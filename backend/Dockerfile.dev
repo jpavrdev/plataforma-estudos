@@ -1,0 +1,17 @@
+# Instalar node 22 (versão alpine é leve)
+FROM node:22-alpine 
+
+# WORKDIR /app é o diretório onde a aplicação vai rodar dentro do container
+WORKDIR /app
+
+# Copiar os arquivos de configuração do npm para o container
+COPY package*.json ./
+
+# Instalar as dependências do projeto
+RUN npm install
+
+# Documentar a porta que a aplicação vai usar
+EXPOSE 3001
+
+# O comando que roda quando o container sobe
+CMD ["npm", "run", "dev"]
