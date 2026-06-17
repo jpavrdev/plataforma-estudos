@@ -10,4 +10,14 @@ export const users = pgTable("users", {
     phone: varchar("phone", { length: 20 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true}),
+});
+
+export const tokens = pgTable("tokens", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    tokenHash: varchar("token_hash", { length: 64}).notNull().unique(),
+    usedAt: timestamp("used_at", { withTimezone: true}),
+    expiredAt: timestamp("expired_at", { withTimezone: true}).notNull()
+
 });
