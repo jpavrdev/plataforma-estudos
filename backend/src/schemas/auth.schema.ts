@@ -5,8 +5,8 @@ export const registerSchema = z.object({
   email: z.email("Email inválido"),
   password: z.string().min(8, "Senha deve ter ao menos 8 caracteres"),
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
-  gender: z.string().optional(),
-  phone: z.string().optional(),
+  gender: z.string(),
+  phone: z.string(),
 });
 
 export const loginSchema = z.object({
