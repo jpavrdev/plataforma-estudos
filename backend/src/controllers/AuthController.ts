@@ -1,13 +1,11 @@
 import { loginSchema, registerSchema } from "../schemas/auth.schema.ts";
 import bcrypt from "bcrypt";
 import { db } from "../../db.ts";
-import { tokens, users } from "../../schema.ts";
-import { createHash, randomBytes } from "node:crypto";
-import { ZodError } from "zod";
+import { users } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import { env } from "../config/env.ts";
+import { authService } from "../services/auth.service.ts";
 
 const BCRYPT_COST = 10;
 
@@ -21,12 +19,16 @@ const DUMMY_HASH = bcrypt.hashSync("uma_senha_qualquer_dummy", BCRYPT_COST);
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Validação dos dados que chegam
         const dados = registerSchema.parse(req.body);
 
+        // Criptografia da senha
         const passwordHash = await bcrypt.hash(dados.password, BCRYPT_COST);
 
+        // Transação atômica: Cria o usuário e gera os tokens iniciais
         const novoUsuario = await db.transaction(async(tx) => {
-            const usuarioCriado = await tx.insert(users).values({
+            // Cria o usuário
+            const [usuarioCriado] = await tx.insert(users).values({
                 name: dados.name,
                 email:dados.email,
                 passwordHash,
@@ -42,24 +44,13 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
                 phone: users.phone 
             });
 
-            const tokenPuro = randomBytes(32).toString("hex");
+            const { accessToken, refreshToken } = await authService.gerarEGravarTokens(usuarioCriado.id, tx);
 
-            const tokenHash = createHash("sha256") // escolhe o algoritmo e cria o hash vazio
-                            .update(tokenPuro) // joga o dado dentro
-                            .digest("hex") // fecha e devolve o resultado
+            return { user: usuarioCriado, accessToken, refreshToken };
 
-            const dataExpiracao = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-            await tx.insert(tokens).values({
-                userId: usuarioCriado[0].id,
-                tokenHash: tokenHash,
-                expiredAt: dataExpiracao
-            });
-
-            return usuarioCriado;
         });
 
-        res.status(201).json(novoUsuario[0]);
+        res.status(201).json(novoUsuario);
         
     } catch (err) {
         next(err);
@@ -84,20 +75,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             return res.status(401).json({ erro: "Credenciais inválidas" });
         }
 
-        const token = jwt.sign(
-            { userId: user.id },
-            JWT_SECRET,
-            { expiresIn: "7d" }
-        );
+        const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
 
-        res.json({ 
-            token, 
-            user: { 
-                id: user.id, 
-                name: user.name, 
-                email: user.email 
-            } 
-        });
+        res.json({ accessToken, refreshToken, user });
 
     } catch (err) {
         next(err);

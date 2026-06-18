@@ -17,6 +17,7 @@ export const tokens = pgTable("tokens", {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").references(() => users.id).notNull(),
     tokenHash: varchar("token_hash", { length: 64}).notNull().unique(),
+    type: varchar("type", { length: 50}).notNull().default("refresh"),
     usedAt: timestamp("used_at", { withTimezone: true}),
     expiredAt: timestamp("expired_at", { withTimezone: true}).notNull()
 
