@@ -114,7 +114,8 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
         // Busca pelo hash
         const [registro] = await db.select({
             userId: tokens.userId,
-            expiredAt: tokens.expiredAt
+            expiredAt: tokens.expiredAt,
+            usedAt: tokens.usedAt
         }).from(tokens).where(eq(tokens.tokenHash, hashCalculado));
 
         // Caso não encontre
@@ -127,10 +128,19 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
             return res.status(401).json({ erro: "Refresh token inválido. "});
         }
 
+        // Existe, não expirou, mas já foi usado
+        if (registro.usedAt !== null) {
+            // Roubo presumido. Revoga todos os tokens do usuário.
+            await db.delete(tokens).where(eq(tokens.userId, registro.userId));
+            return res.status(401).json({ erro: "Refresh token inválido" });
+        }
+
         // Deletar token antigo e Gerar novo token (atomicidade)
 
         const novosTokens = await db.transaction(async (tx) => {
-            await tx.delete(tokens).where(eq(tokens.tokenHash, hashCalculado));
+            await tx.update(tokens)
+                .set({ usedAt: new Date() })
+                .where(eq(tokens.tokenHash, hashCalculado));
             return await authService.gerarEGravarTokens(registro.userId, tx);
         })
 
@@ -147,8 +157,6 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
         res.json({
             token: novosTokens.accessToken,
         });
-
-
 
     } catch(err) {
         next(err);
