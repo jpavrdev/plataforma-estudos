@@ -77,7 +77,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
 
-        res.json({ accessToken, refreshToken, user });
+        res.json({ userId: user.id, name: user.name, email: user.email, token: accessToken, refreshToken});
 
     } catch (err) {
         next(err);
