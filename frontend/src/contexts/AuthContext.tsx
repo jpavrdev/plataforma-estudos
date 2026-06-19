@@ -4,7 +4,9 @@ import api from "../services/api";
 interface User {
     id: string,
     name: string,
-    emails: string
+    email: string,
+    gender: string,
+    phone: string
 }
 
 interface AuthContextData {
@@ -36,9 +38,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loadStorageData();
     }, []);
 
-    async function login(email: string, password: (string)) {
-        const response = await api.post('/login', { email, password });
-
+    async function login(email: string, password: string) {
+        const response = await api.post('/login', 
+            { 
+                email: email.trim(), 
+                password 
+            });
         const { accessToken, refreshToken, user: userData } = response.data;
 
         setUser(userData);
