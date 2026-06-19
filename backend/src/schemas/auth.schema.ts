@@ -10,6 +10,10 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.email("Email inválido"),
-  password: z.string().min(1, "Senha é obrigatória"),
+  email: z.email("Email inválido."),
+  password: z.string().min(1, "Senha é obrigatória."),
+});
+
+export const refreshSchema = z.object({
+  refreshToken: z.string().min(1, "Refresh Token é obrigatório.")
 });

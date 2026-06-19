@@ -1,11 +1,12 @@
-import { loginSchema, registerSchema } from "../schemas/auth.schema.ts";
+import { loginSchema, registerSchema, refreshSchema } from "../schemas/auth.schema.ts";
 import bcrypt from "bcrypt";
 import { db } from "../../db.ts";
-import { users } from "../../schema.ts";
+import { users, tokens } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "../config/env.ts";
 import { authService } from "../services/auth.service.ts";
+import { createHash } from "node:crypto";
 
 const BCRYPT_COST = 10;
 
@@ -50,7 +51,17 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
         });
 
-        res.status(201).json(novoUsuario);
+        const { refreshToken, ...dadosResposta } = novoUsuario;
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000, // 24h
+            path: "/refresh"
+        });
+
+        res.status(201).json(dadosResposta);
         
     } catch (err) {
         next(err);
@@ -77,9 +88,69 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
 
-        res.json({ userId: user.id, name: user.name, email: user.email, token: accessToken, refreshToken});
+        res.json({ name: user.name, email: user.email, token: accessToken});
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000, // 24h
+            path: "/refresh"
+        });
 
     } catch (err) {
+        next(err);
+    }
+};
+
+export const refresh = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        // VAlida a entrada
+        const refreshToken = req.cookies.refreshToken;
+
+        // Hasheia igual ao token que gravamos no banco
+        const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
+
+        // Busca pelo hash
+        const [registro] = await db.select({
+            userId: tokens.userId,
+            expiredAt: tokens.expiredAt
+        }).from(tokens).where(eq(tokens.tokenHash, hashCalculado));
+
+        // Caso não encontre
+        if (!registro) {
+            return res.status(401).json({ erro: "Refresh token inválido. "});
+        }
+
+        // Expiração
+        if (registro.expiredAt < new Date()) {
+            return res.status(401).json({ erro: "Refresh token inválido. "});
+        }
+
+        // Deletar token antigo e Gerar novo token (atomicidade)
+
+        const novosTokens = await db.transaction(async (tx) => {
+            await tx.delete(tokens).where(eq(tokens.tokenHash, hashCalculado));
+            return await authService.gerarEGravarTokens(registro.userId, tx);
+        })
+
+        // Adicionar novo token no cookie
+        res.cookie("refreshToken", novosTokens, {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 24 * 60 * 60 * 1000, // 24h
+            path: "/refresh"
+        });
+
+        // Dar resposta no mesmo formato do login
+        res.json({
+            token: novosTokens.accessToken,
+        });
+
+
+
+    } catch(err) {
         next(err);
     }
 };

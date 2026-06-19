@@ -20,5 +20,4 @@ export const tokens = pgTable("tokens", {
     type: varchar("type", { length: 50}).notNull().default("refresh"),
     usedAt: timestamp("used_at", { withTimezone: true}),
     expiredAt: timestamp("expired_at", { withTimezone: true}).notNull()
-
 });

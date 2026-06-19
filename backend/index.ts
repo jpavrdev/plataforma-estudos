@@ -2,6 +2,7 @@ import { env } from "./src/config/env.ts";
 import express from "express";
 import type { Request, Response } from "express";
 import { db } from "./db.ts";
+import cookieParser from "cookie-parser";
 import { sql } from "drizzle-orm";
 import authRoutes from "./src/routes/auth.routes.ts";
 import userRoutes from "./src/routes/user.routes.ts";
@@ -12,10 +13,16 @@ import cors from "cors";
 const PORT = Number(env.PORT) || 3001;
 const app = express();
 
+app.set("trust proxy", 1);
+
+app.use(cookieParser());
 app.use(express.json());
 app.use(helmet());
 app.use(cors({
-    origin: env.NODE_ENV === "production" ? "https://meusite.com" : "*",
+    origin: env.NODE_ENV === "production"
+    ? "https://meusite.com"
+    : "http://localhost:5173",
+    credentials: true,
 }));
 
 app.use(authRoutes);
