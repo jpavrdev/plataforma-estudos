@@ -58,7 +58,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000, // 24h
-            path: "/refresh"
+            path: "/"
         });
 
         res.status(201).json(dadosResposta);
@@ -95,7 +95,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000, // 24h
-            path: "/refresh"
+            path: "/"
         });
 
     } catch (err) {
@@ -136,7 +136,6 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
         }
 
         // Deletar token antigo e Gerar novo token (atomicidade)
-
         const novosTokens = await db.transaction(async (tx) => {
             await tx.update(tokens)
                 .set({ usedAt: new Date() })
@@ -145,12 +144,12 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
         })
 
         // Adicionar novo token no cookie
-        res.cookie("refreshToken", novosTokens, {
+        res.cookie("refreshToken", novosTokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000, // 24h
-            path: "/refresh"
+            path: "/"
         });
 
         // Dar resposta no mesmo formato do login
@@ -159,6 +158,29 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
         });
 
     } catch(err) {
+        next(err);
+    }
+};
+
+export const logout = async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+
+        // Revoga o token do banco se existir
+        if(refreshToken) {
+            const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
+            await db.delete(tokens).where(eq(tokens.tokenHash, hashCalculado));
+        }
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: env.NODE_ENV === "production",
+            sameSite: "strict",
+            path: "/",
+        });
+
+        res.status(204).send();
+    } catch (err) {
         next(err);
     }
 };

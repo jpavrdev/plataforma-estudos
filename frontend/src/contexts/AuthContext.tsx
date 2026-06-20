@@ -14,7 +14,7 @@ interface AuthContextData {
     isAuthenticated: boolean,
     loading: boolean;
     login: (email: string, password: (string)) => Promise<void>;
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -39,25 +39,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     async function login(email: string, password: string) {
-        const response = await api.post('/login', 
-            { 
-                email: email.trim(), 
-                password 
-            });
-        const { accessToken, refreshToken, user: userData } = response.data;
+        const response = await api.post('/login', { email: email.trim(), password });
+        const { token } = response.data;
 
-        setUser(userData);
+        localStorage.setItem('@App:accessToken', token);
+        api.defaults.headers.Authorization = `Bearer ${token}`;
 
-        localStorage.setItem('@App:accessToken', accessToken);
-        localStorage.setItem('@App:refreshToken', refreshToken);
-        localStorage.setItem('@App:user', JSON.stringify(userData));
+        const meResponse = await api.get('/me');
+        setUser(meResponse.data);
+        localStorage.setItem('@App:user', JSON.stringify(meResponse.data));
 
-        api.defaults.headers.Authorization = `Bearer ${accessToken}`;
     }
 
-    function logout() {
-        localStorage.clear();
-        setUser(null);
+    async function logout() {
+        try {
+            await api.post('/logout');
+        } catch {
+
+        } finally {
+            localStorage.clear();
+            setUser(null);
+        }
     }
 
     return (

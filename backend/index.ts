@@ -21,7 +21,7 @@ app.use(helmet());
 app.use(cors({
     origin: env.NODE_ENV === "production"
     ? "https://meusite.com"
-    : "http://localhost:5173",
+    : true,
     credentials: true,
 }));
 
