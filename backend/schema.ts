@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, date, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, date, timestamp, pgEnum, integer } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 
@@ -14,6 +14,8 @@ export const users = pgTable("users", {
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
     emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true}),
     role: userRole("role").default('user').notNull(),
+    failedLoginAttempts: integer("failed_login_attempts").default(0).notNull(),
+    lockedUntil: timestamp("locked_until", { withTimezone: true}),
 });
 
 export const tokens = pgTable("tokens", {
