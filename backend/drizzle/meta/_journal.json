@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1781474482731,
+      "tag": "0000_fat_medusa",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781655137174,
+      "tag": "0001_giant_salo",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782476502755,
+      "tag": "0002_cloudy_lady_mastermind",
+      "breakpoints": true
+    }
+  ]
+}
