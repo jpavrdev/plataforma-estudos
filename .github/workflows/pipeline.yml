@@ -89,8 +89,8 @@ jobs:
             git fetch origin main
             git checkout main
             git reset --hard origin/main
-            echo "==> Build das imagens"
-            docker compose -f docker-compose.prod.yml build
+            echo "==> Build das imagens (sem cache, para garantir bundle atualizado)"
+            docker compose -f docker-compose.prod.yml build --no-cache
             echo "==> Subindo o banco"
             docker compose -f docker-compose.prod.yml up -d db
             echo "==> Aplicando migrations (antes de subir o app novo)"
