@@ -6,7 +6,7 @@ import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
 import { SelectField } from '../../components/SelectField';
 import { Avatar } from '../../components/Avatar';
-import { Check, UserPlus, Plus } from '../../components/Icons';
+import { Check } from '../../components/Icons';
 import { formatPhone } from '../../utils/phone';
 
 const BENEFITS = [
@@ -92,17 +92,6 @@ export function Register() {
     <AuthShell brand={brand}>
       <h2 className="auth__title">Crie sua conta</h2>
       <p className="auth__subtitle">Leva menos de um minuto.</p>
-
-      <div className="photo-upload">
-        <button type="button" className="photo-upload__circle" aria-label="Adicionar foto">
-          <UserPlus size={26} />
-          <span className="photo-upload__badge"><Plus size={12} /></span>
-        </button>
-        <div>
-          <div className="photo-upload__title">Adicionar foto de perfil</div>
-          <div className="photo-upload__hint">PNG ou JPG, até 4 MB</div>
-        </div>
-      </div>
 
       {error && <div className="auth__alert">{error}</div>}
 
