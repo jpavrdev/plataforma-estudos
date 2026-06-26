@@ -11,6 +11,10 @@ import { emailService } from "../services/email.service.ts";
 
 const BCRYPT_COST = 10;
 
+// Lockout de conta: trava temporariamente após muitas senhas erradas.
+const MAX_TENTATIVAS = 5;
+const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutos
+
 const JWT_SECRET = String(env.JWT_SECRET);
 
 if (!JWT_SECRET) {
@@ -74,6 +78,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const encontrados = await db.select().from(users).where(eq(users.email, dados.email));
         const user = encontrados[0];
 
+        // Conta travada? Recusa antes de gastar bcrypt. Mensagem genérica (igual ao
+        // rate limit) para não distinguir "travada" de "muitas tentativas por IP".
+        if (user?.lockedUntil && user.lockedUntil > new Date()) {
+            return res.status(429).json({ erro: "Muitas tentativas. Tente novamente mais tarde." });
+        }
+
         // Definimos qual hash será comparado. Se o usuário existir, usamos o dele.
         // Se não existir, usamos o DUMMY_HASH.
         const hashParaComparar = user ? user.passwordHash : DUMMY_HASH;
@@ -81,7 +91,28 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const senhaCorreta = await bcrypt.compare(dados.password, hashParaComparar);
 
         if (!user || !senhaCorreta) {
+            // Conta tentativas falhas só para usuário existente. Ao atingir o limite,
+            // trava por LOCKOUT_MS e zera o contador (a próxima janela começa limpa).
+            if (user) {
+                const tentativas = user.failedLoginAttempts + 1;
+                if (tentativas >= MAX_TENTATIVAS) {
+                    await db.update(users)
+                        .set({ failedLoginAttempts: 0, lockedUntil: new Date(Date.now() + LOCKOUT_MS) })
+                        .where(eq(users.id, user.id));
+                } else {
+                    await db.update(users)
+                        .set({ failedLoginAttempts: tentativas })
+                        .where(eq(users.id, user.id));
+                }
+            }
             return res.status(401).json({ erro: "Credenciais inválidas" });
+        }
+
+        // Senha correta: zera o contador se havia tentativas/lock pendentes.
+        if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+            await db.update(users)
+                .set({ failedLoginAttempts: 0, lockedUntil: null })
+                .where(eq(users.id, user.id));
         }
 
         if (!user.emailVerifiedAt) {
