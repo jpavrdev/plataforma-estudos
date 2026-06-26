@@ -3,7 +3,7 @@ import { z } from "zod";
 export const registerSchema = z.object({
   name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
   email: z.email("Email inválido"),
-  password: z.string().min(8, "Senha deve ter ao menos 8 caracteres"),
+  password: z.string().min(12, "Senha deve ter ao menos 12 caracteres").max(72).refine((s) => /[0-9]/.test(s), "A senha deve conter pelo menos um número"),
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
   gender: z.string(),
   phone: z.string(),

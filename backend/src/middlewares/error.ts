@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-
+import { env } from "../config/env.ts";
 export function errorMiddleware(
     err: Error,
     _req: Request,
@@ -9,10 +9,16 @@ export function errorMiddleware(
 ) {
     // Se for erro do Zod
     if (err instanceof ZodError) {
-        return res.status(400).json({
-            erro: "Dados inválidos",
-            detalhes: err.issues
-        });
+        if(env.NODE_ENV !== "development") {
+            return res.status(400).json({
+                erro: "Dados inválidos"
+            });
+        } else {
+            return res.status(400).json({
+                erro: "Dados inválidos",
+                detalhes: err.issues
+            });
+        }
     }
 
     // Erros customizados ou erros de banco conhecidos
