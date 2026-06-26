@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors({
     origin: env.NODE_ENV === "production"
-    ? "https://meusite.com"
+    ? env.FRONTEND_URL
     : true,
     credentials: true,
 }));
