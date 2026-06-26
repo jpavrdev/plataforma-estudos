@@ -1,0 +1,110 @@
+name: Pipeline
+
+# Testa back e front; se passarem e for push na main, aplica migrations e faz deploy.
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+
+concurrency:
+  group: pipeline-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test -d testdb"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://test:test@localhost:5432/testdb
+      JWT_SECRET: ci_secret_com_pelo_menos_32_caracteres_aqui_ok
+      NODE_ENV: test
+      FRONTEND_URL: http://localhost:5173
+      DB_SSL: "false"
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar dependências
+        run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Testes unitários
+        run: npm run test:unit
+      - name: Aplicar migrations no banco de teste
+        run: npx drizzle-kit migrate
+      - name: Testes de integração
+        run: node --test --test-concurrency=1 'tests/**/*.test.ts'
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar dependências
+        run: npm ci
+      - name: Typecheck e build
+        run: npm run build
+
+  deploy:
+    needs: [backend-tests, frontend-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "76.13.174.73 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILDPyeTPCOu8dACmJrgFeI04EGjZkKVwN3lu5145uH8k" >> ~/.ssh/known_hosts
+
+      - name: Deploy no servidor
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'DEPLOY'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            echo "==> Atualizando codigo (main)"
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+            echo "==> Build das imagens"
+            docker compose -f docker-compose.prod.yml build
+            echo "==> Subindo o banco"
+            docker compose -f docker-compose.prod.yml up -d db
+            echo "==> Aplicando migrations (antes de subir o app novo)"
+            docker compose -f docker-compose.prod.yml run --rm backend npx drizzle-kit migrate
+            echo "==> Subindo backend e proxy"
+            docker compose -f docker-compose.prod.yml up -d
+            echo "==> Limpando imagens antigas"
+            docker image prune -f
+            echo "==> Deploy concluido"
+          DEPLOY
+
+      - name: Verificar saúde do site
+        run: |
+          sleep 5
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 https://ensinadev.com.br/api/health)
+          echo "Health check retornou: $code"
+          test "$code" = "200"
