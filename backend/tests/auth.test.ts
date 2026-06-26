@@ -99,6 +99,84 @@ describe("POST /login", () => {
     });
 });
 
+describe("Lockout de conta", () => {
+    // Lê o estado de lockout direto do banco.
+    async function estadoLock(email: string) {
+        const { db } = await import("../db.ts");
+        const { users } = await import("../schema.ts");
+        const { eq } = await import("drizzle-orm");
+        const [u] = await db
+            .select({ tentativas: users.failedLoginAttempts, lockedUntil: users.lockedUntil })
+            .from(users)
+            .where(eq(users.email, email));
+        return u;
+    }
+
+    test("trava a conta com 429 após 5 senhas erradas", async () => {
+        const dados = novoUsuario();
+        await server.request("POST", "/register", { body: dados });
+        await verificarEmail(dados.email);
+
+        // 5 tentativas erradas: as 4 primeiras 401, a 5a trava
+        for (let i = 0; i < 5; i++) {
+            await server.request("POST", "/login", {
+                body: { email: dados.email, password: "errada999" },
+            });
+        }
+
+        // 6a tentativa (mesmo com a senha CERTA) deve bater no lock -> 429
+        const res = await server.request("POST", "/login", {
+            body: { email: dados.email, password: dados.password },
+        });
+        assert.equal(res.status, 429);
+
+        const estado = await estadoLock(dados.email);
+        assert.ok(estado.lockedUntil && estado.lockedUntil > new Date(), "lockedUntil deve estar no futuro");
+    });
+
+    test("login bem-sucedido zera o contador de tentativas", async () => {
+        const dados = novoUsuario();
+        await server.request("POST", "/register", { body: dados });
+        await verificarEmail(dados.email);
+
+        // 2 erros (abaixo do limite), depois acerta
+        await server.request("POST", "/login", { body: { email: dados.email, password: "errada1" } });
+        await server.request("POST", "/login", { body: { email: dados.email, password: "errada2" } });
+
+        let estado = await estadoLock(dados.email);
+        assert.equal(estado.tentativas, 2);
+
+        const ok = await server.request("POST", "/login", {
+            body: { email: dados.email, password: dados.password },
+        });
+        assert.equal(ok.status, 200);
+
+        estado = await estadoLock(dados.email);
+        assert.equal(estado.tentativas, 0);
+        assert.equal(estado.lockedUntil, null);
+    });
+
+    test("lockout expirado permite login novamente", async () => {
+        const dados = novoUsuario();
+        await server.request("POST", "/register", { body: dados });
+        await verificarEmail(dados.email);
+
+        // Trava manualmente com lockedUntil no PASSADO (simula lock expirado)
+        const { db } = await import("../db.ts");
+        const { users } = await import("../schema.ts");
+        const { eq } = await import("drizzle-orm");
+        await db.update(users)
+            .set({ lockedUntil: new Date(Date.now() - 1000), failedLoginAttempts: 5 })
+            .where(eq(users.email, dados.email));
+
+        // Lock no passado nao bloqueia: login com senha certa deve funcionar
+        const res = await server.request("POST", "/login", {
+            body: { email: dados.email, password: dados.password },
+        });
+        assert.equal(res.status, 200);
+    });
+});
+
 describe("POST /verify-email", () => {
     test("verifica email com token válido e libera o login", async () => {
         const dados = novoUsuario();
