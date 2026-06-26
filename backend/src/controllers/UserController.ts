@@ -3,6 +3,17 @@ import { db } from "../../db.ts";
 import { users } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 
+const publicUserColumns = {
+    id: users.id,
+    name: users.name,
+    email: users.email,
+    birthDate: users.birthDate,
+    gender: users.gender,
+    phone: users.phone,
+    role: users.role,
+    createdAt: users.createdAt
+};
+
 export const getMe = async (req: Request, res: Response) => {
     const userId = req.userId;
 
@@ -10,7 +21,7 @@ export const getMe = async (req: Request, res: Response) => {
         return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
-    const encontrados = await db.select().from(users).where(eq(users.id, userId));
+    const encontrados = await db.select(publicUserColumns).from(users).where(eq(users.id, userId));
 
     const user = encontrados[0];
 
@@ -18,18 +29,11 @@ export const getMe = async (req: Request, res: Response) => {
         return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
-    res.json({ 
-        id: user.id, 
-        name: user.name, 
-        email: user.email, 
-        birthDate: user.birthDate, 
-        gender: user.gender, 
-        phone: user.phone, 
-        createdAt: user.createdAt 
-    });
+    res.json(user);
 }
 
 export const listUsers = async (_req: Request, res: Response) => {
-    const allUsers = await db.select().from(users);
+    const allUsers = await db.select(publicUserColumns).from(users);
+
     res.json(allUsers);
 }

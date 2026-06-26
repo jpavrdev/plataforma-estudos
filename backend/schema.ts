@@ -1,4 +1,6 @@
-import { pgTable, uuid, varchar, date, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, date, timestamp, pgEnum } from "drizzle-orm/pg-core";
+
+export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -11,6 +13,7 @@ export const users = pgTable("users", {
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
     emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true}),
+    role: userRole("role").default('user').notNull(),
 });
 
 export const tokens = pgTable("tokens", {
