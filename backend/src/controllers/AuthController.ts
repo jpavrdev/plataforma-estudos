@@ -88,8 +88,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
 
-        res.json({ name: user.name, email: user.email, token: accessToken});
-
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
@@ -97,6 +95,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             maxAge: 24 * 60 * 60 * 1000, // 24h
             path: "/"
         });
+
+        res.json({ name: user.name, email: user.email, token: accessToken});
 
     } catch (err) {
         next(err);
@@ -107,6 +107,10 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
     try {
         // VAlida a entrada
         const refreshToken = req.cookies.refreshToken;
+
+        if (!refreshToken) {
+            return res.status(401).json({ erro: "Refresh token inválido." });
+        }
 
         // Hasheia igual ao token que gravamos no banco
         const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
