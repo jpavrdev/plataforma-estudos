@@ -17,5 +17,17 @@ export const authService = {
         });
 
         return { accessToken, refreshToken };
+    },
+    async gerarTokenVerificacao(userId: string, tx: any = db) {
+        const verificationToken = randomBytes(40).toString("hex");
+
+        await tx.insert(tokens).values({
+            userId,
+            tokenHash: createHash("sha256").update(verificationToken).digest("hex"),
+            type: "email_verification",
+            expiredAt: new Date(Date.now() + 24 * 60 * 1000)
+        });
+
+        return verificationToken;
     }
 };

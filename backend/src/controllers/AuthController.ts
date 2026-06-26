@@ -2,11 +2,12 @@ import { loginSchema, registerSchema, refreshSchema } from "../schemas/auth.sche
 import bcrypt from "bcrypt";
 import { db } from "../../db.ts";
 import { users, tokens } from "../../schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "../config/env.ts";
 import { authService } from "../services/auth.service.ts";
 import { createHash } from "node:crypto";
+import { emailService } from "../services/email.service.ts";
 
 const BCRYPT_COST = 10;
 
@@ -45,23 +46,20 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
                 phone: users.phone 
             });
 
-            const { accessToken, refreshToken } = await authService.gerarEGravarTokens(usuarioCriado.id, tx);
+            const verificationToken = await authService.gerarTokenVerificacao(usuarioCriado.id, tx);
 
-            return { user: usuarioCriado, accessToken, refreshToken };
+            return { user: usuarioCriado, verificationToken };
 
         });
 
-        const { refreshToken, ...dadosResposta } = novoUsuario;
+        const { user, verificationToken } = novoUsuario;
 
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 24 * 60 * 60 * 1000, // 24h
-            path: "/"
+        await emailService.enviarVerificacao(user.email, verificationToken);
+
+        res.status(201).json({
+            mensagem: "Conta criada. Verifique seu email para ativar o acesso.",
+            user,
         });
-
-        res.status(201).json(dadosResposta);
         
     } catch (err) {
         next(err);
@@ -84,6 +82,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         if (!user || !senhaCorreta) {
             return res.status(401).json({ erro: "Credenciais inválidas" });
+        }
+
+        if (!user.emailVerifiedAt) {
+            return res.status(403).json({ erro: "Verifique seu email antes de entrar" });
         }
 
         const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
@@ -184,6 +186,59 @@ export const logout = async(req: Request, res: Response, next: NextFunction) => 
         });
 
         res.status(204).send();
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { token } = req.body;
+
+        if (!token) {
+            return res.status(400).json({ erro: "Token não fornecido" });
+        }
+
+        // Hasheia igual ao token que gravamos no banco
+        const hashCalculado = createHash("sha256").update(token).digest("hex");
+
+        // Busca pelo hash E pelo tipo (impede usar um refresh token aqui)
+        const [registro] = await db.select({
+            userId: tokens.userId,
+            expiredAt: tokens.expiredAt,
+            usedAt: tokens.usedAt
+        }).from(tokens).where(
+            and(
+                eq(tokens.tokenHash, hashCalculado),
+                eq(tokens.type, "email_verification")
+            )
+        );
+
+        if (!registro) {
+            return res.status(400).json({ erro: "Token inválido" });
+        }
+
+        if (registro.expiredAt < new Date()) {
+            return res.status(400).json({ erro: "Token inválido" });
+        }
+
+        if (registro.usedAt !== null) {
+            return res.status(400).json({ erro: "Token inválido" });
+        }
+
+        // Marca o token como usado e o email como verificado (atomicidade)
+        await db.transaction(async (tx) => {
+            await tx.update(tokens)
+                .set({ usedAt: new Date() })
+                .where(eq(tokens.tokenHash, hashCalculado));
+
+            await tx.update(users)
+                .set({ emailVerifiedAt: new Date() })
+                .where(eq(users.id, registro.userId));
+        });
+
+        res.json({ mensagem: "Email verificado com sucesso. Você já pode fazer login." });
+
     } catch (err) {
         next(err);
     }

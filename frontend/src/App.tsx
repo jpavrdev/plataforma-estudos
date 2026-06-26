@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Home } from './pages/Home';
+import { VerifyEmail } from './pages/VerifyEmail';
 import { Placeholder } from './pages/Placeholder';
 
 function PrivateRoute({ children }: { children: React.JSX.Element }) {
@@ -20,6 +21,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
       <Route path="/cadastro" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
+      <Route path="/verificar-email" element={<VerifyEmail />} />
 
       <Route
         path="/home"

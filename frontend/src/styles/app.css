@@ -152,6 +152,15 @@
 .placeholder__desc { margin: 12px 0 24px; font-size: 14.5px; color: var(--muted); line-height: 1.55; }
 .placeholder__back { width: auto; display: inline-flex; }
 
+/* ===================== VERIFY EMAIL ===================== */
+.verify-shell { min-height: 100svh; display: flex; align-items: center; justify-content: center; padding: 32px; background: var(--bg); }
+.verify-card { max-width: 420px; width: 100%; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); box-shadow: var(--shadow); padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.verify-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; }
+.verify-icon--ok { background: var(--success-soft); color: var(--success); }
+.verify-icon--erro { background: color-mix(in srgb, var(--av-red) 14%, transparent); color: var(--av-red); }
+.verify-title { margin: 6px 0 0; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+.verify-text { margin: 0 0 8px; font-size: 14.5px; color: var(--muted); line-height: 1.55; }
+
 /* ===================== HOME ===================== */
 .home-shell { min-height: 100svh; background: var(--bg); }
 .home { min-height: 100svh; background: var(--bg); }
