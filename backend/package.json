@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test --test-concurrency=1 'src/**/*.test.ts' 'tests/**/*.test.ts'",
+    "test:unit": "node --test 'src/**/*.test.ts'",
     "dev": "node --watch --env-file=.env index.ts"
   },
   "keywords": [],

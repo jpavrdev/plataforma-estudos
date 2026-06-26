@@ -1,0 +1,15 @@
+ensinadev.com.br, www.ensinadev.com.br {
+	# API: tudo sob /api vai para o backend, removendo o prefixo /api
+	handle_path /api/* {
+		reverse_proxy backend:3001
+	}
+
+	# Frontend: arquivos estáticos do build do Vite
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	encode gzip
+}

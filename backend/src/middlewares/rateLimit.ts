@@ -6,4 +6,5 @@ export const loginLimiter = rateLimit({
     message: { erro: "Muitas tentativas. Tente novamente mais tarde." },
     standardHeaders: true, // Envia headers RateLimit-* (É o padrão moderno de hoje)
     legacyHeaders: false, // Não envia os headers antigos
+    skip: () => process.env.NODE_ENV === "test", // não limita durante os testes
 });
