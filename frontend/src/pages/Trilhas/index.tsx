@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -7,12 +8,10 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Search, Play, ChevronRight } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
-import {
-  trilhasFull,
-  trilhaFilters,
-  continuar,
-  type TrailLevel,
-} from '../../data/trails';
+import { trilhaFilters, type Trail, type TrailLevel } from '../../data/trails';
+import { listarTrilhas, listarMinhasTrilhas } from '../../services/trails';
+
+type TrailComId = Trail & { id: string };
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -54,6 +53,37 @@ export function Trilhas() {
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
+
+  const [trilhas, setTrilhas] = useState<TrailComId[]>([]);
+  const [minhas, setMinhas] = useState<TrailComId[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const [todas, doUsuario] = await Promise.all([
+          listarTrilhas(),
+          listarMinhasTrilhas(),
+        ]);
+        setTrilhas(todas);
+        setMinhas(doUsuario);
+      } catch {
+        setErro('Não foi possível carregar as trilhas.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+    carregar();
+  }, []);
+
+  // Card de destaque: a trilha em andamento mais avançada (mas nao concluida).
+  const continuar = minhas
+    .filter((t) => t.done > 0 && t.done < t.lessons)
+    .sort((a, b) => b.done / b.lessons - a.done / a.lessons)[0];
+
+  const aulasConcluidas = minhas.reduce((soma, t) => soma + t.done, 0);
+  const emAndamento = minhas.filter((t) => t.done < t.lessons).length;
 
   return (
     <div className="home-shell">
@@ -100,36 +130,38 @@ export function Trilhas() {
               </p>
             </div>
             <div className="trilhas-page__stats">
-              <Metric value="3" label="em andamento" />
+              <Metric value={String(emAndamento)} label="em andamento" />
               <span className="trilhas-page__divider" />
-              <Metric value="54" label="aulas concluídas" />
+              <Metric value={String(aulasConcluidas)} label="aulas concluídas" />
               <span className="trilhas-page__divider" />
-              <Metric value="2.640" label="XP em trilhas" accent />
+              <Metric value={String(aulasConcluidas * 50)} label="XP em trilhas" accent />
             </div>
           </div>
 
           {/* Continuar (destaque) */}
-          <div className="continue-card">
-            <span className="continue-card__glow" />
-            <div className="continue-card__body">
-              <div className="continue-card__kicker">Continuar de onde parou</div>
-              <h2 className="continue-card__title">{continuar.name}</h2>
-              <p className="continue-card__next">
-                Próxima aula · <b>{continuar.next}</b>
-              </p>
-              <div className="continue-card__progress">
-                <div className="continue-card__track">
-                  <span style={{ width: `${continuar.pct}%` }} />
+          {continuar && (
+            <div className="continue-card">
+              <span className="continue-card__glow" />
+              <div className="continue-card__body">
+                <div className="continue-card__kicker">Continuar de onde parou</div>
+                <h2 className="continue-card__title">{continuar.name}</h2>
+                <p className="continue-card__next">
+                  {continuar.done} de {continuar.lessons} aulas concluídas
+                </p>
+                <div className="continue-card__progress">
+                  <div className="continue-card__track">
+                    <span style={{ width: `${Math.round((continuar.done / continuar.lessons) * 100)}%` }} />
+                  </div>
+                  <span className="continue-card__pct">
+                    {Math.round((continuar.done / continuar.lessons) * 100)}% · {continuar.done}/{continuar.lessons}
+                  </span>
                 </div>
-                <span className="continue-card__pct">
-                  {continuar.pct}% · {continuar.done}/{continuar.total}
-                </span>
               </div>
+              <button className="continue-card__btn">
+                <Play size={13} /> Continuar aula
+              </button>
             </div>
-            <button className="continue-card__btn">
-              <Play size={13} /> Continuar aula
-            </button>
-          </div>
+          )}
 
           {/* Filtros */}
           <div className="filters">
@@ -139,18 +171,27 @@ export function Trilhas() {
               </button>
             ))}
             <div className="topbar__spacer" />
-            <span className="filters__count">{trilhasFull.length} trilhas</span>
+            <span className="filters__count">{trilhas.length} trilhas</span>
           </div>
+
+          {carregando && <p className="track__desc">Carregando trilhas...</p>}
+          {erro && <div className="auth__alert">{erro}</div>}
+          {!carregando && !erro && trilhas.length === 0 && (
+            <p className="track__desc">Nenhuma trilha disponível ainda.</p>
+          )}
 
           {/* Grade */}
           <div className="track-grid">
-            {trilhasFull.map((t) => {
-              const pct = Math.round((t.done / t.lessons) * 100);
+            {trilhas.map((catalogo) => {
+              // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
+              const progresso = minhas.find((m) => m.id === catalogo.id);
+              const t = { ...catalogo, done: progresso?.done ?? 0 };
+              const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
               const started = t.done > 0;
               const completed = t.done >= t.lessons;
               const lv = tint[t.level];
               return (
-                <div key={t.name} className="track">
+                <div key={t.id} className="track">
                   <div className="track__head">
                     <span
                       className="track__icon"
