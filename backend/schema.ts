@@ -1,6 +1,7 @@
-import { pgTable, uuid, varchar, date, timestamp, pgEnum, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, date, timestamp, pgEnum, integer, text, unique } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
+export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -26,3 +27,29 @@ export const tokens = pgTable("tokens", {
     usedAt: timestamp("used_at", { withTimezone: true}),
     expiredAt: timestamp("expired_at", { withTimezone: true}).notNull()
 });
+
+export const trails = pgTable("trails", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 255 }).notNull(),
+    trailLevel: trailLevel("level").notNull(),
+    description: text("description").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+});
+
+export const lessons = pgTable("lessons", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    trailId: uuid("trail_id").references(() => trails.id).notNull(),
+    title: varchar("title", { length: 255 }).notNull(),
+    content: text("content"),
+    position: integer("position").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+});
+
+export const lessonProgress = pgTable("lessons_progress", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    lessonId: uuid("lesson_id").references(() => lessons.id).notNull(),
+    completedAt: timestamp("completed_at", { withTimezone: true }).defaultNow().notNull()
+}, (table) => [
+    unique().on(table.userId, table.lessonId),
+]);
