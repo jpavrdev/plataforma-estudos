@@ -65,6 +65,12 @@ export const Plus = ({ size = 12 }: IconProps) => (
   </svg>
 );
 
+export const ChevronRight = ({ size = 15 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 6 15 12 9 18" />
+  </svg>
+);
+
 export const Eye = ({ size = 18 }: IconProps) => (
   <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />

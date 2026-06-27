@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Home } from './pages/Home';
+import { Trilhas } from './pages/Trilhas';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { Placeholder } from './pages/Placeholder';
 
@@ -34,7 +35,7 @@ function AppRoutes() {
         path="/trilhas"
         element={
           <PrivateRoute>
-            <Placeholder title="Trilhas" description="Em breve você poderá navegar por todas as trilhas de aprendizado aqui." />
+            <Trilhas />
           </PrivateRoute>
         } />
       <Route

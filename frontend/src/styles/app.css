@@ -294,3 +294,55 @@
   .challenge__code { width: auto; border-left: none; border-top: 1px solid var(--border); }
   .trilhas { grid-template-columns: 1fr; }
 }
+
+/* ===================== TRILHAS ===================== */
+.trilhas-page { padding: 32px 48px; max-width: 1180px; margin: 0 auto; }
+.trilhas-page__head { display: flex; align-items: flex-end; gap: 14px; margin-bottom: 20px; }
+.trilhas-page__title { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+.trilhas-page__sub { margin: 4px 0 0; font-size: 14px; color: var(--muted); max-width: 560px; }
+.trilhas-page__stats { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+.trilhas-page__divider { width: 1px; align-self: stretch; background: var(--border); }
+.metric { text-align: right; }
+.metric__value { font-size: 20px; font-weight: 700; line-height: 1; }
+.metric__label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.continue-card { position: relative; overflow: hidden; display: flex; align-items: center; gap: 26px; border-radius: var(--r-2xl); padding: 26px 28px; margin-bottom: 24px; color: #fff; background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 46%, #0A1430)); }
+.continue-card__glow { position: absolute; width: 320px; height: 320px; border-radius: 50%; top: -140px; right: -60px; background: radial-gradient(circle, rgba(255,255,255,.14), transparent 70%); pointer-events: none; }
+.continue-card__body { position: relative; flex: 1; min-width: 0; }
+.continue-card__kicker { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.8); line-height: 1; white-space: nowrap; }
+.continue-card__kicker::before { content: ''; display: inline-block; vertical-align: middle; width: 7px; height: 7px; border-radius: 50%; background: #fff; margin-right: 9px; position: relative; top: -1px; }
+.continue-card__title { margin: 10px 0 0; font-size: 23px; font-weight: 700; letter-spacing: -.015em; }
+.continue-card__next { margin: 6px 0 0; font-size: 14px; color: rgba(255,255,255,.85); }
+.continue-card__next b { color: #fff; }
+.continue-card__progress { display: flex; align-items: center; gap: 12px; margin-top: 18px; max-width: 430px; }
+.continue-card__track { flex: 1; height: 8px; border-radius: 99px; background: rgba(255,255,255,.25); overflow: hidden; }
+.continue-card__track span { display: block; height: 100%; border-radius: 99px; background: #fff; }
+.continue-card__pct { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.continue-card__btn { position: relative; display: flex; align-items: center; gap: 9px; height: 50px; padding: 0 24px; border: none; border-radius: 13px; background: #fff; color: var(--accent); font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer; flex-shrink: 0; }
+
+.filters { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; flex-wrap: wrap; }
+.filter { height: 34px; padding: 0 15px; border-radius: 99px; font-size: 13.5px; font-weight: 500; cursor: pointer; color: var(--muted); background: var(--surface); border: 1px solid var(--border); }
+.filter--active { color: #fff; font-weight: 600; background: var(--accent); border-color: var(--accent); }
+.filters__count { font-size: 13px; color: var(--muted); }
+
+.track-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.track { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 18px; }
+.track__head { display: flex; align-items: center; gap: 12px; }
+.track__icon { width: 46px; height: 46px; border-radius: var(--r-lg); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-code); font-weight: 700; font-size: 16px; }
+.track__meta { min-width: 0; flex: 1; }
+.track__name { font-size: 15.5px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track__row { display: flex; align-items: center; gap: 7px; margin-top: 3px; }
+.track__level { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+.track__lessons { font-size: 12.5px; color: var(--muted); }
+.track__desc { margin: 13px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); min-height: 39px; }
+.track__foot { display: flex; align-items: center; gap: 8px; }
+.track__tags { display: flex; gap: 6px; }
+.track__cta { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+
+@media (max-width: 900px) {
+  .trilhas-page { padding: 24px; }
+  .trilhas-page__head { flex-direction: column; align-items: flex-start; }
+  .trilhas-page__stats { margin-left: 0; }
+  .continue-card { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .track-grid { grid-template-columns: 1fr; }
+}

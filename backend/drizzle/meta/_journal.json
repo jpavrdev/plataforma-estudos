@@ -36,6 +36,13 @@
       "when": 1782499695129,
       "tag": "0004_complex_living_lightning",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782513013653,
+      "tag": "0005_lush_stone_men",
+      "breakpoints": true
     }
   ]
 }
