@@ -4,6 +4,7 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Home } from './pages/Home';
 import { Trilhas } from './pages/Trilhas';
+import { Aula } from './pages/Aula';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { Placeholder } from './pages/Placeholder';
 
@@ -36,6 +37,13 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <Trilhas />
+          </PrivateRoute>
+        } />
+      <Route
+        path="/trilhas/:trailId/aula/:lessonId"
+        element={
+          <PrivateRoute>
+            <Aula />
           </PrivateRoute>
         } />
       <Route

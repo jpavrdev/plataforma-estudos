@@ -55,3 +55,74 @@ export async function listarMinhasTrilhas() {
   const { data } = await api.get<TrailApi[]>('/me/trails');
   return data.map(adaptar);
 }
+
+export type LessonState = 'done' | 'current' | 'locked';
+
+export interface LessonRef {
+  id: string;
+  title: string;
+  position: number;
+  published?: boolean;
+  state: LessonState;
+}
+
+export interface ModuleWithLessons {
+  id: string;
+  title: string;
+  position: number;
+  lessons: LessonRef[];
+}
+
+export interface TrailDetail {
+  id: string;
+  name: string;
+  trailLevel: TrailApi['trailLevel'];
+  description: string;
+  modules: ModuleWithLessons[];
+}
+
+export async function obterTrilha(trailId: string) {
+  const { data } = await api.get<TrailDetail>(`/trails/${trailId}`);
+  return data;
+}
+
+export interface QuizOption {
+  id: string;
+  text: string;
+  position: number;
+}
+export interface QuizQuestion {
+  id: string;
+  statement: string;
+  position: number;
+  options: QuizOption[];
+}
+export interface LessonDetail {
+  id: string;
+  trailId: string;
+  moduleId: string;
+  title: string;
+  content: string | null;
+  state: LessonState;
+  questions: QuizQuestion[];
+}
+
+export async function obterAula(lessonId: string) {
+  const { data } = await api.get<LessonDetail>(`/lessons/${lessonId}`);
+  return data;
+}
+
+export interface QuizResult {
+  correct: number;
+  total: number;
+  passed: boolean;
+  lessonCompleted: boolean;
+}
+
+export async function enviarQuiz(
+  lessonId: string,
+  answers: { questionId: string; optionId: string }[],
+) {
+  const { data } = await api.post<QuizResult>(`/lessons/${lessonId}/quiz`, { answers });
+  return data;
+}
