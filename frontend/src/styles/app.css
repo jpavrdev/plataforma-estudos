@@ -40,6 +40,15 @@
 }
 .input::placeholder { color: var(--muted); opacity: .8; }
 .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent); }
+.input-wrap { position: relative; }
+.input-wrap .input { padding-right: 44px; }
+.input-toggle {
+  position: absolute; top: 0; right: 0; height: 100%; width: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  transition: color .15s ease;
+}
+.input-toggle:hover { color: var(--text); }
 .link { color: var(--accent); font-weight: 600; font-size: 13px; text-decoration: none; }
 .divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12.5px; margin: 18px 0; }
 .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
