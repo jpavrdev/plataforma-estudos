@@ -5,9 +5,10 @@ import { limparBanco } from "./helpers/db.ts";
 
 let server: Awaited<ReturnType<typeof startTestServer>>;
 
+let seq = 0;
 const novoUsuario = (over: Record<string, unknown> = {}) => ({
     name: "Maria Silva",
-    email: `maria_${Math.round(performance.now() * 1000)}@email.com`,
+    email: `maria_${++seq}_${Math.round(performance.now() * 1000)}@email.com`,
     password: "senhaforte123",
     birthDate: "1990-01-01",
     gender: "feminino",
