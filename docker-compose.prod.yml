@@ -23,6 +23,8 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env.prod
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       - db
     expose:
@@ -40,3 +42,4 @@ volumes:
   pgdata:
   caddy_data:
   caddy_config:
+  uploads:

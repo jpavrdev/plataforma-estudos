@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
@@ -6,15 +7,14 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
 import { Flame, Search, Bookmark, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
+import { tempoRelativo } from '../../utils/tempo';
 import {
   user,
   dailyChallenge,
-  trilhas,
-  week,
-  ranking,
-  feed,
   MEDALS,
 } from '../../data/home';
+import { listarTrilhas, listarMinhasTrilhas, obterTrilha, obterFeedConquistas, obterRanking, obterStreak, type FeedConquista, type RankingRow, type StreakInfo } from '../../services/trails';
+import type { Trail } from '../../data/trails';
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -22,6 +22,8 @@ const NAV = [
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
+
+const CORES_FEED = ['#2D6BF5', '#E0655A', '#3DAE6B', '#E0A82E', '#8B5CF6'];
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
@@ -37,6 +39,57 @@ export function Home() {
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
+
+  const navigate = useNavigate();
+  const [emAndamento, setEmAndamento] = useState<(Trail & { id: string })[]>([]);
+  const [disponiveis, setDisponiveis] = useState<(Trail & { id: string })[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [feedComunidade, setFeedComunidade] = useState<FeedConquista[]>([]);
+  const [rankingGlobal, setRankingGlobal] = useState<RankingRow[]>([]);
+  const [streakInfo, setStreakInfo] = useState<StreakInfo>({ streak: 0, week: [] });
+
+  useEffect(() => {
+    let ativo = true;
+    async function carregar() {
+      try {
+        const [todas, doUsuario] = await Promise.all([listarTrilhas(), listarMinhasTrilhas()]);
+        if (!ativo) return;
+        const comProgresso = todas.map((c) => ({
+          ...c,
+          done: doUsuario.find((m) => m.id === c.id)?.done ?? 0,
+        }));
+        setEmAndamento(comProgresso.filter((t) => t.done > 0 && t.done < t.lessons));
+        setDisponiveis(comProgresso);
+      } catch {
+        // silencioso: o resto da home continua aparecendo
+      } finally {
+        if (ativo) setCarregando(false);
+      }
+    }
+    carregar();
+    return () => { ativo = false; };
+  }, []);
+
+  useEffect(() => {
+    obterFeedConquistas().then(setFeedComunidade).catch(() => {});
+    obterRanking().then((r) => setRankingGlobal(r.rows)).catch(() => {});
+    obterStreak().then(setStreakInfo).catch(() => {});
+  }, []);
+
+  // Abre a trilha na primeira aula disponivel (a atual, ou a primeira).
+  async function abrirTrilha(trailId: string) {
+    try {
+      const detalhe = await obterTrilha(trailId);
+      const aulas = detalhe.modules.flatMap((m) => m.lessons);
+      const alvo = aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
+      navigate(alvo ? `/trilhas/${trailId}/aula/${alvo.id}` : '/trilhas');
+    } catch {
+      navigate('/trilhas');
+    }
+  }
+
+  const mostrandoEmAndamento = emAndamento.length > 0;
+  const listaTrilhas = (mostrandoEmAndamento ? emAndamento : disponiveis).slice(0, 4);
 
   return (
     <div className="home-shell">
@@ -61,7 +114,7 @@ export function Home() {
             <span>Buscar exercício…</span>
           </div>
           <div className="streak-pill">
-            <Flame size={16} /> {user.streak}
+            <Flame size={16} /> {streakInfo.streak}
           </div>
           <ThemeToggle inline />
           <UserMenu
@@ -125,36 +178,55 @@ export function Home() {
             {/* Trilhas */}
             <section>
               <div className="section-head">
-                <h2 className="section-title">Continue suas trilhas</h2>
-                <a className="link" href="#">Ver todas</a>
+                <h2 className="section-title">{mostrandoEmAndamento ? 'Continue suas trilhas' : 'Trilhas disponíveis'}</h2>
+                <Link className="link" to="/trilhas">Ver todas</Link>
               </div>
-              <div className="trilhas">
-                {trilhas.map((t) => (
-                  <div key={t.name} className="trilha">
-                    <div className="trilha__head">
-                      <span
-                        className="trilha__icon"
-                        style={{
-                          color: t.hue,
-                          background: `color-mix(in srgb, ${t.hue} 16%, transparent)`,
-                        }}
+              {carregando ? (
+                <p className="track__desc">Carregando trilhas...</p>
+              ) : listaTrilhas.length === 0 ? (
+                <p className="track__desc">Nenhuma trilha disponível ainda.</p>
+              ) : (
+                <div className="trilhas">
+                  {listaTrilhas.map((t) => {
+                    const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
+                    return (
+                      <div
+                        key={t.id}
+                        className="trilha"
+                        role="button"
+                        tabIndex={0}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => abrirTrilha(t.id)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') abrirTrilha(t.id); }}
                       >
-                        {t.glyph}
-                      </span>
-                      <div className="trilha__meta">
-                        <div className="trilha__name">{t.name}</div>
-                        <div className="trilha__sub">{t.sub}</div>
+                        <div className="trilha__head">
+                          <span
+                            className="trilha__icon"
+                            style={{
+                              color: t.hue,
+                              background: `color-mix(in srgb, ${t.hue} 16%, transparent)`,
+                            }}
+                          >
+                            {t.glyph}
+                          </span>
+                          <div className="trilha__meta">
+                            <div className="trilha__name">{t.name}</div>
+                            <div className="trilha__sub">
+                              {t.done > 0 ? `${t.done} de ${t.lessons} aulas` : `${t.lessons} aulas · ${t.level}`}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="progress">
+                          <div className="progress__track">
+                            <span className="progress__fill" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="progress__pct">{pct}%</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="progress">
-                      <div className="progress__track">
-                        <span className="progress__fill" style={{ width: `${t.pct}%` }} />
-                      </div>
-                      <span className="progress__pct">{t.pct}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </section>
           </main>
 
@@ -165,17 +237,17 @@ export function Home() {
               <div className="streak">
                 <span className="streak__icon"><Flame size={24} /></span>
                 <div>
-                  <div className="streak__count">{user.streak} dias</div>
+                  <div className="streak__count">{streakInfo.streak} dias</div>
                   <div className="streak__label">de streak seguido</div>
                 </div>
               </div>
               <div className="week">
-                {week.map((d, i) => (
+                {streakInfo.week.map((d, i) => (
                   <div key={i} className="week__day">
-                    <span className={`week__dot${d.on ? ' week__dot--on' : ''}`}>
-                      {d.on ? '✓' : ''}
+                    <span className={`week__dot${d.active ? ' week__dot--on' : ''}`}>
+                      {d.active ? '✓' : ''}
                     </span>
-                    <span className="week__letter">{d.d}</span>
+                    <span className="week__letter">{d.label}</span>
                   </div>
                 ))}
               </div>
@@ -188,22 +260,24 @@ export function Home() {
             <div className="card">
               <div className="card__head">
                 <h3 className="card__title">Ranking global</h3>
-                <a className="link" href="#">Ver tudo</a>
+                <Link className="link" to="/ranking">Ver tudo</Link>
               </div>
-              {ranking.map((p) => (
-                <div key={p.r} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
-                  <span className="rank-row__pos" style={{ color: MEDALS[p.r] || 'var(--muted)' }}>
-                    {p.r}
+              {rankingGlobal.length === 0 ? (
+                <p className="track__desc">Ranking ainda vazio.</p>
+              ) : rankingGlobal.slice(0, 5).map((p) => (
+                <div key={p.position} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
+                  <span className="rank-row__pos" style={{ color: MEDALS[p.position] || 'var(--muted)' }}>
+                    {p.position}
                   </span>
                   <Avatar
-                    initials={p.initials}
-                    background={p.you ? 'var(--accent)' : p.color}
-                    color={!p.you && p.r === 1 ? '#3a2a00' : '#fff'}
+                    initials={getInitials(p.name)}
+                    background={p.you ? 'var(--accent)' : CORES_FEED[p.position % CORES_FEED.length]}
+                    color={!p.you && p.position === 1 ? '#3a2a00' : '#fff'}
                   />
                   <span className={`rank-row__name${p.you ? ' rank-row__name--you' : ''}`}>
                     {p.name}
                   </span>
-                  <span className="rank-row__pts">{p.pts}</span>
+                  <span className="rank-row__pts">{p.xp}</span>
                 </div>
               ))}
             </div>
@@ -211,18 +285,22 @@ export function Home() {
             {/* Comunidade */}
             <div className="card">
               <h3 className="card__title card__title--mb">Comunidade</h3>
-              <div className="feed">
-                {feed.map((f, i) => (
-                  <div key={i} className="feed__item">
-                    <Avatar initials={f.initials} background={f.color} />
-                    <p className="feed__text">
-                      <b>{f.name}</b>{' '}
-                      <span className="feed__muted">{f.text}</span>{' '}
-                      <span className="feed__time">· {f.time}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
+              {feedComunidade.length === 0 ? (
+                <p className="track__desc">Ainda não há conquistas na comunidade.</p>
+              ) : (
+                <div className="feed">
+                  {feedComunidade.map((f, i) => (
+                    <div key={i} className="feed__item">
+                      <Avatar initials={getInitials(f.name)} background={CORES_FEED[i % CORES_FEED.length]} />
+                      <p className="feed__text">
+                        <b>{f.name}</b>{' '}
+                        <span className="feed__muted">desbloqueou {f.achievement}</span>{' '}
+                        <span className="feed__time">· {tempoRelativo(f.at)}</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </aside>
         </div>

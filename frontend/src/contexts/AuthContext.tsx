@@ -6,7 +6,8 @@ interface User {
     name: string,
     email: string,
     gender: string,
-    phone: string
+    phone: string,
+    role?: 'user' | 'admin' | 'moderator'
 }
 
 interface AuthContextData {

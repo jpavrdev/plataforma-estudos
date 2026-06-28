@@ -26,6 +26,16 @@ export function errorMiddleware(
         return res.status(409).json({ erro: err.message });
     }
 
+    // Erros que ja carregam um status HTTP (ex.: body-parser: corpo grande -> 413,
+    // JSON malformado -> 400). Sem isso, cairiam no 500 generico abaixo.
+    const status = (err as { status?: number; statusCode?: number }).status
+        ?? (err as { status?: number; statusCode?: number }).statusCode;
+    if (typeof status === "number" && status >= 400 && status < 500) {
+        return res.status(status).json({
+            erro: status === 413 ? "Arquivo muito grande" : "Requisição inválida"
+        });
+    }
+
     // Erro genérico
     console.error("Erro inesperado: ", err);
     return res.status(500).json({ erro: "Erro interno do servidor" });

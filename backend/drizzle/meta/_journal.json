@@ -57,6 +57,69 @@
       "when": 1782601928764,
       "tag": "0007_boring_elektra",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1782655657824,
+      "tag": "0008_add_question_difficulty",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1782659270682,
+      "tag": "0009_lesson_content_blocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1782660130102,
+      "tag": "0010_tags",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1782662202042,
+      "tag": "0011_user_username",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1782662580398,
+      "tag": "0012_user_profile_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1782664253120,
+      "tag": "0013_add_avatar_cover",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1782665200264,
+      "tag": "0014_languages_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1782667002593,
+      "tag": "0015_achievements",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1782671634129,
+      "tag": "0016_ranking_snapshots",
+      "breakpoints": true
     }
   ]
 }

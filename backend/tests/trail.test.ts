@@ -10,6 +10,7 @@ let seq = 0;
 const novoUsuario = (over: Record<string, unknown> = {}) => ({
     name: "Aluno Teste",
     email: `aluno_${++seq}_${Math.round(performance.now() * 1000)}@email.com`,
+    username: `aluno_${seq}`,
     password: "senhaforte123",
     birthDate: "1990-01-01",
     gender: "outro",

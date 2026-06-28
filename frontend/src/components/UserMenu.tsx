@@ -13,7 +13,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   // Fecha ao clicar fora ou pressionar Escape
   useEffect(() => {
@@ -84,6 +84,26 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
           >
             Meu progresso
           </button>
+          {user?.role === 'admin' && (
+            <button
+              type="button"
+              role="menuitem"
+              className="user-menu__item user-menu__item--accent"
+              onClick={() => go('/estudio')}
+            >
+              Estúdio
+            </button>
+          )}
+          {user?.role === 'admin' && (
+            <button
+              type="button"
+              role="menuitem"
+              className="user-menu__item"
+              onClick={() => go('/configuracoes')}
+            >
+              Configurações
+            </button>
+          )}
           <div className="user-menu__divider" />
           <button
             type="button"

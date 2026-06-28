@@ -4,16 +4,18 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Check, Help, Alert, ChevronRight } from '../../components/Icons';
+import { Flame, Check, Help, Alert, X } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import {
   obterTrilha,
   obterAula,
   enviarQuiz,
+  verificarResposta,
   type TrailDetail,
   type LessonDetail,
   type QuizResult,
+  type Bloco,
 } from '../../services/trails';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -117,7 +119,7 @@ export function Aula() {
         {erro && !carregando && (
           <div className="lesson__erro">
             <p>{erro}</p>
-            <Link className="btn btn--accent" to={`/trilhas/${trailId}`}>Voltar para a trilha</Link>
+            <Link className="btn btn--accent" to="/trilhas">Voltar para as trilhas</Link>
           </div>
         )}
 
@@ -127,7 +129,7 @@ export function Aula() {
             <ConteudoAula
               trilha={trilha}
               aula={aula}
-              onConcluir={() => navigate(`/trilhas/${trailId}`)}
+              onConcluir={() => navigate('/trilhas')}
             />
           </div>
         )}
@@ -190,41 +192,123 @@ function ConteudoAula({
 
       <hr className="rule lesson__rule" />
 
-      {aula.content
-        ? (
-          <div className="lesson__md">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} components={md}>
-              {aula.content}
-            </ReactMarkdown>
-          </div>
-        )
-        : <p className="lesson__p lesson__p--muted">Esta aula ainda não tem conteúdo escrito.</p>}
+      {aula.contentBlocks && aula.contentBlocks.length > 0 ? (
+        <BlocosAula blocks={aula.contentBlocks} />
+      ) : aula.content ? (
+        <div className="lesson__md">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={md}>
+            {aula.content}
+          </ReactMarkdown>
+        </div>
+      ) : (
+        <p className="lesson__p lesson__p--muted">Esta aula ainda não tem conteúdo escrito.</p>
+      )}
 
       {aula.questions.length > 0 && <Quiz aula={aula} onConcluir={onConcluir} />}
     </main>
   );
 }
 
+function embedVideo(url: string): string {
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+  return yt ? `https://www.youtube.com/embed/${yt[1]}` : url;
+}
+
+// Renderiza o conteúdo da aula a partir dos blocos do Estúdio.
+function BlocosAula({ blocks }: { blocks: Bloco[] }) {
+  return (
+    <div className="lesson__md">
+      {blocks.map((b, i) => {
+        if (b.type === 'code') {
+          return (
+            <div key={i} className="codeblock">
+              <div className="codeblock__bar">
+                <span className="dot" style={{ background: '#ff5f57' }} />
+                <span className="dot" style={{ background: '#febc2e' }} />
+                <span className="dot" style={{ background: '#28c840' }} />
+              </div>
+              <pre className="codeblock__code">{b.value}</pre>
+            </div>
+          );
+        }
+        if (b.type === 'image') {
+          return b.value ? <img key={i} className="lesson__img" src={b.value} alt="" /> : null;
+        }
+        if (b.type === 'video') {
+          return b.value ? (
+            <div key={i} className="lesson__video">
+              <iframe src={embedVideo(b.value)} title="Vídeo" allowFullScreen style={{ border: 0 }} />
+            </div>
+          ) : null;
+        }
+        if (b.type === 'quote') {
+          return <blockquote key={i}>{b.value}</blockquote>;
+        }
+        return (
+          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={md}>
+            {b.value}
+          </ReactMarkdown>
+        );
+      })}
+    </div>
+  );
+}
+
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+// Quiz em carrossel: uma questao por vez, com feedback imediato verificado no servidor.
 function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void }) {
   const total = aula.questions.length;
+  const [qIndex, setQIndex] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [checked, setChecked] = useState(false);
+  const [wasCorrect, setWasCorrect] = useState(false);
+  const [correctOptionId, setCorrectOptionId] = useState<string | null>(null);
   const [respostas, setRespostas] = useState<Record<string, string>>({});
+  const [verificando, setVerificando] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [resultado, setResultado] = useState<QuizResult | null>(null);
   const [erro, setErro] = useState('');
 
-  const todasRespondidas = aula.questions.every((q) => respostas[q.id]);
+  const q = aula.questions[qIndex];
+  const isLast = qIndex >= total - 1;
 
-  function selecionar(questionId: string, optionId: string) {
-    if (resultado) return;
-    setRespostas((r) => ({ ...r, [questionId]: optionId }));
+  function selecionar(optionId: string) {
+    if (checked) return;
+    setSelected(optionId);
   }
 
-  async function enviar() {
-    if (!todasRespondidas || enviando) return;
+  async function verificar() {
+    if (selected == null || checked || verificando) return;
+    setVerificando(true);
+    setErro('');
+    try {
+      const r = await verificarResposta(aula.id, q.id, selected);
+      setWasCorrect(r.correct);
+      setCorrectOptionId(r.correctOptionId);
+      setRespostas((prev) => ({ ...prev, [q.id]: selected }));
+      setChecked(true);
+    } catch {
+      setErro('Não foi possível verificar a resposta. Tente novamente.');
+    } finally {
+      setVerificando(false);
+    }
+  }
+
+  async function avancar() {
+    if (!isLast) {
+      setQIndex((i) => i + 1);
+      setSelected(null);
+      setChecked(false);
+      setWasCorrect(false);
+      setCorrectOptionId(null);
+      return;
+    }
+    if (enviando) return;
     setEnviando(true);
     setErro('');
     try {
-      const answers = aula.questions.map((q) => ({ questionId: q.id, optionId: respostas[q.id] }));
+      const answers = aula.questions.map((qq) => ({ questionId: qq.id, optionId: respostas[qq.id] }));
       setResultado(await enviarQuiz(aula.id, answers));
     } catch {
       setErro('Não foi possível enviar o quiz. Tente novamente.');
@@ -234,8 +318,32 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
   }
 
   function refazer() {
+    setQIndex(0);
+    setSelected(null);
+    setChecked(false);
+    setWasCorrect(false);
+    setCorrectOptionId(null);
     setRespostas({});
     setResultado(null);
+    setErro('');
+  }
+
+  function classeOpcao(optionId: string) {
+    if (!checked) return `quiz-opt${selected === optionId ? ' quiz-opt--selected' : ''}`;
+    if (optionId === correctOptionId) return 'quiz-opt quiz-opt--correct';
+    if (optionId === selected) return 'quiz-opt quiz-opt--wrong';
+    return 'quiz-opt quiz-opt--dim';
+  }
+
+  function badge(optionId: string, i: number) {
+    if (checked && optionId === correctOptionId) return <Check size={13} />;
+    if (checked && optionId === selected) return <X size={12} />;
+    return LETTERS[i] ?? String(i + 1);
+  }
+
+  function letraCorreta() {
+    const idx = q.options.findIndex((o) => o.id === correctOptionId);
+    return LETTERS[idx] ?? '';
   }
 
   if (resultado) {
@@ -279,42 +387,72 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
           <div className="quiz__title">Pratique o que aprendeu</div>
           <div className="quiz__sub">{total} questões · acerte ao menos 4 para concluir a aula</div>
         </div>
+        <span className="quiz__counter">{qIndex + 1} / {total}</span>
       </div>
 
-      {aula.questions.map((q, idx) => (
-        <div key={q.id} className="quiz__body">
-          <div className="quiz__q">
-            <span className="quiz__q-num">{idx + 1}</span>
-            <div className="quiz__q-text">{q.statement}</div>
-          </div>
-          <div className="quiz__options">
-            {q.options.map((o) => (
-              <button
-                key={o.id}
-                className={`quiz-opt${respostas[q.id] === o.id ? ' quiz-opt--selected' : ''}`}
-                onClick={() => selecionar(q.id, o.id)}
-              >
-                <span className="quiz-opt__label">{o.text}</span>
-                {respostas[q.id] === o.id && <ChevronRight size={14} />}
-              </button>
-            ))}
-          </div>
+      <div className="quiz__dots">
+        {aula.questions.map((qq, i) => {
+          let cls = 'quiz__dot';
+          if (i < qIndex || (i === qIndex && checked)) cls += ' quiz__dot--done';
+          else if (i === qIndex) cls += ' quiz__dot--current';
+          return <span key={qq.id} className={cls} />;
+        })}
+      </div>
+
+      <div className="quiz__body">
+        <div className="quiz__q">
+          <span className="quiz__q-num">{qIndex + 1}</span>
+          <div className="quiz__q-text">{q.statement}</div>
         </div>
-      ))}
 
-      {erro && <div className="auth__alert">{erro}</div>}
+        <div className="quiz__options">
+          {q.options.map((o, i) => (
+            <button
+              key={o.id}
+              className={classeOpcao(o.id)}
+              onClick={() => selecionar(o.id)}
+              disabled={checked}
+            >
+              <span className="quiz-opt__badge">{badge(o.id, i)}</span>
+              <span className="quiz-opt__label">{o.text}</span>
+            </button>
+          ))}
+        </div>
 
-      <div className="quiz__foot">
-        <span className="quiz__hint">Responda todas as questões e envie.</span>
-        <div className="topbar__spacer" />
-        <button
-          className="btn btn--accent"
-          style={{ opacity: todasRespondidas ? 1 : 0.5 }}
-          disabled={!todasRespondidas || enviando}
-          onClick={enviar}
-        >
-          {enviando ? 'Enviando...' : 'Enviar respostas'}
-        </button>
+        {checked && (
+          <div className={`quiz__feedback quiz__feedback--${wasCorrect ? 'ok' : 'no'}`}>
+            {wasCorrect
+              ? 'Correto! Mandou muito bem.'
+              : `Quase! A resposta certa é a alternativa ${letraCorreta()}.`}
+          </div>
+        )}
+
+        {erro && <div className="auth__alert">{erro}</div>}
+
+        <div className="quiz__foot">
+          <span className="quiz__hint">
+            {!checked
+              ? 'Selecione uma alternativa e verifique.'
+              : isLast
+                ? 'Veja seu desempenho na aula.'
+                : 'Siga para a próxima questão.'}
+          </span>
+          <div className="topbar__spacer" />
+          {!checked ? (
+            <button
+              className="btn btn--accent"
+              style={{ opacity: selected == null ? 0.5 : 1 }}
+              disabled={selected == null || verificando}
+              onClick={verificar}
+            >
+              {verificando ? 'Verificando...' : 'Verificar resposta'}
+            </button>
+          ) : (
+            <button className="btn btn--accent" disabled={enviando} onClick={avancar}>
+              {isLast ? (enviando ? 'Enviando...' : 'Ver resultado') : 'Próxima questão'}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
