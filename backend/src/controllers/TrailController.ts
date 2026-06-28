@@ -13,7 +13,8 @@ import {
     createLanguageSchema, updateLanguageSchema,
     createAchievementSchema, updateAchievementSchema,
 } from "../schemas/trail.schemas.ts";
-import { calcularStreak, diasAtivosDoUsuario, semanaAtividade, streaksTodos } from "../services/streak.ts";
+import { calcularStreak, diasAtivosDoUsuario, semanaAtividade, streaksTodos, hojeSaoPaulo } from "../services/streak.ts";
+import { movimentacaoRanking } from "../services/ranking.ts";
 
 const QUIZ_MIN_ACERTOS = 4;
 
@@ -861,27 +862,28 @@ export const getRanking = async (req: Request, res: Response, next: NextFunction
         const aP = desde ? paraMapa(aulasPer) : at;
         const acP = desde ? paraMapa(acertosPer) : acT;
 
-        const ordenados = usuarios
-            .map((u) => {
-                const totalXp = (at.get(u.id) ?? 0) * 50 + (acT.get(u.id) ?? 0) * 10;
-                const periodXp = (aP.get(u.id) ?? 0) * 50 + (acP.get(u.id) ?? 0) * 10;
-                return {
-                    id: u.id, name: u.name, username: u.username,
-                    totalXp, periodXp, level: Math.floor(totalXp / 500) + 1,
-                    streak: streaks.get(u.id) ?? 0,
-                    you: u.id === req.userId,
-                };
-            })
-            .sort((a, b) => b.periodXp - a.periodXp)
-            .map((u, i) => ({ ...u, position: i + 1 }));
+        const base = usuarios.map((u) => {
+            const totalXp = (at.get(u.id) ?? 0) * 50 + (acT.get(u.id) ?? 0) * 10;
+            const periodXp = (aP.get(u.id) ?? 0) * 50 + (acP.get(u.id) ?? 0) * 10;
+            return {
+                id: u.id, name: u.name, username: u.username,
+                totalXp, periodXp, level: Math.floor(totalXp / 500) + 1,
+                streak: streaks.get(u.id) ?? 0,
+                you: u.id === req.userId,
+            };
+        });
+        const ordenados = [...base].sort((a, b) => b.periodXp - a.periodXp).map((u, i) => ({ ...u, position: i + 1 }));
+        // Movimentação é calculada sobre o ranking geral (XP total).
+        const ordemGeral = [...base].sort((a, b) => b.totalXp - a.totalXp).map((u, i) => ({ id: u.id, position: i + 1 }));
+        const deltas = await movimentacaoRanking(hojeSaoPaulo(), ordemGeral);
 
         const meu = ordenados.find((u) => u.you);
         const me = meu
-            ? { position: meu.position, username: meu.username, xp: meu.periodXp, totalXp: meu.totalXp, level: meu.level, streak: meu.streak }
+            ? { position: meu.position, username: meu.username, xp: meu.periodXp, totalXp: meu.totalXp, level: meu.level, streak: meu.streak, delta: deltas.get(meu.id) ?? 0 }
             : null;
         const rows = ordenados.slice(0, 20).map((u) => ({
             position: u.position, name: u.name, username: u.username,
-            xp: u.periodXp, level: u.level, streak: u.streak, you: u.you,
+            xp: u.periodXp, level: u.level, streak: u.streak, delta: deltas.get(u.id) ?? 0, you: u.you,
         }));
         res.json({ me, rows });
     } catch (err) {

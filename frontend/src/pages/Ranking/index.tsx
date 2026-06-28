@@ -5,7 +5,7 @@ import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
-import { Flame, Search, Trophy, Check, Lock } from '../../components/Icons';
+import { Flame, Search, Trophy, Check, Lock, ChevronUp, ChevronDown } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as homeUser } from '../../data/home';
 import { obterRanking, type RankingResposta, type RankingPeriodo } from '../../services/trails';
@@ -42,6 +42,12 @@ function ligaAtual(totalXp: number): number {
   return idx;
 }
 const fmtXp = (n: number) => n.toLocaleString('pt-BR');
+
+function Delta({ delta }: { delta: number }) {
+  if (delta > 0) return <span className="rk-delta rk-delta--up"><ChevronUp size={13} /></span>;
+  if (delta < 0) return <span className="rk-delta rk-delta--down"><ChevronDown size={13} /></span>;
+  return <span className="rk-delta rk-delta--same">–</span>;
+}
 
 export function Ranking() {
   const { user: authUser } = useAuth();
@@ -187,6 +193,12 @@ export function Ranking() {
                 <div className="rk-you__name">Você</div>
                 <div className="rk-you__user">@{dados.me.username ?? 'voce'}</div>
               </div>
+              {dados.me.delta !== 0 && (
+                <span className="rk-you__delta" style={{ color: dados.me.delta > 0 ? 'var(--success)' : 'var(--av-red)' }}>
+                  {dados.me.delta > 0 ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  {dados.me.delta > 0 ? 'subiu' : 'caiu'} {Math.abs(dados.me.delta)} {Math.abs(dados.me.delta) === 1 ? 'posição' : 'posições'}
+                </span>
+              )}
               <span className="rk-you__streak"><Flame size={15} /> {dados.me.streak} dias</span>
               <span className="rk-you__xp">{fmtXp(dados.me.xp)} XP</span>
             </div>
@@ -208,6 +220,7 @@ export function Ranking() {
                 <div key={r.position} className={`rk-row${r.you ? ' rk-row--you' : ''}`}>
                   <div className="rk-row__rank">
                     <span style={{ color: MEDAL[r.position] || 'var(--text)' }}>{r.position}</span>
+                    <Delta delta={r.delta} />
                   </div>
                   <div className="rk-row__student">
                     <Avatar initials={getInitials(r.name)} background={r.you ? 'var(--accent)' : CORES[r.position % CORES.length]} />

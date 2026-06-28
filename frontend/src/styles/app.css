@@ -738,3 +738,8 @@
 .rk-row__streak { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: var(--text); }
 .rk-row__streak svg { color: var(--accent); }
 .rk-you__streak { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: var(--accent); }
+.rk-you__delta { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; }
+.rk-delta { display: flex; align-items: center; }
+.rk-delta--up { color: var(--success); }
+.rk-delta--down { color: var(--av-red); }
+.rk-delta--same { color: var(--muted); font-size: 13px; font-weight: 700; }
