@@ -15,6 +15,9 @@ dist
 dist-ssr
 *.local
 
+# Imagens enviadas pelos usuarios (geradas em runtime)
+backend/uploads/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

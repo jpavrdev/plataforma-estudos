@@ -4,6 +4,7 @@ import { registerSchema, loginSchema } from "./auth.schema.ts";
 
 const usuarioValido = {
     name: "Maria Silva",
+    username: "maria_silva",
     email: "maria@email.com",
     password: "senhaforte123",
     birthDate: "1990-01-01",
@@ -24,6 +25,21 @@ describe("registerSchema", () => {
 
     test("rejeita email inválido", () => {
         const r = registerSchema.safeParse({ ...usuarioValido, email: "naoehemail" });
+        assert.equal(r.success, false);
+    });
+
+    test("rejeita username com caracteres inválidos", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, username: "maria silva" });
+        assert.equal(r.success, false);
+    });
+
+    test("rejeita username muito curto", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, username: "ab" });
+        assert.equal(r.success, false);
+    });
+
+    test("rejeita username muito longo", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, username: "a".repeat(21) });
         assert.equal(r.success, false);
     });
 

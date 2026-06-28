@@ -2,14 +2,18 @@ import type { Request, Response, NextFunction } from "express";
 import { db } from "../../db.ts";
 import {
     users, trails, modules, lessons, lessonProgress,
-    questions, questionOptions, questionAnswers, tags, trailTags,
+    questions, questionOptions, questionAnswers, tags, trailTags, languages,
+    achievements, userAchievements,
 } from "../../schema.ts";
-import { eq, and, count, asc, inArray } from "drizzle-orm";
+import { eq, and, count, asc, desc, gte, inArray, sql } from "drizzle-orm";
 import {
     createTrailSchema, createModuleSchema, createLessonSchema,
     createQuestionSchema, submitQuizSchema, checkAnswerSchema,
     saveLessonStudioSchema, updateTrailSchema, createTagSchema, updateTagSchema,
+    createLanguageSchema, updateLanguageSchema,
+    createAchievementSchema, updateAchievementSchema,
 } from "../schemas/trail.schemas.ts";
+import { calcularStreak, diasAtivosDoUsuario, semanaAtividade, streaksTodos } from "../services/streak.ts";
 
 const QUIZ_MIN_ACERTOS = 4;
 
@@ -85,6 +89,144 @@ export const deleteTag = async (req: Request, res: Response, next: NextFunction)
         await db.transaction(async (tx) => {
             await tx.delete(trailTags).where(eq(trailTags.tagId, id));
             await tx.delete(tags).where(eq(tags.id, id));
+        });
+        res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// ===================== LINGUAGENS (canônicas do perfil) =====================
+export const listLanguages = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const lista = await db.select().from(languages).orderBy(asc(languages.name));
+        res.json(lista);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const createLanguage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = createLanguageSchema.parse(req.body);
+        const [existe] = await db.select({ id: languages.id }).from(languages).where(eq(languages.name, dados.name));
+        if (existe) {
+            return res.status(409).json({ erro: "Já existe uma linguagem com esse nome" });
+        }
+        const [lang] = await db.insert(languages).values({ name: dados.name }).returning();
+        res.status(201).json(lang);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const updateLanguage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = String(req.params.id);
+        const dados = updateLanguageSchema.parse(req.body);
+        const [atual] = await db.select({ name: languages.name }).from(languages).where(eq(languages.id, id));
+        if (!atual) {
+            return res.status(404).json({ erro: "Linguagem não encontrada" });
+        }
+        const [conflito] = await db.select({ id: languages.id }).from(languages).where(eq(languages.name, dados.name));
+        if (conflito && conflito.id !== id) {
+            return res.status(409).json({ erro: "Já existe uma linguagem com esse nome" });
+        }
+        const lang = await db.transaction(async (tx) => {
+            const [atualizada] = await tx.update(languages).set({ name: dados.name }).where(eq(languages.id, id)).returning();
+            // Renomeou: propaga o novo nome para os perfis que usavam o antigo.
+            if (atual.name !== dados.name) {
+                await tx.execute(sql`
+                    UPDATE users
+                    SET languages = (
+                        SELECT jsonb_agg(CASE WHEN elem = ${JSON.stringify(atual.name)}::jsonb THEN ${JSON.stringify(dados.name)}::jsonb ELSE elem END)
+                        FROM jsonb_array_elements(languages) AS elem
+                    )
+                    WHERE languages @> ${JSON.stringify([atual.name])}::jsonb
+                `);
+            }
+            return atualizada;
+        });
+        res.json(lang);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteLanguage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = String(req.params.id);
+        const [lang] = await db.select({ name: languages.name }).from(languages).where(eq(languages.id, id));
+        if (!lang) {
+            return res.status(404).json({ erro: "Linguagem não encontrada" });
+        }
+        await db.transaction(async (tx) => {
+            await tx.delete(languages).where(eq(languages.id, id));
+            // Remove o nome dos perfis que a usavam, mantendo os dados padronizados.
+            await tx.execute(sql`
+                UPDATE users
+                SET languages = COALESCE((
+                    SELECT jsonb_agg(elem)
+                    FROM jsonb_array_elements(languages) AS elem
+                    WHERE elem <> ${JSON.stringify(lang.name)}::jsonb
+                ), '[]'::jsonb)
+                WHERE languages @> ${JSON.stringify([lang.name])}::jsonb
+            `);
+        });
+        res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// ===================== CONQUISTAS (catálogo, admin) =====================
+export const listAchievements = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const lista = await db.select().from(achievements).orderBy(asc(achievements.threshold));
+        res.json(lista);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const createAchievement = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = createAchievementSchema.parse(req.body);
+        const [existe] = await db.select({ id: achievements.id }).from(achievements).where(eq(achievements.name, dados.name));
+        if (existe) {
+            return res.status(409).json({ erro: "Já existe uma conquista com esse nome" });
+        }
+        const [a] = await db.insert(achievements).values(dados).returning();
+        res.status(201).json(a);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const updateAchievement = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = String(req.params.id);
+        const dados = updateAchievementSchema.parse(req.body);
+        const [conflito] = await db.select({ id: achievements.id }).from(achievements).where(eq(achievements.name, dados.name));
+        if (conflito && conflito.id !== id) {
+            return res.status(409).json({ erro: "Já existe uma conquista com esse nome" });
+        }
+        const [a] = await db.update(achievements).set(dados).where(eq(achievements.id, id)).returning();
+        if (!a) {
+            return res.status(404).json({ erro: "Conquista não encontrada" });
+        }
+        res.json(a);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteAchievement = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = String(req.params.id);
+        await db.transaction(async (tx) => {
+            await tx.delete(userAchievements).where(eq(userAchievements.achievementId, id));
+            await tx.delete(achievements).where(eq(achievements.id, id));
         });
         res.json({ ok: true });
     } catch (err) {
@@ -574,27 +716,184 @@ export const submitQuiz = async (req: Request, res: Response, next: NextFunction
             aulaConcluida = true;
         }
 
+        await verificarConquistas(userId);
+
         res.json({ correct: acertos, total, passed: passou, lessonCompleted: aulaConcluida });
     } catch (err) {
         next(err);
     }
 };
 
+// Estatísticas base do usuário: XP (50 por aula + 10 por acerto), aulas e acertos.
+async function calcularEstatisticas(userId: string) {
+    const [aulas] = await db.select({ n: count() }).from(lessonProgress)
+        .where(eq(lessonProgress.userId, userId));
+    const [acertos] = await db.select({ n: count() }).from(questionAnswers)
+        .where(and(eq(questionAnswers.userId, userId), eq(questionAnswers.isCorrect, true)));
+    const lessonsCompleted = Number(aulas?.n ?? 0);
+    const questionsCorrect = Number(acertos?.n ?? 0);
+    return { xp: lessonsCompleted * 50 + questionsCorrect * 10, lessonsCompleted, questionsCorrect };
+}
+
+// Desbloqueia (idempotente) as conquistas cujo critério o usuário já atingiu.
+async function verificarConquistas(userId: string) {
+    const stats = await calcularEstatisticas(userId);
+    const valor: Record<string, number> = {
+        xp_total: stats.xp,
+        lessons_completed: stats.lessonsCompleted,
+        questions_correct: stats.questionsCorrect,
+    };
+    const catalogo = await db.select().from(achievements);
+    const merecidas = catalogo.filter((a) => (valor[a.criteriaType] ?? 0) >= a.threshold);
+    if (merecidas.length === 0) return;
+    await db.insert(userAchievements)
+        .values(merecidas.map((a) => ({ userId, achievementId: a.id })))
+        .onConflictDoNothing();
+}
+
 // XP total do usuário: 50 por aula concluída + 10 por questão acertada (primeira vez).
 export const getMyXp = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        res.json(await calcularEstatisticas(req.userId!));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Catálogo de conquistas com a marcação do que o usuário já desbloqueou.
+export const getMyAchievements = async (req: Request, res: Response, next: NextFunction) => {
+    try {
         const userId = req.userId!;
-        const [aulas] = await db.select({ n: count() }).from(lessonProgress)
-            .where(eq(lessonProgress.userId, userId));
-        const [acertos] = await db.select({ n: count() }).from(questionAnswers)
-            .where(and(eq(questionAnswers.userId, userId), eq(questionAnswers.isCorrect, true)));
-        const lessonsCompleted = Number(aulas?.n ?? 0);
-        const questionsCorrect = Number(acertos?.n ?? 0);
-        res.json({
-            xp: lessonsCompleted * 50 + questionsCorrect * 10,
-            lessonsCompleted,
-            questionsCorrect,
-        });
+        await verificarConquistas(userId);
+        const catalogo = await db.select().from(achievements).orderBy(asc(achievements.threshold));
+        const ganhas = await db.select().from(userAchievements).where(eq(userAchievements.userId, userId));
+        const quando = new Map(ganhas.map((g) => [g.achievementId, g.earnedAt]));
+        res.json(catalogo.map((a) => ({
+            ...a,
+            earned: quando.has(a.id),
+            earnedAt: quando.get(a.id) ?? null,
+        })));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Atividades recentes derivadas: aulas concluídas + conquistas desbloqueadas.
+export const getMyActivity = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId!;
+        const aulas = await db
+            .select({ at: lessonProgress.completedAt, title: lessons.title })
+            .from(lessonProgress)
+            .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
+            .where(eq(lessonProgress.userId, userId))
+            .orderBy(desc(lessonProgress.completedAt))
+            .limit(15);
+        const conquistas = await db
+            .select({ at: userAchievements.earnedAt, name: achievements.name, icon: achievements.icon })
+            .from(userAchievements)
+            .innerJoin(achievements, eq(achievements.id, userAchievements.achievementId))
+            .where(eq(userAchievements.userId, userId))
+            .orderBy(desc(userAchievements.earnedAt))
+            .limit(15);
+        const itens = [
+            ...aulas.map((a) => ({ type: "lesson", icon: "check", text: `Concluiu a aula "${a.title}"`, at: a.at })),
+            ...conquistas.map((c) => ({ type: "achievement", icon: c.icon, text: `Desbloqueou "${c.name}"`, at: c.at })),
+        ]
+            .sort((x, y) => (x.at < y.at ? 1 : x.at > y.at ? -1 : 0))
+            .slice(0, 15);
+        res.json(itens);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Feed da comunidade: quem desbloqueou cada conquista, mais recentes primeiro.
+export const getCommunityAchievements = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        const lista = await db
+            .select({
+                name: users.name,
+                achievement: achievements.name,
+                icon: achievements.icon,
+                at: userAchievements.earnedAt,
+            })
+            .from(userAchievements)
+            .innerJoin(users, eq(users.id, userAchievements.userId))
+            .innerJoin(achievements, eq(achievements.id, userAchievements.achievementId))
+            .orderBy(desc(userAchievements.earnedAt))
+            .limit(10);
+        res.json(lista);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Ranking global por XP. Liga e nível usam o XP total; o leaderboard usa o
+// período (week/month/all). XP = 50 por aula concluída + 10 por questão certa.
+export const getRanking = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const periodo = String(req.query.period ?? "all");
+        const dia = 24 * 60 * 60 * 1000;
+        const desde = periodo === "week" ? new Date(Date.now() - 7 * dia)
+            : periodo === "month" ? new Date(Date.now() - 30 * dia)
+            : null;
+
+        const [usuarios, aulasTot, acertosTot, aulasPer, acertosPer, streaks] = await Promise.all([
+            db.select({ id: users.id, name: users.name, username: users.username }).from(users),
+            db.select({ userId: lessonProgress.userId, n: count() }).from(lessonProgress).groupBy(lessonProgress.userId),
+            db.select({ userId: questionAnswers.userId, n: count() }).from(questionAnswers)
+                .where(eq(questionAnswers.isCorrect, true)).groupBy(questionAnswers.userId),
+            desde
+                ? db.select({ userId: lessonProgress.userId, n: count() }).from(lessonProgress)
+                    .where(gte(lessonProgress.completedAt, desde)).groupBy(lessonProgress.userId)
+                : Promise.resolve(null),
+            desde
+                ? db.select({ userId: questionAnswers.userId, n: count() }).from(questionAnswers)
+                    .where(and(eq(questionAnswers.isCorrect, true), gte(questionAnswers.answeredAt, desde))).groupBy(questionAnswers.userId)
+                : Promise.resolve(null),
+            streaksTodos(),
+        ]);
+
+        const paraMapa = (arr: { userId: string; n: number }[] | null) =>
+            new Map((arr ?? []).map((a) => [a.userId, Number(a.n)]));
+        const at = paraMapa(aulasTot), acT = paraMapa(acertosTot);
+        const aP = desde ? paraMapa(aulasPer) : at;
+        const acP = desde ? paraMapa(acertosPer) : acT;
+
+        const ordenados = usuarios
+            .map((u) => {
+                const totalXp = (at.get(u.id) ?? 0) * 50 + (acT.get(u.id) ?? 0) * 10;
+                const periodXp = (aP.get(u.id) ?? 0) * 50 + (acP.get(u.id) ?? 0) * 10;
+                return {
+                    id: u.id, name: u.name, username: u.username,
+                    totalXp, periodXp, level: Math.floor(totalXp / 500) + 1,
+                    streak: streaks.get(u.id) ?? 0,
+                    you: u.id === req.userId,
+                };
+            })
+            .sort((a, b) => b.periodXp - a.periodXp)
+            .map((u, i) => ({ ...u, position: i + 1 }));
+
+        const meu = ordenados.find((u) => u.you);
+        const me = meu
+            ? { position: meu.position, username: meu.username, xp: meu.periodXp, totalXp: meu.totalXp, level: meu.level, streak: meu.streak }
+            : null;
+        const rows = ordenados.slice(0, 20).map((u) => ({
+            position: u.position, name: u.name, username: u.username,
+            xp: u.periodXp, level: u.level, streak: u.streak, you: u.you,
+        }));
+        res.json({ me, rows });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Streak do usuário + os últimos 7 dias (para o card da home).
+export const getMyStreak = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dias = await diasAtivosDoUsuario(req.userId!);
+        res.json({ streak: calcularStreak(dias), week: semanaAtividade(dias) });
     } catch (err) {
         next(err);
     }

@@ -8,6 +8,8 @@ import { Aula } from './pages/Aula';
 import { Estudio } from './pages/Estudio';
 import { EstudioHome } from './pages/EstudioHome';
 import { Configuracoes } from './pages/Configuracoes';
+import { Perfil } from './pages/Perfil';
+import { Ranking } from './pages/Ranking';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { Placeholder } from './pages/Placeholder';
 
@@ -82,7 +84,7 @@ function AppRoutes() {
         path="/ranking"
         element={
           <PrivateRoute>
-            <Placeholder title="Ranking" description="Em breve o ranking global completo aparecerá aqui." />
+            <Ranking />
           </PrivateRoute>
         } />
       <Route
@@ -96,7 +98,7 @@ function AppRoutes() {
         path="/perfil"
         element={
           <PrivateRoute>
-            <Placeholder title="Perfil" description="Em breve você poderá ver e editar seus dados de perfil aqui." />
+            <Perfil />
           </PrivateRoute>
         } />
       <Route

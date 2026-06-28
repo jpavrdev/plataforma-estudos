@@ -286,3 +286,136 @@ export async function atualizarTag(id: string, name: string) {
 export async function excluirTag(id: string) {
   await api.delete(`/tags/${id}`);
 }
+
+// ===== Linguagens (canônicas do perfil) =====
+
+export interface Language {
+  id: string;
+  name: string;
+}
+export async function listarLinguagens() {
+  const { data } = await api.get<Language[]>('/languages');
+  return data;
+}
+export async function criarLinguagem(name: string) {
+  const { data } = await api.post<Language>('/languages', { name });
+  return data;
+}
+export async function atualizarLinguagem(id: string, name: string) {
+  const { data } = await api.patch<Language>(`/languages/${id}`, { name });
+  return data;
+}
+export async function excluirLinguagem(id: string) {
+  await api.delete(`/languages/${id}`);
+}
+
+// ===== Conquistas =====
+
+export type CriterioConquista = 'xp_total' | 'lessons_completed' | 'questions_correct';
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  criteriaType: CriterioConquista;
+  threshold: number;
+}
+export interface MinhaConquista extends Achievement {
+  earned: boolean;
+  earnedAt: string | null;
+}
+export interface PayloadConquista {
+  name: string;
+  description: string;
+  icon: string;
+  criteriaType: CriterioConquista;
+  threshold: number;
+}
+
+export async function listarConquistas() {
+  const { data } = await api.get<Achievement[]>('/achievements');
+  return data;
+}
+export async function criarConquista(payload: PayloadConquista) {
+  const { data } = await api.post<Achievement>('/achievements', payload);
+  return data;
+}
+export async function atualizarConquista(id: string, payload: PayloadConquista) {
+  const { data } = await api.patch<Achievement>(`/achievements/${id}`, payload);
+  return data;
+}
+export async function excluirConquista(id: string) {
+  await api.delete(`/achievements/${id}`);
+}
+export async function obterMinhasConquistas() {
+  const { data } = await api.get<MinhaConquista[]>('/me/achievements');
+  return data;
+}
+
+// ===== Atividades recentes =====
+
+export interface Atividade {
+  type: string;
+  icon: string;
+  text: string;
+  at: string;
+}
+export async function obterAtividades() {
+  const { data } = await api.get<Atividade[]>('/me/activity');
+  return data;
+}
+
+// Feed da comunidade: quem desbloqueou cada conquista.
+export interface FeedConquista {
+  name: string;
+  achievement: string;
+  icon: string;
+  at: string;
+}
+export async function obterFeedConquistas() {
+  const { data } = await api.get<FeedConquista[]>('/community/achievements');
+  return data;
+}
+
+// Ranking global por XP.
+export type RankingPeriodo = 'week' | 'month' | 'all';
+export interface RankingRow {
+  position: number;
+  name: string;
+  username: string | null;
+  xp: number;
+  level: number;
+  streak: number;
+  you: boolean;
+}
+export interface RankingMe {
+  position: number;
+  username: string | null;
+  xp: number;
+  totalXp: number;
+  level: number;
+  streak: number;
+}
+export interface RankingResposta {
+  me: RankingMe | null;
+  rows: RankingRow[];
+}
+export async function obterRanking(period: RankingPeriodo = 'all') {
+  const { data } = await api.get<RankingResposta>('/ranking', { params: { period } });
+  return data;
+}
+
+// Streak (dias seguidos de estudo) + os últimos 7 dias.
+export interface DiaSemana {
+  label: string;
+  active: boolean;
+}
+export interface StreakInfo {
+  streak: number;
+  week: DiaSemana[];
+}
+export async function obterStreak() {
+  const { data } = await api.get<StreakInfo>('/me/streak');
+  return data;
+}

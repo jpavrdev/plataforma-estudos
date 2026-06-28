@@ -20,6 +20,22 @@ export const createTagSchema = z.object({
 
 export const updateTagSchema = createTagSchema;
 
+export const createLanguageSchema = z.object({
+    name: z.string().min(1, "Nome obrigatório").max(60, "Nome muito longo"),
+});
+
+export const updateLanguageSchema = createLanguageSchema;
+
+export const createAchievementSchema = z.object({
+    name: z.string().min(2, "Nome obrigatório").max(80, "Nome muito longo"),
+    description: z.string().min(2, "Descrição obrigatória").max(200, "Descrição muito longa"),
+    icon: z.enum(["trophy", "flame", "star", "check", "medal", "bookmark"]),
+    criteriaType: z.enum(["xp_total", "lessons_completed", "questions_correct"]),
+    threshold: z.int().positive("O valor deve ser positivo"),
+});
+
+export const updateAchievementSchema = createAchievementSchema;
+
 export const createLessonSchema = z.object({
     title: z.string().min(3, "Título deve ter ao menos 3 caracteres"),
     content: z.string().optional(),

@@ -7,15 +7,13 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
 import { Flame, Search, Bookmark, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
+import { tempoRelativo } from '../../utils/tempo';
 import {
   user,
   dailyChallenge,
-  week,
-  ranking,
-  feed,
   MEDALS,
 } from '../../data/home';
-import { listarTrilhas, listarMinhasTrilhas, obterTrilha } from '../../services/trails';
+import { listarTrilhas, listarMinhasTrilhas, obterTrilha, obterFeedConquistas, obterRanking, obterStreak, type FeedConquista, type RankingRow, type StreakInfo } from '../../services/trails';
 import type { Trail } from '../../data/trails';
 
 const NAV = [
@@ -24,6 +22,8 @@ const NAV = [
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
+
+const CORES_FEED = ['#2D6BF5', '#E0655A', '#3DAE6B', '#E0A82E', '#8B5CF6'];
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
@@ -44,6 +44,9 @@ export function Home() {
   const [emAndamento, setEmAndamento] = useState<(Trail & { id: string })[]>([]);
   const [disponiveis, setDisponiveis] = useState<(Trail & { id: string })[]>([]);
   const [carregando, setCarregando] = useState(true);
+  const [feedComunidade, setFeedComunidade] = useState<FeedConquista[]>([]);
+  const [rankingGlobal, setRankingGlobal] = useState<RankingRow[]>([]);
+  const [streakInfo, setStreakInfo] = useState<StreakInfo>({ streak: 0, week: [] });
 
   useEffect(() => {
     let ativo = true;
@@ -65,6 +68,12 @@ export function Home() {
     }
     carregar();
     return () => { ativo = false; };
+  }, []);
+
+  useEffect(() => {
+    obterFeedConquistas().then(setFeedComunidade).catch(() => {});
+    obterRanking().then((r) => setRankingGlobal(r.rows)).catch(() => {});
+    obterStreak().then(setStreakInfo).catch(() => {});
   }, []);
 
   // Abre a trilha na primeira aula disponivel (a atual, ou a primeira).
@@ -105,7 +114,7 @@ export function Home() {
             <span>Buscar exercício…</span>
           </div>
           <div className="streak-pill">
-            <Flame size={16} /> {user.streak}
+            <Flame size={16} /> {streakInfo.streak}
           </div>
           <ThemeToggle inline />
           <UserMenu
@@ -228,17 +237,17 @@ export function Home() {
               <div className="streak">
                 <span className="streak__icon"><Flame size={24} /></span>
                 <div>
-                  <div className="streak__count">{user.streak} dias</div>
+                  <div className="streak__count">{streakInfo.streak} dias</div>
                   <div className="streak__label">de streak seguido</div>
                 </div>
               </div>
               <div className="week">
-                {week.map((d, i) => (
+                {streakInfo.week.map((d, i) => (
                   <div key={i} className="week__day">
-                    <span className={`week__dot${d.on ? ' week__dot--on' : ''}`}>
-                      {d.on ? '✓' : ''}
+                    <span className={`week__dot${d.active ? ' week__dot--on' : ''}`}>
+                      {d.active ? '✓' : ''}
                     </span>
-                    <span className="week__letter">{d.d}</span>
+                    <span className="week__letter">{d.label}</span>
                   </div>
                 ))}
               </div>
@@ -251,22 +260,24 @@ export function Home() {
             <div className="card">
               <div className="card__head">
                 <h3 className="card__title">Ranking global</h3>
-                <a className="link" href="#">Ver tudo</a>
+                <Link className="link" to="/ranking">Ver tudo</Link>
               </div>
-              {ranking.map((p) => (
-                <div key={p.r} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
-                  <span className="rank-row__pos" style={{ color: MEDALS[p.r] || 'var(--muted)' }}>
-                    {p.r}
+              {rankingGlobal.length === 0 ? (
+                <p className="track__desc">Ranking ainda vazio.</p>
+              ) : rankingGlobal.slice(0, 5).map((p) => (
+                <div key={p.position} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
+                  <span className="rank-row__pos" style={{ color: MEDALS[p.position] || 'var(--muted)' }}>
+                    {p.position}
                   </span>
                   <Avatar
-                    initials={p.initials}
-                    background={p.you ? 'var(--accent)' : p.color}
-                    color={!p.you && p.r === 1 ? '#3a2a00' : '#fff'}
+                    initials={getInitials(p.name)}
+                    background={p.you ? 'var(--accent)' : CORES_FEED[p.position % CORES_FEED.length]}
+                    color={!p.you && p.position === 1 ? '#3a2a00' : '#fff'}
                   />
                   <span className={`rank-row__name${p.you ? ' rank-row__name--you' : ''}`}>
                     {p.name}
                   </span>
-                  <span className="rank-row__pts">{p.pts}</span>
+                  <span className="rank-row__pts">{p.xp}</span>
                 </div>
               ))}
             </div>
@@ -274,18 +285,22 @@ export function Home() {
             {/* Comunidade */}
             <div className="card">
               <h3 className="card__title card__title--mb">Comunidade</h3>
-              <div className="feed">
-                {feed.map((f, i) => (
-                  <div key={i} className="feed__item">
-                    <Avatar initials={f.initials} background={f.color} />
-                    <p className="feed__text">
-                      <b>{f.name}</b>{' '}
-                      <span className="feed__muted">{f.text}</span>{' '}
-                      <span className="feed__time">· {f.time}</span>
-                    </p>
-                  </div>
-                ))}
-              </div>
+              {feedComunidade.length === 0 ? (
+                <p className="track__desc">Ainda não há conquistas na comunidade.</p>
+              ) : (
+                <div className="feed">
+                  {feedComunidade.map((f, i) => (
+                    <div key={i} className="feed__item">
+                      <Avatar initials={getInitials(f.name)} background={CORES_FEED[i % CORES_FEED.length]} />
+                      <p className="feed__text">
+                        <b>{f.name}</b>{' '}
+                        <span className="feed__muted">desbloqueou {f.achievement}</span>{' '}
+                        <span className="feed__time">· {tempoRelativo(f.at)}</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </aside>
         </div>

@@ -27,6 +27,7 @@ export function Register() {
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [birthDate, setBirthDate] = useState('');
@@ -42,6 +43,7 @@ export function Register() {
     try {
       await api.post('/register', {
         name,
+        username,
         email: email.trim(),
         password,
         birthDate,
@@ -97,10 +99,17 @@ export function Register() {
 
       <form className="form" onSubmit={handleSubmit} noValidate>
         <FormField
-          label="Nome de usuário"
-          placeholder="seu_nome"
+          label="Nome"
+          placeholder="Seu nome"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <FormField
+          label="Nome de usuário"
+          placeholder="seu_usuario"
+          value={username}
+          onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20))}
           required
         />
         <FormField

@@ -7,11 +7,20 @@ export const questionDifficulty = pgEnum("question_difficulty", ["facil", "medio
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),
+    username: varchar("username", { length: 20 }).unique(),
     email: varchar("email", { length: 255 }).notNull().unique(),
     passwordHash: varchar("password_hash", { length: 255 }).notNull(),
     birthDate: date("birth_date").notNull(),
     gender: varchar("gender", { length: 50 }).notNull(),
     phone: varchar("phone", { length: 20 }).notNull(),
+    bio: text("bio"),
+    location: varchar("location", { length: 120 }),
+    occupation: varchar("occupation", { length: 120 }),
+    languages: jsonb("languages").$type<string[]>(),
+    github: varchar("github", { length: 200 }),
+    linkedin: varchar("linkedin", { length: 200 }),
+    avatarUrl: varchar("avatar_url", { length: 300 }),
+    coverUrl: varchar("cover_url", { length: 300 }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
     emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true}),
@@ -99,6 +108,37 @@ export const tags = pgTable("tags", {
     name: varchar("name", { length: 60 }).notNull().unique(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Conjunto canonico de linguagens do perfil (gerenciado pelo admin em Configuracoes).
+export const languages = pgTable("languages", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 60 }).notNull().unique(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Conquistas: catalogo gerenciado pelo admin. Desbloqueiam sozinhas quando o
+// aluno atinge o limite (threshold) do criterio escolhido.
+export const achievementCriteria = pgEnum("achievement_criteria", ["xp_total", "lessons_completed", "questions_correct"]);
+
+export const achievements = pgTable("achievements", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 80 }).notNull().unique(),
+    description: varchar("description", { length: 200 }).notNull(),
+    icon: varchar("icon", { length: 30 }).notNull(),
+    criteriaType: achievementCriteria("criteria_type").notNull(),
+    threshold: integer("threshold").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Conquistas ja desbloqueadas por cada usuario (guarda quando foi pra montar o feed).
+export const userAchievements = pgTable("user_achievements", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    achievementId: uuid("achievement_id").references(() => achievements.id).notNull(),
+    earnedAt: timestamp("earned_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+    unique().on(table.userId, table.achievementId),
+]);
 
 export const trailTags = pgTable("trail_tags", {
     id: uuid("id").primaryKey().defaultRandom(),
