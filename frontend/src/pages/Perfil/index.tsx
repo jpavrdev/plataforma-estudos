@@ -13,7 +13,7 @@ import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
 import { user as homeUser } from '../../data/home';
 import {
-  obterXp, listarLinguagens, obterMinhasConquistas, obterAtividades,
+  obterXp, listarLinguagens, obterMinhasConquistas, obterAtividades, obterRanking,
   type MinhaConquista, type Atividade,
 } from '../../services/trails';
 
@@ -85,6 +85,7 @@ export function Perfil() {
   const [conquistas, setConquistas] = useState<MinhaConquista[]>([]);
   const [verTodasConquistas, setVerTodasConquistas] = useState(false);
   const [atividades, setAtividades] = useState<Atividade[]>([]);
+  const [posicao, setPosicao] = useState<number | null>(null);
   const [editando, setEditando] = useState(false);
   const [draft, setDraft] = useState<Editavel>({ bio: '', location: '', occupation: '', languages: [], github: '', linkedin: '' });
   const [salvando, setSalvando] = useState(false);
@@ -98,12 +99,13 @@ export function Perfil() {
     let ativo = true;
     async function carregar() {
       try {
-        const [me, stats, langs, conq, ativ] = await Promise.all([
+        const [me, stats, langs, conq, ativ, rank] = await Promise.all([
           api.get<PerfilData>('/me'),
           obterXp(),
           listarLinguagens().catch(() => []),
           obterMinhasConquistas().catch(() => []),
           obterAtividades().catch(() => []),
+          obterRanking().catch(() => null),
         ]);
         if (!ativo) return;
         setPerfil(me.data);
@@ -111,6 +113,7 @@ export function Perfil() {
         setLinguagens(langs.map((l) => l.name));
         setConquistas(conq);
         setAtividades(ativ);
+        setPosicao(rank?.me?.position ?? null);
       } catch {
         if (ativo) setErro('Não foi possível carregar o perfil.');
       } finally {
@@ -299,7 +302,7 @@ export function Perfil() {
               <div className="pf-stats">
                 <Stat value={String(perfil.streak)} label="dias de streak" icon={<Flame size={18} />} />
                 <Stat value={xp.xp.toLocaleString('pt-BR')} label="XP total" />
-                <Stat value="—" label="no ranking global" />
+                <Stat value={posicao ? `#${posicao}` : '—'} label="no ranking global" />
                 <Stat value={String(xp.questionsCorrect)} label="exercícios resolvidos" />
                 <Stat value={String(xp.lessonsCompleted)} label="aulas concluídas" />
               </div>
