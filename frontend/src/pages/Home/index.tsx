@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
@@ -9,12 +10,13 @@ import { getInitials } from '../../utils/initials';
 import {
   user,
   dailyChallenge,
-  trilhas,
   week,
   ranking,
   feed,
   MEDALS,
 } from '../../data/home';
+import { listarTrilhas, listarMinhasTrilhas, obterTrilha } from '../../services/trails';
+import type { Trail } from '../../data/trails';
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -37,6 +39,48 @@ export function Home() {
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
+
+  const navigate = useNavigate();
+  const [emAndamento, setEmAndamento] = useState<(Trail & { id: string })[]>([]);
+  const [disponiveis, setDisponiveis] = useState<(Trail & { id: string })[]>([]);
+  const [carregando, setCarregando] = useState(true);
+
+  useEffect(() => {
+    let ativo = true;
+    async function carregar() {
+      try {
+        const [todas, doUsuario] = await Promise.all([listarTrilhas(), listarMinhasTrilhas()]);
+        if (!ativo) return;
+        const comProgresso = todas.map((c) => ({
+          ...c,
+          done: doUsuario.find((m) => m.id === c.id)?.done ?? 0,
+        }));
+        setEmAndamento(comProgresso.filter((t) => t.done > 0 && t.done < t.lessons));
+        setDisponiveis(comProgresso);
+      } catch {
+        // silencioso: o resto da home continua aparecendo
+      } finally {
+        if (ativo) setCarregando(false);
+      }
+    }
+    carregar();
+    return () => { ativo = false; };
+  }, []);
+
+  // Abre a trilha na primeira aula disponivel (a atual, ou a primeira).
+  async function abrirTrilha(trailId: string) {
+    try {
+      const detalhe = await obterTrilha(trailId);
+      const aulas = detalhe.modules.flatMap((m) => m.lessons);
+      const alvo = aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
+      navigate(alvo ? `/trilhas/${trailId}/aula/${alvo.id}` : '/trilhas');
+    } catch {
+      navigate('/trilhas');
+    }
+  }
+
+  const mostrandoEmAndamento = emAndamento.length > 0;
+  const listaTrilhas = (mostrandoEmAndamento ? emAndamento : disponiveis).slice(0, 4);
 
   return (
     <div className="home-shell">
@@ -125,36 +169,55 @@ export function Home() {
             {/* Trilhas */}
             <section>
               <div className="section-head">
-                <h2 className="section-title">Continue suas trilhas</h2>
-                <a className="link" href="#">Ver todas</a>
+                <h2 className="section-title">{mostrandoEmAndamento ? 'Continue suas trilhas' : 'Trilhas disponíveis'}</h2>
+                <Link className="link" to="/trilhas">Ver todas</Link>
               </div>
-              <div className="trilhas">
-                {trilhas.map((t) => (
-                  <div key={t.name} className="trilha">
-                    <div className="trilha__head">
-                      <span
-                        className="trilha__icon"
-                        style={{
-                          color: t.hue,
-                          background: `color-mix(in srgb, ${t.hue} 16%, transparent)`,
-                        }}
+              {carregando ? (
+                <p className="track__desc">Carregando trilhas...</p>
+              ) : listaTrilhas.length === 0 ? (
+                <p className="track__desc">Nenhuma trilha disponível ainda.</p>
+              ) : (
+                <div className="trilhas">
+                  {listaTrilhas.map((t) => {
+                    const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
+                    return (
+                      <div
+                        key={t.id}
+                        className="trilha"
+                        role="button"
+                        tabIndex={0}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => abrirTrilha(t.id)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') abrirTrilha(t.id); }}
                       >
-                        {t.glyph}
-                      </span>
-                      <div className="trilha__meta">
-                        <div className="trilha__name">{t.name}</div>
-                        <div className="trilha__sub">{t.sub}</div>
+                        <div className="trilha__head">
+                          <span
+                            className="trilha__icon"
+                            style={{
+                              color: t.hue,
+                              background: `color-mix(in srgb, ${t.hue} 16%, transparent)`,
+                            }}
+                          >
+                            {t.glyph}
+                          </span>
+                          <div className="trilha__meta">
+                            <div className="trilha__name">{t.name}</div>
+                            <div className="trilha__sub">
+                              {t.done > 0 ? `${t.done} de ${t.lessons} aulas` : `${t.lessons} aulas · ${t.level}`}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="progress">
+                          <div className="progress__track">
+                            <span className="progress__fill" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="progress__pct">{pct}%</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="progress">
-                      <div className="progress__track">
-                        <span className="progress__fill" style={{ width: `${t.pct}%` }} />
-                      </div>
-                      <span className="progress__pct">{t.pct}%</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </section>
           </main>
 

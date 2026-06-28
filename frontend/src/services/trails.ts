@@ -10,6 +10,7 @@ interface TrailApi {
   totalLessons: number;
   completedLessons?: number;
   progress?: number;
+  tags?: { id: string; name: string }[];
 }
 
 const LEVEL_LABEL: Record<TrailApi['trailLevel'], TrailLevel> = {
@@ -42,7 +43,7 @@ function adaptar(t: TrailApi): Trail & { id: string } {
     lessons: t.totalLessons,
     done: t.completedLessons ?? 0,
     desc: t.description,
-    tags: [level],
+    tags: t.tags?.map((tg) => tg.name) ?? [],
   };
 }
 
@@ -97,12 +98,19 @@ export interface QuizQuestion {
   position: number;
   options: QuizOption[];
 }
+export type BlocoTipo = 'text' | 'code' | 'image' | 'video' | 'quote';
+export interface Bloco {
+  type: BlocoTipo;
+  value: string;
+}
+
 export interface LessonDetail {
   id: string;
   trailId: string;
   moduleId: string;
   title: string;
   content: string | null;
+  contentBlocks: Bloco[] | null;
   state: LessonState;
   questions: QuizQuestion[];
 }
@@ -125,4 +133,156 @@ export async function enviarQuiz(
 ) {
   const { data } = await api.post<QuizResult>(`/lessons/${lessonId}/quiz`, { answers });
   return data;
+}
+
+export interface CheckResult {
+  correct: boolean;
+  correctOptionId: string;
+}
+
+// Verifica uma unica resposta (feedback imediato do quiz em carrossel). O gabarito
+// das outras questoes nao e exposto: o backend so revela a alternativa da questao enviada.
+export async function verificarResposta(
+  lessonId: string,
+  questionId: string,
+  optionId: string,
+) {
+  const { data } = await api.post<CheckResult>(`/lessons/${lessonId}/quiz/check`, {
+    questionId,
+    optionId,
+  });
+  return data;
+}
+
+// ===== Estúdio (admin) =====
+
+export type QuestionDifficulty = 'facil' | 'medio' | 'dificil';
+
+export interface StudioLessonRef {
+  id: string;
+  title: string;
+  position: number;
+  published: boolean;
+}
+export interface StudioModule {
+  id: string;
+  title: string;
+  position: number;
+  lessons: StudioLessonRef[];
+}
+export interface StudioTrail {
+  id: string;
+  name: string;
+  modules: StudioModule[];
+}
+
+export async function obterEstudio(trailId: string) {
+  const { data } = await api.get<StudioTrail>(`/trails/${trailId}/studio`);
+  return data;
+}
+
+export interface StudioOption {
+  id?: string;
+  text: string;
+  isCorrect: boolean;
+}
+export interface StudioQuestion {
+  id?: string;
+  statement: string;
+  difficulty: QuestionDifficulty;
+  options: StudioOption[];
+}
+export interface StudioLesson {
+  id: string;
+  moduleId: string;
+  title: string;
+  content: string | null;
+  contentBlocks: Bloco[];
+  published: boolean;
+  position: number;
+  questions: StudioQuestion[];
+}
+
+export async function obterAulaEstudio(lessonId: string) {
+  const { data } = await api.get<StudioLesson>(`/lessons/${lessonId}/studio`);
+  return data;
+}
+
+export interface SalvarAulaPayload {
+  title: string;
+  contentBlocks: Bloco[];
+  published?: boolean;
+  questions: {
+    statement: string;
+    difficulty: QuestionDifficulty;
+    options: { text: string; isCorrect: boolean }[];
+  }[];
+}
+export async function salvarAulaEstudio(lessonId: string, payload: SalvarAulaPayload) {
+  const { data } = await api.put(`/lessons/${lessonId}/studio`, payload);
+  return data;
+}
+
+export async function criarModulo(trailId: string, title: string, position: number) {
+  const { data } = await api.post<{ id: string }>(`/trails/${trailId}/modules`, { title, position });
+  return data;
+}
+export async function criarAula(moduleId: string, title: string, position: number) {
+  const { data } = await api.post<{ id: string }>(`/modules/${moduleId}/lessons`, { title, position });
+  return data;
+}
+export async function excluirAula(lessonId: string) {
+  await api.delete(`/lessons/${lessonId}`);
+}
+export async function excluirModulo(moduleId: string) {
+  await api.delete(`/modules/${moduleId}`);
+}
+
+export type TrailLevelEnum = 'iniciante' | 'intermediario' | 'avancado';
+
+export async function criarTrilha(payload: { name: string; level: TrailLevelEnum; description: string; tagIds?: string[] }) {
+  const { data } = await api.post<{ id: string }>('/trails', payload);
+  return data;
+}
+export async function atualizarTrilha(
+  id: string,
+  payload: { name?: string; level?: TrailLevelEnum; description?: string; tagIds?: string[] },
+) {
+  const { data } = await api.patch(`/trails/${id}`, payload);
+  return data;
+}
+export async function excluirTrilha(id: string) {
+  await api.delete(`/trails/${id}`);
+}
+
+export interface XpStats {
+  xp: number;
+  lessonsCompleted: number;
+  questionsCorrect: number;
+}
+export async function obterXp() {
+  const { data } = await api.get<XpStats>('/me/xp');
+  return data;
+}
+
+// ===== Tags (categorias de trilha) =====
+
+export interface Tag {
+  id: string;
+  name: string;
+}
+export async function listarTags() {
+  const { data } = await api.get<Tag[]>('/tags');
+  return data;
+}
+export async function criarTag(name: string) {
+  const { data } = await api.post<Tag>('/tags', { name });
+  return data;
+}
+export async function atualizarTag(id: string, name: string) {
+  const { data } = await api.patch<Tag>(`/tags/${id}`, { name });
+  return data;
+}
+export async function excluirTag(id: string) {
+  await api.delete(`/tags/${id}`);
 }
