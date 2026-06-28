@@ -9,14 +9,14 @@ const LETRAS = ["D", "S", "T", "Q", "Q", "S", "S"]; // domingo..sábado
 function diaAnterior(s: string): string {
     return new Date(Date.parse(s + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
 }
-function hojeLocal(): string {
+export function hojeSaoPaulo(): string {
     return new Date().toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
 // Conta os dias consecutivos terminando hoje (ou ontem, se ainda não estudou hoje).
 export function calcularStreak(dias: Set<string>): number {
     if (dias.size === 0) return 0;
-    let cursor = hojeLocal();
+    let cursor = hojeSaoPaulo();
     if (!dias.has(cursor)) {
         cursor = diaAnterior(cursor);
         if (!dias.has(cursor)) return 0;
@@ -62,7 +62,7 @@ export async function streaksTodos(): Promise<Map<string, number>> {
 // Últimos 7 dias (mais antigo -> hoje) com flag de atividade, para o card da home.
 export function semanaAtividade(dias: Set<string>): { label: string; active: boolean }[] {
     const ult7: string[] = [];
-    let cursor = hojeLocal();
+    let cursor = hojeSaoPaulo();
     for (let i = 0; i < 7; i++) {
         ult7.unshift(cursor);
         cursor = diaAnterior(cursor);

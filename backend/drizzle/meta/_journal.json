@@ -113,6 +113,13 @@
       "when": 1782667002593,
       "tag": "0015_achievements",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1782671634129,
+      "tag": "0016_ranking_snapshots",
+      "breakpoints": true
     }
   ]
 }
