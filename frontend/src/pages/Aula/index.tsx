@@ -15,6 +15,8 @@ import {
   type LessonDetail,
   type QuizResult,
 } from '../../services/trails';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -22,6 +24,28 @@ const NAV = [
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
+
+// Converte o markdown da aula usando as classes de estilo que ja existem no projeto.
+const md: Components = {
+  h1: ({ children }) => <h2 className="lesson__h2">{children}</h2>,
+  h2: ({ children }) => <h2 className="lesson__h2">{children}</h2>,
+  h3: ({ children }) => <h3 className="lesson__h2" style={{ fontSize: 18 }}>{children}</h3>,
+  h4: ({ children }) => <h4 className="lesson__h2" style={{ fontSize: 16 }}>{children}</h4>,
+  p: ({ children }) => <p className="lesson__p">{children}</p>,
+  ul: ({ children }) => <ul className="lesson__ul">{children}</ul>,
+  ol: ({ children }) => <ol className="lesson__ul">{children}</ol>,
+  code: ({ children }) => <code className="code-inline">{children}</code>,
+  pre: ({ children }) => (
+    <div className="codeblock">
+      <div className="codeblock__bar">
+        <span className="dot" style={{ background: '#ff5f57' }} />
+        <span className="dot" style={{ background: '#febc2e' }} />
+        <span className="dot" style={{ background: '#28c840' }} />
+      </div>
+      <pre className="codeblock__code">{children}</pre>
+    </div>
+  ),
+};
 
 export function Aula() {
   const { trailId, lessonId } = useParams();
@@ -167,7 +191,13 @@ function ConteudoAula({
       <hr className="rule lesson__rule" />
 
       {aula.content
-        ? <p className="lesson__p">{aula.content}</p>
+        ? (
+          <div className="lesson__md">
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={md}>
+              {aula.content}
+            </ReactMarkdown>
+          </div>
+        )
         : <p className="lesson__p lesson__p--muted">Esta aula ainda não tem conteúdo escrito.</p>}
 
       {aula.questions.length > 0 && <Quiz aula={aula} onConcluir={onConcluir} />}

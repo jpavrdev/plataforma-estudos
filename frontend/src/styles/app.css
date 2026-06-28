@@ -441,7 +441,7 @@
 
 
 /* Ajustes da tela de aula ao layout do projeto */
-.lesson { max-width: 1180px; margin: 0 auto; min-height: calc(100svh - 66px); }
+.lesson { min-height: calc(100svh - 66px); }
 .lesson__item { text-decoration: none; }
 .lesson__item--disabled { pointer-events: none; opacity: .7; }
 .lesson__loading, .lesson__erro { padding: 40px 48px; text-align: center; color: var(--muted); }
@@ -450,3 +450,13 @@
 .track--clickable { cursor: pointer; transition: border-color .15s ease, transform .05s ease; }
 .track--clickable:hover { border-color: var(--accent); }
 .track--clickable:active { transform: translateY(1px); }
+
+/* Conteudo da aula vindo de markdown */
+.lesson__md table { border-collapse: collapse; width: 100%; margin: 0 0 22px; font-size: 14px; display: block; overflow-x: auto; }
+.lesson__md th, .lesson__md td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+.lesson__md th { background: var(--surface-2); font-weight: 700; }
+.lesson__md blockquote { border-left: 3px solid var(--accent); margin: 0 0 18px; padding: 4px 16px; background: var(--surface-2); border-radius: 0 8px 8px 0; color: var(--muted); }
+.lesson__md blockquote p { margin: 6px 0; }
+.lesson__md hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+.lesson__md a { color: var(--accent); text-decoration: underline; }
+.codeblock__code code { background: none; padding: 0; color: inherit; font-size: inherit; border-radius: 0; }
