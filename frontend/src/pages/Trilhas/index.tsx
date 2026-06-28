@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Logo } from '../../components/Logo';
@@ -9,7 +9,7 @@ import { Flame, Search, Play, ChevronRight } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { trilhaFilters, type Trail, type TrailLevel } from '../../data/trails';
-import { listarTrilhas, listarMinhasTrilhas } from '../../services/trails';
+import { listarTrilhas, listarMinhasTrilhas, obterTrilha } from '../../services/trails';
 
 type TrailComId = Trail & { id: string };
 
@@ -49,7 +49,20 @@ function Metric({ value, label, accent }: { value: string; label: string; accent
 export function Trilhas() {
   const { user: authUser } = useAuth();
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const tint = LEVEL_TINT[theme] ?? LEVEL_TINT.light;
+
+  // Abre a trilha indo para a primeira aula disponivel (current, ou a primeira).
+  async function abrirTrilha(trailId: string) {
+    try {
+      const detalhe = await obterTrilha(trailId);
+      const aulas = detalhe.modules.flatMap((m) => m.lessons);
+      const alvo = aulas.find((l) => l.state === 'current') ?? aulas[0];
+      if (alvo) navigate(`/trilhas/${trailId}/aula/${alvo.id}`);
+    } catch {
+      // se a trilha nao tiver aulas publicadas, nao navega
+    }
+  }
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
@@ -191,7 +204,14 @@ export function Trilhas() {
               const completed = t.done >= t.lessons;
               const lv = tint[t.level];
               return (
-                <div key={t.id} className="track">
+                <div
+                  key={t.id}
+                  className="track track--clickable"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => abrirTrilha(t.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') abrirTrilha(t.id); }}
+                >
                   <div className="track__head">
                     <span
                       className="track__icon"

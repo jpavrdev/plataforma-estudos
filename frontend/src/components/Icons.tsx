@@ -85,6 +85,35 @@ export const EyeOff = ({ size = 18 }: IconProps) => (
   </svg>
 );
 
+export const ChevronLeft = ({ size = 13 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 6 9 12 15 18" />
+  </svg>
+);
+
+export const X = ({ size = 13 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+    <line x1="6" y1="6" x2="18" y2="18" />
+    <line x1="18" y1="6" x2="6" y2="18" />
+  </svg>
+);
+
+export const Help = ({ size = 22 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.1 9a3 3 0 1 1 4 2.8c-.9.4-1.6 1.2-1.6 2.2v.5" />
+    <line x1="12" y1="18" x2="12" y2="18" />
+  </svg>
+);
+
+export const Alert = ({ size = 34 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12" y2="17" />
+  </svg>
+);
+
 /* Capelo de formatura — símbolo da marca */
 export const GradCap = ({ size = 19 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
