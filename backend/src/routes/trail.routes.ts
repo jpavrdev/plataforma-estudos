@@ -24,6 +24,19 @@ import {
     createTag,
     updateTag,
     deleteTag,
+    listLanguages,
+    createLanguage,
+    updateLanguage,
+    deleteLanguage,
+    listAchievements,
+    createAchievement,
+    updateAchievement,
+    deleteAchievement,
+    getMyAchievements,
+    getMyActivity,
+    getCommunityAchievements,
+    getRanking,
+    getMyStreak,
 } from "../controllers/TrailController.ts";
 
 const router = Router();
@@ -38,6 +51,18 @@ router.get("/tags", autenticar, listTags);
 router.post("/tags", autenticar, exigirAdmin, createTag);
 router.patch("/tags/:id", autenticar, exigirAdmin, updateTag);
 router.delete("/tags/:id", autenticar, exigirAdmin, deleteTag);
+
+// Linguagens do perfil: leitura para qualquer logado; escrita só admin
+router.get("/languages", autenticar, listLanguages);
+router.post("/languages", autenticar, exigirAdmin, createLanguage);
+router.patch("/languages/:id", autenticar, exigirAdmin, updateLanguage);
+router.delete("/languages/:id", autenticar, exigirAdmin, deleteLanguage);
+
+// Conquistas: leitura para qualquer logado; escrita só admin
+router.get("/achievements", autenticar, listAchievements);
+router.post("/achievements", autenticar, exigirAdmin, createAchievement);
+router.patch("/achievements/:id", autenticar, exigirAdmin, updateAchievement);
+router.delete("/achievements/:id", autenticar, exigirAdmin, deleteAchievement);
 router.post("/trails/:id/modules", autenticar, exigirAdmin, createModule);
 router.post("/modules/:id/lessons", autenticar, exigirAdmin, createLesson);
 router.delete("/modules/:id", autenticar, exigirAdmin, deleteModule);
@@ -56,6 +81,11 @@ router.delete("/lessons/:id", autenticar, exigirAdmin, deleteLesson);
 // Progresso do aluno
 router.get("/me/trails", autenticar, getMyTrails);
 router.get("/me/xp", autenticar, getMyXp);
+router.get("/me/achievements", autenticar, getMyAchievements);
+router.get("/me/activity", autenticar, getMyActivity);
+router.get("/me/streak", autenticar, getMyStreak);
+router.get("/community/achievements", autenticar, getCommunityAchievements);
+router.get("/ranking", autenticar, getRanking);
 router.post("/lessons/:id/quiz", autenticar, submitQuiz);
 router.post("/lessons/:id/quiz/check", autenticar, checkAnswer);
 

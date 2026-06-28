@@ -28,6 +28,14 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         // Validação dos dados que chegam
         const dados = registerSchema.parse(req.body);
 
+        // Username normalizado (minúsculo) e único. O regex no schema já barra
+        // qualquer caractere fora de [a-zA-Z0-9_], então é seguro contra injection.
+        const username = dados.username.toLowerCase();
+        const [existeUsername] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+        if (existeUsername) {
+            return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
+        }
+
         // Criptografia da senha
         const passwordHash = await bcrypt.hash(dados.password, BCRYPT_COST);
 
@@ -36,18 +44,20 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             // Cria o usuário
             const [usuarioCriado] = await tx.insert(users).values({
                 name: dados.name,
+                username,
                 email:dados.email,
                 passwordHash,
                 birthDate: dados.birthDate,
                 gender: dados.gender,
                 phone: dados.phone
-            }).returning({ 
-                id: users.id, 
-                name: users.name, 
-                email: users.email, 
-                birthDate: users.birthDate, 
-                gender: users.gender, 
-                phone: users.phone 
+            }).returning({
+                id: users.id,
+                name: users.name,
+                username: users.username,
+                email: users.email,
+                birthDate: users.birthDate,
+                gender: users.gender,
+                phone: users.phone
             });
 
             const verificationToken = await authService.gerarTokenVerificacao(usuarioCriado.id, tx);
