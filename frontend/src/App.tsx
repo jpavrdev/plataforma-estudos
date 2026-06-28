@@ -5,6 +5,9 @@ import { Register } from "./pages/Register";
 import { Home } from './pages/Home';
 import { Trilhas } from './pages/Trilhas';
 import { Aula } from './pages/Aula';
+import { Estudio } from './pages/Estudio';
+import { EstudioHome } from './pages/EstudioHome';
+import { Configuracoes } from './pages/Configuracoes';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { Placeholder } from './pages/Placeholder';
 
@@ -14,6 +17,14 @@ function PrivateRoute({ children }: { children: React.JSX.Element }) {
   if (loading) return <div>Carregando...</div>;
 
   return isAuthenticated ? children : <Navigate to="/" />
+}
+
+function AdminRoute({ children }: { children: React.JSX.Element }) {
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) return <div>Carregando...</div>;
+  if (!isAuthenticated) return <Navigate to="/" />;
+  return user?.role === 'admin' ? children : <Navigate to="/home" />;
 }
 
 function AppRoutes() {
@@ -45,6 +56,27 @@ function AppRoutes() {
           <PrivateRoute>
             <Aula />
           </PrivateRoute>
+        } />
+      <Route
+        path="/estudio"
+        element={
+          <AdminRoute>
+            <EstudioHome />
+          </AdminRoute>
+        } />
+      <Route
+        path="/configuracoes"
+        element={
+          <AdminRoute>
+            <Configuracoes />
+          </AdminRoute>
+        } />
+      <Route
+        path="/estudio/:trailId"
+        element={
+          <AdminRoute>
+            <Estudio />
+          </AdminRoute>
         } />
       <Route
         path="/ranking"

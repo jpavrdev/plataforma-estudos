@@ -8,8 +8,8 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Search, Play, ChevronRight } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
-import { trilhaFilters, type Trail, type TrailLevel } from '../../data/trails';
-import { listarTrilhas, listarMinhasTrilhas, obterTrilha } from '../../services/trails';
+import { type Trail, type TrailLevel } from '../../data/trails';
+import { listarTrilhas, listarMinhasTrilhas, obterTrilha, obterXp, listarTags, type Tag } from '../../services/trails';
 
 type TrailComId = Trail & { id: string };
 
@@ -57,10 +57,11 @@ export function Trilhas() {
     try {
       const detalhe = await obterTrilha(trailId);
       const aulas = detalhe.modules.flatMap((m) => m.lessons);
-      const alvo = aulas.find((l) => l.state === 'current') ?? aulas[0];
-      if (alvo) navigate(`/trilhas/${trailId}/aula/${alvo.id}`);
+      // nunca manda para uma aula bloqueada: prefere a atual, senao a primeira liberada.
+      const alvo = aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
+      navigate(alvo ? `/trilhas/${trailId}/aula/${alvo.id}` : '/trilhas');
     } catch {
-      // se a trilha nao tiver aulas publicadas, nao navega
+      navigate('/trilhas');
     }
   }
 
@@ -71,16 +72,23 @@ export function Trilhas() {
   const [minhas, setMinhas] = useState<TrailComId[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
+  const [xp, setXp] = useState(0);
+  const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
+  const [filtro, setFiltro] = useState('Todas');
 
   useEffect(() => {
     async function carregar() {
       try {
-        const [todas, doUsuario] = await Promise.all([
+        const [todas, doUsuario, stats, tg] = await Promise.all([
           listarTrilhas(),
           listarMinhasTrilhas(),
+          obterXp(),
+          listarTags(),
         ]);
         setTrilhas(todas);
         setMinhas(doUsuario);
+        setXp(stats.xp);
+        setTagsDisp(tg);
       } catch {
         setErro('Não foi possível carregar as trilhas.');
       } finally {
@@ -97,6 +105,8 @@ export function Trilhas() {
 
   const aulasConcluidas = minhas.reduce((soma, t) => soma + t.done, 0);
   const emAndamento = minhas.filter((t) => t.done < t.lessons).length;
+
+  const trilhasFiltradas = filtro === 'Todas' ? trilhas : trilhas.filter((t) => t.tags.includes(filtro));
 
   return (
     <div className="home-shell">
@@ -147,7 +157,7 @@ export function Trilhas() {
               <span className="trilhas-page__divider" />
               <Metric value={String(aulasConcluidas)} label="aulas concluídas" />
               <span className="trilhas-page__divider" />
-              <Metric value={String(aulasConcluidas * 50)} label="XP em trilhas" accent />
+              <Metric value={String(xp)} label="XP em trilhas" accent />
             </div>
           </div>
 
@@ -170,7 +180,7 @@ export function Trilhas() {
                   </span>
                 </div>
               </div>
-              <button className="continue-card__btn">
+              <button className="continue-card__btn" onClick={() => abrirTrilha(continuar.id)}>
                 <Play size={13} /> Continuar aula
               </button>
             </div>
@@ -178,13 +188,17 @@ export function Trilhas() {
 
           {/* Filtros */}
           <div className="filters">
-            {trilhaFilters.map((f, i) => (
-              <button key={f} className={`filter${i === 0 ? ' filter--active' : ''}`}>
+            {['Todas', ...tagsDisp.map((t) => t.name)].map((f) => (
+              <button
+                key={f}
+                className={`filter${filtro === f ? ' filter--active' : ''}`}
+                onClick={() => setFiltro(f)}
+              >
                 {f}
               </button>
             ))}
             <div className="topbar__spacer" />
-            <span className="filters__count">{trilhas.length} trilhas</span>
+            <span className="filters__count">{trilhasFiltradas.length} trilhas</span>
           </div>
 
           {carregando && <p className="track__desc">Carregando trilhas...</p>}
@@ -195,7 +209,7 @@ export function Trilhas() {
 
           {/* Grade */}
           <div className="track-grid">
-            {trilhas.map((catalogo) => {
+            {trilhasFiltradas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
               const t = { ...catalogo, done: progresso?.done ?? 0 };
@@ -251,6 +265,16 @@ export function Trilhas() {
                       {t.tags.map((tag) => (
                         <span key={tag} className="chip--outline">{tag}</span>
                       ))}
+                      {authUser?.role === 'admin' && (
+                        <Link
+                          to={`/estudio/${t.id}`}
+                          className="chip--outline"
+                          style={{ textDecoration: 'none' }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Editar
+                        </Link>
+                      )}
                     </div>
                     <span
                       className="track__cta"

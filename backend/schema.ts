@@ -1,7 +1,8 @@
-import { pgTable, uuid, varchar, date, timestamp, pgEnum, integer, text, unique, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, date, timestamp, pgEnum, integer, text, unique, boolean, jsonb } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
+export const questionDifficulty = pgEnum("question_difficulty", ["facil", "medio", "dificil"]);
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -50,6 +51,7 @@ export const lessons = pgTable("lessons", {
     moduleId: uuid("module_id").references(() => modules.id).notNull(),
     title: varchar("title", { length: 255 }).notNull(),
     content: text("content"),
+    contentBlocks: jsonb("content_blocks").$type<{ type: string; value: string }[]>(),
     position: integer("position").notNull(),
     published: boolean("published").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
@@ -68,6 +70,7 @@ export const questions = pgTable("questions", {
     id: uuid("id").primaryKey().defaultRandom(),
     lessonId: uuid("lesson_id").references(() => lessons.id).notNull(),
     statement: text("statement").notNull(),
+    difficulty: questionDifficulty("difficulty").default("facil").notNull(),
     position: integer("position").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
 });
@@ -89,4 +92,18 @@ export const questionAnswers = pgTable("question_answers", {
     answeredAt: timestamp("answered_at", { withTimezone: true }).defaultNow().notNull()
 }, (table) => [
     unique().on(table.userId, table.questionId),
+]);
+
+export const tags = pgTable("tags", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: varchar("name", { length: 60 }).notNull().unique(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const trailTags = pgTable("trail_tags", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    trailId: uuid("trail_id").references(() => trails.id).notNull(),
+    tagId: uuid("tag_id").references(() => tags.id).notNull(),
+}, (table) => [
+    unique().on(table.trailId, table.tagId),
 ]);
