@@ -50,11 +50,9 @@ import {
     criarConquista,
     atualizarConquista,
     excluirConquista,
-    verificarConquistas,
     conquistasDoUsuario,
     feedComunidade,
 } from "../services/achievement.service.ts";
-import { ehAdmin } from "../services/usuario.service.ts";
 import {
     criarTrilha,
     atualizarTrilha,
@@ -63,9 +61,8 @@ import {
     trilhasDoUsuario,
     detalheDaTrilha,
 } from "../services/trail.service.ts";
-import { estadoDaAula, detalheDaAula } from "../services/lesson.service.ts";
-
-const QUIZ_MIN_ACERTOS = 4;
+import { detalheDaAula } from "../services/lesson.service.ts";
+import { QUIZ_MIN_ACERTOS, corrigirQuiz, conferirResposta } from "../services/quiz.service.ts";
 
 export const createTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -389,84 +386,9 @@ export const getLesson = async (req: Request, res: Response, next: NextFunction)
 // Recebe as respostas, corrige no servidor e conclui a aula se acertar o mínimo.
 export const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.userId!;
         const lessonId = String(req.params.id);
         const dados = submitQuizSchema.parse(req.body);
-
-        const [aula] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
-        if (!aula) {
-            return res.status(404).json({ erro: "Aula não encontrada" });
-        }
-
-        if (!aula.published) {
-            return res.status(404).json({ erro: "Aula não encontrada" });
-        }
-
-        const estado = await estadoDaAula(userId, aula);
-        if (estado === "locked") {
-            return res.status(403).json({ erro: "Aula bloqueada. Conclua a aula anterior." });
-        }
-
-        const qs = await db
-            .select({ id: questions.id })
-            .from(questions)
-            .where(eq(questions.lessonId, lessonId));
-        const qIds = qs.map((q) => q.id);
-        if (qIds.length === 0) {
-            return res.status(400).json({ erro: "Esta aula não tem questões" });
-        }
-
-        const opts = await db
-            .select()
-            .from(questionOptions)
-            .where(inArray(questionOptions.questionId, qIds));
-        const corretaPorQuestao = new Map<string, string>();
-        for (const o of opts) {
-            if (o.isCorrect) corretaPorQuestao.set(o.questionId, o.id);
-        }
-
-        let acertos = 0;
-        for (const resp of dados.answers) {
-            if (corretaPorQuestao.get(resp.questionId) === resp.optionId) acertos++;
-        }
-
-        // Registra cada resposta uma única vez. A primeira conta para o XP por questão
-        // (10 cada); como não sobrescreve, errar e refazer não rende XP depois.
-        const idsValidos = new Set(opts.map((o) => o.id));
-        const qIdSet = new Set(qIds);
-        for (const resp of dados.answers) {
-            if (!qIdSet.has(resp.questionId) || !idsValidos.has(resp.optionId)) continue;
-            await db
-                .insert(questionAnswers)
-                .values({
-                    userId,
-                    questionId: resp.questionId,
-                    selectedOptionId: resp.optionId,
-                    isCorrect: corretaPorQuestao.get(resp.questionId) === resp.optionId,
-                })
-                .onConflictDoNothing();
-        }
-
-        const total = qIds.length;
-        const passou = acertos >= QUIZ_MIN_ACERTOS;
-
-        let aulaConcluida = false;
-        if (passou) {
-            const [existe] = await db
-                .select({ id: lessonProgress.id })
-                .from(lessonProgress)
-                .where(
-                    and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, lessonId)),
-                );
-            if (!existe) {
-                await db.insert(lessonProgress).values({ userId, lessonId });
-            }
-            aulaConcluida = true;
-        }
-
-        await verificarConquistas(userId);
-
-        res.json({ correct: acertos, total, passed: passou, lessonCompleted: aulaConcluida });
+        res.json(await corrigirQuiz(req.userId!, lessonId, dados));
     } catch (err) {
         next(err);
     }
@@ -666,46 +588,9 @@ export const getMyStreak = async (req: Request, res: Response, next: NextFunctio
 // continua sendo decidida no submitQuiz.
 export const checkAnswer = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.userId!;
         const lessonId = String(req.params.id);
         const { questionId, optionId } = checkAnswerSchema.parse(req.body);
-
-        const [aula] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
-        if (!aula) {
-            return res.status(404).json({ erro: "Aula não encontrada" });
-        }
-        if (!aula.published && !(await ehAdmin(userId))) {
-            return res.status(404).json({ erro: "Aula não encontrada" });
-        }
-
-        const estado = await estadoDaAula(userId, aula);
-        if (estado === "locked") {
-            return res.status(403).json({ erro: "Aula bloqueada. Conclua a aula anterior." });
-        }
-
-        // A questão precisa pertencer a esta aula.
-        const [questao] = await db
-            .select({ id: questions.id })
-            .from(questions)
-            .where(and(eq(questions.id, questionId), eq(questions.lessonId, lessonId)));
-        if (!questao) {
-            return res.status(404).json({ erro: "Questão não encontrada" });
-        }
-
-        const [correta] = await db
-            .select({ id: questionOptions.id })
-            .from(questionOptions)
-            .where(
-                and(
-                    eq(questionOptions.questionId, questionId),
-                    eq(questionOptions.isCorrect, true),
-                ),
-            );
-        if (!correta) {
-            return res.status(500).json({ erro: "Questão sem gabarito" });
-        }
-
-        res.json({ correct: correta.id === optionId, correctOptionId: correta.id });
+        res.json(await conferirResposta(req.userId!, lessonId, questionId, optionId));
     } catch (err) {
         next(err);
     }
