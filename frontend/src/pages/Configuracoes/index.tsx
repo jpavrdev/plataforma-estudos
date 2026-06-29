@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
+import { useRequisicao } from '../../hooks/useRequisicao';
 import { Plus, Pencil, Trash, Check, IconeConquista, CHAVES_ICONE } from '../../components/Icons';
 import {
   listarTags,
@@ -50,26 +51,13 @@ function CrudList({
   atualizar,
   excluir,
 }: CrudListProps) {
-  const [itens, setItens] = useState<ItemCrud[]>([]);
-  const [carregando, setCarregando] = useState(true);
+  const { dados, carregando, erro: falhaCarga, recarregar } = useRequisicao(carregar, []);
+  const itens = dados ?? [];
   const [erro, setErro] = useState('');
   const [novo, setNovo] = useState('');
   const [criando, setCriando] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [editNome, setEditNome] = useState('');
-
-  async function recarregar() {
-    try {
-      setItens(await carregar());
-    } catch {
-      setErro('Não foi possível carregar a lista.');
-    } finally {
-      setCarregando(false);
-    }
-  }
-  useEffect(() => {
-    recarregar();
-  }, []);
 
   async function adicionar() {
     const nome = novo.trim();
@@ -79,7 +67,7 @@ function CrudList({
     try {
       await criar(nome);
       setNovo('');
-      await recarregar();
+      recarregar();
     } catch (e) {
       setErro(msgErro(e) ?? 'Não foi possível adicionar.');
     } finally {
@@ -94,7 +82,7 @@ function CrudList({
     try {
       await atualizar(id, nome);
       setEditId(null);
-      await recarregar();
+      recarregar();
     } catch (e) {
       setErro(msgErro(e) ?? 'Não foi possível salvar.');
     }
@@ -105,7 +93,7 @@ function CrudList({
     setErro('');
     try {
       await excluir(item.id);
-      await recarregar();
+      recarregar();
     } catch {
       setErro('Não foi possível excluir.');
     }
@@ -137,7 +125,9 @@ function CrudList({
         </button>
       </div>
 
-      {erro && <div className="auth__alert">{erro}</div>}
+      {(erro || falhaCarga) && (
+        <div className="auth__alert">{erro || 'Não foi possível carregar a lista.'}</div>
+      )}
       {carregando && <p className="track__desc">Carregando...</p>}
       {!carregando && itens.length === 0 && <p className="track__desc">Nada cadastrado ainda.</p>}
 
@@ -225,25 +215,12 @@ const FORM_VAZIO = {
 
 // Seção de CRUD das conquistas (campos mais ricos: ícone, critério e valor).
 function ConquistasAdmin() {
-  const [itens, setItens] = useState<Achievement[]>([]);
-  const [carregando, setCarregando] = useState(true);
+  const { dados, carregando, erro: falhaCarga, recarregar } = useRequisicao(listarConquistas, []);
+  const itens = dados ?? [];
   const [erro, setErro] = useState('');
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(FORM_VAZIO);
   const [salvando, setSalvando] = useState(false);
-
-  async function recarregar() {
-    try {
-      setItens(await listarConquistas());
-    } catch {
-      setErro('Não foi possível carregar as conquistas.');
-    } finally {
-      setCarregando(false);
-    }
-  }
-  useEffect(() => {
-    recarregar();
-  }, []);
 
   function resetar() {
     setEditId(null);
@@ -258,7 +235,7 @@ function ConquistasAdmin() {
       if (editId) await atualizarConquista(editId, form);
       else await criarConquista(form);
       resetar();
-      await recarregar();
+      recarregar();
     } catch (e) {
       setErro(msgErro(e) ?? 'Não foi possível salvar a conquista.');
     } finally {
@@ -288,7 +265,7 @@ function ConquistasAdmin() {
     try {
       await excluirConquista(a.id);
       if (editId === a.id) resetar();
-      await recarregar();
+      recarregar();
     } catch {
       setErro('Não foi possível excluir a conquista.');
     }
@@ -379,7 +356,9 @@ function ConquistasAdmin() {
         </div>
       </div>
 
-      {erro && <div className="auth__alert">{erro}</div>}
+      {(erro || falhaCarga) && (
+        <div className="auth__alert">{erro || 'Não foi possível carregar as conquistas.'}</div>
+      )}
       {carregando && <p className="track__desc">Carregando...</p>}
       {!carregando && itens.length === 0 && (
         <p className="track__desc">Nenhuma conquista cadastrada ainda.</p>
