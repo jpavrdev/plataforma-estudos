@@ -7,7 +7,8 @@ interface User {
     email: string,
     gender: string,
     phone: string,
-    role?: 'user' | 'admin' | 'moderator'
+    role?: 'user' | 'admin' | 'moderator',
+    streak?: number
 }
 
 interface AuthContextData {
@@ -29,11 +30,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const StoragedToken = localStorage.getItem('@App:accessToken');
             const storagedUser = localStorage.getItem('@App:user');
 
-            if (StoragedToken && storagedUser) {
-                setUser(JSON.parse(storagedUser));
-                api.defaults.headers.Authorization = `Bearer ${StoragedToken}`;
+            if (!StoragedToken) {
+                setLoading(false);
+                return;
             }
-            setLoading(false);
+
+            api.defaults.headers.Authorization = `Bearer ${StoragedToken}`;
+            // Mostra o cache na hora (sem tela de loading) e revalida com /me em
+            // segundo plano, trazendo streak/role/perfil atualizados.
+            if (storagedUser) {
+                setUser(JSON.parse(storagedUser));
+                setLoading(false);
+            }
+
+            try {
+                const { data } = await api.get('/me');
+                setUser(data);
+                localStorage.setItem('@App:user', JSON.stringify(data));
+            } catch (e) {
+                const status = (e as { response?: { status?: number } })?.response?.status;
+                if (status === 401) {
+                    localStorage.clear();
+                    setUser(null);
+                }
+            } finally {
+                setLoading(false);
+            }
         }
 
         loadStorageData();

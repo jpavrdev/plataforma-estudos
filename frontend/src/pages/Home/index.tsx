@@ -114,7 +114,7 @@ export function Home() {
             <span>Buscar exercício…</span>
           </div>
           <div className="streak-pill">
-            <Flame size={16} /> {streakInfo.streak}
+            <Flame size={16} /> {authUser?.streak ?? 0}
           </div>
           <ThemeToggle inline />
           <UserMenu

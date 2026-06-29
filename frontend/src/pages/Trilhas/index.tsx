@@ -131,7 +131,7 @@ export function Trilhas() {
             <span>Buscar trilha…</span>
           </div>
           <div className="streak-pill">
-            <Flame size={16} /> {user.streak}
+            <Flame size={16} /> {authUser?.streak ?? 0}
           </div>
           <ThemeToggle inline />
           <UserMenu
