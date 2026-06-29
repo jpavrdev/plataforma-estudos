@@ -36,7 +36,7 @@ api.interceptors.response.use(
       return new Promise((resolve) => {
         fila.push((token: string) => {
           if (original.headers) original.headers.Authorization = `Bearer ${token}`;
-          resolve(api(original));   // refaz a original com o novo token
+          resolve(api(original)); // refaz a original com o novo token
         });
       });
     }
@@ -57,7 +57,6 @@ api.interceptors.response.use(
       // Refaz a original com o novo token
       if (original.headers) original.headers.Authorization = `Bearer ${novoToken}`;
       return api(original);
-
     } catch (err) {
       // Refresh falhou (refresh inválido/expirado): desloga
       fila = [];
@@ -67,7 +66,7 @@ api.interceptors.response.use(
     } finally {
       isRefreshing = false;
     }
-  }
+  },
 );
 
 export default api;

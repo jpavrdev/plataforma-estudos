@@ -35,7 +35,11 @@ export async function startTestServer() {
         let json: any = null;
         const text = await res.text();
         if (text) {
-            try { json = JSON.parse(text); } catch { json = text; }
+            try {
+                json = JSON.parse(text);
+            } catch {
+                json = text;
+            }
         }
 
         return { status: res.status, body: json, setCookie };

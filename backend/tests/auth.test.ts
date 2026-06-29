@@ -25,9 +25,15 @@ async function verificarEmail(email: string) {
     await db.update(users).set({ emailVerifiedAt: new Date() }).where(eq(users.email, email));
 }
 
-before(async () => { server = await startTestServer(); });
-after(async () => { await server.close(); });
-beforeEach(async () => { await limparBanco(); });
+before(async () => {
+    server = await startTestServer();
+});
+after(async () => {
+    await server.close();
+});
+beforeEach(async () => {
+    await limparBanco();
+});
 
 describe("POST /register", () => {
     test("cria usuário com os campos obrigatórios e retorna 201", async () => {
@@ -133,7 +139,10 @@ describe("Lockout de conta", () => {
         assert.equal(res.status, 429);
 
         const estado = await estadoLock(dados.email);
-        assert.ok(estado.lockedUntil && estado.lockedUntil > new Date(), "lockedUntil deve estar no futuro");
+        assert.ok(
+            estado.lockedUntil && estado.lockedUntil > new Date(),
+            "lockedUntil deve estar no futuro",
+        );
     });
 
     test("login bem-sucedido zera o contador de tentativas", async () => {
@@ -142,8 +151,12 @@ describe("Lockout de conta", () => {
         await verificarEmail(dados.email);
 
         // 2 erros (abaixo do limite), depois acerta
-        await server.request("POST", "/login", { body: { email: dados.email, password: "errada1" } });
-        await server.request("POST", "/login", { body: { email: dados.email, password: "errada2" } });
+        await server.request("POST", "/login", {
+            body: { email: dados.email, password: "errada1" },
+        });
+        await server.request("POST", "/login", {
+            body: { email: dados.email, password: "errada2" },
+        });
 
         let estado = await estadoLock(dados.email);
         assert.equal(estado.tentativas, 2);
@@ -167,7 +180,8 @@ describe("Lockout de conta", () => {
         const { db } = await import("../db.ts");
         const { users } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
-        await db.update(users)
+        await db
+            .update(users)
             .set({ lockedUntil: new Date(Date.now() - 1000), failedLoginAttempts: 5 })
             .where(eq(users.email, dados.email));
 
@@ -190,7 +204,10 @@ describe("POST /verify-email", () => {
         const { db } = await import("../db.ts");
         const { users } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
-        const [u] = await db.select({ id: users.id }).from(users).where(eq(users.email, dados.email));
+        const [u] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.email, dados.email));
         const token = await authService.gerarTokenVerificacao(u.id);
 
         const res = await server.request("POST", "/verify-email", { body: { token } });
@@ -204,7 +221,9 @@ describe("POST /verify-email", () => {
     });
 
     test("rejeita token inválido (400)", async () => {
-        const res = await server.request("POST", "/verify-email", { body: { token: "lixoinvalido" } });
+        const res = await server.request("POST", "/verify-email", {
+            body: { token: "lixoinvalido" },
+        });
         assert.equal(res.status, 400);
     });
 
@@ -215,7 +234,10 @@ describe("POST /verify-email", () => {
         const { db } = await import("../db.ts");
         const { users } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
-        const [u] = await db.select({ id: users.id }).from(users).where(eq(users.email, dados.email));
+        const [u] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.email, dados.email));
         const token = await authService.gerarTokenVerificacao(u.id);
 
         await server.request("POST", "/verify-email", { body: { token } });

@@ -1,4 +1,4 @@
-import { loginSchema, registerSchema, refreshSchema } from "../schemas/auth.schema.ts";
+import { loginSchema, registerSchema } from "../schemas/auth.schema.ts";
 import bcrypt from "bcrypt";
 import { db } from "../../db.ts";
 import { users, tokens } from "../../schema.ts";
@@ -31,7 +31,10 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         // Username normalizado (minúsculo) e único. O regex no schema já barra
         // qualquer caractere fora de [a-zA-Z0-9_], então é seguro contra injection.
         const username = dados.username.toLowerCase();
-        const [existeUsername] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+        const [existeUsername] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.username, username));
         if (existeUsername) {
             return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
         }
@@ -40,30 +43,32 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         const passwordHash = await bcrypt.hash(dados.password, BCRYPT_COST);
 
         // Transação atômica: Cria o usuário e gera os tokens iniciais
-        const novoUsuario = await db.transaction(async(tx) => {
+        const novoUsuario = await db.transaction(async (tx) => {
             // Cria o usuário
-            const [usuarioCriado] = await tx.insert(users).values({
-                name: dados.name,
-                username,
-                email:dados.email,
-                passwordHash,
-                birthDate: dados.birthDate,
-                gender: dados.gender,
-                phone: dados.phone
-            }).returning({
-                id: users.id,
-                name: users.name,
-                username: users.username,
-                email: users.email,
-                birthDate: users.birthDate,
-                gender: users.gender,
-                phone: users.phone
-            });
+            const [usuarioCriado] = await tx
+                .insert(users)
+                .values({
+                    name: dados.name,
+                    username,
+                    email: dados.email,
+                    passwordHash,
+                    birthDate: dados.birthDate,
+                    gender: dados.gender,
+                    phone: dados.phone,
+                })
+                .returning({
+                    id: users.id,
+                    name: users.name,
+                    username: users.username,
+                    email: users.email,
+                    birthDate: users.birthDate,
+                    gender: users.gender,
+                    phone: users.phone,
+                });
 
             const verificationToken = await authService.gerarTokenVerificacao(usuarioCriado.id, tx);
 
             return { user: usuarioCriado, verificationToken };
-
         });
 
         const { user, verificationToken } = novoUsuario;
@@ -74,15 +79,13 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             mensagem: "Conta criada. Verifique seu email para ativar o acesso.",
             user,
         });
-        
     } catch (err) {
         next(err);
     }
-}
+};
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
         const dados = loginSchema.parse(req.body);
 
         const encontrados = await db.select().from(users).where(eq(users.email, dados.email));
@@ -106,11 +109,16 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             if (user) {
                 const tentativas = user.failedLoginAttempts + 1;
                 if (tentativas >= MAX_TENTATIVAS) {
-                    await db.update(users)
-                        .set({ failedLoginAttempts: 0, lockedUntil: new Date(Date.now() + LOCKOUT_MS) })
+                    await db
+                        .update(users)
+                        .set({
+                            failedLoginAttempts: 0,
+                            lockedUntil: new Date(Date.now() + LOCKOUT_MS),
+                        })
                         .where(eq(users.id, user.id));
                 } else {
-                    await db.update(users)
+                    await db
+                        .update(users)
                         .set({ failedLoginAttempts: tentativas })
                         .where(eq(users.id, user.id));
                 }
@@ -120,7 +128,8 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         // Senha correta: zera o contador se havia tentativas/lock pendentes.
         if (user.failedLoginAttempts > 0 || user.lockedUntil) {
-            await db.update(users)
+            await db
+                .update(users)
                 .set({ failedLoginAttempts: 0, lockedUntil: null })
                 .where(eq(users.id, user.id));
         }
@@ -136,17 +145,16 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000, // 24h
-            path: "/"
+            path: "/",
         });
 
-        res.json({ name: user.name, email: user.email, token: accessToken});
-
+        res.json({ name: user.name, email: user.email, token: accessToken });
     } catch (err) {
         next(err);
     }
 };
 
-export const refresh = async(req: Request, res: Response, next: NextFunction) => {
+export const refresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // VAlida a entrada
         const refreshToken = req.cookies.refreshToken;
@@ -159,20 +167,23 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
         const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
 
         // Busca pelo hash
-        const [registro] = await db.select({
-            userId: tokens.userId,
-            expiredAt: tokens.expiredAt,
-            usedAt: tokens.usedAt
-        }).from(tokens).where(eq(tokens.tokenHash, hashCalculado));
+        const [registro] = await db
+            .select({
+                userId: tokens.userId,
+                expiredAt: tokens.expiredAt,
+                usedAt: tokens.usedAt,
+            })
+            .from(tokens)
+            .where(eq(tokens.tokenHash, hashCalculado));
 
         // Caso não encontre
         if (!registro) {
-            return res.status(401).json({ erro: "Refresh token inválido. "});
+            return res.status(401).json({ erro: "Refresh token inválido. " });
         }
 
         // Expiração
         if (registro.expiredAt < new Date()) {
-            return res.status(401).json({ erro: "Refresh token inválido. "});
+            return res.status(401).json({ erro: "Refresh token inválido. " });
         }
 
         // Existe, não expirou, mas já foi usado
@@ -184,11 +195,12 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
 
         // Deletar token antigo e Gerar novo token (atomicidade)
         const novosTokens = await db.transaction(async (tx) => {
-            await tx.update(tokens)
+            await tx
+                .update(tokens)
                 .set({ usedAt: new Date() })
                 .where(eq(tokens.tokenHash, hashCalculado));
             return await authService.gerarEGravarTokens(registro.userId, tx);
-        })
+        });
 
         // Adicionar novo token no cookie
         res.cookie("refreshToken", novosTokens.refreshToken, {
@@ -196,25 +208,24 @@ export const refresh = async(req: Request, res: Response, next: NextFunction) =>
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 24 * 60 * 60 * 1000, // 24h
-            path: "/"
+            path: "/",
         });
 
         // Dar resposta no mesmo formato do login
         res.json({
             token: novosTokens.accessToken,
         });
-
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 };
 
-export const logout = async(req: Request, res: Response, next: NextFunction) => {
+export const logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const refreshToken = req.cookies.refreshToken;
 
         // Revoga o token do banco se existir
-        if(refreshToken) {
+        if (refreshToken) {
             const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
             await db.delete(tokens).where(eq(tokens.tokenHash, hashCalculado));
         }
@@ -244,16 +255,14 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
         const hashCalculado = createHash("sha256").update(token).digest("hex");
 
         // Busca pelo hash E pelo tipo (impede usar um refresh token aqui)
-        const [registro] = await db.select({
-            userId: tokens.userId,
-            expiredAt: tokens.expiredAt,
-            usedAt: tokens.usedAt
-        }).from(tokens).where(
-            and(
-                eq(tokens.tokenHash, hashCalculado),
-                eq(tokens.type, "email_verification")
-            )
-        );
+        const [registro] = await db
+            .select({
+                userId: tokens.userId,
+                expiredAt: tokens.expiredAt,
+                usedAt: tokens.usedAt,
+            })
+            .from(tokens)
+            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "email_verification")));
 
         if (!registro) {
             return res.status(400).json({ erro: "Token inválido" });
@@ -269,17 +278,18 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
 
         // Marca o token como usado e o email como verificado (atomicidade)
         await db.transaction(async (tx) => {
-            await tx.update(tokens)
+            await tx
+                .update(tokens)
                 .set({ usedAt: new Date() })
                 .where(eq(tokens.tokenHash, hashCalculado));
 
-            await tx.update(users)
+            await tx
+                .update(users)
                 .set({ emailVerifiedAt: new Date() })
                 .where(eq(users.id, registro.userId));
         });
 
         res.json({ mensagem: "Email verificado com sucesso. Você já pode fazer login." });
-
     } catch (err) {
         next(err);
     }

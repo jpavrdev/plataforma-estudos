@@ -9,7 +9,14 @@ import { Flame, Search, Play, ChevronRight } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
-import { listarTrilhas, listarMinhasTrilhas, obterTrilha, obterXp, listarTags, type Tag } from '../../services/trails';
+import {
+  listarTrilhas,
+  listarMinhasTrilhas,
+  obterTrilha,
+  obterXp,
+  listarTags,
+  type Tag,
+} from '../../services/trails';
 
 type TrailComId = Trail & { id: string };
 
@@ -25,13 +32,13 @@ type Tint = { fg: string; bg: string };
 const LEVEL_TINT: Record<'light' | 'dark', Record<TrailLevel, Tint>> = {
   light: {
     Iniciante: { fg: '#1C8F5A', bg: '#E5F1EA' },
-    'Intermediário': { fg: '#B7791F', bg: '#FBF0D8' },
-    'Avançado': { fg: '#C2410C', bg: '#FBE6D8' },
+    Intermediário: { fg: '#B7791F', bg: '#FBF0D8' },
+    Avançado: { fg: '#C2410C', bg: '#FBE6D8' },
   },
   dark: {
     Iniciante: { fg: '#46D58F', bg: '#15271E' },
-    'Intermediário': { fg: '#E0A82E', bg: '#2A2310' },
-    'Avançado': { fg: '#F08A5D', bg: '#2A1810' },
+    Intermediário: { fg: '#E0A82E', bg: '#2A2310' },
+    Avançado: { fg: '#F08A5D', bg: '#2A1810' },
   },
 };
 
@@ -58,7 +65,8 @@ export function Trilhas() {
       const detalhe = await obterTrilha(trailId);
       const aulas = detalhe.modules.flatMap((m) => m.lessons);
       // nunca manda para uma aula bloqueada: prefere a atual, senao a primeira liberada.
-      const alvo = aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
+      const alvo =
+        aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
       navigate(alvo ? `/trilhas/${trailId}/aula/${alvo.id}` : '/trilhas');
     } catch {
       navigate('/trilhas');
@@ -106,7 +114,8 @@ export function Trilhas() {
   const aulasConcluidas = minhas.reduce((soma, t) => soma + t.done, 0);
   const emAndamento = minhas.filter((t) => t.done < t.lessons).length;
 
-  const trilhasFiltradas = filtro === 'Todas' ? trilhas : trilhas.filter((t) => t.tags.includes(filtro));
+  const trilhasFiltradas =
+    filtro === 'Todas' ? trilhas : trilhas.filter((t) => t.tags.includes(filtro));
 
   return (
     <div className="home-shell">
@@ -131,7 +140,7 @@ export function Trilhas() {
             <span>Buscar trilha…</span>
           </div>
           <div className="streak-pill">
-            <Flame size={16} /> {user.streak}
+            <Flame size={16} /> {authUser?.streak ?? 0}
           </div>
           <ThemeToggle inline />
           <UserMenu
@@ -148,8 +157,8 @@ export function Trilhas() {
             <div>
               <h1 className="trilhas-page__title">Trilhas de aprendizado</h1>
               <p className="trilhas-page__sub">
-                Aprenda passo a passo, da lógica aos algoritmos. Conclua aulas para
-                subir de nível e ganhar XP.
+                Aprenda passo a passo, da lógica aos algoritmos. Conclua aulas para subir de nível e
+                ganhar XP.
               </p>
             </div>
             <div className="trilhas-page__stats">
@@ -173,10 +182,15 @@ export function Trilhas() {
                 </p>
                 <div className="continue-card__progress">
                   <div className="continue-card__track">
-                    <span style={{ width: `${Math.round((continuar.done / continuar.lessons) * 100)}%` }} />
+                    <span
+                      style={{
+                        width: `${Math.round((continuar.done / continuar.lessons) * 100)}%`,
+                      }}
+                    />
                   </div>
                   <span className="continue-card__pct">
-                    {Math.round((continuar.done / continuar.lessons) * 100)}% · {continuar.done}/{continuar.lessons}
+                    {Math.round((continuar.done / continuar.lessons) * 100)}% · {continuar.done}/
+                    {continuar.lessons}
                   </span>
                 </div>
               </div>
@@ -224,7 +238,9 @@ export function Trilhas() {
                   role="button"
                   tabIndex={0}
                   onClick={() => abrirTrilha(t.id)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') abrirTrilha(t.id); }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') abrirTrilha(t.id);
+                  }}
                 >
                   <div className="track__head">
                     <span
@@ -263,7 +279,9 @@ export function Trilhas() {
                   <div className="track__foot">
                     <div className="track__tags">
                       {t.tags.map((tag) => (
-                        <span key={tag} className="chip--outline">{tag}</span>
+                        <span key={tag} className="chip--outline">
+                          {tag}
+                        </span>
                       ))}
                       {authUser?.role === 'admin' && (
                         <Link

@@ -1,0 +1,5 @@
+node_modules
+dist
+drizzle
+uploads
+package-lock.json

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import { Login } from "./pages/Login";
-import { Register } from "./pages/Register";
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { Trilhas } from './pages/Trilhas';
 import { Aula } from './pages/Aula';
@@ -18,7 +18,7 @@ function PrivateRoute({ children }: { children: React.JSX.Element }) {
 
   if (loading) return <div>Carregando...</div>;
 
-  return isAuthenticated ? children : <Navigate to="/" />
+  return isAuthenticated ? children : <Navigate to="/" />;
 }
 
 function AdminRoute({ children }: { children: React.JSX.Element }) {
@@ -44,70 +44,86 @@ function AppRoutes() {
           <PrivateRoute>
             <Home />
           </PrivateRoute>
-        } />
+        }
+      />
       <Route
         path="/trilhas"
         element={
           <PrivateRoute>
             <Trilhas />
           </PrivateRoute>
-        } />
+        }
+      />
       <Route
         path="/trilhas/:trailId/aula/:lessonId"
         element={
           <PrivateRoute>
             <Aula />
           </PrivateRoute>
-        } />
+        }
+      />
       <Route
         path="/estudio"
         element={
           <AdminRoute>
             <EstudioHome />
           </AdminRoute>
-        } />
+        }
+      />
       <Route
         path="/configuracoes"
         element={
           <AdminRoute>
             <Configuracoes />
           </AdminRoute>
-        } />
+        }
+      />
       <Route
         path="/estudio/:trailId"
         element={
           <AdminRoute>
             <Estudio />
           </AdminRoute>
-        } />
+        }
+      />
       <Route
         path="/ranking"
         element={
           <PrivateRoute>
             <Ranking />
           </PrivateRoute>
-        } />
+        }
+      />
       <Route
         path="/comunidade"
         element={
           <PrivateRoute>
-            <Placeholder title="Comunidade" description="Em breve a atividade da comunidade aparecerá aqui." />
+            <Placeholder
+              title="Comunidade"
+              description="Em breve a atividade da comunidade aparecerá aqui."
+            />
           </PrivateRoute>
-        } />
+        }
+      />
       <Route
         path="/perfil"
         element={
           <PrivateRoute>
             <Perfil />
           </PrivateRoute>
-        } />
+        }
+      />
       <Route
         path="/progresso"
         element={
           <PrivateRoute>
-            <Placeholder title="Meu progresso" description="Em breve seu progresso por trilhas e conquistas aparecerá aqui." />
+            <Placeholder
+              title="Meu progresso"
+              description="Em breve seu progresso por trilhas e conquistas aparecerá aqui."
+            />
           </PrivateRoute>
-        } />
+        }
+      />
     </Routes>
   );
 }
@@ -119,7 +135,7 @@ function App() {
         <AppRoutes></AppRoutes>
       </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }
 
 export default App;

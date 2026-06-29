@@ -1,6 +1,7 @@
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, and, count, gte } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { rankingSnapshots } from "../../schema.ts";
+import { rankingSnapshots, users, lessonProgress, questionAnswers } from "../../schema.ts";
+import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
 // usuário, quantas posições subiu (positivo) ou caiu (negativo) desde o último
@@ -31,8 +32,15 @@ export async function movimentacaoRanking(
         .where(eq(rankingSnapshots.snapshotDate, hoje))
         .limit(1);
     if (!existe && posicoesHoje.length > 0) {
-        await db.insert(rankingSnapshots)
-            .values(posicoesHoje.map((p) => ({ userId: p.id, position: p.position, snapshotDate: hoje })))
+        await db
+            .insert(rankingSnapshots)
+            .values(
+                posicoesHoje.map((p) => ({
+                    userId: p.id,
+                    position: p.position,
+                    snapshotDate: hoje,
+                })),
+            )
             .onConflictDoNothing();
     }
 
@@ -42,4 +50,103 @@ export async function movimentacaoRanking(
         deltas.set(p.id, antes === undefined ? 0 : antes - p.position);
     }
     return deltas;
+}
+
+// Ranking global por XP. Liga e nível usam o XP total; o leaderboard usa o
+// período (week/month/all). XP = 50 por aula concluída + 10 por questão certa.
+export async function rankingGlobal(periodo: string, currentUserId: string | undefined) {
+    const dia = 24 * 60 * 60 * 1000;
+    const desde =
+        periodo === "week"
+            ? new Date(Date.now() - 7 * dia)
+            : periodo === "month"
+              ? new Date(Date.now() - 30 * dia)
+              : null;
+
+    const [usuarios, aulasTot, acertosTot, aulasPer, acertosPer, streaks] = await Promise.all([
+        db.select({ id: users.id, name: users.name, username: users.username }).from(users),
+        db
+            .select({ userId: lessonProgress.userId, n: count() })
+            .from(lessonProgress)
+            .groupBy(lessonProgress.userId),
+        db
+            .select({ userId: questionAnswers.userId, n: count() })
+            .from(questionAnswers)
+            .where(eq(questionAnswers.isCorrect, true))
+            .groupBy(questionAnswers.userId),
+        desde
+            ? db
+                  .select({ userId: lessonProgress.userId, n: count() })
+                  .from(lessonProgress)
+                  .where(gte(lessonProgress.completedAt, desde))
+                  .groupBy(lessonProgress.userId)
+            : Promise.resolve(null),
+        desde
+            ? db
+                  .select({ userId: questionAnswers.userId, n: count() })
+                  .from(questionAnswers)
+                  .where(
+                      and(
+                          eq(questionAnswers.isCorrect, true),
+                          gte(questionAnswers.answeredAt, desde),
+                      ),
+                  )
+                  .groupBy(questionAnswers.userId)
+            : Promise.resolve(null),
+        streaksTodos(),
+    ]);
+
+    const paraMapa = (arr: { userId: string; n: number }[] | null) =>
+        new Map((arr ?? []).map((a) => [a.userId, Number(a.n)]));
+    const at = paraMapa(aulasTot),
+        acT = paraMapa(acertosTot);
+    const aP = desde ? paraMapa(aulasPer) : at;
+    const acP = desde ? paraMapa(acertosPer) : acT;
+
+    const base = usuarios.map((u) => {
+        const totalXp = (at.get(u.id) ?? 0) * 50 + (acT.get(u.id) ?? 0) * 10;
+        const periodXp = (aP.get(u.id) ?? 0) * 50 + (acP.get(u.id) ?? 0) * 10;
+        return {
+            id: u.id,
+            name: u.name,
+            username: u.username,
+            totalXp,
+            periodXp,
+            level: Math.floor(totalXp / 500) + 1,
+            streak: streaks.get(u.id) ?? 0,
+            you: u.id === currentUserId,
+        };
+    });
+    const ordenados = [...base]
+        .sort((a, b) => b.periodXp - a.periodXp)
+        .map((u, i) => ({ ...u, position: i + 1 }));
+    // Movimentação é calculada sobre o ranking geral (XP total).
+    const ordemGeral = [...base]
+        .sort((a, b) => b.totalXp - a.totalXp)
+        .map((u, i) => ({ id: u.id, position: i + 1 }));
+    const deltas = await movimentacaoRanking(hojeSaoPaulo(), ordemGeral);
+
+    const meu = ordenados.find((u) => u.you);
+    const me = meu
+        ? {
+              position: meu.position,
+              username: meu.username,
+              xp: meu.periodXp,
+              totalXp: meu.totalXp,
+              level: meu.level,
+              streak: meu.streak,
+              delta: deltas.get(meu.id) ?? 0,
+          }
+        : null;
+    const rows = ordenados.slice(0, 20).map((u) => ({
+        position: u.position,
+        name: u.name,
+        username: u.username,
+        xp: u.periodXp,
+        level: u.level,
+        streak: u.streak,
+        delta: deltas.get(u.id) ?? 0,
+        you: u.you,
+    }));
+    return { me, rows };
 }
