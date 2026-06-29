@@ -44,8 +44,18 @@ function ligaAtual(totalXp: number): number {
 const fmtXp = (n: number) => n.toLocaleString('pt-BR');
 
 function Delta({ delta }: { delta: number }) {
-  if (delta > 0) return <span className="rk-delta rk-delta--up"><ChevronUp size={13} /></span>;
-  if (delta < 0) return <span className="rk-delta rk-delta--down"><ChevronDown size={13} /></span>;
+  if (delta > 0)
+    return (
+      <span className="rk-delta rk-delta--up">
+        <ChevronUp size={13} />
+      </span>
+    );
+  if (delta < 0)
+    return (
+      <span className="rk-delta rk-delta--down">
+        <ChevronDown size={13} />
+      </span>
+    );
   return <span className="rk-delta rk-delta--same">–</span>;
 }
 
@@ -59,10 +69,18 @@ export function Ranking() {
     let ativo = true;
     setCarregando(true);
     obterRanking(period)
-      .then((r) => { if (ativo) setDados(r); })
-      .catch(() => { if (ativo) setDados({ me: null, rows: [] }); })
-      .finally(() => { if (ativo) setCarregando(false); });
-    return () => { ativo = false; };
+      .then((r) => {
+        if (ativo) setDados(r);
+      })
+      .catch(() => {
+        if (ativo) setDados({ me: null, rows: [] });
+      })
+      .finally(() => {
+        if (ativo) setCarregando(false);
+      });
+    return () => {
+      ativo = false;
+    };
   }, [period]);
 
   const displayName = authUser?.name ?? homeUser.name;
@@ -82,14 +100,30 @@ export function Ranking() {
           <Logo variant="solid" size={20} />
           <nav className="nav">
             {NAV.map((item) => (
-              <Link key={item.to} to={item.to} className={`nav__item${item.to === '/ranking' ? ' nav__item--active' : ''}`}>{item.label}</Link>
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`nav__item${item.to === '/ranking' ? ' nav__item--active' : ''}`}
+              >
+                {item.label}
+              </Link>
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="searchbar"><Search size={16} /><span>Buscar exercício…</span></div>
-          <div className="streak-pill"><Flame size={16} /> {authUser?.streak ?? 0}</div>
+          <div className="searchbar">
+            <Search size={16} />
+            <span>Buscar exercício…</span>
+          </div>
+          <div className="streak-pill">
+            <Flame size={16} /> {authUser?.streak ?? 0}
+          </div>
           <ThemeToggle inline />
-          <UserMenu initials={getInitials(displayName)} level={nivel} name={displayName} email={authUser?.email} />
+          <UserMenu
+            initials={getInitials(displayName)}
+            level={nivel}
+            name={displayName}
+            email={authUser?.email}
+          />
         </header>
 
         <div className="rk">
@@ -97,13 +131,23 @@ export function Ranking() {
             <div>
               <div className="rk-head__title-row">
                 <h1 className="rk-title">Ranking global</h1>
-                <span className="rk-league-badge"><Trophy size={13} /> Liga {liga.name}</span>
+                <span className="rk-league-badge">
+                  <Trophy size={13} /> Liga {liga.name}
+                </span>
               </div>
-              <p className="rk-sub">Classificação por XP. Resolva exercícios e conclua aulas para subir.</p>
+              <p className="rk-sub">
+                Classificação por XP. Resolva exercícios e conclua aulas para subir.
+              </p>
             </div>
             <div className="seg">
               {PERIODOS.map((p) => (
-                <button key={p.value} className={`seg__item${period === p.value ? ' seg__item--active' : ''}`} onClick={() => setPeriod(p.value)}>{p.label}</button>
+                <button
+                  key={p.value}
+                  className={`seg__item${period === p.value ? ' seg__item--active' : ''}`}
+                  onClick={() => setPeriod(p.value)}
+                >
+                  {p.label}
+                </button>
               ))}
             </div>
           </div>
@@ -116,7 +160,10 @@ export function Ranking() {
             </div>
             <div className="leagues__track">
               <span className="leagues__line" />
-              <span className="leagues__line leagues__line--progress" style={{ width: `${progresso}%` }} />
+              <span
+                className="leagues__line leagues__line--progress"
+                style={{ width: `${progresso}%` }}
+              />
               <div className="leagues__grid">
                 {LIGAS.map((g, i) => {
                   const done = i < ligaIdx;
@@ -129,15 +176,40 @@ export function Ranking() {
                         style={{
                           background: locked ? 'var(--surface-2)' : g.color,
                           color: locked ? 'var(--muted)' : g.name === 'Ouro' ? '#5a3d00' : '#fff',
-                          boxShadow: current ? '0 0 0 4px color-mix(in srgb, var(--accent) 32%, transparent)' : 'none',
+                          boxShadow: current
+                            ? '0 0 0 4px color-mix(in srgb, var(--accent) 32%, transparent)'
+                            : 'none',
                         }}
                       >
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L19.5 9 L12 22 L4.5 9 Z" opacity=".92" /><path d="M4.5 9 L19.5 9 L12 2 Z" opacity=".6" /></svg>
-                        {done && <span className="league__seal league__seal--done"><Check size={11} /></span>}
-                        {locked && <span className="league__seal league__seal--lock"><Lock size={10} /></span>}
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2 L19.5 9 L12 22 L4.5 9 Z" opacity=".92" />
+                          <path d="M4.5 9 L19.5 9 L12 2 Z" opacity=".6" />
+                        </svg>
+                        {done && (
+                          <span className="league__seal league__seal--done">
+                            <Check size={11} />
+                          </span>
+                        )}
+                        {locked && (
+                          <span className="league__seal league__seal--lock">
+                            <Lock size={10} />
+                          </span>
+                        )}
                       </div>
-                      <div className="league__name" style={{ color: locked ? 'var(--muted)' : 'var(--text)', fontWeight: current ? 700 : 600 }}>{g.name}</div>
-                      {current ? <span className="league__here">Você está aqui</span> : <span className="league__xp">{fmtXp(g.threshold)} XP</span>}
+                      <div
+                        className="league__name"
+                        style={{
+                          color: locked ? 'var(--muted)' : 'var(--text)',
+                          fontWeight: current ? 700 : 600,
+                        }}
+                      >
+                        {g.name}
+                      </div>
+                      {current ? (
+                        <span className="league__here">Você está aqui</span>
+                      ) : (
+                        <span className="league__xp">{fmtXp(g.threshold)} XP</span>
+                      )}
                     </div>
                   );
                 })}
@@ -157,22 +229,43 @@ export function Ranking() {
                   return (
                     <div key={p.position} className="podium__col">
                       {p.position === 1 && (
-                        <svg className="podium__crown" width="26" height="26" viewBox="0 0 24 24" fill="var(--gold)"><path d="M3 7l4 4 5-7 5 7 4-4-1.5 12h-15z" /></svg>
+                        <svg
+                          className="podium__crown"
+                          width="26"
+                          height="26"
+                          viewBox="0 0 24 24"
+                          fill="var(--gold)"
+                        >
+                          <path d="M3 7l4 4 5-7 5 7 4-4-1.5 12h-15z" />
+                        </svg>
                       )}
                       <div className="podium__avatar-wrap">
                         <div
                           className="podium__avatar"
-                          style={{ width: meta.size, height: meta.size, fontSize: meta.font, background: p.you ? 'var(--accent)' : CORES[p.position % CORES.length], color: '#fff', borderColor: cor }}
+                          style={{
+                            width: meta.size,
+                            height: meta.size,
+                            fontSize: meta.font,
+                            background: p.you ? 'var(--accent)' : CORES[p.position % CORES.length],
+                            color: '#fff',
+                            borderColor: cor,
+                          }}
                         >
                           {getInitials(p.name)}
                         </div>
-                        <span className="podium__rank" style={{ background: cor }}>{p.position}</span>
+                        <span className="podium__rank" style={{ background: cor }}>
+                          {p.position}
+                        </span>
                       </div>
                       <div className="podium__name">{p.you ? 'Você' : p.name}</div>
                       <div className="podium__xp">{fmtXp(p.xp)} XP</div>
                       <div
                         className="podium__pedestal"
-                        style={{ height: meta.pedestal, background: `linear-gradient(180deg, color-mix(in srgb, ${cor} 28%, var(--surface)), color-mix(in srgb, ${cor} 10%, var(--surface)))`, color: `color-mix(in srgb, ${cor} 80%, var(--text))` }}
+                        style={{
+                          height: meta.pedestal,
+                          background: `linear-gradient(180deg, color-mix(in srgb, ${cor} 28%, var(--surface)), color-mix(in srgb, ${cor} 10%, var(--surface)))`,
+                          color: `color-mix(in srgb, ${cor} 80%, var(--text))`,
+                        }}
                       >
                         {p.position}
                       </div>
@@ -194,12 +287,18 @@ export function Ranking() {
                 <div className="rk-you__user">@{dados.me.username ?? 'voce'}</div>
               </div>
               {dados.me.delta !== 0 && (
-                <span className="rk-you__delta" style={{ color: dados.me.delta > 0 ? 'var(--success)' : 'var(--av-red)' }}>
+                <span
+                  className="rk-you__delta"
+                  style={{ color: dados.me.delta > 0 ? 'var(--success)' : 'var(--av-red)' }}
+                >
                   {dados.me.delta > 0 ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  {dados.me.delta > 0 ? 'subiu' : 'caiu'} {Math.abs(dados.me.delta)} {Math.abs(dados.me.delta) === 1 ? 'posição' : 'posições'}
+                  {dados.me.delta > 0 ? 'subiu' : 'caiu'} {Math.abs(dados.me.delta)}{' '}
+                  {Math.abs(dados.me.delta) === 1 ? 'posição' : 'posições'}
                 </span>
               )}
-              <span className="rk-you__streak"><Flame size={15} /> {dados.me.streak} dias</span>
+              <span className="rk-you__streak">
+                <Flame size={15} /> {dados.me.streak} dias
+              </span>
               <span className="rk-you__xp">{fmtXp(dados.me.xp)} XP</span>
             </div>
           )}
@@ -207,13 +306,21 @@ export function Ranking() {
           {/* Tabela */}
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="rk-table__head">
-              <div>#</div><div>Estudante</div><div>Streak</div><div>Nível</div><div className="rk-right">XP</div>
+              <div>#</div>
+              <div>Estudante</div>
+              <div>Streak</div>
+              <div>Nível</div>
+              <div className="rk-right">XP</div>
             </div>
             {carregando ? (
-              <p className="track__desc" style={{ padding: '18px 20px' }}>Carregando ranking...</p>
+              <p className="track__desc" style={{ padding: '18px 20px' }}>
+                Carregando ranking...
+              </p>
             ) : tabela.length === 0 ? (
               <p className="track__desc" style={{ padding: '18px 20px' }}>
-                {dados.rows.length === 0 ? 'Ninguém pontuou ainda. Conclua aulas para aparecer aqui.' : 'Sem mais posições por enquanto.'}
+                {dados.rows.length === 0
+                  ? 'Ninguém pontuou ainda. Conclua aulas para aparecer aqui.'
+                  : 'Sem mais posições por enquanto.'}
               </p>
             ) : (
               tabela.map((r) => (
@@ -223,15 +330,30 @@ export function Ranking() {
                     <Delta delta={r.delta} />
                   </div>
                   <div className="rk-row__student">
-                    <Avatar initials={getInitials(r.name)} background={r.you ? 'var(--accent)' : CORES[r.position % CORES.length]} />
+                    <Avatar
+                      initials={getInitials(r.name)}
+                      background={r.you ? 'var(--accent)' : CORES[r.position % CORES.length]}
+                    />
                     <div className="rk-row__id">
-                      <div className="rk-row__name" style={{ fontWeight: r.you ? 700 : 600 }}>{r.you ? 'Você' : r.name}</div>
+                      <div className="rk-row__name" style={{ fontWeight: r.you ? 700 : 600 }}>
+                        {r.you ? 'Você' : r.name}
+                      </div>
                       <div className="rk-row__user">@{r.username ?? 'usuario'}</div>
                     </div>
                   </div>
-                  <div className="rk-row__streak"><Flame size={14} />{r.streak}</div>
-                  <div><span className="rk-row__level">Lv {r.level}</span></div>
-                  <div className="rk-row__xp" style={{ color: r.you ? 'var(--accent)' : 'var(--text)' }}>{fmtXp(r.xp)}</div>
+                  <div className="rk-row__streak">
+                    <Flame size={14} />
+                    {r.streak}
+                  </div>
+                  <div>
+                    <span className="rk-row__level">Lv {r.level}</span>
+                  </div>
+                  <div
+                    className="rk-row__xp"
+                    style={{ color: r.you ? 'var(--accent)' : 'var(--text)' }}
+                  >
+                    {fmtXp(r.xp)}
+                  </div>
                 </div>
               ))
             )}

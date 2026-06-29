@@ -6,15 +6,31 @@ import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import {
-  Flame, Search, Pencil, Check, X, Camera,
-  AtSign, MapPin, Briefcase, Calendar, Github, Linkedin, IconeConquista,
+  Flame,
+  Search,
+  Pencil,
+  Check,
+  X,
+  Camera,
+  AtSign,
+  MapPin,
+  Briefcase,
+  Calendar,
+  Github,
+  Linkedin,
+  IconeConquista,
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
 import { user as homeUser } from '../../data/home';
 import {
-  obterXp, listarLinguagens, obterMinhasConquistas, obterAtividades, obterRanking,
-  type MinhaConquista, type Atividade,
+  obterXp,
+  listarLinguagens,
+  obterMinhasConquistas,
+  obterAtividades,
+  obterRanking,
+  type MinhaConquista,
+  type Atividade,
 } from '../../services/trails';
 
 const NAV = [
@@ -87,7 +103,14 @@ export function Perfil() {
   const [atividades, setAtividades] = useState<Atividade[]>([]);
   const [posicao, setPosicao] = useState<number | null>(null);
   const [editando, setEditando] = useState(false);
-  const [draft, setDraft] = useState<Editavel>({ bio: '', location: '', occupation: '', languages: [], github: '', linkedin: '' });
+  const [draft, setDraft] = useState<Editavel>({
+    bio: '',
+    location: '',
+    occupation: '',
+    languages: [],
+    github: '',
+    linkedin: '',
+  });
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [enviandoFoto, setEnviandoFoto] = useState(false);
@@ -121,7 +144,9 @@ export function Perfil() {
       }
     }
     carregar();
-    return () => { ativo = false; };
+    return () => {
+      ativo = false;
+    };
   }, []);
 
   function editar() {
@@ -159,7 +184,11 @@ export function Perfil() {
     }
   }
 
-  async function enviarImagem(file: File, rota: '/me/avatar' | '/me/cover', setBusy: (v: boolean) => void) {
+  async function enviarImagem(
+    file: File,
+    rota: '/me/avatar' | '/me/cover',
+    setBusy: (v: boolean) => void,
+  ) {
     if (!TIPOS_IMG.includes(file.type)) {
       setErro('Use uma imagem PNG, JPG ou WEBP.');
       return;
@@ -219,7 +248,9 @@ export function Perfil() {
           <Logo variant="solid" size={20} />
           <nav className="nav">
             {NAV.map((item) => (
-              <Link key={item.to} to={item.to} className="nav__item">{item.label}</Link>
+              <Link key={item.to} to={item.to} className="nav__item">
+                {item.label}
+              </Link>
             ))}
           </nav>
           <div className="topbar__spacer" />
@@ -227,21 +258,35 @@ export function Perfil() {
             <Search size={16} />
             <span>Buscar exercício…</span>
           </div>
-          <div className="streak-pill"><Flame size={16} /> {authUser?.streak ?? 0}</div>
+          <div className="streak-pill">
+            <Flame size={16} /> {authUser?.streak ?? 0}
+          </div>
           <ThemeToggle inline />
           <UserMenu initials={initials} level={nivel} name={displayName} email={authUser?.email} />
         </header>
 
         {carregando ? (
-          <p className="track__desc" style={{ padding: '40px 26px' }}>Carregando perfil...</p>
+          <p className="track__desc" style={{ padding: '40px 26px' }}>
+            Carregando perfil...
+          </p>
         ) : !perfil ? (
-          <p className="track__desc" style={{ padding: '40px 26px' }}>{erro || 'Perfil não encontrado.'}</p>
+          <p className="track__desc" style={{ padding: '40px 26px' }}>
+            {erro || 'Perfil não encontrado.'}
+          </p>
         ) : (
           <div className="pf">
             <div className="pf-card">
               <div
                 className="pf-banner"
-                style={capaUrl ? { backgroundImage: `url(${capaUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+                style={
+                  capaUrl
+                    ? {
+                        backgroundImage: `url(${capaUrl})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }
+                    : undefined
+                }
               >
                 {!capaUrl && (
                   <>
@@ -259,11 +304,25 @@ export function Perfil() {
                     <Camera size={14} /> {enviandoCapa ? 'Enviando...' : 'Trocar capa'}
                   </button>
                 )}
-                <input ref={inputCapa} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={onPickCapa} />
+                <input
+                  ref={inputCapa}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  hidden
+                  onChange={onPickCapa}
+                />
               </div>
               <div className="pf-head">
                 <div className="pf-avatar-wrap">
-                  <div className="pf-avatar" style={{ width: 104, height: 104, fontSize: 38, border: '4px solid var(--surface)' }}>
+                  <div
+                    className="pf-avatar"
+                    style={{
+                      width: 104,
+                      height: 104,
+                      fontSize: 38,
+                      border: '4px solid var(--surface)',
+                    }}
+                  >
                     {fotoUrl ? <img src={fotoUrl} alt={perfil.name} /> : initials}
                   </div>
                   {editando && (
@@ -277,7 +336,13 @@ export function Perfil() {
                       <Camera size={14} />
                     </button>
                   )}
-                  <input ref={inputFoto} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={onPickFoto} />
+                  <input
+                    ref={inputFoto}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    hidden
+                    onChange={onPickFoto}
+                  />
                 </div>
                 <div className="pf-id">
                   <div className="pf-id__row">
@@ -288,11 +353,15 @@ export function Perfil() {
                 </div>
                 {!editando ? (
                   <div className="pf-actions">
-                    <button className="btn btn--accent pf-actions__btn" onClick={editar}><Pencil size={14} /> Editar perfil</button>
+                    <button className="btn btn--accent pf-actions__btn" onClick={editar}>
+                      <Pencil size={14} /> Editar perfil
+                    </button>
                   </div>
                 ) : (
                   <div className="pf-actions">
-                    <button className="btn btn--ghost pf-actions__btn" onClick={cancelar}>Cancelar</button>
+                    <button className="btn btn--ghost pf-actions__btn" onClick={cancelar}>
+                      Cancelar
+                    </button>
                     <button className="pf-save" disabled={salvando} onClick={salvar}>
                       <Check size={15} /> {salvando ? 'Salvando...' : 'Salvar alterações'}
                     </button>
@@ -300,7 +369,11 @@ export function Perfil() {
                 )}
               </div>
               <div className="pf-stats">
-                <Stat value={String(perfil.streak)} label="dias de streak" icon={<Flame size={18} />} />
+                <Stat
+                  value={String(perfil.streak)}
+                  label="dias de streak"
+                  icon={<Flame size={18} />}
+                />
                 <Stat value={xp.xp.toLocaleString('pt-BR')} label="XP total" />
                 <Stat value={posicao ? `#${posicao}` : '—'} label="no ranking global" />
                 <Stat value={String(xp.questionsCorrect)} label="exercícios resolvidos" />
@@ -328,18 +401,34 @@ export function Perfil() {
                 <div className="card">
                   <h3 className="card__title card__title--mb">Informações</h3>
                   <div className="pf-fields">
-                    <Campo icon={<AtSign size={14} />} label="Usuário" value={perfil.username ? `@${perfil.username}` : '—'} />
+                    <Campo
+                      icon={<AtSign size={14} />}
+                      label="Usuário"
+                      value={perfil.username ? `@${perfil.username}` : '—'}
+                    />
                     <CampoEdit
-                      icon={<MapPin size={14} />} label="Localização" value={perfil.location}
-                      editando={editando} draft={draft.location} placeholder="Cidade, País"
+                      icon={<MapPin size={14} />}
+                      label="Localização"
+                      value={perfil.location}
+                      editando={editando}
+                      draft={draft.location}
+                      placeholder="Cidade, País"
                       onChange={(v) => setDraft({ ...draft, location: v })}
                     />
                     <CampoEdit
-                      icon={<Briefcase size={14} />} label="Função" value={perfil.occupation}
-                      editando={editando} draft={draft.occupation} placeholder="Ex: Estudante de programação"
+                      icon={<Briefcase size={14} />}
+                      label="Função"
+                      value={perfil.occupation}
+                      editando={editando}
+                      draft={draft.occupation}
+                      placeholder="Ex: Estudante de programação"
                       onChange={(v) => setDraft({ ...draft, occupation: v })}
                     />
-                    <Campo icon={<Calendar size={14} />} label="Membro desde" value={membroDesde(perfil.createdAt)} />
+                    <Campo
+                      icon={<Calendar size={14} />}
+                      label="Membro desde"
+                      value={membroDesde(perfil.createdAt)}
+                    />
 
                     <div>
                       <div className="pf-field__label">Linguagens</div>
@@ -348,7 +437,13 @@ export function Perfil() {
                           <span key={l + i} className="pf-lang">
                             {l}
                             {editando && (
-                              <button className="pf-lang__x" onClick={() => removeLang(i)} aria-label={`Remover ${l}`}><X size={11} /></button>
+                              <button
+                                className="pf-lang__x"
+                                onClick={() => removeLang(i)}
+                                aria-label={`Remover ${l}`}
+                              >
+                                <X size={11} />
+                              </button>
                             )}
                           </span>
                         ))}
@@ -358,14 +453,20 @@ export function Perfil() {
                             value=""
                             onChange={(e) => addLang(e.target.value)}
                           >
-                            <option value="" disabled>+ Adicionar</option>
+                            <option value="" disabled>
+                              + Adicionar
+                            </option>
                             {langsDisponiveis.map((l) => (
-                              <option key={l} value={l}>{l}</option>
+                              <option key={l} value={l}>
+                                {l}
+                              </option>
                             ))}
                           </select>
                         )}
                         {!editando && langsVisiveis.length === 0 && (
-                          <span className="pf-field__value" style={{ color: 'var(--muted)' }}>—</span>
+                          <span className="pf-field__value" style={{ color: 'var(--muted)' }}>
+                            —
+                          </span>
                         )}
                       </div>
                     </div>
@@ -374,13 +475,19 @@ export function Perfil() {
                       <div className="pf-field__label">Links</div>
                       <div className="pf-links">
                         <LinkEdit
-                          icon={<Github size={15} />} value={perfil.github}
-                          editando={editando} draft={draft.github} placeholder="github.com/voce"
+                          icon={<Github size={15} />}
+                          value={perfil.github}
+                          editando={editando}
+                          draft={draft.github}
+                          placeholder="github.com/voce"
                           onChange={(v) => setDraft({ ...draft, github: v })}
                         />
                         <LinkEdit
-                          icon={<Linkedin size={15} />} value={perfil.linkedin}
-                          editando={editando} draft={draft.linkedin} placeholder="linkedin.com/in/voce"
+                          icon={<Linkedin size={15} />}
+                          value={perfil.linkedin}
+                          editando={editando}
+                          draft={draft.linkedin}
+                          placeholder="linkedin.com/in/voce"
                           onChange={(v) => setDraft({ ...draft, linkedin: v })}
                         />
                       </div>
@@ -397,7 +504,13 @@ export function Perfil() {
                       <button
                         type="button"
                         className="link"
-                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          padding: 0,
+                          cursor: 'pointer',
+                          font: 'inherit',
+                        }}
                         onClick={() => setVerTodasConquistas((v) => !v)}
                       >
                         {verTodasConquistas ? 'Ver menos' : 'Ver todas'}
@@ -408,25 +521,33 @@ export function Perfil() {
                     <p className="track__desc">Nenhuma conquista desbloqueada.</p>
                   ) : (
                     <div className="pf-badges">
-                      {(verTodasConquistas ? conquistasGanhas : conquistasGanhas.slice(0, 6)).map((c) => (
-                        <div key={c.id} className="pf-badge">
-                          <span className="pf-badge__icon"><IconeConquista chave={c.icon} size={24} /></span>
-                          <div className="pf-badge__name">{c.name}</div>
-                          <div className="pf-badge__sub">{c.description}</div>
-                        </div>
-                      ))}
+                      {(verTodasConquistas ? conquistasGanhas : conquistasGanhas.slice(0, 6)).map(
+                        (c) => (
+                          <div key={c.id} className="pf-badge">
+                            <span className="pf-badge__icon">
+                              <IconeConquista chave={c.icon} size={24} />
+                            </span>
+                            <div className="pf-badge__name">{c.name}</div>
+                            <div className="pf-badge__sub">{c.description}</div>
+                          </div>
+                        ),
+                      )}
                     </div>
                   )}
                 </div>
                 <div className="card">
                   <h3 className="card__title card__title--mb">Atividade recente</h3>
                   {atividades.length === 0 ? (
-                    <p className="track__desc">Nenhuma atividade ainda. Conclua uma aula para começar.</p>
+                    <p className="track__desc">
+                      Nenhuma atividade ainda. Conclua uma aula para começar.
+                    </p>
                   ) : (
                     <div className="pf-timeline">
                       {atividades.map((a, i) => (
                         <div key={i} className="pf-act">
-                          <span className={`pf-act__icon pf-act__icon--${a.type === 'achievement' ? 'accent' : 'green'}`}>
+                          <span
+                            className={`pf-act__icon pf-act__icon--${a.type === 'achievement' ? 'accent' : 'green'}`}
+                          >
                             <IconeConquista chave={a.icon} size={14} />
                           </span>
                           <div className="pf-act__body">
@@ -441,7 +562,11 @@ export function Perfil() {
               </div>
             </div>
 
-            {erro && <div className="auth__alert" style={{ marginTop: 16 }}>{erro}</div>}
+            {erro && (
+              <div className="auth__alert" style={{ marginTop: 16 }}>
+                {erro}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -452,7 +577,10 @@ export function Perfil() {
 function Stat({ value, label, icon }: { value: string; label: string; icon?: ReactNode }) {
   return (
     <div className="pf-stat">
-      <div className="pf-stat__value">{icon && <span className="pf-stat__icon">{icon}</span>}{value}</div>
+      <div className="pf-stat__value">
+        {icon && <span className="pf-stat__icon">{icon}</span>}
+        {value}
+      </div>
       <div className="pf-stat__label">{label}</div>
     </div>
   );
@@ -461,7 +589,10 @@ function Stat({ value, label, icon }: { value: string; label: string; icon?: Rea
 function Campo({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div>
-      <div className="pf-field__label"><span className="pf-field__icon">{icon}</span>{label}</div>
+      <div className="pf-field__label">
+        <span className="pf-field__icon">{icon}</span>
+        {label}
+      </div>
       <div className="pf-field__value">{value}</div>
     </div>
   );
@@ -480,11 +611,19 @@ interface CampoEditProps {
 function CampoEdit({ icon, label, value, editando, draft, placeholder, onChange }: CampoEditProps) {
   return (
     <div>
-      <div className="pf-field__label"><span className="pf-field__icon">{icon}</span>{label}</div>
+      <div className="pf-field__label">
+        <span className="pf-field__icon">{icon}</span>
+        {label}
+      </div>
       {!editando ? (
         <div className="pf-field__value">{value || '—'}</div>
       ) : (
-        <input className="pf-input" value={draft} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+        <input
+          className="pf-input"
+          value={draft}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+        />
       )}
     </div>
   );
@@ -501,12 +640,22 @@ interface LinkEditProps {
 
 function LinkEdit({ icon, value, editando, draft, placeholder, onChange }: LinkEditProps) {
   if (!editando) {
-    return <div className="pf-link"><span className="pf-link__icon">{icon}</span>{value || '—'}</div>;
+    return (
+      <div className="pf-link">
+        <span className="pf-link__icon">{icon}</span>
+        {value || '—'}
+      </div>
+    );
   }
   return (
     <div className="pf-link-edit">
       <span className="pf-link__icon">{icon}</span>
-      <input className="pf-input pf-input--bare" value={draft} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+      <input
+        className="pf-input pf-input--bare"
+        value={draft}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </div>
   );
 }

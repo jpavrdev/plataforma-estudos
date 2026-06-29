@@ -8,6 +8,7 @@ import { SelectField } from '../../components/SelectField';
 import { Avatar } from '../../components/Avatar';
 import { Check } from '../../components/Icons';
 import { formatPhone } from '../../utils/phone';
+import { mensagemErro } from '../../utils/erro';
 
 const BENEFITS = [
   'Um desafio novo todos os dias',
@@ -51,8 +52,8 @@ export function Register() {
         phone: phone.trim(),
       });
       navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.erro ?? 'Erro ao criar conta. Tente novamente.');
+    } catch (e: unknown) {
+      setError(mensagemErro(e, 'Erro ao criar conta. Tente novamente.'));
     } finally {
       setSubmitting(false);
     }
@@ -61,9 +62,7 @@ export function Register() {
   const brand = (
     <AuthBrand glow="register">
       <div className="auth__brand-body">
-        <h1 className="auth__headline auth__headline--single">
-          Comece sua jornada dev hoje.
-        </h1>
+        <h1 className="auth__headline auth__headline--single">Comece sua jornada dev hoje.</h1>
         <p className="auth__lede">
           Crie sua conta gratuita e desbloqueie um novo desafio a cada dia.
         </p>
@@ -71,7 +70,9 @@ export function Register() {
         <ul className="benefits">
           {BENEFITS.map((b) => (
             <li key={b} className="benefits__item">
-              <span className="benefits__check"><Check size={14} /></span>
+              <span className="benefits__check">
+                <Check size={14} />
+              </span>
               {b}
             </li>
           ))}
@@ -85,7 +86,11 @@ export function Register() {
           <Avatar initials="AS" background="#2E9E6B" />
           <span className="avatar avatar--sm avatars__more">+9k</span>
         </div>
-        <p>Junte-se a <b>12.482</b> devs<br />aprendendo agora.</p>
+        <p>
+          Junte-se a <b>12.482</b> devs
+          <br />
+          aprendendo agora.
+        </p>
       </div>
     </AuthBrand>
   );
@@ -109,7 +114,14 @@ export function Register() {
           label="Nome de usuário"
           placeholder="seu_usuario"
           value={username}
-          onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20))}
+          onChange={(e) =>
+            setUsername(
+              e.target.value
+                .toLowerCase()
+                .replace(/[^a-z0-9_]/g, '')
+                .slice(0, 20),
+            )
+          }
           required
         />
         <FormField
@@ -162,11 +174,20 @@ export function Register() {
 
       <p className="auth__terms">
         Ao criar a conta, você concorda com os{' '}
-        <a className="link" href="#">Termos</a> e a{' '}
-        <a className="link" href="#">Política de Privacidade</a>.
+        <a className="link" href="#">
+          Termos
+        </a>{' '}
+        e a{' '}
+        <a className="link" href="#">
+          Política de Privacidade
+        </a>
+        .
       </p>
       <p className="auth__foot">
-        Já tem conta? <Link className="link" to="/">Entrar</Link>
+        Já tem conta?{' '}
+        <Link className="link" to="/">
+          Entrar
+        </Link>
       </p>
     </AuthShell>
   );

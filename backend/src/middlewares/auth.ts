@@ -14,7 +14,7 @@ interface UserPayload {
     userId: string;
 }
 
-export function autenticar(req: Request, res: Response, next: Function) {
+export function autenticar(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -27,17 +27,17 @@ export function autenticar(req: Request, res: Response, next: Function) {
         const payload = jwt.verify(token, JWT_SECRET) as UserPayload;
 
         req.userId = payload.userId;
-        
+
         next();
     } catch {
         return res.status(401).json({ erro: "Token inválido" });
     }
-};
+}
 
-export async function exigirAdmin(req: Request, res: Response, next: Function) {
+export async function exigirAdmin(req: Request, res: Response, next: NextFunction) {
     const idUsuario = req.userId;
 
-    if(!idUsuario) {
+    if (!idUsuario) {
         return res.status(401).json({ erro: "Não autenticado" });
     }
 
@@ -46,7 +46,7 @@ export async function exigirAdmin(req: Request, res: Response, next: Function) {
         .from(users)
         .where(eq(users.id, idUsuario));
 
-    if(!registro || registro.role !== "admin") {
+    if (!registro || registro.role !== "admin") {
         return res.status(403).json({ erro: "Usuário não é administrador" });
     }
 

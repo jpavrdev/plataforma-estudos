@@ -3,10 +3,20 @@ import { Link } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { Plus, Pencil, Trash, Check, IconeConquista, CHAVES_ICONE } from '../../components/Icons';
 import {
-  listarTags, criarTag, atualizarTag, excluirTag,
-  listarLinguagens, criarLinguagem, atualizarLinguagem, excluirLinguagem,
-  listarConquistas, criarConquista, atualizarConquista, excluirConquista,
-  type Achievement, type CriterioConquista,
+  listarTags,
+  criarTag,
+  atualizarTag,
+  excluirTag,
+  listarLinguagens,
+  criarLinguagem,
+  atualizarLinguagem,
+  excluirLinguagem,
+  listarConquistas,
+  criarConquista,
+  atualizarConquista,
+  excluirConquista,
+  type Achievement,
+  type CriterioConquista,
 } from '../../services/trails';
 
 function msgErro(e: unknown): string | undefined {
@@ -30,7 +40,16 @@ interface CrudListProps {
 }
 
 // Seção genérica de CRUD por nome (usada para Tags e Linguagens).
-function CrudList({ titulo, descricao, placeholder, confirmarExclusao, carregar, criar, atualizar, excluir }: CrudListProps) {
+function CrudList({
+  titulo,
+  descricao,
+  placeholder,
+  confirmarExclusao,
+  carregar,
+  criar,
+  atualizar,
+  excluir,
+}: CrudListProps) {
   const [itens, setItens] = useState<ItemCrud[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
@@ -48,7 +67,9 @@ function CrudList({ titulo, descricao, placeholder, confirmarExclusao, carregar,
       setCarregando(false);
     }
   }
-  useEffect(() => { recarregar(); }, []);
+  useEffect(() => {
+    recarregar();
+  }, []);
 
   async function adicionar() {
     const nome = novo.trim();
@@ -102,9 +123,16 @@ function CrudList({ titulo, descricao, placeholder, confirmarExclusao, carregar,
           value={novo}
           placeholder={placeholder}
           onChange={(e) => setNovo(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') adicionar(); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') adicionar();
+          }}
         />
-        <button className="btn btn--accent" style={{ flex: 'none' }} disabled={criando || !novo.trim()} onClick={adicionar}>
+        <button
+          className="btn btn--accent"
+          style={{ flex: 'none' }}
+          disabled={criando || !novo.trim()}
+          onClick={adicionar}
+        >
           <Plus size={14} /> Adicionar
         </button>
       </div>
@@ -136,13 +164,40 @@ function CrudList({ titulo, descricao, placeholder, confirmarExclusao, carregar,
             <div className="estudio-home__actions">
               {editId === item.id ? (
                 <>
-                  <button className="estudio-home__act" onClick={() => salvarEdicao(item.id)} aria-label="Salvar"><Check size={15} /></button>
-                  <button className="estudio-home__act" onClick={() => setEditId(null)} aria-label="Cancelar">✕</button>
+                  <button
+                    className="estudio-home__act"
+                    onClick={() => salvarEdicao(item.id)}
+                    aria-label="Salvar"
+                  >
+                    <Check size={15} />
+                  </button>
+                  <button
+                    className="estudio-home__act"
+                    onClick={() => setEditId(null)}
+                    aria-label="Cancelar"
+                  >
+                    ✕
+                  </button>
                 </>
               ) : (
                 <>
-                  <button className="estudio-home__act" onClick={() => { setEditId(item.id); setEditNome(item.name); }} aria-label="Editar"><Pencil size={15} /></button>
-                  <button className="estudio-home__act estudio-home__act--danger" onClick={() => remover(item)} aria-label="Excluir"><Trash size={15} /></button>
+                  <button
+                    className="estudio-home__act"
+                    onClick={() => {
+                      setEditId(item.id);
+                      setEditNome(item.name);
+                    }}
+                    aria-label="Editar"
+                  >
+                    <Pencil size={15} />
+                  </button>
+                  <button
+                    className="estudio-home__act estudio-home__act--danger"
+                    onClick={() => remover(item)}
+                    aria-label="Excluir"
+                  >
+                    <Trash size={15} />
+                  </button>
                 </>
               )}
             </div>
@@ -160,7 +215,13 @@ const CRITERIOS: { value: CriterioConquista; label: string }[] = [
 ];
 const rotuloCriterio = (c: CriterioConquista) => CRITERIOS.find((x) => x.value === c)?.label ?? c;
 
-const FORM_VAZIO = { name: '', description: '', icon: 'trophy', criteriaType: 'lessons_completed' as CriterioConquista, threshold: 1 };
+const FORM_VAZIO = {
+  name: '',
+  description: '',
+  icon: 'trophy',
+  criteriaType: 'lessons_completed' as CriterioConquista,
+  threshold: 1,
+};
 
 // Seção de CRUD das conquistas (campos mais ricos: ícone, critério e valor).
 function ConquistasAdmin() {
@@ -180,9 +241,14 @@ function ConquistasAdmin() {
       setCarregando(false);
     }
   }
-  useEffect(() => { recarregar(); }, []);
+  useEffect(() => {
+    recarregar();
+  }, []);
 
-  function resetar() { setEditId(null); setForm(FORM_VAZIO); }
+  function resetar() {
+    setEditId(null);
+    setForm(FORM_VAZIO);
+  }
 
   async function salvar() {
     if (!form.name.trim() || !form.description.trim() || form.threshold < 1 || salvando) return;
@@ -202,11 +268,22 @@ function ConquistasAdmin() {
 
   function editar(a: Achievement) {
     setEditId(a.id);
-    setForm({ name: a.name, description: a.description, icon: a.icon, criteriaType: a.criteriaType, threshold: a.threshold });
+    setForm({
+      name: a.name,
+      description: a.description,
+      icon: a.icon,
+      criteriaType: a.criteriaType,
+      threshold: a.threshold,
+    });
   }
 
   async function remover(a: Achievement) {
-    if (!window.confirm(`Excluir a conquista "${a.name}"? Ela será removida dos perfis que a desbloquearam.`)) return;
+    if (
+      !window.confirm(
+        `Excluir a conquista "${a.name}"? Ela será removida dos perfis que a desbloquearam.`,
+      )
+    )
+      return;
     setErro('');
     try {
       await excluirConquista(a.id);
@@ -221,7 +298,8 @@ function ConquistasAdmin() {
     <section style={{ marginBottom: 40 }}>
       <h1 className="estudio-home__title">Conquistas</h1>
       <p className="estudio-home__sub">
-        Desbloqueiam sozinhas quando o aluno atinge o critério (ex.: concluir 5 aulas, acertar 100 questões, alcançar 500 XP).
+        Desbloqueiam sozinhas quando o aluno atinge o critério (ex.: concluir 5 aulas, acertar 100
+        questões, alcançar 500 XP).
       </p>
 
       <div className="conq-form">
@@ -240,11 +318,31 @@ function ConquistasAdmin() {
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
         <div className="conq-form__row">
-          <select className="estudio-form__input" style={{ margin: 0 }} value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })}>
-            {CHAVES_ICONE.map((k) => <option key={k} value={k}>{k}</option>)}
+          <select
+            className="estudio-form__input"
+            style={{ margin: 0 }}
+            value={form.icon}
+            onChange={(e) => setForm({ ...form, icon: e.target.value })}
+          >
+            {CHAVES_ICONE.map((k) => (
+              <option key={k} value={k}>
+                {k}
+              </option>
+            ))}
           </select>
-          <select className="estudio-form__input" style={{ margin: 0 }} value={form.criteriaType} onChange={(e) => setForm({ ...form, criteriaType: e.target.value as CriterioConquista })}>
-            {CRITERIOS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          <select
+            className="estudio-form__input"
+            style={{ margin: 0 }}
+            value={form.criteriaType}
+            onChange={(e) =>
+              setForm({ ...form, criteriaType: e.target.value as CriterioConquista })
+            }
+          >
+            {CRITERIOS.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
           </select>
           <input
             className="estudio-form__input"
@@ -253,32 +351,65 @@ function ConquistasAdmin() {
             min={1}
             value={form.threshold}
             placeholder="Valor"
-            onChange={(e) => setForm({ ...form, threshold: Math.max(1, Number(e.target.value) || 1) })}
+            onChange={(e) =>
+              setForm({ ...form, threshold: Math.max(1, Number(e.target.value) || 1) })
+            }
           />
-          <button className="btn btn--accent" style={{ flex: 'none' }} disabled={salvando || !form.name.trim() || !form.description.trim()} onClick={salvar}>
-            {editId ? <><Check size={14} /> Salvar</> : <><Plus size={14} /> Adicionar</>}
+          <button
+            className="btn btn--accent"
+            style={{ flex: 'none' }}
+            disabled={salvando || !form.name.trim() || !form.description.trim()}
+            onClick={salvar}
+          >
+            {editId ? (
+              <>
+                <Check size={14} /> Salvar
+              </>
+            ) : (
+              <>
+                <Plus size={14} /> Adicionar
+              </>
+            )}
           </button>
-          {editId && <button className="btn btn--ghost" style={{ flex: 'none' }} onClick={resetar}>Cancelar</button>}
+          {editId && (
+            <button className="btn btn--ghost" style={{ flex: 'none' }} onClick={resetar}>
+              Cancelar
+            </button>
+          )}
         </div>
       </div>
 
       {erro && <div className="auth__alert">{erro}</div>}
       {carregando && <p className="track__desc">Carregando...</p>}
-      {!carregando && itens.length === 0 && <p className="track__desc">Nenhuma conquista cadastrada ainda.</p>}
+      {!carregando && itens.length === 0 && (
+        <p className="track__desc">Nenhuma conquista cadastrada ainda.</p>
+      )}
 
       <div className="estudio-home__list">
         {itens.map((a) => (
           <div key={a.id} className="estudio-home__card">
             <div className="conq-item">
-              <span className="conq-item__icon"><IconeConquista chave={a.icon} size={18} /></span>
+              <span className="conq-item__icon">
+                <IconeConquista chave={a.icon} size={18} />
+              </span>
               <div>
                 <div className="conq-item__name">{a.name}</div>
-                <div className="conq-item__sub">{a.description} · {rotuloCriterio(a.criteriaType)} ≥ {a.threshold}</div>
+                <div className="conq-item__sub">
+                  {a.description} · {rotuloCriterio(a.criteriaType)} ≥ {a.threshold}
+                </div>
               </div>
             </div>
             <div className="estudio-home__actions">
-              <button className="estudio-home__act" onClick={() => editar(a)} aria-label="Editar"><Pencil size={15} /></button>
-              <button className="estudio-home__act estudio-home__act--danger" onClick={() => remover(a)} aria-label="Excluir"><Trash size={15} /></button>
+              <button className="estudio-home__act" onClick={() => editar(a)} aria-label="Editar">
+                <Pencil size={15} />
+              </button>
+              <button
+                className="estudio-home__act estudio-home__act--danger"
+                onClick={() => remover(a)}
+                aria-label="Excluir"
+              >
+                <Trash size={15} />
+              </button>
             </div>
           </div>
         ))}
@@ -296,9 +427,13 @@ export function Configuracoes() {
           <span className="studio__badge">Configurações</span>
         </div>
         <span className="studio__divider" />
-        <div className="studio__crumb"><b>Tags, linguagens e conquistas</b></div>
+        <div className="studio__crumb">
+          <b>Tags, linguagens e conquistas</b>
+        </div>
         <div className="topbar__spacer" />
-        <Link className="btn btn--ghost studio__btn" to="/home">Voltar ao app</Link>
+        <Link className="btn btn--ghost studio__btn" to="/home">
+          Voltar ao app
+        </Link>
       </header>
 
       <div className="estudio-home">
@@ -306,7 +441,9 @@ export function Configuracoes() {
           titulo="Tags"
           descricao="Categorias para filtrar as trilhas (ex.: Fundamentos, Linguagens, Algoritmos). Você atribui as tags ao criar ou editar uma trilha no Estúdio."
           placeholder="Nome da nova tag"
-          confirmarExclusao={(t) => `Excluir a tag "${t.name}"? Ela será removida das trilhas que a usam.`}
+          confirmarExclusao={(t) =>
+            `Excluir a tag "${t.name}"? Ela será removida das trilhas que a usam.`
+          }
           carregar={listarTags}
           criar={criarTag}
           atualizar={atualizarTag}
@@ -317,7 +454,9 @@ export function Configuracoes() {
           titulo="Linguagens"
           descricao="Conjunto fixo de linguagens que aparecem no perfil. Padronizar evita variações como JS, Javascript e javascript, mantendo os dados limpos para análises."
           placeholder="Nome da nova linguagem"
-          confirmarExclusao={(l) => `Excluir a linguagem "${l.name}"? Ela será removida dos perfis que a usam.`}
+          confirmarExclusao={(l) =>
+            `Excluir a linguagem "${l.name}"? Ela será removida dos perfis que a usam.`
+          }
           carregar={listarLinguagens}
           criar={criarLinguagem}
           atualizar={atualizarLinguagem}

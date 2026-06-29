@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { Logo } from '../../components/Logo';
+import { mensagemErro } from '../../utils/erro';
 
 type Status = 'verificando' | 'sucesso' | 'erro';
 
@@ -29,11 +30,10 @@ export function VerifyEmail() {
         const { data } = await api.post('/verify-email', { token });
         setStatus('sucesso');
         setMensagem(data.mensagem ?? 'Email verificado com sucesso.');
-      } catch (err: any) {
+      } catch (e: unknown) {
         setStatus('erro');
         setMensagem(
-          err.response?.data?.erro ??
-            'Não foi possível verificar seu email. O link pode ter expirado.',
+          mensagemErro(e, 'Não foi possível verificar seu email. O link pode ter expirado.'),
         );
       }
     }
@@ -58,7 +58,9 @@ export function VerifyEmail() {
             <div className="verify-icon verify-icon--ok">✓</div>
             <h1 className="verify-title">Email verificado!</h1>
             <p className="verify-text">{mensagem}</p>
-            <Link className="btn btn--accent btn--block" to="/">Ir para o login</Link>
+            <Link className="btn btn--accent btn--block" to="/">
+              Ir para o login
+            </Link>
           </>
         )}
 
@@ -67,7 +69,9 @@ export function VerifyEmail() {
             <div className="verify-icon verify-icon--erro">!</div>
             <h1 className="verify-title">Não foi possível verificar</h1>
             <p className="verify-text">{mensagem}</p>
-            <Link className="btn btn--ghost btn--block" to="/">Voltar ao login</Link>
+            <Link className="btn btn--ghost btn--block" to="/">
+              Voltar ao login
+            </Link>
           </>
         )}
       </div>

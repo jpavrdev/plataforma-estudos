@@ -7,12 +7,12 @@
 
 :root {
   /* Tipografia */
-  --font-ui:   'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-ui: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-code: 'JetBrains Mono', ui-monospace, monospace;
 
   /* Destaque — vale para os dois temas */
-  --accent:      #2D6BF5;
-  --on-accent:   #FFFFFF;
+  --accent: #2d6bf5;
+  --on-accent: #ffffff;
   --accent-soft: color-mix(in srgb, var(--accent) 12%, transparent);
 
   /* Raios */
@@ -23,48 +23,56 @@
   --r-2xl: 18px;
 
   /* Cores de apoio (fixas nos dois temas) */
-  --gold:   #E0A82E;
-  --silver: #A9AEB8;
-  --bronze: #C77B3B;
-  --av-blue:  #5B8DEF;
-  --av-green: #2E9E6B;
-  --av-red:   #D9536B;
+  --gold: #e0a82e;
+  --silver: #a9aeb8;
+  --bronze: #c77b3b;
+  --av-blue: #5b8def;
+  --av-green: #2e9e6b;
+  --av-red: #d9536b;
 }
 
 /* ---------- TEMA CLARO — bege + azul ---------- */
 :root,
-[data-theme="light"] {
-  --bg:            #E9E0CF;
-  --surface:       #FBF8F1;
-  --surface-2:     #F1EADB;
-  --text:          #251F31;
-  --muted:         #776D81;
-  --border:        #E6DDCC;
-  --border-strong: #DBD1BC;
-  --input:         #FFFFFF;
-  --success:       #1C8F5A;
-  --success-soft:  #E5F1EA;
-  --shadow: 0 1px 2px rgba(60,45,25,.05), 0 20px 46px rgba(60,45,25,.08);
+[data-theme='light'] {
+  --bg: #e9e0cf;
+  --surface: #fbf8f1;
+  --surface-2: #f1eadb;
+  --text: #251f31;
+  --muted: #776d81;
+  --border: #e6ddcc;
+  --border-strong: #dbd1bc;
+  --input: #ffffff;
+  --success: #1c8f5a;
+  --success-soft: #e5f1ea;
+  --shadow: 0 1px 2px rgba(60, 45, 25, 0.05), 0 20px 46px rgba(60, 45, 25, 0.08);
 }
 
 /* ---------- TEMA ESCURO — marinho + azul ---------- */
-[data-theme="dark"] {
-  --bg:            #0A0E17;
-  --surface:       #141A26;
-  --surface-2:     #1E2736;
-  --text:          #ECF1FA;
-  --muted:         #93A0B5;
-  --border:        #25303F;
-  --border-strong: #303D50;
-  --input:         #0D1320;
-  --success:       #46D58F;
-  --success-soft:  #15271E;
-  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 20px 46px rgba(0,0,0,.5);
+[data-theme='dark'] {
+  --bg: #0a0e17;
+  --surface: #141a26;
+  --surface-2: #1e2736;
+  --text: #ecf1fa;
+  --muted: #93a0b5;
+  --border: #25303f;
+  --border-strong: #303d50;
+  --input: #0d1320;
+  --success: #46d58f;
+  --success-soft: #15271e;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 20px 46px rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- Reset enxuto ---------- */
-*, *::before, *::after { box-sizing: border-box; }
-html, body, #root { height: 100%; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
 body {
   margin: 0;
   font-family: var(--font-ui);
@@ -73,6 +81,13 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-button { font-family: inherit; }
-input { font-family: inherit; }
-::selection { background: var(--accent); color: #fff; }
+button {
+  font-family: inherit;
+}
+input {
+  font-family: inherit;
+}
+::selection {
+  background: var(--accent);
+  color: #fff;
+}

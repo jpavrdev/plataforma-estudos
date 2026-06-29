@@ -20,19 +20,23 @@ app.use("/me/avatar", express.json({ limit: "6mb" }));
 app.use("/me/cover", express.json({ limit: "6mb" }));
 app.use(express.json());
 app.use(helmet());
-app.use(cors({
-    origin: env.NODE_ENV === "production"
-    ? env.FRONTEND_URL
-    : true,
-    credentials: true,
-}));
+app.use(
+    cors({
+        origin: env.NODE_ENV === "production" ? env.FRONTEND_URL : true,
+        credentials: true,
+    }),
+);
 
 // Imagens enviadas pelos usuarios. Libera o carregamento cross-origin para o
 // front (em dev fica em outra origem que o backend).
-app.use("/uploads", (_req, res, next) => {
-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    next();
-}, express.static(UPLOADS_DIR));
+app.use(
+    "/uploads",
+    (_req, res, next) => {
+        res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+        next();
+    },
+    express.static(UPLOADS_DIR),
+);
 
 app.use(authRoutes);
 app.use(userRoutes);

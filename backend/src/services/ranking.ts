@@ -31,8 +31,15 @@ export async function movimentacaoRanking(
         .where(eq(rankingSnapshots.snapshotDate, hoje))
         .limit(1);
     if (!existe && posicoesHoje.length > 0) {
-        await db.insert(rankingSnapshots)
-            .values(posicoesHoje.map((p) => ({ userId: p.id, position: p.position, snapshotDate: hoje })))
+        await db
+            .insert(rankingSnapshots)
+            .values(
+                posicoesHoje.map((p) => ({
+                    userId: p.id,
+                    position: p.position,
+                    snapshotDate: hoje,
+                })),
+            )
             .onConflictDoNothing();
     }
 
