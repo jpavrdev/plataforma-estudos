@@ -105,7 +105,7 @@ export function Aula() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="streak-pill"><Flame size={16} /> {user.streak}</div>
+          <div className="streak-pill"><Flame size={16} /> {authUser?.streak ?? 0}</div>
           <ThemeToggle inline />
           <UserMenu
             initials={getInitials(displayName)}

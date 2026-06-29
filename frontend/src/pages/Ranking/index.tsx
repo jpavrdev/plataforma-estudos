@@ -87,7 +87,7 @@ export function Ranking() {
           </nav>
           <div className="topbar__spacer" />
           <div className="searchbar"><Search size={16} /><span>Buscar exercício…</span></div>
-          <div className="streak-pill"><Flame size={16} /> {dados.me?.streak ?? 0}</div>
+          <div className="streak-pill"><Flame size={16} /> {authUser?.streak ?? 0}</div>
           <ThemeToggle inline />
           <UserMenu initials={getInitials(displayName)} level={nivel} name={displayName} email={authUser?.email} />
         </header>
