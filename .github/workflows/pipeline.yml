@@ -94,7 +94,7 @@ jobs:
             echo "==> Subindo o banco"
             docker compose -f docker-compose.prod.yml up -d db
             echo "==> Aplicando migrations (antes de subir o app novo)"
-            docker compose -f docker-compose.prod.yml run --rm backend npx drizzle-kit migrate
+            docker compose -f docker-compose.prod.yml run --rm -T backend npx drizzle-kit migrate </dev/null
             echo "==> Subindo backend e proxy (forcando recriacao p/ usar a imagem nova)"
             docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps backend caddy
             echo "==> Limpando imagens antigas"
