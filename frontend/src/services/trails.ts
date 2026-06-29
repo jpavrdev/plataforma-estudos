@@ -387,6 +387,7 @@ export interface RankingRow {
   xp: number;
   level: number;
   streak: number;
+  delta: number;
   you: boolean;
 }
 export interface RankingMe {
@@ -396,6 +397,7 @@ export interface RankingMe {
   totalXp: number;
   level: number;
   streak: number;
+  delta: number;
 }
 export interface RankingResposta {
   me: RankingMe | null;

@@ -140,6 +140,17 @@ export const userAchievements = pgTable("user_achievements", {
     unique().on(table.userId, table.achievementId),
 ]);
 
+// Snapshot diário das posições do ranking (XP total), para calcular a movimentação.
+export const rankingSnapshots = pgTable("ranking_snapshots", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id).notNull(),
+    position: integer("position").notNull(),
+    snapshotDate: date("snapshot_date").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+    unique().on(table.userId, table.snapshotDate),
+]);
+
 export const trailTags = pgTable("trail_tags", {
     id: uuid("id").primaryKey().defaultRandom(),
     trailId: uuid("trail_id").references(() => trails.id).notNull(),

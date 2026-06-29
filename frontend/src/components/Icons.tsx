@@ -221,6 +221,12 @@ export const Lock = ({ size = 14 }: IconProps) => (
   </svg>
 );
 
+export const ChevronUp = ({ size = 13 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="18 15 12 9 6 15" />
+  </svg>
+);
+
 /* Capelo de formatura — símbolo da marca */
 export const GradCap = ({ size = 19 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
