@@ -77,6 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await api.post('/logout');
     } catch {
+      // Mesmo se a chamada falhar, limpamos a sessão local no finally.
     } finally {
       localStorage.clear();
       setUser(null);
