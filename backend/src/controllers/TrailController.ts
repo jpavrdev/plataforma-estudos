@@ -46,6 +46,16 @@ import {
     atualizarLinguagem,
     excluirLinguagem,
 } from "../services/language.service.ts";
+import { calcularEstatisticas } from "../services/stats.service.ts";
+import {
+    listarConquistas,
+    criarConquista,
+    atualizarConquista,
+    excluirConquista,
+    verificarConquistas,
+    conquistasDoUsuario,
+    feedComunidade,
+} from "../services/achievement.service.ts";
 
 const QUIZ_MIN_ACERTOS = 4;
 
@@ -154,8 +164,7 @@ export const deleteLanguage = async (req: Request, res: Response, next: NextFunc
 // ===================== CONQUISTAS (catálogo, admin) =====================
 export const listAchievements = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        const lista = await db.select().from(achievements).orderBy(asc(achievements.threshold));
-        res.json(lista);
+        res.json(await listarConquistas());
     } catch (err) {
         next(err);
     }
@@ -164,15 +173,7 @@ export const listAchievements = async (_req: Request, res: Response, next: NextF
 export const createAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const dados = createAchievementSchema.parse(req.body);
-        const [existe] = await db
-            .select({ id: achievements.id })
-            .from(achievements)
-            .where(eq(achievements.name, dados.name));
-        if (existe) {
-            return res.status(409).json({ erro: "Já existe uma conquista com esse nome" });
-        }
-        const [a] = await db.insert(achievements).values(dados).returning();
-        res.status(201).json(a);
+        res.status(201).json(await criarConquista(dados));
     } catch (err) {
         next(err);
     }
@@ -182,22 +183,7 @@ export const updateAchievement = async (req: Request, res: Response, next: NextF
     try {
         const id = String(req.params.id);
         const dados = updateAchievementSchema.parse(req.body);
-        const [conflito] = await db
-            .select({ id: achievements.id })
-            .from(achievements)
-            .where(eq(achievements.name, dados.name));
-        if (conflito && conflito.id !== id) {
-            return res.status(409).json({ erro: "Já existe uma conquista com esse nome" });
-        }
-        const [a] = await db
-            .update(achievements)
-            .set(dados)
-            .where(eq(achievements.id, id))
-            .returning();
-        if (!a) {
-            return res.status(404).json({ erro: "Conquista não encontrada" });
-        }
-        res.json(a);
+        res.json(await atualizarConquista(id, dados));
     } catch (err) {
         next(err);
     }
@@ -205,11 +191,7 @@ export const updateAchievement = async (req: Request, res: Response, next: NextF
 
 export const deleteAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = String(req.params.id);
-        await db.transaction(async (tx) => {
-            await tx.delete(userAchievements).where(eq(userAchievements.achievementId, id));
-            await tx.delete(achievements).where(eq(achievements.id, id));
-        });
+        await excluirConquista(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -795,42 +777,6 @@ export const submitQuiz = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-// Estatísticas base do usuário: XP (50 por aula + 10 por acerto), aulas e acertos.
-async function calcularEstatisticas(userId: string) {
-    const [aulas] = await db
-        .select({ n: count() })
-        .from(lessonProgress)
-        .where(eq(lessonProgress.userId, userId));
-    const [acertos] = await db
-        .select({ n: count() })
-        .from(questionAnswers)
-        .where(and(eq(questionAnswers.userId, userId), eq(questionAnswers.isCorrect, true)));
-    const lessonsCompleted = Number(aulas?.n ?? 0);
-    const questionsCorrect = Number(acertos?.n ?? 0);
-    return {
-        xp: lessonsCompleted * 50 + questionsCorrect * 10,
-        lessonsCompleted,
-        questionsCorrect,
-    };
-}
-
-// Desbloqueia (idempotente) as conquistas cujo critério o usuário já atingiu.
-async function verificarConquistas(userId: string) {
-    const stats = await calcularEstatisticas(userId);
-    const valor: Record<string, number> = {
-        xp_total: stats.xp,
-        lessons_completed: stats.lessonsCompleted,
-        questions_correct: stats.questionsCorrect,
-    };
-    const catalogo = await db.select().from(achievements);
-    const merecidas = catalogo.filter((a) => (valor[a.criteriaType] ?? 0) >= a.threshold);
-    if (merecidas.length === 0) return;
-    await db
-        .insert(userAchievements)
-        .values(merecidas.map((a) => ({ userId, achievementId: a.id })))
-        .onConflictDoNothing();
-}
-
 // XP total do usuário: 50 por aula concluída + 10 por questão acertada (primeira vez).
 export const getMyXp = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -843,21 +789,7 @@ export const getMyXp = async (req: Request, res: Response, next: NextFunction) =
 // Catálogo de conquistas com a marcação do que o usuário já desbloqueou.
 export const getMyAchievements = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = req.userId!;
-        await verificarConquistas(userId);
-        const catalogo = await db.select().from(achievements).orderBy(asc(achievements.threshold));
-        const ganhas = await db
-            .select()
-            .from(userAchievements)
-            .where(eq(userAchievements.userId, userId));
-        const quando = new Map(ganhas.map((g) => [g.achievementId, g.earnedAt]));
-        res.json(
-            catalogo.map((a) => ({
-                ...a,
-                earned: quando.has(a.id),
-                earnedAt: quando.get(a.id) ?? null,
-            })),
-        );
+        res.json(await conquistasDoUsuario(req.userId!));
     } catch (err) {
         next(err);
     }
@@ -914,19 +846,7 @@ export const getCommunityAchievements = async (
     next: NextFunction,
 ) => {
     try {
-        const lista = await db
-            .select({
-                name: users.name,
-                achievement: achievements.name,
-                icon: achievements.icon,
-                at: userAchievements.earnedAt,
-            })
-            .from(userAchievements)
-            .innerJoin(users, eq(users.id, userAchievements.userId))
-            .innerJoin(achievements, eq(achievements.id, userAchievements.achievementId))
-            .orderBy(desc(userAchievements.earnedAt))
-            .limit(10);
-        res.json(lista);
+        res.json(await feedComunidade());
     } catch (err) {
         next(err);
     }
