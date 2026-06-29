@@ -67,7 +67,7 @@ export function Estudio() {
     const o = await obterEstudio(trailId!);
     setOutline(o);
     const ids = o.modules.flatMap((m) => m.lessons).map((l) => l.id);
-    let alvo: string | null = null;
+    let alvo: string | null;
     if (prefer && ids.includes(prefer)) alvo = prefer;
     else if (prefer !== null && selIdRef.current && ids.includes(selIdRef.current))
       alvo = selIdRef.current;

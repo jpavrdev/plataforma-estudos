@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useRequisicao } from '../../hooks/useRequisicao';
 import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
@@ -62,26 +63,8 @@ function Delta({ delta }: { delta: number }) {
 export function Ranking() {
   const { user: authUser } = useAuth();
   const [period, setPeriod] = useState<RankingPeriodo>('all');
-  const [dados, setDados] = useState<RankingResposta>({ me: null, rows: [] });
-  const [carregando, setCarregando] = useState(true);
-
-  useEffect(() => {
-    let ativo = true;
-    setCarregando(true);
-    obterRanking(period)
-      .then((r) => {
-        if (ativo) setDados(r);
-      })
-      .catch(() => {
-        if (ativo) setDados({ me: null, rows: [] });
-      })
-      .finally(() => {
-        if (ativo) setCarregando(false);
-      });
-    return () => {
-      ativo = false;
-    };
-  }, [period]);
+  const { dados: resp, carregando } = useRequisicao(() => obterRanking(period), [period]);
+  const dados: RankingResposta = resp ?? { me: null, rows: [] };
 
   const displayName = authUser?.name ?? homeUser.name;
   const totalXp = dados.me?.totalXp ?? 0;

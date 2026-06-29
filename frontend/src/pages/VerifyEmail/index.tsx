@@ -8,22 +8,15 @@ type Status = 'verificando' | 'sucesso' | 'erro';
 
 export function VerifyEmail() {
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState<Status>('verificando');
-  const [mensagem, setMensagem] = useState('');
+  const token = searchParams.get('token');
+  const [status, setStatus] = useState<Status>(token ? 'verificando' : 'erro');
+  const [mensagem, setMensagem] = useState(token ? '' : 'Link inválido: token não encontrado.');
   const jaRodou = useRef(false);
 
   useEffect(() => {
-    // Evita chamada dupla no StrictMode (dev)
-    if (jaRodou.current) return;
+    // Evita chamada dupla no StrictMode (dev). Sem token, o estado inicial já é erro.
+    if (!token || jaRodou.current) return;
     jaRodou.current = true;
-
-    const token = searchParams.get('token');
-
-    if (!token) {
-      setStatus('erro');
-      setMensagem('Link inválido: token não encontrado.');
-      return;
-    }
 
     async function verificar() {
       try {
@@ -39,7 +32,7 @@ export function VerifyEmail() {
     }
 
     verificar();
-  }, [searchParams]);
+  }, [token]);
 
   return (
     <div className="verify-shell">
