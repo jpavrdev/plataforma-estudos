@@ -58,7 +58,9 @@ export function VerifyEmail() {
             <div className="verify-icon verify-icon--ok">✓</div>
             <h1 className="verify-title">Email verificado!</h1>
             <p className="verify-text">{mensagem}</p>
-            <Link className="btn btn--accent btn--block" to="/">Ir para o login</Link>
+            <Link className="btn btn--accent btn--block" to="/">
+              Ir para o login
+            </Link>
           </>
         )}
 
@@ -67,7 +69,9 @@ export function VerifyEmail() {
             <div className="verify-icon verify-icon--erro">!</div>
             <h1 className="verify-title">Não foi possível verificar</h1>
             <p className="verify-text">{mensagem}</p>
-            <Link className="btn btn--ghost btn--block" to="/">Voltar ao login</Link>
+            <Link className="btn btn--ghost btn--block" to="/">
+              Voltar ao login
+            </Link>
           </>
         )}
       </div>

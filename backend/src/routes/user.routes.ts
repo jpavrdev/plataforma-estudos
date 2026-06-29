@@ -1,6 +1,12 @@
 import { Router } from "express";
 import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
-import { getMe, updateMe, uploadAvatar, uploadCover, listUsers } from "../controllers/UserController.ts";
+import {
+    getMe,
+    updateMe,
+    uploadAvatar,
+    uploadCover,
+    listUsers,
+} from "../controllers/UserController.ts";
 const router = Router();
 
 router.get("/me", autenticar, getMe);

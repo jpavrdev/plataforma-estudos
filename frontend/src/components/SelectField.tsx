@@ -25,12 +25,7 @@ export function SelectField({
   return (
     <label className="field">
       <span className="field__label">{label}</span>
-      <select
-        className="input"
-        value={value}
-        onChange={onChange}
-        required={required}
-      >
+      <select className="input" value={value} onChange={onChange} required={required}>
         {placeholder && (
           <option value="" disabled>
             {placeholder}

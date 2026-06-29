@@ -8,12 +8,18 @@ import { Avatar } from '../../components/Avatar';
 import { Flame, Search, Bookmark, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
+import { user, dailyChallenge, MEDALS } from '../../data/home';
 import {
-  user,
-  dailyChallenge,
-  MEDALS,
-} from '../../data/home';
-import { listarTrilhas, listarMinhasTrilhas, obterTrilha, obterFeedConquistas, obterRanking, obterStreak, type FeedConquista, type RankingRow, type StreakInfo } from '../../services/trails';
+  listarTrilhas,
+  listarMinhasTrilhas,
+  obterTrilha,
+  obterFeedConquistas,
+  obterRanking,
+  obterStreak,
+  type FeedConquista,
+  type RankingRow,
+  type StreakInfo,
+} from '../../services/trails';
 import type { Trail } from '../../data/trails';
 
 const NAV = [
@@ -67,13 +73,21 @@ export function Home() {
       }
     }
     carregar();
-    return () => { ativo = false; };
+    return () => {
+      ativo = false;
+    };
   }, []);
 
   useEffect(() => {
-    obterFeedConquistas().then(setFeedComunidade).catch(() => {});
-    obterRanking().then((r) => setRankingGlobal(r.rows)).catch(() => {});
-    obterStreak().then(setStreakInfo).catch(() => {});
+    obterFeedConquistas()
+      .then(setFeedComunidade)
+      .catch(() => {});
+    obterRanking()
+      .then((r) => setRankingGlobal(r.rows))
+      .catch(() => {});
+    obterStreak()
+      .then(setStreakInfo)
+      .catch(() => {});
   }, []);
 
   // Abre a trilha na primeira aula disponivel (a atual, ou a primeira).
@@ -81,7 +95,8 @@ export function Home() {
     try {
       const detalhe = await obterTrilha(trailId);
       const aulas = detalhe.modules.flatMap((m) => m.lessons);
-      const alvo = aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
+      const alvo =
+        aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');
       navigate(alvo ? `/trilhas/${trailId}/aula/${alvo.id}` : '/trilhas');
     } catch {
       navigate('/trilhas');
@@ -141,13 +156,17 @@ export function Home() {
                     <span className="tag tag--id">{dailyChallenge.id}</span>
                     <span className="tag tag--success">{dailyChallenge.difficulty}</span>
                     <span className="tag tag--accent">+{dailyChallenge.xp} XP</span>
-                    <span className="challenge__bookmark"><Bookmark size={19} /></span>
+                    <span className="challenge__bookmark">
+                      <Bookmark size={19} />
+                    </span>
                   </div>
                   <h3 className="challenge__title">{dailyChallenge.title}</h3>
                   <p className="challenge__desc">{dailyChallenge.description}</p>
                   <div className="challenge__tags">
                     {dailyChallenge.tags.map((t) => (
-                      <span key={t} className="chip chip--outline">{t}</span>
+                      <span key={t} className="chip chip--outline">
+                        {t}
+                      </span>
                     ))}
                   </div>
                   <hr className="rule" />
@@ -156,7 +175,9 @@ export function Home() {
                     <Stat value={dailyChallenge.solvedToday} label="resolveram hoje" />
                     <Stat value={dailyChallenge.avgTime} label="tempo médio" />
                     <div className="topbar__spacer" />
-                    <button className="btn btn--accent"><Play size={13} /> Resolver agora</button>
+                    <button className="btn btn--accent">
+                      <Play size={13} /> Resolver agora
+                    </button>
                   </div>
                 </div>
                 <aside className="challenge__code">
@@ -165,10 +186,19 @@ export function Home() {
                     <i style={{ background: '#E0A82E' }} />
                     <i style={{ background: '#3DAE6B' }} />
                   </div>
-                  <div><span className="tok-accent">function</span> dois(nums, alvo) {'{'}</div>
-                  <div className="code-window__indent"><span className="tok-accent">const</span> mapa = {'{}'};</div>
-                  <div className="code-window__indent"><span className="tok-accent">for</span> (i <span className="tok-accent">in</span> nums) {'{'}</div>
-                  <div className="code-window__comment" style={{ paddingLeft: 28 }}>// seu código aqui</div>
+                  <div>
+                    <span className="tok-accent">function</span> dois(nums, alvo) {'{'}
+                  </div>
+                  <div className="code-window__indent">
+                    <span className="tok-accent">const</span> mapa = {'{}'};
+                  </div>
+                  <div className="code-window__indent">
+                    <span className="tok-accent">for</span> (i{' '}
+                    <span className="tok-accent">in</span> nums) {'{'}
+                  </div>
+                  <div className="code-window__comment" style={{ paddingLeft: 28 }}>
+                    // seu código aqui
+                  </div>
                   <div className="code-window__indent">{'}'}</div>
                   <div>{'}'}</div>
                 </aside>
@@ -178,8 +208,12 @@ export function Home() {
             {/* Trilhas */}
             <section>
               <div className="section-head">
-                <h2 className="section-title">{mostrandoEmAndamento ? 'Continue suas trilhas' : 'Trilhas disponíveis'}</h2>
-                <Link className="link" to="/trilhas">Ver todas</Link>
+                <h2 className="section-title">
+                  {mostrandoEmAndamento ? 'Continue suas trilhas' : 'Trilhas disponíveis'}
+                </h2>
+                <Link className="link" to="/trilhas">
+                  Ver todas
+                </Link>
               </div>
               {carregando ? (
                 <p className="track__desc">Carregando trilhas...</p>
@@ -197,7 +231,9 @@ export function Home() {
                         tabIndex={0}
                         style={{ cursor: 'pointer' }}
                         onClick={() => abrirTrilha(t.id)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') abrirTrilha(t.id); }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') abrirTrilha(t.id);
+                        }}
                       >
                         <div className="trilha__head">
                           <span
@@ -212,7 +248,9 @@ export function Home() {
                           <div className="trilha__meta">
                             <div className="trilha__name">{t.name}</div>
                             <div className="trilha__sub">
-                              {t.done > 0 ? `${t.done} de ${t.lessons} aulas` : `${t.lessons} aulas · ${t.level}`}
+                              {t.done > 0
+                                ? `${t.done} de ${t.lessons} aulas`
+                                : `${t.lessons} aulas · ${t.level}`}
                             </div>
                           </div>
                         </div>
@@ -235,7 +273,9 @@ export function Home() {
             {/* Streak */}
             <div className="card">
               <div className="streak">
-                <span className="streak__icon"><Flame size={24} /></span>
+                <span className="streak__icon">
+                  <Flame size={24} />
+                </span>
                 <div>
                   <div className="streak__count">{streakInfo.streak} dias</div>
                   <div className="streak__label">de streak seguido</div>
@@ -260,26 +300,35 @@ export function Home() {
             <div className="card">
               <div className="card__head">
                 <h3 className="card__title">Ranking global</h3>
-                <Link className="link" to="/ranking">Ver tudo</Link>
+                <Link className="link" to="/ranking">
+                  Ver tudo
+                </Link>
               </div>
               {rankingGlobal.length === 0 ? (
                 <p className="track__desc">Ranking ainda vazio.</p>
-              ) : rankingGlobal.slice(0, 5).map((p) => (
-                <div key={p.position} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
-                  <span className="rank-row__pos" style={{ color: MEDALS[p.position] || 'var(--muted)' }}>
-                    {p.position}
-                  </span>
-                  <Avatar
-                    initials={getInitials(p.name)}
-                    background={p.you ? 'var(--accent)' : CORES_FEED[p.position % CORES_FEED.length]}
-                    color={!p.you && p.position === 1 ? '#3a2a00' : '#fff'}
-                  />
-                  <span className={`rank-row__name${p.you ? ' rank-row__name--you' : ''}`}>
-                    {p.name}
-                  </span>
-                  <span className="rank-row__pts">{p.xp}</span>
-                </div>
-              ))}
+              ) : (
+                rankingGlobal.slice(0, 5).map((p) => (
+                  <div key={p.position} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
+                    <span
+                      className="rank-row__pos"
+                      style={{ color: MEDALS[p.position] || 'var(--muted)' }}
+                    >
+                      {p.position}
+                    </span>
+                    <Avatar
+                      initials={getInitials(p.name)}
+                      background={
+                        p.you ? 'var(--accent)' : CORES_FEED[p.position % CORES_FEED.length]
+                      }
+                      color={!p.you && p.position === 1 ? '#3a2a00' : '#fff'}
+                    />
+                    <span className={`rank-row__name${p.you ? ' rank-row__name--you' : ''}`}>
+                      {p.name}
+                    </span>
+                    <span className="rank-row__pts">{p.xp}</span>
+                  </div>
+                ))
+              )}
             </div>
 
             {/* Comunidade */}
@@ -291,7 +340,10 @@ export function Home() {
                 <div className="feed">
                   {feedComunidade.map((f, i) => (
                     <div key={i} className="feed__item">
-                      <Avatar initials={getInitials(f.name)} background={CORES_FEED[i % CORES_FEED.length]} />
+                      <Avatar
+                        initials={getInitials(f.name)}
+                        background={CORES_FEED[i % CORES_FEED.length]}
+                      />
                       <p className="feed__text">
                         <b>{f.name}</b>{' '}
                         <span className="feed__muted">desbloqueou {f.achievement}</span>{' '}

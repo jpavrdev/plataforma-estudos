@@ -40,22 +40,34 @@ export function Login() {
           <span className="auth__headline-main">Resolva um desafio</span>
         </h1>
         <p className="auth__lede">
-          Aprenda programação na prática com problemas diários, streaks e um
-          ranking que mantém você no ritmo.
+          Aprenda programação na prática com problemas diários, streaks e um ranking que mantém você
+          no ritmo.
         </p>
 
         <div className="code-window">
-          <div className="code-window__dots"><i /><i /><i /></div>
-          <div><span className="tok">function</span> <span className="tok-fn">soma</span>(a, b) {'{'}</div>
-          <div className="code-window__indent"><span className="tok">return</span> a + b;</div>
+          <div className="code-window__dots">
+            <i />
+            <i />
+            <i />
+          </div>
+          <div>
+            <span className="tok">function</span> <span className="tok-fn">soma</span>(a, b) {'{'}
+          </div>
+          <div className="code-window__indent">
+            <span className="tok">return</span> a + b;
+          </div>
           <div>{'}'}</div>
           <div className="code-window__comment">// +50 XP · streak 12</div>
         </div>
       </div>
 
       <div className="auth__chips">
-        <span className="chip"><Flame size={14} /> 12 dias</span>
-        <span className="chip"><Trophy size={13} /> Top 4</span>
+        <span className="chip">
+          <Flame size={14} /> 12 dias
+        </span>
+        <span className="chip">
+          <Trophy size={13} /> Top 4
+        </span>
       </div>
     </AuthBrand>
   );
@@ -74,7 +86,9 @@ export function Login() {
         </button>
       </div>
 
-      <div className="divider"><span>ou com e-mail</span></div>
+      <div className="divider">
+        <span>ou com e-mail</span>
+      </div>
 
       {error && <div className="auth__alert">{error}</div>}
 
@@ -97,7 +111,9 @@ export function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
           labelAddon={
-            <Link className="link" to="/recuperar-senha">Esqueceu a senha?</Link>
+            <Link className="link" to="/recuperar-senha">
+              Esqueceu a senha?
+            </Link>
           }
         />
         <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
@@ -106,7 +122,10 @@ export function Login() {
       </form>
 
       <p className="auth__foot">
-        Não tem conta? <Link className="link" to="/cadastro">Criar conta grátis</Link>
+        Não tem conta?{' '}
+        <Link className="link" to="/cadastro">
+          Criar conta grátis
+        </Link>
       </p>
     </AuthShell>
   );

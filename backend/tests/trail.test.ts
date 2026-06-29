@@ -28,7 +28,10 @@ async function ajustarUsuario(email: string, campos: Record<string, unknown>) {
 async function criarUsuarioLogado(admin = false) {
     const dados = novoUsuario();
     await server.request("POST", "/register", { body: dados });
-    await ajustarUsuario(dados.email, { emailVerifiedAt: new Date(), ...(admin ? { role: "admin" } : {}) });
+    await ajustarUsuario(dados.email, {
+        emailVerifiedAt: new Date(),
+        ...(admin ? { role: "admin" } : {}),
+    });
     const login = await server.request("POST", "/login", {
         body: { email: dados.email, password: dados.password },
     });
@@ -62,19 +65,24 @@ async function patch(path: string, token: string, body?: unknown) {
 // Monta uma trilha completa: 1 modulo, N aulas, cada aula com 5 questoes (opcao B correta).
 async function montarTrilha(adminToken: string, qtdAulas = 2) {
     const trilha = await post("/trails", adminToken, {
-        name: "Logica", level: "iniciante", description: "Base da programacao logica.",
+        name: "Logica",
+        level: "iniciante",
+        description: "Base da programacao logica.",
     });
     const modulo = await post(`/trails/${trilha.body.id}/modules`, adminToken, {
-        title: "Modulo 1", position: 1,
+        title: "Modulo 1",
+        position: 1,
     });
     const lessons: string[] = [];
     for (let i = 1; i <= qtdAulas; i++) {
         const aula = await post(`/modules/${modulo.body.id}/lessons`, adminToken, {
-            title: `Aula ${i}`, position: i,
+            title: `Aula ${i}`,
+            position: i,
         });
         for (let q = 1; q <= 5; q++) {
             await post(`/lessons/${aula.body.id}/questions`, adminToken, {
-                statement: `Questao numero ${q}`, position: q,
+                statement: `Questao numero ${q}`,
+                position: q,
                 options: [
                     { text: "errada", isCorrect: false },
                     { text: "certa", isCorrect: true },
@@ -99,21 +107,31 @@ async function responderQuiz(token: string, lessonId: string, acertos: number) {
     return post(`/lessons/${lessonId}/quiz`, token, { answers });
 }
 
-before(async () => { server = await startTestServer(); });
-after(async () => { await server.close(); });
-beforeEach(async () => { await limparBanco(); });
+before(async () => {
+    server = await startTestServer();
+});
+after(async () => {
+    await server.close();
+});
+beforeEach(async () => {
+    await limparBanco();
+});
 
 describe("Catalogo (admin)", () => {
     test("admin cria trilha; comum recebe 403", async () => {
         const admin = await criarUsuarioLogado(true);
         const ok = await post("/trails", admin.token, {
-            name: "Trilha", level: "iniciante", description: "Descricao com dez caracteres.",
+            name: "Trilha",
+            level: "iniciante",
+            description: "Descricao com dez caracteres.",
         });
         assert.equal(ok.status, 201);
 
         const comum = await criarUsuarioLogado();
         const negado = await post("/trails", comum.token, {
-            name: "Trilha", level: "iniciante", description: "Descricao com dez caracteres.",
+            name: "Trilha",
+            level: "iniciante",
+            description: "Descricao com dez caracteres.",
         });
         assert.equal(negado.status, 403);
     });
@@ -121,19 +139,35 @@ describe("Catalogo (admin)", () => {
     test("rejeita nivel invalido (400)", async () => {
         const admin = await criarUsuarioLogado(true);
         const res = await post("/trails", admin.token, {
-            name: "Trilha", level: "expert", description: "Descricao com dez caracteres.",
+            name: "Trilha",
+            level: "expert",
+            description: "Descricao com dez caracteres.",
         });
         assert.equal(res.status, 400);
     });
 
     test("rejeita questao sem exatamente uma correta (400)", async () => {
         const admin = await criarUsuarioLogado(true);
-        const t = await post("/trails", admin.token, { name: "Trilha", level: "iniciante", description: "Descricao longa o suficiente." });
-        const m = await post(`/trails/${t.body.id}/modules`, admin.token, { title: "Modulo", position: 1 });
-        const a = await post(`/modules/${m.body.id}/lessons`, admin.token, { title: "Aula", position: 1 });
+        const t = await post("/trails", admin.token, {
+            name: "Trilha",
+            level: "iniciante",
+            description: "Descricao longa o suficiente.",
+        });
+        const m = await post(`/trails/${t.body.id}/modules`, admin.token, {
+            title: "Modulo",
+            position: 1,
+        });
+        const a = await post(`/modules/${m.body.id}/lessons`, admin.token, {
+            title: "Aula",
+            position: 1,
+        });
         const res = await post(`/lessons/${a.body.id}/questions`, admin.token, {
-            statement: "Pergunta valida", position: 1,
-            options: [{ text: "a", isCorrect: true }, { text: "b", isCorrect: true }],
+            statement: "Pergunta valida",
+            position: 1,
+            options: [
+                { text: "a", isCorrect: true },
+                { text: "b", isCorrect: true },
+            ],
         });
         assert.equal(res.status, 400);
     });
@@ -147,8 +181,8 @@ describe("GET /lessons/:id (seguranca)", () => {
 
         const res = await get(`/lessons/${lessonIds[0]}`, aluno.token);
         assert.equal(res.status, 200);
-        const temGabarito = res.body.questions.some(
-            (q: any) => q.options.some((o: any) => "isCorrect" in o),
+        const temGabarito = res.body.questions.some((q: any) =>
+            q.options.some((o: any) => "isCorrect" in o),
         );
         assert.equal(temGabarito, false);
     });
@@ -192,9 +226,19 @@ describe("Quiz e bloqueio sequencial", () => {
 
     test("aula nao publicada fica invisivel para o aluno", async () => {
         const admin = await criarUsuarioLogado(true);
-        const t = await post("/trails", admin.token, { name: "Trilha", level: "iniciante", description: "Descricao longa o suficiente." });
-        const m = await post(`/trails/${t.body.id}/modules`, admin.token, { title: "Modulo", position: 1 });
-        const a = await post(`/modules/${m.body.id}/lessons`, admin.token, { title: "Aula oculta", position: 1 });
+        const t = await post("/trails", admin.token, {
+            name: "Trilha",
+            level: "iniciante",
+            description: "Descricao longa o suficiente.",
+        });
+        const m = await post(`/trails/${t.body.id}/modules`, admin.token, {
+            title: "Modulo",
+            position: 1,
+        });
+        const a = await post(`/modules/${m.body.id}/lessons`, admin.token, {
+            title: "Aula oculta",
+            position: 1,
+        });
         // aula criada sem publicar (default false)
 
         const aluno = await criarUsuarioLogado();
@@ -225,7 +269,9 @@ describe("Quiz e bloqueio sequencial", () => {
 
         const alunoB = await criarUsuarioLogado();
         const trilhaB = await get(`/trails/${trailId}`, alunoB.token);
-        const estadosB = trilhaB.body.modules.flatMap((m: any) => m.lessons.map((l: any) => l.state));
+        const estadosB = trilhaB.body.modules.flatMap((m: any) =>
+            m.lessons.map((l: any) => l.state),
+        );
         // Para B nada foi concluido: primeira current, resto locked
         assert.deepEqual(estadosB, ["current", "locked"]);
     });

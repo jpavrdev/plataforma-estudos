@@ -32,8 +32,16 @@ const NAV = [
 const md: Components = {
   h1: ({ children }) => <h2 className="lesson__h2">{children}</h2>,
   h2: ({ children }) => <h2 className="lesson__h2">{children}</h2>,
-  h3: ({ children }) => <h3 className="lesson__h2" style={{ fontSize: 18 }}>{children}</h3>,
-  h4: ({ children }) => <h4 className="lesson__h2" style={{ fontSize: 16 }}>{children}</h4>,
+  h3: ({ children }) => (
+    <h3 className="lesson__h2" style={{ fontSize: 18 }}>
+      {children}
+    </h3>
+  ),
+  h4: ({ children }) => (
+    <h4 className="lesson__h2" style={{ fontSize: 16 }}>
+      {children}
+    </h4>
+  ),
   p: ({ children }) => <p className="lesson__p">{children}</p>,
   ul: ({ children }) => <ul className="lesson__ul">{children}</ul>,
   ol: ({ children }) => <ol className="lesson__ul">{children}</ol>,
@@ -67,10 +75,7 @@ export function Aula() {
       setCarregando(true);
       setErro('');
       try {
-        const [t, a] = await Promise.all([
-          obterTrilha(trailId!),
-          obterAula(lessonId!),
-        ]);
+        const [t, a] = await Promise.all([obterTrilha(trailId!), obterAula(lessonId!)]);
         if (!ativo) return;
         setTrilha(t);
         setAula(a);
@@ -86,7 +91,9 @@ export function Aula() {
       }
     }
     carregar();
-    return () => { ativo = false; };
+    return () => {
+      ativo = false;
+    };
   }, [trailId, lessonId]);
 
   return (
@@ -106,7 +113,9 @@ export function Aula() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="streak-pill"><Flame size={16} /> {authUser?.streak ?? 0}</div>
+          <div className="streak-pill">
+            <Flame size={16} /> {authUser?.streak ?? 0}
+          </div>
           <ThemeToggle inline />
           <UserMenu
             initials={getInitials(displayName)}
@@ -120,18 +129,16 @@ export function Aula() {
         {erro && !carregando && (
           <div className="lesson__erro">
             <p>{erro}</p>
-            <Link className="btn btn--accent" to="/trilhas">Voltar para as trilhas</Link>
+            <Link className="btn btn--accent" to="/trilhas">
+              Voltar para as trilhas
+            </Link>
           </div>
         )}
 
         {!carregando && !erro && trilha && aula && (
           <div className="lesson">
             <SidebarTrilha trilha={trilha} aulaAtualId={aula.id} />
-            <ConteudoAula
-              trilha={trilha}
-              aula={aula}
-              onConcluir={() => navigate('/trilhas')}
-            />
+            <ConteudoAula trilha={trilha} aula={aula} onConcluir={() => navigate('/trilhas')} />
           </div>
         )}
       </div>
@@ -151,10 +158,14 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
         <span className="lesson__track-icon">{'{}'}</span>
         <div className="lesson__track-meta">
           <div className="lesson__track-name">{trilha.name}</div>
-          <div className="lesson__track-sub">{feitas} de {total} aulas · {pct}%</div>
+          <div className="lesson__track-sub">
+            {feitas} de {total} aulas · {pct}%
+          </div>
         </div>
       </div>
-      <div className="lesson__track-bar"><span style={{ width: `${pct}%` }} /></div>
+      <div className="lesson__track-bar">
+        <span style={{ width: `${pct}%` }} />
+      </div>
 
       {trilha.modules.map((m) => (
         <div key={m.id} className="lesson__module">
@@ -167,7 +178,9 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
                 to={`/trilhas/${trilha.id}/aula/${l.id}`}
                 className={`lesson__item lesson__item--${estado}${l.state === 'locked' ? ' lesson__item--disabled' : ''}`}
               >
-                <span className="lesson__bullet">{l.state === 'done' ? <Check size={11} /> : null}</span>
+                <span className="lesson__bullet">
+                  {l.state === 'done' ? <Check size={11} /> : null}
+                </span>
                 <span className="lesson__item-name">{l.title}</span>
               </Link>
             );
@@ -179,8 +192,14 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
 }
 
 function ConteudoAula({
-  trilha, aula, onConcluir,
-}: { trilha: TrailDetail; aula: LessonDetail; onConcluir: () => void }) {
+  trilha,
+  aula,
+  onConcluir,
+}: {
+  trilha: TrailDetail;
+  aula: LessonDetail;
+  onConcluir: () => void;
+}) {
   return (
     <main className="lesson__content">
       <div className="lesson__crumb">
@@ -238,7 +257,12 @@ function BlocosAula({ blocks }: { blocks: Bloco[] }) {
         if (b.type === 'video') {
           return b.value ? (
             <div key={i} className="lesson__video">
-              <iframe src={embedVideo(b.value)} title="Vídeo" allowFullScreen style={{ border: 0 }} />
+              <iframe
+                src={embedVideo(b.value)}
+                title="Vídeo"
+                allowFullScreen
+                style={{ border: 0 }}
+              />
             </div>
           ) : null;
         }
@@ -309,7 +333,10 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
     setEnviando(true);
     setErro('');
     try {
-      const answers = aula.questions.map((qq) => ({ questionId: qq.id, optionId: respostas[qq.id] }));
+      const answers = aula.questions.map((qq) => ({
+        questionId: qq.id,
+        optionId: respostas[qq.id],
+      }));
       setResultado(await enviarQuiz(aula.id, answers));
     } catch {
       setErro('Não foi possível enviar o quiz. Tente novamente.');
@@ -357,22 +384,31 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
           >
             {resultado.passed ? <Check size={34} /> : <Alert size={34} />}
           </span>
-          <div className="quiz__result-title">{resultado.passed ? 'Aula concluída!' : 'Quase lá!'}</div>
+          <div className="quiz__result-title">
+            {resultado.passed ? 'Aula concluída!' : 'Quase lá!'}
+          </div>
           <div className="quiz__result-text">
             {resultado.passed
               ? 'Você dominou o conteúdo e desbloqueou a próxima aula.'
               : 'Você precisa acertar pelo menos 4 questões. Revise o conteúdo e tente de novo.'}
           </div>
           <div className="quiz__score">
-            <span className="quiz__score-n" style={{ color: resultado.passed ? 'var(--success)' : 'var(--av-red)' }}>
+            <span
+              className="quiz__score-n"
+              style={{ color: resultado.passed ? 'var(--success)' : 'var(--av-red)' }}
+            >
               {resultado.correct}
             </span>
             <span className="quiz__score-t">/ {resultado.total}</span>
           </div>
           <div className="quiz__result-actions">
-            <button className="btn btn--ghost" onClick={refazer}>Refazer quiz</button>
+            <button className="btn btn--ghost" onClick={refazer}>
+              Refazer quiz
+            </button>
             {resultado.passed && (
-              <button className="btn btn--accent" onClick={onConcluir}>Voltar para a trilha</button>
+              <button className="btn btn--accent" onClick={onConcluir}>
+                Voltar para a trilha
+              </button>
             )}
           </div>
         </div>
@@ -383,12 +419,16 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
   return (
     <div className="quiz">
       <div className="quiz__head">
-        <span className="quiz__icon"><Help size={22} /></span>
+        <span className="quiz__icon">
+          <Help size={22} />
+        </span>
         <div className="quiz__head-meta">
           <div className="quiz__title">Pratique o que aprendeu</div>
           <div className="quiz__sub">{total} questões · acerte ao menos 4 para concluir a aula</div>
         </div>
-        <span className="quiz__counter">{qIndex + 1} / {total}</span>
+        <span className="quiz__counter">
+          {qIndex + 1} / {total}
+        </span>
       </div>
 
       <div className="quiz__dots">

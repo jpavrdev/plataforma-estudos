@@ -22,8 +22,8 @@ const LEVEL_LABEL: Record<TrailApi['trailLevel'], TrailLevel> = {
 // Cor de destaque do card derivada do nível (o banco nao guarda cor).
 const LEVEL_HUE: Record<TrailLevel, string> = {
   Iniciante: '#2D6BF5',
-  'Intermediário': '#2E9E6B',
-  'Avançado': '#D9536B',
+  Intermediário: '#2E9E6B',
+  Avançado: '#D9536B',
 };
 
 function glyphDoNome(name: string): string {
@@ -142,11 +142,7 @@ export interface CheckResult {
 
 // Verifica uma unica resposta (feedback imediato do quiz em carrossel). O gabarito
 // das outras questoes nao e exposto: o backend so revela a alternativa da questao enviada.
-export async function verificarResposta(
-  lessonId: string,
-  questionId: string,
-  optionId: string,
-) {
+export async function verificarResposta(lessonId: string, questionId: string, optionId: string) {
   const { data } = await api.post<CheckResult>(`/lessons/${lessonId}/quiz/check`, {
     questionId,
     optionId,
@@ -224,11 +220,17 @@ export async function salvarAulaEstudio(lessonId: string, payload: SalvarAulaPay
 }
 
 export async function criarModulo(trailId: string, title: string, position: number) {
-  const { data } = await api.post<{ id: string }>(`/trails/${trailId}/modules`, { title, position });
+  const { data } = await api.post<{ id: string }>(`/trails/${trailId}/modules`, {
+    title,
+    position,
+  });
   return data;
 }
 export async function criarAula(moduleId: string, title: string, position: number) {
-  const { data } = await api.post<{ id: string }>(`/modules/${moduleId}/lessons`, { title, position });
+  const { data } = await api.post<{ id: string }>(`/modules/${moduleId}/lessons`, {
+    title,
+    position,
+  });
   return data;
 }
 export async function excluirAula(lessonId: string) {
@@ -240,7 +242,12 @@ export async function excluirModulo(moduleId: string) {
 
 export type TrailLevelEnum = 'iniciante' | 'intermediario' | 'avancado';
 
-export async function criarTrilha(payload: { name: string; level: TrailLevelEnum; description: string; tagIds?: string[] }) {
+export async function criarTrilha(payload: {
+  name: string;
+  level: TrailLevelEnum;
+  description: string;
+  tagIds?: string[];
+}) {
   const { data } = await api.post<{ id: string }>('/trails', payload);
   return data;
 }

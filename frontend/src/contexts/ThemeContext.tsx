@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 /**
  * ThemeProvider — controla o tema (light/dark).
@@ -30,10 +24,7 @@ interface ThemeProviderProps {
   defaultTheme?: Theme;
 }
 
-export function ThemeProvider({
-  children,
-  defaultTheme = 'light',
-}: ThemeProviderProps) {
+export function ThemeProvider({ children, defaultTheme = 'light' }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
     () => (localStorage.getItem(THEME_KEY) as Theme) || defaultTheme,
   );
@@ -46,8 +37,7 @@ export function ThemeProvider({
     localStorage.removeItem('ensina:accent');
   }, [theme]);
 
-  const toggleTheme = () =>
-    setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>

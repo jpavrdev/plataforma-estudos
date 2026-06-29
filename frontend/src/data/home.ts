@@ -79,8 +79,13 @@ export const trilhas: Trilha[] = [
 ];
 
 export const week: WeekDay[] = [
-  { d: 'S', on: true }, { d: 'T', on: true }, { d: 'Q', on: true },
-  { d: 'Q', on: true }, { d: 'S', on: true }, { d: 'S', on: false }, { d: 'D', on: false },
+  { d: 'S', on: true },
+  { d: 'T', on: true },
+  { d: 'Q', on: true },
+  { d: 'Q', on: true },
+  { d: 'S', on: true },
+  { d: 'S', on: false },
+  { d: 'D', on: false },
 ];
 
 export const ranking: RankingEntry[] = [
@@ -92,9 +97,27 @@ export const ranking: RankingEntry[] = [
 ];
 
 export const feed: FeedItem[] = [
-  { initials: 'MA', color: '#E0A82E', name: 'Marina', text: 'resolveu Soma de Dois Números', time: 'agora' },
-  { initials: 'DR', color: '#5B8DEF', name: 'Diego', text: 'alcançou um streak de 30 dias', time: '5 min' },
-  { initials: 'AS', color: '#2E9E6B', name: 'Aisha', text: 'completou a trilha Lógica de Programação', time: '12 min' },
+  {
+    initials: 'MA',
+    color: '#E0A82E',
+    name: 'Marina',
+    text: 'resolveu Soma de Dois Números',
+    time: 'agora',
+  },
+  {
+    initials: 'DR',
+    color: '#5B8DEF',
+    name: 'Diego',
+    text: 'alcançou um streak de 30 dias',
+    time: '5 min',
+  },
+  {
+    initials: 'AS',
+    color: '#2E9E6B',
+    name: 'Aisha',
+    text: 'completou a trilha Lógica de Programação',
+    time: '12 min',
+  },
   { initials: 'BC', color: '#D9536B', name: 'Bruno', text: 'subiu para o nível 8', time: '1 h' },
 ];
 
