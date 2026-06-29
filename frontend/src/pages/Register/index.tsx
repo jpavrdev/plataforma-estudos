@@ -8,6 +8,7 @@ import { SelectField } from '../../components/SelectField';
 import { Avatar } from '../../components/Avatar';
 import { Check } from '../../components/Icons';
 import { formatPhone } from '../../utils/phone';
+import { mensagemErro } from '../../utils/erro';
 
 const BENEFITS = [
   'Um desafio novo todos os dias',
@@ -51,8 +52,8 @@ export function Register() {
         phone: phone.trim(),
       });
       navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.erro ?? 'Erro ao criar conta. Tente novamente.');
+    } catch (e: unknown) {
+      setError(mensagemErro(e, 'Erro ao criar conta. Tente novamente.'));
     } finally {
       setSubmitting(false);
     }

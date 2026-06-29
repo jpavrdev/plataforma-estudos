@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { Eye, Trash, Plus, Minus, Check, ChevronRight } from '../../components/Icons';
+import { mensagemErro } from '../../utils/erro';
 import {
   obterEstudio,
   obterAulaEstudio,
@@ -152,8 +153,8 @@ export function Estudio() {
         })),
       });
       await carregarOutline(aula.id);
-    } catch (e: any) {
-      setErro(e?.response?.data?.erro ?? 'Não foi possível salvar.');
+    } catch (e: unknown) {
+      setErro(mensagemErro(e, 'Não foi possível salvar.'));
     } finally {
       setSalvando(false);
     }

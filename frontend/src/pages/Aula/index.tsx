@@ -19,6 +19,7 @@ import {
 } from '../../services/trails';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { statusErro } from '../../utils/erro';
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -73,10 +74,10 @@ export function Aula() {
         if (!ativo) return;
         setTrilha(t);
         setAula(a);
-      } catch (err: any) {
+      } catch (e: unknown) {
         if (!ativo) return;
         setErro(
-          err.response?.status === 403
+          statusErro(e) === 403
             ? 'Esta aula está bloqueada. Conclua a aula anterior.'
             : 'Não foi possível carregar a aula.',
         );

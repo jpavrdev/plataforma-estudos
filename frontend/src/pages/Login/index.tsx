@@ -5,6 +5,7 @@ import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
 import { Flame, Trophy } from '../../components/Icons';
+import { mensagemErro } from '../../utils/erro';
 
 export function Login() {
   const navigate = useNavigate();
@@ -22,8 +23,8 @@ export function Login() {
     try {
       await login(email, password);
       navigate('/home');
-    } catch (err: any) {
-      setError(err.response?.data?.erro ?? 'Erro ao fazer login. Tente novamente.');
+    } catch (e: unknown) {
+      setError(mensagemErro(e, 'Erro ao fazer login. Tente novamente.'));
     } finally {
       setSubmitting(false);
     }

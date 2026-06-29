@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { tokens } from "../../schema.ts";
 
 export const authService = {
-    async gerarEGravarTokens(userId: string, tx: any = db) {
+    async gerarEGravarTokens(userId: string, tx: Pick<typeof db, "insert"> = db) {
         const accessToken = jwt.sign({userId}, env.JWT_SECRET, { expiresIn: "15m" });
         const refreshToken = randomBytes(40).toString("hex");
 
@@ -18,7 +18,7 @@ export const authService = {
 
         return { accessToken, refreshToken };
     },
-    async gerarTokenVerificacao(userId: string, tx: any = db) {
+    async gerarTokenVerificacao(userId: string, tx: Pick<typeof db, "insert"> = db) {
         const verificationToken = randomBytes(40).toString("hex");
 
         await tx.insert(tokens).values({

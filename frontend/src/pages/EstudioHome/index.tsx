@@ -12,6 +12,7 @@ import {
   type Tag,
 } from '../../services/trails';
 import type { Trail } from '../../data/trails';
+import { mensagemErro } from '../../utils/erro';
 
 type TrailComId = Trail & { id: string };
 
@@ -78,8 +79,8 @@ export function EstudioHome() {
       }
       setForm(null);
       await carregar();
-    } catch (e: any) {
-      setErro(e?.response?.data?.erro ?? 'Não foi possível salvar a trilha.');
+    } catch (e: unknown) {
+      setErro(mensagemErro(e, 'Não foi possível salvar a trilha.'));
     } finally {
       setSalvando(false);
     }

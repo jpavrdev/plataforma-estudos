@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../../services/api';
 import { Logo } from '../../components/Logo';
+import { mensagemErro } from '../../utils/erro';
 
 type Status = 'verificando' | 'sucesso' | 'erro';
 
@@ -29,11 +30,10 @@ export function VerifyEmail() {
         const { data } = await api.post('/verify-email', { token });
         setStatus('sucesso');
         setMensagem(data.mensagem ?? 'Email verificado com sucesso.');
-      } catch (err: any) {
+      } catch (e: unknown) {
         setStatus('erro');
         setMensagem(
-          err.response?.data?.erro ??
-            'Não foi possível verificar seu email. O link pode ter expirado.',
+          mensagemErro(e, 'Não foi possível verificar seu email. O link pode ter expirado.'),
         );
       }
     }
