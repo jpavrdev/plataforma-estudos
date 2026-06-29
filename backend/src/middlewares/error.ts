@@ -1,7 +1,13 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
 import { env } from "../config/env.ts";
+import { AppError } from "../errors/AppError.ts";
 export function errorMiddleware(err: Error, _req: Request, res: Response, _next: NextFunction) {
+    // Erro de domínio lançado pelos services (404, 409, etc.)
+    if (err instanceof AppError) {
+        return res.status(err.status).json({ erro: err.message });
+    }
+
     // Se for erro do Zod
     if (err instanceof ZodError) {
         if (env.NODE_ENV !== "development") {

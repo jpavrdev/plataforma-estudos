@@ -11,11 +11,10 @@ import {
     questionAnswers,
     tags,
     trailTags,
-    languages,
     achievements,
     userAchievements,
 } from "../../schema.ts";
-import { eq, and, count, asc, desc, gte, inArray, sql } from "drizzle-orm";
+import { eq, and, count, asc, desc, gte, inArray } from "drizzle-orm";
 import {
     createTrailSchema,
     createModuleSchema,
@@ -40,6 +39,13 @@ import {
     hojeSaoPaulo,
 } from "../services/streak.ts";
 import { movimentacaoRanking } from "../services/ranking.ts";
+import { listarTags, criarTag, atualizarTag, excluirTag } from "../services/tag.service.ts";
+import {
+    listarLinguagens,
+    criarLinguagem,
+    atualizarLinguagem,
+    excluirLinguagem,
+} from "../services/language.service.ts";
 
 const QUIZ_MIN_ACERTOS = 4;
 
@@ -74,8 +80,7 @@ export const createTrail = async (req: Request, res: Response, next: NextFunctio
 // ===================== TAGS (categorias de trilha) =====================
 export const listTags = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        const lista = await db.select().from(tags).orderBy(asc(tags.name));
-        res.json(lista);
+        res.json(await listarTags());
     } catch (err) {
         next(err);
     }
@@ -84,15 +89,7 @@ export const listTags = async (_req: Request, res: Response, next: NextFunction)
 export const createTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const dados = createTagSchema.parse(req.body);
-        const [existe] = await db
-            .select({ id: tags.id })
-            .from(tags)
-            .where(eq(tags.name, dados.name));
-        if (existe) {
-            return res.status(409).json({ erro: "Já existe uma tag com esse nome" });
-        }
-        const [tag] = await db.insert(tags).values({ name: dados.name }).returning();
-        res.status(201).json(tag);
+        res.status(201).json(await criarTag(dados.name));
     } catch (err) {
         next(err);
     }
@@ -102,22 +99,7 @@ export const updateTag = async (req: Request, res: Response, next: NextFunction)
     try {
         const id = String(req.params.id);
         const dados = updateTagSchema.parse(req.body);
-        const [conflito] = await db
-            .select({ id: tags.id })
-            .from(tags)
-            .where(eq(tags.name, dados.name));
-        if (conflito && conflito.id !== id) {
-            return res.status(409).json({ erro: "Já existe uma tag com esse nome" });
-        }
-        const [tag] = await db
-            .update(tags)
-            .set({ name: dados.name })
-            .where(eq(tags.id, id))
-            .returning();
-        if (!tag) {
-            return res.status(404).json({ erro: "Tag não encontrada" });
-        }
-        res.json(tag);
+        res.json(await atualizarTag(id, dados.name));
     } catch (err) {
         next(err);
     }
@@ -125,11 +107,7 @@ export const updateTag = async (req: Request, res: Response, next: NextFunction)
 
 export const deleteTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = String(req.params.id);
-        await db.transaction(async (tx) => {
-            await tx.delete(trailTags).where(eq(trailTags.tagId, id));
-            await tx.delete(tags).where(eq(tags.id, id));
-        });
+        await excluirTag(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -139,8 +117,7 @@ export const deleteTag = async (req: Request, res: Response, next: NextFunction)
 // ===================== LINGUAGENS (canônicas do perfil) =====================
 export const listLanguages = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        const lista = await db.select().from(languages).orderBy(asc(languages.name));
-        res.json(lista);
+        res.json(await listarLinguagens());
     } catch (err) {
         next(err);
     }
@@ -149,15 +126,7 @@ export const listLanguages = async (_req: Request, res: Response, next: NextFunc
 export const createLanguage = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const dados = createLanguageSchema.parse(req.body);
-        const [existe] = await db
-            .select({ id: languages.id })
-            .from(languages)
-            .where(eq(languages.name, dados.name));
-        if (existe) {
-            return res.status(409).json({ erro: "Já existe uma linguagem com esse nome" });
-        }
-        const [lang] = await db.insert(languages).values({ name: dados.name }).returning();
-        res.status(201).json(lang);
+        res.status(201).json(await criarLinguagem(dados.name));
     } catch (err) {
         next(err);
     }
@@ -167,40 +136,7 @@ export const updateLanguage = async (req: Request, res: Response, next: NextFunc
     try {
         const id = String(req.params.id);
         const dados = updateLanguageSchema.parse(req.body);
-        const [atual] = await db
-            .select({ name: languages.name })
-            .from(languages)
-            .where(eq(languages.id, id));
-        if (!atual) {
-            return res.status(404).json({ erro: "Linguagem não encontrada" });
-        }
-        const [conflito] = await db
-            .select({ id: languages.id })
-            .from(languages)
-            .where(eq(languages.name, dados.name));
-        if (conflito && conflito.id !== id) {
-            return res.status(409).json({ erro: "Já existe uma linguagem com esse nome" });
-        }
-        const lang = await db.transaction(async (tx) => {
-            const [atualizada] = await tx
-                .update(languages)
-                .set({ name: dados.name })
-                .where(eq(languages.id, id))
-                .returning();
-            // Renomeou: propaga o novo nome para os perfis que usavam o antigo.
-            if (atual.name !== dados.name) {
-                await tx.execute(sql`
-                    UPDATE users
-                    SET languages = (
-                        SELECT jsonb_agg(CASE WHEN elem = ${JSON.stringify(atual.name)}::jsonb THEN ${JSON.stringify(dados.name)}::jsonb ELSE elem END)
-                        FROM jsonb_array_elements(languages) AS elem
-                    )
-                    WHERE languages @> ${JSON.stringify([atual.name])}::jsonb
-                `);
-            }
-            return atualizada;
-        });
-        res.json(lang);
+        res.json(await atualizarLinguagem(id, dados.name));
     } catch (err) {
         next(err);
     }
@@ -208,27 +144,7 @@ export const updateLanguage = async (req: Request, res: Response, next: NextFunc
 
 export const deleteLanguage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = String(req.params.id);
-        const [lang] = await db
-            .select({ name: languages.name })
-            .from(languages)
-            .where(eq(languages.id, id));
-        if (!lang) {
-            return res.status(404).json({ erro: "Linguagem não encontrada" });
-        }
-        await db.transaction(async (tx) => {
-            await tx.delete(languages).where(eq(languages.id, id));
-            // Remove o nome dos perfis que a usavam, mantendo os dados padronizados.
-            await tx.execute(sql`
-                UPDATE users
-                SET languages = COALESCE((
-                    SELECT jsonb_agg(elem)
-                    FROM jsonb_array_elements(languages) AS elem
-                    WHERE elem <> ${JSON.stringify(lang.name)}::jsonb
-                ), '[]'::jsonb)
-                WHERE languages @> ${JSON.stringify([lang.name])}::jsonb
-            `);
-        });
+        await excluirLinguagem(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
