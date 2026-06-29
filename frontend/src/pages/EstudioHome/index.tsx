@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { ChevronRight, Plus, Pencil, Trash } from '../../components/Icons';
+import { useRequisicao } from '../../hooks/useRequisicao';
 import {
   listarTrilhas,
   criarTrilha,
@@ -37,27 +38,20 @@ interface FormState {
 
 export function EstudioHome() {
   const navigate = useNavigate();
-  const [trilhas, setTrilhas] = useState<TrailComId[]>([]);
-  const [carregando, setCarregando] = useState(true);
+  const {
+    dados,
+    carregando,
+    erro: falhaCarga,
+    recarregar,
+  } = useRequisicao(
+    () => Promise.all([listarTrilhas(), listarTags()]).then(([tr, tg]) => ({ tr, tg })),
+    [],
+  );
+  const trilhas: TrailComId[] = dados?.tr ?? [];
+  const tagsDisp: Tag[] = dados?.tg ?? [];
   const [erro, setErro] = useState('');
   const [form, setForm] = useState<FormState | null>(null);
   const [salvando, setSalvando] = useState(false);
-  const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
-
-  async function carregar() {
-    try {
-      const [tr, tg] = await Promise.all([listarTrilhas(), listarTags()]);
-      setTrilhas(tr);
-      setTagsDisp(tg);
-    } catch {
-      setErro('Não foi possível carregar as trilhas.');
-    } finally {
-      setCarregando(false);
-    }
-  }
-  useEffect(() => {
-    carregar();
-  }, []);
 
   function novaTrilha() {
     setErro('');
@@ -96,7 +90,7 @@ export function EstudioHome() {
         });
       }
       setForm(null);
-      await carregar();
+      recarregar();
     } catch (e: unknown) {
       setErro(mensagemErro(e, 'Não foi possível salvar a trilha.'));
     } finally {
@@ -114,7 +108,7 @@ export function EstudioHome() {
     setErro('');
     try {
       await excluirTrilha(t.id);
-      await carregar();
+      recarregar();
     } catch {
       setErro('Não foi possível excluir a trilha.');
     }
@@ -224,7 +218,9 @@ export function EstudioHome() {
         )}
 
         {carregando && <p className="track__desc">Carregando...</p>}
-        {!form && erro && <div className="auth__alert">{erro}</div>}
+        {!form && (erro || falhaCarga) && (
+          <div className="auth__alert">{erro || 'Não foi possível carregar as trilhas.'}</div>
+        )}
         {!carregando && trilhas.length === 0 && !form && (
           <p className="track__desc">Nenhuma trilha cadastrada ainda.</p>
         )}
