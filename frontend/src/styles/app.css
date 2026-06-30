@@ -161,6 +161,39 @@
 .input-toggle:hover {
   color: var(--text);
 }
+.input--error,
+.input--error:focus {
+  border-color: var(--av-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--av-red) 16%, transparent);
+}
+.field__error {
+  font-size: 12.5px;
+  color: var(--av-red);
+}
+.pw-reqs {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pw-reqs__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.pw-reqs__item svg {
+  opacity: 0.35;
+}
+.pw-reqs__item--ok {
+  color: var(--success);
+}
+.pw-reqs__item--ok svg {
+  opacity: 1;
+}
 .link {
   color: var(--accent);
   font-weight: 600;
