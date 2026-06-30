@@ -9,6 +9,7 @@ interface User {
   phone: string;
   role?: 'user' | 'admin' | 'moderator';
   streak?: number;
+  level?: number;
 }
 
 interface AuthContextData {
