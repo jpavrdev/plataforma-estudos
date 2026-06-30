@@ -11,6 +11,10 @@ interface FormFieldProps {
   required?: boolean;
   /** Conteúdo opcional à direita do label (ex.: link "Esqueceu a senha?"). */
   labelAddon?: ReactNode;
+  /** Mensagem de erro do campo; quando presente, destaca o input em vermelho. */
+  error?: string;
+  /** Conteúdo extra abaixo do input (ex.: checklist de requisitos da senha). */
+  children?: ReactNode;
 }
 
 export function FormField({
@@ -22,6 +26,8 @@ export function FormField({
   autoComplete,
   required = false,
   labelAddon,
+  error,
+  children,
 }: FormFieldProps) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const ehSenha = type === 'password';
@@ -40,13 +46,14 @@ export function FormField({
       )}
       <div className={ehSenha ? 'input-wrap' : undefined}>
         <input
-          className="input"
+          className={`input${error ? ' input--error' : ''}`}
           type={tipoInput}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           autoComplete={autoComplete}
           required={required}
+          aria-invalid={error ? true : undefined}
         />
         {ehSenha && (
           <button
@@ -61,6 +68,8 @@ export function FormField({
           </button>
         )}
       </div>
+      {children}
+      {error && <span className="field__error">{error}</span>}
     </label>
   );
 }
