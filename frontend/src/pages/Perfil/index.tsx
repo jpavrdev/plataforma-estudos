@@ -95,7 +95,7 @@ function lerArquivo(file: File): Promise<string> {
 export function Perfil() {
   const { user: authUser } = useAuth();
   const [perfil, setPerfil] = useState<PerfilData | null>(null);
-  const [xp, setXp] = useState({ xp: 0, lessonsCompleted: 0, questionsCorrect: 0 });
+  const [xp, setXp] = useState({ xp: 0, level: 1, lessonsCompleted: 0, questionsCorrect: 0 });
   const [carregando, setCarregando] = useState(true);
   const [linguagens, setLinguagens] = useState<string[]>([]);
   const [conquistas, setConquistas] = useState<MinhaConquista[]>([]);
@@ -234,7 +234,7 @@ export function Perfil() {
 
   const displayName = perfil?.name ?? authUser?.name ?? homeUser.name;
   const initials = getInitials(displayName);
-  const nivel = Math.floor(xp.xp / 500) + 1;
+  const nivel = xp.level;
   const langsVisiveis = editando ? draft.languages : (perfil?.languages ?? []);
   const langsDisponiveis = linguagens.filter((l) => !draft.languages.includes(l));
   const fotoUrl = urlImagem(perfil?.avatarUrl);

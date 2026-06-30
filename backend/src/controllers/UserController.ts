@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import { updateMeSchema } from "../schemas/auth.schema.ts";
 import { UPLOADS_DIR, AVATARS_DIR, COVERS_DIR } from "../config/paths.ts";
 import { calcularStreak, diasAtivosDoUsuario } from "../services/streak.ts";
+import { calcularEstatisticas } from "../services/stats.service.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -44,14 +45,23 @@ export const getMe = async (req: Request, res: Response) => {
         return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
+    // streak e nível são derivados: se falharem, logamos e seguimos com o fallback
+    // em vez de quebrar o perfil inteiro.
     let streak = 0;
     try {
         streak = calcularStreak(await diasAtivosDoUsuario(userId));
-    } catch {
-        // streak é derivado; se falhar, não quebra o perfil
+    } catch (e) {
+        console.error("getMe: falha ao calcular streak", e);
     }
 
-    res.json({ ...user, streak });
+    let level = 1;
+    try {
+        level = (await calcularEstatisticas(userId)).level;
+    } catch (e) {
+        console.error("getMe: falha ao calcular nível", e);
+    }
+
+    res.json({ ...user, streak, level });
 };
 
 // Atualiza o próprio perfil (campos editáveis). Não toca em campos sensíveis.

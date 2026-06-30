@@ -119,7 +119,7 @@ export function Aula() {
           <ThemeToggle inline />
           <UserMenu
             initials={getInitials(displayName)}
-            level={user.level}
+            level={authUser?.level ?? 1}
             name={displayName}
             email={authUser?.email}
           />

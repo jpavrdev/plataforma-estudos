@@ -13,7 +13,10 @@ export const registerSchema = z.object({
         .string()
         .min(12, "Senha deve ter ao menos 12 caracteres")
         .max(72)
-        .refine((s) => /[0-9]/.test(s), "A senha deve conter pelo menos um número"),
+        .refine((s) => /[a-z]/.test(s), "A senha deve conter uma letra minúscula")
+        .refine((s) => /[A-Z]/.test(s), "A senha deve conter uma letra maiúscula")
+        .refine((s) => /[0-9]/.test(s), "A senha deve conter pelo menos um número")
+        .refine((s) => /[^A-Za-z0-9]/.test(s), "A senha deve conter um caractere especial"),
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
     gender: z.string(),
     phone: z.string(),

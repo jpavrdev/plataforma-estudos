@@ -145,7 +145,7 @@ export function Trilhas() {
           <ThemeToggle inline />
           <UserMenu
             initials={initials}
-            level={user.level}
+            level={authUser?.level ?? 1}
             name={displayName}
             email={authUser?.email}
           />

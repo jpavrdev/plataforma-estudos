@@ -12,6 +12,7 @@ interface SelectFieldProps {
   options: Option[];
   placeholder?: string;
   required?: boolean;
+  error?: string;
 }
 
 export function SelectField({
@@ -21,11 +22,18 @@ export function SelectField({
   options,
   placeholder,
   required = false,
+  error,
 }: SelectFieldProps) {
   return (
     <label className="field">
       <span className="field__label">{label}</span>
-      <select className="input" value={value} onChange={onChange} required={required}>
+      <select
+        className={`input${error ? ' input--error' : ''}`}
+        value={value}
+        onChange={onChange}
+        required={required}
+        aria-invalid={error ? true : undefined}
+      >
         {placeholder && (
           <option value="" disabled>
             {placeholder}
@@ -37,6 +45,7 @@ export function SelectField({
           </option>
         ))}
       </select>
+      {error && <span className="field__error">{error}</span>}
     </label>
   );
 }
