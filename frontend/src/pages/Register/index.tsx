@@ -5,6 +5,7 @@ import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
 import { SelectField } from '../../components/SelectField';
+import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Avatar } from '../../components/Avatar';
 import { Check } from '../../components/Icons';
 import { formatPhone } from '../../utils/phone';
@@ -146,6 +147,8 @@ export function Register() {
     <AuthShell brand={brand}>
       <h2 className="auth__title">Crie sua conta</h2>
       <p className="auth__subtitle">Leva menos de um minuto.</p>
+
+      <SocialAuth />
 
       {error && <div className="auth__alert">{error}</div>}
 

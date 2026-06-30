@@ -17,6 +17,7 @@ interface AuthContextData {
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  entrarComToken: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -74,6 +75,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('@App:user', JSON.stringify(meResponse.data));
   }
 
+  // Entra a partir de um access token já emitido (usado no callback do login social).
+  async function entrarComToken(accessToken: string) {
+    localStorage.setItem('@App:accessToken', accessToken);
+    api.defaults.headers.Authorization = `Bearer ${accessToken}`;
+    const { data } = await api.get('/me');
+    setUser(data);
+    localStorage.setItem('@App:user', JSON.stringify(data));
+  }
+
   async function logout() {
     try {
       await api.post('/logout');
@@ -86,7 +96,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated: !!user, loading, login, entrarComToken, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

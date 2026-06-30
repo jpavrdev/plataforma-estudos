@@ -39,6 +39,14 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
         }
 
+        const [existeEmail] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.email, dados.email));
+        if (existeEmail) {
+            return res.status(409).json({ erro: "Este email já está em uso" });
+        }
+
         // Criptografia da senha
         const passwordHash = await bcrypt.hash(dados.password, BCRYPT_COST);
 
@@ -97,9 +105,9 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             return res.status(429).json({ erro: "Muitas tentativas. Tente novamente mais tarde." });
         }
 
-        // Definimos qual hash será comparado. Se o usuário existir, usamos o dele.
-        // Se não existir, usamos o DUMMY_HASH.
-        const hashParaComparar = user ? user.passwordHash : DUMMY_HASH;
+        // Definimos qual hash será comparado. Usuário com senha usa a dele; sem usuário
+        // (ou conta só de login social, sem senha) cai no DUMMY_HASH e a comparação falha.
+        const hashParaComparar = user?.passwordHash ?? DUMMY_HASH;
 
         const senhaCorreta = await bcrypt.compare(dados.password, hashParaComparar);
 
