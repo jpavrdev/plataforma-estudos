@@ -88,7 +88,7 @@ export const saveLessonStudioSchema = z.object({
     contentBlocks: z
         .array(
             z.object({
-                type: z.enum(["text", "code", "image", "video", "quote"]),
+                type: z.enum(["text", "code", "image", "video", "quote", "table"]),
                 value: z.string(),
             }),
         )

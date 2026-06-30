@@ -17,6 +17,7 @@ import {
   type QuestionDifficulty,
   type BlocoTipo,
 } from '../../services/trails';
+import { parseGrid, serializeGrid } from '../../utils/tabela';
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -26,6 +27,7 @@ const BLOCO_TIPOS: { type: BlocoTipo; icon: string; label: string }[] = [
   { type: 'image', icon: '▣', label: 'Imagem' },
   { type: 'video', icon: '▷', label: 'Vídeo' },
   { type: 'quote', icon: '❝', label: 'Citação' },
+  { type: 'table', icon: '▦', label: 'Tabela' },
 ];
 const BLOCO_LABEL: Record<BlocoTipo, string> = {
   text: 'Texto',
@@ -33,6 +35,7 @@ const BLOCO_LABEL: Record<BlocoTipo, string> = {
   image: 'Imagem',
   video: 'Vídeo',
   quote: 'Citação',
+  table: 'Tabela',
 };
 const DIFFS: { value: QuestionDifficulty; label: string }[] = [
   { value: 'facil', label: 'Fácil' },
@@ -178,7 +181,15 @@ export function Estudio() {
 
   // ----- blocos de conteúdo -----
   function addBloco(type: BlocoTipo) {
-    setAula((a) => (a ? { ...a, contentBlocks: [...a.contentBlocks, { type, value: '' }] } : a));
+    // Tabela começa com um grid 2x2 (1ª linha = cabeçalho); os demais começam vazios.
+    const value =
+      type === 'table'
+        ? serializeGrid([
+            ['', ''],
+            ['', ''],
+          ])
+        : '';
+    setAula((a) => (a ? { ...a, contentBlocks: [...a.contentBlocks, { type, value }] } : a));
     sujo();
   }
   function setBloco(i: number, value: string) {
@@ -463,7 +474,9 @@ export function Estudio() {
                         <Trash size={15} />
                       </button>
                     </div>
-                    {b.type === 'image' || b.type === 'video' ? (
+                    {b.type === 'table' ? (
+                      <TabelaEditor value={b.value} onChange={(v) => setBloco(i, v)} />
+                    ) : b.type === 'image' || b.type === 'video' ? (
                       <input
                         className="block__input es-input"
                         value={b.value}
@@ -619,6 +632,69 @@ export function Estudio() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// Editor de tabela: grid de inputs com controles para adicionar/remover linhas e
+// colunas. A 1ª linha é o cabeçalho. Salva como JSON no value do bloco.
+function TabelaEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const grid = parseGrid(value);
+  const cols = grid[0]?.length ?? 0;
+
+  const setCell = (r: number, c: number, v: string) =>
+    onChange(
+      serializeGrid(
+        grid.map((row, ri) => (ri === r ? row.map((cell, ci) => (ci === c ? v : cell)) : row)),
+      ),
+    );
+  const addLinha = () => onChange(serializeGrid([...grid, Array(cols).fill('')]));
+  const removerLinha = () => {
+    if (grid.length > 1) onChange(serializeGrid(grid.slice(0, -1)));
+  };
+  const addColuna = () => onChange(serializeGrid(grid.map((row) => [...row, ''])));
+  const removerColuna = () => {
+    if (cols > 1) onChange(serializeGrid(grid.map((row) => row.slice(0, -1))));
+  };
+
+  return (
+    <div className="tbl-edit">
+      <div
+        className="tbl-edit__grid"
+        style={{ gridTemplateColumns: `repeat(${cols}, minmax(90px, 1fr))` }}
+      >
+        {grid.map((row, r) =>
+          row.map((cell, c) => (
+            <input
+              key={`${r}-${c}`}
+              className={`tbl-edit__cell${r === 0 ? ' tbl-edit__cell--head' : ''}`}
+              value={cell}
+              placeholder={r === 0 ? 'Cabeçalho' : ''}
+              onChange={(e) => setCell(r, c, e.target.value)}
+            />
+          )),
+        )}
+      </div>
+      <div className="tbl-edit__controls">
+        <span className="tbl-edit__hint">
+          {grid.length} {grid.length === 1 ? 'linha' : 'linhas'} × {cols}{' '}
+          {cols === 1 ? 'coluna' : 'colunas'} · 1ª linha é o cabeçalho
+        </span>
+        <div className="tbl-edit__actions">
+          <button type="button" className="tbl-edit__btn" onClick={removerColuna}>
+            − coluna
+          </button>
+          <button type="button" className="tbl-edit__btn" onClick={addColuna}>
+            + coluna
+          </button>
+          <button type="button" className="tbl-edit__btn" onClick={removerLinha}>
+            − linha
+          </button>
+          <button type="button" className="tbl-edit__btn" onClick={addLinha}>
+            + linha
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
