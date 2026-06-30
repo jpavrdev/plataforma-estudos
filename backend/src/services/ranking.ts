@@ -2,6 +2,7 @@ import { sql, eq, and, count, gte } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { rankingSnapshots, users, lessonProgress, questionAnswers } from "../../schema.ts";
 import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
+import { nivelPorXp } from "./stats.service.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
 // usuário, quantas posições subiu (positivo) ou caiu (negativo) desde o último
@@ -112,7 +113,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
             username: u.username,
             totalXp,
             periodXp,
-            level: Math.floor(totalXp / 500) + 1,
+            level: nivelPorXp(totalXp),
             streak: streaks.get(u.id) ?? 0,
             you: u.id === currentUserId,
         };

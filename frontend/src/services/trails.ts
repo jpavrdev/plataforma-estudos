@@ -264,6 +264,7 @@ export async function excluirTrilha(id: string) {
 
 export interface XpStats {
   xp: number;
+  level: number;
   lessonsCompleted: number;
   questionsCorrect: number;
 }
