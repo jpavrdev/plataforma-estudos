@@ -21,10 +21,11 @@ export const users = pgTable("users", {
     name: varchar("name", { length: 255 }).notNull(),
     username: varchar("username", { length: 20 }).unique(),
     email: varchar("email", { length: 255 }).notNull().unique(),
-    passwordHash: varchar("password_hash", { length: 255 }).notNull(),
-    birthDate: date("birth_date").notNull(),
-    gender: varchar("gender", { length: 50 }).notNull(),
-    phone: varchar("phone", { length: 20 }).notNull(),
+    // Opcionais: quem entra por login social (Google/GitHub) não informa esses campos.
+    passwordHash: varchar("password_hash", { length: 255 }),
+    birthDate: date("birth_date"),
+    gender: varchar("gender", { length: 50 }),
+    phone: varchar("phone", { length: 20 }),
     bio: text("bio"),
     location: varchar("location", { length: 120 }),
     occupation: varchar("occupation", { length: 120 }),
@@ -40,6 +41,22 @@ export const users = pgTable("users", {
     failedLoginAttempts: integer("failed_login_attempts").default(0).notNull(),
     lockedUntil: timestamp("locked_until", { withTimezone: true }),
 });
+
+// Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de
+// uma (ex.: Google e GitHub) e o par (provider, providerId) é único.
+export const oauthAccounts = pgTable(
+    "oauth_accounts",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        provider: varchar("provider", { length: 20 }).notNull(),
+        providerId: varchar("provider_id", { length: 255 }).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.provider, table.providerId)],
+);
 
 export const tokens = pgTable("tokens", {
     id: uuid("id").primaryKey().defaultRandom(),

@@ -58,8 +58,11 @@ describe("POST /register", () => {
     test("rejeita email duplicado", async () => {
         const dados = novoUsuario();
         await server.request("POST", "/register", { body: dados });
-        const res = await server.request("POST", "/register", { body: dados });
-        assert.ok(res.status >= 400);
+        // Mesmo email, username diferente: deve barrar pela checagem de email.
+        const res = await server.request("POST", "/register", {
+            body: novoUsuario({ email: dados.email }),
+        });
+        assert.equal(res.status, 409);
     });
 });
 

@@ -120,6 +120,20 @@
       "when": 1782671634129,
       "tag": "0016_ranking_snapshots",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1782830638263,
+      "tag": "0017_login_social",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1782832261914,
+      "tag": "0018_oauth_accounts",
+      "breakpoints": true
     }
   ]
 }

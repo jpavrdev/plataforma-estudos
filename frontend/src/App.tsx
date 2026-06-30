@@ -11,6 +11,8 @@ import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
 import { Ranking } from './pages/Ranking';
 import { VerifyEmail } from './pages/VerifyEmail';
+import { OAuthCallback } from './pages/OAuthCallback';
+import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
 
 function PrivateRoute({ children }: { children: React.JSX.Element }) {
@@ -37,6 +39,15 @@ function AppRoutes() {
       <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
       <Route path="/cadastro" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
       <Route path="/verificar-email" element={<VerifyEmail />} />
+      <Route path="/auth/callback" element={<OAuthCallback />} />
+      <Route
+        path="/completar-perfil"
+        element={
+          <PrivateRoute>
+            <CompletarPerfil />
+          </PrivateRoute>
+        }
+      />
 
       <Route
         path="/home"
