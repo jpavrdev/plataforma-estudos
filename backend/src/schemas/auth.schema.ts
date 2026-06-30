@@ -39,3 +39,16 @@ export const updateMeSchema = z.object({
     github: z.string().max(200).optional(),
     linkedin: z.string().max(200).optional(),
 });
+
+// Campos que o login social não traz e o usuário completa depois.
+export const completarPerfilSchema = z.object({
+    username: z
+        .string()
+        .trim()
+        .min(3, "Usuário deve ter ao menos 3 caracteres")
+        .max(20, "Usuário deve ter no máximo 20 caracteres")
+        .regex(/^[a-zA-Z0-9_]+$/, "Use apenas letras, números e underscore"),
+    birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
+    gender: z.string().min(1, "Selecione o gênero"),
+    phone: z.string().min(1, "Informe o telefone"),
+});

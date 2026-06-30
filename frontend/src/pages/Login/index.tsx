@@ -1,15 +1,27 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
+import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Flame, Trophy } from '../../components/Icons';
 import { mensagemErro } from '../../utils/erro';
+
+// Mensagens dos erros que o callback do OAuth manda via ?erro= ao voltar pro login.
+const ERROS_OAUTH: Record<string, string> = {
+  provedor_indisponivel: 'Esse login social não está disponível no momento.',
+  oauth_invalido: 'Não foi possível validar o login. Tente de novo.',
+  oauth_falhou: 'Falha ao entrar com o provedor. Tente de novo.',
+  oauth_sem_email: 'Não foi possível obter um email verificado da sua conta.',
+};
 
 export function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const [searchParams] = useSearchParams();
+  const erroOAuth = ERROS_OAUTH[searchParams.get('erro') ?? ''] ?? '';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,20 +89,9 @@ export function Login() {
       <h2 className="auth__title">Bem-vindo de volta</h2>
       <p className="auth__subtitle">Continue de onde você parou.</p>
 
-      <div className="auth__social">
-        <button type="button" className="btn btn--ghost">
-          <span className="provider">G</span> Google
-        </button>
-        <button type="button" className="btn btn--ghost">
-          <span className="provider provider--mono">&lt;&gt;</span> GitHub
-        </button>
-      </div>
+      <SocialAuth />
 
-      <div className="divider">
-        <span>ou com e-mail</span>
-      </div>
-
-      {error && <div className="auth__alert">{error}</div>}
+      {(error || erroOAuth) && <div className="auth__alert">{error || erroOAuth}</div>}
 
       <form className="form" onSubmit={handleSubmit} noValidate>
         <FormField

@@ -5,7 +5,7 @@ import { writeFile, mkdir, unlink } from "node:fs/promises";
 import { db } from "../../db.ts";
 import { users, languages as languagesTable } from "../../schema.ts";
 import { eq } from "drizzle-orm";
-import { updateMeSchema } from "../schemas/auth.schema.ts";
+import { updateMeSchema, completarPerfilSchema } from "../schemas/auth.schema.ts";
 import { UPLOADS_DIR, AVATARS_DIR, COVERS_DIR } from "../config/paths.ts";
 import { calcularStreak, diasAtivosDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
@@ -102,6 +102,38 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
         const [user] = await db
             .update(users)
             .set(sets)
+            .where(eq(users.id, userId))
+            .returning(publicUserColumns);
+        res.json(user);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Completa nascimento, gênero e telefone (ex.: após o primeiro login social).
+export const completarPerfil = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    if (!userId) {
+        return res.status(401).json({ erro: "Não autenticado" });
+    }
+    try {
+        const dados = completarPerfilSchema.parse(req.body);
+        const username = dados.username.toLowerCase();
+        const [existeUsername] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.username, username));
+        if (existeUsername && existeUsername.id !== userId) {
+            return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
+        }
+        const [user] = await db
+            .update(users)
+            .set({
+                username,
+                birthDate: dados.birthDate,
+                gender: dados.gender,
+                phone: dados.phone,
+            })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
         res.json(user);
