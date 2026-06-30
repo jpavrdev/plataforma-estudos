@@ -28,7 +28,14 @@ type Erros = Record<string, string>;
 
 // Requisitos da senha (espelham o registerSchema do backend, que é a fonte de verdade).
 const SENHA_MIN = 12;
-const temNumero = (s: string) => /[0-9]/.test(s);
+const REGRAS_SENHA: { ok: (s: string) => boolean; label: string }[] = [
+  { ok: (s) => s.length >= SENHA_MIN, label: `Ao menos ${SENHA_MIN} caracteres` },
+  { ok: (s) => /[A-Z]/.test(s), label: 'Uma letra maiúscula' },
+  { ok: (s) => /[a-z]/.test(s), label: 'Uma letra minúscula' },
+  { ok: (s) => /[0-9]/.test(s), label: 'Um número' },
+  { ok: (s) => /[^A-Za-z0-9]/.test(s), label: 'Um caractere especial' },
+];
+const senhaValida = (s: string) => REGRAS_SENHA.every((r) => r.ok(s));
 
 export function Register() {
   const navigate = useNavigate();
@@ -59,8 +66,7 @@ export function Register() {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Email inválido';
 
-    if (password.length < SENHA_MIN) e.password = `Senha deve ter ao menos ${SENHA_MIN} caracteres`;
-    else if (!temNumero(password)) e.password = 'A senha deve conter pelo menos um número';
+    if (!senhaValida(password)) e.password = 'A senha não cumpre todos os requisitos';
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) e.birthDate = 'Informe sua data de nascimento';
     if (!gender) e.gender = 'Selecione o gênero';
@@ -98,10 +104,7 @@ export function Register() {
     }
   }
 
-  const reqsSenha = [
-    { ok: password.length >= SENHA_MIN, label: `Ao menos ${SENHA_MIN} caracteres` },
-    { ok: temNumero(password), label: 'Pelo menos um número' },
-  ];
+  const reqsSenha = REGRAS_SENHA.map((r) => ({ ok: r.ok(password), label: r.label }));
 
   const brand = (
     <AuthBrand glow="register">

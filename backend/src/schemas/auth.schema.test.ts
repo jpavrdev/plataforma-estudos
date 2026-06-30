@@ -6,7 +6,7 @@ const usuarioValido = {
     name: "Maria Silva",
     username: "maria_silva",
     email: "maria@email.com",
-    password: "senhaforte123",
+    password: "Senhaforte123!",
     birthDate: "1990-01-01",
     gender: "feminino",
     phone: "(11) 98888-7777",
@@ -58,9 +58,24 @@ describe("registerSchema", () => {
         assert.equal(r.success, false);
     });
 
-    test("aceita senha no limite de 12 caracteres com número", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "abcdefghij12" });
+    test("aceita senha no limite de 12 caracteres com todos os requisitos", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, password: "Abcdefgh123!" });
         assert.equal(r.success, true);
+    });
+
+    test("rejeita senha sem maiúscula", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, password: "senhaforte123!" });
+        assert.equal(r.success, false);
+    });
+
+    test("rejeita senha sem minúscula", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, password: "SENHAFORTE123!" });
+        assert.equal(r.success, false);
+    });
+
+    test("rejeita senha sem caractere especial", () => {
+        const r = registerSchema.safeParse({ ...usuarioValido, password: "Senhaforte123" });
+        assert.equal(r.success, false);
     });
 
     test("rejeita birthDate em formato errado", () => {
