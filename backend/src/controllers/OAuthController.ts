@@ -68,7 +68,6 @@ export const callbackOAuth = async (req: Request, res: Response) => {
     }
     if (!dados) return falhar("oauth_sem_email");
 
-    // Já existe essa identidade do provedor? Então é login: usa o dono dela.
     const [contaExistente] = await db
         .select()
         .from(oauthAccounts)
@@ -83,7 +82,6 @@ export const callbackOAuth = async (req: Request, res: Response) => {
     if (contaExistente) {
         [user] = await db.select().from(users).where(eq(users.id, contaExistente.userId));
     } else {
-        // Sem identidade ainda: vincula a uma conta com o mesmo email (verificado) ou cria.
         [user] = await db.select().from(users).where(eq(users.email, dados.email));
         if (!user) {
             [user] = await db
@@ -93,6 +91,13 @@ export const callbackOAuth = async (req: Request, res: Response) => {
                     email: dados.email,
                     emailVerifiedAt: new Date(),
                 })
+                .returning();
+        } else if (!user.emailVerifiedAt) {
+            // O provedor já confirmou o email, então marca a conta pré-existente como verificada.
+            [user] = await db
+                .update(users)
+                .set({ emailVerifiedAt: new Date() })
+                .where(eq(users.id, user.id))
                 .returning();
         }
         await db
@@ -106,7 +111,6 @@ export const callbackOAuth = async (req: Request, res: Response) => {
     const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
     res.cookie("refreshToken", refreshToken, refreshCookieOpts);
 
-    // Conta de login social nova ainda não tem username nem nascimento/gênero/telefone.
     const precisaCompletar = !user.username || !user.birthDate || !user.gender || !user.phone;
     const destino = precisaCompletar ? "completar-perfil" : "home";
     res.redirect(`${env.FRONTEND_URL}/auth/callback#token=${accessToken}&destino=${destino}`);
