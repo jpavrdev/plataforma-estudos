@@ -20,6 +20,7 @@ import {
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { statusErro } from '../../utils/erro';
+import { parseGrid } from '../../utils/tabela';
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -269,6 +270,9 @@ function BlocosAula({ blocks }: { blocks: Bloco[] }) {
         if (b.type === 'quote') {
           return <blockquote key={i}>{b.value}</blockquote>;
         }
+        if (b.type === 'table') {
+          return <TabelaBloco key={i} value={b.value} />;
+        }
         return (
           <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={md}>
             {b.value}
@@ -276,6 +280,33 @@ function BlocosAula({ blocks }: { blocks: Bloco[] }) {
         );
       })}
     </div>
+  );
+}
+
+// Renderiza um bloco de tabela. Herda o estilo de .lesson__md table; 1ª linha = cabeçalho.
+function TabelaBloco({ value }: { value: string }) {
+  const grid = parseGrid(value);
+  if (grid.length === 0) return null;
+  const [cabecalho, ...corpo] = grid;
+  return (
+    <table>
+      <thead>
+        <tr>
+          {cabecalho.map((c, j) => (
+            <th key={j}>{c}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {corpo.map((linha, i) => (
+          <tr key={i}>
+            {linha.map((c, j) => (
+              <td key={j}>{c}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 

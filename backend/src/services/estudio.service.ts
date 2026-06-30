@@ -249,6 +249,22 @@ export async function excluirAula(lessonId: string) {
     });
 }
 
+// Converte o grid (JSON salvo pelo editor) em uma tabela markdown. 1ª linha = cabeçalho.
+function tabelaParaMarkdown(value: string): string {
+    try {
+        const grid = JSON.parse(value);
+        if (!Array.isArray(grid) || grid.length === 0) return "";
+        const celula = (c: unknown) => String(c ?? "").replace(/\|/g, "\\|").replace(/\n/g, " ");
+        const linha = (r: unknown[]) => "| " + r.map(celula).join(" | ") + " |";
+        const [cabecalho, ...corpo] = grid as unknown[][];
+        const separador = "| " + cabecalho.map(() => "---").join(" | ") + " |";
+        return [linha(cabecalho), separador, ...corpo.map(linha)].join("\n");
+    } catch (e) {
+        console.error("tabelaParaMarkdown: valor inválido", e);
+        return "";
+    }
+}
+
 // Serializa os blocos em markdown (fallback para o aluno e para conteúdo legado).
 function blocosParaMarkdown(blocos: { type: string; value: string }[]): string {
     return blocos
@@ -265,6 +281,8 @@ function blocosParaMarkdown(blocos: { type: string; value: string }[]): string {
                     return `![imagem](${b.value})`;
                 case "video":
                     return `[Vídeo](${b.value})`;
+                case "table":
+                    return tabelaParaMarkdown(b.value);
                 default:
                     return b.value;
             }

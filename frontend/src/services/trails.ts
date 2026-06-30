@@ -98,7 +98,7 @@ export interface QuizQuestion {
   position: number;
   options: QuizOption[];
 }
-export type BlocoTipo = 'text' | 'code' | 'image' | 'video' | 'quote';
+export type BlocoTipo = 'text' | 'code' | 'image' | 'video' | 'quote' | 'table';
 export interface Bloco {
   type: BlocoTipo;
   value: string;
