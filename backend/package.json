@@ -34,7 +34,7 @@
         "@types/bcrypt": "^6.0.0",
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^25.9.3",
+        "@types/node": "^26.0.1",
         "@types/pg": "^8.20.0",
         "drizzle-kit": "^0.31.10",
         "eslint": "^10.6.0",
