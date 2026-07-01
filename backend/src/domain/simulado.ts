@@ -24,3 +24,21 @@ export function corrigirSimulado(
     const score = total === 0 ? 0 : Math.round((acertos / total) * 100);
     return { acertos, total, score, passed: total > 0 && score >= passPercent };
 }
+
+// Agrupa só os temas com erro, mais errados primeiro, para recomendar o que revisar.
+export function resumoPorTema(
+    questoes: { topic: string | null; correta: boolean }[],
+): { topic: string; erradas: number; total: number }[] {
+    const mapa = new Map<string, { erradas: number; total: number }>();
+    for (const q of questoes) {
+        const tema = q.topic ?? "Outros";
+        const atual = mapa.get(tema) ?? { erradas: 0, total: 0 };
+        atual.total++;
+        if (!q.correta) atual.erradas++;
+        mapa.set(tema, atual);
+    }
+    return [...mapa.entries()]
+        .filter(([, v]) => v.erradas > 0)
+        .map(([topic, v]) => ({ topic, erradas: v.erradas, total: v.total }))
+        .sort((a, b) => b.erradas - a.erradas);
+}

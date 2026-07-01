@@ -78,10 +78,10 @@ async function montarSimulado(over: Record<string, unknown> = {}) {
 
     const corretas: Record<string, string[]> = {};
 
-    async function criarQuestao(gabarito: boolean[]) {
+    async function criarQuestao(gabarito: boolean[], topic: string) {
         const [q] = await db
             .insert(simuladoQuestions)
-            .values({ simuladoId: s.id, statement: "Enunciado", explanation: "Porque sim." })
+            .values({ simuladoId: s.id, statement: "Enunciado", explanation: "Porque sim.", topic })
             .returning();
         const opcoes = await db
             .insert(simuladoOptions)
@@ -98,9 +98,9 @@ async function montarSimulado(over: Record<string, unknown> = {}) {
         return q.id;
     }
 
-    await criarQuestao([true, false]); // única
-    await criarQuestao([false, true]); // única
-    const multiId = await criarQuestao([true, true, false]); // múltipla (2 corretas)
+    await criarQuestao([true, false], "Tema A"); // única
+    await criarQuestao([false, true], "Tema A"); // única
+    const multiId = await criarQuestao([true, true, false], "Tema B"); // múltipla (2 corretas)
 
     return { slug: s.slug as string, corretas, multiId };
 }
@@ -132,6 +132,10 @@ describe("Simulado: início e segurança", () => {
         assert.equal(vazou, false);
         assert.equal(
             r.body.questions.some((q: any) => "explanation" in q),
+            false,
+        );
+        assert.equal(
+            r.body.questions.some((q: any) => "topic" in q),
             false,
         );
     });
@@ -193,9 +197,29 @@ describe("Simulado: responder, enviar e corrigir", () => {
         }
 
         const envio = await post(`/simulado-attempts/${id}/submit`, aluno.token);
-        assert.equal(envio.body.correct ?? envio.body.acertos, 2);
+        assert.equal(envio.body.acertos, 2);
         assert.equal(envio.body.score, 67);
         assert.equal(envio.body.passed, false);
+    });
+
+    test("resultado agrupa os erros por tema e revela o tópico", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug, corretas, multiId } = await montarSimulado();
+        const attempt = await post(`/simulados/${slug}/attempts`, aluno.token);
+        const id = attempt.body.attemptId;
+
+        // acerta tudo, menos a múltipla (Tema B)
+        for (const q of attempt.body.questions) {
+            const marcar = q.id === multiId ? [corretas[q.id][0]] : corretas[q.id];
+            await put(`/simulado-attempts/${id}/answers/${q.id}`, aluno.token, {
+                optionIds: marcar,
+            });
+        }
+        await post(`/simulado-attempts/${id}/submit`, aluno.token);
+
+        const rev = await get(`/simulado-attempts/${id}`, aluno.token);
+        assert.ok(rev.body.questions.every((q: any) => "topic" in q));
+        assert.deepEqual(rev.body.temasARevisar, [{ topic: "Tema B", erradas: 1, total: 1 }]);
     });
 
     test("não deixa enviar duas vezes", async () => {

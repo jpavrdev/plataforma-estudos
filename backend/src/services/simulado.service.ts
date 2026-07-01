@@ -9,7 +9,7 @@ import {
 } from "../../schema.ts";
 import { eq, and, sql, inArray, desc, isNull } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
-import { corrigirSimulado } from "../domain/simulado.ts";
+import { corrigirSimulado, questaoCorreta, resumoPorTema } from "../domain/simulado.ts";
 
 function agrupar(pares: [string, string][]): Map<string, Set<string>> {
     const mapa = new Map<string, Set<string>>();
@@ -107,6 +107,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
             id: simuladoQuestions.id,
             statement: simuladoQuestions.statement,
             explanation: simuladoQuestions.explanation,
+            topic: simuladoQuestions.topic,
             position: simuladoAttemptQuestions.position,
         })
         .from(simuladoAttemptQuestions)
@@ -128,8 +129,16 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         .where(eq(simuladoAttemptAnswers.attemptId, attemptId));
     const marcadas = agrupar(respostas.map((r) => [r.questionId, r.optionId]));
 
+    const paraResumo: { topic: string | null; correta: boolean }[] = [];
     const questions = questoes.map((q) => {
         const opcoesDaQuestao = opcoes.filter((o) => o.questionId === q.id);
+        if (enviado) {
+            const corretasSet = new Set(
+                opcoesDaQuestao.filter((o) => o.isCorrect).map((o) => o.id),
+            );
+            const marcadasSet = new Set(marcadas.get(q.id) ?? []);
+            paraResumo.push({ topic: q.topic, correta: questaoCorreta(marcadasSet, corretasSet) });
+        }
         return {
             id: q.id,
             statement: q.statement,
@@ -144,7 +153,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                 ...(enviado ? { isCorrect: o.isCorrect } : {}),
             })),
             selected: [...(marcadas.get(q.id) ?? [])],
-            ...(enviado ? { explanation: q.explanation } : {}),
+            ...(enviado ? { topic: q.topic, explanation: q.explanation } : {}),
         };
     });
 
@@ -154,7 +163,13 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         submitted: enviado,
         expiresAt: attempt.expiresAt,
         remainingSeconds: enviado ? 0 : Math.max(0, Math.floor(restanteMs / 1000)),
-        ...(enviado ? { score: attempt.score, passed: attempt.passed } : {}),
+        ...(enviado
+            ? {
+                  score: attempt.score,
+                  passed: attempt.passed,
+                  temasARevisar: resumoPorTema(paraResumo),
+              }
+            : {}),
         questions,
     };
 }
