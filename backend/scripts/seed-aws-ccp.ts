@@ -645,6 +645,219 @@ const QUESTOES: Questao[] = [
             ["Acoplamento fraco", true],
         ],
     },
+    {
+        statement:
+            "Qual recurso da AWS permite testar diversos serviços sem custo, dentro de certos limites?",
+        explanation:
+            "O AWS Free Tier oferece uso gratuito limitado (alguns por 12 meses, outros sempre grátis). Budgets, Cost Explorer e Pricing Calculator são ferramentas de custo, não de uso gratuito.",
+        options: [
+            ["AWS Free Tier", true],
+            ["AWS Budgets", false],
+            ["AWS Cost Explorer", false],
+            ["AWS Pricing Calculator", false],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço protege aplicações contra ataques distribuídos de negação de serviço (DDoS)?",
+        explanation:
+            "O AWS Shield é a proteção contra DDoS (Standard grátis, Advanced pago). O WAF filtra tráfego web na camada 7, o GuardDuty detecta ameaças e o KMS gerencia chaves.",
+        options: [
+            ["AWS WAF", false],
+            ["AWS Shield", true],
+            ["Amazon GuardDuty", false],
+            ["AWS Key Management Service (AWS KMS)", false],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço permite provisionar a infraestrutura da AWS como código, a partir de templates?",
+        explanation:
+            "O CloudFormation provisiona recursos via templates (infraestrutura como código). CodeDeploy faz deploy de aplicações, Config avalia conformidade e OpsWorks é gestão de configuração com Chef/Puppet.",
+        options: [
+            ["AWS CloudFormation", true],
+            ["AWS CodeDeploy", false],
+            ["AWS Config", false],
+            ["AWS OpsWorks", false],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço gerenciado facilita executar bancos de dados relacionais, como MySQL e PostgreSQL, na AWS?",
+        explanation:
+            "O Amazon RDS gerencia bancos relacionais (MySQL, PostgreSQL, MariaDB etc.). DynamoDB é NoSQL, Redshift é data warehouse e ElastiCache é cache em memória.",
+        options: [
+            ["Amazon DynamoDB", false],
+            ["Amazon RDS", true],
+            ["Amazon Redshift", false],
+            ["Amazon ElastiCache", false],
+        ],
+    },
+    {
+        statement:
+            "Qual recurso ajusta automaticamente a quantidade de instâncias do Amazon EC2 conforme a demanda?",
+        explanation:
+            "O Amazon EC2 Auto Scaling adiciona e remove instâncias conforme a demanda (elasticidade). O Elastic Load Balancing distribui o tráfego, mas não muda a quantidade de instâncias.",
+        options: [
+            ["Elastic Load Balancing", false],
+            ["Amazon EC2 Auto Scaling", true],
+            ["AWS Lambda", false],
+            ["Amazon CloudFront", false],
+        ],
+    },
+    {
+        statement: "Quais são pilares do AWS Well-Architected Framework? (Selecione DUAS opções.)",
+        explanation:
+            "Os seis pilares são: Excelência Operacional, Segurança, Confiabilidade, Eficiência de Desempenho, Otimização de Custos e Sustentabilidade. Portabilidade e escalabilidade automática não são pilares.",
+        options: [
+            ["Excelência operacional", true],
+            ["Sustentabilidade", true],
+            ["Portabilidade", false],
+            ["Escalabilidade automática", false],
+            ["Marketing", false],
+        ],
+    },
+    {
+        statement:
+            "Qual é uma prática recomendada para proteger o usuário raiz (root) de uma conta AWS?",
+        explanation:
+            "Ative o MFA no root e use-o apenas para tarefas que exigem o root, criando usuários IAM para o dia a dia. Compartilhar credenciais, usar o root sempre ou criar chaves de acesso do root são práticas ruins.",
+        options: [
+            ["Compartilhar as credenciais do root com a equipe", false],
+            ["Ativar MFA e usar o root apenas para tarefas específicas", true],
+            ["Usar o root para todas as tarefas do dia a dia", false],
+            ["Criar chaves de acesso do root para automação", false],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço coleta métricas e logs para monitorar o desempenho de recursos e aplicações da AWS?",
+        explanation:
+            "O Amazon CloudWatch coleta métricas, logs e dispara alarmes. O CloudTrail audita chamadas de API, o Config avalia conformidade e o Trusted Advisor faz recomendações.",
+        options: [
+            ["AWS CloudTrail", false],
+            ["Amazon CloudWatch", true],
+            ["AWS Config", false],
+            ["AWS Trusted Advisor", false],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço é indicado para armazenar e hospedar arquivos de um site estático com alta durabilidade?",
+        explanation:
+            "O Amazon S3 armazena objetos com durabilidade de 99,999999999% (11 noves) e pode hospedar sites estáticos. O EBS é bloco anexado a uma instância e o RDS é banco relacional.",
+        options: [
+            ["Amazon Elastic Block Store (Amazon EBS)", false],
+            ["Amazon Simple Storage Service (Amazon S3)", true],
+            ["AWS Lambda", false],
+            ["Amazon RDS", false],
+        ],
+    },
+    {
+        statement: "Qual característica descreve melhor o AWS Lambda?",
+        explanation:
+            "O Lambda é serverless: executa código sem que você provisione ou gerencie servidores, cobrando pelo tempo de execução. Não há SO para gerenciar nem capacidade mínima mensal.",
+        options: [
+            ["Você gerencia o sistema operacional dos servidores", false],
+            ["Executa código sem provisionar ou gerenciar servidores", true],
+            ["Cobra sempre por instância reservada", false],
+            ["Exige uma capacidade mínima contratada por mês", false],
+        ],
+    },
+    {
+        statement: "O que é uma Amazon Virtual Private Cloud (VPC)?",
+        explanation:
+            "A VPC é uma rede virtual isolada, sua, dentro da AWS, onde você provisiona recursos e controla sub-redes, rotas e gateways. Não é CDN, banco de dados nem fila de mensagens.",
+        options: [
+            ["Um serviço de rede de entrega de conteúdo (CDN)", false],
+            ["Uma rede virtual isolada na AWS onde você provisiona recursos", true],
+            ["Um banco de dados relacional gerenciado", false],
+            ["Um serviço de fila de mensagens", false],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço permite definir orçamentos e receber alertas quando os custos ou o uso ultrapassam um limite?",
+        explanation:
+            "O AWS Budgets define orçamentos com alertas. O Cost Explorer analisa e visualiza custos já incorridos e o Pricing Calculator estima custos antes de usar.",
+        options: [
+            ["AWS Cost Explorer", false],
+            ["AWS Budgets", true],
+            ["AWS Pricing Calculator", false],
+            ["AWS Trusted Advisor", false],
+        ],
+    },
+    {
+        statement: "Qual plano do AWS Support inclui um Technical Account Manager (TAM) dedicado?",
+        explanation:
+            "O TAM dedicado faz parte do plano Enterprise Support. Basic e Developer não têm TAM, e o Business também não tem um TAM dedicado.",
+        options: [
+            ["AWS Basic Support", false],
+            ["AWS Developer Support", false],
+            ["AWS Business Support", false],
+            ["AWS Enterprise Support", true],
+        ],
+    },
+    {
+        statement:
+            "Qual serviço gerencia cadastro, login e identidade de usuários para aplicações web e mobile?",
+        explanation:
+            "O Amazon Cognito faz sign-up, sign-in e federação de identidade para aplicações. O IAM controla o acesso à conta AWS, o KMS gerencia chaves e o Secrets Manager guarda segredos.",
+        options: [
+            ["AWS Identity and Access Management (IAM)", false],
+            ["Amazon Cognito", true],
+            ["AWS Key Management Service (AWS KMS)", false],
+            ["AWS Secrets Manager", false],
+        ],
+    },
+    {
+        statement:
+            "Qual conceito da nuvem descreve aumentar ou reduzir recursos automaticamente conforme a demanda, pagando apenas pelo que usa?",
+        explanation:
+            "Elasticidade é escalar recursos conforme a demanda, pagando pelo uso. Alta disponibilidade trata de continuar operando apesar de falhas; capacidade fixa é o oposto da nuvem.",
+        options: [
+            ["Elasticidade", true],
+            ["Alta disponibilidade", false],
+            ["Colocation", false],
+            ["Capacidade fixa provisionada", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa precisa transferir 80 TB de dados para a AWS sem depender da conexão de internet. Qual serviço usar?",
+        explanation:
+            "O AWS Snowball é um dispositivo físico para mover dezenas de TB offline. Transfer Acceleration e Direct Connect dependem da rede, e o CloudFront é uma CDN.",
+        options: [
+            ["AWS Snowball", true],
+            ["Amazon S3 Transfer Acceleration", false],
+            ["AWS Direct Connect", false],
+            ["Amazon CloudFront", false],
+        ],
+    },
+    {
+        statement:
+            "No modelo de responsabilidade compartilhada, quais itens são responsabilidade DO CLIENTE? (Selecione DUAS opções.)",
+        explanation:
+            "O cliente cuida da segurança NA nuvem: seus dados, criptografia do lado do cliente e configuração de rede (como grupos de segurança). A AWS cuida da segurança DA nuvem: infraestrutura física, hardware e rede global.",
+        options: [
+            ["Gerenciar os dados e a criptografia do lado do cliente", true],
+            ["Manter a segurança física dos data centers", false],
+            ["Configurar grupos de segurança e regras de firewall", true],
+            ["Manter o hardware da infraestrutura", false],
+            ["Manter a rede global da AWS", false],
+        ],
+    },
+    {
+        statement: "Por que implantar uma aplicação em múltiplas Zonas de Disponibilidade (AZs)?",
+        explanation:
+            "Distribuir a aplicação em múltiplas AZs aumenta a disponibilidade e a tolerância a falhas: se uma AZ ficar indisponível, as outras continuam atendendo. Não é para reduzir custo nem contornar o modelo de responsabilidade compartilhada.",
+        options: [
+            ["Para reduzir o custo de armazenamento", false],
+            ["Para aumentar a disponibilidade e a tolerância a falhas", true],
+            ["Para contornar o modelo de responsabilidade compartilhada", false],
+            ["Para dispensar o uso de IAM", false],
+        ],
+    },
 ];
 
 // Tema de cada questão, na mesma ordem de QUESTOES (para agrupar erros e recomendar revisão).
@@ -695,6 +908,24 @@ const TEMAS: string[] = [
     "Preços e faturamento",
     "Conceitos e arquitetura",
     "Computação",
+    "Conceitos e arquitetura",
+    "Preços e faturamento",
+    "Segurança e identidade",
+    "Ferramentas e suporte",
+    "Banco de dados",
+    "Computação",
+    "Conceitos e arquitetura",
+    "Segurança e identidade",
+    "Ferramentas e suporte",
+    "Armazenamento",
+    "Computação",
+    "Rede e entrega de conteúdo",
+    "Preços e faturamento",
+    "Ferramentas e suporte",
+    "Segurança e identidade",
+    "Conceitos e arquitetura",
+    "Migração",
+    "Segurança e identidade",
     "Conceitos e arquitetura",
 ];
 if (TEMAS.length !== QUESTOES.length) {
