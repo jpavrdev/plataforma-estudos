@@ -15,7 +15,7 @@ import {
     createAchievementSchema,
     updateAchievementSchema,
 } from "../schemas/trail.schemas.ts";
-import { calcularStreak, diasAtivosDoUsuario, semanaAtividade } from "../services/streak.ts";
+import { resumoSemana } from "../services/streak.ts";
 import { rankingGlobal } from "../services/ranking.ts";
 import { atividadeRecente } from "../services/activity.service.ts";
 import { listarTags, criarTag, atualizarTag, excluirTag } from "../services/tag.service.ts";
@@ -341,8 +341,7 @@ export const getRanking = async (req: Request, res: Response, next: NextFunction
 // Streak do usuário + os últimos 7 dias (para o card da home).
 export const getMyStreak = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dias = await diasAtivosDoUsuario(req.userId!);
-        res.json({ streak: calcularStreak(dias), week: semanaAtividade(dias) });
+        res.json(await resumoSemana(req.userId!));
     } catch (err) {
         next(err);
     }
