@@ -15,6 +15,7 @@ import {
     createSimuladoQuestion,
     updateSimuladoQuestion,
     deleteSimuladoQuestion,
+    syncSimuladoQuestions,
 } from "../controllers/SimuladoController.ts";
 
 const router = Router();
@@ -33,6 +34,7 @@ router.get("/admin/simulados/:slug", autenticar, exigirAdmin, adminGetSimulado);
 router.patch("/simulados/:slug", autenticar, exigirAdmin, updateSimulado);
 router.delete("/simulados/:slug", autenticar, exigirAdmin, deleteSimulado);
 router.post("/simulados/:slug/questions", autenticar, exigirAdmin, createSimuladoQuestion);
+router.put("/admin/simulados/:slug/questions", autenticar, exigirAdmin, syncSimuladoQuestions);
 router.patch("/simulado-questions/:id", autenticar, exigirAdmin, updateSimuladoQuestion);
 router.delete("/simulado-questions/:id", autenticar, exigirAdmin, deleteSimuladoQuestion);
 

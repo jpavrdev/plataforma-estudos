@@ -9,7 +9,12 @@ import {
 } from "../../schema.ts";
 import { eq, and, sql, inArray, desc, isNull, count } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
-import { corrigirSimulado, questaoCorreta, resumoPorTema } from "../domain/simulado.ts";
+import {
+    corrigirSimulado,
+    questaoCorreta,
+    resumoPorTema,
+    embaralharComSemente,
+} from "../domain/simulado.ts";
 
 function agrupar(pares: [string, string][]): Map<string, Set<string>> {
     const mapa = new Map<string, Set<string>>();
@@ -131,7 +136,10 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
 
     const paraResumo: { topic: string | null; correta: boolean }[] = [];
     const questions = questoes.map((q) => {
-        const opcoesDaQuestao = opcoes.filter((o) => o.questionId === q.id);
+        const opcoesDaQuestao = embaralharComSemente(
+            opcoes.filter((o) => o.questionId === q.id),
+            attemptId + q.id,
+        );
         if (enviado) {
             const corretasSet = new Set(
                 opcoesDaQuestao.filter((o) => o.isCorrect).map((o) => o.id),
@@ -515,6 +523,78 @@ export async function excluirQuestaoSimulado(questionId: string) {
             .where(eq(simuladoAttemptQuestions.questionId, questionId));
         await tx.delete(simuladoOptions).where(eq(simuladoOptions.questionId, questionId));
         await tx.delete(simuladoQuestions).where(eq(simuladoQuestions.id, questionId));
+    });
+    return { ok: true };
+}
+
+// Salvar tudo numa única transação (atômico): remove as questões que sumiram,
+// atualiza as que têm id e cria as novas. Se qualquer passo falhar, nada é gravado.
+export async function sincronizarQuestoesSimulado(
+    slug: string,
+    questoes: ({ id?: string } & DadosQuestao)[],
+) {
+    const s = await simuladoPorSlug(slug);
+    await db.transaction(async (tx) => {
+        const existentes = await tx
+            .select({ id: simuladoQuestions.id })
+            .from(simuladoQuestions)
+            .where(eq(simuladoQuestions.simuladoId, s.id));
+        const idsExistentes = new Set(existentes.map((q) => q.id));
+
+        const idsEnviados = new Set<string>();
+        for (const q of questoes) {
+            if (q.id) {
+                if (!idsExistentes.has(q.id))
+                    throw new AppError(400, "Questão não pertence a este simulado");
+                idsEnviados.add(q.id);
+            }
+        }
+
+        const aRemover = [...idsExistentes].filter((id) => !idsEnviados.has(id));
+        if (aRemover.length) {
+            await tx
+                .delete(simuladoAttemptAnswers)
+                .where(inArray(simuladoAttemptAnswers.questionId, aRemover));
+            await tx
+                .delete(simuladoAttemptQuestions)
+                .where(inArray(simuladoAttemptQuestions.questionId, aRemover));
+            await tx.delete(simuladoOptions).where(inArray(simuladoOptions.questionId, aRemover));
+            await tx.delete(simuladoQuestions).where(inArray(simuladoQuestions.id, aRemover));
+        }
+
+        for (const q of questoes) {
+            let questionId: string;
+            if (q.id) {
+                await tx
+                    .update(simuladoQuestions)
+                    .set({ statement: q.statement, topic: q.topic, explanation: q.explanation })
+                    .where(eq(simuladoQuestions.id, q.id));
+                await tx
+                    .delete(simuladoAttemptAnswers)
+                    .where(eq(simuladoAttemptAnswers.questionId, q.id));
+                await tx.delete(simuladoOptions).where(eq(simuladoOptions.questionId, q.id));
+                questionId = q.id;
+            } else {
+                const [nova] = await tx
+                    .insert(simuladoQuestions)
+                    .values({
+                        simuladoId: s.id,
+                        statement: q.statement,
+                        topic: q.topic,
+                        explanation: q.explanation,
+                    })
+                    .returning({ id: simuladoQuestions.id });
+                questionId = nova.id;
+            }
+            await tx.insert(simuladoOptions).values(
+                q.options.map((o, i) => ({
+                    questionId,
+                    text: o.text,
+                    isCorrect: o.isCorrect,
+                    position: i + 1,
+                })),
+            );
+        }
     });
     return { ok: true };
 }

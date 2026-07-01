@@ -358,4 +358,47 @@ describe("Simulado: CRUD admin", () => {
         assert.equal((await del(`/simulados/${s.slug}`, admin.token)).status, 200);
         assert.equal((await get(`/admin/simulados/${s.slug}`, admin.token)).status, 404);
     });
+
+    test("sincroniza (salvar tudo) de forma atômica", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const s = novoSimulado();
+        await post("/simulados", admin.token, s);
+        const q = (t: string) => ({
+            statement: `Enunciado ${t}`,
+            topic: "Tema",
+            options: [
+                { text: "certa", isCorrect: true },
+                { text: "errada", isCorrect: false },
+            ],
+        });
+
+        // cria duas de uma vez
+        let r = await put(`/admin/simulados/${s.slug}/questions`, admin.token, {
+            questions: [q("A"), q("B")],
+        });
+        assert.equal(r.status, 200);
+        let det = await get(`/admin/simulados/${s.slug}`, admin.token);
+        assert.equal(det.body.questions.length, 2);
+
+        // edita a 1a, remove a 2a, adiciona uma nova
+        const q1Id = det.body.questions[0].id;
+        r = await put(`/admin/simulados/${s.slug}/questions`, admin.token, {
+            questions: [{ ...q("A"), id: q1Id, statement: "Editada" }, q("C")],
+        });
+        assert.equal(r.status, 200);
+        det = await get(`/admin/simulados/${s.slug}`, admin.token);
+        const enunciados = det.body.questions.map((x: any) => x.statement).sort();
+        assert.deepEqual(enunciados, ["Editada", "Enunciado C"]);
+
+        // atômico: uma questão inválida rejeita tudo, sem alterar o estado
+        const ruim = await put(`/admin/simulados/${s.slug}/questions`, admin.token, {
+            questions: [
+                q("D"),
+                { statement: "sem correta", options: [{ text: "a", isCorrect: false }] },
+            ],
+        });
+        assert.equal(ruim.status, 400);
+        det = await get(`/admin/simulados/${s.slug}`, admin.token);
+        assert.equal(det.body.questions.length, 2);
+    });
 });
