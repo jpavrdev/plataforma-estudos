@@ -7,7 +7,7 @@ import { users, languages as languagesTable } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 import { updateMeSchema, completarPerfilSchema } from "../schemas/auth.schema.ts";
 import { UPLOADS_DIR, AVATARS_DIR, COVERS_DIR } from "../config/paths.ts";
-import { calcularStreak, diasAtivosDoUsuario } from "../services/streak.ts";
+import { streakDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
 
 const publicUserColumns = {
@@ -49,7 +49,7 @@ export const getMe = async (req: Request, res: Response) => {
     // em vez de quebrar o perfil inteiro.
     let streak = 0;
     try {
-        streak = calcularStreak(await diasAtivosDoUsuario(userId));
+        streak = await streakDoUsuario(userId);
     } catch (e) {
         console.error("getMe: falha ao calcular streak", e);
     }
