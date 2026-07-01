@@ -233,3 +233,87 @@ export const trailTags = pgTable(
     },
     (table) => [unique().on(table.trailId, table.tagId)],
 );
+
+// Prova cronometrada com banco de questões próprio, separado das aulas.
+export const simulados = pgTable("simulados", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: varchar("slug", { length: 80 }).notNull().unique(),
+    name: varchar("name", { length: 160 }).notNull(),
+    description: text("description"),
+    durationMinutes: integer("duration_minutes").notNull(),
+    questionCount: integer("question_count").notNull(),
+    passPercent: integer("pass_percent").notNull(),
+    published: boolean("published").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const simuladoQuestions = pgTable("simulado_questions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    simuladoId: uuid("simulado_id")
+        .references(() => simulados.id)
+        .notNull(),
+    statement: text("statement").notNull(),
+    explanation: text("explanation"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const simuladoOptions = pgTable("simulado_options", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    questionId: uuid("question_id")
+        .references(() => simuladoQuestions.id)
+        .notNull(),
+    text: text("text").notNull(),
+    isCorrect: boolean("is_correct").default(false).notNull(),
+    position: integer("position").notNull(),
+});
+
+// Uma execução do simulado por um usuário (sessão cronometrada).
+export const simuladoAttempts = pgTable("simulado_attempts", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    simuladoId: uuid("simulado_id")
+        .references(() => simulados.id)
+        .notNull(),
+    startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }),
+    score: integer("score"),
+    passed: boolean("passed"),
+});
+
+// Snapshot das questões sorteadas para a tentativa (ordem fixa, sobrevive a
+// mudanças no banco de questões).
+export const simuladoAttemptQuestions = pgTable(
+    "simulado_attempt_questions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        attemptId: uuid("attempt_id")
+            .references(() => simuladoAttempts.id)
+            .notNull(),
+        questionId: uuid("question_id")
+            .references(() => simuladoQuestions.id)
+            .notNull(),
+        position: integer("position").notNull(),
+    },
+    (table) => [unique().on(table.attemptId, table.questionId)],
+);
+
+// Opções marcadas pelo usuário (uma linha por opção: é o que permite multi-seleção).
+export const simuladoAttemptAnswers = pgTable(
+    "simulado_attempt_answers",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        attemptId: uuid("attempt_id")
+            .references(() => simuladoAttempts.id)
+            .notNull(),
+        questionId: uuid("question_id")
+            .references(() => simuladoQuestions.id)
+            .notNull(),
+        optionId: uuid("option_id")
+            .references(() => simuladoOptions.id)
+            .notNull(),
+    },
+    (table) => [unique().on(table.attemptId, table.questionId, table.optionId)],
+);
