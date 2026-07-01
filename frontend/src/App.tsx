@@ -10,6 +10,8 @@ import { EstudioHome } from './pages/EstudioHome';
 import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
 import { Ranking } from './pages/Ranking';
+import { Simulados } from './pages/Simulados';
+import { TentativaSimulado } from './pages/Simulados/Tentativa';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { OAuthCallback } from './pages/OAuthCallback';
 import { CompletarPerfil } from './pages/CompletarPerfil';
@@ -95,6 +97,22 @@ function AppRoutes() {
           <AdminRoute>
             <Estudio />
           </AdminRoute>
+        }
+      />
+      <Route
+        path="/simulados"
+        element={
+          <PrivateRoute>
+            <Simulados />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/simulados/tentativa/:attemptId"
+        element={
+          <PrivateRoute>
+            <TentativaSimulado />
+          </PrivateRoute>
         }
       />
       <Route
