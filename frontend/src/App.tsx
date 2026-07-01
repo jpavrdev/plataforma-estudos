@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
@@ -10,6 +11,10 @@ import { EstudioHome } from './pages/EstudioHome';
 import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
 import { Ranking } from './pages/Ranking';
+import { Simulados } from './pages/Simulados';
+import { TentativaSimulado } from './pages/Simulados/Tentativa';
+import { SimuladosAdmin } from './pages/SimuladosAdmin';
+import { SimuladoEditor } from './pages/SimuladosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { OAuthCallback } from './pages/OAuthCallback';
 import { CompletarPerfil } from './pages/CompletarPerfil';
@@ -90,11 +95,43 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/estudio/simulados"
+        element={
+          <AdminRoute>
+            <SimuladosAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/simulados/:slug"
+        element={
+          <AdminRoute>
+            <SimuladoEditor />
+          </AdminRoute>
+        }
+      />
+      <Route
         path="/estudio/:trailId"
         element={
           <AdminRoute>
             <Estudio />
           </AdminRoute>
+        }
+      />
+      <Route
+        path="/simulados"
+        element={
+          <PrivateRoute>
+            <Simulados />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/simulados/tentativa/:attemptId"
+        element={
+          <PrivateRoute>
+            <TentativaSimulado />
+          </PrivateRoute>
         }
       />
       <Route
@@ -143,7 +180,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppRoutes></AppRoutes>
+        <ToastProvider>
+          <AppRoutes />
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

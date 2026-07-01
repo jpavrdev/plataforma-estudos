@@ -14,6 +14,7 @@ import { obterRanking, type RankingResposta, type RankingPeriodo } from '../../s
 const NAV = [
   { label: 'Início', to: '/home' },
   { label: 'Trilhas', to: '/trilhas' },
+  { label: 'Simulados', to: '/simulados' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];

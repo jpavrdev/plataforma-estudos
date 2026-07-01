@@ -1,0 +1,1 @@
+ALTER TABLE "simulado_questions" ADD COLUMN "topic" varchar(60);

@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/auth.routes.ts";
 import userRoutes from "./src/routes/user.routes.ts";
 import trailRoutes from "./src/routes/trail.routes.ts";
+import simuladoRoutes from "./src/routes/simulado.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
 import helmet from "helmet";
 import cors from "cors";
@@ -41,6 +42,7 @@ app.use(
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(trailRoutes);
+app.use(simuladoRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
