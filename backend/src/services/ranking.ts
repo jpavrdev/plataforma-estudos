@@ -2,7 +2,7 @@ import { sql, eq, and, count, gte } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { rankingSnapshots, users, lessonProgress, questionAnswers } from "../../schema.ts";
 import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
-import { nivelPorXp } from "./stats.service.ts";
+import { calcularXp, nivelPorXp } from "../domain/xp.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
 // usuário, quantas posições subiu (positivo) ou caiu (negativo) desde o último
@@ -54,7 +54,7 @@ export async function movimentacaoRanking(
 }
 
 // Ranking global por XP. Liga e nível usam o XP total; o leaderboard usa o
-// período (week/month/all). XP = 50 por aula concluída + 10 por questão certa.
+// período (week/month/all).
 export async function rankingGlobal(periodo: string, currentUserId: string | undefined) {
     const dia = 24 * 60 * 60 * 1000;
     const desde =
@@ -105,8 +105,8 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
     const acP = desde ? paraMapa(acertosPer) : acT;
 
     const base = usuarios.map((u) => {
-        const totalXp = (at.get(u.id) ?? 0) * 50 + (acT.get(u.id) ?? 0) * 10;
-        const periodXp = (aP.get(u.id) ?? 0) * 50 + (acP.get(u.id) ?? 0) * 10;
+        const totalXp = calcularXp({ aulas: at.get(u.id) ?? 0, questoes: acT.get(u.id) ?? 0 });
+        const periodXp = calcularXp({ aulas: aP.get(u.id) ?? 0, questoes: acP.get(u.id) ?? 0 });
         return {
             id: u.id,
             name: u.name,
