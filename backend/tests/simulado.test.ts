@@ -24,10 +24,13 @@ async function ajustarUsuario(email: string, campos: Record<string, unknown>) {
     await db.update(users).set(campos).where(eq(users.email, email));
 }
 
-async function criarUsuarioLogado() {
+async function criarUsuarioLogado(admin = false) {
     const dados = novoUsuario();
     await server.request("POST", "/register", { body: dados });
-    await ajustarUsuario(dados.email, { emailVerifiedAt: new Date() });
+    await ajustarUsuario(dados.email, {
+        emailVerifiedAt: new Date(),
+        ...(admin ? { role: "admin" } : {}),
+    });
     const login = await server.request("POST", "/login", {
         body: { email: dados.email, password: dados.password },
     });
@@ -55,6 +58,18 @@ async function put(path: string, token: string, body?: unknown) {
         headers: { ...auth(token), "Content-Type": "application/json" },
         body: body ? JSON.stringify(body) : undefined,
     });
+    return { status: res.status, body: await res.json().catch(() => null) };
+}
+async function patch(path: string, token: string, body?: unknown) {
+    const res = await fetch(`${server.base}${path}`, {
+        method: "PATCH",
+        headers: { ...auth(token), "Content-Type": "application/json" },
+        body: body ? JSON.stringify(body) : undefined,
+    });
+    return { status: res.status, body: await res.json().catch(() => null) };
+}
+async function del(path: string, token: string) {
+    const res = await fetch(`${server.base}${path}`, { method: "DELETE", headers: auth(token) });
     return { status: res.status, body: await res.json().catch(() => null) };
 }
 
@@ -250,5 +265,97 @@ describe("Simulado: responder, enviar e corrigir", () => {
         assert.equal(hist.body.length, 1);
         assert.equal(hist.body[0].passed, true);
         assert.equal(hist.body[0].score, 100);
+    });
+});
+
+describe("Simulado: CRUD admin", () => {
+    const novoSimulado = (over: Record<string, unknown> = {}) => ({
+        slug: `admin-${++seq}`,
+        name: "Simulado Admin",
+        durationMinutes: 30,
+        questionCount: 10,
+        passPercent: 70,
+        published: true,
+        ...over,
+    });
+    const novaQuestao = (over: Record<string, unknown> = {}) => ({
+        statement: "Enunciado da questão de teste",
+        topic: "Tema X",
+        explanation: "Porque sim.",
+        options: [
+            { text: "certa", isCorrect: true },
+            { text: "errada", isCorrect: false },
+        ],
+        ...over,
+    });
+
+    test("admin cria simulado; comum recebe 403", async () => {
+        const admin = await criarUsuarioLogado(true);
+        assert.equal((await post("/simulados", admin.token, novoSimulado())).status, 201);
+
+        const comum = await criarUsuarioLogado();
+        assert.equal((await post("/simulados", comum.token, novoSimulado())).status, 403);
+    });
+
+    test("slug duplicado retorna 409", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const s = novoSimulado();
+        assert.equal((await post("/simulados", admin.token, s)).status, 201);
+        assert.equal((await post("/simulados", admin.token, s)).status, 409);
+    });
+
+    test("questão sem alternativa correta é rejeitada (400)", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const s = novoSimulado();
+        await post("/simulados", admin.token, s);
+        const r = await post(`/simulados/${s.slug}/questions`, admin.token, {
+            statement: "Sem gabarito",
+            options: [
+                { text: "a", isCorrect: false },
+                { text: "b", isCorrect: false },
+            ],
+        });
+        assert.equal(r.status, 400);
+    });
+
+    test("fluxo: cria, adiciona questão, edita, exclui questão e simulado", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const s = novoSimulado();
+        await post("/simulados", admin.token, s);
+
+        const criada = await post(`/simulados/${s.slug}/questions`, admin.token, novaQuestao());
+        assert.equal(criada.status, 201);
+
+        let det = await get(`/admin/simulados/${s.slug}`, admin.token);
+        assert.equal(det.body.questions.length, 1);
+        assert.ok(det.body.questions[0].options.some((o: any) => o.isCorrect === true));
+        const qId = det.body.questions[0].id;
+
+        const editou = await patch(
+            `/simulado-questions/${qId}`,
+            admin.token,
+            novaQuestao({
+                statement: "Enunciado editado",
+                options: [
+                    { text: "nova certa", isCorrect: true },
+                    { text: "nova errada", isCorrect: false },
+                    { text: "outra", isCorrect: false },
+                ],
+            }),
+        );
+        assert.equal(editou.status, 200);
+        det = await get(`/admin/simulados/${s.slug}`, admin.token);
+        assert.equal(det.body.questions[0].statement, "Enunciado editado");
+        assert.equal(det.body.questions[0].options.length, 3);
+
+        const lista = await get(`/admin/simulados`, admin.token);
+        assert.equal(Number(lista.body.find((x: any) => x.slug === s.slug).questoes), 1);
+
+        assert.equal((await del(`/simulado-questions/${qId}`, admin.token)).status, 200);
+        det = await get(`/admin/simulados/${s.slug}`, admin.token);
+        assert.equal(det.body.questions.length, 0);
+
+        assert.equal((await del(`/simulados/${s.slug}`, admin.token)).status, 200);
+        assert.equal((await get(`/admin/simulados/${s.slug}`, admin.token)).status, 404);
     });
 });
