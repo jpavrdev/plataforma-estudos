@@ -45,3 +45,9 @@ export const simuladoQuestionSchema = z.object({
         .max(6, "No máximo 6 alternativas")
         .refine((opts) => opts.some((o) => o.isCorrect), "Marque ao menos uma alternativa correta"),
 });
+
+// Salvar tudo (atômico): cada questão pode ter id (edita) ou não (cria); as que
+// sumirem da lista são removidas. A validação da lista inteira é tudo-ou-nada.
+export const sincronizarQuestoesSchema = z.object({
+    questions: z.array(simuladoQuestionSchema.extend({ id: z.uuid().optional() })).max(200),
+});

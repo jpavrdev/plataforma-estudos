@@ -4,6 +4,7 @@ import {
     createSimuladoSchema,
     updateSimuladoSchema,
     simuladoQuestionSchema,
+    sincronizarQuestoesSchema,
 } from "../schemas/simulado.schema.ts";
 import {
     listarSimulados,
@@ -20,6 +21,7 @@ import {
     criarQuestaoSimulado,
     atualizarQuestaoSimulado,
     excluirQuestaoSimulado,
+    sincronizarQuestoesSimulado,
 } from "../services/simulado.service.ts";
 
 export const listSimulados = async (_req: Request, res: Response, next: NextFunction) => {
@@ -150,6 +152,15 @@ export const updateSimuladoQuestion = async (req: Request, res: Response, next: 
 export const deleteSimuladoQuestion = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await excluirQuestaoSimulado(String(req.params.id)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const syncSimuladoQuestions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { questions } = sincronizarQuestoesSchema.parse(req.body);
+        res.json(await sincronizarQuestoesSimulado(String(req.params.slug), questions));
     } catch (err) {
         next(err);
     }

@@ -89,3 +89,102 @@ export async function historicoSimulados() {
   const { data } = await api.get<TentativaHistorico[]>('/me/simulado-attempts');
   return data;
 }
+
+// ===================== ADMIN =====================
+
+export interface SimuladoAdminItem {
+  slug: string;
+  name: string;
+  durationMinutes: number;
+  questionCount: number;
+  passPercent: number;
+  published: boolean;
+  questoes: number;
+}
+
+export interface QuestaoAdmin {
+  id: string;
+  statement: string;
+  topic: string | null;
+  explanation: string | null;
+  options: { id: string; text: string; isCorrect: boolean; position: number }[];
+}
+
+export interface SimuladoAdminDetalhe {
+  slug: string;
+  name: string;
+  description: string | null;
+  durationMinutes: number;
+  questionCount: number;
+  passPercent: number;
+  published: boolean;
+  questions: QuestaoAdmin[];
+}
+
+export interface PayloadSimulado {
+  slug: string;
+  name: string;
+  description?: string;
+  durationMinutes: number;
+  questionCount: number;
+  passPercent: number;
+  published: boolean;
+}
+export type PayloadSimuladoUpdate = Partial<Omit<PayloadSimulado, 'slug'>>;
+
+export interface PayloadQuestao {
+  statement: string;
+  topic?: string;
+  explanation?: string;
+  options: { text: string; isCorrect: boolean }[];
+}
+
+export async function listarSimuladosAdmin() {
+  const { data } = await api.get<SimuladoAdminItem[]>('/admin/simulados');
+  return data;
+}
+
+export async function obterSimuladoAdmin(slug: string) {
+  const { data } = await api.get<SimuladoAdminDetalhe>(`/admin/simulados/${slug}`);
+  return data;
+}
+
+export async function criarSimulado(payload: PayloadSimulado) {
+  const { data } = await api.post('/simulados', payload);
+  return data;
+}
+
+export async function atualizarSimulado(slug: string, payload: PayloadSimuladoUpdate) {
+  const { data } = await api.patch(`/simulados/${slug}`, payload);
+  return data;
+}
+
+export async function excluirSimulado(slug: string) {
+  await api.delete(`/simulados/${slug}`);
+}
+
+export async function criarQuestaoSimulado(slug: string, payload: PayloadQuestao) {
+  const { data } = await api.post<{ id: string }>(`/simulados/${slug}/questions`, payload);
+  return data;
+}
+
+export async function atualizarQuestaoSimulado(id: string, payload: PayloadQuestao) {
+  await api.patch(`/simulado-questions/${id}`, payload);
+}
+
+export async function excluirQuestaoSimulado(id: string) {
+  await api.delete(`/simulado-questions/${id}`);
+}
+
+export interface QuestaoSync {
+  id?: string;
+  statement: string;
+  topic?: string;
+  explanation?: string;
+  options: { text: string; isCorrect: boolean }[];
+}
+
+// Salva todas as questões de uma vez, de forma atômica (uma transação no backend).
+export async function sincronizarQuestoes(slug: string, questions: QuestaoSync[]) {
+  await api.put(`/admin/simulados/${slug}/questions`, { questions });
+}

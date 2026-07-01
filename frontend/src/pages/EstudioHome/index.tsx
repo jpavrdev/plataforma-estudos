@@ -126,6 +126,9 @@ export function EstudioHome() {
           <b>Painel do administrador</b>
         </div>
         <div className="topbar__spacer" />
+        <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
+          Simulados
+        </Link>
         <Link className="btn btn--ghost studio__btn" to="/home">
           Voltar ao app
         </Link>

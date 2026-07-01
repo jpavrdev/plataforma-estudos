@@ -983,3 +983,70 @@
   color: var(--muted);
   margin-top: 1px;
 }
+
+/* Admin de simulados */
+.sim-adm__row {
+  display: flex;
+  gap: 12px;
+}
+.sim-adm__row > div {
+  flex: 1;
+}
+.sim-adm__check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.sim-adm__ta {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 64px;
+  resize: vertical;
+  margin-top: 12px;
+  padding: 11px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 11px;
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+}
+.sim-adm__ta:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.sim-adm__qfoot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+.sim-adm__qfoot .btn {
+  flex: none;
+  height: 40px;
+}
+.sim-adm__msg {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--success);
+}
+.sim-adm__msg--erro {
+  color: var(--av-red);
+}
+.sim-adm__save {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+}
+.sim-adm__geral {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
