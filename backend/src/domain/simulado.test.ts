@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { corrigirSimulado, questaoCorreta } from "./simulado.ts";
+import { corrigirSimulado, questaoCorreta, resumoPorTema } from "./simulado.ts";
 
 describe("questaoCorreta", () => {
     test("resposta única certa", () => {
@@ -92,5 +92,31 @@ describe("corrigirSimulado", () => {
             score: 0,
             passed: false,
         });
+    });
+});
+
+describe("resumoPorTema", () => {
+    test("agrupa só os temas com erro, mais errados primeiro", () => {
+        const r = resumoPorTema([
+            { topic: "A", correta: false },
+            { topic: "A", correta: false },
+            { topic: "A", correta: true },
+            { topic: "B", correta: false },
+            { topic: "C", correta: true },
+        ]);
+        assert.deepEqual(r, [
+            { topic: "A", erradas: 2, total: 3 },
+            { topic: "B", erradas: 1, total: 1 },
+        ]);
+    });
+
+    test("tudo certo devolve lista vazia", () => {
+        assert.deepEqual(resumoPorTema([{ topic: "A", correta: true }]), []);
+    });
+
+    test("tema nulo vira Outros", () => {
+        assert.deepEqual(resumoPorTema([{ topic: null, correta: false }]), [
+            { topic: "Outros", erradas: 1, total: 1 },
+        ]);
     });
 });

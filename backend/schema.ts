@@ -254,6 +254,7 @@ export const simuladoQuestions = pgTable("simulado_questions", {
         .notNull(),
     statement: text("statement").notNull(),
     explanation: text("explanation"),
+    topic: varchar("topic", { length: 60 }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

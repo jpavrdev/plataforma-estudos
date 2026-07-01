@@ -647,6 +647,60 @@ const QUESTOES: Questao[] = [
     },
 ];
 
+// Tema de cada questão, na mesma ordem de QUESTOES (para agrupar erros e recomendar revisão).
+const TEMAS: string[] = [
+    "Segurança e identidade",
+    "Armazenamento",
+    "Rede e entrega de conteúdo",
+    "Preços e faturamento",
+    "Conceitos e arquitetura",
+    "Rede e entrega de conteúdo",
+    "Ferramentas e suporte",
+    "Ferramentas e suporte",
+    "Armazenamento",
+    "Rede e entrega de conteúdo",
+    "Ferramentas e suporte",
+    "Rede e entrega de conteúdo",
+    "Segurança e identidade",
+    "Segurança e identidade",
+    "Rede e entrega de conteúdo",
+    "Banco de dados",
+    "Computação",
+    "Computação",
+    "Machine learning",
+    "Ferramentas e suporte",
+    "Migração",
+    "Armazenamento",
+    "Conceitos e arquitetura",
+    "Conceitos e arquitetura",
+    "Armazenamento",
+    "Computação",
+    "Ferramentas e suporte",
+    "Conceitos e arquitetura",
+    "Segurança e identidade",
+    "Segurança e identidade",
+    "Ferramentas e suporte",
+    "Rede e entrega de conteúdo",
+    "Ferramentas e suporte",
+    "Segurança e identidade",
+    "Rede e entrega de conteúdo",
+    "Preços e faturamento",
+    "Segurança e identidade",
+    "Armazenamento",
+    "Preços e faturamento",
+    "Preços e faturamento",
+    "Armazenamento",
+    "Conceitos e arquitetura",
+    "Conceitos e arquitetura",
+    "Preços e faturamento",
+    "Conceitos e arquitetura",
+    "Computação",
+    "Conceitos e arquitetura",
+];
+if (TEMAS.length !== QUESTOES.length) {
+    throw new Error(`TEMAS (${TEMAS.length}) e QUESTOES (${QUESTOES.length}) fora de sincronia`);
+}
+
 async function seed() {
     let [simulado] = await db.select().from(simulados).where(eq(simulados.slug, SLUG));
     if (!simulado) {
@@ -675,10 +729,16 @@ async function seed() {
         return;
     }
 
-    for (const q of QUESTOES) {
+    for (let i = 0; i < QUESTOES.length; i++) {
+        const q = QUESTOES[i];
         const [questao] = await db
             .insert(simuladoQuestions)
-            .values({ simuladoId: simulado.id, statement: q.statement, explanation: q.explanation })
+            .values({
+                simuladoId: simulado.id,
+                statement: q.statement,
+                explanation: q.explanation,
+                topic: TEMAS[i],
+            })
             .returning();
         await db.insert(simuladoOptions).values(
             q.options.map(([text, isCorrect], i) => ({
