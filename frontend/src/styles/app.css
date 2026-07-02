@@ -2036,6 +2036,11 @@
 .quiz__result-actions .btn--ghost {
   flex: none;
 }
+.lesson__nextbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
 
 /* Ajustes da tela de aula ao layout do projeto */
 .lesson {
