@@ -1,5 +1,12 @@
 import { db } from "../../db.ts";
-import { lessons, modules, lessonProgress, questions, questionOptions } from "../../schema.ts";
+import {
+    lessons,
+    modules,
+    lessonProgress,
+    questions,
+    questionOptions,
+    questionAnswers,
+} from "../../schema.ts";
 import { eq, and, asc, inArray } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 import { ehAdmin } from "./usuario.service.ts";
@@ -81,15 +88,41 @@ export async function detalheDaAula(lessonId: string, userId: string) {
               .orderBy(asc(questionOptions.position))
         : [];
 
-    const questoes = qs.map((q) => ({
-        id: q.id,
-        statement: q.statement,
-        position: q.position,
-        // isCorrect deliberadamente omitido: o gabarito nunca vai para o cliente.
-        options: opts
-            .filter((o) => o.questionId === q.id)
-            .map((o) => ({ id: o.id, text: o.text, position: o.position })),
-    }));
+    // Respostas que o usuário já deu, para restaurar o estado "respondido" ao revisitar.
+    const respostas = qIds.length
+        ? await db
+              .select()
+              .from(questionAnswers)
+              .where(
+                  and(
+                      eq(questionAnswers.userId, userId),
+                      inArray(questionAnswers.questionId, qIds),
+                  ),
+              )
+        : [];
+    const respostaPorQuestao = new Map(respostas.map((r) => [r.questionId, r]));
+    const corretaPorQuestao = new Map<string, string>();
+    for (const o of opts) if (o.isCorrect) corretaPorQuestao.set(o.questionId, o.id);
+
+    const questoes = qs.map((q) => {
+        const r = respostaPorQuestao.get(q.id);
+        return {
+            id: q.id,
+            statement: q.statement,
+            position: q.position,
+            options: opts
+                .filter((o) => o.questionId === q.id)
+                .map((o) => ({ id: o.id, text: o.text, position: o.position })),
+            // O gabarito só é revelado nas questões que o usuário já respondeu.
+            answer: r
+                ? {
+                      selectedOptionId: r.selectedOptionId,
+                      isCorrect: r.isCorrect,
+                      correctOptionId: corretaPorQuestao.get(q.id) ?? null,
+                  }
+                : null,
+        };
+    });
 
     return {
         id: aula.id,

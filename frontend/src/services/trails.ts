@@ -92,11 +92,17 @@ export interface QuizOption {
   text: string;
   position: number;
 }
+export interface QuizAnswerState {
+  selectedOptionId: string;
+  isCorrect: boolean;
+  correctOptionId: string | null;
+}
 export interface QuizQuestion {
   id: string;
   statement: string;
   position: number;
   options: QuizOption[];
+  answer?: QuizAnswerState | null;
 }
 export type BlocoTipo = 'text' | 'code' | 'image' | 'video' | 'quote' | 'table';
 export interface Bloco {
