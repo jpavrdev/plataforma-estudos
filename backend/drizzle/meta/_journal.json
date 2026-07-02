@@ -148,6 +148,20 @@
       "when": 1782924277429,
       "tag": "0020_simulado_topic",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1783014706785,
+      "tag": "0021_desafios",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1783018230004,
+      "tag": "0022_desafio_kind",
+      "breakpoints": true
     }
   ]
 }

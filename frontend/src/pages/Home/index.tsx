@@ -5,10 +5,10 @@ import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
-import { Flame, Search, Bookmark, Play } from '../../components/Icons';
+import { Flame, Search, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
-import { user, dailyChallenge, MEDALS } from '../../data/home';
+import { user, MEDALS } from '../../data/home';
 import {
   listarTrilhas,
   listarMinhasTrilhas,
@@ -20,12 +20,41 @@ import {
   type RankingRow,
   type StreakInfo,
 } from '../../services/trails';
+import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import type { Trail } from '../../data/trails';
+
+const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
+
+// Resumo em texto puro do enunciado (primeiro bloco de texto, sem marcação).
+function resumoEnunciado(blocks: { type: string; value: string }[]): string {
+  const texto = blocks.find((b) => b.type === 'text')?.value ?? '';
+  const limpo = texto
+    .replace(/[*`_#>]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return limpo.length > 160 ? limpo.slice(0, 157) + '...' : limpo;
+}
+
+// Primeiras linhas do código inicial, para a prévia no card.
+function previaCodigo(starter: Partial<Record<'javascript' | 'python', string>>): string {
+  const code = starter.javascript || starter.python || '';
+  return code.split('\n').slice(0, 10).join('\n');
+}
+
+function dataPorExtenso(): string {
+  const s = new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 const NAV = [
   { label: 'Início', to: '/home' },
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
+  { label: 'Desafios', to: '/desafios' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
@@ -54,6 +83,7 @@ export function Home() {
   const [feedComunidade, setFeedComunidade] = useState<FeedConquista[]>([]);
   const [rankingGlobal, setRankingGlobal] = useState<RankingRow[]>([]);
   const [streakInfo, setStreakInfo] = useState<StreakInfo>({ streak: 0, week: [] });
+  const [desafioHoje, setDesafioHoje] = useState<DesafioDetalhe | null>(null);
 
   useEffect(() => {
     let ativo = true;
@@ -88,6 +118,9 @@ export function Home() {
       .catch(() => {});
     obterStreak()
       .then(setStreakInfo)
+      .catch(() => {});
+    getDesafioDoDia()
+      .then(setDesafioHoje)
       .catch(() => {});
   }, []);
 
@@ -145,66 +178,65 @@ export function Home() {
         <div className="home__body">
           <main className="home__main">
             {/* Desafio do dia */}
-            <section>
-              <div className="section-head">
-                <h2 className="section-title">Desafio do dia</h2>
-                <span className="section-meta">Quarta-feira, 25 de junho</span>
-              </div>
-
-              <article className="challenge">
-                <div className="challenge__content">
-                  <div className="challenge__badges">
-                    <span className="tag tag--id">{dailyChallenge.id}</span>
-                    <span className="tag tag--success">{dailyChallenge.difficulty}</span>
-                    <span className="tag tag--accent">+{dailyChallenge.xp} XP</span>
-                    <span className="challenge__bookmark">
-                      <Bookmark size={19} />
-                    </span>
-                  </div>
-                  <h3 className="challenge__title">{dailyChallenge.title}</h3>
-                  <p className="challenge__desc">{dailyChallenge.description}</p>
-                  <div className="challenge__tags">
-                    {dailyChallenge.tags.map((t) => (
-                      <span key={t} className="chip chip--outline">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <hr className="rule" />
-                  <div className="challenge__footer">
-                    <Stat value={dailyChallenge.acceptance} label="aceitação" />
-                    <Stat value={dailyChallenge.solvedToday} label="resolveram hoje" />
-                    <Stat value={dailyChallenge.avgTime} label="tempo médio" />
-                    <div className="topbar__spacer" />
-                    <button className="btn btn--accent">
-                      <Play size={13} /> Resolver agora
-                    </button>
-                  </div>
+            {desafioHoje && (
+              <section>
+                <div className="section-head">
+                  <h2 className="section-title">Desafio do dia</h2>
+                  <span className="section-meta">{dataPorExtenso()}</span>
                 </div>
-                <aside className="challenge__code">
-                  <div className="code-window__dots">
-                    <i style={{ background: '#E0655A' }} />
-                    <i style={{ background: '#E0A82E' }} />
-                    <i style={{ background: '#3DAE6B' }} />
+
+                <article className="challenge">
+                  <div className="challenge__content">
+                    <div className="challenge__badges">
+                      {desafioHoje.number != null && (
+                        <span className="tag tag--id">{desafioHoje.number}</span>
+                      )}
+                      <span className="tag tag--success">{DIF_LABEL[desafioHoje.difficulty]}</span>
+                      <span className="tag tag--accent">+{desafioHoje.xp} XP</span>
+                      {desafioHoje.solved && <span className="tag tag--success">Resolvido</span>}
+                    </div>
+                    <h3 className="challenge__title">{desafioHoje.title}</h3>
+                    <p className="challenge__desc">
+                      {resumoEnunciado(desafioHoje.statementBlocks)}
+                    </p>
+                    <div className="challenge__tags">
+                      {(desafioHoje.topic ?? '')
+                        .split('·')
+                        .map((s) => s.trim())
+                        .filter(Boolean)
+                        .map((t) => (
+                          <span key={t} className="chip chip--outline">
+                            {t}
+                          </span>
+                        ))}
+                    </div>
+                    <hr className="rule" />
+                    <div className="challenge__footer">
+                      {desafioHoje.acceptance != null && (
+                        <Stat value={`${desafioHoje.acceptance}%`} label="aceitação" />
+                      )}
+                      <div className="topbar__spacer" />
+                      <button
+                        className="btn btn--accent"
+                        onClick={() => navigate(`/desafios/${desafioHoje.id}`)}
+                      >
+                        <Play size={13} /> {desafioHoje.solved ? 'Revisar' : 'Resolver agora'}
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <span className="tok-accent">function</span> dois(nums, alvo) {'{'}
-                  </div>
-                  <div className="code-window__indent">
-                    <span className="tok-accent">const</span> mapa = {'{}'};
-                  </div>
-                  <div className="code-window__indent">
-                    <span className="tok-accent">for</span> (i{' '}
-                    <span className="tok-accent">in</span> nums) {'{'}
-                  </div>
-                  <div className="code-window__comment" style={{ paddingLeft: 28 }}>
-                    // seu código aqui
-                  </div>
-                  <div className="code-window__indent">{'}'}</div>
-                  <div>{'}'}</div>
-                </aside>
-              </article>
-            </section>
+                  <aside className="challenge__code">
+                    <div className="code-window__dots">
+                      <i style={{ background: '#E0655A' }} />
+                      <i style={{ background: '#E0A82E' }} />
+                      <i style={{ background: '#3DAE6B' }} />
+                    </div>
+                    <pre className="challenge__code-pre">
+                      {previaCodigo(desafioHoje.starterCode)}
+                    </pre>
+                  </aside>
+                </article>
+              </section>
+            )}
 
             {/* Trilhas */}
             <section>

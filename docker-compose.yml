@@ -24,6 +24,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  # Executor isolado dos desafios. É o único serviço com acesso ao Docker; ele sobe
+  # containers efêmeros por submissão. As imagens desafio-js/desafio-python precisam
+  # existir no daemon (rode runner/build-images.sh).
+  runner:
+    build:
+      context: ./runner
+    environment:
+      - MAX_CONCURRENT=2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
   frontend:
     build:
       context: ./frontend

@@ -18,6 +18,8 @@ const envSchema = z.object({
     // Base pública do backend, para montar a redirect_uri do OAuth.
     // Dev: http://localhost:3001 · Prod: https://ensinadev.com.br/api
     OAUTH_CALLBACK_BASE: z.string().url().default("http://localhost:3001"),
+    // Serviço interno que executa o código dos desafios em containers isolados.
+    RUNNER_URL: z.string().url().default("http://runner:8080"),
 });
 
 // Valida os dados e lança erro se tiver algo errado.
