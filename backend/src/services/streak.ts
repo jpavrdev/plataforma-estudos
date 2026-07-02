@@ -2,8 +2,8 @@ import { sql } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { calcularStreak, semanaAtividade } from "../domain/streak.ts";
 
-// Streak = dias corridos com atividade (questão respondida ou aula concluída).
-// O "dia" é bucketizado no fuso de São Paulo para bater com o usuário.
+// Streak = dias corridos com atividade (questão respondida, aula concluída ou
+// desafio resolvido). O "dia" é bucketizado no fuso de São Paulo para bater com o usuário.
 const TZ = "America/Sao_Paulo";
 
 export function hojeSaoPaulo(): string {
@@ -15,6 +15,8 @@ export async function diasAtivosDoUsuario(userId: string): Promise<Set<string>> 
         SELECT DISTINCT to_char(answered_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d FROM question_answers WHERE user_id = ${userId}
         UNION
         SELECT DISTINCT to_char(completed_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d FROM lessons_progress WHERE user_id = ${userId}
+        UNION
+        SELECT DISTINCT to_char(created_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d FROM challenge_submissions WHERE user_id = ${userId} AND status = 'passed'
     `);
     return new Set((res.rows as { d: string }[]).map((r) => r.d));
 }
@@ -25,6 +27,8 @@ export async function streaksTodos(): Promise<Map<string, number>> {
         SELECT user_id AS uid, to_char(answered_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d FROM question_answers
         UNION
         SELECT user_id AS uid, to_char(completed_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d FROM lessons_progress
+        UNION
+        SELECT user_id AS uid, to_char(created_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d FROM challenge_submissions WHERE status = 'passed'
     `);
     const porUsuario = new Map<string, Set<string>>();
     for (const row of res.rows as { uid: string; d: string }[]) {

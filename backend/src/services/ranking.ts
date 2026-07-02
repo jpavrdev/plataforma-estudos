@@ -1,6 +1,12 @@
-import { sql, eq, and, count, gte } from "drizzle-orm";
+import { sql, eq, and, count, sum, gte } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { rankingSnapshots, users, lessonProgress, questionAnswers } from "../../schema.ts";
+import {
+    rankingSnapshots,
+    users,
+    lessonProgress,
+    questionAnswers,
+    challengeSubmissions,
+} from "../../schema.ts";
 import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
 import { calcularXp, nivelPorXp } from "../domain/xp.ts";
 
@@ -64,7 +70,16 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
               ? new Date(Date.now() - 30 * dia)
               : null;
 
-    const [usuarios, aulasTot, acertosTot, aulasPer, acertosPer, streaks] = await Promise.all([
+    const [
+        usuarios,
+        aulasTot,
+        acertosTot,
+        desafiosTot,
+        aulasPer,
+        acertosPer,
+        desafiosPer,
+        streaks,
+    ] = await Promise.all([
         db.select({ id: users.id, name: users.name, username: users.username }).from(users),
         db
             .select({ userId: lessonProgress.userId, n: count() })
@@ -75,6 +90,10 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
             .from(questionAnswers)
             .where(eq(questionAnswers.isCorrect, true))
             .groupBy(questionAnswers.userId),
+        db
+            .select({ userId: challengeSubmissions.userId, n: sum(challengeSubmissions.xpEarned) })
+            .from(challengeSubmissions)
+            .groupBy(challengeSubmissions.userId),
         desde
             ? db
                   .select({ userId: lessonProgress.userId, n: count() })
@@ -94,19 +113,40 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
                   )
                   .groupBy(questionAnswers.userId)
             : Promise.resolve(null),
+        desde
+            ? db
+                  .select({
+                      userId: challengeSubmissions.userId,
+                      n: sum(challengeSubmissions.xpEarned),
+                  })
+                  .from(challengeSubmissions)
+                  .where(gte(challengeSubmissions.createdAt, desde))
+                  .groupBy(challengeSubmissions.userId)
+            : Promise.resolve(null),
         streaksTodos(),
     ]);
 
-    const paraMapa = (arr: { userId: string; n: number }[] | null) =>
-        new Map((arr ?? []).map((a) => [a.userId, Number(a.n)]));
+    // n vem como number (count) ou string (sum de xp); Number() normaliza os dois.
+    const paraMapa = (arr: { userId: string; n: number | string | null }[] | null) =>
+        new Map((arr ?? []).map((a) => [a.userId, Number(a.n ?? 0)]));
     const at = paraMapa(aulasTot),
-        acT = paraMapa(acertosTot);
+        acT = paraMapa(acertosTot),
+        dT = paraMapa(desafiosTot);
     const aP = desde ? paraMapa(aulasPer) : at;
     const acP = desde ? paraMapa(acertosPer) : acT;
+    const dP = desde ? paraMapa(desafiosPer) : dT;
 
     const base = usuarios.map((u) => {
-        const totalXp = calcularXp({ aulas: at.get(u.id) ?? 0, questoes: acT.get(u.id) ?? 0 });
-        const periodXp = calcularXp({ aulas: aP.get(u.id) ?? 0, questoes: acP.get(u.id) ?? 0 });
+        const totalXp = calcularXp({
+            aulas: at.get(u.id) ?? 0,
+            questoes: acT.get(u.id) ?? 0,
+            desafiosXp: dT.get(u.id) ?? 0,
+        });
+        const periodXp = calcularXp({
+            aulas: aP.get(u.id) ?? 0,
+            questoes: acP.get(u.id) ?? 0,
+            desafiosXp: dP.get(u.id) ?? 0,
+        });
         return {
             id: u.id,
             name: u.name,

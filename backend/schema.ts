@@ -15,6 +15,18 @@ import {
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
 export const questionDifficulty = pgEnum("question_difficulty", ["facil", "medio", "dificil"]);
+export const challengeLanguage = pgEnum("challenge_language", ["javascript", "python", "csharp"]);
+// stdin: aluno lê stdin e imprime stdout. function: aluno implementa uma função
+// (class Solution.entry) chamada com os argumentos do teste; compara-se o retorno.
+export const challengeKind = pgEnum("challenge_kind", ["stdin", "function"]);
+export const challengeSubmissionStatus = pgEnum("challenge_submission_status", [
+    "queued",
+    "running",
+    "passed",
+    "failed",
+    "error",
+    "timeout",
+]);
 
 export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -318,3 +330,56 @@ export const simuladoAttemptAnswers = pgTable(
     },
     (table) => [unique().on(table.attemptId, table.questionId, table.optionId)],
 );
+
+// Desafios de código. O enunciado usa os mesmos blocos das aulas; activeDate marca
+// o dia em que ele é "o desafio do dia" (única data com XP).
+export const challenges = pgTable("challenges", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    // Número de exibição (estilo LeetCode "142."). Atribuído no cadastro.
+    number: integer("number").unique(),
+    title: varchar("title", { length: 255 }).notNull(),
+    // Tema(s) em uma string com separador " · " (ex.: "Array · Hash Table").
+    topic: varchar("topic", { length: 160 }),
+    kind: challengeKind("kind").default("stdin").notNull(),
+    // Nome do método a chamar quando kind = function (ex.: "twoSum").
+    entryPoint: varchar("entry_point", { length: 120 }),
+    statementBlocks: jsonb("statement_blocks").$type<{ type: string; value: string }[]>(),
+    difficulty: questionDifficulty("difficulty").default("facil").notNull(),
+    // Código inicial por linguagem (javascript/python/csharp), já com a leitura do stdin.
+    starterCode: jsonb("starter_code").$type<Record<string, string>>(),
+    activeDate: date("active_date").unique(),
+    published: boolean("published").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Casos de teste: os públicos aparecem no enunciado; os ocultos só contam na correção.
+export const challengeTests = pgTable("challenge_tests", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    challengeId: uuid("challenge_id")
+        .references(() => challenges.id)
+        .notNull(),
+    input: text("input").notNull(),
+    expectedOutput: text("expected_output").notNull(),
+    isPublic: boolean("is_public").default(false).notNull(),
+    position: integer("position").notNull(),
+});
+
+export const challengeSubmissions = pgTable("challenge_submissions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    challengeId: uuid("challenge_id")
+        .references(() => challenges.id)
+        .notNull(),
+    language: challengeLanguage("language").notNull(),
+    code: text("code").notNull(),
+    status: challengeSubmissionStatus("status").default("queued").notNull(),
+    passedCount: integer("passed_count").default(0).notNull(),
+    totalCount: integer("total_count").default(0).notNull(),
+    // Saída de erro visível ao aluno (compilação ou caso público); nunca a de caso oculto.
+    output: text("output"),
+    // XP concedido nesta submissão (0 quando não gera XP; > 0 só na 1ª aprovação do desafio).
+    xpEarned: integer("xp_earned").default(0).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
