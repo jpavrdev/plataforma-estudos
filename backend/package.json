@@ -26,6 +26,7 @@
         "express-rate-limit": "^8.5.2",
         "helmet": "^8.2.0",
         "jsonwebtoken": "^9.0.3",
+        "nodemailer": "^9.0.3",
         "pg": "^8.21.0",
         "zod": "^4.4.3"
     },
@@ -35,6 +36,7 @@
         "@types/express": "^5.0.6",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "^26.0.1",
+        "@types/nodemailer": "^8.0.1",
         "@types/pg": "^8.20.0",
         "drizzle-kit": "^0.31.10",
         "eslint": "^10.6.0",
