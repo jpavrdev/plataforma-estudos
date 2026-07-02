@@ -201,6 +201,12 @@ function ConteudoAula({
   aula: LessonDetail;
   onConcluir: () => void;
 }) {
+  const navigate = useNavigate();
+  const todas = trilha.modules.flatMap((m) => m.lessons);
+  const idx = todas.findIndex((l) => l.id === aula.id);
+  const proxima = idx >= 0 && idx < todas.length - 1 ? todas[idx + 1] : null;
+  const irProxima = proxima ? () => navigate(`/trilhas/${trilha.id}/aula/${proxima.id}`) : null;
+
   return (
     <main className="lesson__content">
       <div className="lesson__crumb">
@@ -225,7 +231,21 @@ function ConteudoAula({
         <p className="lesson__p lesson__p--muted">Esta aula ainda não tem conteúdo escrito.</p>
       )}
 
-      {aula.questions.length > 0 && <Quiz aula={aula} onConcluir={onConcluir} />}
+      {aula.questions.length > 0 ? (
+        <Quiz aula={aula} onConcluir={onConcluir} irProxima={irProxima} />
+      ) : (
+        <div className="lesson__nextbar">
+          {irProxima ? (
+            <button className="btn btn--accent" onClick={irProxima}>
+              Próxima aula
+            </button>
+          ) : (
+            <button className="btn btn--accent" onClick={onConcluir}>
+              Concluir trilha
+            </button>
+          )}
+        </div>
+      )}
     </main>
   );
 }
@@ -313,8 +333,19 @@ function TabelaBloco({ value }: { value: string }) {
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 // Quiz em carrossel: uma questao por vez, com feedback imediato verificado no servidor.
-function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void }) {
+function Quiz({
+  aula,
+  onConcluir,
+  irProxima,
+}: {
+  aula: LessonDetail;
+  onConcluir: () => void;
+  irProxima: (() => void) | null;
+}) {
   const total = aula.questions.length;
+  const jaConcluida = aula.state === 'done';
+  const respondido = total > 0 && aula.questions.every((q) => q.answer);
+  const acertosSalvos = aula.questions.filter((q) => q.answer?.isCorrect).length;
   const [qIndex, setQIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [checked, setChecked] = useState(false);
@@ -323,8 +354,14 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
   const [respostas, setRespostas] = useState<Record<string, string>>({});
   const [verificando, setVerificando] = useState(false);
   const [enviando, setEnviando] = useState(false);
-  const [resultado, setResultado] = useState<QuizResult | null>(null);
+  const [resultado, setResultado] = useState<QuizResult | null>(
+    respondido
+      ? { correct: acertosSalvos, total, passed: jaConcluida, lessonCompleted: jaConcluida }
+      : null,
+  );
   const [erro, setErro] = useState('');
+  // Uma vez concluída (agora ou numa visita anterior), refazer e errar não volta a bloquear.
+  const [concluida, setConcluida] = useState(jaConcluida);
 
   const q = aula.questions[qIndex];
   const isLast = qIndex >= total - 1;
@@ -332,6 +369,21 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
   function selecionar(optionId: string) {
     if (checked) return;
     setSelected(optionId);
+  }
+
+  async function submeterQuiz(answers: { questionId: string; optionId: string }[]) {
+    if (enviando) return;
+    setEnviando(true);
+    setErro('');
+    try {
+      const r = await enviarQuiz(aula.id, answers);
+      setResultado(r);
+      if (r.passed) setConcluida(true);
+    } catch {
+      setErro('Não foi possível enviar o quiz. Tente novamente.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   async function verificar() {
@@ -344,6 +396,14 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
       setCorrectOptionId(r.correctOptionId);
       setRespostas((prev) => ({ ...prev, [q.id]: selected }));
       setChecked(true);
+      // Na última questão o resultado sai sozinho; só damos um tempo para ver o feedback.
+      if (isLast) {
+        const answers = aula.questions.map((qq) => ({
+          questionId: qq.id,
+          optionId: qq.id === q.id ? selected : respostas[qq.id],
+        }));
+        setTimeout(() => submeterQuiz(answers), 1200);
+      }
     } catch {
       setErro('Não foi possível verificar a resposta. Tente novamente.');
     } finally {
@@ -351,29 +411,12 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
     }
   }
 
-  async function avancar() {
-    if (!isLast) {
-      setQIndex((i) => i + 1);
-      setSelected(null);
-      setChecked(false);
-      setWasCorrect(false);
-      setCorrectOptionId(null);
-      return;
-    }
-    if (enviando) return;
-    setEnviando(true);
-    setErro('');
-    try {
-      const answers = aula.questions.map((qq) => ({
-        questionId: qq.id,
-        optionId: respostas[qq.id],
-      }));
-      setResultado(await enviarQuiz(aula.id, answers));
-    } catch {
-      setErro('Não foi possível enviar o quiz. Tente novamente.');
-    } finally {
-      setEnviando(false);
-    }
+  function avancar() {
+    setQIndex((i) => i + 1);
+    setSelected(null);
+    setChecked(false);
+    setWasCorrect(false);
+    setCorrectOptionId(null);
   }
 
   function refazer() {
@@ -436,11 +479,16 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
             <button className="btn btn--ghost" onClick={refazer}>
               Refazer quiz
             </button>
-            {resultado.passed && (
-              <button className="btn btn--accent" onClick={onConcluir}>
-                Voltar para a trilha
-              </button>
-            )}
+            {concluida &&
+              (irProxima ? (
+                <button className="btn btn--accent" onClick={irProxima}>
+                  Próxima aula
+                </button>
+              ) : (
+                <button className="btn btn--accent" onClick={onConcluir}>
+                  Concluir trilha
+                </button>
+              ))}
           </div>
         </div>
       </div>
@@ -506,7 +554,7 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
             {!checked
               ? 'Selecione uma alternativa e verifique.'
               : isLast
-                ? 'Veja seu desempenho na aula.'
+                ? 'Calculando seu resultado...'
                 : 'Siga para a próxima questão.'}
           </span>
           <div className="topbar__spacer" />
@@ -519,9 +567,13 @@ function Quiz({ aula, onConcluir }: { aula: LessonDetail; onConcluir: () => void
             >
               {verificando ? 'Verificando...' : 'Verificar resposta'}
             </button>
+          ) : isLast ? (
+            <button className="btn btn--accent" disabled>
+              Calculando resultado...
+            </button>
           ) : (
-            <button className="btn btn--accent" disabled={enviando} onClick={avancar}>
-              {isLast ? (enviando ? 'Enviando...' : 'Ver resultado') : 'Próxima questão'}
+            <button className="btn btn--accent" onClick={avancar}>
+              Próxima questão
             </button>
           )}
         </div>
