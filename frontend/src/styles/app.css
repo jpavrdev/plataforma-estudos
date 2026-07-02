@@ -929,6 +929,15 @@
 .challenge__code .code-window__comment {
   color: var(--muted);
 }
+.challenge__code-pre {
+  margin: 12px 0 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.7;
+  color: inherit;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
 /* Trilhas */
 .trilhas {

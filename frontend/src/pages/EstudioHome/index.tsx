@@ -129,6 +129,9 @@ export function EstudioHome() {
         <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
           Simulados
         </Link>
+        <Link className="btn btn--ghost studio__btn" to="/estudio/desafios">
+          Desafios
+        </Link>
         <Link className="btn btn--ghost studio__btn" to="/home">
           Voltar ao app
         </Link>

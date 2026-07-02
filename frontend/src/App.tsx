@@ -15,6 +15,10 @@ import { Simulados } from './pages/Simulados';
 import { TentativaSimulado } from './pages/Simulados/Tentativa';
 import { SimuladosAdmin } from './pages/SimuladosAdmin';
 import { SimuladoEditor } from './pages/SimuladosAdmin/Editor';
+import { Desafios } from './pages/Desafios';
+import { Desafio } from './pages/Desafios/Desafio';
+import { DesafiosAdmin } from './pages/DesafiosAdmin';
+import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { OAuthCallback } from './pages/OAuthCallback';
 import { CompletarPerfil } from './pages/CompletarPerfil';
@@ -111,6 +115,22 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/estudio/desafios"
+        element={
+          <AdminRoute>
+            <DesafiosAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/desafios/:id"
+        element={
+          <AdminRoute>
+            <DesafioEditor />
+          </AdminRoute>
+        }
+      />
+      <Route
         path="/estudio/:trailId"
         element={
           <AdminRoute>
@@ -131,6 +151,22 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <TentativaSimulado />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/desafios"
+        element={
+          <PrivateRoute>
+            <Desafios />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/desafios/:id"
+        element={
+          <PrivateRoute>
+            <Desafio />
           </PrivateRoute>
         }
       />

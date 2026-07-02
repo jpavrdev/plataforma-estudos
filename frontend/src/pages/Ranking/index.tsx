@@ -15,6 +15,7 @@ const NAV = [
   { label: 'Início', to: '/home' },
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
+  { label: 'Desafios', to: '/desafios' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
