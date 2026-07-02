@@ -45,6 +45,7 @@
   padding: 18px;
   cursor: pointer;
   font-family: inherit;
+  color: var(--text);
 }
 .exam-card--active {
   border-color: var(--accent);
@@ -466,6 +467,7 @@
   border: 1.5px solid transparent;
   font-family: inherit;
   text-align: left;
+  color: var(--text);
 }
 .exam-opt__badge {
   width: 30px;
