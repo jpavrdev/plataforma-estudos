@@ -38,6 +38,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  # Executor isolado dos desafios de código. É o único serviço com acesso ao
+  # Docker: sobe um container efêmero por submissão. O backend fala com ele pela
+  # rede interna (RUNNER_URL padrão http://runner:8080). As imagens de execução
+  # desafio-js/desafio-python precisam existir no host (rode runner/build-images.sh).
+  runner:
+    build:
+      context: ./runner
+    restart: unless-stopped
+    environment:
+      - MAX_CONCURRENT=2
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
 volumes:
   pgdata:
   caddy_data:
