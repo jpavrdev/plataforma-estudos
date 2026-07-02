@@ -1,9 +1,8 @@
-// Seed da trilha AZ-900 (Microsoft Azure Fundamentals). Idempotente: se a trilha
-// já existir, não faz nada.
+// Seed da trilha AZ-900 (Microsoft Azure Fundamentals). Cria a trilha se não existir
+// e garante 5 questões por aula (completa as que faltarem). Idempotente e não
+// destrutivo: nunca apaga conteúdo nem progresso, só insere o que falta.
 //
-// Rodar em dev:  node --env-file=.env scripts/seed-trilha-az900.ts
-// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend \
-//                  node scripts/seed-trilha-az900.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-trilha-az900.ts
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
@@ -94,6 +93,17 @@ const AULAS: Aula[] = [
                     { text: "A segurança física do data center", isCorrect: false },
                     { text: "A manutenção dos equipamentos de rede", isCorrect: false },
                     { text: "A energia e a refrigeração dos servidores", isCorrect: false },
+                ],
+            },
+            {
+                statement:
+                    "Uma empresa mantém parte dos sistemas no data center próprio por conformidade e usa o Azure para o resto, com os dois ambientes conectados. Que modelo de implantação de nuvem isso descreve?",
+                difficulty: "facil",
+                options: [
+                    { text: "Nuvem híbrida", isCorrect: true },
+                    { text: "Nuvem pública", isCorrect: false },
+                    { text: "Nuvem privada", isCorrect: false },
+                    { text: "Multinuvem com dois provedores públicos", isCorrect: false },
                 ],
             },
         ],
@@ -213,6 +223,17 @@ const AULAS: Aula[] = [
                     },
                 ],
             },
+            {
+                statement:
+                    "Uma empresa tem dezenas de assinaturas e quer aplicar uma mesma política de governança a todas de uma vez, de forma centralizada. Qual nível da hierarquia do Azure ela deve usar?",
+                difficulty: "medio",
+                options: [
+                    { text: "Grupo de gerenciamento (management group)", isCorrect: true },
+                    { text: "Grupo de recursos", isCorrect: false },
+                    { text: "Uma única assinatura", isCorrect: false },
+                    { text: "Zona de disponibilidade", isCorrect: false },
+                ],
+            },
         ],
     },
     {
@@ -287,6 +308,17 @@ const AULAS: Aula[] = [
                     { text: "Azure Container Instances (ACI)", isCorrect: false },
                     { text: "Azure App Service", isCorrect: false },
                     { text: "Azure Functions", isCorrect: false },
+                ],
+            },
+            {
+                statement:
+                    "Uma equipe quer publicar uma aplicação web e uma API sem gerenciar o sistema operacional nem o servidor, focando apenas no código. Qual serviço de computação é o mais indicado?",
+                difficulty: "medio",
+                options: [
+                    { text: "Azure App Service", isCorrect: true },
+                    { text: "Máquina Virtual do Azure", isCorrect: false },
+                    { text: "Azure Virtual Desktop", isCorrect: false },
+                    { text: "Azure Batch", isCorrect: false },
                 ],
             },
         ],
@@ -383,6 +415,17 @@ const AULAS: Aula[] = [
                     },
                 ],
             },
+            {
+                statement:
+                    "Uma empresa aceita que o tráfego entre o data center local e o Azure passe pela internet, desde que criptografado, e quer o menor custo. Qual conexão usar?",
+                difficulty: "medio",
+                options: [
+                    { text: "VPN Gateway com conexão site a site", isCorrect: true },
+                    { text: "ExpressRoute", isCorrect: false },
+                    { text: "Peering de VNet", isCorrect: false },
+                    { text: "Azure DNS", isCorrect: false },
+                ],
+            },
         ],
     },
     {
@@ -459,6 +502,22 @@ const AULAS: Aula[] = [
                     { text: "Discos gerenciados", isCorrect: false },
                 ],
             },
+            {
+                statement: "Qual tipo de dado o Azure Blob Storage foi feito para guardar?",
+                difficulty: "facil",
+                options: [
+                    {
+                        text: "Dados não estruturados, como imagens, vídeos, backups e logs",
+                        isCorrect: true,
+                    },
+                    {
+                        text: "Tabelas relacionais com esquema fixo e chaves estrangeiras",
+                        isCorrect: false,
+                    },
+                    { text: "Compartilhamentos de arquivos montados via SMB", isCorrect: false },
+                    { text: "Mensagens em fila trocadas entre componentes", isCorrect: false },
+                ],
+            },
         ],
     },
     {
@@ -533,6 +592,17 @@ const AULAS: Aula[] = [
                     { text: "Azure SQL Managed Instance", isCorrect: false },
                     { text: "SQL Server em uma máquina virtual", isCorrect: false },
                     { text: "Azure Cosmos DB", isCorrect: false },
+                ],
+            },
+            {
+                statement:
+                    "Uma empresa quer rodar no Azure um banco de dados PostgreSQL totalmente gerenciado, sem administrar o servidor nem aplicar patches. Qual serviço usar?",
+                difficulty: "medio",
+                options: [
+                    { text: "Azure Database for PostgreSQL", isCorrect: true },
+                    { text: "Azure SQL Database", isCorrect: false },
+                    { text: "Azure Cosmos DB", isCorrect: false },
+                    { text: "Azure Synapse Analytics", isCorrect: false },
                 ],
             },
         ],
@@ -617,6 +687,17 @@ const AULAS: Aula[] = [
                     { text: "Função Leitor no escopo da assinatura inteira", isCorrect: false },
                 ],
             },
+            {
+                statement:
+                    "Qual serviço avalia continuamente a postura de segurança do ambiente Azure, dá uma pontuação de segurança (Secure Score) e recomenda melhorias de configuração?",
+                difficulty: "medio",
+                options: [
+                    { text: "Microsoft Defender for Cloud", isCorrect: true },
+                    { text: "Microsoft Entra ID", isCorrect: false },
+                    { text: "Azure Policy", isCorrect: false },
+                    { text: "Azure Monitor", isCorrect: false },
+                ],
+            },
         ],
     },
     {
@@ -691,6 +772,17 @@ const AULAS: Aula[] = [
                     { text: "No Microsoft Purview", isCorrect: false },
                     { text: "No Azure Policy", isCorrect: false },
                     { text: "No Azure Monitor", isCorrect: false },
+                ],
+            },
+            {
+                statement:
+                    "Como se chama o agrupamento de várias definições de Azure Policy atribuídas em conjunto para atingir um objetivo maior de conformidade?",
+                difficulty: "medio",
+                options: [
+                    { text: "Iniciativa (conjunto de políticas)", isCorrect: true },
+                    { text: "Grupo de recursos", isCorrect: false },
+                    { text: "Bloqueio de recurso", isCorrect: false },
+                    { text: "Grupo de gerenciamento", isCorrect: false },
                 ],
             },
         ],
@@ -769,6 +861,17 @@ const AULAS: Aula[] = [
                     { text: "Grupos de gerenciamento", isCorrect: false },
                 ],
             },
+            {
+                statement:
+                    "Uma carga de trabalho roda de forma estável o ano inteiro. A empresa quer reduzir o custo assumindo um compromisso de 1 ou 3 anos. Qual opção usar?",
+                difficulty: "medio",
+                options: [
+                    { text: "Reservas do Azure (Azure Reservations)", isCorrect: true },
+                    { text: "Máquinas virtuais Spot", isCorrect: false },
+                    { text: "Pagamento conforme o uso (pay-as-you-go)", isCorrect: false },
+                    { text: "Camada gratuita", isCorrect: false },
+                ],
+            },
         ],
     },
     {
@@ -845,67 +948,93 @@ const AULAS: Aula[] = [
                     { text: "Azure Monitor", isCorrect: false },
                 ],
             },
+            {
+                statement:
+                    "Qual serviço analisa seus recursos e recomenda melhorias de custo, segurança, confiabilidade e desempenho, com base nas boas práticas da Microsoft?",
+                difficulty: "medio",
+                options: [
+                    { text: "Azure Advisor", isCorrect: true },
+                    { text: "Azure Monitor", isCorrect: false },
+                    { text: "Azure Service Health", isCorrect: false },
+                    { text: "Log Analytics", isCorrect: false },
+                ],
+            },
         ],
     },
 ];
 
-async function seed() {
-    const [existente] = await db.select().from(trails).where(eq(trails.name, NOME));
-    if (existente) {
-        console.log(`Trilha "${NOME}" já existe, nada a fazer.`);
-        return;
-    }
-    const [trilha] = await db
-        .insert(trails)
-        .values({
-            name: NOME,
-            trailLevel: "iniciante",
-            description:
-                "Trilha de fundamentos do Microsoft Azure para a certificação AZ-900: conceitos de nuvem, arquitetura, computação, rede, armazenamento, bancos de dados, identidade, governança, custos e ferramentas.",
-        })
-        .returning();
-    console.log(`Trilha criada: ${trilha.name}`);
-
-    for (let i = 0; i < AULAS.length; i++) {
-        const a = AULAS[i];
-        const [mod] = await db
-            .insert(modules)
-            .values({ trailId: trilha.id, title: a.modulo, position: i + 1 })
+async function inserirQuestoes(lessonId: string, qs: Questao[], apartirDe: number) {
+    for (let j = apartirDe; j < qs.length; j++) {
+        const q = qs[j];
+        const [questao] = await db
+            .insert(questions)
+            .values({ lessonId, statement: q.statement, difficulty: q.difficulty, position: j + 1 })
             .returning();
-        const [lesson] = await db
-            .insert(lessons)
+        await db.insert(questionOptions).values(
+            q.options.map((o, k) => ({
+                questionId: questao.id,
+                text: o.text,
+                isCorrect: o.isCorrect,
+                position: k + 1,
+            })),
+        );
+    }
+}
+
+async function seed() {
+    let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
+    if (!trilha) {
+        [trilha] = await db
+            .insert(trails)
             .values({
-                trailId: trilha.id,
-                moduleId: mod.id,
-                title: a.titulo,
-                content: null,
-                contentBlocks: a.blocks,
-                position: 1,
-                published: true,
+                name: NOME,
+                trailLevel: "iniciante",
+                description:
+                    "Trilha de fundamentos do Microsoft Azure para a certificação AZ-900: conceitos de nuvem, arquitetura, computação, rede, armazenamento, bancos de dados, identidade, governança, custos e ferramentas.",
             })
             .returning();
-        for (let j = 0; j < a.questions.length; j++) {
-            const q = a.questions[j];
-            const [questao] = await db
-                .insert(questions)
+        console.log(`Trilha criada: ${trilha.name}`);
+    }
+
+    const existentes = await db.select().from(lessons).where(eq(lessons.trailId, trilha.id));
+
+    if (existentes.length === 0) {
+        // Trilha nova: insere tudo.
+        for (let i = 0; i < AULAS.length; i++) {
+            const a = AULAS[i];
+            const [mod] = await db
+                .insert(modules)
+                .values({ trailId: trilha.id, title: a.modulo, position: i + 1 })
+                .returning();
+            const [lesson] = await db
+                .insert(lessons)
                 .values({
-                    lessonId: lesson.id,
-                    statement: q.statement,
-                    difficulty: q.difficulty,
-                    position: j + 1,
+                    trailId: trilha.id,
+                    moduleId: mod.id,
+                    title: a.titulo,
+                    content: null,
+                    contentBlocks: a.blocks,
+                    position: 1,
+                    published: true,
                 })
                 .returning();
-            await db.insert(questionOptions).values(
-                q.options.map((o, k) => ({
-                    questionId: questao.id,
-                    text: o.text,
-                    isCorrect: o.isCorrect,
-                    position: k + 1,
-                })),
-            );
+            await inserirQuestoes(lesson.id, a.questions, 0);
         }
+        console.log(`Seed concluído: trilha ${NOME} com ${AULAS.length} aulas.`);
+        return;
     }
-    console.log(`Seed concluído: trilha ${NOME} com ${AULAS.length} aulas.`);
+
+    // Trilha já existe: garante 5 questões por aula, adicionando só o que falta.
+    let adicionadas = 0;
+    for (const a of AULAS) {
+        const lesson = existentes.find((l) => l.title === a.titulo);
+        if (!lesson) continue;
+        const qs = await db.select().from(questions).where(eq(questions.lessonId, lesson.id));
+        if (qs.length >= a.questions.length) continue;
+        await inserirQuestoes(lesson.id, a.questions, qs.length);
+        adicionadas += a.questions.length - qs.length;
+    }
+    console.log(`Questões completadas: ${adicionadas}.`);
 }
 
 seed()
