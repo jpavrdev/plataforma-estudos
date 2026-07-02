@@ -450,11 +450,41 @@
     display: none;
   }
   .ch-row {
-    grid-template-columns: 30px 1fr 70px;
+    grid-template-columns: 28px 1fr auto auto;
+    gap: 8px;
   }
   .ch-row__topic,
   .ch-row__accept {
     display: none;
+  }
+}
+
+/* Telefone: banner do dia empilha, e busca/filtros quebram linha. */
+@media (max-width: 640px) {
+  .ch {
+    padding: 18px 14px;
+  }
+  .ch-daily {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+  }
+  .ch-daily__btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .ch-toolbar {
+    flex-wrap: wrap;
+  }
+  .ch-search {
+    flex-basis: 100%;
+  }
+  .ch-dd {
+    flex: 1;
+  }
+  .ch-dd__btn {
+    width: 100%;
   }
 }
 

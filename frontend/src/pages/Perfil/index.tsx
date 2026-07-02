@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
+import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import {
@@ -246,6 +247,7 @@ export function Perfil() {
     <div className="home-shell">
       <div className="home">
         <header className="topbar">
+          <MobileMenu />
           <Logo variant="solid" size={20} />
           <nav className="nav">
             {NAV.map((item) => (

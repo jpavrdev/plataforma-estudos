@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
+import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Check, Help, Alert, X } from '../../components/Icons';
@@ -71,6 +72,7 @@ export function Aula() {
     <div className="home-shell">
       <div className="home">
         <header className="topbar">
+          <MobileMenu />
           <Logo variant="solid" size={20} />
           <nav className="nav">
             {NAV.map((item) => (

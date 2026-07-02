@@ -3944,3 +3944,227 @@
     transform: translateY(0);
   }
 }
+
+/* ===================== RESPONSIVO / MOBILE ===================== */
+/* Topbar no telefone: o nav inline e a busca somem, e aparece o hambúrguer. */
+@media (max-width: 640px) {
+  .topbar {
+    gap: 10px;
+    padding: 0 14px;
+  }
+  .topbar .searchbar,
+  .topbar .nav {
+    display: none;
+  }
+  .topbar .hamburguer {
+    display: flex;
+  }
+  .streak-pill {
+    padding: 0 10px;
+    font-size: 14px;
+  }
+}
+
+/* Hambúrguer (só no telefone) e drawer lateral com a navegação. */
+.hamburguer {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+.drawer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.45);
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 101;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: drawer-in 0.18s ease;
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: var(--r-sm);
+}
+.drawer__item {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+}
+.drawer__item--active {
+  color: var(--accent);
+  font-weight: 700;
+  background: var(--accent-soft);
+}
+
+/* Telas de duas colunas que ainda não empilhavam no mobile. */
+@media (max-width: 900px) {
+  .home__body {
+    padding: 24px 16px;
+  }
+  .lesson {
+    grid-template-columns: 1fr;
+  }
+  .lesson__nav {
+    align-self: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 42vh;
+    overflow-y: auto;
+  }
+  .studio {
+    grid-template-columns: 1fr;
+  }
+  .pf {
+    padding: 24px 16px;
+  }
+  .pf-grid {
+    grid-template-columns: 1fr;
+  }
+  .pf-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pf-badges {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .rk {
+    padding: 24px 16px;
+  }
+  .leagues__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tabela do ranking: colapsa para posição, estudante e XP no telefone. */
+@media (max-width: 700px) {
+  .rk-table__head,
+  .rk-row {
+    grid-template-columns: 40px 1fr auto;
+    padding: 12px 14px;
+  }
+  /* Esconde as colunas Streak e Nível (3º e 4º filhos) na tabela e no cabeçalho. */
+  .rk-table__head > :nth-child(3),
+  .rk-table__head > :nth-child(4),
+  .rk-row > :nth-child(3),
+  .rk-row > :nth-child(4) {
+    display: none;
+  }
+}
+
+/* Telefone: cabeçalho do ranking empilha e as abas ocupam a linha; a linha de
+   progressão das ligas some (não faz sentido com os emblemas empilhados). */
+@media (max-width: 640px) {
+  .rk-head {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .seg {
+    width: 100%;
+    margin-left: 0;
+  }
+  .seg__item {
+    flex: 1;
+  }
+  /* "LIGAS" grande e fora do card; as ligas viram uma faixa que rola pro lado. */
+  .leagues {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 22px;
+  }
+  .leagues__head {
+    display: block;
+    margin-bottom: 12px;
+  }
+  .leagues .card__title {
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .leagues__rule {
+    display: block;
+    margin: 4px 0 0;
+  }
+  .leagues__track {
+    padding: 0;
+  }
+  .leagues__line {
+    display: none;
+  }
+  .leagues__grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .leagues__grid::-webkit-scrollbar {
+    display: none;
+  }
+  .league {
+    flex: 0 0 132px;
+    scroll-snap-align: start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 16px 8px;
+  }
+  /* Cartão "Sua posição": rótulo em cima, depois posição/nome, e streak+XP na última linha. */
+  .rk-you {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding: 14px 16px;
+  }
+  .rk-you__label {
+    flex-basis: 100%;
+  }
+  .rk-you__xp {
+    margin-left: auto;
+  }
+}
