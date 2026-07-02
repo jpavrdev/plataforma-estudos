@@ -92,3 +92,17 @@ input {
   background: var(--accent);
   color: #fff;
 }
+
+/* Imagens e mídia nunca ultrapassam a largura do container. */
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+/* Rede de segurança no telefone: nada gera rolagem horizontal na página. */
+@media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+}

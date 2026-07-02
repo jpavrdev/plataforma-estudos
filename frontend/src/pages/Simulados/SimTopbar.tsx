@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
+import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame } from '../../components/Icons';
@@ -21,6 +22,7 @@ export function SimTopbar() {
 
   return (
     <header className="topbar">
+      <MobileMenu />
       <Logo variant="solid" size={20} />
       <nav className="nav">
         {NAV.map((item) => (

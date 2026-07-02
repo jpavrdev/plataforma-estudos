@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Logo } from '../../components/Logo';
+import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Search, Play, ChevronRight } from '../../components/Icons';
@@ -124,6 +125,7 @@ export function Trilhas() {
       <div className="home">
         {/* Topbar */}
         <header className="topbar">
+          <MobileMenu />
           <Logo variant="solid" size={20} />
           <nav className="nav">
             {NAV.map((item) => (

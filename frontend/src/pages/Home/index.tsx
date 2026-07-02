@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
+import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
@@ -145,6 +146,7 @@ export function Home() {
       <div className="home">
         {/* Topbar */}
         <header className="topbar">
+          <MobileMenu />
           <Logo variant="solid" size={20} />
           <nav className="nav">
             {NAV.map((item, i) => (
