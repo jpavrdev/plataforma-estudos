@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
@@ -255,6 +255,40 @@ function embedVideo(url: string): string {
   return yt ? `https://www.youtube.com/embed/${yt[1]}` : url;
 }
 
+// Renderiza negrito (**x**), itálico (_x_) e código (`x`) inline, para os blocos que
+// não passam pelo markdown completo (tabela e citação).
+function inline(texto: string): ReactNode {
+  const re = /\*\*([^*]+?)\*\*|`([^`]+?)`|_([^_]+?)_/g;
+  const out: ReactNode[] = [];
+  let ultimo = 0;
+  let k = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(texto)) !== null) {
+    if (m.index > ultimo) out.push(texto.slice(ultimo, m.index));
+    if (m[1] !== undefined) out.push(<strong key={k++}>{m[1]}</strong>);
+    else if (m[2] !== undefined)
+      out.push(
+        <code key={k++} className="code-inline">
+          {m[2]}
+        </code>,
+      );
+    else out.push(<em key={k++}>{m[3]}</em>);
+    ultimo = re.lastIndex;
+  }
+  if (ultimo < texto.length) out.push(texto.slice(ultimo));
+  return out;
+}
+
+// Citação pode ter várias linhas; preserva as quebras.
+function citacaoInline(texto: string): ReactNode {
+  return texto.split('\n').map((linha, j) => (
+    <span key={j}>
+      {j > 0 && <br />}
+      {inline(linha)}
+    </span>
+  ));
+}
+
 // Renderiza o conteúdo da aula a partir dos blocos do Estúdio.
 function BlocosAula({ blocks }: { blocks: Bloco[] }) {
   return (
@@ -288,7 +322,7 @@ function BlocosAula({ blocks }: { blocks: Bloco[] }) {
           ) : null;
         }
         if (b.type === 'quote') {
-          return <blockquote key={i}>{b.value}</blockquote>;
+          return <blockquote key={i}>{citacaoInline(b.value)}</blockquote>;
         }
         if (b.type === 'table') {
           return <TabelaBloco key={i} value={b.value} />;
@@ -313,7 +347,7 @@ function TabelaBloco({ value }: { value: string }) {
       <thead>
         <tr>
           {cabecalho.map((c, j) => (
-            <th key={j}>{c}</th>
+            <th key={j}>{inline(c)}</th>
           ))}
         </tr>
       </thead>
@@ -321,7 +355,7 @@ function TabelaBloco({ value }: { value: string }) {
         {corpo.map((linha, i) => (
           <tr key={i}>
             {linha.map((c, j) => (
-              <td key={j}>{c}</td>
+              <td key={j}>{inline(c)}</td>
             ))}
           </tr>
         ))}

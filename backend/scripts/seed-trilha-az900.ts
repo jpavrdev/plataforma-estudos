@@ -7,7 +7,7 @@ import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
 
-const NOME = "AZ-900";
+const NOME = "AZURE AZ-900";
 
 type Bloco = { type: "text" | "code" | "quote" | "table"; value: string };
 type Questao = {
