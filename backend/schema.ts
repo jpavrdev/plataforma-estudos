@@ -256,6 +256,11 @@ export const simulados = pgTable("simulados", {
     slug: varchar("slug", { length: 80 }).notNull().unique(),
     name: varchar("name", { length: 160 }).notNull(),
     description: text("description"),
+    // Provedor da certificação (chave: aws, azure, gcp), código (ex.: DP-900) e nível
+    // (ex.: Fundamental, Associate). Usados na organização e nos filtros da lista.
+    provider: varchar("provider", { length: 40 }),
+    code: varchar("code", { length: 40 }),
+    level: varchar("level", { length: 40 }),
     durationMinutes: integer("duration_minutes").notNull(),
     questionCount: integer("question_count").notNull(),
     passPercent: integer("pass_percent").notNull(),

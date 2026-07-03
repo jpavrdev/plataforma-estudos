@@ -4,6 +4,9 @@ export interface SimuladoResumo {
   slug: string;
   name: string;
   description: string | null;
+  provider: string | null;
+  code: string | null;
+  level: string | null;
   durationMinutes: number;
   questionCount: number;
   passPercent: number;
@@ -35,11 +38,15 @@ export interface TemaRevisar {
 
 export interface TentativaEstado {
   attemptId: string;
+  slug?: string | null;
+  simulado?: string | null;
+  passPercent?: number | null;
   submitted: boolean;
   expiresAt: string;
   remainingSeconds: number;
   score?: number;
   passed?: boolean;
+  elapsedSeconds?: number;
   temasARevisar?: TemaRevisar[];
   questions: QuestaoSimulado[];
 }

@@ -12,6 +12,7 @@ import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
 import { Ranking } from './pages/Ranking';
 import { Simulados } from './pages/Simulados';
+import { SimuladoBriefing } from './pages/Simulados/Briefing';
 import { TentativaSimulado } from './pages/Simulados/Tentativa';
 import { SimuladosAdmin } from './pages/SimuladosAdmin';
 import { SimuladoEditor } from './pages/SimuladosAdmin/Editor';
@@ -155,6 +156,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <TentativaSimulado />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/simulados/:slug"
+        element={
+          <PrivateRoute>
+            <SimuladoBriefing />
           </PrivateRoute>
         }
       />
