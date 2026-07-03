@@ -1556,6 +1556,7 @@
 }
 .lesson__nav {
   align-self: stretch;
+  min-width: 0;
   background: var(--surface);
   border-right: 1px solid var(--border);
   padding: 22px 18px;
@@ -1669,7 +1670,34 @@
   font-weight: 700;
 }
 
+/* Botão de expandir a lista de aulas (só aparece no telefone). */
+.lesson__toggle {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lesson__toggle-chevron {
+  display: inline-flex;
+  transition: transform 0.2s;
+}
+.lesson__toggle--aberto .lesson__toggle-chevron {
+  transform: rotate(180deg);
+}
+
 .lesson__content {
+  min-width: 0;
   padding: 34px 44px 40px;
   max-width: 820px;
   margin: 22px;
@@ -4068,8 +4096,31 @@
     align-self: auto;
     border-right: none;
     border-bottom: 1px solid var(--border);
-    max-height: 42vh;
+    padding: 14px 16px;
+  }
+  .lesson__toggle {
+    display: flex;
+  }
+  .lesson__modules {
+    display: none;
+    max-height: 60vh;
     overflow-y: auto;
+  }
+  .lesson__modules--aberto {
+    display: block;
+  }
+  .lesson__item {
+    height: auto;
+    min-height: 38px;
+    padding: 8px;
+  }
+  .lesson__item-name {
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .lesson__content {
+    margin: 16px 12px 0;
+    padding: 22px 18px 28px;
   }
   .studio {
     grid-template-columns: 1fr;
