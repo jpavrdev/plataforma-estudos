@@ -27,6 +27,7 @@ import {
   Calendar,
   Github,
   Linkedin,
+  XSocial,
   Trash,
   IconeConquista,
 } from '../../components/Icons';
@@ -42,6 +43,7 @@ import {
   type MinhaConquista,
   type Atividade,
 } from '../../services/trails';
+import { urlImagem } from '../../utils/urlImagem';
 
 const NAV = [
   { label: 'Início', to: '/home' },
@@ -66,6 +68,7 @@ interface PerfilData {
   languages: string[] | null;
   github: string | null;
   linkedin: string | null;
+  x: string | null;
   avatarUrl: string | null;
   coverUrl: string | null;
   streak: number;
@@ -82,6 +85,7 @@ interface Editavel {
   languages: string[];
   github: string;
   linkedin: string;
+  x: string;
 }
 
 function membroDesde(iso: string): string {
@@ -91,12 +95,6 @@ function membroDesde(iso: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-// As imagens sao servidas pelo backend; em dev ele fica em outra origem que o front.
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-function urlImagem(p: string | null | undefined): string | null {
-  if (!p) return null;
-  return p.startsWith('http') ? p : `${API_BASE}${p}`;
-}
 const TIPOS_IMG = ['image/png', 'image/jpeg', 'image/webp'];
 const MAX_IMG = 4 * 1024 * 1024; // 4MB
 
@@ -110,7 +108,7 @@ function lerArquivo(file: File): Promise<string> {
 }
 
 export function Perfil() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, atualizarUsuario } = useAuth();
   const [perfil, setPerfil] = useState<PerfilData | null>(null);
   const [xp, setXp] = useState({ xp: 0, level: 1, lessonsCompleted: 0, questionsCorrect: 0 });
   const [carregando, setCarregando] = useState(true);
@@ -129,6 +127,7 @@ export function Perfil() {
     languages: [],
     github: '',
     linkedin: '',
+    x: '',
   });
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
@@ -181,6 +180,7 @@ export function Perfil() {
       languages: (perfil.languages ?? []).filter((l) => linguagens.includes(l)),
       github: perfil.github ?? '',
       linkedin: perfil.linkedin ?? '',
+      x: perfil.x ?? '',
     });
     setEditando(true);
   }
@@ -196,7 +196,9 @@ export function Perfil() {
     setErro('');
     try {
       const { data } = await api.patch<PerfilData>('/me', draft);
-      setPerfil(data);
+      // Preserva campos derivados (streak) que o PATCH não retorna.
+      setPerfil((prev) => (prev ? { ...prev, ...data } : data));
+      atualizarUsuario({ name: data.name });
       setEditando(false);
     } catch (e) {
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
@@ -232,7 +234,8 @@ export function Perfil() {
       const { data } = await api.post<PerfilData>(avatar ? '/me/avatar' : '/me/cover', {
         image: dataUrl,
       });
-      setPerfil(data);
+      setPerfil((prev) => (prev ? { ...prev, ...data } : data));
+      if (avatar) atualizarUsuario({ avatarUrl: data.avatarUrl });
     } catch (e) {
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
       setErro(msg ?? 'Não foi possível enviar a imagem.');
@@ -247,7 +250,8 @@ export function Perfil() {
     setErro('');
     try {
       const { data } = await api.delete<PerfilData>(rota);
-      setPerfil(data);
+      setPerfil((prev) => (prev ? { ...prev, ...data } : data));
+      if (rota === '/me/avatar') atualizarUsuario({ avatarUrl: data.avatarUrl });
     } catch (e) {
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
       setErro(msg ?? 'Não foi possível remover a imagem.');
@@ -611,6 +615,7 @@ export function Perfil() {
                           editando={editando}
                           draft={draft.github}
                           placeholder="github.com/voce"
+                          prefixo="https://github.com/"
                           onChange={(v) => setDraft({ ...draft, github: v })}
                         />
                         <LinkEdit
@@ -619,7 +624,17 @@ export function Perfil() {
                           editando={editando}
                           draft={draft.linkedin}
                           placeholder="linkedin.com/in/voce"
+                          prefixo="https://www.linkedin.com/in/"
                           onChange={(v) => setDraft({ ...draft, linkedin: v })}
+                        />
+                        <LinkEdit
+                          icon={<XSocial size={15} />}
+                          value={perfil.x}
+                          editando={editando}
+                          draft={draft.x}
+                          placeholder="x.com/voce"
+                          prefixo="https://x.com/"
+                          onChange={(v) => setDraft({ ...draft, x: v })}
                         />
                       </div>
                     </div>
@@ -766,16 +781,37 @@ interface LinkEditProps {
   editando: boolean;
   draft: string;
   placeholder?: string;
+  prefixo: string;
   onChange: (v: string) => void;
 }
 
-function LinkEdit({ icon, value, editando, draft, placeholder, onChange }: LinkEditProps) {
+// Monta a URL do link: aceita URL completa, domínio com caminho (github.com/voce) ou só o usuário.
+function urlSocial(valor: string, prefixo: string): string {
+  const v = valor.trim();
+  if (/^https?:\/\//i.test(v)) return v;
+  if (v.includes('.')) return `https://${v.replace(/^\/+/, '')}`;
+  return `${prefixo}${v.replace(/^@/, '')}`;
+}
+
+function LinkEdit({ icon, value, editando, draft, placeholder, prefixo, onChange }: LinkEditProps) {
   if (!editando) {
+    if (!value) {
+      return (
+        <div className="pf-link">
+          <span className="pf-link__icon">{icon}</span>—
+        </div>
+      );
+    }
     return (
-      <div className="pf-link">
+      <a
+        className="pf-link pf-link--click"
+        href={urlSocial(value, prefixo)}
+        target="_blank"
+        rel="noreferrer noopener"
+      >
         <span className="pf-link__icon">{icon}</span>
-        {value || '—'}
-      </div>
+        {value}
+      </a>
     );
   }
   return (

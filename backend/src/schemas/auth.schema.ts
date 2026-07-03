@@ -58,6 +58,7 @@ export const updateMeSchema = z.object({
     languages: z.array(z.string().min(1).max(60)).max(20).optional(),
     github: z.string().max(200).optional(),
     linkedin: z.string().max(200).optional(),
+    x: z.string().max(200).optional(),
 });
 
 // Campos que o login social não traz e o usuário completa depois.

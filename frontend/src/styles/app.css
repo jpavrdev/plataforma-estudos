@@ -519,6 +519,12 @@
   color: #fff;
   flex-shrink: 0;
 }
+.avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
 .avatar--sm {
   width: 30px;
   height: 30px;
@@ -3014,8 +3020,9 @@
 
 /* ===================== PERFIL ===================== */
 .pf {
-  padding: 28px 48px 36px;
-  max-width: 1600px;
+  /* Coluna do card em 1080px (1128 - 24px de respiro de cada lado). */
+  padding: 28px 24px 36px;
+  max-width: 1128px;
   margin: 0 auto;
 }
 .pf-avatar {
@@ -3043,7 +3050,7 @@
 }
 .pf-banner {
   position: relative;
-  height: 132px;
+  height: 120px;
   background: linear-gradient(
     150deg,
     var(--accent),
@@ -3291,6 +3298,13 @@
   font-size: 13.5px;
   font-weight: 500;
   color: var(--accent);
+}
+.pf-link--click {
+  text-decoration: none;
+  cursor: pointer;
+}
+.pf-link--click:hover {
+  text-decoration: underline;
 }
 .pf-link__icon {
   color: var(--muted);
