@@ -169,6 +169,13 @@
       "when": 1783036921710,
       "tag": "0023_username_changed_at",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1783041864103,
+      "tag": "0024_add_x_social",
+      "breakpoints": true
     }
   ]
 }

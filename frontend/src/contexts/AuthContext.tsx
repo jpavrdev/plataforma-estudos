@@ -10,6 +10,7 @@ interface User {
   role?: 'user' | 'admin' | 'moderator';
   streak?: number;
   level?: number;
+  avatarUrl?: string | null;
 }
 
 interface AuthContextData {
@@ -19,6 +20,7 @@ interface AuthContextData {
   login: (email: string, password: string) => Promise<void>;
   entrarComToken: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
+  atualizarUsuario: (patch: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -95,9 +97,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  // Atualiza campos do usuário logado (ex.: foto ou nome mudados no perfil) e persiste no cache.
+  function atualizarUsuario(patch: Partial<User>) {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const novo = { ...prev, ...patch };
+      localStorage.setItem('@App:user', JSON.stringify(novo));
+      return novo;
+    });
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated: !!user, loading, login, entrarComToken, logout }}
+      value={{
+        user,
+        isAuthenticated: !!user,
+        loading,
+        login,
+        entrarComToken,
+        logout,
+        atualizarUsuario,
+      }}
     >
       {children}
     </AuthContext.Provider>

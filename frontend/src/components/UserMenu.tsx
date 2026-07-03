@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { urlImagem } from '../utils/urlImagem';
 
 interface UserMenuProps {
   initials: string;
@@ -14,6 +15,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { logout, user } = useAuth();
+  const foto = urlImagem(user?.avatarUrl);
 
   // Fecha ao clicar fora ou pressionar Escape
   useEffect(() => {
@@ -57,7 +59,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
         aria-expanded={open}
         aria-label="Abrir menu do usuário"
       >
-        {initials}
+        {foto ? <img className="avatar__img" src={foto} alt={name} /> : initials}
         <span className="avatar__level">Lv{level}</span>
       </button>
 

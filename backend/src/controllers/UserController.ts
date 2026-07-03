@@ -25,6 +25,7 @@ const publicUserColumns = {
     languages: users.languages,
     github: users.github,
     linkedin: users.linkedin,
+    x: users.x,
     avatarUrl: users.avatarUrl,
     coverUrl: users.coverUrl,
     role: users.role,
@@ -93,6 +94,7 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
             languages?: string[];
             github?: string;
             linkedin?: string;
+            x?: string;
         } = {};
         if (dados.name !== undefined) sets.name = dados.name;
         if (dados.bio !== undefined) sets.bio = dados.bio;
@@ -101,6 +103,7 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
         if (dados.languages !== undefined) sets.languages = dados.languages;
         if (dados.github !== undefined) sets.github = dados.github;
         if (dados.linkedin !== undefined) sets.linkedin = dados.linkedin;
+        if (dados.x !== undefined) sets.x = dados.x;
 
         // Username: só troca uma vez a cada 30 dias (a primeira troca é livre).
         if (dados.username !== undefined) {
