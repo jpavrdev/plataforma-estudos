@@ -22,7 +22,8 @@ interface Mensagem {
 // Uma falha é logada, não propagada: o cadastro não deve quebrar porque o email não saiu.
 async function enviar({ to, subject, html, text }: Mensagem) {
     if (!transporter) {
-        console.log(`[EMAIL] (SMTP não configurado) para=${to} assunto="${subject}"`);
+        // Em dev registra o corpo (com o link) para dar pra testar o fluxo sem SMTP.
+        console.log(`[EMAIL] (SMTP não configurado) para=${to} assunto="${subject}"\n${text}`);
         return;
     }
     try {
@@ -55,5 +56,17 @@ export const emailService = {
         );
         const text = `Confirme seu email para ativar sua conta no ensina.dev:\n${link}\n\nSe você não criou uma conta, ignore este email.`;
         await enviar({ to: email, subject: "Confirme seu email · ensina.dev", html, text });
+    },
+    async enviarResetSenha(email: string, token: string) {
+        const link = `${env.FRONTEND_URL}/redefinir-senha?token=${token}`;
+        const html = layout(
+            "Redefinir sua senha",
+            `<p style="font-size:15px;line-height:1.6;color:#555">Recebemos um pedido para redefinir sua senha. Clique no botão abaixo para criar uma nova. O link vale por 1 hora.</p>
+  <a href="${link}" style="display:inline-block;margin:20px 0;background:#2d6bf5;color:#fff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:600">Redefinir senha</a>
+  <p style="font-size:13px;line-height:1.6;color:#888">Se o botão não funcionar, cole este link no navegador:<br><a href="${link}" style="color:#2d6bf5;word-break:break-all">${link}</a></p>
+  <p style="font-size:13px;color:#888;margin-top:24px">Se você não pediu isso, pode ignorar este email: sua senha continua a mesma.</p>`,
+        );
+        const text = `Redefina sua senha no ensina.dev (o link vale por 1 hora):\n${link}\n\nSe você não pediu isso, ignore este email.`;
+        await enviar({ to: email, subject: "Redefinir sua senha · ensina.dev", html, text });
     },
 };
