@@ -22,13 +22,7 @@ import remarkGfm from 'remark-gfm';
 import { statusErro } from '../../utils/erro';
 import { BlocosConteudo, md } from '../../components/BlocosConteudo';
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 export function Aula() {
   const { trailId, lessonId } = useParams();

@@ -72,6 +72,76 @@
   color: var(--muted);
 }
 
+/* ===== Selo hexagonal (SVG) ===== */
+.badge__hex {
+  position: relative;
+  width: 104px;
+  height: 118px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.badge__hex--sm {
+  width: 84px;
+  height: 95px;
+}
+.badge__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.badge__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.05;
+}
+.badge__vendor {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.82);
+}
+.badge__hex--sm .badge__vendor {
+  font-size: 8.5px;
+}
+.badge__glyph {
+  margin-top: 4px;
+  font-family: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+  font-size: 22px;
+  font-weight: 800;
+}
+.badge__score {
+  margin-top: 4px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.badge__hex--sm .badge__score {
+  font-size: 16px;
+}
+.badge__lock {
+  position: relative;
+  color: var(--muted);
+  display: flex;
+}
+.badge__name {
+  margin-top: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.badge__sub {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.badge__sub--done {
+  color: var(--success);
+}
+
 /* Grade de selos de trilha */
 .conq-trilhas {
   display: grid;
@@ -82,74 +152,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
+  gap: 0;
   padding: 20px 12px;
   text-align: center;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
-}
-.conq-badge__name {
-  font-size: 13.5px;
-  font-weight: 600;
-}
-.conq-badge__status {
-  font-size: 12px;
-  color: var(--muted);
-}
-.conq-badge__status--done {
-  color: var(--success);
-  font-weight: 600;
-}
-
-/* Hexágono (selo) */
-.hex {
-  --cor: #9aa4b2;
-  width: 84px;
-  height: 92px;
-  display: grid;
-  place-items: center;
-  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-  background: var(--cor);
-}
-.hex--sm {
-  width: 62px;
-  height: 68px;
-}
-.hex--locked {
-  background: var(--border-strong);
-}
-.hex__in {
-  width: 87%;
-  height: 87%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-  background: #10192b;
-  color: var(--cor);
-}
-.hex--locked .hex__in {
-  background: var(--surface-2);
-  color: var(--muted);
-}
-.hex__in small {
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  opacity: 0.85;
-}
-.hex__in b {
-  font-size: 17px;
-  font-weight: 700;
-}
-.hex--sm .hex__in b {
-  font-size: 14px;
-}
-.hex--sm .hex__in small {
-  font-size: 7px;
 }
 
 /* Legenda das faixas */
@@ -225,21 +233,12 @@
 }
 .conq-sim__medals {
   display: flex;
-  gap: 18px;
+  gap: 16px;
 }
 .conq-medal {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-}
-.conq-medal__label {
-  font-size: 11px;
-  font-weight: 600;
-}
-.conq-medal__label--off {
-  color: var(--muted);
-  font-weight: 400;
 }
 
 /* Catálogo (conquistas especiais) */
@@ -315,6 +314,6 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .conq-sim__medals {
-    gap: 12px;
+    gap: 10px;
   }
 }

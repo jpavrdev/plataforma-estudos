@@ -21,14 +21,7 @@ import {
 
 type TrailComId = Trail & { id: string };
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 type Tint = { fg: string; bg: string };
 
