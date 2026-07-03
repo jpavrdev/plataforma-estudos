@@ -20,6 +20,16 @@ const envSchema = z.object({
     OAUTH_CALLBACK_BASE: z.string().url().default("http://localhost:3001"),
     // Serviço interno que executa o código dos desafios em containers isolados.
     RUNNER_URL: z.string().url().default("http://runner:8080"),
+    // Envio de email por SMTP (opcional). Sem host/user/pass, o backend só loga o link.
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.string().default("587"),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASS: z.string().optional(),
+    SMTP_SECURE: z
+        .string()
+        .optional()
+        .transform((v) => v === "true"),
+    EMAIL_FROM: z.string().default("ensina.dev <nao-responda@ensinadev.com.br>"),
 });
 
 // Valida os dados e lança erro se tiver algo errado.

@@ -14,6 +14,7 @@ const publicUserColumns = {
     id: users.id,
     name: users.name,
     username: users.username,
+    usernameChangedAt: users.usernameChangedAt,
     email: users.email,
     birthDate: users.birthDate,
     gender: users.gender,
@@ -83,6 +84,9 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
             }
         }
         const sets: {
+            name?: string;
+            username?: string;
+            usernameChangedAt?: Date;
             bio?: string;
             location?: string;
             occupation?: string;
@@ -90,12 +94,44 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
             github?: string;
             linkedin?: string;
         } = {};
+        if (dados.name !== undefined) sets.name = dados.name;
         if (dados.bio !== undefined) sets.bio = dados.bio;
         if (dados.location !== undefined) sets.location = dados.location;
         if (dados.occupation !== undefined) sets.occupation = dados.occupation;
         if (dados.languages !== undefined) sets.languages = dados.languages;
         if (dados.github !== undefined) sets.github = dados.github;
         if (dados.linkedin !== undefined) sets.linkedin = dados.linkedin;
+
+        // Username: só troca uma vez a cada 30 dias (a primeira troca é livre).
+        if (dados.username !== undefined) {
+            const novo = dados.username.toLowerCase();
+            const [atual] = await db
+                .select({ username: users.username, usernameChangedAt: users.usernameChangedAt })
+                .from(users)
+                .where(eq(users.id, userId));
+            if (atual && novo !== atual.username) {
+                const TRAVA_MS = 30 * 24 * 60 * 60 * 1000;
+                if (atual.usernameChangedAt) {
+                    const desde = Date.now() - atual.usernameChangedAt.getTime();
+                    if (desde < TRAVA_MS) {
+                        const libera = new Date(atual.usernameChangedAt.getTime() + TRAVA_MS);
+                        return res.status(429).json({
+                            erro: `Você só poderá mudar o usuário novamente em ${libera.toLocaleDateString("pt-BR")}.`,
+                        });
+                    }
+                }
+                const [existe] = await db
+                    .select({ id: users.id })
+                    .from(users)
+                    .where(eq(users.username, novo));
+                if (existe && existe.id !== userId) {
+                    return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
+                }
+                sets.username = novo;
+                sets.usernameChangedAt = new Date();
+            }
+        }
+
         if (Object.keys(sets).length === 0) {
             return res.status(400).json({ erro: "Nada para atualizar" });
         }
@@ -219,6 +255,46 @@ export const uploadCover = async (req: Request, res: Response, next: NextFunctio
         const [user] = await db
             .update(users)
             .set({ coverUrl: r.url })
+            .where(eq(users.id, userId))
+            .returning(publicUserColumns);
+        await removerArquivoLocal(atual?.coverUrl ?? null);
+        res.json(user);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const removerAvatar = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    try {
+        const [atual] = await db
+            .select({ avatarUrl: users.avatarUrl })
+            .from(users)
+            .where(eq(users.id, userId));
+        const [user] = await db
+            .update(users)
+            .set({ avatarUrl: null })
+            .where(eq(users.id, userId))
+            .returning(publicUserColumns);
+        await removerArquivoLocal(atual?.avatarUrl ?? null);
+        res.json(user);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const removerCover = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    try {
+        const [atual] = await db
+            .select({ coverUrl: users.coverUrl })
+            .from(users)
+            .where(eq(users.id, userId));
+        const [user] = await db
+            .update(users)
+            .set({ coverUrl: null })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
         await removerArquivoLocal(atual?.coverUrl ?? null);

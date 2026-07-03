@@ -20,6 +20,8 @@ import { Desafio } from './pages/Desafios/Desafio';
 import { DesafiosAdmin } from './pages/DesafiosAdmin';
 import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
+import { RecuperarSenha } from './pages/RecuperarSenha';
+import { RedefinirSenha } from './pages/RedefinirSenha';
 import { OAuthCallback } from './pages/OAuthCallback';
 import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
@@ -48,6 +50,8 @@ function AppRoutes() {
       <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
       <Route path="/cadastro" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
       <Route path="/verificar-email" element={<VerifyEmail />} />
+      <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+      <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       <Route path="/auth/callback" element={<OAuthCallback />} />
       <Route
         path="/completar-perfil"

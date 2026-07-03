@@ -1052,3 +1052,25 @@
   font-weight: 600;
   color: var(--muted);
 }
+
+/* ===================== RESPONSIVO / MOBILE ===================== */
+@media (max-width: 900px) {
+  .sim {
+    padding: 20px 16px;
+  }
+  .sim__grid,
+  .sim__exams,
+  .sim-rules__grid,
+  .exam-body {
+    grid-template-columns: 1fr;
+  }
+  .exam-bar {
+    padding: 12px 16px;
+  }
+  .exam-body {
+    padding: 20px 16px;
+  }
+  .exam-nav__grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}

@@ -162,6 +162,13 @@
       "when": 1783018230004,
       "tag": "0022_desafio_kind",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1783036921710,
+      "tag": "0023_username_changed_at",
+      "breakpoints": true
     }
   ]
 }
