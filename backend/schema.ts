@@ -46,6 +46,8 @@ export const users = pgTable("users", {
     languages: jsonb("languages").$type<string[]>(),
     github: varchar("github", { length: 200 }),
     linkedin: varchar("linkedin", { length: 200 }),
+    // Perfil no X (antigo Twitter).
+    x: varchar("x", { length: 200 }),
     avatarUrl: varchar("avatar_url", { length: 300 }),
     coverUrl: varchar("cover_url", { length: 300 }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
