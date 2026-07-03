@@ -32,6 +32,8 @@ export const users = pgTable("users", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),
     username: varchar("username", { length: 20 }).unique(),
+    // Quando o username foi trocado pela última vez (trava de 30 dias entre trocas).
+    usernameChangedAt: timestamp("username_changed_at", { withTimezone: true }),
     email: varchar("email", { length: 255 }).notNull().unique(),
     // Opcionais: quem entra por login social (Google/GitHub) não informa esses campos.
     passwordHash: varchar("password_hash", { length: 255 }),
