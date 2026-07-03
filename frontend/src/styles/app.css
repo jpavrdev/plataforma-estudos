@@ -1447,6 +1447,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  /* start: expandir um card com "ler mais" não estica os vizinhos da linha. */
+  align-items: start;
 }
 .track {
   display: flex;
@@ -1506,7 +1508,35 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--muted);
-  min-height: 39px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  min-height: 59px;
+}
+.track__desc--full {
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+}
+/* Linha reservada do "ler mais": mantém a altura uniforme mesmo quando não há botão. */
+.track__more-row {
+  min-height: 20px;
+  margin-top: 3px;
+}
+.track__more {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+.track__more:hover {
+  text-decoration: underline;
 }
 .track__foot {
   display: flex;

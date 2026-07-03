@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, X, Info, BookOpen, Trophy, Target, Redo } from '../../components/Icons';
 import type { TentativaEstado, QuestaoSimulado } from '../../services/simulados';
 
 const RING = 352;
+const VISIVEIS = 4;
 
 function mesmoConjunto(a: string[], b: string[]) {
   if (a.length !== b.length) return false;
@@ -28,17 +30,27 @@ function faixa(pct: number) {
   if (pct >= 55) return { fg: 'var(--amber)', label: 'Reforçar' };
   return { fg: 'var(--av-red)', label: 'Frágil' };
 }
+function formatarTempo(seg: number) {
+  const min = Math.round(seg / 60);
+  if (min < 60) return `${min}min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m ? `${h}h ${m}min` : `${h}h`;
+}
 
 export function Resultado({ dados }: { dados: TentativaEstado }) {
   const navigate = useNavigate();
+  const [todas, setTodas] = useState(false);
   const isPass = dados.passed === true;
   const score = dados.score ?? 0;
+  const passPercent = dados.passPercent ?? 70;
+  const gap = Math.max(0, passPercent - score);
   const questions = dados.questions;
   const total = questions.length;
   const acertos = questions.filter(acertou).length;
   const erros = total - acertos;
   const erradas = questions.filter((q) => !acertou(q));
-  const temas = dados.temasARevisar ?? [];
+  const tempo = dados.elapsedSeconds != null ? formatarTempo(dados.elapsedSeconds) : null;
 
   const porTema = new Map<string, { acertos: number; total: number }>();
   for (const q of questions) {
@@ -51,15 +63,21 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
   const dominios = [...porTema.entries()]
     .map(([name, v]) => ({ name, pct: v.total ? Math.round((v.acertos / v.total) * 100) : 0 }))
     .sort((a, b) => a.pct - b.pct);
+  const maisFragil = dominios[0];
 
+  const mostradas = todas ? erradas : erradas.slice(0, VISIVEIS);
   const ringOffset = Math.round(RING * (1 - score / 100));
   const heroBg = isPass
     ? 'linear-gradient(150deg, var(--success), color-mix(in srgb, var(--success) 52%, #06371f))'
     : 'linear-gradient(150deg, #d9536b, #8a2f42)';
-  const titulo = isPass ? 'Aprovado! Mandou bem.' : 'Quase lá.';
+  const titulo = isPass ? 'Você foi aprovado!' : 'Você não foi aprovado desta vez';
   const sub = isPass
-    ? 'Você atingiu a nota de corte. Revise os pontos abaixo pra chegar ainda mais confiante.'
-    : 'Faltou pouco pra nota de corte. Reforce os temas abaixo e tente de novo.';
+    ? 'Você passou da nota de corte. Revise os pontos abaixo pra ficar ainda mais confiante.'
+    : `Você ficou a ${gap}% da aprovação. Revise os tópicos abaixo e refaça o simulado. Você está quase lá.`;
+
+  function refazer() {
+    navigate(dados.slug ? `/simulados/${dados.slug}` : '/simulados');
+  }
 
   return (
     <div className="sim">
@@ -117,18 +135,18 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
               <div className="res-stat__l">erros</div>
             </div>
             <div className="res-stat">
-              <div className="res-stat__v">{total}</div>
-              <div className="res-stat__l">questões</div>
+              <div className="res-stat__v">{tempo ?? total}</div>
+              <div className="res-stat__l">{tempo ? 'tempo' : 'questões'}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="sim__grid">
+      <div className="res-grid">
         <div className="sim__col">
           <div className="card">
-            <div className="res-sec__title">Desempenho por tema</div>
-            <div className="res-sec__sub">Veja onde você foi bem e onde precisa reforçar.</div>
+            <div className="res-sec__title">Desempenho por domínio</div>
+            <div className="res-sec__sub">Veja onde você mandou bem e onde precisa reforçar.</div>
             <div className="res-domains">
               {dominios.map((d) => {
                 const c = faixa(d.pct);
@@ -161,18 +179,18 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
           {erradas.length > 0 && (
             <div className="card">
               <div className="res-review__head">
-                <div className="res-sec__title">Revise o que você errou</div>
+                <div className="res-sec__title">Onde você errou</div>
                 <div className="topbar__spacer" />
-                <span className="res-review__count">{erros} erradas</span>
+                <span className="res-review__count">{erros} questões erradas</span>
               </div>
               <div className="res-sec__sub">
-                Confira a resposta certa, o porquê e o assunto de cada questão.
+                Estude estes tópicos com atenção: foram os que mais pesaram na sua nota.
               </div>
               <div className="res-wrongs">
-                {erradas.map((q) => (
+                {mostradas.map((q) => (
                   <div key={q.id} className="res-wrong">
                     <div className="res-wrong__meta">
-                      <span className="res-wrong__q">Questão {q.position}</span>
+                      <span className="res-wrong__q">Q{q.position}</span>
                       {q.topic && <span className="res-wrong__domain">{q.topic}</span>}
                     </div>
                     <div className="res-wrong__text">{q.statement}</div>
@@ -202,7 +220,7 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
                           <Info size={17} />
                         </span>
                         <div>
-                          <b>Por quê:</b> {q.explanation}
+                          <b>Por que você errou:</b> {q.explanation}
                         </div>
                       </div>
                     )}
@@ -217,39 +235,62 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
                   </div>
                 ))}
               </div>
+              {erradas.length > VISIVEIS && (
+                <button className="res-more" onClick={() => setTodas((v) => !v)}>
+                  {todas ? 'Mostrar menos' : `Ver todas as ${erros} questões erradas`}
+                </button>
+              )}
             </div>
           )}
         </div>
 
         <div className="sim__col">
           <div className="card">
-            <div className="res-plan__title">Temas para revisar</div>
+            <div className="res-plan__title">Seu plano de estudo</div>
             <div className="res-plan__sub">
-              {temas.length > 0
-                ? 'Priorize os assuntos onde você mais errou.'
-                : 'Você não errou nenhum tema. Excelente!'}
+              {isPass
+                ? 'Mandou bem. Revise os poucos erros e siga treinando pra manter o nível.'
+                : 'Faltou pouco. Foque nestes tópicos e tente de novo em alguns dias.'}
             </div>
-            {temas.length > 0 && (
-              <div className="res-plan">
-                {temas.map((t) => (
-                  <div key={t.topic} className="res-plan-item">
-                    <span className="res-plan-item__icon">
-                      <BookOpen size={16} />
-                    </span>
-                    <div>
-                      <div className="res-plan-item__t">{t.topic}</div>
-                      <div className="res-plan-item__s">
-                        {t.erradas} de {t.total} erradas
-                      </div>
+            <div className="res-plan">
+              {maisFragil && (
+                <div className="res-plan-item">
+                  <span className="res-plan-item__icon">
+                    <BookOpen size={16} />
+                  </span>
+                  <div>
+                    <div className="res-plan-item__t">Estude pelas trilhas</div>
+                    <div className="res-plan-item__s">
+                      Comece pelo tema mais frágil: {maisFragil.name} ({maisFragil.pct}%)
                     </div>
                   </div>
-                ))}
+                </div>
+              )}
+              <div className="res-plan-item">
+                <span className="res-plan-item__icon">
+                  <Info size={16} />
+                </span>
+                <div>
+                  <div className="res-plan-item__t">Revise cada questão errada</div>
+                  <div className="res-plan-item__s">
+                    Leia a explicação e o assunto indicado de cada uma.
+                  </div>
+                </div>
               </div>
-            )}
-            <button
-              className="btn btn--accent res-plan__redo"
-              onClick={() => navigate('/simulados')}
-            >
+              <div className="res-plan-item">
+                <span className="res-plan-item__icon">
+                  <Redo size={16} />
+                </span>
+                <div>
+                  <div className="res-plan-item__t">Refaça o simulado</div>
+                  <div className="res-plan-item__s">Meça sua evolução daqui a alguns dias.</div>
+                </div>
+              </div>
+            </div>
+            <button className="btn btn--accent res-plan__redo" onClick={() => navigate('/trilhas')}>
+              <BookOpen size={16} /> Começar plano de estudo
+            </button>
+            <button className="res-plan__ghost" onClick={refazer}>
               <Redo size={16} /> Refazer simulado
             </button>
           </div>
@@ -259,13 +300,11 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
               {isPass ? <Trophy size={26} /> : <Target size={26} />}
             </span>
             <div>
-              <div className="res-seal__t">
-                {isPass ? 'Pronto pra prova' : 'Continue treinando'}
-              </div>
+              <div className="res-seal__t">{isPass ? 'Aprovado!' : 'Continue tentando'}</div>
               <div className="res-seal__s">
                 {isPass
                   ? 'Seu desempenho está no nível de aprovação.'
-                  : 'Cada tentativa te deixa mais perto.'}
+                  : `Faltam ${gap}% para a aprovação.`}
               </div>
             </div>
           </div>
