@@ -153,12 +153,12 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
           <div key={m.id} className="lesson__module">
             <div className="lesson__module-title">{m.title}</div>
             {m.lessons.map((l) => {
-              const estado = l.id === aulaAtualId ? 'current' : l.state;
+              const ativa = l.id === aulaAtualId;
               return (
                 <Link
                   key={l.id}
                   to={`/trilhas/${trilha.id}/aula/${l.id}`}
-                  className={`lesson__item lesson__item--${estado}${l.state === 'locked' ? ' lesson__item--disabled' : ''}`}
+                  className={`lesson__item lesson__item--${l.state}${ativa ? ' lesson__item--active' : ''}${l.state === 'locked' ? ' lesson__item--disabled' : ''}`}
                   onClick={() => setAberto(false)}
                 >
                   <span className="lesson__bullet">
