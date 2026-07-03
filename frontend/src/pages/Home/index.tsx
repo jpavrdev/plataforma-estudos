@@ -56,6 +56,7 @@ const NAV = [
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
   { label: 'Desafios', to: '/desafios' },
+  { label: 'Conquistas', to: '/conquistas' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];

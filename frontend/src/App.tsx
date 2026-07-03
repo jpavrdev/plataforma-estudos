@@ -12,6 +12,7 @@ import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
 import { Ranking } from './pages/Ranking';
 import { Simulados } from './pages/Simulados';
+import { Conquistas } from './pages/Conquistas';
 import { SimuladoBriefing } from './pages/Simulados/Briefing';
 import { TentativaSimulado } from './pages/Simulados/Tentativa';
 import { SimuladosAdmin } from './pages/SimuladosAdmin';
@@ -148,6 +149,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <Simulados />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/conquistas"
+        element={
+          <PrivateRoute>
+            <Conquistas />
           </PrivateRoute>
         }
       />

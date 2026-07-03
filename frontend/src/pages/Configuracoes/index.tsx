@@ -397,7 +397,14 @@ function ConquistasAdmin() {
   );
 }
 
+const ABAS_CFG = [
+  { key: 'tags', label: 'Tags' },
+  { key: 'linguagens', label: 'Linguagens' },
+  { key: 'conquistas', label: 'Conquistas' },
+] as const;
+
 export function Configuracoes() {
+  const [aba, setAba] = useState<(typeof ABAS_CFG)[number]['key']>('tags');
   return (
     <div className="home">
       <header className="topbar studio__bar">
@@ -416,33 +423,49 @@ export function Configuracoes() {
       </header>
 
       <div className="estudio-home">
-        <CrudList
-          titulo="Tags"
-          descricao="Categorias para filtrar as trilhas (ex.: Fundamentos, Linguagens, Algoritmos). Você atribui as tags ao criar ou editar uma trilha no Estúdio."
-          placeholder="Nome da nova tag"
-          confirmarExclusao={(t) =>
-            `Excluir a tag "${t.name}"? Ela será removida das trilhas que a usam.`
-          }
-          carregar={listarTags}
-          criar={criarTag}
-          atualizar={atualizarTag}
-          excluir={excluirTag}
-        />
+        <div className="cfg-tabs">
+          {ABAS_CFG.map((a) => (
+            <button
+              key={a.key}
+              className={`cfg-tab${aba === a.key ? ' cfg-tab--active' : ''}`}
+              onClick={() => setAba(a.key)}
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
 
-        <CrudList
-          titulo="Linguagens"
-          descricao="Conjunto fixo de linguagens que aparecem no perfil. Padronizar evita variações como JS, Javascript e javascript, mantendo os dados limpos para análises."
-          placeholder="Nome da nova linguagem"
-          confirmarExclusao={(l) =>
-            `Excluir a linguagem "${l.name}"? Ela será removida dos perfis que a usam.`
-          }
-          carregar={listarLinguagens}
-          criar={criarLinguagem}
-          atualizar={atualizarLinguagem}
-          excluir={excluirLinguagem}
-        />
+        {aba === 'tags' && (
+          <CrudList
+            titulo="Tags"
+            descricao="Categorias para filtrar as trilhas (ex.: Fundamentos, Linguagens, Algoritmos). Você atribui as tags ao criar ou editar uma trilha no Estúdio."
+            placeholder="Nome da nova tag"
+            confirmarExclusao={(t) =>
+              `Excluir a tag "${t.name}"? Ela será removida das trilhas que a usam.`
+            }
+            carregar={listarTags}
+            criar={criarTag}
+            atualizar={atualizarTag}
+            excluir={excluirTag}
+          />
+        )}
 
-        <ConquistasAdmin />
+        {aba === 'linguagens' && (
+          <CrudList
+            titulo="Linguagens"
+            descricao="Conjunto fixo de linguagens que aparecem no perfil. Padronizar evita variações como JS, Javascript e javascript, mantendo os dados limpos para análises."
+            placeholder="Nome da nova linguagem"
+            confirmarExclusao={(l) =>
+              `Excluir a linguagem "${l.name}"? Ela será removida dos perfis que a usam.`
+            }
+            carregar={listarLinguagens}
+            criar={criarLinguagem}
+            atualizar={atualizarLinguagem}
+            excluir={excluirLinguagem}
+          />
+        )}
+
+        {aba === 'conquistas' && <ConquistasAdmin />}
       </div>
     </div>
   );
