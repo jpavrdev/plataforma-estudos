@@ -1,0 +1,320 @@
+/* ensina.dev — estilos da aba de Conquistas. Depende de tokens.css. */
+
+.conq {
+  padding: 26px 28px 40px;
+}
+.conq__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.conq__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.conq__sub {
+  margin: 4px 0 0;
+  max-width: 640px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.conq__stats {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.conq-stat {
+  min-width: 88px;
+  padding: 10px 18px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.conq-stat b {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.conq-stat span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.conq-sec {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px 0 16px;
+}
+.conq-sec__icon {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.conq-sec__title {
+  font-size: 16px;
+  font-weight: 700;
+}
+.conq-sec__hint {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* Grade de selos de trilha */
+.conq-trilhas {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+.conq-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 20px 12px;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+}
+.conq-badge__name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.conq-badge__status {
+  font-size: 12px;
+  color: var(--muted);
+}
+.conq-badge__status--done {
+  color: var(--success);
+  font-weight: 600;
+}
+
+/* Hexágono (selo) */
+.hex {
+  --cor: #9aa4b2;
+  width: 84px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: var(--cor);
+}
+.hex--sm {
+  width: 62px;
+  height: 68px;
+}
+.hex--locked {
+  background: var(--border-strong);
+}
+.hex__in {
+  width: 87%;
+  height: 87%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  background: #10192b;
+  color: var(--cor);
+}
+.hex--locked .hex__in {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.hex__in small {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+.hex__in b {
+  font-size: 17px;
+  font-weight: 700;
+}
+.hex--sm .hex__in b {
+  font-size: 14px;
+}
+.hex--sm .hex__in small {
+  font-size: 7px;
+}
+
+/* Legenda das faixas */
+.conq-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 14px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.conq-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.conq-legend__item b {
+  color: var(--text);
+}
+.conq-legend__dot {
+  display: inline-flex;
+  width: 21px;
+  height: 21px;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+/* Linhas por simulado */
+.conq-sims {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.conq-sim {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+}
+.conq-sim__id {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.conq-sim__logo {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.conq-sim__code {
+  font-size: 15px;
+  font-weight: 700;
+}
+.conq-sim__name {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.conq-sim__medals {
+  display: flex;
+  gap: 18px;
+}
+.conq-medal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.conq-medal__label {
+  font-size: 11px;
+  font-weight: 600;
+}
+.conq-medal__label--off {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* Catálogo (conquistas especiais) */
+.conq-catalog {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.conq-cat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+.conq-cat--off {
+  opacity: 0.55;
+}
+.conq-cat__icon {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.conq-cat--off .conq-cat__icon {
+  color: var(--muted);
+  background: var(--surface-2);
+}
+.conq-cat__body {
+  flex: 1;
+  min-width: 0;
+}
+.conq-cat__name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.conq-cat__desc {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.conq-cat__check {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+}
+
+@media (max-width: 1000px) {
+  .conq-trilhas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .conq-catalog {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .conq {
+    padding: 20px 16px 32px;
+  }
+  .conq-trilhas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .conq-sim__medals {
+    gap: 12px;
+  }
+}

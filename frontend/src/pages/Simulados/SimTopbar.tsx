@@ -12,11 +12,12 @@ const NAV = [
   { label: 'Início', to: '/home' },
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
+  { label: 'Conquistas', to: '/conquistas' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
 
-export function SimTopbar() {
+export function SimTopbar({ active = '/simulados' }: { active?: string }) {
   const { user: authUser } = useAuth();
   const displayName = authUser?.name ?? homeUser.name;
 
@@ -29,7 +30,7 @@ export function SimTopbar() {
           <Link
             key={item.to}
             to={item.to}
-            className={`nav__item${item.to === '/simulados' ? ' nav__item--active' : ''}`}
+            className={`nav__item${item.to === active ? ' nav__item--active' : ''}`}
           >
             {item.label}
           </Link>
