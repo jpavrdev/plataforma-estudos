@@ -1,4 +1,12 @@
-import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  lazy,
+  Suspense,
+  type ChangeEvent,
+  type ReactNode,
+} from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,6 +27,7 @@ import {
   Calendar,
   Github,
   Linkedin,
+  Trash,
   IconeConquista,
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
@@ -42,10 +51,14 @@ const NAV = [
   { label: 'Comunidade', to: '/comunidade' },
 ];
 
+// Só carrega o recortador quando o usuário vai trocar foto ou capa.
+const ImageCropper = lazy(() => import('../../components/ImageCropper'));
+
 interface PerfilData {
   id: string;
   name: string;
   username: string | null;
+  usernameChangedAt: string | null;
   email: string;
   bio: string | null;
   location: string | null;
@@ -61,6 +74,8 @@ interface PerfilData {
 }
 
 interface Editavel {
+  name: string;
+  username: string;
   bio: string;
   location: string;
   occupation: string;
@@ -106,6 +121,8 @@ export function Perfil() {
   const [posicao, setPosicao] = useState<number | null>(null);
   const [editando, setEditando] = useState(false);
   const [draft, setDraft] = useState<Editavel>({
+    name: '',
+    username: '',
     bio: '',
     location: '',
     occupation: '',
@@ -117,6 +134,7 @@ export function Perfil() {
   const [erro, setErro] = useState('');
   const [enviandoFoto, setEnviandoFoto] = useState(false);
   const [enviandoCapa, setEnviandoCapa] = useState(false);
+  const [cropper, setCropper] = useState<{ image: string; tipo: 'avatar' | 'cover' } | null>(null);
   const inputFoto = useRef<HTMLInputElement>(null);
   const inputCapa = useRef<HTMLInputElement>(null);
 
@@ -155,6 +173,8 @@ export function Perfil() {
     if (!perfil) return;
     setErro('');
     setDraft({
+      name: perfil.name,
+      username: perfil.username ?? '',
       bio: perfil.bio ?? '',
       location: perfil.location ?? '',
       occupation: perfil.occupation ?? '',
@@ -186,11 +206,8 @@ export function Perfil() {
     }
   }
 
-  async function enviarImagem(
-    file: File,
-    rota: '/me/avatar' | '/me/cover',
-    setBusy: (v: boolean) => void,
-  ) {
+  // Valida o arquivo escolhido e abre o recortador; o envio acontece após o corte.
+  async function escolherImagem(file: File, tipo: 'avatar' | 'cover') {
     if (!TIPOS_IMG.includes(file.type)) {
       setErro('Use uma imagem PNG, JPG ou WEBP.');
       return;
@@ -199,11 +216,22 @@ export function Perfil() {
       setErro('Imagem muito grande (máximo 4MB).');
       return;
     }
+    setErro('');
+    setCropper({ image: await lerArquivo(file), tipo });
+  }
+
+  // Envia a imagem já recortada (data URL) para o avatar ou a capa.
+  async function enviarRecorte(dataUrl: string) {
+    if (!cropper) return;
+    const avatar = cropper.tipo === 'avatar';
+    const setBusy = avatar ? setEnviandoFoto : setEnviandoCapa;
+    setCropper(null);
     setBusy(true);
     setErro('');
     try {
-      const dataUrl = await lerArquivo(file);
-      const { data } = await api.post<PerfilData>(rota, { image: dataUrl });
+      const { data } = await api.post<PerfilData>(avatar ? '/me/avatar' : '/me/cover', {
+        image: dataUrl,
+      });
       setPerfil(data);
     } catch (e) {
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
@@ -213,16 +241,31 @@ export function Perfil() {
     }
   }
 
+  // Remove o avatar ou a capa (volta às iniciais / capa padrão).
+  async function removerImagem(rota: '/me/avatar' | '/me/cover', setBusy: (v: boolean) => void) {
+    setBusy(true);
+    setErro('');
+    try {
+      const { data } = await api.delete<PerfilData>(rota);
+      setPerfil(data);
+    } catch (e) {
+      const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
+      setErro(msg ?? 'Não foi possível remover a imagem.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function onPickFoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = '';
-    if (file) enviarImagem(file, '/me/avatar', setEnviandoFoto);
+    if (file) escolherImagem(file, 'avatar');
   }
 
   function onPickCapa(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = '';
-    if (file) enviarImagem(file, '/me/cover', setEnviandoCapa);
+    if (file) escolherImagem(file, 'cover');
   }
 
   function addLang(v: string) {
@@ -243,8 +286,27 @@ export function Perfil() {
   const capaUrl = urlImagem(perfil?.coverUrl);
   const conquistasGanhas = conquistas.filter((c) => c.earned);
 
+  // Trava de 30 dias para trocar o username.
+  const usernameLiberaEm = perfil?.usernameChangedAt
+    ? new Date(new Date(perfil.usernameChangedAt).getTime() + 30 * 24 * 60 * 60 * 1000)
+    : null;
+  const usernameTravado = !!usernameLiberaEm && usernameLiberaEm.getTime() > Date.now();
+
   return (
     <div className="home-shell">
+      {cropper && (
+        <Suspense fallback={null}>
+          <ImageCropper
+            image={cropper.image}
+            aspect={cropper.tipo === 'avatar' ? 1 : 3}
+            round={cropper.tipo === 'avatar'}
+            maxWidth={cropper.tipo === 'avatar' ? 512 : 1400}
+            titulo={cropper.tipo === 'avatar' ? 'Ajustar foto' : 'Ajustar capa'}
+            onConfirm={enviarRecorte}
+            onCancel={() => setCropper(null)}
+          />
+        </Suspense>
+      )}
       <div className="home">
         <header className="topbar">
           <MobileMenu />
@@ -307,6 +369,16 @@ export function Perfil() {
                     <Camera size={14} /> {enviandoCapa ? 'Enviando...' : 'Trocar capa'}
                   </button>
                 )}
+                {editando && capaUrl && (
+                  <button
+                    type="button"
+                    className="pf-banner__rm"
+                    onClick={() => removerImagem('/me/cover', setEnviandoCapa)}
+                    disabled={enviandoCapa}
+                  >
+                    <Trash size={13} /> Remover
+                  </button>
+                )}
                 <input
                   ref={inputCapa}
                   type="file"
@@ -339,6 +411,17 @@ export function Perfil() {
                       <Camera size={14} />
                     </button>
                   )}
+                  {editando && fotoUrl && (
+                    <button
+                      type="button"
+                      className="pf-avatar-wrap__rm"
+                      onClick={() => removerImagem('/me/avatar', setEnviandoFoto)}
+                      disabled={enviandoFoto}
+                      aria-label="Remover foto"
+                    >
+                      <Trash size={13} />
+                    </button>
+                  )}
                   <input
                     ref={inputFoto}
                     type="file"
@@ -349,10 +432,22 @@ export function Perfil() {
                 </div>
                 <div className="pf-id">
                   <div className="pf-id__row">
-                    <span className="pf-id__name">{perfil.name}</span>
+                    {editando ? (
+                      <input
+                        className="pf-id__name-input"
+                        value={draft.name}
+                        maxLength={255}
+                        placeholder="Seu nome"
+                        onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+                      />
+                    ) : (
+                      <span className="pf-id__name">{perfil.name}</span>
+                    )}
                     <span className="pf-id__level">Nível {nivel}</span>
                   </div>
-                  <div className="pf-id__user">@{perfil.username ?? 'sem_usuario'}</div>
+                  <div className="pf-id__user">
+                    @{(editando ? draft.username : perfil.username) || 'sem_usuario'}
+                  </div>
                 </div>
                 {!editando ? (
                   <div className="pf-actions">
@@ -404,11 +499,44 @@ export function Perfil() {
                 <div className="card">
                   <h3 className="card__title card__title--mb">Informações</h3>
                   <div className="pf-fields">
-                    <Campo
-                      icon={<AtSign size={14} />}
-                      label="Usuário"
-                      value={perfil.username ? `@${perfil.username}` : '—'}
-                    />
+                    {!editando ? (
+                      <Campo
+                        icon={<AtSign size={14} />}
+                        label="Usuário"
+                        value={perfil.username ? `@${perfil.username}` : '—'}
+                      />
+                    ) : (
+                      <div>
+                        <div className="pf-field__label">
+                          <span className="pf-field__icon">
+                            <AtSign size={14} />
+                          </span>
+                          Usuário
+                        </div>
+                        {usernameTravado ? (
+                          <>
+                            <div className="pf-field__value">@{perfil.username}</div>
+                            <span className="pf-field__hint">
+                              Você poderá mudar novamente em{' '}
+                              {usernameLiberaEm!.toLocaleDateString('pt-BR')}.
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <input
+                              className="pf-input"
+                              value={draft.username}
+                              maxLength={20}
+                              placeholder="seu_usuario"
+                              onChange={(e) => setDraft({ ...draft, username: e.target.value })}
+                            />
+                            <span className="pf-field__hint">
+                              Só pode ser alterado uma vez a cada 30 dias.
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
                     <CampoEdit
                       icon={<MapPin size={14} />}
                       label="Localização"

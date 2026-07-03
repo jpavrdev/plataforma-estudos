@@ -3074,7 +3074,7 @@
   align-items: flex-end;
   gap: 20px;
   padding: 0 26px 22px;
-  margin-top: -46px;
+  margin-top: -30px;
 }
 .pf-avatar-wrap {
   position: relative;
@@ -3106,7 +3106,7 @@
 .pf-id__user {
   font-size: 14px;
   color: var(--muted);
-  margin-top: 3px;
+  margin-top: 8px;
   font-family: var(--font-code);
 }
 .pf-actions {
@@ -4167,4 +4167,108 @@
   .rk-you__xp {
     margin-left: auto;
   }
+}
+
+/* ===================== RECORTADOR DE IMAGEM ===================== */
+.cropper-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.cropper {
+  width: 100%;
+  max-width: 440px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.cropper__head {
+  padding: 16px 20px;
+  font-weight: 700;
+  font-size: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.cropper__area {
+  position: relative;
+  height: 320px;
+  background: #0d1320;
+}
+.cropper__zoom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.cropper__zoom input {
+  flex: 1;
+  accent-color: var(--accent);
+}
+.cropper__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 20px 18px;
+}
+
+/* Edição de perfil: nome, remover foto/capa e dica do campo usuário. */
+.pf-id__name-input {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--input);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 2px 10px;
+  max-width: 260px;
+}
+.pf-avatar-wrap__rm {
+  position: absolute;
+  left: 2px;
+  bottom: 2px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  background: var(--av-red, #e5484d);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+.pf-banner__rm {
+  position: absolute;
+  top: 54px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pf-field__hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
 }
