@@ -1,8 +1,9 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useRef, type ReactNode } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { parseGrid } from '../utils/tabela';
-import { glossariar } from './Glossario';
+import { glossariar, criarMatcher } from './Glossario';
+import { useGlossario } from '../hooks/useGlossario';
 
 // Bloco genérico de conteúdo (aulas e desafios usam o mesmo formato).
 export interface Bloco {
@@ -81,13 +82,18 @@ function citacaoInline(texto: string): ReactNode {
 
 // Renderiza o conteúdo a partir dos blocos do Estúdio (aulas e enunciados de desafio).
 export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
-  // Aplica o glossário nos parágrafos e listas. Componentes memoizados para o markdown
-  // não remontar; a marcação é pura (não altera estado durante o render).
+  // O glossário vem do backend (cacheado). O matcher fica num ref lido pelos componentes
+  // memoizados, então o markdown não remonta quando o glossário carrega, e a marcação é
+  // pura (set de usados local por parágrafo), segura no StrictMode.
+  const glossario = useGlossario();
+  const matcher = useMemo(() => criarMatcher(glossario), [glossario]);
+  const matcherRef = useRef(matcher);
+  matcherRef.current = matcher;
   const componentes = useMemo<Components>(
     () => ({
       ...md,
-      p: ({ children }) => <p className="lesson__p">{glossariar(children)}</p>,
-      li: ({ children }) => <li>{glossariar(children)}</li>,
+      p: ({ children }) => <p className="lesson__p">{glossariar(children, matcherRef.current)}</p>,
+      li: ({ children }) => <li>{glossariar(children, matcherRef.current)}</li>,
     }),
     [],
   );

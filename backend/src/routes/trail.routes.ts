@@ -32,6 +32,10 @@ import {
     createAchievement,
     updateAchievement,
     deleteAchievement,
+    listGlossary,
+    createGlossaryTerm,
+    updateGlossaryTerm,
+    deleteGlossaryTerm,
     getMyAchievements,
     getMyActivity,
     getCommunityAchievements,
@@ -63,6 +67,12 @@ router.get("/achievements", autenticar, listAchievements);
 router.post("/achievements", autenticar, exigirAdmin, createAchievement);
 router.patch("/achievements/:id", autenticar, exigirAdmin, updateAchievement);
 router.delete("/achievements/:id", autenticar, exigirAdmin, deleteAchievement);
+
+// Glossário: leitura para qualquer logado; escrita só admin
+router.get("/glossary", autenticar, listGlossary);
+router.post("/glossary", autenticar, exigirAdmin, createGlossaryTerm);
+router.patch("/glossary/:id", autenticar, exigirAdmin, updateGlossaryTerm);
+router.delete("/glossary/:id", autenticar, exigirAdmin, deleteGlossaryTerm);
 router.post("/trails/:id/modules", autenticar, exigirAdmin, createModule);
 router.post("/modules/:id/lessons", autenticar, exigirAdmin, createLesson);
 router.delete("/modules/:id", autenticar, exigirAdmin, deleteModule);
