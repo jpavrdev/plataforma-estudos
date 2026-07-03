@@ -23,6 +23,7 @@ import {
 } from '../../services/trails';
 import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import type { Trail } from '../../data/trails';
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
 
@@ -50,15 +51,6 @@ function dataPorExtenso(): string {
   });
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
-
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
 
 const CORES_FEED = ['#2D6BF5', '#E0655A', '#3DAE6B', '#E0A82E', '#8B5CF6'];
 

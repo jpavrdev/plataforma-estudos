@@ -19,6 +19,15 @@ import {
   type Achievement,
   type CriterioConquista,
 } from '../../services/trails';
+import {
+  listarGlossario,
+  criarTermo,
+  atualizarTermo,
+  excluirTermo,
+  type TermoGlossario,
+} from '../../services/glossario';
+import { invalidarGlossario } from '../../hooks/useGlossario';
+import { ConfirmModal } from '../Simulados/ConfirmModal';
 
 function msgErro(e: unknown): string | undefined {
   return (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
@@ -397,7 +406,192 @@ function ConquistasAdmin() {
   );
 }
 
+const GLOSS_VAZIO = { term: '', definition: '' };
+
+function GlossarioAdmin() {
+  const { dados, carregando, erro: falhaCarga, recarregar } = useRequisicao(listarGlossario, []);
+  const itens = dados ?? [];
+  const [erro, setErro] = useState('');
+  const [editId, setEditId] = useState<string | null>(null);
+  const [form, setForm] = useState(GLOSS_VAZIO);
+  const [salvando, setSalvando] = useState(false);
+  const [confirmando, setConfirmando] = useState(false);
+
+  function resetar() {
+    setEditId(null);
+    setForm(GLOSS_VAZIO);
+  }
+
+  // Pede confirmação antes de gravar (criação ou edição).
+  function pedirConfirmacao() {
+    if (!form.term.trim() || !form.definition.trim() || salvando) return;
+    setConfirmando(true);
+  }
+
+  async function salvar() {
+    const term = form.term.trim();
+    const definition = form.definition.trim();
+    if (!term || !definition || salvando) return;
+    setSalvando(true);
+    setErro('');
+    try {
+      if (editId) await atualizarTermo(editId, term, definition);
+      else await criarTermo(term, definition);
+      invalidarGlossario(); // as aulas rebuscam o glossário atualizado
+      setConfirmando(false);
+      resetar();
+      recarregar();
+    } catch (e) {
+      setErro(msgErro(e) ?? 'Não foi possível salvar o termo.');
+      setConfirmando(false);
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  function editar(t: TermoGlossario) {
+    setEditId(t.id);
+    setForm({ term: t.term, definition: t.definition });
+  }
+
+  async function remover(t: TermoGlossario) {
+    if (!window.confirm(`Excluir o termo "${t.term}"?`)) return;
+    setErro('');
+    try {
+      await excluirTermo(t.id);
+      invalidarGlossario();
+      if (editId === t.id) resetar();
+      recarregar();
+    } catch {
+      setErro('Não foi possível excluir o termo.');
+    }
+  }
+
+  return (
+    <section style={{ marginBottom: 40 }}>
+      <h1 className="estudio-home__title">Glossário</h1>
+      <p className="estudio-home__sub">
+        Termos técnicos que ganham um tooltip com a definição nas aulas (primeira ocorrência por
+        parágrafo). O texto casa por palavra inteira e respeitando maiúsculas, ex.: IaaS, CapEx.
+      </p>
+
+      <div className="conq-form">
+        <input
+          className="estudio-form__input"
+          style={{ margin: 0 }}
+          value={form.term}
+          maxLength={60}
+          placeholder="Termo (ex.: IaaS)"
+          onChange={(e) => setForm({ ...form, term: e.target.value })}
+        />
+        <textarea
+          className="estudio-form__input"
+          value={form.definition}
+          maxLength={400}
+          placeholder="Definição do termo"
+          style={{
+            margin: 0,
+            minHeight: 84,
+            padding: '10px 14px',
+            lineHeight: 1.5,
+            resize: 'vertical',
+          }}
+          onChange={(e) => setForm({ ...form, definition: e.target.value })}
+        />
+        <div className="conq-form__row">
+          <button
+            className="btn btn--accent"
+            style={{ flex: 'none' }}
+            disabled={salvando || !form.term.trim() || !form.definition.trim()}
+            onClick={pedirConfirmacao}
+          >
+            {editId ? (
+              <>
+                <Check size={14} /> Salvar
+              </>
+            ) : (
+              <>
+                <Plus size={14} /> Adicionar
+              </>
+            )}
+          </button>
+          {editId && (
+            <button className="btn btn--ghost" style={{ flex: 'none' }} onClick={resetar}>
+              Cancelar
+            </button>
+          )}
+        </div>
+      </div>
+
+      {(erro || falhaCarga) && (
+        <div className="auth__alert">{erro || 'Não foi possível carregar o glossário.'}</div>
+      )}
+      {carregando && <p className="track__desc">Carregando...</p>}
+      {!carregando && itens.length === 0 && (
+        <p className="track__desc">Nenhum termo cadastrado ainda.</p>
+      )}
+
+      <div className="estudio-home__list">
+        {itens.map((t) => (
+          <div key={t.id} className="estudio-home__card">
+            <div className="conq-item">
+              <div>
+                <div className="conq-item__name">{t.term}</div>
+                <div
+                  className="conq-item__sub"
+                  style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {t.definition}
+                </div>
+              </div>
+            </div>
+            <div className="estudio-home__actions">
+              <button className="estudio-home__act" onClick={() => editar(t)} aria-label="Editar">
+                <Pencil size={15} />
+              </button>
+              <button
+                className="estudio-home__act estudio-home__act--danger"
+                onClick={() => remover(t)}
+                aria-label="Excluir"
+              >
+                <Trash size={15} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {confirmando && (
+        <ConfirmModal
+          title={editId ? 'Salvar alterações?' : 'Adicionar termo?'}
+          confirmLabel={editId ? 'Salvar' : 'Adicionar'}
+          loading={salvando}
+          onConfirm={salvar}
+          onCancel={() => setConfirmando(false)}
+        >
+          {editId
+            ? `As alterações no termo "${form.term.trim()}" passarão a valer nas aulas.`
+            : `O termo "${form.term.trim()}" será adicionado ao glossário e passará a aparecer nas aulas.`}
+        </ConfirmModal>
+      )}
+    </section>
+  );
+}
+
+const ABAS_CFG = [
+  { key: 'tags', label: 'Tags' },
+  { key: 'linguagens', label: 'Linguagens' },
+  { key: 'conquistas', label: 'Conquistas' },
+  { key: 'glossario', label: 'Glossário' },
+] as const;
+
 export function Configuracoes() {
+  const [aba, setAba] = useState<(typeof ABAS_CFG)[number]['key']>('tags');
   return (
     <div className="home">
       <header className="topbar studio__bar">
@@ -407,7 +601,7 @@ export function Configuracoes() {
         </div>
         <span className="studio__divider" />
         <div className="studio__crumb">
-          <b>Tags, linguagens e conquistas</b>
+          <b>Tags, linguagens, conquistas e glossário</b>
         </div>
         <div className="topbar__spacer" />
         <Link className="btn btn--ghost studio__btn" to="/home">
@@ -416,33 +610,50 @@ export function Configuracoes() {
       </header>
 
       <div className="estudio-home">
-        <CrudList
-          titulo="Tags"
-          descricao="Categorias para filtrar as trilhas (ex.: Fundamentos, Linguagens, Algoritmos). Você atribui as tags ao criar ou editar uma trilha no Estúdio."
-          placeholder="Nome da nova tag"
-          confirmarExclusao={(t) =>
-            `Excluir a tag "${t.name}"? Ela será removida das trilhas que a usam.`
-          }
-          carregar={listarTags}
-          criar={criarTag}
-          atualizar={atualizarTag}
-          excluir={excluirTag}
-        />
+        <div className="cfg-tabs">
+          {ABAS_CFG.map((a) => (
+            <button
+              key={a.key}
+              className={`cfg-tab${aba === a.key ? ' cfg-tab--active' : ''}`}
+              onClick={() => setAba(a.key)}
+            >
+              {a.label}
+            </button>
+          ))}
+        </div>
 
-        <CrudList
-          titulo="Linguagens"
-          descricao="Conjunto fixo de linguagens que aparecem no perfil. Padronizar evita variações como JS, Javascript e javascript, mantendo os dados limpos para análises."
-          placeholder="Nome da nova linguagem"
-          confirmarExclusao={(l) =>
-            `Excluir a linguagem "${l.name}"? Ela será removida dos perfis que a usam.`
-          }
-          carregar={listarLinguagens}
-          criar={criarLinguagem}
-          atualizar={atualizarLinguagem}
-          excluir={excluirLinguagem}
-        />
+        {aba === 'tags' && (
+          <CrudList
+            titulo="Tags"
+            descricao="Categorias para filtrar as trilhas (ex.: Fundamentos, Linguagens, Algoritmos). Você atribui as tags ao criar ou editar uma trilha no Estúdio."
+            placeholder="Nome da nova tag"
+            confirmarExclusao={(t) =>
+              `Excluir a tag "${t.name}"? Ela será removida das trilhas que a usam.`
+            }
+            carregar={listarTags}
+            criar={criarTag}
+            atualizar={atualizarTag}
+            excluir={excluirTag}
+          />
+        )}
 
-        <ConquistasAdmin />
+        {aba === 'linguagens' && (
+          <CrudList
+            titulo="Linguagens"
+            descricao="Conjunto fixo de linguagens que aparecem no perfil. Padronizar evita variações como JS, Javascript e javascript, mantendo os dados limpos para análises."
+            placeholder="Nome da nova linguagem"
+            confirmarExclusao={(l) =>
+              `Excluir a linguagem "${l.name}"? Ela será removida dos perfis que a usam.`
+            }
+            carregar={listarLinguagens}
+            criar={criarLinguagem}
+            atualizar={atualizarLinguagem}
+            excluir={excluirLinguagem}
+          />
+        )}
+
+        {aba === 'conquistas' && <ConquistasAdmin />}
+        {aba === 'glossario' && <GlossarioAdmin />}
       </div>
     </div>
   );

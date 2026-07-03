@@ -3035,6 +3035,9 @@ async function seed() {
             .values({
                 slug: SLUG,
                 name: "Microsoft Azure Fundamentals (AZ-900)",
+                provider: "azure",
+                code: "AZ-900",
+                level: "Fundamental",
                 description:
                     "Simulado no formato da prova AZ-900: 45 minutos, corte de 70%. Mistura resposta única e múltipla.",
                 durationMinutes: 45,
@@ -3045,6 +3048,11 @@ async function seed() {
             .returning();
         console.log(`Simulado criado: ${simulado.slug}`);
     }
+    // Mantém provedor, código e nível em dia mesmo se o simulado já existia.
+    await db
+        .update(simulados)
+        .set({ provider: "azure", code: "AZ-900", level: "Fundamental" })
+        .where(eq(simulados.id, simulado.id));
 
     const [{ n }] = await db
         .select({ n: count() })

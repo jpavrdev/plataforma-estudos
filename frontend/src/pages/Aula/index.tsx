@@ -5,7 +5,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Check, Help, Alert, X } from '../../components/Icons';
+import { Flame, Check, Help, Alert, X, ChevronDown } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import {
@@ -22,13 +22,7 @@ import remarkGfm from 'remark-gfm';
 import { statusErro } from '../../utils/erro';
 import { BlocosConteudo, md } from '../../components/BlocosConteudo';
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 export function Aula() {
   const { trailId, lessonId } = useParams();
@@ -120,6 +114,7 @@ export function Aula() {
 }
 
 function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtualId: string }) {
+  const [aberto, setAberto] = useState(false);
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const feitas = todas.filter((l) => l.state === 'done').length;
   const total = todas.length;
@@ -140,26 +135,42 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
         <span style={{ width: `${pct}%` }} />
       </div>
 
-      {trilha.modules.map((m) => (
-        <div key={m.id} className="lesson__module">
-          <div className="lesson__module-title">{m.title}</div>
-          {m.lessons.map((l) => {
-            const estado = l.id === aulaAtualId ? 'current' : l.state;
-            return (
-              <Link
-                key={l.id}
-                to={`/trilhas/${trilha.id}/aula/${l.id}`}
-                className={`lesson__item lesson__item--${estado}${l.state === 'locked' ? ' lesson__item--disabled' : ''}`}
-              >
-                <span className="lesson__bullet">
-                  {l.state === 'done' ? <Check size={11} /> : null}
-                </span>
-                <span className="lesson__item-name">{l.title}</span>
-              </Link>
-            );
-          })}
-        </div>
-      ))}
+      {/* No telefone a lista de aulas colapsa, para abrir a aula já mostrar o conteúdo. */}
+      <button
+        type="button"
+        className={`lesson__toggle${aberto ? ' lesson__toggle--aberto' : ''}`}
+        onClick={() => setAberto((v) => !v)}
+        aria-expanded={aberto}
+      >
+        Aulas da trilha
+        <span className="lesson__toggle-chevron">
+          <ChevronDown size={16} />
+        </span>
+      </button>
+
+      <div className={`lesson__modules${aberto ? ' lesson__modules--aberto' : ''}`}>
+        {trilha.modules.map((m) => (
+          <div key={m.id} className="lesson__module">
+            <div className="lesson__module-title">{m.title}</div>
+            {m.lessons.map((l) => {
+              const ativa = l.id === aulaAtualId;
+              return (
+                <Link
+                  key={l.id}
+                  to={`/trilhas/${trilha.id}/aula/${l.id}`}
+                  className={`lesson__item lesson__item--${l.state}${ativa ? ' lesson__item--active' : ''}${l.state === 'locked' ? ' lesson__item--disabled' : ''}`}
+                  onClick={() => setAberto(false)}
+                >
+                  <span className="lesson__bullet">
+                    {l.state === 'done' ? <Check size={11} /> : null}
+                  </span>
+                  <span className="lesson__item-name">{l.title}</span>
+                </Link>
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </aside>
   );
 }

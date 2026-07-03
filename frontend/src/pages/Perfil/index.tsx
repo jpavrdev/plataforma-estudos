@@ -45,13 +45,7 @@ import {
 } from '../../services/trails';
 import { urlImagem } from '../../utils/urlImagem';
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 // Só carrega o recortador quando o usuário vai trocar foto ou capa.
 const ImageCropper = lazy(() => import('../../components/ImageCropper'));

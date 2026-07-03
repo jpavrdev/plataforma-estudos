@@ -12,14 +12,7 @@ import { getInitials } from '../../utils/initials';
 import { user as homeUser } from '../../data/home';
 import { obterRanking, type RankingResposta, type RankingPeriodo } from '../../services/trails';
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 const CORES = ['#5B8DEF', '#E0655A', '#2E9E6B', '#E0A82E', '#8B5CF6'];
 const MEDAL: Record<number, string> = { 1: 'var(--gold)', 2: 'var(--silver)', 3: 'var(--bronze)' };
 const PODIO: Record<number, { size: number; font: number; pedestal: number }> = {

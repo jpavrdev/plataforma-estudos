@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -21,14 +21,7 @@ import {
 
 type TrailComId = Trail & { id: string };
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 type Tint = { fg: string; bg: string };
 
@@ -266,7 +259,7 @@ export function Trilhas() {
                       </div>
                     </div>
                   </div>
-                  <p className="track__desc">{t.desc}</p>
+                  <TrilhaDesc>{t.desc}</TrilhaDesc>
                   <div className="progress">
                     <div className="progress__track">
                       <span
@@ -313,5 +306,44 @@ export function Trilhas() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Descrição do card com "ler mais": mostra o botão só quando o texto passa de 3 linhas,
+// e expande apenas este card (estado próprio), sem mexer nos vizinhos.
+function TrilhaDesc({ children }: { children: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [truncado, setTruncado] = useState(false);
+  const [aberto, setAberto] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || aberto) return;
+    const medir = () => setTruncado(el.scrollHeight > el.clientHeight + 1);
+    medir();
+    window.addEventListener('resize', medir);
+    return () => window.removeEventListener('resize', medir);
+  }, [children, aberto]);
+
+  return (
+    <>
+      <p ref={ref} className={`track__desc${aberto ? ' track__desc--full' : ''}`}>
+        {children}
+      </p>
+      <div className="track__more-row">
+        {(truncado || aberto) && (
+          <button
+            type="button"
+            className="track__more"
+            onClick={(e) => {
+              e.stopPropagation();
+              setAberto((v) => !v);
+            }}
+          >
+            {aberto ? 'Ler menos' : 'Ler mais'}
+          </button>
+        )}
+      </div>
+    </>
   );
 }

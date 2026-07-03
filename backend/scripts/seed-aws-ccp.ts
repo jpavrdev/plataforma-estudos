@@ -3167,6 +3167,9 @@ async function seed() {
             .values({
                 slug: SLUG,
                 name: "AWS Certified Cloud Practitioner",
+                provider: "aws",
+                code: "CLF-C02",
+                level: "Fundamental",
                 description:
                     "Simulado no formato da prova CLF-C02: 90 minutos, corte de 70%. Mistura resposta única e múltipla.",
                 durationMinutes: 90,
@@ -3177,6 +3180,11 @@ async function seed() {
             .returning();
         console.log(`Simulado criado: ${simulado.slug}`);
     }
+    // Mantém provedor, código e nível em dia mesmo se o simulado já existia.
+    await db
+        .update(simulados)
+        .set({ provider: "aws", code: "CLF-C02", level: "Fundamental" })
+        .where(eq(simulados.id, simulado.id));
 
     const [{ n }] = await db
         .select({ n: count() })

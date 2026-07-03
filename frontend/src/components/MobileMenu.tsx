@@ -3,14 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './Logo';
 import { X } from './Icons';
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../data/nav';
 
 // Hambúrguer + drawer lateral, visíveis só no telefone (controlados por CSS).
 export function MobileMenu() {

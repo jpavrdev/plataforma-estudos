@@ -36,6 +36,11 @@ export const createAchievementSchema = z.object({
 
 export const updateAchievementSchema = createAchievementSchema;
 
+export const glossaryTermSchema = z.object({
+    term: z.string().min(1, "Termo obrigatório").max(60, "Termo muito longo"),
+    definition: z.string().min(2, "Definição obrigatória").max(400, "Definição muito longa"),
+});
+
 export const createLessonSchema = z.object({
     title: z.string().min(3, "Título deve ter ao menos 3 caracteres"),
     content: z.string().optional(),

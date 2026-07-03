@@ -102,7 +102,7 @@ async function responderQuiz(token: string, lessonId: string, acertos: number) {
     if (aula.status !== 200) return aula;
     const answers = aula.body.questions.map((q: any, idx: number) => ({
         questionId: q.id,
-        optionId: q.options.find((o: any) => o.position === (idx < acertos ? 2 : 1)).id,
+        optionId: q.options.find((o: any) => o.text === (idx < acertos ? "certa" : "errada")).id,
     }));
     return post(`/lessons/${lessonId}/quiz`, token, { answers });
 }

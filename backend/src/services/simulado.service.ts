@@ -7,7 +7,7 @@ import {
     simuladoAttemptQuestions,
     simuladoAttemptAnswers,
 } from "../../schema.ts";
-import { eq, and, sql, inArray, desc, isNull, count } from "drizzle-orm";
+import { eq, and, sql, inArray, desc, isNull, count, ne } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 import {
     corrigirSimulado,
@@ -35,6 +35,9 @@ export async function listarSimulados() {
             slug: simulados.slug,
             name: simulados.name,
             description: simulados.description,
+            provider: simulados.provider,
+            code: simulados.code,
+            level: simulados.level,
             durationMinutes: simulados.durationMinutes,
             questionCount: simulados.questionCount,
             passPercent: simulados.passPercent,
@@ -42,6 +45,18 @@ export async function listarSimulados() {
         .from(simulados)
         .where(eq(simulados.published, true))
         .orderBy(simulados.name);
+}
+
+// Cancela as tentativas em aberto do usuário: marca submittedAt sem gravar score/passed.
+// Como toda tentativa realmente enviada tem score, o histórico exibe estas como "Cancelada"
+// e o cronômetro delas para. Opcionalmente preserva uma tentativa (a que será retomada).
+async function cancelarTentativasEmAberto(userId: string, exceto: string | null) {
+    const condicoes = [eq(simuladoAttempts.userId, userId), isNull(simuladoAttempts.submittedAt)];
+    if (exceto) condicoes.push(ne(simuladoAttempts.id, exceto));
+    await db
+        .update(simuladoAttempts)
+        .set({ submittedAt: new Date() })
+        .where(and(...condicoes));
 }
 
 export async function iniciarTentativa(userId: string, slug: string) {
@@ -67,8 +82,13 @@ export async function iniciarTentativa(userId: string, slug: string) {
         .orderBy(desc(simuladoAttempts.startedAt))
         .limit(1);
     if (emAberto && emAberto.expiresAt > agora) {
+        // Retoma esta tentativa e cancela qualquer outra em aberto (de outros simulados).
+        await cancelarTentativasEmAberto(userId, emAberto.id);
         return estadoDaTentativa(userId, emAberto.id);
     }
+
+    // Vai criar uma nova: cancela todas as tentativas em aberto, parando o cronômetro delas.
+    await cancelarTentativasEmAberto(userId, null);
 
     const sorteadas = await db
         .select({ id: simuladoQuestions.id })
@@ -165,9 +185,20 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         };
     });
 
+    const [sim] = await db
+        .select({
+            slug: simulados.slug,
+            name: simulados.name,
+            passPercent: simulados.passPercent,
+        })
+        .from(simulados)
+        .where(eq(simulados.id, attempt.simuladoId));
     const restanteMs = attempt.expiresAt.getTime() - Date.now();
     return {
         attemptId: attempt.id,
+        slug: sim?.slug ?? null,
+        simulado: sim?.name ?? null,
+        passPercent: sim?.passPercent ?? null,
         submitted: enviado,
         expiresAt: attempt.expiresAt,
         remainingSeconds: enviado ? 0 : Math.max(0, Math.floor(restanteMs / 1000)),
@@ -175,6 +206,10 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
             ? {
                   score: attempt.score,
                   passed: attempt.passed,
+                  elapsedSeconds: Math.max(
+                      0,
+                      Math.round((attempt.submittedAt!.getTime() - attempt.startedAt.getTime()) / 1000),
+                  ),
                   temasARevisar: resumoPorTema(paraResumo),
               }
             : {}),

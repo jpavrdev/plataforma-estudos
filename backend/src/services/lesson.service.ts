@@ -104,25 +104,41 @@ export async function detalheDaAula(lessonId: string, userId: string) {
     const corretaPorQuestao = new Map<string, string>();
     for (const o of opts) if (o.isCorrect) corretaPorQuestao.set(o.questionId, o.id);
 
-    const questoes = qs.map((q) => {
-        const r = respostaPorQuestao.get(q.id);
-        return {
-            id: q.id,
-            statement: q.statement,
-            position: q.position,
-            options: opts
-                .filter((o) => o.questionId === q.id)
-                .map((o) => ({ id: o.id, text: o.text, position: o.position })),
-            // O gabarito só é revelado nas questões que o usuário já respondeu.
-            answer: r
-                ? {
-                      selectedOptionId: r.selectedOptionId,
-                      isCorrect: r.isCorrect,
-                      correctOptionId: corretaPorQuestao.get(q.id) ?? null,
-                  }
-                : null,
-        };
-    });
+    // Embaralha questões e alternativas para a correta não cair sempre em "A". A
+    // correção é por id da opção, então a ordem não muda o resultado; a position é
+    // renumerada para a nova ordem.
+    const embaralhar = <T>(arr: T[]): T[] => {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    };
+
+    const questoes = embaralhar(
+        qs.map((q) => {
+            const r = respostaPorQuestao.get(q.id);
+            return {
+                id: q.id,
+                statement: q.statement,
+                position: q.position,
+                options: embaralhar(opts.filter((o) => o.questionId === q.id)).map((o, i) => ({
+                    id: o.id,
+                    text: o.text,
+                    position: i + 1,
+                })),
+                // O gabarito só é revelado nas questões que o usuário já respondeu.
+                answer: r
+                    ? {
+                          selectedOptionId: r.selectedOptionId,
+                          isCorrect: r.isCorrect,
+                          correctOptionId: corretaPorQuestao.get(q.id) ?? null,
+                      }
+                    : null,
+            };
+        }),
+    ).map((q, i) => ({ ...q, position: i + 1 }));
 
     return {
         id: aula.id,

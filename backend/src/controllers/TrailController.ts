@@ -14,6 +14,7 @@ import {
     updateLanguageSchema,
     createAchievementSchema,
     updateAchievementSchema,
+    glossaryTermSchema,
 } from "../schemas/trail.schemas.ts";
 import { resumoSemana } from "../services/streak.ts";
 import { rankingGlobal } from "../services/ranking.ts";
@@ -34,6 +35,12 @@ import {
     conquistasDoUsuario,
     feedComunidade,
 } from "../services/achievement.service.ts";
+import {
+    listarGlossario,
+    criarTermo,
+    atualizarTermo,
+    excluirTermo,
+} from "../services/glossary.service.ts";
 import {
     criarTrilha,
     atualizarTrilha,
@@ -170,6 +177,42 @@ export const updateAchievement = async (req: Request, res: Response, next: NextF
 export const deleteAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
         await excluirConquista(String(req.params.id));
+        res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// ===================== Glossário =====================
+export const listGlossary = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await listarGlossario());
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const createGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = glossaryTermSchema.parse(req.body);
+        res.status(201).json(await criarTermo(dados));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const updateGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = glossaryTermSchema.parse(req.body);
+        res.json(await atualizarTermo(String(req.params.id), dados));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await excluirTermo(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
