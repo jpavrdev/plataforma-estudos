@@ -30,4 +30,16 @@ export const authService = {
 
         return verificationToken;
     },
+    async gerarTokenResetSenha(userId: string, tx: Pick<typeof db, "insert"> = db) {
+        const resetToken = randomBytes(40).toString("hex");
+
+        await tx.insert(tokens).values({
+            userId,
+            tokenHash: createHash("sha256").update(resetToken).digest("hex"),
+            type: "password_reset",
+            expiredAt: new Date(Date.now() + 60 * 60 * 1000),
+        });
+
+        return resetToken;
+    },
 };

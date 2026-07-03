@@ -34,3 +34,14 @@ export const verifyEmailLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",
 );
+
+// Pedir redefinição dispara email; mantém baixo para não virar vetor de spam.
+export const forgotPasswordLimiter = criarLimiter(
+    5,
+    "Muitos pedidos de redefinição. Tente novamente em alguns minutos.",
+);
+
+export const resetPasswordLimiter = criarLimiter(
+    20,
+    "Muitas tentativas. Tente novamente em alguns minutos.",
+);

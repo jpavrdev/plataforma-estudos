@@ -1,8 +1,13 @@
-import { loginSchema, registerSchema } from "../schemas/auth.schema.ts";
+import {
+    loginSchema,
+    registerSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
+} from "../schemas/auth.schema.ts";
 import bcrypt from "bcrypt";
 import { db } from "../../db.ts";
 import { users, tokens } from "../../schema.ts";
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "../config/env.ts";
 import { authService } from "../services/auth.service.ts";
@@ -298,6 +303,77 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
         });
 
         res.json({ mensagem: "Email verificado com sucesso. Você já pode fazer login." });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = forgotPasswordSchema.parse(req.body);
+
+        // Resposta sempre genérica, para não revelar se o email tem conta.
+        const resposta = {
+            mensagem: "Se houver uma conta com esse email, enviamos um link para redefinir a senha.",
+        };
+
+        const [user] = await db
+            .select({ id: users.id, passwordHash: users.passwordHash })
+            .from(users)
+            .where(eq(users.email, email));
+
+        // Só envia quando a conta existe e tem senha (login social não tem o que redefinir).
+        if (user && user.passwordHash) {
+            const token = await authService.gerarTokenResetSenha(user.id);
+            await emailService.enviarResetSenha(email, token);
+        }
+
+        res.json(resposta);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { token, password } = resetPasswordSchema.parse(req.body);
+
+        const hashCalculado = createHash("sha256").update(token).digest("hex");
+        const [registro] = await db
+            .select({
+                id: tokens.id,
+                userId: tokens.userId,
+                expiredAt: tokens.expiredAt,
+                usedAt: tokens.usedAt,
+            })
+            .from(tokens)
+            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "password_reset")));
+
+        if (!registro || registro.expiredAt < new Date() || registro.usedAt !== null) {
+            return res.status(400).json({ erro: "Link inválido ou expirado. Peça um novo." });
+        }
+
+        const passwordHash = await bcrypt.hash(password, BCRYPT_COST);
+
+        await db.transaction(async (tx) => {
+            // Consome o token de reset.
+            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, registro.id));
+            // Troca a senha.
+            await tx.update(users).set({ passwordHash }).where(eq(users.id, registro.userId));
+            // Revoga as sessões abertas (refresh tokens) por segurança.
+            await tx
+                .update(tokens)
+                .set({ usedAt: new Date() })
+                .where(
+                    and(
+                        eq(tokens.userId, registro.userId),
+                        eq(tokens.type, "refresh"),
+                        isNull(tokens.usedAt),
+                    ),
+                );
+        });
+
+        res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
     } catch (err) {
         next(err);
     }
