@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { parseGrid } from '../utils/tabela';
+import { glossariar } from './Glossario';
 
 // Bloco genérico de conteúdo (aulas e desafios usam o mesmo formato).
 export interface Bloco {
@@ -80,6 +81,16 @@ function citacaoInline(texto: string): ReactNode {
 
 // Renderiza o conteúdo a partir dos blocos do Estúdio (aulas e enunciados de desafio).
 export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
+  // Aplica o glossário nos parágrafos e listas. Componentes memoizados para o markdown
+  // não remontar; a marcação é pura (não altera estado durante o render).
+  const componentes = useMemo<Components>(
+    () => ({
+      ...md,
+      p: ({ children }) => <p className="lesson__p">{glossariar(children)}</p>,
+      li: ({ children }) => <li>{glossariar(children)}</li>,
+    }),
+    [],
+  );
   return (
     <div className="lesson__md">
       {blocks.map((b, i) => {
@@ -117,7 +128,7 @@ export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
           return <TabelaBloco key={i} value={b.value} />;
         }
         return (
-          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={md}>
+          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={componentes}>
             {b.value}
           </ReactMarkdown>
         );
