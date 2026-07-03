@@ -8,14 +8,7 @@ import { Flame } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as homeUser } from '../../data/home';
 
-const NAV = [
-  { label: 'Início', to: '/home' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Conquistas', to: '/conquistas' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-];
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 export function SimTopbar({ active = '/simulados' }: { active?: string }) {
   const { user: authUser } = useAuth();

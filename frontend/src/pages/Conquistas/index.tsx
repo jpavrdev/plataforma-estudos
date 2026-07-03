@@ -1,4 +1,4 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from '../Simulados/SimTopbar';
 import { BookOpen, Trophy, Lock, Check, IconeConquista } from '../../components/Icons';
@@ -8,14 +8,48 @@ import { provedorDe, nomeLimpo } from '../Simulados/provedores';
 
 // Um selo por faixa, ganho de forma cumulativa (85% acende bronze e prata).
 const TIERS = [
-  { key: 'bronze', label: 'Bronze', min: 70, cor: '#c0803f', faixa: '70-79%' },
-  { key: 'prata', label: 'Prata', min: 80, cor: '#8b95a7', faixa: '80-89%' },
-  { key: 'ouro', label: 'Ouro', min: 90, cor: '#d3a533', faixa: '90-99%' },
-  { key: 'diamante', label: 'Diamante', min: 100, cor: '#3bbdf5', faixa: '100%' },
+  { key: 'bronze', label: 'Bronze', min: 70, cor: '#c77b3b', faixa: '70-79%' },
+  { key: 'prata', label: 'Prata', min: 80, cor: '#a9aeb8', faixa: '80-89%' },
+  { key: 'ouro', label: 'Ouro', min: 90, cor: '#e0a82e', faixa: '90-99%' },
+  { key: 'diamante', label: 'Diamante', min: 100, cor: '#56c5e8', faixa: '100%' },
 ];
 
-function corVar(cor: string): CSSProperties {
-  return { ['--cor' as string]: cor } as CSSProperties;
+// Selo hexagonal: placa escura com borda colorida quando ganho, ou placa apagada
+// com cadeado quando bloqueado.
+function BadgeHex({
+  ganho,
+  cor,
+  sm,
+  children,
+}: {
+  ganho: boolean;
+  cor?: string;
+  sm?: boolean;
+  children?: ReactNode;
+}) {
+  return (
+    <div className={`badge__hex${sm ? ' badge__hex--sm' : ''}`}>
+      <svg className="badge__svg" viewBox="0 0 112 126">
+        <path
+          d="M56 5 L106 34 L106 92 L56 121 L6 92 L6 34 Z"
+          strokeWidth="5"
+          strokeLinejoin="round"
+          style={
+            ganho
+              ? { fill: '#232f3e', stroke: cor }
+              : { fill: 'var(--surface-2)', stroke: 'var(--border-strong)' }
+          }
+        />
+      </svg>
+      {ganho ? (
+        <div className="badge__content">{children}</div>
+      ) : (
+        <div className="badge__lock">
+          <Lock size={sm ? 17 : 21} />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function Conquistas() {
@@ -106,25 +140,14 @@ export function Conquistas() {
                         : `${t.done}/${t.lessons} aulas`;
                     return (
                       <div key={t.id} className="conq-badge">
-                        <span
-                          className={`hex${feito ? '' : ' hex--locked'}`}
-                          style={feito ? corVar(t.hue) : undefined}
-                        >
-                          <span className="hex__in">
-                            {feito ? (
-                              <>
-                                <small>TRILHA</small>
-                                <b>{t.glyph}</b>
-                              </>
-                            ) : (
-                              <Lock size={20} />
-                            )}
+                        <BadgeHex ganho={feito} cor={t.hue}>
+                          <span className="badge__vendor">TRILHA</span>
+                          <span className="badge__glyph" style={{ color: t.hue }}>
+                            {t.glyph}
                           </span>
-                        </span>
-                        <div className="conq-badge__name">{t.name}</div>
-                        <div
-                          className={`conq-badge__status${feito ? ' conq-badge__status--done' : ''}`}
-                        >
+                        </BadgeHex>
+                        <div className="badge__name">{t.name}</div>
+                        <div className={`badge__sub${feito ? ' badge__sub--done' : ''}`}>
                           {status}
                         </div>
                       </div>
@@ -176,26 +199,18 @@ export function Conquistas() {
                             const ganho = best >= tier.min;
                             return (
                               <div key={tier.key} className="conq-medal">
-                                <span
-                                  className={`hex hex--sm${ganho ? '' : ' hex--locked'}`}
-                                  style={ganho ? corVar(tier.cor) : undefined}
-                                >
-                                  <span className="hex__in">
-                                    {ganho ? (
-                                      <>
-                                        <small>{p.label.toUpperCase()}</small>
-                                        <b>{tier.min}%</b>
-                                      </>
-                                    ) : (
-                                      <Lock size={15} />
-                                    )}
+                                <BadgeHex ganho={ganho} cor={tier.cor} sm>
+                                  <span className="badge__vendor">{p.label.toUpperCase()}</span>
+                                  <span className="badge__score" style={{ color: tier.cor }}>
+                                    {tier.min}%
                                   </span>
-                                </span>
-                                <span
-                                  className={`conq-medal__label${ganho ? '' : ' conq-medal__label--off'}`}
+                                </BadgeHex>
+                                <div
+                                  className="badge__name"
+                                  style={ganho ? { color: tier.cor } : undefined}
                                 >
                                   {tier.label}
-                                </span>
+                                </div>
                               </div>
                             );
                           })}
