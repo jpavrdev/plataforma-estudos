@@ -4,11 +4,14 @@ import api from '../../services/api';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
-import { SelectField } from '../../components/SelectField';
+import {
+  birthDateDisplayToIso,
+  ProfileCompletionFields,
+  validateProfileCompletionFields,
+} from '../../components/ProfileCompletionFields';
 import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Avatar } from '../../components/Avatar';
 import { Check } from '../../components/Icons';
-import { formatPhone } from '../../utils/phone';
 import { mensagemErro } from '../../utils/erro';
 
 const BENEFITS = [
@@ -16,13 +19,6 @@ const BENEFITS = [
   'Mantenha seu streak e ganhe XP',
   'Suba no ranking global',
   'Acompanhe seu progresso por trilhas',
-];
-
-const GENDER_OPTIONS = [
-  { value: 'feminino', label: 'Feminino' },
-  { value: 'masculino', label: 'Masculino' },
-  { value: 'outro', label: 'Outro' },
-  { value: 'prefiro_nao_dizer', label: 'Prefiro não dizer' },
 ];
 
 type Erros = Record<string, string>;
@@ -60,18 +56,13 @@ export function Register() {
     const e: Erros = {};
     if (name.trim().length < 2) e.name = 'Nome deve ter ao menos 2 caracteres';
 
-    const u = username.trim();
-    if (u.length < 3) e.username = 'Usuário deve ter ao menos 3 caracteres';
-    else if (u.length > 20) e.username = 'Usuário deve ter no máximo 20 caracteres';
-    else if (!/^[a-zA-Z0-9_]+$/.test(u)) e.username = 'Use apenas letras, números e underscore';
+    const profileErrors = validateProfileCompletionFields({ username, birthDate, gender, phone });
+    Object.assign(e, profileErrors);
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Email inválido';
 
     if (!senhaValida(password)) e.password = 'A senha não cumpre todos os requisitos';
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) e.birthDate = 'Informe sua data de nascimento';
-    if (!gender) e.gender = 'Selecione o gênero';
-    if (!phone.trim()) e.phone = 'Informe seu telefone';
     return e;
   }
 
@@ -81,6 +72,8 @@ export function Register() {
     const errs = validar();
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
+    const birthDateIso = birthDateDisplayToIso(birthDate);
+    if (!birthDateIso) return;
 
     setSubmitting(true);
     try {
@@ -89,7 +82,7 @@ export function Register() {
         username,
         email: email.trim(),
         password,
-        birthDate,
+        birthDate: birthDateIso,
         gender,
         phone: phone.trim(),
       });
@@ -164,21 +157,18 @@ export function Register() {
           required
           error={errors.name}
         />
-        <FormField
-          label="Nome de usuário"
-          placeholder="seu_usuario"
-          value={username}
-          onChange={(e) => {
-            setUsername(
-              e.target.value
-                .toLowerCase()
-                .replace(/[^a-z0-9_]/g, '')
-                .slice(0, 20),
-            );
-            limparErro('username');
-          }}
+        <ProfileCompletionFields
+          username={username}
+          onUsernameChange={setUsername}
+          birthDate={birthDate}
+          onBirthDateChange={setBirthDate}
+          gender={gender}
+          onGenderChange={setGender}
+          phone={phone}
+          onPhoneChange={setPhone}
+          errors={errors}
+          onClearError={limparErro}
           required
-          error={errors.username}
         />
         <FormField
           label="E-mail"
@@ -213,43 +203,6 @@ export function Register() {
             ))}
           </ul>
         </FormField>
-        <FormField
-          label="Data de nascimento"
-          type="date"
-          autoComplete="bday"
-          value={birthDate}
-          onChange={(e) => {
-            setBirthDate(e.target.value);
-            limparErro('birthDate');
-          }}
-          required
-          error={errors.birthDate}
-        />
-        <SelectField
-          label="Gênero"
-          value={gender}
-          onChange={(e) => {
-            setGender(e.target.value);
-            limparErro('gender');
-          }}
-          options={GENDER_OPTIONS}
-          placeholder="Selecione"
-          required
-          error={errors.gender}
-        />
-        <FormField
-          label="Telefone"
-          type="tel"
-          autoComplete="tel"
-          placeholder="(11) 98888-7777"
-          value={phone}
-          onChange={(e) => {
-            setPhone(formatPhone(e.target.value));
-            limparErro('phone');
-          }}
-          required
-          error={errors.phone}
-        />
         <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
           {submitting ? 'Criando conta...' : 'Criar conta grátis'}
         </button>
