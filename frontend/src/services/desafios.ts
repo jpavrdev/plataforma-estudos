@@ -1,6 +1,6 @@
 import api from './api';
 
-export type Linguagem = 'javascript' | 'python';
+export type Linguagem = 'javascript' | 'python' | 'java';
 export type Dificuldade = 'facil' | 'medio' | 'dificil';
 export type StatusDesafio = 'solved' | 'attempted' | 'todo';
 export type TipoDesafio = 'stdin' | 'function';

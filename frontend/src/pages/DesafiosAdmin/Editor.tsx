@@ -51,6 +51,7 @@ interface FormState {
   blocks: Bloco[];
   starterJs: string;
   starterPy: string;
+  starterJava: string;
   tests: CasoTesteAdmin[];
 }
 
@@ -66,6 +67,7 @@ const VAZIO: FormState = {
   blocks: [{ type: 'text', value: '' }],
   starterJs: '',
   starterPy: '',
+  starterJava: '',
   tests: [{ input: '', expectedOutput: '', isPublic: true }],
 };
 
@@ -95,6 +97,7 @@ export function DesafioEditor() {
           blocks: d.statementBlocks.length ? d.statementBlocks : [{ type: 'text', value: '' }],
           starterJs: d.starterCode.javascript ?? '',
           starterPy: d.starterCode.python ?? '',
+          starterJava: d.starterCode.java ?? '',
           tests: d.tests.length ? d.tests : [{ input: '', expectedOutput: '', isPublic: true }],
         });
       })
@@ -153,6 +156,7 @@ export function DesafioEditor() {
     const starterCode: DesafioInput['starterCode'] = {};
     if (form.starterJs.trim()) starterCode.javascript = form.starterJs;
     if (form.starterPy.trim()) starterCode.python = form.starterPy;
+    if (form.starterJava.trim()) starterCode.java = form.starterJava;
     if (form.kind === 'function' && !/^[A-Za-z_]\w*$/.test(form.entryPoint.trim())) {
       setErro('Informe o nome do método (ex.: twoSum) para desafios do tipo função.');
       return;
@@ -403,6 +407,15 @@ export function DesafioEditor() {
               value={form.starterPy}
               placeholder="# leitura da entrada..."
               onChange={(e) => patch({ starterPy: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="studio__label">Java</label>
+            <textarea
+              className="block__edit es-input block__edit--code"
+              value={form.starterJava}
+              placeholder="// leitura da entrada..."
+              onChange={(e) => patch({ starterJava: e.target.value })}
             />
           </div>
         </div>

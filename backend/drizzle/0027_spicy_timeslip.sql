@@ -1,0 +1,1 @@
+ALTER TYPE "public"."challenge_language" ADD VALUE 'java';

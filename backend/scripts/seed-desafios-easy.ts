@@ -27,6 +27,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} s\n   * @return {string}\n   */\n  reverseString(s) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def reverseString(self, s: str) -> str:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public String reverseString(String s) {\n        // sua solução aqui\n        return \"\";\n    }\n}",
         },
         tests: [
             {
@@ -74,6 +75,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} x\n   * @return {boolean}\n   */\n  isPalindrome(x) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def isPalindrome(self, x: int) -> bool:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public boolean isPalindrome(int x) {\n        // sua solução aqui\n        return false;\n    }\n}",
         },
         tests: [
             {
@@ -125,6 +127,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {string[]}\n   */\n  fizzBuzz(n) {\n    // sua solução aqui\n  }\n}",
             python: "from typing import List\n\n\nclass Solution:\n    def fizzBuzz(self, n: int) -> List[str]:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public String[] fizzBuzz(int n) {\n        // sua solução aqui\n        return new String[0];\n    }\n}",
         },
         tests: [
             {
@@ -178,6 +181,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {number}\n   */\n  fib(n) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def fib(self, n: int) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int fib(int n) {\n        // sua solução aqui\n        return 0;\n    }\n}",
         },
         tests: [
             {
@@ -225,6 +229,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {number}\n   */\n  factorial(n) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def factorial(self, n: int) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int factorial(int n) {\n        // sua solução aqui\n        return 0;\n    }\n}",
         },
         tests: [
             {
@@ -272,6 +277,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  sumArray(nums) {\n    // sua solução aqui\n  }\n}",
             python: "from typing import List\n\nclass Solution:\n    def sumArray(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int sumArray(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -323,6 +329,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  maxArray(nums) {\n    // sua solução aqui\n  }\n}",
             python: "from typing import List\n\nclass Solution:\n    def maxArray(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int maxArray(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -374,6 +381,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} s\n   * @return {number}\n   */\n  countVowels(s) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def countVowels(self, s: str) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int countVowels(String s) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -425,6 +433,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {boolean}\n   */\n  isPrime(n) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def isPrime(self, n: int) -> bool:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public boolean isPrime(int n) {\n        // sua solução aqui\n        return false;\n    }\n}\n",
         },
         tests: [
             {
@@ -476,6 +485,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} a\n   * @param {number} b\n   * @return {number}\n   */\n  gcd(a, b) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def gcd(self, a: int, b: int) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int gcd(int a, int b) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -527,6 +537,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} s\n   * @return {boolean}\n   */\n  isValid(s) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def isValid(self, s: str) -> bool:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public boolean isValid(String s) {\n        // sua solução aqui\n        return false;\n    }\n}\n",
         },
         tests: [
             {
@@ -574,6 +585,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  missingNumber(nums) {\n    // sua solução aqui\n  }\n}",
             python: "from typing import List\n\n\nclass Solution:\n    def missingNumber(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int missingNumber(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -625,6 +637,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  singleNumber(nums) {\n    // sua solução aqui\n  }\n}\n",
             python: "from typing import List\n\n\nclass Solution:\n    def singleNumber(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int singleNumber(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -676,6 +689,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {boolean}\n   */\n  containsDuplicate(nums) {\n    // sua solução aqui\n  }\n}",
             python: "from typing import List\n\n\nclass Solution:\n    def containsDuplicate(self, nums: List[int]) -> bool:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public boolean containsDuplicate(int[] nums) {\n        // sua solução aqui\n        return false;\n    }\n}\n",
         },
         tests: [
             {
@@ -727,6 +741,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number[]}\n   */\n  moveZeroes(nums) {\n    // sua solução aqui\n  }\n}\n",
             python: "from typing import List\n\n\nclass Solution:\n    def moveZeroes(self, nums: List[int]) -> List[int]:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int[] moveZeroes(int[] nums) {\n        // sua solução aqui\n        return nums;\n    }\n}\n",
         },
         tests: [
             {
@@ -778,6 +793,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} s\n   * @return {number}\n   */\n  romanToInt(s) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def romanToInt(self, s: str) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int romanToInt(String s) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -829,6 +845,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} s\n   * @return {number}\n   */\n  lengthOfLastWord(s) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def lengthOfLastWord(self, s: str) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int lengthOfLastWord(String s) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -884,6 +901,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} x\n   * @return {number}\n   */\n  reverse(x) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def reverse(self, x: int) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int reverse(int x) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -935,6 +953,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {boolean}\n   */\n  isPowerOfTwo(n) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def isPowerOfTwo(self, n: int) -> bool:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public boolean isPowerOfTwo(int n) {\n        // sua solução aqui\n        return false;\n    }\n}\n",
         },
         tests: [
             {
@@ -982,6 +1001,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {number}\n   */\n  climbStairs(n) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def climbStairs(self, n: int) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int climbStairs(int n) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -1033,6 +1053,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} prices\n   * @return {number}\n   */\n  maxProfit(prices) {\n    // sua solução aqui\n  }\n}\n",
             python: "from typing import List\n\n\nclass Solution:\n    def maxProfit(self, prices: List[int]) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int maxProfit(int[] prices) {\n        // sua solução aqui\n        return 0;\n    }\n}",
         },
         tests: [
             {
@@ -1084,6 +1105,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  majorityElement(nums) {\n    // sua solução aqui\n  }\n}\n",
             python: "from typing import List\n\n\nclass Solution:\n    def majorityElement(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int majorityElement(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}",
         },
         tests: [
             {
@@ -1135,6 +1157,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} digits\n   * @return {number[]}\n   */\n  plusOne(digits) {\n    // sua solução aqui\n  }\n}\n",
             python: "from typing import List\n\n\nclass Solution:\n    def plusOne(self, digits: List[int]) -> List[int]:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int[] plusOne(int[] digits) {\n        // sua solução aqui\n        return new int[0];\n    }\n}",
         },
         tests: [
             {
@@ -1186,6 +1209,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number[]}\n   */\n  runningSum(nums) {\n    // sua solução aqui\n  }\n}",
             python: "from typing import List\n\nclass Solution:\n    def runningSum(self, nums: List[int]) -> List[int]:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int[] runningSum(int[] nums) {\n        // sua solução aqui\n        return new int[0];\n    }\n}",
         },
         tests: [
             {
@@ -1241,6 +1265,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} num\n   * @return {number}\n   */\n  addDigits(num) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def addDigits(self, num: int) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int addDigits(int num) {\n        // sua solução aqui\n        return 0;\n    }\n}",
         },
         tests: [
             {
@@ -1292,6 +1317,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {number}\n   */\n  hammingWeight(n) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def hammingWeight(self, n: int) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int hammingWeight(int n) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -1343,6 +1369,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number[]}\n   */\n  sortedSquares(nums) {\n    // sua solução aqui\n  }\n}\n",
             python: "from typing import List\n\n\nclass Solution:\n    def sortedSquares(self, nums: List[int]) -> List[int]:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int[] sortedSquares(int[] nums) {\n        // sua solução aqui\n        return new int[0];\n    }\n}\n",
         },
         tests: [
             {
@@ -1394,6 +1421,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {number} n\n   * @return {number}\n   */\n  countPrimes(n) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def countPrimes(self, n: int) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int countPrimes(int n) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -1445,6 +1473,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} jewels\n   * @param {string} stones\n   * @return {number}\n   */\n  numJewelsInStones(jewels, stones) {\n    // sua solução aqui\n  }\n}",
             python: "class Solution:\n    def numJewelsInStones(self, jewels: str, stones: str) -> int:\n        # sua solução aqui\n        pass",
+            java: "public class Solution {\n    public int numJewelsInStones(String jewels, String stones) {\n        // sua solução aqui\n        return 0;\n    }\n}\n",
         },
         tests: [
             {
@@ -1496,6 +1525,7 @@ const DESAFIOS = [
             javascript:
                 "class Solution {\n  /**\n   * @param {string} s\n   * @return {number}\n   */\n  firstUniqChar(s) {\n    // sua solução aqui\n  }\n}\n",
             python: "class Solution:\n    def firstUniqChar(self, s: str) -> int:\n        # sua solução aqui\n        pass\n",
+            java: "public class Solution {\n    public int firstUniqChar(String s) {\n        // sua solução aqui\n        return -1;\n    }\n}\n",
         },
         tests: [
             {
