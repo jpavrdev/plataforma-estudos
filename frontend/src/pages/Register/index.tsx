@@ -194,6 +194,7 @@ export function Register() {
             limparErro('password');
           }}
           required
+          error={errors.password}
         >
           <ul className="pw-reqs">
             {reqsSenha.map((r) => (
