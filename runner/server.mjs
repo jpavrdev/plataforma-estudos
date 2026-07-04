@@ -9,6 +9,7 @@ import { spawn } from 'node:child_process';
 const LIMITS = {
   javascript: { image: 'desafio-js', mem: '256m', caseTimeoutMs: 5000 },
   python: { image: 'desafio-python', mem: '256m', caseTimeoutMs: 5000 },
+  java: { image: 'desafio-java', mem: '512m', caseTimeoutMs: 8000 },
 };
 const RUNTIME = process.env.RUNNER_RUNTIME || ''; // "runsc" (gVisor) quando disponível
 const MAX_CONCURRENT = Number(process.env.MAX_CONCURRENT || 2);

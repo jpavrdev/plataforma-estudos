@@ -7,5 +7,6 @@ cd "$(dirname "$0")"
 
 docker build -t desafio-js images/js
 docker build -t desafio-python images/python
+docker build -t desafio-java images/java
 
-echo "==> Imagens prontas: desafio-js, desafio-python"
+echo "==> Imagens prontas: desafio-js, desafio-python, desafio-java"

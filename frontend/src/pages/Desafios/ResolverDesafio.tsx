@@ -24,6 +24,7 @@ const EditorCodigo = lazy(() => import('../../components/EditorCodigo'));
 const LINGUAGENS: { id: Linguagem; label: string }[] = [
   { id: 'javascript', label: 'JavaScript' },
   { id: 'python', label: 'Python' },
+  { id: 'java', label: 'Java' },
 ];
 const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
 const TABS = [
@@ -43,6 +44,16 @@ const linhas = entrada.split('\\n');
 dados = sys.stdin.read().split()
 
 # Escreva sua solução e imprima o resultado com print(...)
+`,
+  java: `import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Escreva sua solução e imprima o resultado com System.out.println(...)
+    }
+}
 `,
 };
 
@@ -147,6 +158,7 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
   const [codigos, setCodigos] = useState<Record<Linguagem, string>>({
     javascript: desafio.starterCode.javascript || STARTER_PADRAO.javascript,
     python: desafio.starterCode.python || STARTER_PADRAO.python,
+    java: desafio.starterCode.java || STARTER_PADRAO.java,
   });
   const [rodando, setRodando] = useState(false);
   const [enviando, setEnviando] = useState(false);
