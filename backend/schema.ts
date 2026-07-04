@@ -15,7 +15,12 @@ import {
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
 export const questionDifficulty = pgEnum("question_difficulty", ["facil", "medio", "dificil"]);
-export const challengeLanguage = pgEnum("challenge_language", ["javascript", "python", "csharp"]);
+export const challengeLanguage = pgEnum("challenge_language", [
+    "javascript",
+    "python",
+    "csharp",
+    "java",
+]);
 // stdin: aluno lê stdin e imprime stdout. function: aluno implementa uma função
 // (class Solution.entry) chamada com os argumentos do teste; compara-se o retorno.
 export const challengeKind = pgEnum("challenge_kind", ["stdin", "function"]);

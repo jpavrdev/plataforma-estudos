@@ -1,8 +1,7 @@
 import { z } from "zod";
 
-// Linguagens executáveis hoje. O enum do banco (challenge_language) já reserva
-// "csharp"; ele entra aqui quando a imagem do runner estiver pronta.
-const LINGUAGENS = ["javascript", "python"] as const;
+// O que o runner executa hoje. O enum do banco também reserva "csharp".
+const LINGUAGENS = ["javascript", "python", "java"] as const;
 
 // Rodar exemplos ou submeter: o código é limitado para não estourar o runner.
 export const executarDesafioSchema = z.object({
