@@ -2,7 +2,7 @@ import { useMemo, type ReactNode } from 'react';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from '../Simulados/SimTopbar';
 import { BookOpen, Trophy, Lock, Check, IconeConquista } from '../../components/Icons';
-import { listarTrilhas, obterMinhasConquistas } from '../../services/trails';
+import { listarTrilhas, listarMinhasTrilhas, obterMinhasConquistas } from '../../services/trails';
 import { listarSimulados, historicoSimulados } from '../../services/simulados';
 import { provedorDe, nomeLimpo } from '../Simulados/provedores';
 
@@ -57,15 +57,19 @@ export function Conquistas() {
     () =>
       Promise.all([
         listarTrilhas(),
+        listarMinhasTrilhas(),
         listarSimulados(),
         historicoSimulados(),
         obterMinhasConquistas(),
-      ]).then(([trilhas, simulados, historico, catalogo]) => ({
-        trilhas,
-        simulados,
-        historico,
-        catalogo,
-      })),
+      ]).then(([trilhas, minhas, simulados, historico, catalogo]) => {
+        const doneById = new Map(minhas.map((t) => [t.id, t.done]));
+        return {
+          trilhas: trilhas.map((t) => ({ ...t, done: doneById.get(t.id) ?? 0 })),
+          simulados,
+          historico,
+          catalogo,
+        };
+      }),
     [],
   );
   const trilhas = dados?.trilhas ?? [];

@@ -26,15 +26,25 @@ export const createLanguageSchema = z.object({
 
 export const updateLanguageSchema = createLanguageSchema;
 
-export const createAchievementSchema = z.object({
-    name: z.string().min(2, "Nome obrigatório").max(80, "Nome muito longo"),
-    description: z.string().min(2, "Descrição obrigatória").max(200, "Descrição muito longa"),
-    icon: z.enum(["trophy", "flame", "star", "check", "medal", "bookmark"]),
-    criteriaType: z.enum(["xp_total", "lessons_completed", "questions_correct"]),
-    threshold: z.int().positive("O valor deve ser positivo"),
-});
+export const createAchievementSchema = z
+    .object({
+        name: z.string().min(2, "Nome obrigatório").max(80, "Nome muito longo"),
+        description: z.string().min(2, "Descrição obrigatória").max(200, "Descrição muito longa"),
+        icon: z.enum(["trophy", "flame", "star", "check", "medal", "bookmark", "bug"]),
+        criteriaType: z.enum(["xp_total", "lessons_completed", "questions_correct", "special"]),
+        // "special" é concedida à mão pelo admin, então não exige valor.
+        threshold: z.int().min(0, "O valor não pode ser negativo").default(0),
+    })
+    .refine((d) => d.criteriaType === "special" || d.threshold > 0, {
+        message: "Informe um valor maior que zero.",
+        path: ["threshold"],
+    });
 
 export const updateAchievementSchema = createAchievementSchema;
+
+export const grantAchievementSchema = z.object({
+    userId: z.uuid("Usuário inválido"),
+});
 
 export const glossaryTermSchema = z.object({
     term: z.string().min(1, "Termo obrigatório").max(60, "Termo muito longo"),
