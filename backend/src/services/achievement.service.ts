@@ -1,6 +1,6 @@
 import { db } from "../../db.ts";
 import { achievements, userAchievements, users } from "../../schema.ts";
-import { eq, asc, desc } from "drizzle-orm";
+import { eq, and, asc, desc } from "drizzle-orm";
 import type { z } from "zod";
 import type { createAchievementSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -57,12 +57,53 @@ export async function verificarConquistas(userId: string) {
         questions_correct: stats.questionsCorrect,
     };
     const catalogo = await db.select().from(achievements);
-    const merecidas = catalogo.filter((a) => (valor[a.criteriaType] ?? 0) >= a.threshold);
+    // "special" (ocasião especial) nunca é automática: só concedida à mão pelo admin.
+    const merecidas = catalogo.filter(
+        (a) => a.criteriaType !== "special" && (valor[a.criteriaType] ?? 0) >= a.threshold,
+    );
     if (merecidas.length === 0) return;
     await db
         .insert(userAchievements)
         .values(merecidas.map((a) => ({ userId, achievementId: a.id })))
         .onConflictDoNothing();
+}
+
+// ===================== Concessão manual (ocasião especial) =====================
+export async function concederConquista(achievementId: string, userId: string) {
+    const [conquista] = await db
+        .select({ id: achievements.id })
+        .from(achievements)
+        .where(eq(achievements.id, achievementId));
+    if (!conquista) throw new AppError(404, "Conquista não encontrada");
+    const [usuario] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId));
+    if (!usuario) throw new AppError(404, "Usuário não encontrado");
+    await db.insert(userAchievements).values({ userId, achievementId }).onConflictDoNothing();
+}
+
+export async function revogarConquista(achievementId: string, userId: string) {
+    await db
+        .delete(userAchievements)
+        .where(
+            and(
+                eq(userAchievements.achievementId, achievementId),
+                eq(userAchievements.userId, userId),
+            ),
+        );
+}
+
+// Quem já tem a conquista, para o admin gerenciar as de ocasião especial.
+export async function usuariosComConquista(achievementId: string) {
+    return db
+        .select({
+            userId: users.id,
+            name: users.name,
+            username: users.username,
+            earnedAt: userAchievements.earnedAt,
+        })
+        .from(userAchievements)
+        .innerJoin(users, eq(users.id, userAchievements.userId))
+        .where(eq(userAchievements.achievementId, achievementId))
+        .orderBy(desc(userAchievements.earnedAt));
 }
 
 // Catálogo de conquistas com a marcação do que o usuário já desbloqueou.

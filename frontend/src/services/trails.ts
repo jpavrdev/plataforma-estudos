@@ -325,7 +325,7 @@ export async function excluirLinguagem(id: string) {
 
 // ===== Conquistas =====
 
-export type CriterioConquista = 'xp_total' | 'lessons_completed' | 'questions_correct';
+export type CriterioConquista = 'xp_total' | 'lessons_completed' | 'questions_correct' | 'special';
 
 export interface Achievement {
   id: string;
@@ -365,6 +365,34 @@ export async function excluirConquista(id: string) {
 export async function obterMinhasConquistas() {
   const { data } = await api.get<MinhaConquista[]>('/me/achievements');
   return data;
+}
+
+// Concessão manual (conquistas de ocasião especial).
+export interface UsuarioSimples {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+}
+export async function listarUsuarios() {
+  const { data } = await api.get<UsuarioSimples[]>('/users');
+  return data;
+}
+export interface HolderConquista {
+  userId: string;
+  name: string;
+  username: string;
+  earnedAt: string;
+}
+export async function holdersConquista(achievementId: string) {
+  const { data } = await api.get<HolderConquista[]>(`/achievements/${achievementId}/holders`);
+  return data;
+}
+export async function concederConquista(achievementId: string, userId: string) {
+  await api.post(`/achievements/${achievementId}/grant`, { userId });
+}
+export async function revogarConquista(achievementId: string, userId: string) {
+  await api.delete(`/achievements/${achievementId}/grant/${userId}`);
 }
 
 // ===== Atividades recentes =====

@@ -1,0 +1,1 @@
+ALTER TYPE "public"."achievement_criteria" ADD VALUE 'special';

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { useRequisicao } from '../../hooks/useRequisicao';
@@ -16,8 +16,14 @@ import {
   criarConquista,
   atualizarConquista,
   excluirConquista,
+  listarUsuarios,
+  concederConquista,
+  revogarConquista,
+  holdersConquista,
   type Achievement,
   type CriterioConquista,
+  type UsuarioSimples,
+  type HolderConquista,
 } from '../../services/trails';
 import {
   listarGlossario,
@@ -211,6 +217,7 @@ const CRITERIOS: { value: CriterioConquista; label: string }[] = [
   { value: 'lessons_completed', label: 'Aulas concluídas' },
   { value: 'questions_correct', label: 'Questões certas' },
   { value: 'xp_total', label: 'XP total' },
+  { value: 'special', label: 'Ocasião especial' },
 ];
 const rotuloCriterio = (c: CriterioConquista) => CRITERIOS.find((x) => x.value === c)?.label ?? c;
 
@@ -222,9 +229,124 @@ const FORM_VAZIO = {
   threshold: 1,
 };
 
+// Painel de concessão manual para conquistas de ocasião especial: escolhe um
+// usuário e concede; mostra quem já tem, com opção de revogar.
+function ConcederEspecial({
+  conquista,
+  usuarios,
+}: {
+  conquista: Achievement;
+  usuarios: UsuarioSimples[];
+}) {
+  const [holders, setHolders] = useState<HolderConquista[]>([]);
+  const [sel, setSel] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const carregar = useCallback(() => {
+    holdersConquista(conquista.id)
+      .then(setHolders)
+      .catch((e) => console.error('Falha ao carregar quem tem a conquista', e));
+  }, [conquista.id]);
+  useEffect(() => {
+    carregar();
+  }, [carregar]);
+
+  async function conceder() {
+    if (!sel || busy) return;
+    setBusy(true);
+    try {
+      await concederConquista(conquista.id, sel);
+      setSel('');
+      carregar();
+    } catch (e) {
+      console.error('Falha ao conceder a conquista', e);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function revogar(userId: string) {
+    setBusy(true);
+    try {
+      await revogarConquista(conquista.id, userId);
+      carregar();
+    } catch (e) {
+      console.error('Falha ao revogar a conquista', e);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const donos = new Set(holders.map((h) => h.userId));
+  const disponiveis = usuarios.filter((u) => !donos.has(u.id));
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '10px 12px 4px' }}>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <select
+          className="estudio-form__input"
+          style={{ margin: 0, flex: 1 }}
+          value={sel}
+          onChange={(e) => setSel(e.target.value)}
+        >
+          <option value="">Conceder a um usuário…</option>
+          {disponiveis.map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.name} (@{u.username})
+            </option>
+          ))}
+        </select>
+        <button
+          className="btn btn--accent"
+          style={{ flex: 'none' }}
+          disabled={!sel || busy}
+          onClick={conceder}
+        >
+          <Plus size={14} /> Conceder
+        </button>
+      </div>
+      {holders.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {holders.map((h) => (
+            <span
+              key={h.userId}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '3px 6px 3px 10px',
+                borderRadius: 999,
+                background: 'var(--surface-2)',
+                fontSize: 13,
+              }}
+            >
+              {h.name} (@{h.username})
+              <button
+                onClick={() => revogar(h.userId)}
+                aria-label={`Revogar de ${h.name}`}
+                disabled={busy}
+                style={{
+                  display: 'inline-flex',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-2)',
+                  padding: 0,
+                }}
+              >
+                <Trash size={12} />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Seção de CRUD das conquistas (campos mais ricos: ícone, critério e valor).
 function ConquistasAdmin() {
   const { dados, carregando, erro: falhaCarga, recarregar } = useRequisicao(listarConquistas, []);
+  const { dados: usuariosData } = useRequisicao(listarUsuarios, []);
+  const usuarios = usuariosData ?? [];
   const itens = dados ?? [];
   const [erro, setErro] = useState('');
   const [editId, setEditId] = useState<string | null>(null);
@@ -237,7 +359,8 @@ function ConquistasAdmin() {
   }
 
   async function salvar() {
-    if (!form.name.trim() || !form.description.trim() || form.threshold < 1 || salvando) return;
+    const faltaValor = form.criteriaType !== 'special' && form.threshold < 1;
+    if (!form.name.trim() || !form.description.trim() || faltaValor || salvando) return;
     setSalvando(true);
     setErro('');
     try {
@@ -284,8 +407,8 @@ function ConquistasAdmin() {
     <section style={{ marginBottom: 40 }}>
       <h1 className="estudio-home__title">Conquistas</h1>
       <p className="estudio-home__sub">
-        Desbloqueiam sozinhas quando o aluno atinge o critério (ex.: concluir 5 aulas, acertar 100
-        questões, alcançar 500 XP).
+        Desbloqueiam sozinhas quando o aluno atinge o critério (aulas, questões ou XP), ou são
+        concedidas à mão em ocasiões especiais (ex.: Bug Finder).
       </p>
 
       <div className="conq-form">
@@ -330,17 +453,19 @@ function ConquistasAdmin() {
               </option>
             ))}
           </select>
-          <input
-            className="estudio-form__input"
-            style={{ margin: 0, width: 110 }}
-            type="number"
-            min={1}
-            value={form.threshold}
-            placeholder="Valor"
-            onChange={(e) =>
-              setForm({ ...form, threshold: Math.max(1, Number(e.target.value) || 1) })
-            }
-          />
+          {form.criteriaType !== 'special' && (
+            <input
+              className="estudio-form__input"
+              style={{ margin: 0, width: 110 }}
+              type="number"
+              min={1}
+              value={form.threshold}
+              placeholder="Valor"
+              onChange={(e) =>
+                setForm({ ...form, threshold: Math.max(1, Number(e.target.value) || 1) })
+              }
+            />
+          )}
           <button
             className="btn btn--accent"
             style={{ flex: 'none' }}
@@ -375,30 +500,36 @@ function ConquistasAdmin() {
 
       <div className="estudio-home__list">
         {itens.map((a) => (
-          <div key={a.id} className="estudio-home__card">
-            <div className="conq-item">
-              <span className="conq-item__icon">
-                <IconeConquista chave={a.icon} size={18} />
-              </span>
-              <div>
-                <div className="conq-item__name">{a.name}</div>
-                <div className="conq-item__sub">
-                  {a.description} · {rotuloCriterio(a.criteriaType)} ≥ {a.threshold}
+          <div key={a.id}>
+            <div className="estudio-home__card">
+              <div className="conq-item">
+                <span className="conq-item__icon">
+                  <IconeConquista chave={a.icon} size={18} />
+                </span>
+                <div>
+                  <div className="conq-item__name">{a.name}</div>
+                  <div className="conq-item__sub">
+                    {a.description} ·{' '}
+                    {a.criteriaType === 'special'
+                      ? 'Ocasião especial'
+                      : `${rotuloCriterio(a.criteriaType)} ≥ ${a.threshold}`}
+                  </div>
                 </div>
               </div>
+              <div className="estudio-home__actions">
+                <button className="estudio-home__act" onClick={() => editar(a)} aria-label="Editar">
+                  <Pencil size={15} />
+                </button>
+                <button
+                  className="estudio-home__act estudio-home__act--danger"
+                  onClick={() => remover(a)}
+                  aria-label="Excluir"
+                >
+                  <Trash size={15} />
+                </button>
+              </div>
             </div>
-            <div className="estudio-home__actions">
-              <button className="estudio-home__act" onClick={() => editar(a)} aria-label="Editar">
-                <Pencil size={15} />
-              </button>
-              <button
-                className="estudio-home__act estudio-home__act--danger"
-                onClick={() => remover(a)}
-                aria-label="Excluir"
-              >
-                <Trash size={15} />
-              </button>
-            </div>
+            {a.criteriaType === 'special' && <ConcederEspecial conquista={a} usuarios={usuarios} />}
           </div>
         ))}
       </div>
