@@ -206,6 +206,7 @@ export const achievementCriteria = pgEnum("achievement_criteria", [
     "xp_total",
     "lessons_completed",
     "questions_correct",
+    "special",
 ]);
 
 export const achievements = pgTable("achievements", {

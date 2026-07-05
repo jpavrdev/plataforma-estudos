@@ -32,6 +32,9 @@ import {
     createAchievement,
     updateAchievement,
     deleteAchievement,
+    grantAchievement,
+    revokeAchievement,
+    listAchievementHolders,
     listGlossary,
     createGlossaryTerm,
     updateGlossaryTerm,
@@ -67,6 +70,9 @@ router.get("/achievements", autenticar, listAchievements);
 router.post("/achievements", autenticar, exigirAdmin, createAchievement);
 router.patch("/achievements/:id", autenticar, exigirAdmin, updateAchievement);
 router.delete("/achievements/:id", autenticar, exigirAdmin, deleteAchievement);
+router.get("/achievements/:id/holders", autenticar, exigirAdmin, listAchievementHolders);
+router.post("/achievements/:id/grant", autenticar, exigirAdmin, grantAchievement);
+router.delete("/achievements/:id/grant/:userId", autenticar, exigirAdmin, revokeAchievement);
 
 // Glossário: leitura para qualquer logado; escrita só admin
 router.get("/glossary", autenticar, listGlossary);

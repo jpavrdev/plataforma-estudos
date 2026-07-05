@@ -14,6 +14,7 @@ import {
     updateLanguageSchema,
     createAchievementSchema,
     updateAchievementSchema,
+    grantAchievementSchema,
     glossaryTermSchema,
 } from "../schemas/trail.schemas.ts";
 import { resumoSemana } from "../services/streak.ts";
@@ -32,6 +33,9 @@ import {
     criarConquista,
     atualizarConquista,
     excluirConquista,
+    concederConquista,
+    revogarConquista,
+    usuariosComConquista,
     conquistasDoUsuario,
     feedComunidade,
 } from "../services/achievement.service.ts";
@@ -178,6 +182,35 @@ export const deleteAchievement = async (req: Request, res: Response, next: NextF
     try {
         await excluirConquista(String(req.params.id));
         res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Concede/revoga uma conquista (ocasião especial) a um usuário; lista quem já tem.
+export const grantAchievement = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = String(req.params.id);
+        const { userId } = grantAchievementSchema.parse(req.body);
+        await concederConquista(id, userId);
+        res.status(201).json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const revokeAchievement = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await revogarConquista(String(req.params.id), String(req.params.userId));
+        res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const listAchievementHolders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await usuariosComConquista(String(req.params.id)));
     } catch (err) {
         next(err);
     }
