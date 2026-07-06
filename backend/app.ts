@@ -7,6 +7,7 @@ import trailRoutes from "./src/routes/trail.routes.ts";
 import simuladoRoutes from "./src/routes/simulado.routes.ts";
 import desafioRoutes from "./src/routes/desafio.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
+import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
 import cors from "cors";
 import { UPLOADS_DIR } from "./src/config/paths.ts";
@@ -41,6 +42,7 @@ app.use(
 );
 
 app.use(authRoutes);
+app.use(apiLimiter);
 app.use(userRoutes);
 app.use(trailRoutes);
 app.use(simuladoRoutes);
