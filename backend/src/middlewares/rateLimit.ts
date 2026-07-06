@@ -45,3 +45,14 @@ export const resetPasswordLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",
 );
+
+// Teto por IP folgado de propósito: escola e lab saem por um mesmo IP, então é
+// barreira anti-abuso em rajada, não limite por usuário. Auth tem os seus limiters.
+export const apiLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 1000,
+    message: { erro: "Muitas requisições em pouco tempo. Aguarde um instante." },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => process.env.NODE_ENV === "test" || req.path === "/health",
+});
