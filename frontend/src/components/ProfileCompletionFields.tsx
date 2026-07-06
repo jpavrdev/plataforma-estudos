@@ -62,8 +62,10 @@ export function validateProfileCompletionFields(
   } else if (!USERNAME_REGEX.test(username)) {
     errors.username = 'Use apenas letras, números e underscore';
   }
-  if (!birthDateDisplayToIso(values.birthDate)) {
+  if (!values.birthDate.trim()) {
     errors.birthDate = 'Informe sua data de nascimento';
+  } else if (!birthDateDisplayToIso(values.birthDate)) {
+    errors.birthDate = 'Data inválida';
   }
   if (!values.gender) {
     errors.gender = 'Selecione o gênero';

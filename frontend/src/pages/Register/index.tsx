@@ -157,19 +157,6 @@ export function Register() {
           required
           error={errors.name}
         />
-        <ProfileCompletionFields
-          username={username}
-          onUsernameChange={setUsername}
-          birthDate={birthDate}
-          onBirthDateChange={setBirthDate}
-          gender={gender}
-          onGenderChange={setGender}
-          phone={phone}
-          onPhoneChange={setPhone}
-          errors={errors}
-          onClearError={limparErro}
-          required
-        />
         <FormField
           label="E-mail"
           type="email"
@@ -182,6 +169,19 @@ export function Register() {
           }}
           required
           error={errors.email}
+        />
+        <ProfileCompletionFields
+          username={username}
+          onUsernameChange={setUsername}
+          birthDate={birthDate}
+          onBirthDateChange={setBirthDate}
+          gender={gender}
+          onGenderChange={setGender}
+          phone={phone}
+          onPhoneChange={setPhone}
+          errors={errors}
+          onClearError={limparErro}
+          required
         />
         <FormField
           label="Senha"
