@@ -29,7 +29,7 @@ import { OAuthCallback } from './pages/OAuthCallback';
 import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
 
-function PrivateRoute({ children }: { children: React.JSX.Element }) {
+function AuthRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) return <div>Carregando...</div>;
@@ -37,11 +37,21 @@ function PrivateRoute({ children }: { children: React.JSX.Element }) {
   return isAuthenticated ? children : <Navigate to="/" />;
 }
 
+function PrivateRoute({ children }: { children: React.JSX.Element }) {
+  const { isAuthenticated, user, loading } = useAuth();
+
+  if (loading) return <div>Carregando...</div>;
+  if (!isAuthenticated) return <Navigate to="/" />;
+  if (!user?.username) return <Navigate to="/completar-perfil" replace />;
+  return children;
+}
+
 function AdminRoute({ children }: { children: React.JSX.Element }) {
   const { user, isAuthenticated, loading } = useAuth();
 
   if (loading) return <div>Carregando...</div>;
   if (!isAuthenticated) return <Navigate to="/" />;
+  if (!user?.username) return <Navigate to="/completar-perfil" replace />;
   return user?.role === 'admin' ? children : <Navigate to="/home" />;
 }
 
@@ -59,9 +69,9 @@ function AppRoutes() {
       <Route
         path="/completar-perfil"
         element={
-          <PrivateRoute>
+          <AuthRoute>
             <CompletarPerfil />
-          </PrivateRoute>
+          </AuthRoute>
         }
       />
 
