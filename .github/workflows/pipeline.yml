@@ -11,6 +11,9 @@ concurrency:
   group: pipeline-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   backend-tests:
     runs-on: ubuntu-latest
