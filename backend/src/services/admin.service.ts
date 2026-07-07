@@ -48,7 +48,6 @@ export async function visaoGeral() {
         await db.execute(sql`
             select created_at::date dia, count(*)::int n
             from users
-            where created_at >= now() - interval '30 days'
             group by dia
             order by dia
         `)
@@ -72,7 +71,12 @@ export async function visaoGeral() {
 }
 
 // Métricas por usuário para o CRM, agregadas em uma query só (sem N+1).
-export async function usuariosCrm() {
+// A busca por nome/username/email é feita no servidor.
+export async function usuariosCrm(busca?: string) {
+    const termo = busca?.trim();
+    const filtro = termo
+        ? sql`where u.name ilike ${`%${termo}%`} or u.username ilike ${`%${termo}%`} or u.email ilike ${`%${termo}%`}`
+        : sql``;
     const { rows } = await db.execute(sql`
         select
             u.id, u.name, u.username, u.email, u.created_at,
@@ -109,6 +113,7 @@ export async function usuariosCrm() {
         left join (
             select user_id, max(ts) ultima from (${ATIVIDADE}) z group by user_id
         ) la on la.user_id = u.id
+        ${filtro}
         order by u.created_at desc
     `);
 

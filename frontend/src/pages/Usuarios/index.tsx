@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { obterVisaoGeral, listarUsuariosCrm, type UsuarioCrm } from '../../services/admin';
+import { GraficoCrescimento } from './GraficoCrescimento';
 import '../../styles/painel.css';
 
 const fmtData = (s: string | null) =>
@@ -41,23 +42,24 @@ function Th({
 
 export function Usuarios() {
   const { dados: overview } = useRequisicao(obterVisaoGeral, []);
-  const { dados: usuariosData, carregando } = useRequisicao(listarUsuariosCrm, []);
   const [busca, setBusca] = useState('');
+  const [buscaDeb, setBuscaDeb] = useState('');
   const [ordem, setOrdem] = useState<{ col: Coluna; desc: boolean }>({ col: 'criadoEm', desc: true });
 
+  useEffect(() => {
+    const id = setTimeout(() => setBuscaDeb(busca), 350);
+    return () => clearTimeout(id);
+  }, [busca]);
+
+  const { dados: usuariosData, carregando } = useRequisicao(
+    () => listarUsuariosCrm(buscaDeb),
+    [buscaDeb],
+  );
+
   const filtrados = useMemo(() => {
-    const usuarios = usuariosData ?? [];
-    const q = busca.trim().toLowerCase();
-    const base = q
-      ? usuarios.filter(
-          (u) =>
-            u.name.toLowerCase().includes(q) ||
-            (u.username ?? '').toLowerCase().includes(q) ||
-            u.email.toLowerCase().includes(q),
-        )
-      : usuarios;
+    const base = usuariosData ?? [];
     const { col, desc } = ordem;
-    return [...base].sort((a, b) => {
+    return base.toSorted((a, b) => {
       const va = a[col] ?? '';
       const vb = b[col] ?? '';
       const cmp =
@@ -66,7 +68,7 @@ export function Usuarios() {
           : String(va).localeCompare(String(vb));
       return desc ? -cmp : cmp;
     });
-  }, [usuariosData, busca, ordem]);
+  }, [usuariosData, ordem]);
 
   function ordenarPor(col: Coluna) {
     setOrdem((o) => (o.col === col ? { col, desc: !o.desc } : { col, desc: true }));
@@ -91,10 +93,8 @@ export function Usuarios() {
       ]
     : [];
 
-  const maxCad = Math.max(1, ...(overview?.cadastrosPorDia ?? []).map((d) => d.n));
-
   return (
-    <div className="home">
+    <div className="home painel-page">
       <header className="topbar studio__bar">
         <div className="studio__brand">
           <Logo variant="solid" size={19} />
@@ -137,18 +137,7 @@ export function Usuarios() {
           ))}
         </div>
 
-        {overview && overview.cadastrosPorDia.length > 0 && (
-          <div className="painel-chart">
-            <div className="painel-chart__titulo">Cadastros nos últimos 30 dias</div>
-            <div className="painel-chart__bars">
-              {overview.cadastrosPorDia.map((d) => (
-                <div key={d.dia} className="painel-chart__col" title={`${fmtData(d.dia)}: ${d.n} cadastro(s)`}>
-                  <div className="painel-chart__bar" style={{ height: `${(d.n / maxCad) * 100}%` }} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {overview && <GraficoCrescimento cadastros={overview.cadastrosPorDia} />}
 
         <div className="painel-toolbar">
           <input

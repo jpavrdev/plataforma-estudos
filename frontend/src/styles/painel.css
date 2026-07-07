@@ -1,5 +1,9 @@
 /* Painel/CRM do admin: cards de visão geral, gráfico de cadastros e tabela de usuários. */
 
+.painel-page {
+  background: var(--surface);
+}
+
 .painel-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -35,45 +39,102 @@
   color: var(--muted);
 }
 
-.painel-chart {
+.painel-graf {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 14px 16px 10px;
+  padding: 14px 16px 8px;
   margin-bottom: 20px;
 }
 
-.painel-chart__titulo {
+.painel-graf__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.painel-graf__titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.painel-graf__periodos {
+  display: flex;
+  gap: 2px;
+}
+
+.painel-graf__periodo {
+  padding: 4px 10px;
+  border: none;
+  background: none;
+  color: var(--muted);
   font-size: 13px;
   font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.painel-graf__periodo:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.painel-graf__periodo.is-ativo {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.painel-graf__leitura {
+  font-size: 13px;
   color: var(--muted);
-  margin-bottom: 10px;
+  min-height: 20px;
+  margin: 4px 0;
 }
 
-.painel-chart__bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 90px;
+.painel-graf__leitura b {
+  color: var(--text);
+  font-size: 15px;
 }
 
-.painel-chart__col {
-  flex: 1;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-}
-
-.painel-chart__bar {
+.painel-graf__svg {
   width: 100%;
-  min-height: 2px;
-  background: var(--accent);
-  border-radius: 3px 3px 0 0;
-  transition: opacity 0.15s;
+  height: auto;
+  display: block;
+  overflow: visible;
 }
 
-.painel-chart__col:hover .painel-chart__bar {
-  opacity: 0.7;
+.painel-graf__grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.painel-graf__linha {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.painel-graf__ylab,
+.painel-graf__xlab {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.painel-graf__cross {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.painel-graf__dot {
+  fill: var(--accent);
+  stroke: var(--surface);
+  stroke-width: 2;
 }
 
 .painel-toolbar {

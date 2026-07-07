@@ -38,7 +38,9 @@ export async function obterVisaoGeral() {
   return data;
 }
 
-export async function listarUsuariosCrm() {
-  const { data } = await api.get<UsuarioCrm[]>('/admin/users');
+export async function listarUsuariosCrm(busca?: string) {
+  const { data } = await api.get<UsuarioCrm[]>('/admin/users', {
+    params: busca ? { q: busca } : undefined,
+  });
   return data;
 }
