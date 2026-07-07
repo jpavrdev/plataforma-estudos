@@ -1,0 +1,174 @@
+/* Painel/CRM do admin: cards de visão geral, gráfico de cadastros e tabela de usuários. */
+
+.painel-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.painel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.painel-card__valor {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.painel-card__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.painel-card__sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.painel-chart {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px 10px;
+  margin-bottom: 20px;
+}
+
+.painel-chart__titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.painel-chart__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 90px;
+}
+
+.painel-chart__col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.painel-chart__bar {
+  width: 100%;
+  min-height: 2px;
+  background: var(--accent);
+  border-radius: 3px 3px 0 0;
+  transition: opacity 0.15s;
+}
+
+.painel-chart__col:hover .painel-chart__bar {
+  opacity: 0.7;
+}
+
+.painel-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.painel-toolbar__contagem {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.painel-tabela-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.painel-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.painel-tabela th,
+.painel-tabela td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.painel-tabela thead th {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.painel-tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.painel-tabela tbody tr:hover {
+  background: var(--surface-2);
+}
+
+.painel-tabela .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.painel-th {
+  cursor: pointer;
+  user-select: none;
+}
+
+.painel-th:hover {
+  color: var(--text);
+}
+
+.painel-th--ativa {
+  color: var(--accent);
+}
+
+.painel-user__nome {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.painel-user__sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.painel-user__semuser {
+  color: #d9536b;
+  font-style: italic;
+}
+
+.painel-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border-strong);
+  color: var(--muted);
+}
+
+.painel-tag--social {
+  border-color: var(--accent);
+  color: var(--accent);
+}

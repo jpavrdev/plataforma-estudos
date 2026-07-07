@@ -8,6 +8,7 @@ import { Trilhas } from './pages/Trilhas';
 import { Aula } from './pages/Aula';
 import { Estudio } from './pages/Estudio';
 import { EstudioHome } from './pages/EstudioHome';
+import { Usuarios } from './pages/Usuarios';
 import { Configuracoes } from './pages/Configuracoes';
 import { Perfil } from './pages/Perfil';
 import { Ranking } from './pages/Ranking';
@@ -93,6 +94,14 @@ function AppRoutes() {
         element={
           <AdminRoute>
             <EstudioHome />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/usuarios"
+        element={
+          <AdminRoute>
+            <Usuarios />
           </AdminRoute>
         }
       />
