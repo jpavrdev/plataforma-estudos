@@ -1,0 +1,235 @@
+/* Painel/CRM do admin: cards de visão geral, gráfico de cadastros e tabela de usuários. */
+
+.painel-page {
+  background: var(--surface);
+}
+
+.painel-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.painel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.painel-card__valor {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.painel-card__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.painel-card__sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.painel-graf {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px 8px;
+  margin-bottom: 20px;
+}
+
+.painel-graf__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.painel-graf__titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.painel-graf__periodos {
+  display: flex;
+  gap: 2px;
+}
+
+.painel-graf__periodo {
+  padding: 4px 10px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.painel-graf__periodo:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.painel-graf__periodo.is-ativo {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.painel-graf__leitura {
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 20px;
+  margin: 4px 0;
+}
+
+.painel-graf__leitura b {
+  color: var(--text);
+  font-size: 15px;
+}
+
+.painel-graf__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.painel-graf__grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.painel-graf__linha {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.painel-graf__ylab,
+.painel-graf__xlab {
+  fill: var(--muted);
+  font-size: 11px;
+}
+
+.painel-graf__cross {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.painel-graf__dot {
+  fill: var(--accent);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.painel-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.painel-toolbar__contagem {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.painel-tabela-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.painel-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.painel-tabela th,
+.painel-tabela td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.painel-tabela thead th {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.painel-tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.painel-tabela tbody tr:hover {
+  background: var(--surface-2);
+}
+
+.painel-tabela .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.painel-th {
+  cursor: pointer;
+  user-select: none;
+}
+
+.painel-th:hover {
+  color: var(--text);
+}
+
+.painel-th--ativa {
+  color: var(--accent);
+}
+
+.painel-user__nome {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.painel-user__sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.painel-user__semuser {
+  color: #d9536b;
+  font-style: italic;
+}
+
+.painel-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border-strong);
+  color: var(--muted);
+}
+
+.painel-tag--social {
+  border-color: var(--accent);
+  color: var(--accent);
+}
