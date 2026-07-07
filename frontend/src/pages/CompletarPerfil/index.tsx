@@ -10,6 +10,7 @@ import {
 } from '../../components/ProfileCompletionFields';
 import { Check } from '../../components/Icons';
 import { mensagemErro } from '../../utils/erro';
+import { useAuth } from '../../contexts/AuthContext';
 
 type Erros = Record<string, string>;
 
@@ -17,6 +18,7 @@ type Erros = Record<string, string>;
 // não fornece (nascimento, gênero e telefone).
 export function CompletarPerfil() {
   const navigate = useNavigate();
+  const { atualizarUsuario } = useAuth();
   const [username, setUsername] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
@@ -45,6 +47,7 @@ export function CompletarPerfil() {
         gender,
         phone: phone.trim(),
       });
+      atualizarUsuario({ username, gender, phone: phone.trim() });
       navigate('/home', { replace: true });
     } catch (e: unknown) {
       const msg = mensagemErro(e, 'Não foi possível salvar. Tente novamente.');
