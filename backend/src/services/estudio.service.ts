@@ -254,7 +254,8 @@ function tabelaParaMarkdown(value: string): string {
     try {
         const grid = JSON.parse(value);
         if (!Array.isArray(grid) || grid.length === 0) return "";
-        const celula = (c: unknown) => String(c ?? "").replace(/\|/g, "\\|").replace(/\n/g, " ");
+        const celula = (c: unknown) =>
+            String(c ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\n/g, " ");
         const linha = (r: unknown[]) => "| " + r.map(celula).join(" | ") + " |";
         const [cabecalho, ...corpo] = grid as unknown[][];
         const separador = "| " + cabecalho.map(() => "---").join(" | ") + " |";

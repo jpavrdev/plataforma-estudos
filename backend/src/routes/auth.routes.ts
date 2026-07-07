@@ -17,13 +17,14 @@ import {
     forgotPasswordLimiter,
     resetPasswordLimiter,
 } from "../middlewares/rateLimit.ts";
+import { mesmaOrigem } from "../middlewares/origem.ts";
 
 const router = Router();
 
 router.post("/login", loginLimiter, login);
 router.post("/register", registerLimiter, register);
-router.post("/refresh", refreshLimiter, refresh);
-router.post("/logout", refreshLimiter, logout);
+router.post("/refresh", mesmaOrigem, refreshLimiter, refresh);
+router.post("/logout", mesmaOrigem, refreshLimiter, logout);
 router.post("/verify-email", verifyEmailLimiter, verifyEmail);
 router.post("/forgot-password", forgotPasswordLimiter, forgotPassword);
 router.post("/reset-password", resetPasswordLimiter, resetPassword);
