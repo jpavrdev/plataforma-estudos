@@ -47,8 +47,11 @@ function adaptar(t: TrailApi): Trail & { id: string } {
   };
 }
 
-export async function listarTrilhas() {
-  const { data } = await api.get<TrailApi[]>('/trails');
+export async function listarTrilhas(level?: string, categoria?: string) {
+  const params: Record<string, string> = {};
+  if (level) params.level = level;
+  if (categoria) params.categoria = categoria;
+  const { data } = await api.get<TrailApi[]>('/trails', { params });
   return data.map(adaptar);
 }
 

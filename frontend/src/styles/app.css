@@ -1421,6 +1421,17 @@
   margin-bottom: 18px;
   flex-wrap: wrap;
 }
+
+.filters--tight {
+  margin-bottom: 10px;
+}
+
+.filters__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-right: 2px;
+}
 .filter {
   height: 34px;
   padding: 0 15px;
