@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
 import { Plus, Trash } from '../../components/Icons';
 import { useToast } from '../../contexts/ToastContext';
 import { mensagemErro } from '../../utils/erro';
@@ -193,25 +193,26 @@ export function DesafioEditor() {
   }
 
   const cabecalho = (
-    <header className="topbar studio__bar">
-      <div className="studio__brand">
-        <Logo variant="solid" size={19} />
-        <span className="studio__badge">Estúdio</span>
-      </div>
-      <span className="studio__divider" />
-      <div className="studio__crumb">
-        <Link to="/estudio/desafios">Desafios</Link>
-        <span>/</span>
-        <b>{novo ? 'Novo desafio' : form?.title || 'Editar'}</b>
-      </div>
-      <div className="topbar__spacer" />
-      <button className="btn btn--accent studio__btn" disabled={salvando || !form} onClick={salvar}>
-        {salvando ? 'Salvando...' : 'Salvar'}
-      </button>
-      <Link className="btn btn--ghost studio__btn" to="/estudio/desafios">
-        Voltar
-      </Link>
-    </header>
+    <EstudioTopbar
+      nav={false}
+      crumb={
+        <>
+          <Link to="/estudio/desafios">Desafios</Link>
+          <span>/</span>
+          <b>{novo ? 'Novo desafio' : form?.title || 'Editar'}</b>
+        </>
+      }
+      actions={
+        <>
+          <button className="btn btn--accent studio__btn" disabled={salvando || !form} onClick={salvar}>
+            {salvando ? 'Salvando...' : 'Salvar'}
+          </button>
+          <Link className="btn btn--ghost studio__btn" to="/estudio/desafios">
+            Voltar
+          </Link>
+        </>
+      }
+    />
   );
 
   if (carregando) {

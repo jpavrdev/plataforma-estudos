@@ -10,7 +10,7 @@ import {
     questionOptions,
     questionAnswers,
 } from "../../schema.ts";
-import { eq, asc, count, inArray } from "drizzle-orm";
+import { eq, asc, count, inArray, and } from "drizzle-orm";
 import type { z } from "zod";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -109,7 +109,23 @@ export async function excluirTrilha(trailId: string) {
     });
 }
 
-export async function listarTrilhas() {
+const NIVEIS_VALIDOS = new Set(["iniciante", "intermediario", "avancado"]);
+
+export async function listarTrilhas(filtros: { level?: string; categoria?: string } = {}) {
+    const filtroNivel =
+        filtros.level && NIVEIS_VALIDOS.has(filtros.level)
+            ? eq(trails.trailLevel, filtros.level as "iniciante" | "intermediario" | "avancado")
+            : undefined;
+    const filtroCategoria = filtros.categoria
+        ? inArray(
+              trails.id,
+              db
+                  .select({ id: trailTags.trailId })
+                  .from(trailTags)
+                  .innerJoin(tags, eq(tags.id, trailTags.tagId))
+                  .where(eq(tags.name, filtros.categoria)),
+          )
+        : undefined;
     const lista = await db
         .select({
             id: trails.id,
@@ -120,6 +136,7 @@ export async function listarTrilhas() {
         })
         .from(trails)
         .leftJoin(lessons, eq(lessons.trailId, trails.id))
+        .where(and(filtroNivel, filtroCategoria))
         .groupBy(trails.id);
 
     const vinculos = await db

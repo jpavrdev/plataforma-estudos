@@ -313,9 +313,11 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-export const listTrails = async (_req: Request, res: Response, next: NextFunction) => {
+export const listTrails = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarTrilhas());
+        const level = typeof req.query.level === "string" ? req.query.level : undefined;
+        const categoria = typeof req.query.categoria === "string" ? req.query.categoria : undefined;
+        res.json(await listarTrilhas({ level, categoria }));
     } catch (err) {
         next(err);
     }
