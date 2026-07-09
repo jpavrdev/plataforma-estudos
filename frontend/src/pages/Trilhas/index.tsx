@@ -207,36 +207,31 @@ export function Trilhas() {
           )}
 
           {/* Filtros */}
-          <div className="filters filters--tight">
-            <span className="filters__label">Nível</span>
-            {NIVEIS.map((n) => (
-              <button
-                key={n.v}
-                className={`filter${nivel === n.v ? ' filter--active' : ''}`}
-                onClick={() => setNivel(n.v)}
-              >
-                {n.label}
-              </button>
-            ))}
+          <div className="filters">
+            <label className="select-filtro">
+              <span className="filters__label">Nível</span>
+              <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
+                {NIVEIS.map((n) => (
+                  <option key={n.v} value={n.v}>
+                    {n.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="select-filtro">
+              <span className="filters__label">Categoria</span>
+              <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+                <option value="">Todas</option>
+                {tagsDisp.map((t) => (
+                  <option key={t.id} value={t.name}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </label>
             <div className="topbar__spacer" />
             <span className="filters__count">{trilhas.length} trilhas</span>
           </div>
-          {tagsDisp.length > 0 && (
-            <div className="filters">
-              <span className="filters__label">Categoria</span>
-              {[{ v: '', label: 'Todas' }, ...tagsDisp.map((t) => ({ v: t.name, label: t.name }))].map(
-                (c) => (
-                  <button
-                    key={c.v || 'todas'}
-                    className={`filter${categoria === c.v ? ' filter--active' : ''}`}
-                    onClick={() => setCategoria(c.v)}
-                  >
-                    {c.label}
-                  </button>
-                ),
-              )}
-            </div>
-          )}
 
           {carregando && <p className="track__desc">Carregando trilhas...</p>}
           {erro && <div className="auth__alert">{erro}</div>}
