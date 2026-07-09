@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { Link, useParams } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
 import { Eye, Trash, Plus, Minus, Check, ChevronRight } from '../../components/Icons';
 import { mensagemErro } from '../../utils/erro';
 import {
@@ -312,36 +312,37 @@ export function Estudio() {
 
   return (
     <div className="home">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Estúdio</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <Link to="/trilhas">Trilhas</Link>
-          <span className="studio__crumb-sep">/</span>
-          <b>{outline?.name ?? '...'}</b>
-        </div>
-        <div className="topbar__spacer" />
-        {aula && salvo && (
-          <span className="studio__saved">
-            <i /> Rascunho salvo
-          </span>
-        )}
-        {aula && (
-          <Link className="btn btn--ghost studio__btn" to={`/trilhas/${trailId}/aula/${aula.id}`}>
-            <Eye size={15} /> Pré-visualizar
-          </Link>
-        )}
-        <button
-          className="btn btn--accent studio__btn"
-          disabled={!aula || salvando}
-          onClick={() => aula && salvar(!aula.published)}
-        >
-          {salvando ? 'Salvando...' : aula?.published ? 'Despublicar' : 'Publicar'}
-        </button>
-      </header>
+      <EstudioTopbar
+        nav={false}
+        crumb={
+          <>
+            <Link to="/trilhas">Trilhas</Link>
+            <span className="studio__crumb-sep">/</span>
+            <b>{outline?.name ?? '...'}</b>
+          </>
+        }
+        actions={
+          <>
+            {aula && salvo && (
+              <span className="studio__saved">
+                <i /> Rascunho salvo
+              </span>
+            )}
+            {aula && (
+              <Link className="btn btn--ghost studio__btn" to={`/trilhas/${trailId}/aula/${aula.id}`}>
+                <Eye size={15} /> Pré-visualizar
+              </Link>
+            )}
+            <button
+              className="btn btn--accent studio__btn"
+              disabled={!aula || salvando}
+              onClick={() => aula && salvar(!aula.published)}
+            >
+              {salvando ? 'Salvando...' : aula?.published ? 'Despublicar' : 'Publicar'}
+            </button>
+          </>
+        }
+      />
 
       {carregando ? (
         <p className="lesson__loading">Carregando estúdio...</p>

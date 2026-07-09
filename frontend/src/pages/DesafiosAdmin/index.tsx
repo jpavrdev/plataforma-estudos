@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
+import { useNavigate } from 'react-router-dom';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { Plus, Pencil, Trash, ChevronRight, Target } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { useToast } from '../../contexts/ToastContext';
@@ -33,26 +33,7 @@ export function DesafiosAdmin() {
 
   return (
     <div className="home">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Estúdio</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <b>Desafios</b>
-        </div>
-        <div className="topbar__spacer" />
-        <Link className="btn btn--ghost studio__btn" to="/estudio">
-          Trilhas
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
-          Simulados
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/home">
-          Voltar ao app
-        </Link>
-      </header>
+      <EstudioTopbar crumb={<b>Desafios</b>} />
 
       <div className="estudio-home">
         <div className="estudio-home__head">

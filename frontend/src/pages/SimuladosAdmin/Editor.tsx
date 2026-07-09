@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { Link, useParams } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
 import { Plus, Trash, Check, Minus } from '../../components/Icons';
 import { mensagemErro } from '../../utils/erro';
 import { useToast } from '../../contexts/ToastContext';
@@ -125,29 +125,30 @@ export function SimuladoEditor() {
 
   return (
     <div className="home">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Estúdio</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <Link to="/estudio/simulados">Simulados</Link>
-          <span className="studio__crumb-sep">/</span>
-          <b>{nome || '...'}</b>
-        </div>
-        <div className="topbar__spacer" />
-        <button
-          className="btn btn--accent studio__btn"
-          disabled={salvandoTudo || carregando}
-          onClick={salvarTudo}
-        >
-          {salvandoTudo ? 'Salvando...' : 'Salvar tudo'}
-        </button>
-        <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
-          Voltar
-        </Link>
-      </header>
+      <EstudioTopbar
+        nav={false}
+        crumb={
+          <>
+            <Link to="/estudio/simulados">Simulados</Link>
+            <span className="studio__crumb-sep">/</span>
+            <b>{nome || '...'}</b>
+          </>
+        }
+        actions={
+          <>
+            <button
+              className="btn btn--accent studio__btn"
+              disabled={salvandoTudo || carregando}
+              onClick={salvarTudo}
+            >
+              {salvandoTudo ? 'Salvando...' : 'Salvar tudo'}
+            </button>
+            <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
+              Voltar
+            </Link>
+          </>
+        }
+      />
 
       <div className="studio__editor">
         <div className="studio__section">
