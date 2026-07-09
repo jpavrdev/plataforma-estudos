@@ -20,6 +20,7 @@ const MAPA: Record<string, string[]> = {
     "UI/UX Design": ["Front-end"],
     "Fundamentos de Cibersegurança": ["Cibersegurança"],
     "Segurança de Aplicações Web": ["Cibersegurança", "Front-end"],
+    "ISC2 Certified in Cybersecurity (CC)": ["Cibersegurança"],
 };
 
 async function seed() {
