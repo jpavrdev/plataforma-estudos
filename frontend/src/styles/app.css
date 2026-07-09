@@ -1421,6 +1421,39 @@
   margin-bottom: 18px;
   flex-wrap: wrap;
 }
+
+.filters__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+.select-filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.select-filtro select {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.select-filtro select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
 .filter {
   height: 34px;
   padding: 0 15px;
@@ -1581,7 +1614,7 @@
 /* ===================== TELA DE AULA ===================== */
 .lesson {
   display: grid;
-  grid-template-columns: 288px 1fr;
+  grid-template-columns: 320px 1fr;
   align-items: start;
 }
 .lesson__nav {
@@ -1655,8 +1688,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 36px;
-  padding: 0 8px;
+  min-height: 36px;
+  padding: 7px 8px;
   border-radius: 9px;
   margin-bottom: 2px;
 }
@@ -1674,9 +1707,7 @@
   min-width: 0;
   font-size: 13.5px;
   font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 .lesson__item--done .lesson__bullet {
   background: var(--success);
@@ -2324,6 +2355,10 @@
 .studio__btn {
   flex: none;
   height: 40px;
+}
+.studio__btn.studio__btn--active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .studio {
@@ -4019,6 +4054,21 @@
 }
 
 /* ===================== RESPONSIVO / MOBILE ===================== */
+/* Estúdio tem muitos botões de nav: vira hambúrguer já a partir de 900px. */
+@media (max-width: 900px) {
+  .studio__bar {
+    gap: 10px;
+    padding: 0 14px;
+  }
+  .studio__bar .hamburguer {
+    display: flex;
+  }
+  .studio__bar .studio__divider,
+  .studio__bar .studio__crumb,
+  .studio__navbtn {
+    display: none;
+  }
+}
 /* Topbar no telefone: o nav inline e a busca somem, e aparece o hambúrguer. */
 @media (max-width: 640px) {
   .topbar {
@@ -4195,6 +4245,22 @@
 /* Telefone: cabeçalho do ranking empilha e as abas ocupam a linha; a linha de
    progressão das ligas some (não faz sentido com os emblemas empilhados). */
 @media (max-width: 640px) {
+  .pf-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 18px 20px;
+  }
+  .pf-id__row {
+    flex-wrap: wrap;
+  }
+  .pf-actions {
+    width: 100%;
+  }
+  .pf-actions__btn,
+  .pf-save {
+    flex: 1;
+  }
   .rk-head {
     flex-direction: column;
     gap: 12px;

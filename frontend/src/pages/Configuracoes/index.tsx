@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { Plus, Pencil, Trash, Check, IconeConquista, CHAVES_ICONE } from '../../components/Icons';
 import {
@@ -725,20 +724,7 @@ export function Configuracoes() {
   const [aba, setAba] = useState<(typeof ABAS_CFG)[number]['key']>('tags');
   return (
     <div className="home">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Configurações</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <b>Tags, linguagens, conquistas e glossário</b>
-        </div>
-        <div className="topbar__spacer" />
-        <Link className="btn btn--ghost studio__btn" to="/home">
-          Voltar ao app
-        </Link>
-      </header>
+      <EstudioTopbar badge="Configurações" crumb={<b>Tags, linguagens, conquistas e glossário</b>} />
 
       <div className="estudio-home">
         <div className="cfg-tabs">

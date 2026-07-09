@@ -38,6 +38,13 @@ const LEVEL_TINT: Record<'light' | 'dark', Record<TrailLevel, Tint>> = {
   },
 };
 
+const NIVEIS: { v: string; label: string }[] = [
+  { v: '', label: 'Todos' },
+  { v: 'iniciante', label: 'Iniciante' },
+  { v: 'intermediario', label: 'Intermediário' },
+  { v: 'avancado', label: 'Avançado' },
+];
+
 function Metric({ value, label, accent }: { value: string; label: string; accent?: boolean }) {
   return (
     <div className="metric">
@@ -78,18 +85,17 @@ export function Trilhas() {
   const [erro, setErro] = useState('');
   const [xp, setXp] = useState(0);
   const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
-  const [filtro, setFiltro] = useState('Todas');
+  const [nivel, setNivel] = useState('');
+  const [categoria, setCategoria] = useState('');
 
   useEffect(() => {
     async function carregar() {
       try {
-        const [todas, doUsuario, stats, tg] = await Promise.all([
-          listarTrilhas(),
+        const [doUsuario, stats, tg] = await Promise.all([
           listarMinhasTrilhas(),
           obterXp(),
           listarTags(),
         ]);
-        setTrilhas(todas);
         setMinhas(doUsuario);
         setXp(stats.xp);
         setTagsDisp(tg);
@@ -102,6 +108,12 @@ export function Trilhas() {
     carregar();
   }, []);
 
+  useEffect(() => {
+    listarTrilhas(nivel || undefined, categoria || undefined)
+      .then(setTrilhas)
+      .catch(() => setErro('Não foi possível carregar as trilhas.'));
+  }, [nivel, categoria]);
+
   // Card de destaque: a trilha em andamento mais avançada (mas nao concluida).
   const continuar = minhas
     .filter((t) => t.done > 0 && t.done < t.lessons)
@@ -109,9 +121,6 @@ export function Trilhas() {
 
   const aulasConcluidas = minhas.reduce((soma, t) => soma + t.done, 0);
   const emAndamento = minhas.filter((t) => t.done < t.lessons).length;
-
-  const trilhasFiltradas =
-    filtro === 'Todas' ? trilhas : trilhas.filter((t) => t.tags.includes(filtro));
 
   return (
     <div className="home-shell">
@@ -199,28 +208,44 @@ export function Trilhas() {
 
           {/* Filtros */}
           <div className="filters">
-            {['Todas', ...tagsDisp.map((t) => t.name)].map((f) => (
-              <button
-                key={f}
-                className={`filter${filtro === f ? ' filter--active' : ''}`}
-                onClick={() => setFiltro(f)}
-              >
-                {f}
-              </button>
-            ))}
+            <label className="select-filtro">
+              <span className="filters__label">Nível</span>
+              <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
+                {NIVEIS.map((n) => (
+                  <option key={n.v} value={n.v}>
+                    {n.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="select-filtro">
+              <span className="filters__label">Categoria</span>
+              <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+                <option value="">Todas</option>
+                {tagsDisp.map((t) => (
+                  <option key={t.id} value={t.name}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </label>
             <div className="topbar__spacer" />
-            <span className="filters__count">{trilhasFiltradas.length} trilhas</span>
+            <span className="filters__count">{trilhas.length} trilhas</span>
           </div>
 
           {carregando && <p className="track__desc">Carregando trilhas...</p>}
           {erro && <div className="auth__alert">{erro}</div>}
           {!carregando && !erro && trilhas.length === 0 && (
-            <p className="track__desc">Nenhuma trilha disponível ainda.</p>
+            <p className="track__desc">
+              {nivel || categoria
+                ? 'Nenhuma trilha com esse filtro.'
+                : 'Nenhuma trilha disponível ainda.'}
+            </p>
           )}
 
           {/* Grade */}
           <div className="track-grid">
-            {trilhasFiltradas.map((catalogo) => {
+            {trilhas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
               const t = { ...catalogo, done: progresso?.done ?? 0 };

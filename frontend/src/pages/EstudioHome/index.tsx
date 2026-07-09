@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
+import { useNavigate } from 'react-router-dom';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { ChevronRight, Plus, Pencil, Trash } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import {
@@ -116,29 +116,7 @@ export function EstudioHome() {
 
   return (
     <div className="home">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Estúdio</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <b>Painel do administrador</b>
-        </div>
-        <div className="topbar__spacer" />
-        <Link className="btn btn--ghost studio__btn" to="/estudio/usuarios">
-          Usuários
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
-          Simulados
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/estudio/desafios">
-          Desafios
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/home">
-          Voltar ao app
-        </Link>
-      </header>
+      <EstudioTopbar crumb={<b>Painel do administrador</b>} />
 
       <div className="estudio-home">
         <div className="estudio-home__head">

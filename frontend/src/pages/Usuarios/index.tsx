@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { obterVisaoGeral, listarUsuariosCrm, type UsuarioCrm } from '../../services/admin';
 import { GraficoCrescimento } from './GraficoCrescimento';
@@ -95,29 +94,7 @@ export function Usuarios() {
 
   return (
     <div className="home painel-page">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Estúdio</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <b>Usuários</b>
-        </div>
-        <div className="topbar__spacer" />
-        <Link className="btn btn--ghost studio__btn" to="/estudio">
-          Trilhas
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/estudio/simulados">
-          Simulados
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/estudio/desafios">
-          Desafios
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/home">
-          Voltar ao app
-        </Link>
-      </header>
+      <EstudioTopbar crumb={<b>Usuários</b>} />
 
       <div className="estudio-home">
         <div className="estudio-home__head">

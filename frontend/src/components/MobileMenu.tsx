@@ -6,11 +6,14 @@ import { X } from './Icons';
 import { NAV_PRINCIPAL as NAV } from '../data/nav';
 
 // Hambúrguer + drawer lateral, visíveis só no telefone (controlados por CSS).
-export function MobileMenu() {
+export function MobileMenu({ items = NAV }: { items?: { to: string; label: string }[] }) {
   const [aberto, setAberto] = useState(false);
   const { pathname } = useLocation();
   const fechar = () => setAberto(false);
-  const ativo = (to: string) => pathname === to || pathname.startsWith(to + '/');
+  const casa = (to: string) => pathname === to || pathname.startsWith(to + '/');
+  const ativo = items
+    .filter((i) => casa(i.to))
+    .reduce((melhor, i) => (i.to.length > melhor.length ? i.to : melhor), '');
 
   return (
     <>
@@ -40,12 +43,12 @@ export function MobileMenu() {
                 <X size={20} />
               </button>
             </div>
-            {NAV.map((item) => (
+            {items.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 onClick={fechar}
-                className={`drawer__item${ativo(item.to) ? ' drawer__item--active' : ''}`}
+                className={`drawer__item${item.to === ativo ? ' drawer__item--active' : ''}`}
               >
                 {item.label}
               </Link>

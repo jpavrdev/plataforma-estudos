@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Logo } from '../../components/Logo';
+import { EstudioTopbar } from '../../components/EstudioTopbar';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Pencil, Trash, ChevronRight, GradCap } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { mensagemErro } from '../../utils/erro';
@@ -112,23 +112,7 @@ export function SimuladosAdmin() {
 
   return (
     <div className="home">
-      <header className="topbar studio__bar">
-        <div className="studio__brand">
-          <Logo variant="solid" size={19} />
-          <span className="studio__badge">Estúdio</span>
-        </div>
-        <span className="studio__divider" />
-        <div className="studio__crumb">
-          <b>Simulados</b>
-        </div>
-        <div className="topbar__spacer" />
-        <Link className="btn btn--ghost studio__btn" to="/estudio">
-          Trilhas
-        </Link>
-        <Link className="btn btn--ghost studio__btn" to="/home">
-          Voltar ao app
-        </Link>
-      </header>
+      <EstudioTopbar crumb={<b>Simulados</b>} />
 
       <div className="estudio-home">
         <div className="estudio-home__head">

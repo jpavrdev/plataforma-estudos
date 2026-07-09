@@ -8,3 +8,11 @@ export const NAV_PRINCIPAL = [
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
 ];
+
+export const NAV_ESTUDIO = [
+  { label: 'Trilhas', to: '/estudio' },
+  { label: 'Usuários', to: '/estudio/usuarios' },
+  { label: 'Simulados', to: '/estudio/simulados' },
+  { label: 'Desafios', to: '/estudio/desafios' },
+  { label: 'Voltar ao app', to: '/home' },
+];
