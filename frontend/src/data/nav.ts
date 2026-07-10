@@ -12,6 +12,7 @@ export const NAV_PRINCIPAL = [
 
 export const NAV_ESTUDIO = [
   { label: 'Trilhas', to: '/estudio' },
+  { label: 'Roadmaps', to: '/estudio/roadmaps' },
   { label: 'Usuários', to: '/estudio/usuarios' },
   { label: 'Simulados', to: '/estudio/simulados' },
   { label: 'Desafios', to: '/estudio/desafios' },
