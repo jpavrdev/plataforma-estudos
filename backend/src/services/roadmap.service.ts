@@ -12,7 +12,16 @@ import {
     challenges,
     challengeSubmissions,
 } from "../../schema.ts";
-import { eq, and, asc, inArray } from "drizzle-orm";
+import { eq, and, asc, desc, inArray, count } from "drizzle-orm";
+import type { z } from "zod";
+import type {
+    createRoadmapSchema,
+    updateRoadmapSchema,
+    createStageSchema,
+    updateStageSchema,
+    createRefSchema,
+} from "../schemas/roadmap.schema.ts";
+import { AppError } from "../errors/AppError.ts";
 
 type RefType = "trail" | "module" | "lesson" | "simulado" | "challenge";
 type StatusRoadmap = "nao_iniciado" | "em_progresso" | "concluido";
@@ -300,4 +309,234 @@ export async function obterRoadmap(slug: string, userId?: string) {
         currentStageId: atual?.id ?? null,
         stages: comCadeado,
     };
+}
+
+// ============================ CRUD (admin) ============================
+
+type DadosCriarRoadmap = z.infer<typeof createRoadmapSchema>;
+type DadosAtualizarRoadmap = z.infer<typeof updateRoadmapSchema>;
+type DadosCriarEstagio = z.infer<typeof createStageSchema>;
+type DadosAtualizarEstagio = z.infer<typeof updateStageSchema>;
+type DadosCriarRef = z.infer<typeof createRefSchema>;
+
+function gerarSlug(nome: string): string {
+    return nome
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+// Lista para o admin: todos os roadmaps (inclusive rascunhos), com contagem de estágios.
+export async function listarRoadmapsAdmin() {
+    const lista = await db.select().from(roadmaps).orderBy(asc(roadmaps.position));
+    const contagens = await db
+        .select({ roadmapId: roadmapStages.roadmapId, n: count() })
+        .from(roadmapStages)
+        .groupBy(roadmapStages.roadmapId);
+    const porId = new Map(contagens.map((c) => [c.roadmapId, Number(c.n)]));
+    return lista.map((r) => ({ ...r, stagesTotal: porId.get(r.id) ?? 0 }));
+}
+
+// Estrutura crua de um roadmap para edição no estúdio (por id, sem progresso de aluno).
+export async function obterRoadmapStudio(id: string) {
+    const [roadmap] = await db.select().from(roadmaps).where(eq(roadmaps.id, id));
+    if (!roadmap) throw new AppError(404, "Roadmap não encontrado");
+
+    const etapas = await db
+        .select()
+        .from(roadmapStages)
+        .where(eq(roadmapStages.roadmapId, id))
+        .orderBy(asc(roadmapStages.position));
+    const etapaIds = etapas.map((e) => e.id);
+    const refs = etapaIds.length
+        ? await db
+              .select()
+              .from(roadmapStageRefs)
+              .where(inArray(roadmapStageRefs.stageId, etapaIds))
+              .orderBy(asc(roadmapStageRefs.position))
+        : [];
+    const info = await resolverRefs(refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })));
+
+    const refsPorEtapa = new Map<string, typeof refs>();
+    for (const r of refs) {
+        const arr = refsPorEtapa.get(r.stageId) ?? [];
+        arr.push(r);
+        refsPorEtapa.set(r.stageId, arr);
+    }
+
+    return {
+        ...roadmap,
+        stages: etapas.map((e) => ({
+            id: e.id,
+            phase: e.phase,
+            title: e.title,
+            description: e.description,
+            tags: e.tags ?? [],
+            position: e.position,
+            refs: (refsPorEtapa.get(e.id) ?? []).map((r) => ({
+                id: r.id,
+                refType: r.refType,
+                refId: r.refId,
+                position: r.position,
+                ...(info.get(r.refType + ":" + r.refId) ?? { title: null }),
+            })),
+        })),
+    };
+}
+
+export async function criarRoadmap(dados: DadosCriarRoadmap) {
+    const slug = (dados.slug?.trim() || gerarSlug(dados.name)).slice(0, 80);
+    if (!slug) throw new AppError(400, "Não foi possível gerar um slug a partir do nome");
+    const [existe] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.slug, slug));
+    if (existe) throw new AppError(409, "Já existe um roadmap com esse slug");
+
+    let position = dados.position;
+    if (position === undefined) {
+        const [ult] = await db.select({ p: roadmaps.position }).from(roadmaps).orderBy(desc(roadmaps.position)).limit(1);
+        position = ult ? ult.p + 1 : 1;
+    }
+    const [rm] = await db
+        .insert(roadmaps)
+        .values({
+            slug,
+            name: dados.name,
+            description: dados.description,
+            level: dados.level,
+            icon: dados.icon ?? null,
+            position,
+            premium: dados.premium ?? false,
+            published: dados.published ?? false,
+        })
+        .returning();
+    return rm;
+}
+
+export async function atualizarRoadmap(id: string, dados: DadosAtualizarRoadmap) {
+    const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, id));
+    if (!rm) throw new AppError(404, "Roadmap não encontrado");
+
+    const sets: Partial<typeof roadmaps.$inferInsert> = {};
+    if (dados.slug !== undefined) {
+        const s = dados.slug.trim();
+        const [outro] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.slug, s));
+        if (outro && outro.id !== id) throw new AppError(409, "Já existe um roadmap com esse slug");
+        sets.slug = s;
+    }
+    if (dados.name !== undefined) sets.name = dados.name;
+    if (dados.description !== undefined) sets.description = dados.description;
+    if (dados.level !== undefined) sets.level = dados.level;
+    if (dados.icon !== undefined) sets.icon = dados.icon;
+    if (dados.position !== undefined) sets.position = dados.position;
+    if (dados.premium !== undefined) sets.premium = dados.premium;
+    if (dados.published !== undefined) sets.published = dados.published;
+    if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
+
+    const [atualizado] = await db.update(roadmaps).set(sets).where(eq(roadmaps.id, id)).returning();
+    return atualizado;
+}
+
+export async function excluirRoadmap(id: string) {
+    const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, id));
+    if (!rm) throw new AppError(404, "Roadmap não encontrado");
+    await db.transaction(async (tx) => {
+        const etapas = await tx
+            .select({ id: roadmapStages.id })
+            .from(roadmapStages)
+            .where(eq(roadmapStages.roadmapId, id));
+        const ids = etapas.map((e) => e.id);
+        if (ids.length) {
+            await tx.delete(roadmapStageRefs).where(inArray(roadmapStageRefs.stageId, ids));
+            await tx.delete(roadmapStages).where(inArray(roadmapStages.id, ids));
+        }
+        await tx.delete(roadmaps).where(eq(roadmaps.id, id));
+    });
+}
+
+export async function criarEstagio(roadmapId: string, dados: DadosCriarEstagio) {
+    const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, roadmapId));
+    if (!rm) throw new AppError(404, "Roadmap não encontrado");
+
+    let position = dados.position;
+    if (position === undefined) {
+        const [ult] = await db
+            .select({ p: roadmapStages.position })
+            .from(roadmapStages)
+            .where(eq(roadmapStages.roadmapId, roadmapId))
+            .orderBy(desc(roadmapStages.position))
+            .limit(1);
+        position = ult ? ult.p + 1 : 1;
+    }
+    const [stage] = await db
+        .insert(roadmapStages)
+        .values({
+            roadmapId,
+            phase: dados.phase,
+            title: dados.title,
+            description: dados.description,
+            tags: dados.tags ?? [],
+            position,
+        })
+        .returning();
+    return stage;
+}
+
+export async function atualizarEstagio(id: string, dados: DadosAtualizarEstagio) {
+    const [st] = await db.select({ id: roadmapStages.id }).from(roadmapStages).where(eq(roadmapStages.id, id));
+    if (!st) throw new AppError(404, "Estágio não encontrado");
+
+    const sets: Partial<typeof roadmapStages.$inferInsert> = {};
+    if (dados.phase !== undefined) sets.phase = dados.phase;
+    if (dados.title !== undefined) sets.title = dados.title;
+    if (dados.description !== undefined) sets.description = dados.description;
+    if (dados.tags !== undefined) sets.tags = dados.tags;
+    if (dados.position !== undefined) sets.position = dados.position;
+    if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
+
+    const [atualizado] = await db.update(roadmapStages).set(sets).where(eq(roadmapStages.id, id)).returning();
+    return atualizado;
+}
+
+export async function excluirEstagio(id: string) {
+    const [st] = await db.select({ id: roadmapStages.id }).from(roadmapStages).where(eq(roadmapStages.id, id));
+    if (!st) throw new AppError(404, "Estágio não encontrado");
+    await db.transaction(async (tx) => {
+        await tx.delete(roadmapStageRefs).where(eq(roadmapStageRefs.stageId, id));
+        await tx.delete(roadmapStages).where(eq(roadmapStages.id, id));
+    });
+}
+
+export async function adicionarRef(stageId: string, dados: DadosCriarRef) {
+    const [st] = await db.select({ id: roadmapStages.id }).from(roadmapStages).where(eq(roadmapStages.id, stageId));
+    if (!st) throw new AppError(404, "Estágio não encontrado");
+
+    // Valida que o conteúdo referenciado existe, para nunca criar um ref pendurado.
+    const info = await resolverRefs([{ refType: dados.refType, refId: dados.refId }]);
+    if (!info.has(dados.refType + ":" + dados.refId)) {
+        throw new AppError(400, "O conteúdo referenciado não existe");
+    }
+
+    let position = dados.position;
+    if (position === undefined) {
+        const [ult] = await db
+            .select({ p: roadmapStageRefs.position })
+            .from(roadmapStageRefs)
+            .where(eq(roadmapStageRefs.stageId, stageId))
+            .orderBy(desc(roadmapStageRefs.position))
+            .limit(1);
+        position = ult ? ult.p + 1 : 1;
+    }
+    const [ref] = await db
+        .insert(roadmapStageRefs)
+        .values({ stageId, refType: dados.refType, refId: dados.refId, position })
+        .returning();
+    return { ...ref, ...(info.get(dados.refType + ":" + dados.refId) ?? {}) };
+}
+
+export async function removerRef(id: string) {
+    const [ref] = await db.select({ id: roadmapStageRefs.id }).from(roadmapStageRefs).where(eq(roadmapStageRefs.id, id));
+    if (!ref) throw new AppError(404, "Referência não encontrada");
+    await db.delete(roadmapStageRefs).where(eq(roadmapStageRefs.id, id));
 }
