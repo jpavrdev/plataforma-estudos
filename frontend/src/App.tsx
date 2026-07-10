@@ -5,6 +5,8 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { Trilhas } from './pages/Trilhas';
+import { Roadmaps } from './pages/Roadmaps';
+import { RoadmapDetalhe } from './pages/Roadmaps/Detalhe';
 import { Aula } from './pages/Aula';
 import { Estudio } from './pages/Estudio';
 import { EstudioHome } from './pages/EstudioHome';
@@ -18,6 +20,8 @@ import { SimuladoBriefing } from './pages/Simulados/Briefing';
 import { TentativaSimulado } from './pages/Simulados/Tentativa';
 import { SimuladosAdmin } from './pages/SimuladosAdmin';
 import { SimuladoEditor } from './pages/SimuladosAdmin/Editor';
+import { RoadmapsAdmin } from './pages/RoadmapsAdmin';
+import { RoadmapEditor } from './pages/RoadmapsAdmin/Editor';
 import { Desafios } from './pages/Desafios';
 import { Desafio } from './pages/Desafios/Desafio';
 import { DesafiosAdmin } from './pages/DesafiosAdmin';
@@ -100,6 +104,22 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/roadmaps"
+        element={
+          <PrivateRoute>
+            <Roadmaps />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/roadmaps/:slug"
+        element={
+          <PrivateRoute>
+            <RoadmapDetalhe />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/estudio"
         element={
           <AdminRoute>
@@ -112,6 +132,22 @@ function AppRoutes() {
         element={
           <AdminRoute>
             <Usuarios />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/roadmaps"
+        element={
+          <AdminRoute>
+            <RoadmapsAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/roadmaps/:id"
+        element={
+          <AdminRoute>
+            <RoadmapEditor />
           </AdminRoute>
         }
       />
