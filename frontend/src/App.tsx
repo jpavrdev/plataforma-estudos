@@ -20,6 +20,8 @@ import { SimuladoBriefing } from './pages/Simulados/Briefing';
 import { TentativaSimulado } from './pages/Simulados/Tentativa';
 import { SimuladosAdmin } from './pages/SimuladosAdmin';
 import { SimuladoEditor } from './pages/SimuladosAdmin/Editor';
+import { RoadmapsAdmin } from './pages/RoadmapsAdmin';
+import { RoadmapEditor } from './pages/RoadmapsAdmin/Editor';
 import { Desafios } from './pages/Desafios';
 import { Desafio } from './pages/Desafios/Desafio';
 import { DesafiosAdmin } from './pages/DesafiosAdmin';
@@ -130,6 +132,22 @@ function AppRoutes() {
         element={
           <AdminRoute>
             <Usuarios />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/roadmaps"
+        element={
+          <AdminRoute>
+            <RoadmapsAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/estudio/roadmaps/:id"
+        element={
+          <AdminRoute>
+            <RoadmapEditor />
           </AdminRoute>
         }
       />
