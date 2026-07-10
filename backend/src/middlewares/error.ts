@@ -10,6 +10,10 @@ export function errorMiddleware(err: Error, _req: Request, res: Response, _next:
 
     // Se for erro do Zod
     if (err instanceof ZodError) {
+        console.warn(
+            "Validação rejeitada:",
+            err.issues.map((i) => `${i.path.join(".")} (${i.message})`).join("; "),
+        );
         if (env.NODE_ENV !== "development") {
             return res.status(400).json({
                 erro: "Dados inválidos",
