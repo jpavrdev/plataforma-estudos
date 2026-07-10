@@ -1,6 +1,7 @@
 // Itens da navegação principal, compartilhados por todas as abas para não divergirem.
 export const NAV_PRINCIPAL = [
   { label: 'Início', to: '/home' },
+  { label: 'Roadmaps', to: '/roadmaps' },
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
   { label: 'Desafios', to: '/desafios' },

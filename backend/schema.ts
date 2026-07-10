@@ -406,3 +406,50 @@ export const challengeSubmissions = pgTable("challenge_submissions", {
     xpEarned: integer("xp_earned").default(0).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Roadmaps: orquestração sobre o conteúdo existente; progresso derivado dos sinais atuais.
+export const roadmapPhase = pgEnum("roadmap_phase", ["fundamentos", "core", "avancado", "deploy"]);
+export const roadmapRefType = pgEnum("roadmap_ref_type", [
+    "trail",
+    "module",
+    "lesson",
+    "simulado",
+    "challenge",
+]);
+
+export const roadmaps = pgTable("roadmaps", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: varchar("slug", { length: 80 }).notNull().unique(),
+    name: varchar("name", { length: 160 }).notNull(),
+    description: text("description").notNull(),
+    level: trailLevel("level").notNull(),
+    icon: varchar("icon", { length: 40 }),
+    position: integer("position").default(0).notNull(),
+    premium: boolean("premium").default(false).notNull(),
+    published: boolean("published").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const roadmapStages = pgTable("roadmap_stages", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    roadmapId: uuid("roadmap_id")
+        .references(() => roadmaps.id)
+        .notNull(),
+    phase: roadmapPhase("phase").notNull(),
+    title: varchar("title", { length: 200 }).notNull(),
+    description: text("description").notNull(),
+    tags: jsonb("tags").$type<string[]>(),
+    position: integer("position").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// refId polimórfico (sem FK): aponta pra trails/modules/lessons/simulados/challenges conforme refType.
+export const roadmapStageRefs = pgTable("roadmap_stage_refs", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    stageId: uuid("stage_id")
+        .references(() => roadmapStages.id)
+        .notNull(),
+    refType: roadmapRefType("ref_type").notNull(),
+    refId: uuid("ref_id").notNull(),
+    position: integer("position").default(0).notNull(),
+});
