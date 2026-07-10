@@ -22,7 +22,7 @@ export const registerSchema = z.object({
     password: senhaForte,
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
     gender: z.string(),
-    phone: z.string(),
+    phone: z.string().trim().max(20, "Telefone muito longo"),
 });
 
 export const forgotPasswordSchema = z.object({
@@ -71,5 +71,5 @@ export const completarPerfilSchema = z.object({
         .regex(/^[a-zA-Z0-9_]+$/, "Use apenas letras, números e underscore"),
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
     gender: z.string().min(1, "Selecione o gênero"),
-    phone: z.string().min(1, "Informe o telefone"),
+    phone: z.string().trim().min(1, "Informe o telefone").max(20, "Telefone muito longo"),
 });
