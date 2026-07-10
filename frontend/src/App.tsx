@@ -5,6 +5,8 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { Trilhas } from './pages/Trilhas';
+import { Roadmaps } from './pages/Roadmaps';
+import { RoadmapDetalhe } from './pages/Roadmaps/Detalhe';
 import { Aula } from './pages/Aula';
 import { Estudio } from './pages/Estudio';
 import { EstudioHome } from './pages/EstudioHome';
@@ -96,6 +98,22 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <Aula />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/roadmaps"
+        element={
+          <PrivateRoute>
+            <Roadmaps />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/roadmaps/:slug"
+        element={
+          <PrivateRoute>
+            <RoadmapDetalhe />
           </PrivateRoute>
         }
       />
