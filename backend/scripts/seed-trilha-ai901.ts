@@ -97,7 +97,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "IA agêntica (agentes)",
+                                "text": "IA agêntica",
                                 "isCorrect": true
                             },
                             {
@@ -131,7 +131,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Fala",
+                                "text": "Visão computacional",
                                 "isCorrect": false
                             }
                         ]
@@ -216,11 +216,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Reconhecimento de fala (speech-to-text)",
+                                "text": "Reconhecimento de fala",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Síntese de fala (text-to-speech)",
+                                "text": "Síntese de fala",
                                 "isCorrect": false
                             },
                             {
@@ -260,11 +260,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Geração de imagem com modelos generativos",
+                                "text": "Geração de imagem",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Análise de imagem (visão computacional de interpretação)",
+                                "text": "Análise de imagem",
                                 "isCorrect": false
                             },
                             {
@@ -282,19 +282,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Azure Content Understanding",
+                                "text": "Azure Content Understanding, multimodal",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Azure AI Language",
+                                "text": "Azure AI Language, só analisa texto já escrito",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure AI Speech",
+                                "text": "Azure AI Speech, só converte fala e texto falado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure AI Vision",
+                                "text": "Azure AI Vision, só interpreta imagem e vídeo",
                                 "isCorrect": false
                             }
                         ]
@@ -605,19 +605,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma resposta que parece correta e confiante, mas é falsa ou inventada",
+                                "text": "Uma resposta inventada que soa confiante e correta",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um erro de digitação no prompt escrito pelo usuário",
+                                "text": "Um erro de digitação que o usuário comete sem perceber no prompt",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um recurso que bloqueia conteúdo nocivo",
+                                "text": "Um recurso do Foundry que bloqueia conteúdo nocivo na resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A recusa do modelo em responder a uma pergunta",
+                                "text": "A recusa do modelo em responder por falta de confiança na resposta",
                                 "isCorrect": false
                             }
                         ]
@@ -649,19 +649,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Grounding: apoiar as respostas em fontes de dados confiáveis",
+                                "text": "Apoiar as respostas em documentos internos confiáveis",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Desativar os filtros de conteúdo",
+                                "text": "Desativar os filtros de conteúdo do assistente generativo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover a supervisão humana",
+                                "text": "Remover a supervisão humana sobre as respostas do assistente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar o assistente por síntese de fala",
+                                "text": "Trocar o assistente de texto por um serviço de síntese de fala",
                                 "isCorrect": false
                             }
                         ]
@@ -697,7 +697,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Inclusão; e transparência",
+                                "text": "Responsabilização; e confiabilidade e segurança",
                                 "isCorrect": false
                             },
                             {
@@ -705,7 +705,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transparência; e inclusão",
+                                "text": "Privacidade e segurança; e imparcialidade",
                                 "isCorrect": false
                             }
                         ]
@@ -759,11 +759,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Traduzir o prompt para outro idioma",
+                                "text": "Traduzir automaticamente o prompt para outro idioma",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ordenar as palavras do prompt em ordem alfabética",
+                                "text": "Ordenar todas as palavras do prompt em ordem alfabética",
                                 "isCorrect": false
                             }
                         ]
@@ -795,7 +795,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Embeddings (vetores que capturam o significado)",
+                                "text": "Embeddings",
                                 "isCorrect": true
                             },
                             {
@@ -817,7 +817,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A janela de contexto, medida em tokens",
+                                "text": "A janela de contexto",
                                 "isCorrect": true
                             },
                             {
@@ -839,19 +839,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Pesa a importância dos outros tokens da sequência para captar o contexto e as relações entre eles",
+                                "text": "Pesa a importância dos outros tokens para captar o contexto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Converte cada token diretamente em um pixel da resposta",
+                                "text": "Converte cada token diretamente em um pixel da imagem de resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumenta o tamanho máximo da resposta automaticamente",
+                                "text": "Aumenta automaticamente o tamanho máximo da resposta gerada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Consulta a internet em tempo real para validar os fatos",
+                                "text": "Consulta a internet em tempo real para validar cada fato citado",
                                 "isCorrect": false
                             }
                         ]
@@ -892,15 +892,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Local logic machine",
+                                "text": "Local logic machine (máquina de lógica local)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Long latency model",
+                                "text": "Long latency model (modelo de longa latência)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Limited learning model",
+                                "text": "Limited learning model (modelo de aprendizado limitado)",
                                 "isCorrect": false
                             }
                         ]
@@ -910,19 +910,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É menor, mais barato e rápido, e pode rodar em ambientes com menos recursos",
+                                "text": "Menor, mais barato e rápido, e roda com poucos recursos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Tem sempre mais parâmetros que qualquer LLM",
+                                "text": "Tem mais parâmetros e mais capacidade geral que um LLM",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só funciona para gerar imagens",
+                                "text": "Só serve para gerar imagens, nunca para texto ou chat",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não precisa de nenhum treinamento",
+                                "text": "Não passa por nenhum tipo de treinamento prévio",
                                 "isCorrect": false
                             }
                         ]
@@ -932,19 +932,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um SLM, que roda com menos recursos e perto do dispositivo",
+                                "text": "Um SLM, mais leve e adequado para rodar perto do dispositivo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O maior LLM disponível, sempre na nuvem",
+                                "text": "O maior LLM disponível, sempre dependente da nuvem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um modelo de geração de imagem",
+                                "text": "Um modelo de geração de imagem, que não conversa em texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um modelo de embeddings",
+                                "text": "Um modelo de embeddings, feito só para busca semântica",
                                 "isCorrect": false
                             }
                         ]
@@ -954,7 +954,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um LLM (modelo grande)",
+                                "text": "Um LLM grande e generalista",
                                 "isCorrect": true
                             },
                             {
@@ -976,19 +976,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O LLM tende a ser mais capaz em tarefas amplas e complexas, porém mais caro e lento; o SLM é mais barato, rápido e viável no edge, mas costuma render menos em tarefas muito complexas",
+                                "text": "O LLM é mais capaz em tarefas complexas, mas custa mais; o SLM é mais barato e leve, mas rende menos nelas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O SLM é sempre mais capaz que o LLM em qualquer tarefa, por ser mais moderno",
+                                "text": "O SLM é sempre mais capaz que o LLM em qualquer tarefa, pois os modelos mais novos são sempre melhores",
                                 "isCorrect": false
                             },
                             {
-                                "text": "LLM e SLM têm exatamente o mesmo custo e a mesma capacidade; muda só o nome",
+                                "text": "LLM e SLM têm exatamente o mesmo custo, a mesma velocidade e a mesma capacidade; muda só o nome comercial",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O LLM só serve para imagens e o SLM só serve para texto",
+                                "text": "O LLM só serve para gerar imagens e o SLM só serve para gerar texto e conversar",
                                 "isCorrect": false
                             }
                         ]
@@ -1069,7 +1069,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um modelo multimodal, que recebe imagem e texto e responde em texto",
+                                "text": "Um modelo multimodal",
                                 "isCorrect": true
                             },
                             {
@@ -1091,19 +1091,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Uma biblioteca central para pesquisar, filtrar e escolher modelos de vários provedores",
+                                "text": "Uma biblioteca para pesquisar e escolher modelos de vários provedores",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um parâmetro que controla a criatividade da resposta",
+                                "text": "Um parâmetro que controla a criatividade das respostas do modelo geral",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um serviço que traduz texto entre idiomas",
+                                "text": "Um serviço que traduz automaticamente texto entre idiomas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma métrica para avaliar a acurácia de um modelo",
+                                "text": "Uma métrica que avalia a acurácia de um modelo treinado",
                                 "isCorrect": false
                             }
                         ]
@@ -1113,7 +1113,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Um modelo de embeddings para a busca e um modelo de geração de texto/chat para conversar",
+                                "text": "Um modelo de embeddings para buscar e um modelo de chat para conversar",
                                 "isCorrect": true
                             },
                             {
@@ -1121,7 +1121,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas um modelo de fala",
+                                "text": "Apenas um modelo de fala, convertendo áudio em texto",
                                 "isCorrect": false
                             },
                             {
@@ -1166,7 +1166,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O tamanho máximo da resposta, contado em tokens",
+                                "text": "O tamanho máximo da resposta em tokens",
                                 "isCorrect": true
                             },
                             {
@@ -1188,7 +1188,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mais determinísticas, focadas e previsíveis",
+                                "text": "Mais determinísticas e previsíveis",
                                 "isCorrect": true
                             },
                             {
@@ -1196,7 +1196,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mais longas, sempre no limite máximo",
+                                "text": "Mais longas e sempre no limite máximo",
                                 "isCorrect": false
                             },
                             {
@@ -1232,19 +1232,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Criar uma instância do modelo com um nome de implantação e um endpoint, pronta para receber chamadas",
+                                "text": "Criar uma instância do modelo com nome e endpoint prontos para uso",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Traduzir o modelo para outro idioma",
+                                "text": "Traduzir automaticamente o modelo inteiro para outro idioma",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apagar o modelo do catálogo",
+                                "text": "Apagar de vez o modelo escolhido do catálogo de modelos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Treinar o modelo do zero com os seus dados",
+                                "text": "Treinar o modelo do zero usando apenas os seus próprios dados",
                                 "isCorrect": false
                             }
                         ]
@@ -1303,19 +1303,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma plataforma unificada para construir, testar e implantar soluções de IA generativa e agêntica",
+                                "text": "Uma plataforma unificada para construir e implantar soluções de IA",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um parâmetro que controla a criatividade do modelo",
+                                "text": "Um parâmetro que controla a criatividade das respostas do modelo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um único modelo de linguagem grande",
+                                "text": "Um único modelo de linguagem grande, sem outras ferramentas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um formato de arquivo de imagem",
+                                "text": "Um formato de arquivo usado para salvar imagens geradas",
                                 "isCorrect": false
                             }
                         ]
@@ -1471,7 +1471,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Leitura de texto (OCR)",
+                                "text": "Leitura de texto",
                                 "isCorrect": true
                             },
                             {
@@ -1537,19 +1537,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Criar uma ilustração inédita a partir da descrição \"um farol ao entardecer\"",
+                                "text": "Criar uma ilustração inédita a partir de uma descrição",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ler o texto impresso em uma placa fotografada",
+                                "text": "Ler e extrair o texto impresso em uma placa fotografada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Detectar e localizar os carros em uma foto de rua",
+                                "text": "Detectar, localizar e contar os carros em uma foto de rua",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Classificar uma foto como praia ou cidade",
+                                "text": "Classificar automaticamente uma foto como praia ou cidade",
                                 "isCorrect": false
                             }
                         ]
@@ -1598,7 +1598,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Análise de sentimento",
+                                "text": "Análise de sentimento da conversa gravada",
                                 "isCorrect": false
                             }
                         ]
@@ -1630,19 +1630,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Transcrição, feita pelo reconhecimento de fala",
+                                "text": "Transcrição, porque o áudio e o texto ficam no mesmo idioma",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Tradução de fala",
+                                "text": "Tradução de fala, porque o conteúdo muda de idioma",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Síntese de fala",
+                                "text": "Síntese de fala, porque o texto vira áudio",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tradução de texto",
+                                "text": "Tradução de texto, porque o resultado final fica escrito",
                                 "isCorrect": false
                             }
                         ]
@@ -1860,19 +1860,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Transformar conteúdo não estruturado em dados estruturados, como campos e valores",
+                                "text": "Transformar conteúdo não estruturado em dados estruturados",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criar imagens novas a partir de uma descrição em texto",
+                                "text": "Criar imagens totalmente novas a partir de uma descrição em texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Traduzir texto de um idioma para outro",
+                                "text": "Traduzir automaticamente um texto de um idioma para outro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Dar voz natural a um assistente virtual",
+                                "text": "Dar voz natural e sintetizada a um assistente virtual",
                                 "isCorrect": false
                             }
                         ]
@@ -1926,19 +1926,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Azure Content Understanding",
+                                "text": "Azure Content Understanding, multimodal",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Azure AI Vision",
+                                "text": "Azure AI Vision, só processa imagem e vídeo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure AI Speech",
+                                "text": "Azure AI Speech, só processa áudio e voz",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure AI Language",
+                                "text": "Azure AI Language, só processa texto escrito",
                                 "isCorrect": false
                             }
                         ]
@@ -1948,19 +1948,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Reconhecimento de fala e visão computacional combinados",
+                                "text": "Reconhecimento de fala e visão computacional juntos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas leitura de texto (OCR)",
+                                "text": "Apenas leitura de texto (OCR) das cenas do vídeo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas análise de sentimento",
+                                "text": "Apenas análise de sentimento da narração falada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Síntese de fala e geração de imagem",
+                                "text": "Síntese de fala e geração de imagem combinadas",
                                 "isCorrect": false
                             }
                         ]
@@ -2006,19 +2006,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Definir quem o modelo é, o tom, as regras e o formato das respostas para toda a conversa",
+                                "text": "Definir quem o modelo é e como ele deve se comportar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Fazer a pergunta específica do usuário a cada rodada",
+                                "text": "Fazer a pergunta específica que o usuário faz a cada rodada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Armazenar a chave de API usada na autenticação",
+                                "text": "Armazenar com segurança a chave de API usada na autenticação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Converter o texto do usuário em tokens",
+                                "text": "Converter automaticamente o texto do usuário em tokens",
                                 "isCorrect": false
                             }
                         ]
@@ -2050,19 +2050,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Especificar o formato desejado no prompt, por exemplo na mensagem de sistema",
+                                "text": "Especificar o formato desejado na mensagem de sistema",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentar bastante o valor de temperature",
+                                "text": "Aumentar bastante o valor do parâmetro temperature",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reduzir o número de tokens de entrada",
+                                "text": "Reduzir bastante o número de tokens de entrada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover a mensagem de sistema da conversa",
+                                "text": "Remover a mensagem de sistema logo no início da conversa",
                                 "isCorrect": false
                             }
                         ]
@@ -2072,19 +2072,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Incluir no prompt alguns exemplos de entrada e saída para orientar o padrão da resposta",
+                                "text": "Incluir no prompt alguns exemplos de entrada e saída esperada",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Enviar o mesmo prompt várias vezes até obter uma resposta boa",
+                                "text": "Enviar o mesmo prompt várias vezes até sair uma resposta boa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Limitar a resposta a poucas palavras",
+                                "text": "Limitar a resposta do modelo a poucas palavras apenas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Treinar o modelo do zero com novos dados",
+                                "text": "Treinar o modelo do zero com dados novos rotulados",
                                 "isCorrect": false
                             }
                         ]
@@ -2235,19 +2235,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ser um modelo multimodal, capaz de processar texto e imagem",
+                                "text": "Ser um modelo multimodal que processa texto e imagem",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ser um modelo apenas de embeddings",
+                                "text": "Ser um modelo apenas de embeddings sem gerar texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ser um modelo somente de geração de áudio",
+                                "text": "Ser um modelo somente de geração de áudio sem imagem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ser um modelo exclusivo de tradução de texto",
+                                "text": "Ser um modelo exclusivo de tradução de texto escrito",
                                 "isCorrect": false
                             }
                         ]
@@ -2288,19 +2288,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "DefaultAzureCredential",
+                                "text": "DefaultAzureCredential, para autenticar sem usar chave",
                                 "isCorrect": true
                             },
                             {
-                                "text": "SystemMessage",
+                                "text": "SystemMessage, para dar a instrução do modelo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "AIProjectClient",
+                                "text": "AIProjectClient, para conectar ao projeto do Foundry",
                                 "isCorrect": false
                             },
                             {
-                                "text": "max_tokens",
+                                "text": "AssistantMessage, para guardar as respostas já dadas",
                                 "isCorrect": false
                             }
                         ]
@@ -2332,19 +2332,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O client de chat obtido com project.inference.get_chat_completions_client()",
+                                "text": "O client obtido com get_chat_completions_client()",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A classe DefaultAzureCredential",
+                                "text": "A classe DefaultAzureCredential usada só para autenticação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O catálogo de modelos",
+                                "text": "O catálogo de modelos disponíveis no Foundry",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O pacote azure-identity sozinho",
+                                "text": "O pacote azure-identity sozinho sem o de inference",
                                 "isCorrect": false
                             }
                         ]
@@ -2354,19 +2354,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Acumular o histórico, adicionando a resposta do modelo e a nova pergunta à lista de mensagens antes de chamar de novo",
+                                "text": "Acumular o histórico de mensagens a cada nova chamada",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentar o valor de max_tokens em cada chamada",
+                                "text": "Aumentar bastante o valor de max_tokens em cada nova chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar um novo AIProjectClient a cada pergunta",
+                                "text": "Criar um novo AIProjectClient antes de cada pergunta enviada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Enviar apenas a última pergunta, sem as anteriores",
+                                "text": "Enviar apenas a última pergunta e ignorar as anteriores da conversa",
                                 "isCorrect": false
                             }
                         ]
@@ -2376,7 +2376,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Para não deixar segredos escritos no código-fonte, seguindo boas práticas de segurança",
+                                "text": "Para não deixar nenhum segredo escrito no código-fonte",
                                 "isCorrect": true
                             },
                             {
@@ -2429,19 +2429,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Instruções próprias e a possibilidade de usar ferramentas, mantendo o estado da conversa",
+                                "text": "Instruções e ferramentas próprias com memória da conversa",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas uma cor diferente no portal",
+                                "text": "Apenas uma cor e um ícone diferentes no portal",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A dispensa de qualquer modelo generativo",
+                                "text": "A dispensa completa de qualquer modelo generativo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A tradução automática de todas as respostas",
+                                "text": "A tradução automática de todas as respostas geradas pelo modelo",
                                 "isCorrect": false
                             }
                         ]
@@ -2473,19 +2473,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A conversa que guarda as mensagens trocadas entre o usuário e o agente",
+                                "text": "A conversa que guarda as mensagens entre usuário e agente",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O nome comercial do modelo implantado",
+                                "text": "O nome comercial do modelo que está implantado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A chave de API do projeto",
+                                "text": "A chave de API usada para autenticar o projeto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O parâmetro que controla a criatividade da resposta",
+                                "text": "O parâmetro que controla a criatividade das respostas geradas",
                                 "isCorrect": false
                             }
                         ]
@@ -2499,15 +2499,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "A criação de um novo projeto no Foundry",
+                                "text": "A criação de um novo projeto do zero no Foundry",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O deploy de um modelo no catálogo",
+                                "text": "O deploy de um novo modelo escolhido no catálogo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A exclusão de todas as mensagens da conversa",
+                                "text": "A exclusão definitiva de todas as mensagens da conversa",
                                 "isCorrect": false
                             }
                         ]
@@ -2592,19 +2592,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A thread, criada com project.agents.threads.create()",
+                                "text": "A thread criada com project.agents.threads.create()",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O parâmetro temperature",
+                                "text": "O parâmetro temperature usado na chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O catálogo de modelos",
+                                "text": "O catálogo de modelos disponíveis no projeto do Foundry",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A variável max_tokens",
+                                "text": "A variável max_tokens definida na chamada",
                                 "isCorrect": false
                             }
                         ]
@@ -2636,19 +2636,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Listando as mensagens da thread com project.agents.messages.list(...)",
+                                "text": "Listando as mensagens com project.agents.messages.list(...)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Lendo o valor do parâmetro temperature",
+                                "text": "Lendo o valor atual do parâmetro temperature configurado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Consultando o catálogo de modelos",
+                                "text": "Consultando de novo o catálogo de modelos do projeto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Recriando o agente com create_agent",
+                                "text": "Recriando o agente do zero com create_agent(...)",
                                 "isCorrect": false
                             }
                         ]
@@ -2658,19 +2658,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Buscar o agente existente pelo seu agent id com project.agents.get_agent(...)",
+                                "text": "Buscar o agente existente com project.agents.get_agent(...)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Chamar create_agent novamente a cada requisição",
+                                "text": "Chamar create_agent(...) de novo a cada nova requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Copiar as instruções para dentro da mensagem de usuário",
+                                "text": "Copiar as instruções inteiras para dentro da mensagem de usuário",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar o max_tokens para reaproveitar o agente",
+                                "text": "Aumentar bastante o max_tokens para tentar reaproveitar o agente",
                                 "isCorrect": false
                             }
                         ]
@@ -2786,15 +2786,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "A detecção de idioma",
+                                "text": "A detecção de idioma do texto enviado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A extração de frases-chave",
+                                "text": "A extração de frases-chave do texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O reconhecimento de entidades",
+                                "text": "O reconhecimento de entidades no texto",
                                 "isCorrect": false
                             }
                         ]
@@ -2923,7 +2923,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "SpeechRecognizer com o microfone (AudioConfig)",
+                                "text": "SpeechRecognizer com o microfone",
                                 "isCorrect": true
                             },
                             {
@@ -2945,19 +2945,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Transcrição em lote (batch), sobre os arquivos gravados",
+                                "text": "Transcrição em lote sobre arquivos já gravados",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Transcrição em tempo real do microfone",
+                                "text": "Transcrição em tempo real vinda do microfone",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Síntese de fala (text-to-speech)",
+                                "text": "Síntese de fala a partir de um texto pronto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tradução de texto",
+                                "text": "Tradução de um documento de texto para outro idioma",
                                 "isCorrect": false
                             }
                         ]
@@ -2998,7 +2998,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Azure AI Speech (speech-to-text)",
+                                "text": "Azure AI Speech",
                                 "isCorrect": true
                             },
                             {
@@ -3020,7 +3020,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O nome da implantação (deployment)",
+                                "text": "O nome da implantação",
                                 "isCorrect": true
                             },
                             {
@@ -3046,15 +3046,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Carregar o áudio bruto do microfone",
+                                "text": "Carregar o áudio bruto vindo do microfone",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transcrever a fala em texto",
+                                "text": "Transcrever a fala do usuário em texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Gerar a imagem de saída",
+                                "text": "Gerar a imagem de saída do modelo",
                                 "isCorrect": false
                             }
                         ]
@@ -3064,19 +3064,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque lida com mais de um tipo de entrada, como texto e, dependendo do modelo, áudio ou imagem",
+                                "text": "Porque aceita mais de um tipo de entrada, como texto e imagem",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque roda em várias regiões do Azure ao mesmo tempo",
+                                "text": "Porque é implantado em várias regiões do Azure ao mesmo tempo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só aceita texto puro",
+                                "text": "Porque só aceita texto puro, sem nenhum outro formato",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque devolve apenas números",
+                                "text": "Porque devolve apenas números em vez de texto",
                                 "isCorrect": false
                             }
                         ]
@@ -3139,19 +3139,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ele aceita imagem e texto no mesmo prompt e responde em linguagem natural",
+                                "text": "Ele aceita imagem e texto no mesmo prompt",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ele só transcreve áudio em texto",
+                                "text": "Ele só transcreve áudio em texto, nunca imagem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele só gera números a partir de tabelas",
+                                "text": "Ele só gera números a partir de tabelas de dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele apenas traduz texto entre idiomas",
+                                "text": "Ele apenas traduz texto entre idiomas diferentes",
                                 "isCorrect": false
                             }
                         ]
@@ -3161,19 +3161,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um modelo multimodal do Foundry, com a imagem no prompt",
+                                "text": "Um modelo multimodal com a imagem no prompt",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A tradução de texto",
+                                "text": "A tradução automática de texto para outro idioma",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A síntese de fala",
+                                "text": "A síntese de fala a partir de um texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A detecção de idioma",
+                                "text": "A detecção de idioma do texto enviado",
                                 "isCorrect": false
                             }
                         ]
@@ -3183,19 +3183,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Por uma URL pública ou embutindo o arquivo como dados em base64",
+                                "text": "Por uma URL pública da imagem ou como dados em base64",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Só por captura direta da webcam",
+                                "text": "Só por captura direta da webcam do usuário",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só digitando a descrição da imagem em texto",
+                                "text": "Só digitando a descrição completa da imagem em texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Por um número de telefone e uma chave de API",
+                                "text": "Por um número de telefone e uma chave de API do projeto",
                                 "isCorrect": false
                             }
                         ]
@@ -3209,15 +3209,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Como dois modelos implantados separados",
+                                "text": "Como dois modelos diferentes implantados separadamente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como duas regiões do Azure",
+                                "text": "Como duas regiões diferentes do Azure conectadas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como um único número inteiro",
+                                "text": "Como um único número inteiro sem nenhum texto",
                                 "isCorrect": false
                             }
                         ]
@@ -3227,7 +3227,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O Azure AI Vision (OCR), por ser mais simples e barato para uma tarefa padronizada de alto volume",
+                                "text": "O Azure AI Vision, mais simples e barato numa tarefa padronizada",
                                 "isCorrect": true
                             },
                             {
@@ -3284,15 +3284,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Extrai o texto impresso de uma imagem",
+                                "text": "Extrai o texto impresso dentro de uma imagem existente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Classifica a imagem em categorias fixas",
+                                "text": "Classifica uma imagem existente em categorias fixas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transcreve áudio em texto",
+                                "text": "Transcreve um áudio de voz em texto escrito",
                                 "isCorrect": false
                             }
                         ]
@@ -3324,19 +3324,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Interpretar analisa uma imagem que já existe; gerar cria uma imagem nova a partir de texto",
+                                "text": "Interpretar analisa uma imagem existente; gerar cria uma nova",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As duas criam imagens novas a partir de texto",
+                                "text": "As duas criam sempre imagens novas a partir de um texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas apenas leem o texto impresso na imagem",
+                                "text": "As duas apenas leem o texto impresso dentro da imagem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Interpretar cria a imagem e gerar a descreve",
+                                "text": "Interpretar cria a imagem nova e gerar apenas a descreve",
                                 "isCorrect": false
                             }
                         ]
@@ -3346,19 +3346,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Orquestra as chamadas aos modelos implantados no Foundry, cuidando de entrada, saída e erros",
+                                "text": "Orquestra as chamadas aos modelos implantados no Foundry",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Treina do zero um novo modelo de visão a cada foto",
+                                "text": "Treina do zero um novo modelo de visão para cada foto enviada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substitui os modelos, fazendo a geração localmente sem a nuvem",
+                                "text": "Substitui os modelos fazendo a geração localmente sem a nuvem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Analisa apenas o sentimento de um texto",
+                                "text": "Analisa apenas o sentimento de um texto qualquer enviado",
                                 "isCorrect": false
                             }
                         ]
@@ -3368,19 +3368,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Um modelo multimodal para interpretar a foto e um modelo de geração de imagem para criar as variações",
+                                "text": "Um modelo multimodal para interpretar e um de geração para variar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas OCR do Azure AI Vision, ajustando o tamanho da fonte",
+                                "text": "Apenas OCR do Azure AI Vision, só ajustando o tamanho da fonte usada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas síntese de fala, mudando a voz neural",
+                                "text": "Apenas síntese de fala, só mudando a voz neural do áudio gerado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas detecção de idioma, trocando o idioma de saída",
+                                "text": "Apenas detecção de idioma, só trocando o idioma do texto de saída",
                                 "isCorrect": false
                             }
                         ]
@@ -3426,19 +3426,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Extrai informação de documentos e mídia e devolve dados estruturados em JSON",
+                                "text": "Extrai informação de documentos e mídia em dados estruturados",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas traduz textos de um idioma para outro",
+                                "text": "Apenas traduz textos automaticamente de um idioma para outro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas gera imagens a partir de descrições em texto",
+                                "text": "Apenas gera imagens novas a partir de descrições em texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas treina modelos de regressão a partir de planilhas",
+                                "text": "Apenas treina modelos de regressão a partir de planilhas antigas",
                                 "isCorrect": false
                             }
                         ]
@@ -3448,7 +3448,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um analisador (analyzer)",
+                                "text": "Um analisador",
                                 "isCorrect": true
                             },
                             {
@@ -3492,19 +3492,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Indicar o quanto o serviço confia naquele valor, permitindo enviar os campos incertos para revisão humana",
+                                "text": "Indicar o quanto o serviço confia naquele valor",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Medir a velocidade da chamada à API",
+                                "text": "Medir a velocidade da chamada feita à API",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Informar o preço cobrado por página processada",
+                                "text": "Informar o preço cobrado por cada página processada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Contar o número de páginas do documento",
+                                "text": "Contar o número total de páginas do documento",
                                 "isCorrect": false
                             }
                         ]
@@ -3567,19 +3567,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "OCR (leitura do texto da imagem)",
+                                "text": "Leitura de texto por OCR",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Síntese de fala",
+                                "text": "Síntese de fala a partir de texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Geração de imagem",
+                                "text": "Geração de imagem a partir de texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tradução de texto",
+                                "text": "Tradução de texto para outro idioma",
                                 "isCorrect": false
                             }
                         ]
@@ -3589,19 +3589,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Azure Content Understanding, com um analisador de imagem",
+                                "text": "Azure Content Understanding",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Azure AI Speech",
+                                "text": "Azure AI Speech para voz e áudio",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um modelo de regressão",
+                                "text": "Um modelo de regressão para prever números",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Clustering",
+                                "text": "Clustering para agrupar dados parecidos",
                                 "isCorrect": false
                             }
                         ]
@@ -3611,7 +3611,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um campo generate (descrição gerada pelo modelo)",
+                                "text": "Um campo generate",
                                 "isCorrect": true
                             },
                             {
@@ -3655,19 +3655,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Combinando a classificação da imagem com campos nomeados, para rotular a categoria e extrair valor e data quando houver",
+                                "text": "Combinando classificação da imagem com campos nomeados no analisador",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Usando apenas OCR, que já devolve a categoria e os campos prontos",
+                                "text": "Usando apenas OCR para tentar obter os dois resultados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usando síntese de fala para descrever a imagem em áudio",
+                                "text": "Usando síntese de fala para tentar descrever cada imagem em áudio",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Treinando um modelo de regressão para prever a categoria",
+                                "text": "Treinando do zero um modelo de regressão para prever a categoria",
                                 "isCorrect": false
                             }
                         ]
@@ -3708,19 +3708,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Azure Content Understanding, no cenário de áudio",
+                                "text": "Azure Content Understanding no cenário de áudio",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Geração de imagem",
+                                "text": "Geração de imagem a partir de um prompt de texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OCR de documentos",
+                                "text": "OCR de documentos digitalizados em PDF",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Clustering",
+                                "text": "Clustering de dados numéricos",
                                 "isCorrect": false
                             }
                         ]
@@ -3738,7 +3738,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A geração de imagem a partir de texto",
+                                "text": "A geração de imagem a partir de uma descrição em texto",
                                 "isCorrect": false
                             },
                             {
@@ -3752,19 +3752,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Com campos definidos no analisador (como motivo do contato) e um campo generate para o resumo",
+                                "text": "Com campos definidos no analisador e um generate para o resumo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas devolvendo o áudio convertido em outro formato",
+                                "text": "Apenas devolvendo o áudio original convertido em outro formato",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Gerando uma imagem que ilustra a ligação",
+                                "text": "Gerando apenas uma imagem estática que ilustra a ligação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Traduzindo a ligação para outro idioma automaticamente",
+                                "text": "Traduzindo automaticamente a ligação inteira para outro idioma",
                                 "isCorrect": false
                             }
                         ]
@@ -3774,19 +3774,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "As marcas de tempo (timestamps) da transcrição e dos trechos",
+                                "text": "As marcas de tempo da transcrição e dos trechos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A síntese de fala",
+                                "text": "A síntese de fala do texto encontrado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A leitura de código de barras",
+                                "text": "A leitura de código de barras de cada produto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A classificação de imagem",
+                                "text": "A classificação de imagem em categorias",
                                 "isCorrect": false
                             }
                         ]
@@ -3796,7 +3796,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Azure Content Understanding no áudio, que une transcrição e extração de campos num só passo",
+                                "text": "Azure Content Understanding, que une transcrição e extração",
                                 "isCorrect": true
                             },
                             {
@@ -3808,7 +3808,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um modelo de geração de imagem",
+                                "text": "Um modelo de geração de imagem, que não lida com áudio",
                                 "isCorrect": false
                             }
                         ]
@@ -3849,19 +3849,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O analisador, com o schema dos campos a extrair",
+                                "text": "O analisador com o schema dos campos a extrair",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um cluster de imagens",
+                                "text": "Um cluster de imagens semelhantes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma matriz de confusão",
+                                "text": "Uma matriz de confusão do modelo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um conjunto de teste rotulado",
+                                "text": "Um conjunto de teste rotulado manualmente",
                                 "isCorrect": false
                             }
                         ]
@@ -3871,7 +3871,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um analisador pronto (prebuilt)",
+                                "text": "Um analisador pronto",
                                 "isCorrect": true
                             },
                             {
@@ -3897,15 +3897,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Descartar o documento inteiro automaticamente",
+                                "text": "Descartar automaticamente o documento inteiro sem revisão",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover a pontuação de confiança da saída",
+                                "text": "Remover completamente a pontuação de confiança da saída",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aceitar o valor sem qualquer verificação",
+                                "text": "Aceitar sempre o valor sem qualquer tipo de verificação",
                                 "isCorrect": false
                             }
                         ]
@@ -3937,11 +3937,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Definir um limite de confiança e enviar só os campos abaixo dele para revisão humana",
+                                "text": "Definir um limite e mandar para revisão só o que for incerto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Revisar manualmente todos os documentos, um a um",
+                                "text": "Revisar manualmente todos os documentos processados um a um",
                                 "isCorrect": false
                             },
                             {
