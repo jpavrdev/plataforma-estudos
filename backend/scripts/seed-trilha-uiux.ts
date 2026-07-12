@@ -57,19 +57,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A tudo o que a pessoa sente e vivencia ao usar um produto ou serviço, em toda a jornada — se foi fácil, claro e agradável.",
+                                "text": "Ao que a pessoa sente e vivencia ao longo de toda a jornada de uso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas às cores e fontes escolhidas para a tela do aplicativo.",
+                                "text": "Apenas às cores e fontes escolhidas para as telas do aplicativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente ao código que faz o aplicativo funcionar por trás.",
+                                "text": "Somente ao código que faz o aplicativo funcionar por trás dos panos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exclusivamente ao preço cobrado pelo produto.",
+                                "text": "Unicamente ao preço cobrado pela pessoa que compra o produto.",
                                 "isCorrect": false
                             }
                         ]
@@ -79,19 +79,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Não. A UX abrange toda a jornada — encontrar o que precisa, concluir a tarefa e o pós-uso — e não só a aparência da tela.",
+                                "text": "Não, a UX abrange toda a jornada, do primeiro contato ao pós-uso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim: se a tela é bonita, a experiência é automaticamente boa.",
+                                "text": "Sim, uma tela bonita garante sozinha uma boa experiência.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim: UX e aparência da tela são exatamente a mesma coisa.",
+                                "text": "Sim, UX e aparência da tela são, na prática, a mesma coisa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não: a UX se refere apenas ao logotipo da marca.",
+                                "text": "Não, a UX se refere apenas ao logotipo oficial escolhido pela marca.",
                                 "isCorrect": false
                             }
                         ]
@@ -101,19 +101,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Que a UX é a jornada inteira: mesmo com telas ótimas, a experiência é ruim porque a entrega e o pós-uso falharam.",
+                                "text": "Que a UX é a jornada inteira, pois entrega e suporte também contam.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que a UX está ótima, afinal as telas são bonitas e fáceis de usar.",
+                                "text": "Que a UX está ótima, já que a beleza da tela é o que mais pesa nela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a UX depende só do design das telas, e o resto não faz parte dela.",
+                                "text": "Que a UX depende só da tela, pois entrega é tarefa de outra equipe.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que comida fria não tem nenhuma relação com a experiência do usuário.",
+                                "text": "Que a comida fria não conta, pois só a interface define a experiência.",
                                 "isCorrect": false
                             }
                         ]
@@ -123,19 +123,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ruim: o produto cria obstáculos e faz a pessoa se sentir presa, dificultando uma tarefa que deveria ser simples.",
+                                "text": "Ruim, pois isso cria obstáculos e prende a pessoa numa tarefa simples.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Boa: quanto mais etapas para cancelar, mais organizado é o produto.",
+                                "text": "Boa, pois mais etapas de confirmação tornam o processo mais seguro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Neutra: a quantidade de etapas não influencia a experiência do usuário.",
+                                "text": "Neutra, pois o número de etapas não muda em nada a experiência.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Boa: esconder o cancelamento protege a pessoa de se arrepender.",
+                                "text": "Boa, pois esconder a opção evita que a pessoa cancele por impulso.",
                                 "isCorrect": false
                             }
                         ]
@@ -145,19 +145,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Que a experiência é boa: quando tudo flui sem esforço, a pessoa nem percebe o design — costuma-se notar a experiência mais quando ela falha.",
+                                "text": "Que a experiência é boa, pois um bom design costuma passar despercebido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que a experiência é ruim, pois um bom app precisa chamar a atenção o tempo todo.",
+                                "text": "Que a experiência é ruim, pois um bom app precisa chamar atenção sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o design não teve nenhum trabalho, já que ninguém reparou nele.",
+                                "text": "Que o design não teve trabalho nenhum, já que ninguém notou ele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a pessoa não sabe usar o aplicativo, por isso não percebe os detalhes.",
+                                "text": "Que a pessoa não sabe usar o app, por isso não repara nos detalhes.",
                                 "isCorrect": false
                             }
                         ]
@@ -198,7 +198,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A camada visível e interativa do produto — botões, cores, textos, ícones, campos e espaçamentos — por onde a pessoa interage.",
+                                "text": "A camada visível do produto: botões, cores, ícones e campos.",
                                 "isCorrect": true
                             },
                             {
@@ -206,11 +206,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor onde os dados do aplicativo ficam guardados.",
+                                "text": "O servidor remoto onde os dados do aplicativo ficam guardados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O conjunto de leis que protegem os dados do usuário.",
+                                "text": "O conjunto de leis que regulam a proteção de dados do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -220,19 +220,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um botão colorido de \"Enviar\" com um ícone.",
+                                "text": "Um botão de \"Enviar\" colorido, com um ícone ao lado do texto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O tempo que a entrega leva para chegar na casa da pessoa.",
+                                "text": "O tempo que o pedido leva para chegar até a casa da pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A política de reembolso escrita no contrato.",
+                                "text": "A política de reembolso descrita nas letras miúdas do contrato.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor que processa os pagamentos nos bastidores.",
+                                "text": "O servidor que processa os pagamentos por trás da aplicação.",
                                 "isCorrect": false
                             }
                         ]
@@ -242,19 +242,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Dar destaque visual ao botão principal (por exemplo, \"Confirmar\" colorido) e deixar o secundário discreto, para a hierarquia ficar clara.",
+                                "text": "Destacar o botão principal e deixar o outro discreto, para a hierarquia ficar clara.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentar o tamanho da fonte de todo o texto da página.",
+                                "text": "Aumentar a fonte de toda a página, pois letras maiores sempre reduzem erros.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar as palavras dos botões por termos em inglês.",
+                                "text": "Trocar as palavras dos botões para inglês, pois termos técnicos confundem menos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover os dois botões e deixar a pessoa adivinhar o que fazer.",
+                                "text": "Remover os dois botões, pois menos opções na tela sempre evitam erro.",
                                 "isCorrect": false
                             }
                         ]
@@ -264,19 +264,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque aproveita um símbolo já familiar: a interface comunica a ação de forma imediata, sem exigir explicação.",
+                                "text": "Porque usa um símbolo já familiar, e isso comunica a ação sem precisar de explicação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque ícones deixam a tela mais colorida, e cor é o que mais importa.",
+                                "text": "Porque ícones deixam a tela mais colorida, e cor é o que mais importa para a pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque quanto mais ícones diferentes, mais moderna a interface parece.",
+                                "text": "Porque quanto mais ícones diferentes, mais moderna a interface parece ser.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque esconder o significado da ação torna o app mais interessante.",
+                                "text": "Porque esconder o significado da ação torna o aplicativo mais curioso.",
                                 "isCorrect": false
                             }
                         ]
@@ -286,19 +286,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O feedback: a interface precisa responder à ação (mudar de estado, mostrar carregamento ou confirmação) para a pessoa saber o que aconteceu.",
+                                "text": "O feedback, pois a interface precisa responder à ação tomada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A quantidade de cores: o botão deveria ter mais cores diferentes.",
+                                "text": "A quantidade de cores, pois um botão com mais cores chama mais atenção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada: se o toque funcionou por trás, a reação visual é dispensável.",
+                                "text": "Nada, pois se o toque funcionou por trás, a reação visual é dispensável.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tamanho da fonte do restante da página, que deveria ser maior.",
+                                "text": "O tamanho da fonte da página, pois letras maiores evitam qualquer dúvida.",
                                 "isCorrect": false
                             }
                         ]
@@ -339,7 +339,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A UI faz parte da UX: a interface é a camada visível por onde a experiência acontece, mas a UX é maior e abrange toda a jornada.",
+                                "text": "A UI faz parte da UX: é a camada visível por onde a jornada acontece.",
                                 "isCorrect": true
                             },
                             {
@@ -347,11 +347,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A UX faz parte da UI: a experiência é um detalhe dentro da tela.",
+                                "text": "A UX faz parte da UI: a experiência é só um detalhe dentro da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "UX e UI não têm nenhuma relação entre si.",
+                                "text": "UX e UI existem de forma separada, sem nenhuma relação entre si.",
                                 "isCorrect": false
                             }
                         ]
@@ -361,19 +361,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A UX cuida da jornada e do sentimento; a UI cuida da camada visível e interativa.",
+                                "text": "A UX cuida da jornada e do sentimento; a UI cuida da camada visível.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A UI cuida da jornada e do sentimento; a UX cuida das cores e dos botões.",
+                                "text": "A UI cuida da jornada e do sentimento; a UX cuida só das cores e botões.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambas cuidam apenas das cores; a jornada não é responsabilidade de nenhuma.",
+                                "text": "As duas cuidam somente das cores; a jornada não é papel de nenhuma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A UX cuida do código, e a UI cuida do servidor.",
+                                "text": "A UX cuida do código do sistema, e a UI cuida do servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -383,19 +383,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não: o problema é de experiência (fluxo confuso, travamentos); enfeitar mais a interface não conserta um fluxo que não funciona.",
+                                "text": "Não, pois o problema é o fluxo, e enfeitar a tela não resolve isso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim: uma interface mais bonita sempre corrige qualquer problema de uso.",
+                                "text": "Sim, pois uma interface mais bonita corrige qualquer problema de uso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim: se o visual já foi premiado, o fluxo de compra é irrelevante.",
+                                "text": "Sim, pois um visual premiado torna o fluxo de compra irrelevante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não: a solução é remover as telas bonitas e deixar tudo cinza.",
+                                "text": "Não, pois a solução certa é deixar todas as telas sem nenhuma cor.",
                                 "isCorrect": false
                             }
                         ]
@@ -405,19 +405,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "De UI: a cor é parte da camada visual; sozinha, não representa a experiência inteira (UX).",
+                                "text": "De UI, pois a cor é só um detalhe visual, e não a experiência inteira.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "De UX, pois qualquer mudança na tela é sempre uma mudança de experiência.",
+                                "text": "De UX, pois qualquer troca na tela já muda a experiência inteira.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "De infraestrutura, pois cor é definida no servidor.",
+                                "text": "De infraestrutura, pois a cor de um botão é definida no servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "De conteúdo, pois cor e texto são a mesma decisão.",
+                                "text": "De conteúdo, pois escolher uma cor é o mesmo que escrever um texto.",
                                 "isCorrect": false
                             }
                         ]
@@ -427,19 +427,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Que uma UI bonita não compensa uma UX ruim: resolver bem a necessidade pesa mais do que só ser bonito — e o ideal é ter os dois.",
+                                "text": "Que uma UI bonita não compensa uma UX ruim, pois resolver bem pesa mais.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que a aparência é o único fator que decide se um produto é bom.",
+                                "text": "Que a aparência é o único fator que decide se um produto é bom de usar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que UX e UI são a mesma coisa, então tanto faz qual melhorar.",
+                                "text": "Que UX e UI são a mesma coisa, então tanto faz qual delas melhorar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que produtos feios são sempre melhores que produtos bonitos.",
+                                "text": "Que produtos feios são sempre melhores do que produtos bonitos e lentos.",
                                 "isCorrect": false
                             }
                         ]
@@ -480,19 +480,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Não: o designer entende pessoas, define o problema certo, cria e testa soluções e colabora com o time — a aparência é só uma parte.",
+                                "text": "Não, pois o designer também entende pessoas e define o problema certo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim: design é só escolher cores e fontes bonitas.",
+                                "text": "Sim, pois design é apenas escolher cores e fontes bonitas para a tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim: o designer trabalha sozinho e cuida apenas do visual final.",
+                                "text": "Sim, pois o designer trabalha sozinho e cuida só do visual final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não: o papel do designer é escrever o código do produto.",
+                                "text": "Não, pois o papel do designer é escrever o código do produto inteiro.",
                                 "isCorrect": false
                             }
                         ]
@@ -502,19 +502,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Menos abandono e mais tarefas concluídas, além de menos chamados de suporte.",
+                                "text": "Menos abandono nas tarefas e menos chamados abertos no suporte.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentar a quantidade de telas para o produto parecer maior.",
+                                "text": "Mais telas no produto, para ele parecer maior e mais completo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar o cadastro mais longo para coletar o máximo de dados possível.",
+                                "text": "Um cadastro mais longo, para coletar o máximo de dados possível.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar o maior número de cores diferentes em cada tela.",
+                                "text": "O maior número possível de cores diferentes em cada tela.",
                                 "isCorrect": false
                             }
                         ]
@@ -524,19 +524,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A conversão: com menos obstáculos, mais pessoas concluem a compra.",
+                                "text": "A conversão, que aumenta quando há menos obstáculos na compra.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O tamanho do arquivo do aplicativo, que fica menor.",
+                                "text": "O tamanho do arquivo do aplicativo, que passa a ocupar menos espaço.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de cores da marca, que aumenta.",
+                                "text": "A quantidade de cores da marca, que aumenta junto com as vendas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número de telas do fluxo, que sempre precisa crescer.",
+                                "text": "O número de telas do fluxo, que precisa sempre crescer também.",
                                 "isCorrect": false
                             }
                         ]
@@ -546,19 +546,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Autonomia e inclusão: um design claro e acessível permite que mais gente use o produto com confiança e por conta própria.",
+                                "text": "Autonomia, pois um design claro deixa a pessoa usar o produto sozinha.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum valor real, pois isso não afeta em nada a vida da pessoa.",
+                                "text": "Nenhum valor real, pois isso não muda em nada o dia a dia da pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Valor apenas estético, ligado somente às cores do aplicativo.",
+                                "text": "Valor estético apenas, ligado somente às cores usadas no aplicativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Valor só de marketing, que serve apenas para a propaganda do banco.",
+                                "text": "Valor de marketing só, que serve apenas para a propaganda do banco.",
                                 "isCorrect": false
                             }
                         ]
@@ -568,19 +568,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Investir esforço numa solução bonita para um problema mal compreendido — sem entender a pessoa e o problema, corre-se o risco de construir algo que ninguém precisa.",
+                                "text": "Construir algo bonito para o problema errado, sem entender a pessoa antes.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum risco: entender a pessoa é uma etapa dispensável no design.",
+                                "text": "Nenhum risco, pois entender a pessoa é uma etapa dispensável no design.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único risco é escolher a fonte errada para os títulos.",
+                                "text": "O único risco real é escolher a fonte errada para os títulos da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco é gastar tempo demais programando antes de desenhar.",
+                                "text": "O risco é gastar tempo demais desenhando telas antes de programar.",
                                 "isCorrect": false
                             }
                         ]
@@ -665,19 +665,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Empatizar: buscar entender profundamente a pessoa antes de pensar na solução.",
+                                "text": "Empatizar, a etapa de entender a pessoa antes de propor soluções.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Prototipar: montar uma versão testável da solução.",
+                                "text": "Prototipar, a etapa de montar uma versão testável da ideia escolhida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Testar: mostrar um protótipo já pronto para as pessoas.",
+                                "text": "Testar, a etapa de mostrar um protótipo já pronto para as pessoas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Idear: gerar o maior número possível de ideias.",
+                                "text": "Idear, a etapa de gerar o maior número possível de ideias distintas.",
                                 "isCorrect": false
                             }
                         ]
@@ -687,19 +687,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Divergir (abrir: explorar amplamente muitas possibilidades) e depois convergir (fechar: focar e decidir) — primeiro sobre o problema, depois sobre a solução.",
+                                "text": "Divergir: abrir e explorar. Depois convergir: fechar e decidir.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentar e diminuir o orçamento do projeto duas vezes.",
+                                "text": "Aumentar e depois diminuir o orçamento do projeto por duas vezes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Abrir e fechar a empresa a cada fase do projeto.",
+                                "text": "Abrir e depois fechar a empresa a cada nova fase do projeto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escrever o código e depois apagá-lo, repetidamente.",
+                                "text": "Escrever o código todo e depois apagá-lo, de forma repetida.",
                                 "isCorrect": false
                             }
                         ]
@@ -709,19 +709,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Entender e definir o problema certo antes de correr para a solução — explorar (divergir) antes de decidir (convergir), em vez de se apaixonar pela primeira ideia.",
+                                "text": "Que é preciso entender e definir o problema antes de correr para a solução.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que a solução deve sempre ser construída antes de existir qualquer problema.",
+                                "text": "Que a solução deve ser construída antes mesmo de existir qualquer problema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a etapa de testar deve vir sempre antes de empatizar.",
+                                "text": "Que a etapa de testar deve sempre vir antes da etapa de empatizar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o design é um lampejo de genialidade e não precisa de nenhum processo.",
+                                "text": "Que design é um lampejo de genialidade que dispensa qualquer processo.",
                                 "isCorrect": false
                             }
                         ]
@@ -767,19 +767,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque quem constrói o sistema conhece termos e caminhos que o usuário não conhece, então projetar só pelo próprio gosto costuma errar a necessidade real.",
+                                "text": "Porque quem constrói o sistema já sabe termos e caminhos que o usuário não conhece.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o designer nunca pode usar o próprio produto depois de pronto.",
+                                "text": "Porque o designer perde a licença para usar o próprio produto assim que ele fica pronto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o usuário sempre entende mais de design do que o time que construiu o produto.",
+                                "text": "Porque o usuário, por ser leigo, enxerga mais de design do que quem construiu o produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a opinião do usuário não deve influenciar as decisões do projeto.",
+                                "text": "Porque a opinião de quem usa o produto não deveria pesar nas decisões do projeto.",
                                 "isCorrect": false
                             }
                         ]
@@ -789,19 +789,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Por que as pessoas se comportam de determinada forma.",
+                                "text": "Por que as pessoas agem de determinada forma.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Quantos por cento dos usuários preferem o botão azul.",
+                                "text": "Qual o percentual de usuários que prefere o botão azul.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Qual é a idade média de mil usuários cadastrados.",
+                                "text": "Qual a média de idade entre mil usuários cadastrados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quantas pessoas acessaram o site no último domingo.",
+                                "text": "Quantas pessoas acessaram o site no domingo passado.",
                                 "isCorrect": false
                             }
                         ]
@@ -811,19 +811,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Observação: assistir as pessoas usando o produto no contexto real.",
+                                "text": "Observação: acompanhar a pessoa usando o app no dia a dia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um questionário longo, só com perguntas fechadas.",
+                                "text": "Questionário extenso, formado só por perguntas fechadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma entrevista por telefone com perguntas de opinião.",
+                                "text": "Entrevista por telefone, com perguntas sobre opinião.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Olhar apenas o número total de downloads do app.",
+                                "text": "Contagem simples de quantos downloads o app recebeu.",
                                 "isCorrect": false
                             }
                         ]
@@ -833,19 +833,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um questionário enviado a muitos usuários, com perguntas fechadas.",
+                                "text": "Questionário enviado a muitos usuários, com perguntas fechadas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Três entrevistas longas e aprofundadas.",
+                                "text": "Poucas entrevistas longas, feitas com calma e profundidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Observar uma única pessoa durante um dia inteiro.",
+                                "text": "Observação de uma única pessoa ao longo de um dia inteiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma conversa aberta e demorada com um só usuário.",
+                                "text": "Uma conversa bem aberta e demorada com um único usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -855,19 +855,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Combinar os dois: o dado quantitativo aponta onde está o problema e uma pesquisa qualitativa (como entrevistas) descobre por que ele acontece.",
+                                "text": "Combinar os dois: o número aponta o problema, e a entrevista explica o porquê.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Confiar só no número, que por si já basta para definir a solução.",
+                                "text": "Confiar só no número, que já basta sozinho para definir a solução certa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ignorar o dado e redesenhar o cadastro no achismo do time.",
+                                "text": "Ignorar o dado por completo e redesenhar o cadastro no achismo do time.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aplicar outro questionário fechado, que vai revelar exatamente o motivo do abandono.",
+                                "text": "Aplicar mais um questionário fechado, que vai revelar o motivo do abandono.",
                                 "isCorrect": false
                             }
                         ]
@@ -908,19 +908,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um personagem fictício, baseado em pesquisa, que representa um grupo de usuários com necessidades parecidas.",
+                                "text": "Personagem fictício, criado a partir de pesquisa com usuários reais.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma pessoa real contratada para testar o app todos os dias.",
+                                "text": "Uma pessoa real, contratada para testar o aplicativo todos os dias.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome técnico do usuário mais importante da empresa.",
+                                "text": "O nome técnico usado internamente para o usuário mais importante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um gráfico com a quantidade de acessos por faixa etária.",
+                                "text": "Um gráfico que mostra a quantidade de acessos por faixa etária.",
                                 "isCorrect": false
                             }
                         ]
@@ -930,19 +930,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Seus objetivos, comportamentos e frustrações ao usar o produto.",
+                                "text": "Objetivos e frustrações da pessoa ao usar o produto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A cidade onde ela nasceu e o seu estado civil.",
+                                "text": "A cidade onde nasceu e o seu estado civil atual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A cor favorita e o time de futebol dela.",
+                                "text": "A cor favorita dela e o time de futebol que torce.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número exato do documento de identidade.",
+                                "text": "O número exato do documento de identidade dela.",
                                 "isCorrect": false
                             }
                         ]
@@ -952,19 +952,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque se resume a rótulos e clichês, sem falar dos objetivos, hábitos e frustrações que realmente orientam decisões de tela.",
+                                "text": "Porque junta só rótulos, sem os objetivos que guiam o design.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque toda persona precisa ter menos de 30 anos.",
+                                "text": "Porque nenhuma persona pode ter mais de trinta anos de idade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque falta informar a renda exata da pessoa.",
+                                "text": "Porque falta informar a renda mensal exata dessa pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque uma persona nunca deveria ter idade nem gênero.",
+                                "text": "Porque persona nenhuma deveria trazer idade ou gênero.",
                                 "isCorrect": false
                             }
                         ]
@@ -974,19 +974,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Mostrar um resumo claro do pagamento para conferência antes de confirmar.",
+                                "text": "Mostrar um resumo claro do pagamento antes de pedir a confirmação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Esconder o valor total para deixar a tela mais limpa.",
+                                "text": "Esconder o valor total do pagamento para deixar a tela mais limpa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar mais opções e atalhos na tela de pagamento.",
+                                "text": "Adicionar mais opções e atalhos na mesma tela de pagamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confirmar o pagamento automaticamente para ganhar tempo.",
+                                "text": "Confirmar o pagamento de forma automática para economizar tempo.",
                                 "isCorrect": false
                             }
                         ]
@@ -996,19 +996,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A persona vira um estereótipo baseado em achismo, carregando os vieses do time e apontando para necessidades que podem não ser reais.",
+                                "text": "A persona vira um estereótipo de achismo, carregando os vieses do time.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum risco, já que toda persona é fictícia de qualquer forma.",
+                                "text": "Nenhum risco: toda persona já é fictícia, então tanto faz a origem.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único risco é a foto escolhida não agradar a todo o time.",
+                                "text": "O único risco real é a foto escolhida não agradar todo o time.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco é ter personas de menos; bastaria criar uma para cada usuário.",
+                                "text": "O risco é ter personas de menos; o ideal é uma para cada usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -1049,19 +1049,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A experiência de um usuário, do começo ao fim, ao longo das etapas para atingir um objetivo.",
+                                "text": "A experiência do usuário, do início ao fim, até um objetivo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas o layout de uma única tela do aplicativo.",
+                                "text": "Apenas o layout visual de uma única tela do aplicativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A lista de tecnologias usadas para construir o produto.",
+                                "text": "A lista de tecnologias empregadas na construção do produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O organograma da equipe que desenvolve o produto.",
+                                "text": "O organograma completo da equipe que desenvolve o produto.",
                                 "isCorrect": false
                             }
                         ]
@@ -1071,19 +1071,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Os momentos em que o usuário se sente frustrado, perdido ou inseguro.",
+                                "text": "Momentos em que o usuário fica perdido ou inseguro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As telas mais bonitas do aplicativo.",
+                                "text": "As telas do aplicativo consideradas mais bonitas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As etapas em que o usuário está mais feliz.",
+                                "text": "As etapas em que o usuário se sente mais feliz.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os erros de código encontrados nos testes.",
+                                "text": "Os erros de código encontrados durante os testes.",
                                 "isCorrect": false
                             }
                         ]
@@ -1093,19 +1093,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um ponto de dor, ou seja, uma oportunidade clara de melhorar a experiência.",
+                                "text": "Um ponto de dor, ou seja, uma chance clara de melhorar ali.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que essa etapa está perfeita e não precisa de atenção.",
+                                "text": "Que essa etapa já está perfeita e não precisa de atenção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que aquela etapa deve ser removida da jornada.",
+                                "text": "Que aquela etapa inteira deve ser removida da jornada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a curva de emoção não tem relação com o design.",
+                                "text": "Que a curva de emoção não tem nenhuma relação com o design.",
                                 "isCorrect": false
                             }
                         ]
@@ -1115,19 +1115,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque olha a experiência inteira e localiza onde a pessoa sofreu, indicando exatamente onde melhorar.",
+                                "text": "Porque olha a jornada inteira e mostra onde a pessoa sofreu.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o resultado final é a única coisa que importa em UX.",
+                                "text": "Porque em UX só o resultado final é o que realmente importa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque emoções não devem ser levadas em conta no design.",
+                                "text": "Porque emoções no meio do caminho não interessam ao design.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a primeira leitura inventou um problema que não existe.",
+                                "text": "Porque a primeira leitura inventa um problema que não existe.",
                                 "isCorrect": false
                             }
                         ]
@@ -1137,19 +1137,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Validar o código e mostrar claramente o beneficiário e o valor, com um resumo para conferência antes de confirmar.",
+                                "text": "Validar o código e mostrar um resumo, evitando erro de valor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Remover a etapa de digitação para encurtar a jornada.",
+                                "text": "Cortar a etapa de digitação para encurtar a jornada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar a tela igual, já que no fim ela consegue pagar.",
+                                "text": "Manter a tela como está, já que no fim ela consegue pagar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar mais campos para preencher e distrair do medo.",
+                                "text": "Incluir mais campos para preencher, tirando o foco do medo.",
                                 "isCorrect": false
                             }
                         ]
@@ -1190,19 +1190,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A facilidade com que as pessoas encontram o que procuram no produto.",
+                                "text": "A facilidade de encontrar o que se procura no produto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A velocidade de carregamento das páginas.",
+                                "text": "A velocidade de carregamento das páginas do site.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de cores usadas no layout.",
+                                "text": "A quantidade de cores usadas em todo o layout.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número total de telas que o aplicativo possui.",
+                                "text": "O número total de telas existentes no aplicativo.",
                                 "isCorrect": false
                             }
                         ]
@@ -1212,19 +1212,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma técnica em que usuários agrupam itens de conteúdo do jeito que faz sentido para eles.",
+                                "text": "Técnica em que usuários agrupam o conteúdo como acham melhor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um jogo de cartas usado para descontrair a equipe.",
+                                "text": "Um jogo de cartas comum, usado para descontrair a equipe.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um método para escolher a paleta de cores do produto.",
+                                "text": "Um método usado para escolher a paleta de cores do produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma forma de medir a velocidade do servidor.",
+                                "text": "Uma forma de medir a velocidade de resposta do servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -1234,19 +1234,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Rótulos em jargão interno prejudicam a findability; nomear na linguagem do usuário (como Preços e Ajuda) facilitaria encontrar.",
+                                "text": "O jargão interno prejudica a busca; nomes claros como Preços ajudariam.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O site tem telas bonitas demais; bastaria deixá-las mais simples.",
+                                "text": "O site tem telas bonitas demais; o ideal seria deixá-las mais simples.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é só de cor; trocar o azul do menu resolveria.",
+                                "text": "O problema é só de cor; trocar o azul do menu já resolveria.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema algum: recorrer ao Google é o comportamento ideal.",
+                                "text": "Não existe problema algum: recorrer ao Google já é o esperado.",
                                 "isCorrect": false
                             }
                         ]
@@ -1256,19 +1256,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Card sorting aberto, em que os próprios usuários criam e nomeiam os grupos.",
+                                "text": "Card sorting aberto: os usuários criam e nomeiam os grupos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Card sorting fechado, com as categorias já definidas pelo time.",
+                                "text": "Card sorting fechado, com categorias já definidas pelo time.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um teste de contraste entre as cores da interface.",
+                                "text": "Um teste de contraste entre as cores da interface toda.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma entrevista sobre a idade e a renda dos usuários.",
+                                "text": "Uma entrevista sobre a idade e a renda de cada usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -1278,19 +1278,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Como as pessoas passam a maior parte do tempo em outros sites, elas esperam padrões conhecidos; nomes muito diferentes quebram essa expectativa e dificultam encontrar as coisas.",
+                                "text": "Elas esperam padrões conhecidos, e nomes diferentes atrapalham.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: quanto mais original a navegação, melhor a experiência.",
+                                "text": "Nenhum: quanto mais original a navegação, melhor ela fica.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único risco é o texto ocupar um pouco mais de espaço na tela.",
+                                "text": "O único risco é o texto ocupar um pouco mais de espaço.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A Lei de Jakob diz que todo menu deve ter no máximo sete itens.",
+                                "text": "A Lei de Jakob determina no máximo sete itens por menu.",
                                 "isCorrect": false
                             }
                         ]
@@ -1331,19 +1331,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A sequência de telas, ações e decisões que a pessoa percorre para atingir um objetivo.",
+                                "text": "A sequência de telas e decisões até atingir um objetivo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A paleta de cores escolhida para o aplicativo.",
+                                "text": "A paleta de cores escolhida para todo o aplicativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A lista de todos os usuários cadastrados no sistema.",
+                                "text": "A lista completa de usuários cadastrados no sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tempo que uma página leva para carregar.",
+                                "text": "O tempo total que uma página leva para carregar.",
                                 "isCorrect": false
                             }
                         ]
@@ -1353,19 +1353,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um momento em que o caminho se divide conforme uma condição, como um sim ou não.",
+                                "text": "O momento em que o caminho se divide, num sim ou não.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O título principal exibido na tela.",
+                                "text": "O título principal exibido logo no topo da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A cor de fundo do aplicativo.",
+                                "text": "A cor de fundo escolhida para o aplicativo inteiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome do usuário que está logado.",
+                                "text": "O nome do usuário que está logado no momento.",
                                 "isCorrect": false
                             }
                         ]
@@ -1375,19 +1375,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um beco sem saída: se o usuário errar os dados, o fluxo não oferece caminho de volta nem de correção.",
+                                "text": "Um beco sem saída: quem errar os dados fica sem caminho de volta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum, porque o caso de erro é raro e pode ser ignorado.",
+                                "text": "Nenhum, já que o erro é raro e pode ser deixado de lado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O fluxo fica mais rápido por ter menos setas para desenhar.",
+                                "text": "O fluxo fica mais enxuto, com menos setas para desenhar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É só um problema estético, sem efeito na experiência.",
+                                "text": "É só um problema estético, que não afeta a experiência real.",
                                 "isCorrect": false
                             }
                         ]
@@ -1397,19 +1397,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Oferecer a compra como visitante, deixando o cadastro opcional para depois.",
+                                "text": "Oferecer a compra como visitante, com cadastro opcional depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Adicionar mais campos ao cadastro para conhecer melhor o cliente.",
+                                "text": "Incluir mais campos no cadastro para conhecer melhor o cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exigir também uma confirmação por telefone antes de comprar.",
+                                "text": "Pedir também uma confirmação por telefone antes da compra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar apenas o tamanho da fonte do botão de cadastro.",
+                                "text": "Aumentar apenas o tamanho da fonte usada no botão de cadastro.",
                                 "isCorrect": false
                             }
                         ]
@@ -1419,19 +1419,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A Lei de Hick: mais opções ao mesmo tempo aumentam o tempo de decisão; convém apresentar poucas escolhas por passo, uma decisão de cada vez.",
+                                "text": "A Lei de Hick: mais opções atrasam a decisão; o ideal é poucas por vez.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A Lei de Fitts: por isso, bastaria afastar os botões uns dos outros.",
+                                "text": "A Lei de Fitts: por isso, bastaria afastar mais os botões entre si.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A Lei de Jakob: por isso, bastaria trocar todas as cores da tela.",
+                                "text": "A Lei de Jakob: bastaria, então, trocar as cores da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhuma lei se aplica; a quantidade de opções não afeta a decisão.",
+                                "text": "Nenhuma lei se aplica: a quantidade de opções não muda nada.",
                                 "isCorrect": false
                             }
                         ]
@@ -1521,19 +1521,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um falso signifier: a aparência promete uma ação (clicar) que não existe de verdade.",
+                                "text": "Falso signifier: o texto parece link e promete um clique que não existe.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Falta de feedback: a ação existe, mas o sistema não responde a ela.",
+                                "text": "Falta de feedback: a ação existe, mas o sistema nunca responde.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro de mapeamento entre o controle e o seu efeito.",
+                                "text": "Erro de mapeamento: o clique aciona um efeito diferente do esperado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Excesso de opções, que deixa a decisão mais lenta.",
+                                "text": "Excesso de opções: tantos links deixam a escolha mais lenta.",
                                 "isCorrect": false
                             }
                         ]
@@ -1543,7 +1543,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O signifier: faltou a pista visual que anuncia que aquilo é clicável.",
+                                "text": "O signifier: faltou o sinal visual de que aquilo é clicável.",
                                 "isCorrect": true
                             },
                             {
@@ -1565,7 +1565,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A superfície é plana e uniforme, e tocar é possível em qualquer ponto (affordance). Por isso, o que realmente guia o usuário são as pistas visuais (signifiers) que indicam ONDE tocar.",
+                                "text": "Porque a superfície é plana; os signifiers, não a affordance, guiam o toque.",
                                 "isCorrect": true
                             },
                             {
@@ -1618,7 +1618,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A resposta que o sistema dá a cada ação do usuário, mostrando que a ação foi recebida e qual foi o resultado.",
+                                "text": "A resposta que o sistema dá a cada ação do usuário.",
                                 "isCorrect": true
                             },
                             {
@@ -1662,7 +1662,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ausência de feedback: o sistema não sinalizou que havia recebido o clique.",
+                                "text": "Ausência de feedback depois do clique em Pagar.",
                                 "isCorrect": true
                             },
                             {
@@ -1684,7 +1684,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Mostrar um indicador de \"carregando\" ou de progresso enquanto o sistema trabalha.",
+                                "text": "Mostrar um indicador de \"carregando\" ou de progresso.",
                                 "isCorrect": true
                             },
                             {
@@ -1706,7 +1706,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A proporcionalidade: um evento trivial e bem-sucedido recebeu um sinal de erro/alarme, o que confunde o usuário e banaliza os avisos importantes.",
+                                "text": "A proporcionalidade: a curtida, um evento trivial, recebeu alarme de erro.",
                                 "isCorrect": true
                             },
                             {
@@ -1759,7 +1759,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Hover, o estado em que o cursor do mouse está sobre o botão.",
+                                "text": "Hover, o estado do cursor sobre o botão.",
                                 "isCorrect": true
                             },
                             {
@@ -1781,7 +1781,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mostrar qual elemento está selecionado durante a navegação por teclado, o que é essencial para a acessibilidade.",
+                                "text": "Indicar qual elemento está selecionado no teclado.",
                                 "isCorrect": true
                             },
                             {
@@ -1803,7 +1803,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Explicar que ainda não há dados e oferecer uma ação clara para o usuário começar, como um botão \"Adicionar primeira transação\".",
+                                "text": "Explicar que não há dados ainda e oferecer um botão para começar.",
                                 "isCorrect": true
                             },
                             {
@@ -1825,7 +1825,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O estado de carregando (loading), que sinalizaria que o sistema está processando o envio.",
+                                "text": "O estado de carregando, que avisa o processamento.",
                                 "isCorrect": true
                             },
                             {
@@ -1847,7 +1847,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O estado de foco (para a navegação por teclado) e o estado de erro (para sinalizar o dado inválido).",
+                                "text": "O estado de foco (teclado) e o de erro (dado inválido).",
                                 "isCorrect": true
                             },
                             {
@@ -1922,7 +1922,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O mesmo elemento se comporta e aparece do mesmo jeito em todas as telas do produto.",
+                                "text": "O mesmo elemento se comporta igual em todas as telas do produto.",
                                 "isCorrect": true
                             },
                             {
@@ -1944,7 +1944,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É um mapeamento natural: a direção do controle corresponde à direção do efeito.",
+                                "text": "É um mapeamento natural: a direção do controle bate com o efeito.",
                                 "isCorrect": true
                             },
                             {
@@ -1966,7 +1966,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A consistência interna, já que o mesmo botão não está no mesmo lugar em todo o produto.",
+                                "text": "A consistência interna, já que o botão muda de lugar.",
                                 "isCorrect": true
                             },
                             {
@@ -1988,7 +1988,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A consistência externa: os usuários esperam as convenções que já conhecem de outros apps, e o produto as contrariou sem necessidade.",
+                                "text": "A consistência externa, que o produto contrariou sem necessidade.",
                                 "isCorrect": true
                             },
                             {
@@ -2063,7 +2063,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Os usuários preferem que o seu site funcione da mesma forma que os outros sites que eles já conhecem.",
+                                "text": "Os usuários esperam que seu site funcione como os outros já conhecidos.",
                                 "isCorrect": true
                             },
                             {
@@ -2085,7 +2085,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Deixar o botão maior e posicioná-lo ao alcance do polegar, na parte de baixo da tela.",
+                                "text": "Deixar o botão maior, para ficar ao alcance do polegar.",
                                 "isCorrect": true
                             },
                             {
@@ -2107,7 +2107,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Lei de Hick; a solução é reduzir e agrupar os itens em categorias para acelerar a decisão.",
+                                "text": "Lei de Hick; a solução é agrupar os itens em categorias.",
                                 "isCorrect": true
                             },
                             {
@@ -2129,7 +2129,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O \"7 ± 2\" virou um mito mal aplicado; o estudo de Miller tratava de agrupar informação em blocos (chunking), e não de um teto rígido de 7 itens. A lição real é organizar a informação, não perseguir o número 7.",
+                                "text": "É um mito mal aplicado: o estudo tratava de chunking, não de um teto fixo de 7 itens.",
                                 "isCorrect": true
                             },
                             {
@@ -2187,19 +2187,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Para guiar o olho, deixando claro o que deve ser visto primeiro, o que vem depois e o que é detalhe.",
+                                "text": "Para guiar o olho, mostrando o que é mais importante primeiro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Para deixar todos os elementos exatamente do mesmo tamanho e da mesma cor.",
+                                "text": "Para deixar todos os elementos com exatamente o mesmo peso visual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para esconder informações que o usuário não deve ver.",
+                                "text": "Para esconder do usuário as informações menos relevantes da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para escolher em qual linguagem o site será programado.",
+                                "text": "Para decidir em qual linguagem de programação o site será feito.",
                                 "isCorrect": false
                             }
                         ]
@@ -2209,19 +2209,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O olho não sabe o que é mais importante, porque falta hierarquia visual.",
+                                "text": "O olho não sabe o que é mais importante, sem hierarquia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A página vai carregar mais devagar por causa disso.",
+                                "text": "A página passa a carregar bem mais devagar no navegador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As cores vão ficar erradas em telas escuras.",
+                                "text": "As cores do texto ficam erradas em telas escuras.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O texto vai ficar impossível de acessar pelo teclado.",
+                                "text": "O texto fica impossível de navegar usando o teclado.",
                                 "isCorrect": false
                             }
                         ]
@@ -2231,19 +2231,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Dar ao botão uma cor de destaque que contraste com o fundo e um pouco de espaço em volta.",
+                                "text": "Dar ao botão uma cor de destaque que contraste com o fundo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentar o tamanho de todos os textos da tela igualmente.",
+                                "text": "Aumentar o tamanho de todos os textos da tela por igual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar todo o texto da tela em negrito.",
+                                "text": "Deixar todo o texto da tela em negrito, sem exceção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar a fonte de toda a página por uma decorativa.",
+                                "text": "Trocar a fonte de toda a página por uma bem decorativa.",
                                 "isCorrect": false
                             }
                         ]
@@ -2253,19 +2253,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Cercar o preço de espaço em branco, isolando-o dos outros elementos.",
+                                "text": "Cercar o preço de espaço em branco, isolando-o do resto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Colocar o preço no rodapé, no fim da tela.",
+                                "text": "Colocar o preço no rodapé, bem longe do resto da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar exatamente a mesma cor e o mesmo tamanho do texto comum.",
+                                "text": "Usar no preço a mesma cor e o mesmo tamanho do texto comum.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escrever o preço com a menor letra da tela.",
+                                "text": "Escrever o preço com a menor letra disponível na tela.",
                                 "isCorrect": false
                             }
                         ]
@@ -2275,11 +2275,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o destaque é relativo: quando todos os elementos têm o mesmo peso visual, nenhum se sobressai sobre os outros.",
+                                "text": "Porque o destaque é relativo: se tudo pesa igual, nada se destaca.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o negrito nunca deve ser usado em interfaces.",
+                                "text": "Porque o negrito nunca deve ser usado em interfaces digitais.",
                                 "isCorrect": false
                             },
                             {
@@ -2287,7 +2287,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a hierarquia depende só da cor, e não do tamanho ou do peso.",
+                                "text": "Porque a hierarquia depende só da cor, nunca do peso ou tamanho.",
                                 "isCorrect": false
                             }
                         ]
@@ -2328,19 +2328,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Os pequenos \"pezinhos\" nas pontas das letras.",
+                                "text": "Os pequenos \"pezinhos\" nas pontas de cada letra.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Todas as letras terem exatamente a mesma largura.",
+                                "text": "Todas as letras com exatamente a mesma largura.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A ausência total de qualquer traço fino.",
+                                "text": "A ausência total de qualquer traço mais fino.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ser sempre exibida em negrito.",
+                                "text": "Ser sempre exibida em negrito em qualquer tela.",
                                 "isCorrect": false
                             }
                         ]
@@ -2350,19 +2350,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O espaço vertical entre uma linha e a próxima.",
+                                "text": "O espaço vertical entre uma linha e a linha seguinte.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A cor de fundo do parágrafo.",
+                                "text": "A cor de fundo que fica atrás de todo o parágrafo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de fontes usadas na página.",
+                                "text": "A quantidade de fontes usadas na mesma página.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A largura das bordas ao redor do texto.",
+                                "text": "A largura das bordas desenhadas ao redor do texto.",
                                 "isCorrect": false
                             }
                         ]
@@ -2372,15 +2372,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Aumentar a entrelinha (_line-height_) para dar respiro entre as linhas.",
+                                "text": "Aumentar a entrelinha para dar respiro entre as linhas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixar todo o parágrafo em negrito.",
+                                "text": "Deixar todo o parágrafo em negrito, do início ao fim.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar a fonte por uma monoespaçada.",
+                                "text": "Trocar a fonte do parágrafo por uma monoespaçada.",
                                 "isCorrect": false
                             },
                             {
@@ -2394,19 +2394,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Usar uma escala tipográfica: partir de um tamanho-base e multiplicá-lo por uma razão fixa.",
+                                "text": "Usar uma escala tipográfica, com uma razão fixa entre os tamanhos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixar todos os textos exatamente com o mesmo tamanho.",
+                                "text": "Deixar todos os textos exatamente com o mesmo tamanho de fonte.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escolher um tamanho diferente e aleatório para cada frase.",
+                                "text": "Escolher um tamanho diferente e aleatório para cada frase da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar todos os tamanhos até preencher a tela.",
+                                "text": "Aumentar todos os tamanhos até eles preencherem a tela toda.",
                                 "isCorrect": false
                             }
                         ]
@@ -2416,7 +2416,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Priorizar a legibilidade no corpo com uma fonte de leitura fácil e reservar a fonte decorativa para títulos curtos.",
+                                "text": "Reservar a fonte decorativa para títulos e usar outra no corpo.",
                                 "isCorrect": true
                             },
                             {
@@ -2428,7 +2428,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar apenas a cor do texto e manter a mesma fonte decorativa no corpo.",
+                                "text": "Trocar só a cor do texto e manter a mesma fonte decorativa no corpo.",
                                 "isCorrect": false
                             }
                         ]
@@ -2513,7 +2513,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O contraste está baixo demais; escurecer o texto para atingir os mínimos da WCAG resolve.",
+                                "text": "O contraste está baixo demais; escurecer o texto resolve.",
                                 "isCorrect": true
                             },
                             {
@@ -2535,19 +2535,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Quem não distingue bem as cores pode não perceber o erro; some um ícone e um texto explicando, além da cor.",
+                                "text": "Quem não distingue as cores pode não notar o erro; falta um ícone.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O vermelho deixa a página mais lenta; basta trocar por azul.",
+                                "text": "O vermelho deixa a página mais lenta pra carregar; basta trocar por azul.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bordas nunca devem ter cor; basta remover a borda.",
+                                "text": "Bordas nunca deveriam ter cor nenhuma; o certo é remover a borda toda.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O erro só deveria aparecer depois de recarregar a página.",
+                                "text": "O erro só deveria aparecer depois que a página for recarregada de novo.",
                                 "isCorrect": false
                             }
                         ]
@@ -2569,7 +2569,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma paleta com o maior número possível de cores diferentes.",
+                                "text": "Uma paleta com o maior número de cores possível.",
                                 "isCorrect": false
                             }
                         ]
@@ -2610,7 +2610,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Para dar respiro, organizar e agrupar os elementos, deixando a tela mais clara.",
+                                "text": "Para dar respiro e organizar melhor os elementos da tela.",
                                 "isCorrect": true
                             },
                             {
@@ -2622,7 +2622,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "É usado só para esconder erros no layout.",
+                                "text": "É usado só para esconder erros de layout malfeito.",
                                 "isCorrect": false
                             }
                         ]
@@ -2632,11 +2632,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Como parte de um mesmo grupo, relacionados entre si.",
+                                "text": "Como parte de um mesmo grupo, ligados entre si.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Como elementos sem nenhuma relação.",
+                                "text": "Como elementos sem nenhuma relação entre si.",
                                 "isCorrect": false
                             },
                             {
@@ -2644,7 +2644,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como elementos que devem ter cores opostas.",
+                                "text": "Como elementos que deveriam ter cores opostas.",
                                 "isCorrect": false
                             }
                         ]
@@ -2654,19 +2654,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Proximidade: aproximar o rótulo do seu próprio campo e afastá-lo do outro.",
+                                "text": "Proximidade: colar o rótulo no campo certo e afastar o outro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Contraste: deixar o rótulo numa cor bem diferente.",
+                                "text": "Contraste: deixar o rótulo numa cor bem mais chamativa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escala: aumentar bastante o tamanho do rótulo.",
+                                "text": "Escala: aumentar bastante o tamanho da fonte do rótulo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ritmo: repetir o mesmo rótulo em todos os campos.",
+                                "text": "Ritmo: repetir o mesmo rótulo ao lado de todos os campos.",
                                 "isCorrect": false
                             }
                         ]
@@ -2676,11 +2676,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Adotar um sistema de espaçamento com valores consistentes, como múltiplos de 8.",
+                                "text": "Adotar um sistema de espaçamento fixo, como múltiplos de 8.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Remover todo o espaço entre os cards.",
+                                "text": "Remover todo o espaço que existe entre os cards da tela.",
                                 "isCorrect": false
                             },
                             {
@@ -2698,19 +2698,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Falta de alinhamento; encaixar os blocos nas colunas de um grid em comum devolve a ordem.",
+                                "text": "Falta de alinhamento; encaixar os blocos num grid resolve.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Excesso de contraste; basta reduzir as cores.",
+                                "text": "Excesso de contraste; basta reduzir as cores da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Entrelinha curta; basta afastar as linhas de texto.",
+                                "text": "Entrelinha curta; basta afastar mais as linhas de texto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uso de fontes serifadas; basta trocar por sem serifa.",
+                                "text": "Uso de fontes serifadas; basta trocar por uma sem serifa.",
                                 "isCorrect": false
                             }
                         ]
@@ -2751,7 +2751,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Na distância: elementos próximos são vistos como um grupo.",
+                                "text": "Na distância entre os elementos na tela.",
                                 "isCorrect": true
                             },
                             {
@@ -2759,11 +2759,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "No tamanho da fonte de cada elemento.",
+                                "text": "No tamanho da fonte usado em cada elemento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Na ordem alfabética dos textos.",
+                                "text": "Na ordem alfabética dos textos na página.",
                                 "isCorrect": false
                             }
                         ]
@@ -2773,19 +2773,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Pelo princípio da semelhança: itens parecidos são percebidos como do mesmo tipo.",
+                                "text": "Pela semelhança: itens parecidos parecem do mesmo tipo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a cor dos links não pode ser alterada.",
+                                "text": "Porque a cor dos links nunca pode ser alterada no CSS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para deixar a página mais pesada.",
+                                "text": "Para deixar a página mais pesada e lenta de carregar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque links precisam sempre ser vermelhos.",
+                                "text": "Porque a maioria dos navegadores só permite links vermelhos.",
                                 "isCorrect": false
                             }
                         ]
@@ -2795,7 +2795,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Semelhança: dar a todos eles o mesmo estilo (cor, forma e tamanho).",
+                                "text": "Semelhança: dar a todos o mesmo estilo de cor e forma.",
                                 "isCorrect": true
                             },
                             {
@@ -2817,11 +2817,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Figura-fundo: o modal vira a figura em foco e o resto recua para o fundo.",
+                                "text": "Figura-fundo: o modal vira a figura e o resto recua.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Semelhança: o modal fica igual ao restante da tela.",
+                                "text": "Semelhança: o modal fica com a cara do restante da tela.",
                                 "isCorrect": false
                             },
                             {
@@ -2839,19 +2839,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Continuidade: o card cortado sinaliza que a linha segue, convidando o usuário a deslizar para ver mais.",
+                                "text": "Continuidade: o corte sugere que a linha segue, convidando a deslizar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Fechamento: o card cortado serve para esconder um erro de layout.",
+                                "text": "Fechamento: o corte serve para esconder um erro no layout da lista.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Semelhança: o card cortado deve ter uma cor diferente dos demais.",
+                                "text": "Semelhança: o corte deveria ter uma cor diferente dos demais cards.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Figura-fundo: o card cortado serve para escurecer o fundo.",
+                                "text": "Figura-fundo: o corte serve para escurecer o fundo atrás da lista.",
                                 "isCorrect": false
                             }
                         ]
@@ -2897,19 +2897,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O quanto uma interface é fácil e agradável de usar para que as pessoas consigam fazer o que precisam.",
+                                "text": "Facilidade de uso que ajuda as pessoas a concluir tarefas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O quanto uma interface é bonita e moderna visualmente.",
+                                "text": "Aparência moderna e visualmente agradável da interface.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de recursos e funcionalidades que o produto oferece.",
+                                "text": "Quantidade de recursos e funções oferecidas pelo produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A velocidade com que o servidor carrega as páginas.",
+                                "text": "Velocidade com que o servidor carrega as páginas do site.",
                                 "isCorrect": false
                             }
                         ]
@@ -2941,19 +2941,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A eficiência: a tarefa foi possível (eficaz), mas custou tempo e esforço demais.",
+                                "text": "Eficiência: a compra foi concluída, mas custou tempo e esforço demais.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A eficácia, porque a pessoa não conseguiu concluir a compra.",
+                                "text": "Eficácia: a compra não chegou a ser finalizada pela pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, pois concluir a tarefa é o que importa.",
+                                "text": "Nenhum pilar, já que concluir a compra é tudo o que importa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A memorização, porque ela vai esquecer o caminho.",
+                                "text": "Memorização: a pessoa provavelmente esquecerá o caminho percorrido.",
                                 "isCorrect": false
                             }
                         ]
@@ -2963,19 +2963,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Memorização: ao retornar após um tempo, ele não conseguiu reestabelecer facilmente como usar.",
+                                "text": "Memorização: ela não lembrou como usar após um tempo sem acessar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aprendizado, pois ele nunca tinha usado o app antes.",
+                                "text": "Aprendizado: essa foi a primeira vez que ela usou o aplicativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Eficácia, pois ele não conseguiu fazer o Pix.",
+                                "text": "Eficácia: ela não conseguiu concluir o Pix de forma alguma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Satisfação, pois o app tem visual feio.",
+                                "text": "Satisfação: o aplicativo tem uma aparência visual pouco atraente.",
                                 "isCorrect": false
                             }
                         ]
@@ -2985,19 +2985,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ser esteticamente bonito não garante boa usabilidade: a interface pode agradar aos olhos e ainda assim ser difícil e propensa a erros.",
+                                "text": "Ser bonito não garante boa usabilidade: pode agradar e ainda causar erros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Se o app é bonito, por definição ele tem boa usabilidade.",
+                                "text": "Se o design agrada aos olhos, a usabilidade está automaticamente garantida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usabilidade e estética são a mesma coisa, então o problema relatado não existe.",
+                                "text": "Estética e usabilidade são sempre a mesma coisa, então não há problema real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A usabilidade depende só da velocidade de carregamento, não do design.",
+                                "text": "A usabilidade depende apenas da velocidade com que as telas carregam.",
                                 "isCorrect": false
                             }
                         ]
@@ -3038,19 +3038,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Regras gerais e princípios de bom senso para avaliar e melhorar a usabilidade de uma interface.",
+                                "text": "Princípios de bom senso para avaliar e melhorar a usabilidade.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma linguagem de programação para criar animações.",
+                                "text": "Uma linguagem de programação voltada à criação de animações.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um conjunto de cores oficiais para aplicativos.",
+                                "text": "Um conjunto de cores padronizadas obrigatórias para aplicativos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Leis obrigatórias que, se descumpridas, tornam o site ilegal.",
+                                "text": "Leis que tornam um site ilegal caso não sejam seguidas.",
                                 "isCorrect": false
                             }
                         ]
@@ -3082,19 +3082,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Correspondência entre o sistema e o mundo real: a mensagem usa jargão técnico em vez da linguagem das pessoas.",
+                                "text": "Correspondência com o mundo real, pois o erro usa jargão técnico.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Controle e liberdade do usuário, porque não há botão de voltar.",
+                                "text": "Controle e liberdade do usuário, pois falta um botão para voltar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Visibilidade do status do sistema, porque nada foi informado.",
+                                "text": "Visibilidade do status do sistema, pois o app não informou nada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Consistência e padrões, porque o texto mudou de lugar.",
+                                "text": "Consistência e padrões, pois o texto de erro mudou de lugar.",
                                 "isCorrect": false
                             }
                         ]
@@ -3104,19 +3104,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Mostrar um aviso \"Conversa arquivada. Desfazer\" logo após a ação.",
+                                "text": "Exibir um aviso de Conversa arquivada com opção de desfazer na hora.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Exibir uma barra de progresso enquanto arquiva.",
+                                "text": "Exibir uma barra de progresso enquanto a conversa é arquivada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escrever um manual explicando como arquivar.",
+                                "text": "Disponibilizar um manual explicando o passo a passo para arquivar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Impedir que o usuário arquive qualquer conversa.",
+                                "text": "Bloquear a opção de arquivar qualquer conversa no aplicativo.",
                                 "isCorrect": false
                             }
                         ]
@@ -3126,19 +3126,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Prevenção de erros: em vez de avisar depois, o design elimina a condição que causava o erro, impedindo que ele aconteça.",
+                                "text": "Prevenção de erros: elimina a condição que causaria o erro, em vez de avisar depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ajudar a reconhecer e recuperar de erros, pois melhora a mensagem de erro exibida.",
+                                "text": "Ajudar a reconhecer e recuperar de erros, pois melhora a mensagem exibida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Flexibilidade e eficiência, pois cria um atalho para usuários avançados.",
+                                "text": "Flexibilidade e eficiência de uso, pois cria um atalho para quem já é experiente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Correspondência com o mundo real, apenas porque um calendário é um objeto do mundo real.",
+                                "text": "Correspondência com o mundo real, pois um calendário existe fora da tela também.",
                                 "isCorrect": false
                             }
                         ]
@@ -3183,15 +3183,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Prevenção de erros.",
+                                "text": "Prevenção de erros do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ajuda e documentação.",
+                                "text": "Ajuda e documentação do produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Controle e liberdade do usuário.",
+                                "text": "Controle e liberdade do usuário na interface.",
                                 "isCorrect": false
                             }
                         ]
@@ -3223,19 +3223,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Dizer em linguagem simples qual foi o problema e sugerir como corrigi-lo.",
+                                "text": "Uma explicação simples do problema com uma sugestão de correção.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um atalho de teclado para usuários avançados.",
+                                "text": "Um atalho de teclado disponível para usuários avançados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma barra de progresso indicando o carregamento.",
+                                "text": "Uma barra de progresso mostrando o andamento do carregamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um manual completo anexado à tela.",
+                                "text": "Um manual completo anexado diretamente à tela de erro.",
                                 "isCorrect": false
                             }
                         ]
@@ -3245,19 +3245,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Flexibilidade e eficiência de uso: um acelerador para o usuário experiente, sem prejudicar o iniciante.",
+                                "text": "Flexibilidade e eficiência de uso: um atalho para quem repete o pedido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Prevenção de erros, pois evita que o usuário erre o pedido.",
+                                "text": "Prevenção de erros, pois evita que o cliente erre ao montar o pedido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Design minimalista, pois remove elementos da tela.",
+                                "text": "Design minimalista, pois reduz elementos visuais desnecessários na tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Visibilidade do status, pois informa o andamento do pedido.",
+                                "text": "Visibilidade do status, pois mostra em tempo real o andamento do pedido.",
                                 "isCorrect": false
                             }
                         ]
@@ -3267,19 +3267,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "(a) Prevenção de erros e (b) ajudar a reconhecer e recuperar de erros.",
+                                "text": "(a) Prevenção de erros e (b) recuperação de erros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "(a) Ajudar a recuperar de erros e (b) prevenção de erros.",
+                                "text": "(a) Recuperação de erros e (b) prevenção de erros, na ordem trocada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambos são visibilidade do status do sistema.",
+                                "text": "Ambos ilustram a visibilidade do status do sistema em ação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambos são ajuda e documentação.",
+                                "text": "Ambos ilustram apenas a heurística de ajuda e documentação.",
                                 "isCorrect": false
                             }
                         ]
@@ -3320,19 +3320,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma inspeção em que avaliadores percorrem a interface comparando-a com as heurísticas para encontrar problemas de usabilidade.",
+                                "text": "Inspeção em que avaliadores comparam a interface com as heurísticas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um teste em que muitos usuários reais navegam livremente pelo site.",
+                                "text": "Teste em que muitos usuários reais navegam livremente pelo site.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma pesquisa de opinião com o público-alvo por questionário.",
+                                "text": "Pesquisa de opinião aplicada ao público-alvo por meio de questionário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma medição automática da velocidade de carregamento das telas.",
+                                "text": "Medição automática da velocidade de carregamento das telas.",
                                 "isCorrect": false
                             }
                         ]
@@ -3342,19 +3342,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "De 3 a 5 avaliadores.",
+                                "text": "De 3 a 5 avaliadores, o bastante para achar a maioria dos problemas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Exatamente 1, para não haver divergências.",
+                                "text": "Apenas 1 avaliador, para evitar divergências de opinião entre pessoas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No mínimo 50, para ter significância estatística.",
+                                "text": "Pelo menos 50 avaliadores, para alcançar significância estatística.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quantos mais melhor, sem limite útil.",
+                                "text": "Não há limite: quanto mais avaliadores, melhor é o resultado final.",
                                 "isCorrect": false
                             }
                         ]
@@ -3364,19 +3364,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Para que um não influencie o julgamento do outro; a discussão em grupo vem só depois de cada um formar sua lista.",
+                                "text": "Para que a opinião de um avaliador não influencie a dos outros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque é proibido que avaliadores conversem sobre o produto.",
+                                "text": "Porque as regras proíbem que avaliadores conversem entre si.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só um avaliador por vez pode acessar o sistema.",
+                                "text": "Porque o sistema permite acesso de apenas um avaliador por vez.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque assim a avaliação fica mais lenta e detalhada de propósito.",
+                                "text": "Porque isso torna a avaliação de propósito mais lenta e detalhada.",
                                 "isCorrect": false
                             }
                         ]
@@ -3386,7 +3386,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Classificar os problemas por gravidade e corrigir primeiro o que impede finalizar a compra.",
+                                "text": "Classificar por gravidade e corrigir primeiro o que impede a compra.",
                                 "isCorrect": true
                             },
                             {
@@ -3394,11 +3394,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Começar pelos desalinhamentos, por serem mais fáceis.",
+                                "text": "Começar pelos desalinhamentos, por serem mais fáceis de corrigir.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Descartar a lista, pois 40 problemas é sinal de que a avaliação falhou.",
+                                "text": "Descartar a lista, pois 40 problemas é sinal de avaliação malfeita.",
                                 "isCorrect": false
                             }
                         ]
@@ -3408,7 +3408,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A avaliação heurística não substitui o teste com usuários reais: ela pode apontar não-problemas e deixar passar dificuldades que só aparecem com gente de verdade usando.",
+                                "text": "A avaliação heurística não substitui o teste com usuários reais.",
                                 "isCorrect": true
                             },
                             {
@@ -3461,11 +3461,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Observar pessoas reais realizando tarefas no produto para descobrir onde a interface trava.",
+                                "text": "Observar pessoas reais tentando realizar tarefas no produto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Perguntar aos usuários, por questionário, o que eles acham do visual.",
+                                "text": "Perguntar aos usuários, por questionário, o que acham do visual.",
                                 "isCorrect": false
                             },
                             {
@@ -3483,19 +3483,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Cerca de 5 pessoas por rodada.",
+                                "text": "Cerca de 5 pessoas já revelam a maioria dos problemas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "No mínimo 100 pessoas.",
+                                "text": "É necessário reunir no mínimo 100 pessoas para o teste completo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exatamente 1 pessoa.",
+                                "text": "Basta testar com exatamente 1 pessoa apenas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pelo menos metade de todos os usuários do produto.",
+                                "text": "Pelo menos metade dos usuários do produto inteiro.",
                                 "isCorrect": false
                             }
                         ]
@@ -3505,15 +3505,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Pedir \"encontre a política de troca\" e observar se a pessoa consegue, sem ajudar.",
+                                "text": "Pedir para encontrar a política de troca e observar, sem ajudar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Perguntar diretamente \"você acha esse menu intuitivo?\".",
+                                "text": "Perguntar diretamente se a pessoa acha aquele menu intuitivo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apontar onde fica o item e ver se a pessoa concorda.",
+                                "text": "Apontar onde fica o item e perguntar se a pessoa concorda.",
                                 "isCorrect": false
                             },
                             {
@@ -3527,19 +3527,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Teste não moderado, em que a pessoa faz as tarefas sozinha e a ferramenta grava tudo.",
+                                "text": "Teste não moderado: a pessoa faz tudo sozinha e a tela é gravada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Teste moderado, com um facilitador em cada sessão.",
+                                "text": "Teste moderado: um facilitador acompanha e conduz cada sessão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um grupo de discussão para coletar opiniões.",
+                                "text": "Grupo de discussão: participantes conversam e dão suas opiniões.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma avaliação heurística com especialistas.",
+                                "text": "Avaliação heurística: especialistas inspecionam a interface sozinhos.",
                                 "isCorrect": false
                             }
                         ]
@@ -3549,7 +3549,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Vale o comportamento observado: ela teve dificuldade real, mesmo dizendo o contrário, pois o que as pessoas dizem e o que fazem costuma divergir.",
+                                "text": "Vale o comportamento: ela teve dificuldade real, apesar do que disse.",
                                 "isCorrect": true
                             },
                             {
@@ -3561,7 +3561,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A dificuldade foi culpa da participante, não da interface.",
+                                "text": "A dificuldade foi culpa da participante, não da interface testada.",
                                 "isCorrect": false
                             }
                         ]
@@ -3607,19 +3607,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Projetar produtos que qualquer pessoa consiga perceber, operar e compreender, inclusive quem tem alguma deficiência.",
+                                "text": "Projetar produtos que qualquer pessoa consiga perceber, operar e entender.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixar a interface bonita e moderna para impressionar o usuário.",
+                                "text": "Deixar a interface bonita e moderna, priorizando o visual sobre a usabilidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um recurso extra que só grandes empresas precisam oferecer.",
+                                "text": "Oferecer um recurso extra que só as empresas grandes precisam disponibilizar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Fazer o site abrir mais rápido em qualquer conexão.",
+                                "text": "Fazer o site carregar mais rápido em qualquer tipo de conexão de internet.",
                                 "isCorrect": false
                             }
                         ]
@@ -3629,19 +3629,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Quem assiste a vídeos em ambiente barulhento ou sem fone, quem está aprendendo o idioma e muita gente no dia a dia.",
+                                "text": "Quem assiste sem fone em lugar barulhento, quem estuda idioma e mais gente no dia a dia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ninguém além de pessoas surdas; para os demais, elas só atrapalham.",
+                                "text": "Só pessoas surdas; para o resto do público, as legendas apenas atrapalham a leitura.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas quem tem deficiência visual.",
+                                "text": "Só quem tem baixa visão, já que as legendas aumentam as letras exibidas na tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só quem desenvolve o site, para testar se o vídeo carregou.",
+                                "text": "Só a equipe de desenvolvimento, para conferir se o vídeo terminou de carregar.",
                                 "isCorrect": false
                             }
                         ]
@@ -3651,19 +3651,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Temporária.",
+                                "text": "Temporária, pois vai durar só até o braço sarar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Permanente.",
+                                "text": "Permanente, pois a fratura deixa sequela para sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Situacional.",
+                                "text": "Situacional, pois depende só do local onde a pessoa está.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é considerada uma limitação, pois vai passar.",
+                                "text": "Não conta como limitação, já que vai passar em semanas.",
                                 "isCorrect": false
                             }
                         ]
@@ -3677,15 +3677,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Permanente, porque ele sempre terá um filho.",
+                                "text": "Permanente, porque ter filho pequeno dura a vida toda.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Temporária, pois dura algumas semanas.",
+                                "text": "Temporária, pois em algumas semanas o bebê já anda.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhuma, já que ele não tem deficiência.",
+                                "text": "Nenhuma: segurar o próprio filho no colo não é limitação.",
                                 "isCorrect": false
                             }
                         ]
@@ -3695,7 +3695,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Acessibilidade é um direito e, no Brasil, é exigida por lei (LBI); além disso, soluções acessíveis costumam beneficiar todos os usuários, então não são desperdício.",
+                                "text": "É um direito, exigido por lei no Brasil (LBI), e costuma beneficiar todos os usuários.",
                                 "isCorrect": true
                             },
                             {
@@ -3703,7 +3703,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Acessibilidade só se aplica a sites do governo, então empresas privadas podem ignorar.",
+                                "text": "Acessibilidade só se aplica a sites do governo; empresas privadas podem ignorar.",
                                 "isCorrect": false
                             },
                             {
@@ -3814,19 +3814,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Robusto, pois falta nome, papel e estado que as tecnologias assistivas entendam.",
+                                "text": "Robusto, pois falta nome, papel e estado que a leitura de tela reconheça.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Perceptível, porque faltou contraste no texto do botão.",
+                                "text": "Perceptível, porque o botão não tem contraste suficiente com o fundo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Compreensível, porque o texto do botão está confuso.",
+                                "text": "Compreensível, porque o texto escrito dentro do botão está confuso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: usar `<div>` no lugar de `<button>` não afeta a acessibilidade.",
+                                "text": "Nenhum: trocar `<div>` por `<button>` nunca muda nada na acessibilidade.",
                                 "isCorrect": false
                             }
                         ]
@@ -3836,19 +3836,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Compreensível, por falta de clareza nos erros e de previsibilidade no comportamento.",
+                                "text": "Compreensível, pela falta de clareza nos erros e da previsibilidade.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Perceptível, porque o conteúdo não pode ser notado pelos sentidos.",
+                                "text": "Perceptível, porque o site tem pouco contraste entre texto e fundo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Operável, porque não é possível usar a interface pelo teclado.",
+                                "text": "Operável, porque o teclado não consegue navegar pelos campos do site.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Robusto, porque o site não funciona em leitores de tela.",
+                                "text": "Robusto, porque o HTML usado não é compatível com leitores de tela.",
                                 "isCorrect": false
                             }
                         ]
@@ -3933,19 +3933,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Pessoas com daltonismo podem não perceber o vermelho; a informação não deve depender só da cor. Some um ícone e um texto explicando o erro.",
+                                "text": "Daltônicos podem não notar o vermelho; melhor somar ícone e texto ao erro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é problema: vermelho é universalmente entendido como erro.",
+                                "text": "Não é problema: todo mundo reconhece vermelho como sinal de erro na hora.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é o vermelho ser uma cor forte; basta usar um vermelho mais claro.",
+                                "text": "O problema é o tom do vermelho; basta trocar por um vermelho mais claro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta aumentar a espessura da borda vermelha para resolver.",
+                                "text": "Basta deixar a borda vermelha mais grossa, pois isso já chama atenção.",
                                 "isCorrect": false
                             }
                         ]
@@ -3955,19 +3955,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sim. Por ser texto grande, o mínimo exigido é 3:1, e 3,2:1 fica acima disso.",
+                                "text": "Sim: como é texto grande, o mínimo é 3:1, e 3,2:1 passa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não, porque todo texto precisa de pelo menos 4,5:1.",
+                                "text": "Não, porque todo texto exige pelo menos 4,5:1 de contraste.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque títulos precisam de 7:1.",
+                                "text": "Não, porque títulos grandes precisam de 7:1 de contraste.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Depende da cor: se for vermelho, reprova automaticamente.",
+                                "text": "Depende da cor: vermelho reprovaria automaticamente.",
                                 "isCorrect": false
                             }
                         ]
@@ -3977,19 +3977,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não depender só da cor: adicionar rótulos diretos nas linhas e usar estilos ou marcadores diferentes (tracejado, pontilhado, símbolos), mantendo bom contraste.",
+                                "text": "Não depender só da cor: somar rótulos e traços diferentes em cada linha.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trocar por cores mais vivas e saturadas, que chamam mais atenção.",
+                                "text": "Trocar por cores mais vivas e saturadas, que chamam mais a atenção do olhar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar a espessura das três linhas por igual.",
+                                "text": "Aumentar de forma igual a espessura das três linhas do gráfico inteiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar o gráfico maior na tela para facilitar a leitura.",
+                                "text": "Deixar o gráfico bem maior na tela, para facilitar a leitura de todos.",
                                 "isCorrect": false
                             }
                         ]
@@ -4052,19 +4052,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um alt vazio (alt=\"\"), para o leitor de tela ignorar a imagem.",
+                                "text": "Um alt vazio (alt=\"\"), para o leitor pular a imagem.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma descrição bem detalhada da imagem.",
+                                "text": "Uma descrição bem detalhada de tudo que aparece na imagem.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O texto \"imagem decorativa\".",
+                                "text": "O texto fixo \"imagem decorativa\" dentro do atributo alt.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada; o melhor é remover o atributo alt por completo.",
+                                "text": "Nada: o melhor é remover o atributo alt por completo.",
                                 "isCorrect": false
                             }
                         ]
@@ -4074,19 +4074,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Quem navega por teclado perde a noção de onde está. Nunca remova o foco sem um substituto: redesenhe um indicador visível e com bom contraste.",
+                                "text": "Quem usa teclado se perde; o certo é redesenhar o foco, nunca apagá-lo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum problema: o contorno de foco é apenas decorativo.",
+                                "text": "Nenhum problema: o contorno de foco serve só de enfeite visual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é de desempenho; basta usar uma cor mais clara no contorno.",
+                                "text": "O problema é de desempenho; basta deixar o contorno bem mais claro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Está certo remover; o foco atrapalha quem usa mouse e não ajuda ninguém.",
+                                "text": "Está certo remover: o foco só atrapalha quem usa o mouse na tela.",
                                 "isCorrect": false
                             }
                         ]
@@ -4096,19 +4096,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Dar um texto acessível que descreva a ação, como \"Excluir\"; descreve-se a função, não o desenho do ícone.",
+                                "text": "Dar um texto acessível, como \"Excluir\": a ação, não o desenho.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Usar alt=\"lixeira\", descrevendo o desenho do ícone.",
+                                "text": "Usar alt=\"ícone de lixeira\", descrevendo o desenho que aparece.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar alt=\"imagem\", para indicar que ali há uma figura.",
+                                "text": "Usar alt=\"imagem\", só para indicar que ali existe uma figura.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar o alt vazio (alt=\"\"), como se faz com imagens decorativas.",
+                                "text": "Deixar o alt vazio (alt=\"\"), tratando o botão como decorativo.",
                                 "isCorrect": false
                             }
                         ]
@@ -4118,19 +4118,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Falta HTML semântico. Trocar a `<div>` por um `<button>` resolve de uma vez: ele já é focável pelo teclado e é anunciado com o papel e o estado corretos.",
+                                "text": "Falta HTML semântico; trocar por `<button>` já resolve foco e anúncio certos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É um problema de CSS; basta estilizar a `<div>` para parecer mais um botão.",
+                                "text": "É um problema de CSS: basta estilizar a `<div>` para se parecer com botão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um problema de contraste; basta escurecer o texto da `<div>`.",
+                                "text": "É um problema de contraste: basta escurecer o texto dentro da `<div>`.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um problema de cor; basta não usar só a cor para indicar o botão.",
+                                "text": "É um problema de cor: falta usar mais do que a cor para indicar o botão.",
                                 "isCorrect": false
                             }
                         ]
@@ -4198,19 +4198,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mostra a estrutura e a organização da tela com blocos cinza, sem cores nem imagens finais.",
+                                "text": "Estrutura e organização da tela em blocos cinza, sem cor nem imagem final.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Traz as cores da marca, a tipografia e as imagens reais, como uma foto do produto.",
+                                "text": "Cores da marca, tipografia definitiva e imagens reais, como uma foto do produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É totalmente clicável e simula todo o comportamento do app.",
+                                "text": "Totalmente clicável, simulando o comportamento real do app pronto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É o conjunto de componentes reutilizáveis e tokens de um produto.",
+                                "text": "O conjunto de componentes reutilizáveis e tokens visuais de um produto.",
                                 "isCorrect": false
                             }
                         ]
@@ -4220,19 +4220,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um wireframe de baixa fidelidade, que foca na estrutura e é barato de mudar.",
+                                "text": "Um wireframe de baixa fidelidade, focado na estrutura e barato de mudar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um mockup de alta fidelidade, com todas as cores e imagens finais.",
+                                "text": "Um mockup de alta fidelidade, já com as cores e imagens definitivas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um protótipo de alta fidelidade, totalmente animado.",
+                                "text": "Um protótipo de alta fidelidade, com toda a animação pronta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código final da tela, já publicado no ar.",
+                                "text": "O código final da tela, já publicado e no ar para o público.",
                                 "isCorrect": false
                             }
                         ]
@@ -4242,19 +4242,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É um mockup: tem alta fidelidade visual, mas fidelidade de interação zero — falta transformá-lo em protótipo para poder clicar.",
+                                "text": "É um mockup: alta fidelidade visual, interação zero, por isso não clica.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É um protótipo, e o único problema é a cor do botão.",
+                                "text": "É um protótipo malfeito, que só precisa de ajuste na cor do botão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um wireframe, porque wireframes já vêm com cores e imagens reais.",
+                                "text": "É um wireframe, já que wireframes trazem cor e imagem reais desde o início.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um esboço, porque foi feito à mão no papel.",
+                                "text": "É um esboço, pois foi rabiscado à mão no papel antes de ganhar cor.",
                                 "isCorrect": false
                             }
                         ]
@@ -4264,19 +4264,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Decisões grandes devem ser resolvidas em baixa fidelidade, enquanto mudar é barato; caprichar cedo desperdiça trabalho quando a ideia ainda pode estar errada.",
+                                "text": "Resolver as decisões grandes em baixa fidelidade primeiro, pois mudar ali ainda é barato.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Quanto mais alta a fidelidade desde o primeiro dia, menor o risco do projeto.",
+                                "text": "Quanto mais alta a fidelidade desde o início, menor é o risco de errar o produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Protótipos e mockups nunca devem ser testados com usuários reais.",
+                                "text": "Testar com usuários só serve depois que a tela já está toda programada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mockups não podem ser alterados depois de prontos, então é obrigatório acertar de primeira.",
+                                "text": "Um mockup pronto não pode mais ser alterado, então acertar de primeira é obrigatório.",
                                 "isCorrect": false
                             }
                         ]
@@ -4317,19 +4317,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um desenho de baixa fidelidade que mostra a estrutura da tela com blocos simples, sem cores nem imagens finais.",
+                                "text": "Um desenho de baixa fidelidade que mostra a estrutura da tela em blocos cinza.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A versão final da tela, com todas as cores, fontes e imagens reais aplicadas.",
+                                "text": "A versão final da tela, já com cores, fontes e imagens definitivas aplicadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um protótipo totalmente clicável e animado.",
+                                "text": "Um protótipo de alta fidelidade, totalmente clicável e animado na tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O arquivo de código que o navegador executa.",
+                                "text": "O arquivo de código-fonte que o navegador interpreta e executa direto.",
                                 "isCorrect": false
                             }
                         ]
@@ -4361,19 +4361,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O wireframe existe para decidir a estrutura; cor é uma decisão de alta fidelidade que deve ficar para depois de o layout estar fechado.",
+                                "text": "O wireframe resolve a estrutura; cor é decisão de alta fidelidade, para depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque wireframes já deveriam vir com todas as cores finais definidas.",
+                                "text": "Porque todo wireframe já deveria nascer pronto, com as cores finais definidas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a cor do botão é a decisão mais importante de qualquer tela.",
+                                "text": "Porque a cor do botão é sempre a decisão mais importante de qualquer tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a cor azul nunca deve ser usada em botões.",
+                                "text": "Porque a cor azul é proibida em botões por convenção do design system.",
                                 "isCorrect": false
                             }
                         ]
@@ -4383,19 +4383,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Listar o conteúdo essencial que precisa aparecer na tela, antes de desenhar qualquer caixa.",
+                                "text": "Listar o conteúdo essencial da tela antes de desenhar qualquer caixa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Escolher a paleta de cores e a tipografia da marca.",
+                                "text": "Escolher logo a paleta de cores e a tipografia final da marca da empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exportar todos os ícones em alta resolução.",
+                                "text": "Exportar logo todos os ícones da tela em alta resolução.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escrever o código HTML e CSS da tela.",
+                                "text": "Escrever direto o código HTML e CSS que vai virar a tela.",
                                 "isCorrect": false
                             }
                         ]
@@ -4405,19 +4405,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Por parecer inacabado e barato de mudar, o wireframe convida à crítica; uma tela que parece pronta passa a impressão de que já foi decidida e inibe as sugestões.",
+                                "text": "Por parecer inacabado, o wireframe convida à crítica; tela pronta parece decidida.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque telas caprichadas têm menos problemas e, por isso, ninguém tem o que sugerir.",
+                                "text": "Porque telas caprichadas realmente têm menos problemas, então sobra pouco o que sugerir.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque wireframes têm mais funcionalidades do que os mockups.",
+                                "text": "Porque wireframes escondem funcionalidades que só aparecem depois, prontas no mockup.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, quanto mais bonita a tela, mais difícil ela fica de entender.",
+                                "text": "Porque, quanto mais bonita a tela fica, mais confusa ela se torna para o usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -4458,19 +4458,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O mockup é estático (só se olha), enquanto o protótipo é clicável e simula o comportamento do produto.",
+                                "text": "O mockup é estático, só para olhar; o protótipo é clicável e interativo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O protótipo é sempre feito no papel, e o mockup, no computador.",
+                                "text": "O protótipo nasce sempre no papel, e o mockup, direto no computador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O mockup tem interação e o protótipo não.",
+                                "text": "O mockup já responde a cliques, e o protótipo é a versão parada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há diferença: são dois nomes para a mesma coisa.",
+                                "text": "Não existe diferença real: são apenas dois nomes para a mesma peça.",
                                 "isCorrect": false
                             }
                         ]
@@ -4480,19 +4480,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A sequência de telas que o usuário percorre do início ao fim para completar uma tarefa.",
+                                "text": "A sequência de telas percorrida do início ao fim de uma tarefa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A cor de fundo escolhida para todas as telas.",
+                                "text": "A cor de fundo padrão aplicada a todas as telas do protótipo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A lista de componentes reutilizáveis de um design system.",
+                                "text": "A lista de componentes reutilizáveis guardados no design system.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código que roda no servidor por trás do app.",
+                                "text": "O código de servidor que processa os dados por trás do app.",
                                 "isCorrect": false
                             }
                         ]
@@ -4502,11 +4502,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um protótipo clicável, que conecta as telas e deixa as pessoas percorrerem o fluxo.",
+                                "text": "Um protótipo clicável, com as telas conectadas em sequência.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um mockup estático de uma única tela.",
+                                "text": "Um mockup estático de uma tela só, sem nenhuma conexão.",
                                 "isCorrect": false
                             },
                             {
@@ -4514,7 +4514,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O design system da empresa.",
+                                "text": "O catálogo de componentes do design system da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -4546,19 +4546,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Encontrar um problema de usabilidade enquanto ainda é barato corrigir, antes de o fluxo estar programado e no ar.",
+                                "text": "Encontrar o problema de usabilidade enquanto ainda é barato corrigir.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Provar que protótipos de alta fidelidade nunca têm problemas.",
+                                "text": "Provar que protótipos de alta fidelidade nunca escondem problemas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confirmar que testar com pessoas só vale a pena depois do lançamento.",
+                                "text": "Confirmar que testar com pessoas só compensa depois do lançamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mostrar que a cor da tela de pagamento é irrelevante para o negócio.",
+                                "text": "Mostrar que a cor da tela de pagamento não afeta a taxa de desistência.",
                                 "isCorrect": false
                             }
                         ]
@@ -4599,19 +4599,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma ferramenta de design de interfaces, colaborativa e que roda no navegador.",
+                                "text": "Uma ferramenta de design de interfaces que roda no navegador.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma linguagem de programação para criar sites.",
+                                "text": "Uma linguagem de programação usada para criar sites do zero.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um banco de dados para guardar imagens.",
+                                "text": "Um banco de dados voltado para guardar imagens em nuvem.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um sistema operacional para celulares.",
+                                "text": "Um sistema operacional próprio para celulares e tablets.",
                                 "isCorrect": false
                             }
                         ]
@@ -4621,19 +4621,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A entrega do design da pessoa designer para a pessoa dev, com tudo o que é preciso para construir a tela.",
+                                "text": "A entrega do design pronto para a pessoa dev construir a tela.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O primeiro rascunho feito à mão no papel.",
+                                "text": "O primeiro esboço da tela, feito à mão, ainda no papel comum.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A escolha das cores da marca.",
+                                "text": "A escolha final das cores oficiais da marca do produto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O teste do protótipo com usuários.",
+                                "text": "O teste do protótipo clicável junto a usuários reais.",
                                 "isCorrect": false
                             }
                         ]
@@ -4643,19 +4643,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Faltam as informações que a pessoa dev precisa (espaçamentos, cores em código, assets, estados), então ela terá que adivinhar e o resultado tende a sair diferente do design.",
+                                "text": "Faltam medidas, cores em código e ícones; a pessoa dev terá que adivinhar tudo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: um print já contém automaticamente todas as medidas e cores.",
+                                "text": "Nenhum: um print já esconde nele as medidas e as cores exatas da tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é que prints têm qualidade alta demais para programar.",
+                                "text": "O problema real é que o formato do print pesa demais para o dev abrir.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O handoff está perfeito; a pessoa dev não precisa de medidas nem de cores.",
+                                "text": "O handoff está completo; medidas e cores em código nunca fazem falta ao dev.",
                                 "isCorrect": false
                             }
                         ]
@@ -4665,19 +4665,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A colaboração em tempo real, com comentários no próprio arquivo compartilhado.",
+                                "text": "A colaboração em tempo real, com comentários no próprio arquivo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A exportação de imagens em alta resolução.",
+                                "text": "A exportação de imagens da tela pronta em alta resolução.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O modo escuro da interface.",
+                                "text": "O modo escuro disponível na interface do editor, só estético.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A existência de atalhos de teclado.",
+                                "text": "Os atalhos de teclado configuráveis para acelerar o trabalho.",
                                 "isCorrect": false
                             }
                         ]
@@ -4687,19 +4687,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O CSS gerado é uma referência de valores, não um código final: ele ignora os componentes e os tokens do projeto, então copiar às cegas produz código solto e fora do padrão da base.",
+                                "text": "O CSS gerado é só referência; ignora os tokens e foge do padrão da base.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o Figma nunca gera CSS, apenas imagens estáticas.",
+                                "text": "Porque o Figma nunca gera CSS de verdade, apenas imagens estáticas do layout.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o CSS gerado pelo Figma já é sempre perfeito e nunca precisa de revisão.",
+                                "text": "Porque o CSS gerado pelo Figma já nasce perfeito e nunca exige nenhuma revisão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o dev deveria ter copiado o código a partir do mockup, e não do modo dev.",
+                                "text": "Porque o certo era copiar o código a partir do mockup, e não do modo dev.",
                                 "isCorrect": false
                             }
                         ]
@@ -4740,19 +4740,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma peça de interface (como um botão ou um cartão) desenhada uma vez e reaproveitada em várias telas.",
+                                "text": "Uma peça de interface desenhada uma vez e usada em várias telas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma cor específica escolhida para o fundo do site.",
+                                "text": "Uma cor específica escolhida e reservada para o fundo do site.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um comentário deixado no arquivo do Figma.",
+                                "text": "Um comentário qualquer deixado solto no arquivo do Figma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um rascunho feito à mão no papel.",
+                                "text": "Um primeiro esboço da tela, feito à mão, ainda no papel.",
                                 "isCorrect": false
                             }
                         ]
@@ -4762,19 +4762,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma decisão visual (como uma cor, um espaçamento ou um tamanho de texto) guardada em uma variável com nome.",
+                                "text": "Uma decisão visual, como uma cor, guardada numa variável com nome.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um tipo de protótipo clicável de alta fidelidade.",
+                                "text": "Um tipo específico de protótipo clicável de alta fidelidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O arquivo final que a pessoa dev entrega para o cliente.",
+                                "text": "O arquivo final que a pessoa dev entrega de volta ao cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma senha de acesso ao projeto no Figma.",
+                                "text": "Uma senha de acesso exclusiva ao projeto dentro do Figma.",
                                 "isCorrect": false
                             }
                         ]
@@ -4784,19 +4784,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Apenas um: o valor do token cor-primaria, e todas as telas que o usam mudam junto.",
+                                "text": "Apenas um: o valor do token cor-primaria, e o resto muda junto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cada tela, uma por uma, procurando o código da cor antiga.",
+                                "text": "Cada tela do produto, uma por uma, trocando o código da cor antiga.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: tokens não têm relação com as cores da interface.",
+                                "text": "Nenhum lugar: tokens não têm nenhuma relação com as cores usadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Todos os componentes precisam ser desenhados novamente do zero.",
+                                "text": "Todos os componentes, que precisariam ser redesenhados um por um.",
                                 "isCorrect": false
                             }
                         ]
@@ -4806,19 +4806,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Traria consistência, com componentes e tokens padronizados que fazem botões, cores e espaçamentos ficarem iguais em todo o produto.",
+                                "text": "Traria consistência, com tokens e componentes que igualam cores e botões.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixaria cada tela livre para usar as suas próprias cores e botões.",
+                                "text": "Deixaria cada tela ainda mais livre para escolher suas próprias cores.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Removeria a necessidade de testar o produto com usuários.",
+                                "text": "Removeria de vez a necessidade de testar o produto com usuários reais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transformaria automaticamente os mockups em código de produção.",
+                                "text": "Transformaria os mockups automaticamente em código pronto de produção.",
                                 "isCorrect": false
                             }
                         ]
@@ -4828,19 +4828,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Os componentes prontos aceleram a montagem das telas (velocidade), enquanto os tokens centralizam as decisões visuais numa fonte única (consistência) — reúso e padronização agindo juntos.",
+                                "text": "Componentes prontos aceleram a montagem das telas, e os tokens centralizam as decisões, dando consistência.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A velocidade veio de abandonar os componentes, e a consistência, de cada pessoa escolher as suas próprias cores.",
+                                "text": "A velocidade veio de abandonar os componentes, e a consistência, de cada pessoa escolher suas próprias cores.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os dois ganhos vieram de aumentar a fidelidade dos wireframes iniciais.",
+                                "text": "Os dois ganhos vieram apenas de aumentar a fidelidade dos wireframes usados no início.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A coerência veio do handoff, e a velocidade, de pular a etapa de prototipagem.",
+                                "text": "A coerência veio do handoff bem feito, e a velocidade, de pular a prototipagem inteira.",
                                 "isCorrect": false
                             }
                         ]
