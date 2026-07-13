@@ -61,19 +61,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Os dados viviam apenas na memória do processo, que foi zerada ao reiniciar",
+                                "text": "Memória do processo, zerada ao reiniciar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O banco de dados apagou os registros automaticamente",
+                                "text": "Apagamento automático feito pelo banco de dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express limita arrays a poucos itens por padrão",
+                                "text": "Limite do Express para o tamanho de arrays",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O deploy corrompeu o arquivo de configuração do servidor",
+                                "text": "Configuração do servidor corrompida pelo deploy",
                                 "isCorrect": false
                             }
                         ]
@@ -83,19 +83,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Persistência dos dados mesmo depois do processo reiniciar",
+                                "text": "Persistir os dados após o processo reiniciar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Capacidade de guardar números e textos",
+                                "text": "Guardar números e textos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uso dentro de uma função JavaScript",
+                                "text": "Ser usada dentro de uma função JavaScript",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Velocidade de leitura maior que qualquer estrutura em memória",
+                                "text": "Ler mais rápido que qualquer estrutura em memória",
                                 "isCorrect": false
                             }
                         ]
@@ -105,7 +105,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A falta de busca eficiente: sem um índice, é preciso varrer o arquivo inteiro a cada consulta",
+                                "text": "Que a busca sem índice obriga a varrer o arquivo inteiro a cada consulta",
                                 "isCorrect": true
                             },
                             {
@@ -127,19 +127,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Cada instância tem sua própria cópia do array, então uma instância pode não saber que o estoque já zerou na outra",
+                                "text": "Cada instância mantém sua própria cópia do array de estoque",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Node sincroniza automaticamente os arrays entre os processos",
+                                "text": "Sincronização automática dos arrays entre os processos pelo Node",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O sistema operacional bloqueia a segunda instância até a primeira terminar",
+                                "text": "Bloqueio da segunda instância pelo sistema operacional até a primeira terminar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não acontece nada: arrays em memória são compartilhados entre processos automaticamente",
+                                "text": "Compartilhamento automático do mesmo array de memória entre os processos",
                                 "isCorrect": false
                             }
                         ]
@@ -149,19 +149,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Controle de acesso concorrente que impede duas escritas conflitantes de corromper o mesmo dado",
+                                "text": "Controle de concorrência entre escritas simultâneas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um formato de arquivo mais compacto que o JSON",
+                                "text": "Formato de arquivo mais compacto que o JSON",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma interface gráfica para editar o arquivo manualmente",
+                                "text": "Interface gráfica para editar o arquivo manualmente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um nome de arquivo mais descritivo para facilitar a busca",
+                                "text": "Nome de arquivo mais descritivo para facilitar a busca",
                                 "isCorrect": false
                             }
                         ]
@@ -202,7 +202,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Registro (ou tupla)",
+                                "text": "Registro",
                                 "isCorrect": true
                             },
                             {
@@ -224,7 +224,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma característica comum a todo produto cadastrado na tabela",
+                                "text": "Uma característica presente em todo produto",
                                 "isCorrect": true
                             },
                             {
@@ -246,7 +246,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Criar uma tabela `livros` e uma tabela `emprestimos`, cada uma representando uma entidade diferente",
+                                "text": "Criar uma tabela `livros` e uma tabela `emprestimos`",
                                 "isCorrect": true
                             },
                             {
@@ -268,7 +268,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Gerenciar o armazenamento dos dados em disco, controlar acessos simultâneos e oferecer uma linguagem para consultar e alterar os dados",
+                                "text": "Gerenciar o armazenamento em disco e controlar o acesso aos dados",
                                 "isCorrect": true
                             },
                             {
@@ -290,7 +290,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O valor de um atributo (coluna) daquele registro (linha) foi alterado, mas ele continua sendo a mesma linha, identificada pelo mesmo id",
+                                "text": "O valor da coluna mudou, mas a linha continua a mesma, pelo id",
                                 "isCorrect": true
                             },
                             {
@@ -391,15 +391,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Operações matemáticas como soma podem falhar ou exigir conversão manual dos valores de texto para número",
+                                "text": "A soma pode falhar ou exigir conversão manual do texto para número",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum, o banco converte automaticamente o texto para número sem nenhum efeito colateral",
+                                "text": "O banco converte automaticamente o texto para número, sem efeito colateral",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, VARCHAR e NUMERIC se comportam de forma idêntica em cálculos",
+                                "text": "VARCHAR e NUMERIC se comportam de forma idêntica em cálculos",
                                 "isCorrect": false
                             },
                             {
@@ -435,19 +435,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O SGBD rejeita a inserção, porque o valor não é compatível com o tipo INTEGER da coluna",
+                                "text": "O SGBD rejeita a inserção, pois 'dez' não é compatível com o tipo INTEGER",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O SGBD converte automaticamente o texto 'dez' para o número 10",
+                                "text": "O SGBD converte o texto para número, pois reconhece números por extenso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O SGBD aceita o valor e guarda 'dez' como texto dentro da coluna INTEGER",
+                                "text": "O SGBD aceita e guarda 'dez' como texto, pois a coluna aceita qualquer formato",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O SGBD ignora o esquema para essa inserção específica",
+                                "text": "O SGBD ignora o esquema nessa inserção, pois permite exceções pontuais",
                                 "isCorrect": false
                             }
                         ]
@@ -488,7 +488,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Identificar cada linha de forma única, sem repetição e sem valor vazio",
+                                "text": "Identificar cada linha, de forma única",
                                 "isCorrect": true
                             },
                             {
@@ -510,7 +510,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O banco impede a operação, porque a chave primária não permite valores repetidos",
+                                "text": "O banco impede a operação, rejeitando o valor duplicado",
                                 "isCorrect": true
                             },
                             {
@@ -532,7 +532,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o nome não é único, então não há garantia de qual das duas linhas seria apagada",
+                                "text": "Porque o nome não é único, então a linha certa não fica garantida",
                                 "isCorrect": true
                             },
                             {
@@ -554,7 +554,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O novo id gerado continua a sequência (por exemplo, 6), sem reaproveitar o 5",
+                                "text": "O novo id gerado continua a sequência, sem reaproveitar o 5",
                                 "isCorrect": true
                             },
                             {
@@ -576,7 +576,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque mudar a chave primária muda a própria identidade da linha, algo que um id numérico independente do conteúdo não exige",
+                                "text": "Porque mudar o email muda a própria identidade da linha",
                                 "isCorrect": true
                             },
                             {
@@ -633,7 +633,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Guarda cada registro como um documento flexível, tipo JSON, sem exigir que todos os documentos tenham exatamente as mesmas colunas",
+                                "text": "Guarda cada registro como um documento flexível, tipo JSON",
                                 "isCorrect": true
                             },
                             {
@@ -655,7 +655,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Leituras e escritas muito rápidas de valores simples associados a uma chave, como cache e sessões",
+                                "text": "Leituras e escritas muito rápidas de valores simples, como cache e sessões",
                                 "isCorrect": true
                             },
                             {
@@ -677,7 +677,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Grafo, porque relacionamentos entre os dados são o foco principal da consulta",
+                                "text": "Grafo, porque o foco da consulta são os relacionamentos entre os dados",
                                 "isCorrect": true
                             },
                             {
@@ -699,7 +699,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque oferece esquema fixo, chaves e garantias de integridade que ajudam a manter os dados consistentes",
+                                "text": "Porque oferece esquema fixo, chaves e garantias de integridade",
                                 "isCorrect": true
                             },
                             {
@@ -721,11 +721,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A inconsistência entre os documentos dificulta escrever código confiável, já que a aplicação não pode assumir uma estrutura fixa dos dados",
+                                "text": "A inconsistência entre documentos dificulta escrever código confiável",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O banco de documentos rejeita automaticamente qualquer documento com formato diferente dos anteriores",
+                                "text": "O banco de documentos rejeita automaticamente formatos diferentes dos anteriores",
                                 "isCorrect": false
                             },
                             {
@@ -849,7 +849,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque listar as colunas deixa a consulta mais clara, evita trafegar dados desnecessários e protege o código de mudanças futuras na tabela",
+                                "text": "Porque listar as colunas deixa a consulta mais clara e estável",
                                 "isCorrect": true
                             },
                             {
@@ -871,7 +871,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As colunas continuam se chamando titulo e prioridade na tabela; AS só muda os nomes exibidos no resultado dessa consulta",
+                                "text": "As colunas continuam se chamando titulo e prioridade na tabela real",
                                 "isCorrect": true
                             },
                             {
@@ -1161,7 +1161,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não é garantida: como só há uma coluna no ORDER BY, o banco pode devolver as duas em qualquer ordem entre si; para garantir uma ordem específica seria preciso acrescentar uma segunda coluna, como ORDER BY criado_em DESC, titulo",
+                                "text": "Não é garantida: com uma só coluna no ORDER BY, o empate pode sair em qualquer ordem",
                                 "isCorrect": true
                             },
                             {
@@ -1306,7 +1306,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O PostgreSQL recusa a consulta com um erro, porque SUM espera uma coluna numérica e prioridade é texto",
+                                "text": "O PostgreSQL recusa a consulta, pois SUM exige uma coluna numérica",
                                 "isCorrect": true
                             },
                             {
@@ -1363,7 +1363,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Agrupa linhas que têm o mesmo valor em uma coluna, permitindo aplicar funções de agregação a cada grupo separadamente",
+                                "text": "Agrupa linhas por coluna, para agregação",
                                 "isCorrect": true
                             },
                             {
@@ -1407,7 +1407,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "WHERE filtra linhas antes do agrupamento e não pode usar funções de agregação; HAVING filtra grupos depois do agrupamento e pode usar funções de agregação",
+                                "text": "WHERE filtra linhas antes de agrupar; HAVING filtra grupos depois de agrupar",
                                 "isCorrect": true
                             },
                             {
@@ -1535,7 +1535,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "id recebe o próximo valor gerado automaticamente, feita e criado_em usam seus valores padrão, e prazo fica NULL, porque aceita nulo",
+                                "text": "id, feita e criado_em usam seus valores padrão, e prazo fica NULL",
                                 "isCorrect": true
                             },
                             {
@@ -1579,7 +1579,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "INSERT INTO tarefas (titulo, prioridade) VALUES ('Nova tarefa', 2) RETURNING id, titulo, criado_em;",
+                                "text": "INSERT INTO tarefas (titulo, prioridade) VALUES ('Nova tarefa', 2) RETURNING id;",
                                 "isCorrect": true
                             },
                             {
@@ -1601,7 +1601,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O segundo INSERT tenta usar o id 8 de novo, porque a sequência não foi avisada da inserção manual, e falha por violar a chave primária",
+                                "text": "O segundo INSERT tenta usar o id 8 de novo e falha, por violar a chave primária",
                                 "isCorrect": true
                             },
                             {
@@ -1724,7 +1724,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "As 7 linhas da tabela tiveram a coluna feita alterada para true, porque não havia WHERE para restringir quais linhas mudariam",
+                                "text": "As 7 linhas tiveram a coluna feita alterada para true, sem WHERE para restringir",
                                 "isCorrect": true
                             },
                             {
@@ -1746,7 +1746,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Rodar antes um SELECT COUNT(*) FROM tarefas WHERE feita = false AND prioridade = 2; e conferir se o número bate com o esperado",
+                                "text": "Rodar antes um SELECT COUNT(*) com a mesma condição e conferir o número esperado",
                                 "isCorrect": true
                             },
                             {
@@ -1825,7 +1825,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "UPDATE altera valores de colunas em linhas que continuam existindo; DELETE remove a linha inteira da tabela",
+                                "text": "UPDATE altera colunas de uma linha; DELETE remove a linha inteira",
                                 "isCorrect": true
                             },
                             {
@@ -1847,7 +1847,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Todas as linhas da tabela tarefas são removidas, mas a tabela em si (a estrutura, as colunas) continua existindo",
+                                "text": "Todas as linhas são removidas, mas a estrutura da tabela continua existindo",
                                 "isCorrect": true
                             },
                             {
@@ -1869,7 +1869,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Soft delete: marcar a linha como removida ou cancelada em vez de apagar de verdade",
+                                "text": "Soft delete: marcar a linha como removida em vez de apagar",
                                 "isCorrect": true
                             },
                             {
@@ -1891,7 +1891,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As queries desses relatórios não foram atualizadas para incluir WHERE removida = false, então continuam trazendo todas as linhas, inclusive as marcadas como removidas",
+                                "text": "As queries dos relatórios não foram atualizadas para filtrar WHERE removida = false",
                                 "isCorrect": true
                             },
                             {
@@ -1948,7 +1948,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Inicia um bloco de transação, deixando os comandos seguintes provisórios até um COMMIT ou ROLLBACK",
+                                "text": "Inicia um bloco de transação, com os comandos seguintes provisórios",
                                 "isCorrect": true
                             },
                             {
@@ -1970,7 +1970,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Todas são desfeitas; o banco volta ao estado de antes do BEGIN",
+                                "text": "Todas as alterações são desfeitas",
                                 "isCorrect": true
                             },
                             {
@@ -1992,7 +1992,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Se o processo falhar entre os dois UPDATE, um saldo pode ser debitado sem o outro ser creditado, deixando os dados inconsistentes",
+                                "text": "Porque, se o processo falhar entre os dois UPDATE, um saldo fica sem o outro",
                                 "isCorrect": true
                             },
                             {
@@ -2181,7 +2181,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Durabilidade, apoiada no registro da transação em um log de write-ahead (WAL) antes de considerar o COMMIT concluído",
+                                "text": "Durabilidade, apoiada no registro da transação no log write-ahead (WAL)",
                                 "isCorrect": true
                             },
                             {
@@ -2247,7 +2247,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "É preciso atualizar manualmente todas as linhas desse cliente, e esquecer uma gera inconsistência",
+                                "text": "É preciso atualizar manualmente cada linha, arriscando esquecer alguma",
                                 "isCorrect": true
                             },
                             {
@@ -2309,7 +2309,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Uma referência ao id do usuário na tabela usuarios, evitando repetir nome e email",
+                                "text": "Referência ao id do usuário em usuarios, sem repetir nome e email",
                                 "isCorrect": true
                             },
                             {
@@ -2335,7 +2335,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os dados de Bruno (nome, email) são perdidos junto com a linha apagada, porque não existiam em nenhum outro lugar",
+                                "text": "Os dados de Bruno são perdidos junto com a linha, pois não existiam em outro lugar",
                                 "isCorrect": true
                             },
                             {
@@ -2388,7 +2388,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Impede inserir um pedido com um usuario_id que não existe em usuarios",
+                                "text": "Impede inserir um pedido com usuario_id que não existe",
                                 "isCorrect": true
                             },
                             {
@@ -2410,7 +2410,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Normalização",
+                                "text": "Normalização de dados",
                                 "isCorrect": false
                             },
                             {
@@ -2418,11 +2418,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Chave candidata",
+                                "text": "Restrição de unicidade",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transação atômica",
+                                "text": "Atomicidade da transação",
                                 "isCorrect": false
                             }
                         ]
@@ -2476,7 +2476,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A coluna usuario_id precisa aceitar NULL; os 3 pedidos continuam existindo, mas com usuario_id igual a NULL",
+                                "text": "A coluna usuario_id precisa aceitar NULL; os pedidos continuam existindo, com usuario_id NULL",
                                 "isCorrect": true
                             },
                             {
@@ -2537,7 +2537,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Em pedidos, apontando para usuarios, que é o lado muitos",
+                                "text": "Em pedidos, o lado muitos da relação",
                                 "isCorrect": true
                             },
                             {
@@ -2559,7 +2559,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "No 1:1 a coluna com a FK também tem uma restrição UNIQUE, limitando a uma correspondência só",
+                                "text": "No 1:1 a coluna da FK também tem uma restrição UNIQUE",
                                 "isCorrect": true
                             },
                             {
@@ -2629,7 +2629,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixa de ser um 1:1 de fato: nada impede que o mesmo pedido_id apareça em várias linhas de entregas, virando um 1:N",
+                                "text": "Deixa de ser 1:1: o mesmo pedido_id pode repetir em várias linhas",
                                 "isCorrect": true
                             },
                             {
@@ -2682,7 +2682,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque uma coluna só guarda um valor por linha, e os dois lados precisariam guardar vários",
+                                "text": "Porque uma coluna guarda um valor só, e os dois lados têm vários",
                                 "isCorrect": true
                             },
                             {
@@ -2704,7 +2704,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma tabela criada para representar um relacionamento N:N, com uma FK para cada lado",
+                                "text": "Uma tabela criada para representar um N:N, com uma FK para cada lado",
                                 "isCorrect": true
                             },
                             {
@@ -2726,7 +2726,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Impede duas linhas para o mesmo par pedido e produto; para comprar mais, aumenta a quantidade na mesma linha",
+                                "text": "Impede duas linhas para o mesmo par pedido e produto",
                                 "isCorrect": true
                             },
                             {
@@ -2744,11 +2744,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É redundante e essa coluna deveria ser removida de itens_pedido",
+                                "text": "Porque é redundante e deveria ser removida de itens_pedido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o preço do produto pode mudar depois, e o item de pedido precisa manter o preço cobrado no momento da compra",
+                                "text": "Porque o preço muda com o tempo, e o item de pedido guarda o preço da compra",
                                 "isCorrect": true
                             },
                             {
@@ -2774,7 +2774,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que é de fato N:N: um produto está em vários pedidos, e um pedido tem vários produtos, cada combinação em uma linha",
+                                "text": "Que é de fato N:N: um produto está em vários pedidos, e um pedido, em vários produtos",
                                 "isCorrect": true
                             },
                             {
@@ -2827,7 +2827,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A condição usada para casar as linhas das duas tabelas",
+                                "text": "A condição que casa as linhas das duas tabelas",
                                 "isCorrect": true
                             },
                             {
@@ -2915,7 +2915,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somem do resultado, porque pedidos.data_pedido é NULL para eles e a comparação com NULL nunca é verdadeira, o que na prática anula o efeito do LEFT JOIN",
+                                "text": "Somem do resultado, pois comparar NULL nunca é verdadeiro, anulando o LEFT JOIN",
                                 "isCorrect": true
                             },
                             {
@@ -2973,7 +2973,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Os três compartilham o núcleo básico do SQL (SELECT, INSERT, JOIN), mas têm diferenças em tipos de dados, funções e detalhes de sintaxe.",
+                                "text": "Os três compartilham o núcleo do SQL, com diferenças em tipos e sintaxe",
                                 "isCorrect": true
                             },
                             {
@@ -3017,7 +3017,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Foram perdidos, porque sem volume os dados vivem só dentro do container que foi removido.",
+                                "text": "Foram perdidos: sem volume, os dados vivem só dentro do container removido.",
                                 "isCorrect": true
                             },
                             {
@@ -3039,7 +3039,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "São lidas na primeira inicialização do container para criar automaticamente um usuário, uma senha e um banco de dados prontos para uso.",
+                                "text": "São lidas na 1ª inicialização, criando usuário, senha e banco",
                                 "isCorrect": true
                             },
                             {
@@ -3061,7 +3061,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Os dados ficam persistidos no volume e sobrevivem mesmo se o container for removido e recriado com docker compose up.",
+                                "text": "Os dados ficam no volume e sobrevivem mesmo se o container for removido",
                                 "isCorrect": true
                             },
                             {
@@ -3140,7 +3140,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O meta-comando começa com barra invertida, não termina com ponto e vírgula e é interpretado pelo próprio psql; o SQL termina com ponto e vírgula e é enviado ao servidor.",
+                                "text": "O meta-comando usa barra invertida, sem ponto e vírgula",
                                 "isCorrect": true
                             },
                             {
@@ -3184,7 +3184,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A sessão passa a operar dentro do banco financeiro, e o prompt muda para financeiro=#.",
+                                "text": "A sessão passa a operar no banco financeiro, e o prompt muda",
                                 "isCorrect": true
                             },
                             {
@@ -3206,7 +3206,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O psql funciona em qualquer lugar com acesso a um terminal, inclusive via SSH numa VPS sem interface gráfica, sem precisar instalar nada além do próprio Postgres.",
+                                "text": "O psql funciona em qualquer terminal, mesmo via SSH sem interface gráfica",
                                 "isCorrect": true
                             },
                             {
@@ -3285,7 +3285,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "NUMERIC(p, s)",
+                                "text": "NUMERIC",
                                 "isCorrect": true
                             },
                             {
@@ -3329,7 +3329,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "VARCHAR(n) limita o texto a n caracteres, e o Postgres recusa um valor maior; TEXT não impõe limite de tamanho.",
+                                "text": "VARCHAR(n) limita o texto a n caracteres; TEXT não tem limite",
                                 "isCorrect": true
                             },
                             {
@@ -3351,7 +3351,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O Postgres recusa o INSERT com erro, a menos que a cláusula OVERRIDING SYSTEM VALUE seja usada.",
+                                "text": "O Postgres recusa o INSERT, a menos que use OVERRIDING SYSTEM VALUE",
                                 "isCorrect": true
                             },
                             {
@@ -3474,7 +3474,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "PRIMARY KEY já é NOT NULL e UNIQUE ao mesmo tempo, e só pode existir uma por tabela; UNIQUE sozinha pode aparecer em várias colunas e aceita mais de um valor NULL.",
+                                "text": "PRIMARY KEY já é NOT NULL e UNIQUE, e só existe uma por tabela",
                                 "isCorrect": true
                             },
                             {
@@ -3496,7 +3496,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O INSERT é aceito e a coluna fica com NULL: o DEFAULT só entra quando a coluna é omitida, e o CHECK não barra valores NULL.",
+                                "text": "O INSERT é aceito com NULL: DEFAULT só entra se a coluna for omitida",
                                 "isCorrect": true
                             },
                             {
@@ -3553,7 +3553,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O Postgres varre a tabela inteira, linha por linha, comparando cada uma com a condição do WHERE.",
+                                "text": "O Postgres varre a tabela inteira, linha por linha, contra a condição",
                                 "isCorrect": true
                             },
                             {
@@ -3575,7 +3575,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "CREATE INDEX idx_usuarios_email ON usuarios(email);",
+                                "text": "CREATE INDEX idx_email ON usuarios(email);",
                                 "isCorrect": true
                             },
                             {
@@ -3597,7 +3597,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não existe índice em cliente_id, então o Postgres faz um sequential scan na tabela inteira; criar um índice em cliente_id resolveria.",
+                                "text": "Falta índice em cliente_id, então o Postgres faz sequential scan",
                                 "isCorrect": true
                             },
                             {
@@ -3619,7 +3619,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Cada índice ocupa espaço extra em disco e precisa ser atualizado a cada escrita, deixando INSERT, UPDATE e DELETE mais lentos.",
+                                "text": "Cada índice ocupa espaço e precisa ser atualizado a cada escrita",
                                 "isCorrect": true
                             },
                             {
@@ -3703,7 +3703,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É o driver que permite ao Node.js se conectar e executar queries SQL no PostgreSQL.",
+                                "text": "É o driver que conecta o Node.js e executa queries SQL no Postgres.",
                                 "isCorrect": true
                             },
                             {
@@ -3747,7 +3747,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque credenciais no código ficam expostas no histórico do Git e dificultam usar bancos diferentes por ambiente, como desenvolvimento, teste e produção.",
+                                "text": "Porque credenciais no código ficam expostas no Git, e mudam por ambiente",
                                 "isCorrect": true
                             },
                             {
@@ -3769,7 +3769,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A senha continua exposta no histórico do Git, mesmo depois de removida do arquivo atual, e deve ser considerada comprometida.",
+                                "text": "A senha continua exposta no histórico do Git, mesmo removida do arquivo",
                                 "isCorrect": true
                             },
                             {
@@ -3791,7 +3791,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ele abre a conexão com o Postgres, envia o SQL que você escreve e converte o resultado em objetos JavaScript, sem gerar ou abstrair o SQL por conta própria.",
+                                "text": "Ele abre a conexão, envia o SQL que você escreve e converte o resultado em objetos",
                                 "isCorrect": true
                             },
                             {
@@ -3870,7 +3870,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque a comunicação com o banco acontece pela rede, e client.query retorna uma Promise.",
+                                "text": "Porque a comunicação pela rede é assíncrona, e query retorna Promise",
                                 "isCorrect": true
                             },
                             {
@@ -3914,7 +3914,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O número de linhas retornadas (em SELECT) ou afetadas (em UPDATE ou DELETE) pela query.",
+                                "text": "Linhas retornadas por um SELECT, ou afetadas por UPDATE e DELETE",
                                 "isCorrect": true
                             },
                             {
@@ -3936,7 +3936,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A função da rota não é async e não usa await antes de client.query, então resultado é uma Promise, não o resultado da query.",
+                                "text": "Falta async e await antes de client.query, então resultado é uma Promise",
                                 "isCorrect": true
                             },
                             {
@@ -3993,7 +3993,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma falha de segurança em que a entrada de um usuário é interpretada como parte do comando SQL, alterando o que a query faz.",
+                                "text": "Uma falha em que a entrada do usuário é interpretada como parte do SQL",
                                 "isCorrect": true
                             },
                             {
@@ -4015,7 +4015,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O valor de email é concatenado direto na string SQL, sem nenhum tratamento.",
+                                "text": "O valor de email é concatenado direto na string SQL",
                                 "isCorrect": true
                             },
                             {
@@ -4037,7 +4037,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A condição do WHERE passa a ser sempre verdadeira, e a query retorna todas as linhas da tabela usuarios, inclusive para quem não tem credenciais válidas.",
+                                "text": "O WHERE passa a ser sempre verdadeiro, e retorna todas as linhas de usuarios",
                                 "isCorrect": true
                             },
                             {
@@ -4059,7 +4059,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque validação de formato não impede que o texto, mesmo parecendo válido, seja concatenado como código SQL; o problema é como o dado entra na query, não só o formato dele.",
+                                "text": "Porque um texto com formato válido ainda pode ser concatenado como SQL",
                                 "isCorrect": true
                             },
                             {
@@ -4081,7 +4081,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ler dados de outras tabelas ou até executar comandos destrutivos, como um DROP TABLE, se esses comandos forem embutidos na entrada concatenada na query.",
+                                "text": "Ler dados de outras tabelas, ou até executar um DROP TABLE embutido",
                                 "isCorrect": true
                             },
                             {
@@ -4138,7 +4138,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um placeholder que será substituído, com segurança, pelo primeiro valor do array passado como segundo argumento.",
+                                "text": "Um placeholder substituído pelo primeiro valor do array de parâmetros",
                                 "isCorrect": true
                             },
                             {
@@ -4182,7 +4182,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A query busca por um usuário cujo email seja literalmente a string ' OR '1'='1, e não retorna nenhuma linha, porque o valor nunca é interpretado como parte do comando SQL.",
+                                "text": "Busca um email literalmente igual a ' OR '1'='1, e não retorna nenhuma linha",
                                 "isCorrect": true
                             },
                             {
@@ -4204,7 +4204,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o SQL é compilado separadamente dos valores; o valor é sempre tratado como dado, nunca interpretado como parte do comando.",
+                                "text": "Porque o SQL é compilado separado dos valores, sempre tratados como dado",
                                 "isCorrect": true
                             },
                             {
@@ -4283,7 +4283,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque autenticar e estabelecer uma conexão nova tem um custo, e o Postgres aceita apenas um número limitado de conexões simultâneas.",
+                                "text": "Porque abrir conexão tem custo, e o Postgres limita conexões simultâneas",
                                 "isCorrect": true
                             },
                             {
@@ -4305,7 +4305,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mantém um conjunto de conexões já abertas com o banco e as reaproveita entre as queries, em vez de abrir e fechar uma conexão a cada vez.",
+                                "text": "Mantém conexões já abertas e as reaproveita entre as queries",
                                 "isCorrect": true
                             },
                             {
@@ -4327,7 +4327,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Novas queries ficam esperando numa fila até alguma conexão do pool ser liberada, o chamado esgotamento do pool.",
+                                "text": "Novas queries esperam numa fila até uma conexão ser liberada",
                                 "isCorrect": true
                             },
                             {
@@ -4349,7 +4349,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Nada na forma de escrever a query: os placeholders $1, $2 e o array de valores funcionam do mesmo jeito, o que muda é como a conexão é gerenciada por baixo dos panos.",
+                                "text": "Nada: os placeholders $1, $2 e o array de valores funcionam igual",
                                 "isCorrect": true
                             },
                             {
@@ -4371,7 +4371,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque usa WHERE com o id para atingir só a linha certa, os três valores vêm como parâmetros ($1, $2, $3), e trata o caso de nenhuma linha ser afetada.",
+                                "text": "Porque usa WHERE com id, valores como parâmetros, e trata a linha ausente",
                                 "isCorrect": true
                             },
                             {
@@ -4433,7 +4433,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mapeia tabelas do banco relacional para objetos ou classes da linguagem de programação, permitindo interagir com o banco por meio de código em vez de SQL escrito à mão.",
+                                "text": "Mapeia tabelas do banco para objetos ou classes da linguagem de programação",
                                 "isCorrect": true
                             },
                             {
@@ -4459,7 +4459,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A necessidade de entender modelagem de dados e índices: más decisões nessas áreas continuam gerando queries lentas mesmo com ORM.",
+                                "text": "A necessidade de entender modelagem de dados e índices",
                                 "isCorrect": true
                             },
                             {
@@ -4485,7 +4485,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um query builder ajuda a montar SQL de forma programática, mais próxima do SQL real, sem impor um sistema completo de models e migrations; um ORM completo adiciona uma camada de modelos, relacionamentos e migrations em torno do acesso a dados.",
+                                "text": "Query builder monta SQL de forma programática; ORM completo adiciona models e migrations",
                                 "isCorrect": true
                             },
                             {
@@ -4503,7 +4503,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tipagem de ponta a ponta: o Client gerado a partir do schema garante autocomplete e erros de tipo em tempo de compilação, além de reduzir a quantidade de SQL escrito à mão para operações comuns.",
+                                "text": "Tipagem de ponta a ponta: autocomplete e erros de tipo em tempo de compilação",
                                 "isCorrect": true
                             },
                             {
@@ -4533,7 +4533,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "ORMs abstraem boa parte das diferenças de sintaxe SQL entre bancos, facilitando a portabilidade do código de acesso a dados; isso não elimina diferenças de comportamento, tipos específicos ou performance entre os bancos, que ainda podem exigir ajustes manuais.",
+                                "text": "ORMs abstraem boa parte da sintaxe SQL entre bancos, mas não eliminam diferenças de tipos e performance",
                                 "isCorrect": true
                             }
                         ]
@@ -4582,7 +4582,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O bloco datasource db, que define o provider (por exemplo postgresql) e a propriedade url, normalmente lida de uma variável de ambiente como DATABASE_URL.",
+                                "text": "O bloco datasource db, com o provider e a url lida da DATABASE_URL",
                                 "isCorrect": true
                             },
                             {
@@ -4634,7 +4634,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Executa uma query INSERT parametrizada na tabela usuarios; o Prisma monta os parâmetros automaticamente, sem concatenar valores na string SQL.",
+                                "text": "Executa um INSERT parametrizado; o Prisma monta os parâmetros automaticamente",
                                 "isCorrect": true
                             }
                         ]
@@ -4644,7 +4644,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O atributo @map(\"usuario_id\") no campo do model (ou @@map no nível da tabela), que conecta o nome usado no código ao nome real da coluna ou tabela no banco.",
+                                "text": "O atributo @map(\"usuario_id\") no campo, ligando o nome do código ao da coluna",
                                 "isCorrect": true
                             },
                             {
@@ -4678,7 +4678,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pouca coisa muda em segurança: as duas formas já parametrizam os valores, nenhuma concatena entrada do usuário na string SQL. A diferença do Prisma é gerar essa query automaticamente e retornar um objeto tipado, sem exigir escrever o SQL nem o RETURNING * manualmente.",
+                                "text": "Pouca coisa muda em segurança: as duas parametrizam os valores; o Prisma só gera a query sozinho",
                                 "isCorrect": true
                             }
                         ]
@@ -4723,7 +4723,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um passo versionado e ordenado que altera o schema do banco de dados, como criar uma tabela ou adicionar uma coluna, guardado como arquivo e aplicado de forma controlada.",
+                                "text": "Um passo versionado que altera o schema, guardado como arquivo e aplicado em ordem",
                                 "isCorrect": true
                             },
                             {
@@ -4753,7 +4753,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque as mudanças não ficam versionadas nem documentadas: outros ambientes, como o banco de outro dev, o de staging ou o de produção, ficam dessincronizados, e ninguém sabe ao certo quais alterações já foram aplicadas onde.",
+                                "text": "Porque as mudanças não ficam versionadas, e os ambientes dessincronizam",
                                 "isCorrect": true
                             }
                         ]
@@ -4763,7 +4763,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "migrate dev compara o schema com o banco, gera um novo arquivo de migration a partir das diferenças, aplica essa migration no banco de desenvolvimento e regenera o Prisma Client; migrate deploy só aplica migrations já existentes e versionadas, sem gerar nada novo, sendo o comando adequado para CI/produção.",
+                                "text": "migrate dev gera e aplica a migration nova; migrate deploy só aplica as já existentes",
                                 "isCorrect": true
                             },
                             {
@@ -4793,7 +4793,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para registrar quais migrations já foram aplicadas naquele banco, permitindo que a ferramenta saiba exatamente quais passos ainda faltam rodar quando o schema evolui.",
+                                "text": "Para registrar quais migrations já foram aplicadas naquele banco",
                                 "isCorrect": true
                             },
                             {
@@ -4819,7 +4819,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que as migrations resultantes fazem sentido quando aplicadas juntas, na ordem correta, sobre o mesmo estado de schema; conflitos de migrations concorrentes podem exigir recriar ou reordenar uma delas manualmente antes do deploy, já que foram geradas a partir de pontos de partida diferentes.",
+                                "text": "Que as migrations fazem sentido juntas, na ordem certa, podendo exigir ajuste manual",
                                 "isCorrect": true
                             }
                         ]
@@ -4872,7 +4872,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quando uma query inicial busca N registros e, em seguida, o código dispara uma query adicional para cada um desses registros dentro de um loop, resultando em N+1 queries no banco em vez de uma consulta só.",
+                                "text": "Uma query inicial busca N registros, mais uma query por registro dentro de um loop",
                                 "isCorrect": true
                             },
                             {
@@ -4898,7 +4898,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A opção include, que carrega o relacionamento numa quantidade fixa de consultas, em vez de uma query separada por registro.",
+                                "text": "A opção include, que carrega o relacionamento em poucas consultas fixas",
                                 "isCorrect": true
                             }
                         ]
@@ -4942,7 +4942,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um provável problema N+1: uma query dentro de um loop, disparada uma vez para cada item de uma lista, em vez de uma única consulta com include equivalente a um JOIN.",
+                                "text": "Um provável N+1: uma query por item da lista, em vez de um include só",
                                 "isCorrect": true
                             }
                         ]
@@ -4964,7 +4964,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Incorreta: N+1 é um risco inerente a como ORMs facilitam disparar queries relacionadas dentro de loops; aparece em praticamente qualquer ORM (Sequelize, TypeORM, ActiveRecord, Django ORM etc.), e a mitigação em todos passa pela mesma ideia, carregar relacionamentos numa única leva de consultas em vez de um loop de queries.",
+                                "text": "Incorreta: N+1 aparece em praticamente qualquer ORM, não só no Prisma",
                                 "isCorrect": true
                             }
                         ]
@@ -5013,7 +5013,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Modelo relacional e SQL para consultar dados, depois para modificar dados, modelagem e relacionamentos, PostgreSQL na prática, conectar isso a uma API em Node, e por fim ORMs como camada de produtividade sobre o SQL.",
+                                "text": "Modelo relacional e SQL, depois modelagem, Postgres na prática, API e por fim ORMs",
                                 "isCorrect": true
                             },
                             {
@@ -5039,7 +5039,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação, que vai usar a própria tabela de usuários modelada e consultada ao longo desta trilha para lidar com login e identificação de quem faz cada requisição.",
+                                "text": "Autenticação, que vai usar a tabela de usuários modelada nesta trilha",
                                 "isCorrect": true
                             }
                         ]
@@ -5053,7 +5053,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não necessariamente: para relatórios complexos e performance crítica, SQL puro, inclusive via $queryRaw do próprio Prisma quando for o caso, costuma dar mais controle e melhor desempenho do que tentar expressar tudo pela API do ORM.",
+                                "text": "Não necessariamente: para casos críticos, SQL puro dá mais controle e desempenho",
                                 "isCorrect": true
                             },
                             {
@@ -5083,7 +5083,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sem entender como JOIN, índices e o custo de uma query funcionam, fica difícil reconhecer que o problema é N+1 e avaliar se um include realmente resolve, em vez de só confiar cegamente na abstração do ORM.",
+                                "text": "Sem entender JOIN e o custo de uma query, fica difícil reconhecer um N+1",
                                 "isCorrect": true
                             }
                         ]
@@ -5093,7 +5093,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Modelar uma tabela com colunas como email único e uma coluna para a senha em formato de hash, além de saber consultar essa tabela, por exemplo localizar um usuário pelo email, com SQL puro ou por um ORM como o Prisma.",
+                                "text": "Modelar a tabela (email único, senha em hash) e saber consultá-la, por SQL ou ORM",
                                 "isCorrect": true
                             },
                             {
