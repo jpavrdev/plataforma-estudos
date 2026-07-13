@@ -9,8 +9,11 @@ import {
     questions,
     questionOptions,
     questionAnswers,
+    roadmaps,
+    roadmapStages,
+    roadmapStageRefs,
 } from "../../schema.ts";
-import { eq, asc, count, inArray, and } from "drizzle-orm";
+import { eq, asc, count, countDistinct, inArray, and } from "drizzle-orm";
 import type { z } from "zod";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -260,9 +263,34 @@ export async function detalheDaTrilha(trailId: string, userId: string) {
                 title: a.title,
                 position: a.position,
                 published: a.published,
+                durationMin: a.durationMin,
+                preview: a.preview,
                 state: estadoPorAula.get(a.id) ?? "locked",
             })),
     }));
 
-    return { ...trilha, modules: modulosComAulas };
+    const lessonIds = todasAulas.map((a) => a.id);
+    const [studs] = lessonIds.length
+        ? await db
+              .select({ n: countDistinct(lessonProgress.userId) })
+              .from(lessonProgress)
+              .where(inArray(lessonProgress.lessonId, lessonIds))
+        : [{ n: 0 }];
+
+    // Area da trilha: o roadmap que a referencia (o principal, de menor posicao).
+    const [rm] = await db
+        .select({ name: roadmaps.name })
+        .from(roadmapStageRefs)
+        .innerJoin(roadmapStages, eq(roadmapStages.id, roadmapStageRefs.stageId))
+        .innerJoin(roadmaps, eq(roadmaps.id, roadmapStages.roadmapId))
+        .where(and(eq(roadmapStageRefs.refType, "trail"), eq(roadmapStageRefs.refId, trailId)))
+        .orderBy(asc(roadmaps.position))
+        .limit(1);
+
+    return {
+        ...trilha,
+        category: rm?.name ?? null,
+        studentsCount: Number(studs.n),
+        modules: modulosComAulas,
+    };
 }

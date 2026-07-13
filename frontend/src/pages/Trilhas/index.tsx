@@ -259,9 +259,9 @@ export function Trilhas() {
                   className="track track--clickable"
                   role="button"
                   tabIndex={0}
-                  onClick={() => abrirTrilha(t.id)}
+                  onClick={() => navigate(`/trilhas/${t.id}`)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') abrirTrilha(t.id);
+                    if (e.key === 'Enter') navigate(`/trilhas/${t.id}`);
                   }}
                 >
                   <div className="track__head">

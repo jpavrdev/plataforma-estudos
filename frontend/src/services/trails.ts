@@ -67,6 +67,8 @@ export interface LessonRef {
   title: string;
   position: number;
   published?: boolean;
+  durationMin?: number | null;
+  preview?: boolean;
   state: LessonState;
 }
 
@@ -82,6 +84,10 @@ export interface TrailDetail {
   name: string;
   trailLevel: TrailApi['trailLevel'];
   description: string;
+  category?: string | null;
+  whatYouLearn?: string[] | null;
+  prerequisites?: string[] | null;
+  studentsCount?: number;
   modules: ModuleWithLessons[];
 }
 
