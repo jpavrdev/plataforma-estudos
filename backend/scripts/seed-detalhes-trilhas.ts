@@ -47,6 +47,42 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Python (estruturas de dados, funções)", "Noções de estatística descritiva"],
     },
+    "Visualização de Dados": {
+        whatYouLearn: [
+            "Escolher o gráfico certo para cada tipo de dado",
+            "Criar visualizações com matplotlib e seaborn",
+            "Análise exploratória visual (EDA)",
+            "Storytelling com dados e os gráficos que enganam",
+        ],
+        prerequisites: ["Python (pandas)", "Noções de estatística descritiva"],
+    },
+    "Machine Learning": {
+        whatYouLearn: [
+            "O fluxo de um projeto de machine learning",
+            "Regressão e classificação com scikit-learn",
+            "Avaliar modelos e evitar o overfitting",
+            "Preparar dados e o aprendizado não supervisionado",
+        ],
+        prerequisites: ["Análise de dados (pandas)", "Estatística e probabilidade"],
+    },
+    "Machine Learning na Prática": {
+        whatYouLearn: [
+            "Feature engineering e ajuste de hiperparâmetros",
+            "Ensembles: random forest e boosting",
+            "Pipelines robustos e dados desbalanceados",
+            "Uma introdução a deep learning",
+        ],
+        prerequisites: ["Machine Learning (scikit-learn, avaliação de modelos)"],
+    },
+    "Do Modelo ao Produto": {
+        whatYouLearn: [
+            "Do notebook à produção e o que é MLOps",
+            "Servir um modelo com uma API e empacotar com Docker",
+            "Monitorar o modelo, o drift e o retreino",
+            "Ética e IA responsável",
+        ],
+        prerequisites: ["Machine Learning na Prática", "Noções de Docker e APIs ajudam"],
+    },
     "Protocolos da Web": {
         whatYouLearn: [
             "Como a web funciona: cliente-servidor e o ciclo de uma requisição",
@@ -253,6 +289,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "CI/CD e observabilidade, para o Developer Associate",
         ],
         prerequisites: ["Cloud Practitioner (CLF-C02) ou equivalente", "Saber programar"],
+    },
+    "AWS SAA-C03": {
+        whatYouLearn: [
+            "Projetar arquiteturas seguras, resilientes e de baixo custo",
+            "IAM e segurança, VPC e rede, computação e Auto Scaling",
+            "Armazenamento, bancos de dados, mensageria e desacoplamento",
+            "Alta disponibilidade e DR, para o Solutions Architect Associate",
+        ],
+        prerequisites: ["Cloud Practitioner (CLF-C02) ou equivalente", "Noções de redes e sistemas ajudam"],
     },
 };
 
