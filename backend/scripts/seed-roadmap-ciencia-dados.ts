@@ -60,6 +60,15 @@ const STAGES: Stage[] = [
         tags: ["Python", "Programação", "Dados"],
         refs: [{ type: "trail", ref: "Python" }],
     },
+    {
+        phase: "fundamentos",
+        position: 3,
+        title: "Estatística e probabilidade",
+        description:
+            "A base quantitativa: estatística descritiva, distribuições, probabilidade, amostragem e o Teorema Central do Limite, inferência (intervalos de confiança e teste de hipótese) e correlação (que não é causalidade).",
+        tags: ["Estatística", "Probabilidade", "Inferência"],
+        refs: [{ type: "trail", ref: "Estatística e Probabilidade" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
