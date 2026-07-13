@@ -1,12 +1,12 @@
 // Seed do roadmap "Back-end": camada de orquestracao sobre as trilhas de fundacao
 // (Logica de Programacao, Protocolos da Web, APIs e Frameworks, Banco de Dados,
-// Autenticacao). Cobre os estagios 1 a 5 do desenho de 10 estagios; os estagios
-// 6 a 10 (cache, testes, docker, ci/cd, arquitetura) entram depois, conforme o
-// conteudo for autorado.
+// Autenticacao, Cache/Filas/Performance, Testes e Qualidade, Docker e Containers,
+// CI/CD e Cloud). Cobre os estagios 1 a 9 do desenho de 10 estagios; o estagio 10
+// (arquitetura e escala) entra depois, conforme o conteudo for autorado.
 //
 // Idempotente POR ESTAGIO: cria o roadmap se faltar e insere apenas os estagios
-// que ainda nao existem (casados por titulo). Assim, para adicionar os estagios
-// 6 a 10 depois, basta acrescenta-los em STAGES e rodar de novo.
+// que ainda nao existem (casados por titulo). Assim, para adicionar o estagio 10
+// depois, basta acrescenta-lo em STAGES e rodar de novo.
 //
 // O Back-end e o roadmap principal do catalogo: na criacao, entra na posicao 1 e
 // empurra os roadmaps existentes uma posicao para baixo.
@@ -97,6 +97,33 @@ const STAGES: Stage[] = [
             "Deixe o back-end rápido e escalável: medir performance, cache com Redis e sua invalidação, filas e processamento assíncrono com workers, e como escalar.",
         tags: ["Redis", "Filas", "Performance"],
         refs: [{ type: "trail", ref: "Cache, Filas e Performance" }],
+    },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Testes & qualidade",
+        description:
+            "Garanta que o back-end continua correto quando o código muda: testes unitários e de integração, mocks, TDD, cobertura e a qualidade além dos testes (lint, tipos, review).",
+        tags: ["Testes", "Vitest", "TDD"],
+        refs: [{ type: "trail", ref: "Testes e Qualidade" }],
+    },
+    {
+        phase: "deploy",
+        position: 8,
+        title: "Docker & containers",
+        description:
+            "Empacote o back-end pra rodar igual em qualquer lugar: containers e imagens, Dockerfile, volumes, Docker Compose orquestrando app, banco e cache, e imagens enxutas e seguras a caminho do deploy.",
+        tags: ["Docker", "Compose", "Containers"],
+        refs: [{ type: "trail", ref: "Docker e Containers" }],
+    },
+    {
+        phase: "deploy",
+        position: 9,
+        title: "CI/CD & Cloud",
+        description:
+            "Automatize o caminho do código até o ar: integração contínua a cada push, GitHub Actions construindo e publicando a imagem, deploy contínuo e a aplicação rodando na nuvem com HTTPS, secrets e observabilidade.",
+        tags: ["CI/CD", "GitHub Actions", "Cloud"],
+        refs: [{ type: "trail", ref: "CI/CD e Cloud" }],
     },
 ];
 
