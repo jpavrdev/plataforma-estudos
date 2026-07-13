@@ -57,19 +57,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O cliente envia uma requisição e o servidor devolve uma resposta; cada troca é independente, pois o HTTP é, por padrão, sem estado.",
+                                "text": "O cliente envia o pedido e o servidor responde; o HTTP não guarda memória entre um pedido e outro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor inicia a conversa enviando dados sem que o cliente peça nada.",
+                                "text": "O servidor inicia o contato e manda dados antes de qualquer pedido do cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cliente e servidor mantêm uma ligação aberta o tempo todo, sem mensagens separadas.",
+                                "text": "Cliente e servidor abrem uma conexão só e a mantêm aberta o tempo todo, sem mensagens separadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É o navegador que responde e o servidor que faz as perguntas.",
+                                "text": "O navegador responde e o servidor pergunta, invertendo os papéis de uma troca comum.",
                                 "isCorrect": false
                             }
                         ]
@@ -101,19 +101,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É uma requisição POST que envia, no corpo, os dados de uma transferência em JSON.",
+                                "text": "É uma requisição POST que carrega os dados da transferência no corpo, em JSON.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É uma requisição GET cujos dados estão na URL.",
+                                "text": "É uma requisição GET que carrega os dados da transferência na própria URL.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O valor 5000 está no cabeçalho Host.",
+                                "text": "É uma requisição POST em que o valor 5000 fica gravado no cabeçalho Host.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há corpo na requisição; tudo está na linha de requisição.",
+                                "text": "É uma requisição POST sem corpo; os dados ficam só na linha inicial do pedido.",
                                 "isCorrect": false
                             }
                         ]
@@ -123,19 +123,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "DELETE, pois expressa a intenção de remover um recurso e é idempotente (repetir a chamada leva ao mesmo estado final).",
+                                "text": "DELETE, pois expressa a intenção de remover o recurso e é idempotente.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "GET, pois é o método mais rápido e cabe qualquer operação.",
+                                "text": "GET, pois é o método mais rápido e serve para qualquer tipo de operação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "POST, porque só o POST pode alterar dados no servidor.",
+                                "text": "POST, pois é o único verbo HTTP que tem permissão para alterar dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Qualquer método serve; o verbo HTTP não tem relação com a operação.",
+                                "text": "Tanto faz o verbo escolhido; o método HTTP não influencia a operação feita.",
                                 "isCorrect": false
                             }
                         ]
@@ -145,19 +145,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque qualquer um pode montar as mesmas requisições HTTP com ferramentas como curl, Postman ou um proxy, sem passar pela página nem pelos botões.",
+                                "text": "Porque qualquer um pode montar a mesma requisição com curl, Postman ou um proxy, sem usar a página.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque os botões podem quebrar em navegadores antigos.",
+                                "text": "Porque botões antigos costumam quebrar em navegadores desatualizados, sem suporte a scripts modernos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTP exige que toda requisição venha de um formulário HTML.",
+                                "text": "Porque o protocolo HTTP só aceita requisições originadas de um formulário HTML válido e completo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Está correto: sem o JavaScript do site, é impossível chamar a API.",
+                                "text": "Está correto, pois sem o JavaScript do site nenhuma ferramenta externa consegue acessar a API.",
                                 "isCorrect": false
                             }
                         ]
@@ -198,19 +198,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ele envia um cookie de sessão no login; o navegador reenvia esse cookie automaticamente nas próximas requisições.",
+                                "text": "Ele cria um cookie de sessão no login, que o navegador reenvia sozinho a cada requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O navegador refaz o login sozinho a cada requisição.",
+                                "text": "O navegador guarda a senha digitada no login e a reenvia sozinho a cada requisição nova.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor guarda o seu IP e confia nele para sempre.",
+                                "text": "O servidor identifica você apenas pelo seu endereço IP de rede e confia nele indefinidamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O HTML memoriza a senha e a reenvia em cada clique.",
+                                "text": "O próprio HTML memoriza a senha do usuário e a reenvia sozinho a cada clique na página.",
                                 "isCorrect": false
                             }
                         ]
@@ -220,19 +220,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Impede que o cookie seja lido por JavaScript no navegador (via document.cookie), reduzindo o risco de roubo por scripts.",
+                                "text": "Impede que o JavaScript da página leia o cookie via document.cookie, dificultando o roubo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Faz o cookie ser enviado apenas por HTTP, nunca por HTTPS.",
+                                "text": "Faz o cookie trafegar somente por conexões HTTP em texto puro, nunca por HTTPS seguro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografa o conteúdo do cookie.",
+                                "text": "Criptografa o conteúdo do cookie antes de armazená-lo localmente no navegador do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faz o cookie expirar assim que a aba é fechada.",
+                                "text": "Faz o cookie expirar automaticamente assim que a aba do navegador for fechada pelo usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -246,7 +246,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "401 Unauthorized, que indica que falta autenticação",
+                                "text": "401 Unauthorized",
                                 "isCorrect": false
                             },
                             {
@@ -264,19 +264,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Que o navegador só enviará esse cookie em conexões HTTPS, nunca em HTTP puro.",
+                                "text": "Que o navegador só envia esse cookie por HTTPS, nunca por HTTP puro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que o cookie é inacessível a JavaScript.",
+                                "text": "Que o cookie fica inacessível ao JavaScript da página, como o HttpOnly.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o cookie nunca expira.",
+                                "text": "Que o cookie nunca expira, permanecendo salvo para sempre no navegador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o cookie será enviado para qualquer site, de forma segura.",
+                                "text": "Que o cookie passa a ser enviado para qualquer site, de forma criptografada.",
                                 "isCorrect": false
                             }
                         ]
@@ -286,19 +286,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As mensagens diferentes permitem que um atacante descubra quais e-mails estão cadastrados (enumeração de usuários); o ideal é uma mensagem genérica de credenciais inválidas.",
+                                "text": "As respostas diferentes revelam quais e-mails existem (enumeração); o certo é uma mensagem genérica.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: mensagens específicas sempre ajudam o usuário e não têm impacto em segurança.",
+                                "text": "Nenhum problema: mensagens específicas só ajudam o usuário e não afetam a segurança do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é usar 401; o correto seria sempre responder 200.",
+                                "text": "O erro está no código 401 usado; o certo seria responder sempre com 200 em qualquer caso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O erro é mostrar qualquer texto; status codes nunca devem vir com mensagem.",
+                                "text": "O erro é exibir qualquer texto; nenhum status code deveria vir acompanhado de mensagem.",
                                 "isCorrect": false
                             }
                         ]
@@ -339,19 +339,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Tudo o que roda no navegador do usuário: HTML, JavaScript, campos de formulário, cookies e a própria requisição.",
+                                "text": "Tudo que roda no navegador: HTML, JavaScript, campos de formulário, cookies e a requisição enviada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O banco de dados do servidor.",
+                                "text": "O banco de dados usado pelo servidor para guardar as informações internas da aplicação inteira.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código que roda apenas no servidor, sob seu controle.",
+                                "text": "O código-fonte que roda apenas no servidor, fora do alcance direto de qualquer usuário externo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As variáveis de ambiente do servidor de produção.",
+                                "text": "As variáveis de ambiente configuradas apenas no servidor de produção da aplicação inteira.",
                                 "isCorrect": false
                             }
                         ]
@@ -361,19 +361,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Nunca confie na entrada do usuário: tudo que vem do cliente deve ser validado e verificado no servidor.",
+                                "text": "Nunca confie na entrada do cliente: toda validação de verdade acontece no servidor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Confie no cliente, desde que ele use HTTPS.",
+                                "text": "Pode confiar no cliente, desde que toda a conexão use HTTPS de ponta a ponta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta validar os dados no front-end para estar seguro.",
+                                "text": "Validar os dados apenas no front-end já é o suficiente para o sistema ficar seguro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Se o campo é do tipo hidden, o usuário não consegue alterá-lo.",
+                                "text": "Um campo do tipo hidden nunca pode ser alterado pelo usuário, de jeito nenhum.",
                                 "isCorrect": false
                             }
                         ]
@@ -383,19 +383,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O servidor usa o preço enviado pelo cliente; um atacante pode alterar esse valor (por exemplo, para 0) antes de enviar a requisição.",
+                                "text": "O total usa o preço vindo do cliente, que um atacante pode alterar antes de enviar a requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O código não valida o formato do e-mail do usuário.",
+                                "text": "Falta validar corretamente o formato do e-mail informado pelo usuário no formulário de compra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falta um try/catch para erros de rede.",
+                                "text": "Falta um bloco try/catch para tratar os possíveis erros de rede durante todo o checkout.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é usar POST em vez de GET no checkout.",
+                                "text": "O erro real está em usar o verbo POST em vez de GET nessa rota de checkout da API.",
                                 "isCorrect": false
                             }
                         ]
@@ -405,19 +405,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ignorar o preço vindo do cliente e calcular o total a partir do preço do produto lido no banco de dados do servidor.",
+                                "text": "Ignorar o preço enviado pelo cliente e recalcular o total com o preço salvo no banco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Colocar o campo de preço como hidden no formulário.",
+                                "text": "Trocar o campo de preço para o tipo hidden dentro do próprio formulário de checkout.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar uma validação de preço em JavaScript no navegador.",
+                                "text": "Reforçar ainda mais a validação do preço em JavaScript antes de enviar a requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografar o preço no cliente antes de enviar.",
+                                "text": "Criptografar o valor do preço já no cliente, antes de enviar a requisição inteira.",
                                 "isCorrect": false
                             }
                         ]
@@ -427,19 +427,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Esconder o botão só afeta a interface; qualquer pessoa pode chamar o endpoint DELETE diretamente, então a autorização precisa ser verificada no servidor.",
+                                "text": "Esconder o botão só muda a tela; qualquer um pode chamar o DELETE direto, sem passar pela interface.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é inseguro: se o botão está escondido, a ação fica indisponível.",
+                                "text": "Não é inseguro: um botão escondido torna a ação indisponível para qualquer usuário comum.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco some se o botão for removido do HTML em vez de escondido com CSS.",
+                                "text": "O risco só desaparece de verdade se o botão for totalmente removido do HTML em vez de escondido por CSS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta validar a permissão em JavaScript antes de mostrar o botão.",
+                                "text": "Basta checar direito a permissão em JavaScript antes de exibir o botão na tela do sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -502,19 +502,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Impedir que uma página de uma origem leia livremente dados de outra origem (como o conteúdo de outra aba logada).",
+                                "text": "Impedir que uma página leia livremente dados de outra origem, como o conteúdo de outra aba logada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografar todo o tráfego entre navegador e servidor.",
+                                "text": "Criptografar todo o tráfego trocado entre o navegador do usuário e o respectivo servidor de destino.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Impedir que o servidor registre logs dos acessos.",
+                                "text": "Impedir que o servidor registre logs detalhados de cada acesso recebido na aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bloquear o carregamento de imagens de outros sites.",
+                                "text": "Bloquear o carregamento de imagens hospedadas em sites de outras origens diferentes.",
                                 "isCorrect": false
                             }
                         ]
@@ -524,19 +524,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "São origens diferentes (o host difere), então a requisição é cross-origin e depende de CORS para o JavaScript ler a resposta.",
+                                "text": "São origens diferentes, pois o host muda; o CORS decide se o JavaScript lê a resposta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "São a mesma origem, pois o domínio-raiz é o mesmo.",
+                                "text": "São a mesma origem, já que loja.com e api.loja.com compartilham o domínio-raiz.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É bloqueada de forma absoluta: navegadores nunca permitem chamadas entre subdomínios.",
+                                "text": "É bloqueada por completo: navegadores nunca permitem chamadas entre subdomínios.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É mesma origem porque ambas usam https.",
+                                "text": "É a mesma origem, porque as duas URLs usam exatamente o mesmo esquema https, seguro.",
                                 "isCorrect": false
                             }
                         ]
@@ -546,19 +546,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Permite que um servidor autorize explicitamente que origens diferentes acessem seus recursos, relaxando a Same-Origin Policy de forma controlada.",
+                                "text": "Permite que o servidor autorize origens específicas a acessar seus recursos, com controle.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Serve para desligar a Same-Origin Policy globalmente no navegador.",
+                                "text": "Serve para desligar a Same-Origin Policy por completo em todo o navegador do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um firewall que bloqueia requisições maliciosas.",
+                                "text": "É um firewall embutido no navegador que bloqueia toda requisição maliciosa recebida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um cabeçalho que criptografa a resposta.",
+                                "text": "É um cabeçalho HTTP que criptografa todo o corpo da resposta enviada pelo servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -568,19 +568,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Qualquer site pode fazer requisições autenticadas com os cookies da vítima e ler as respostas; o correto é liberar apenas uma lista de origens confiáveis.",
+                                "text": "Qualquer site pode usar os cookies da vítima e ler a resposta; o certo é liberar só origens confiáveis.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não há risco: refletir a origem é o comportamento recomendado quando há credenciais.",
+                                "text": "Não há risco: refletir a origem enviada é a prática recomendada quando existem credenciais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é apenas de desempenho, não de segurança.",
+                                "text": "O problema afeta apenas o desempenho do servidor, sem nenhum impacto real na segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Isso desativa o HTTPS do servidor.",
+                                "text": "Isso desativa o HTTPS por completo e faz o servidor voltar a aceitar novamente conexões em texto puro.",
                                 "isCorrect": false
                             }
                         ]
@@ -621,19 +621,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma lista, mantida pela OWASP, com as dez categorias de risco de segurança mais críticas para aplicações web, usada como guia de prioridades.",
+                                "text": "Uma lista da OWASP com as dez categorias de risco mais críticas, usada como guia de prioridades.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma ferramenta que corrige vulnerabilidades automaticamente.",
+                                "text": "Uma ferramenta que corrige vulnerabilidades automaticamente no código da aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma lei que obriga empresas a seguir dez regras.",
+                                "text": "Uma lei internacional que obriga todas as empresas a seguir dez regras fixas de segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um ranking dos dez melhores frameworks web.",
+                                "text": "Um ranking anual divulgado pela OWASP com os dez frameworks web mais usados no mercado atual.",
                                 "isCorrect": false
                             }
                         ]
@@ -643,19 +643,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O conjunto de todos os pontos por onde dados entram e podem ser manipulados: URLs, formulários, cabeçalhos, cookies, APIs e uploads.",
+                                "text": "Os pontos por onde dados entram e podem ser manipulados, como URLs, formulários e cookies.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas a tela de login.",
+                                "text": "Somente a tela de login e o formulário de autenticação inicial da aplicação inteira.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O visual (CSS) que o atacante vê primeiro.",
+                                "text": "O visual em CSS da aplicação, que costuma chamar a atenção do atacante logo de início.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de servidores que a empresa possui.",
+                                "text": "A quantidade total de servidores físicos que a empresa mantém contratados atualmente.",
                                 "isCorrect": false
                             }
                         ]
@@ -709,19 +709,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "\"Mishandling of Exceptional Conditions\" (A10) é uma categoria nova, e \"Software Supply Chain Failures\" (A03) amplia a antiga categoria de componentes vulneráveis e desatualizados.",
+                                "text": "A10 é categoria nova sobre condições excepcionais, e A03 amplia a antiga lista de componentes vulneráveis.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Injeção segue sendo a categoria A01, no topo da lista.",
+                                "text": "A injeção segue sendo classificada oficialmente como a categoria A01, permanecendo sempre no topo da lista.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "\"Security Misconfiguration\" foi removida da lista de 2025.",
+                                "text": "A categoria \"Security Misconfiguration\" foi totalmente removida na nova atualização de 2025.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As categorias de 2025 são idênticas, em ordem e nome, às de 2021.",
+                                "text": "As dez categorias de 2025 permanecem totalmente idênticas em ordem e nome às da edição de 2021.",
                                 "isCorrect": false
                             }
                         ]
@@ -767,19 +767,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Autenticação é provar quem você é (o login); autorização é decidir o que você pode fazer (as permissões).",
+                                "text": "Autenticação prova quem você é no login; autorização decide o que essa pessoa pode fazer.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "São sinônimos: as duas palavras significam exatamente a mesma coisa.",
+                                "text": "Autorização prova quem você é no login; autenticação decide o que você pode fazer.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação define as permissões de acesso; autorização faz o login do usuário.",
+                                "text": "Autenticação e autorização são a mesma coisa: dois nomes para o processo de login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação é responsabilidade do front-end; autorização é responsabilidade do banco de dados.",
+                                "text": "Autenticação é feita pelo servidor; autorização é feita apenas pelo navegador do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -789,19 +789,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Tudo é proibido por padrão, e só é liberado o que for explicitamente permitido.",
+                                "text": "Por padrão tudo é proibido, e só fica liberado o que for explicitamente permitido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Todo usuário logado pode acessar tudo, exceto o que for explicitamente bloqueado.",
+                                "text": "Por padrão tudo é liberado, e só fica bloqueado o que for explicitamente proibido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O sistema nega o login de contas novas até que um administrador as aprove.",
+                                "text": "O sistema bloqueia contas novas até um administrador aprovar o primeiro acesso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As decisões de permissão são tomadas pelo navegador do usuário.",
+                                "text": "A permissão de acesso é decidida pelo navegador, não pelo servidor da aplicação.",
                                 "isCorrect": false
                             }
                         ]
@@ -811,19 +811,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ela exige login, mas não verifica se o usuário tem permissão (papel) para excluir; qualquer usuário autenticado pode apagar qualquer conta.",
+                                "text": "Falta checar o papel; qualquer conta autenticada consegue excluir qualquer outra conta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ela não valida se o id é um número, o que permite injeção de SQL na rota.",
+                                "text": "Falta validar se o parâmetro id é numérico, o que deixa a rota vulnerável a injeção de SQL.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: o middleware exigirLogin já garante que apenas administradores acessam a rota.",
+                                "text": "Nenhum: o middleware exigirLogin por si só já restringe essa rota a administradores.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falta criptografar a resposta JSON antes de enviá-la ao cliente.",
+                                "text": "Falta cifrar o corpo da resposta JSON antes de devolvê-la de volta para o navegador.",
                                 "isCorrect": false
                             }
                         ]
@@ -833,19 +833,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O usuário controla o próprio navegador e pode chamar a API diretamente (por exemplo, com curl), ignorando a interface.",
+                                "text": "O usuário controla o navegador e pode chamar a API direto, sem passar pela interface.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o CSS pode falhar em alguns navegadores e acabar exibindo o botão.",
+                                "text": "Navegadores antigos costumam ignorar regras de CSS e acabam exibindo o botão escondido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque esconder elementos com JavaScript deixa a página mais lenta.",
+                                "text": "Ocultar elementos da tela com JavaScript aumenta bastante o tempo de carregamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é inseguro: se o botão não aparece, a ação não tem como ser executada.",
+                                "text": "É seguro sim: sem o botão visível na tela, não existe forma de disparar essa ação.",
                                 "isCorrect": false
                             }
                         ]
@@ -855,19 +855,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Verificar a identidade e as permissões no servidor a cada requisição, negando por padrão e liberando só o necessário.",
+                                "text": "Verificar identidade e permissão no servidor a cada requisição, negando por padrão o que não for liberado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Confiar no token JWT enviado pelo cliente, que já traz um campo 'isAdmin' definido no navegador.",
+                                "text": "Confiar num campo isAdmin dentro do próprio token JWT, já que foi definido no navegador do cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ocultar os endpoints de administração da documentação para que ninguém os descubra.",
+                                "text": "Retirar os endpoints de administração da documentação pública, assim ninguém consegue achá-los.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Checar as permissões apenas uma vez, no login, e liberar todo o resto da sessão sem novas checagens.",
+                                "text": "Checar a permissão uma única vez, apenas no momento do login, e liberar o resto sem novas checagens depois disso.",
                                 "isCorrect": false
                             }
                         ]
@@ -908,19 +908,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A aplicação usa um identificador fornecido pelo usuário para buscar um objeto, sem verificar se aquele usuário tem direito de acessá-lo.",
+                                "text": "A aplicação busca um objeto pelo id que o usuário informou, sem checar se pode acessá-lo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A aplicação armazena as senhas em texto puro no banco de dados.",
+                                "text": "A aplicação grava as senhas de todos os usuários em texto puro dentro do banco de dados principal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O usuário consegue injetar comandos SQL através de um campo de busca.",
+                                "text": "Um campo de busca mal validado permite que o usuário injete comandos SQL na consulta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A página carrega scripts de terceiros sem nenhuma validação.",
+                                "text": "A página carrega scripts de terceiros sem nenhuma verificação de origem ou integridade.",
                                 "isCorrect": false
                             }
                         ]
@@ -930,19 +930,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "IDOR (referência direta insegura a objeto).",
+                                "text": "IDOR: referência direta insegura ao objeto de outra pessoa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Path traversal (travessia de diretórios).",
+                                "text": "Path traversal: travessia para fora da pasta de arquivos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Injeção de SQL.",
+                                "text": "Injeção de SQL: comando SQL inserido num campo de entrada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cross-Site Scripting (XSS).",
+                                "text": "Cross-Site Scripting: script malicioso refletido na página.",
                                 "isCorrect": false
                             }
                         ]
@@ -952,19 +952,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Buscar o pedido e só retorná-lo se o dono do pedido for igual ao id do usuário logado (tirado da sessão).",
+                                "text": "Buscar o pedido e só devolvê-lo se o dono corresponder ao id do usuário tirado da sessão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trocar o id sequencial da URL por um UUID aleatório.",
+                                "text": "Substituir o id sequencial da URL por um identificador UUID gerado aleatoriamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exigir apenas que o usuário esteja autenticado antes de acessar a rota.",
+                                "text": "Bastar que o usuário esteja autenticado, sem checar mais nada, para liberar o acesso à rota.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Retornar sempre o status 200 para não revelar erros ao atacante.",
+                                "text": "Sempre responder com status 200, mesmo em erro, para não dar pistas ao atacante.",
                                 "isCorrect": false
                             }
                         ]
@@ -974,19 +974,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não: o UUID só dificulta a adivinhação; sem verificar o dono, um id vazado (em e-mail, log ou link) ainda expõe o objeto.",
+                                "text": "Não: o UUID só dificulta adivinhar o id; sem checar o dono, um id vazado expõe o objeto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim: com UUIDs aleatórios é impossível acessar objetos de outros usuários.",
+                                "text": "Sim: um identificador UUID aleatório torna impossível acessar objetos de outro usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, desde que os UUIDs tenham pelo menos 128 bits de entropia.",
+                                "text": "Sim, desde que o UUID gerado tenha no mínimo 128 bits de entropia no total.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque UUIDs deixam as consultas do banco de dados mais lentas.",
+                                "text": "Não, porque o uso de UUIDs deixa as consultas ao banco de dados sensivelmente mais lentas.",
                                 "isCorrect": false
                             }
                         ]
@@ -996,19 +996,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O atacante controla o corpo da requisição e pode enviar o clienteId da vítima; o id do dono precisa vir da sessão do servidor, não do cliente.",
+                                "text": "O atacante controla o corpo e pode enviar o clienteId da vítima; o id do dono deveria vir da sessão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque comandos UPDATE nunca devem ser usados com prepared statements.",
+                                "text": "Porque comandos do tipo UPDATE nunca deveriam ser escritos como prepared statements parametrizados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a consulta deveria comparar o status antes de comparar o id.",
+                                "text": "Porque a cláusula WHERE deveria comparar primeiro o status antes de comparar o identificador do pedido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é vulnerável: a cláusula AND cliente_id já garante a checagem de dono.",
+                                "text": "Não há vulnerabilidade nenhuma: a cláusula AND cliente_id já garante sozinha que o dono foi checado.",
                                 "isCorrect": false
                             }
                         ]
@@ -1049,19 +1049,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Vertical: o atacante sobe para um nível de permissão maior.",
+                                "text": "Escalonamento vertical: o atacante passa a ter permissões de um nível acima do seu.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Horizontal: o atacante acessa recursos de um usuário do mesmo nível.",
+                                "text": "Escalonamento horizontal: o atacante acessa recursos de outro usuário do mesmo nível.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é escalonamento, é apenas um IDOR comum.",
+                                "text": "Não é escalonamento de privilégio, é apenas mais um exemplo comum de IDOR.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Path traversal (travessia de diretórios).",
+                                "text": "Path traversal: o atacante escapou da pasta de arquivos permitida no servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -1071,19 +1071,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Acessar diretamente uma URL que não aparece na interface, contando que o servidor não verifique a permissão.",
+                                "text": "Acessar direto uma URL fora do menu, apostando que o servidor não confere a permissão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Forçar o navegador a recarregar a página várias vezes até travar o servidor.",
+                                "text": "Forçar o navegador a recarregar a mesma página várias vezes seguidas até derrubar o servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Navegar em modo anônimo para não deixar rastros no histórico.",
+                                "text": "Abrir o site inteiro em modo anônimo para não deixar nenhum rastro no histórico local.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Preencher um formulário automaticamente com um robô.",
+                                "text": "Preencher todos os formulários do site de forma automática usando um robô programado.",
                                 "isCorrect": false
                             }
                         ]
@@ -1093,19 +1093,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "`../../../../etc/passwd`, explorando path traversal para ler arquivos fora da pasta permitida.",
+                                "text": "`../../../../etc/passwd`, um path traversal que foge da pasta de arquivos liberada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "`<script>alert(1)</script>`, explorando XSS refletido.",
+                                "text": "`<script>alert(1)</script>`, um XSS refletido injetado no parâmetro da URL.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "`' OR '1'='1`, explorando injeção de SQL.",
+                                "text": "`' OR '1'='1`, uma injeção de SQL clássica que altera a cláusula WHERE.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "`admin`, explorando escalonamento vertical de privilégio.",
+                                "text": "`admin`, um valor que dispara o escalonamento vertical ao virar o papel do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -1115,19 +1115,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Incluindo no corpo um campo extra de papel (role) com valor admin, que será gravado e o tornará administrador.",
+                                "text": "Enviando no corpo um campo role valendo admin, que é gravado e vira administrador.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Enviando um corpo gigante para estourar a memória do servidor.",
+                                "text": "Enviando um corpo de requisição enorme e repetido para esgotar a memória do servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocando o método da requisição de POST para GET.",
+                                "text": "Trocando o verbo da requisição de POST para GET logo antes de enviar o formulário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é possível: o servidor ignora campos desconhecidos automaticamente.",
+                                "text": "Não é possível fazer isso: o servidor descarta sozinho qualquer campo desconhecido.",
                                 "isCorrect": false
                             }
                         ]
@@ -1137,19 +1137,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A troca acontece só uma vez e pode ser contornada (por exemplo, `....//` vira `../` depois da remoção); o certo é resolver o caminho e confirmar que ele continua dentro da pasta base.",
+                                "text": "A troca roda uma vez e é fácil driblar duplicando pontos e barras; o certo é resolver o caminho e checar a pasta base.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a função replace não funciona com caracteres acentuados.",
+                                "text": "A remoção falha só em sistemas operacionais antigos; a correção real é atualizar o servidor para a versão mais recente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o correto seria remover apenas as barras, mantendo os pontos.",
+                                "text": "A remoção só falha em caminhos muito longos; a correção real é limitar o nome do arquivo a poucos caracteres.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A correção é suficiente e elimina totalmente o path traversal.",
+                                "text": "A remoção cobre todos os casos existentes; a correção real já elimina por completo o path traversal.",
                                 "isCorrect": false
                             }
                         ]
@@ -1190,19 +1190,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "De falhas no processo de provar a identidade do usuário e de manter a sessão com segurança.",
+                                "text": "De falhas no processo de provar a identidade do usuário e manter a sessão segura.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "De falhas na verificação de permissões de acesso a recursos.",
+                                "text": "De falhas na checagem de permissões de acesso aos recursos da aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "De falhas na configuração de servidores e frameworks.",
+                                "text": "De falhas na configuração de servidores, frameworks e bibliotecas de terceiros.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "De falhas no tratamento de exceções e mensagens de erro.",
+                                "text": "De falhas no tratamento de exceções e nas mensagens de erro exibidas ao usuário final.",
                                 "isCorrect": false
                             }
                         ]
@@ -1212,19 +1212,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Impedir que o JavaScript da página leia o cookie, protegendo o token mesmo diante de um XSS.",
+                                "text": "Impedir que o JavaScript leia o cookie, mesmo que a página sofra um ataque XSS.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Garantir que o cookie só trafegue por conexões HTTPS.",
+                                "text": "Garantir que o cookie só seja transmitido em conexões criptografadas por HTTPS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Fazer o cookie expirar automaticamente após 30 minutos.",
+                                "text": "Fazer o cookie de sessão expirar automaticamente depois de 30 minutos parado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Impedir que o cookie seja enviado em requisições de sites de terceiros.",
+                                "text": "Impedir que o cookie seja enviado junto com requisições vindas de outros sites.",
                                 "isCorrect": false
                             }
                         ]
@@ -1234,19 +1234,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Forçar todos os usuários a trocar a senha a cada 90 dias, mesmo sem qualquer sinal de vazamento.",
+                                "text": "Forçar a troca periódica da senha a cada 90 dias, mesmo sem nenhum sinal de vazamento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Bloquear senhas que aparecem em listas de senhas vazadas.",
+                                "text": "Recusar qualquer senha que já apareça em listas públicas de senhas vazadas conhecidas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exigir um comprimento mínimo alto e permitir frases longas.",
+                                "text": "Exigir um comprimento mínimo bem alto e aceitar frases longas como senha do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Permitir que o usuário cole a senha vinda de um gerenciador.",
+                                "text": "Permitir que a senha seja colada no campo direto a partir de um gerenciador de senhas.",
                                 "isCorrect": false
                             }
                         ]
@@ -1256,19 +1256,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Session fixation; a defesa é gerar um novo id de sessão no momento do login.",
+                                "text": "Session fixation: a defesa é gerar um novo id de sessão assim que o login acontece.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Credential stuffing; a defesa é ativar o MFA.",
+                                "text": "Credential stuffing: a defesa mais eficaz é sempre exigir MFA em toda tentativa de login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "IDOR; a defesa é verificar o dono do objeto.",
+                                "text": "IDOR: a defesa correta é verificar se o objeto pedido pertence ao usuário logado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Path traversal; a defesa é normalizar o caminho do arquivo.",
+                                "text": "Path traversal: a defesa é normalizar o caminho e validar se ficou na pasta final.",
                                 "isCorrect": false
                             }
                         ]
@@ -1278,19 +1278,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Pode ser lido por JavaScript (roubo via XSS), trafega em HTTP puro (interceptável) e é enviado em requisições de outros sites; faltam HttpOnly, Secure e SameSite.",
+                                "text": "Faltam HttpOnly (leitura via XSS), Secure (HTTP puro) e SameSite (vai a outros sites).",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum risco relevante: o navegador aplica HttpOnly e Secure por padrão.",
+                                "text": "Nenhum risco relevante: o navegador aplica HttpOnly e Secure a todo cookie por padrão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas o risco de expirar cedo demais e prejudicar a experiência do usuário.",
+                                "text": "Apenas o risco de o cookie expirar cedo demais e atrapalhar bastante a experiência do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas o risco de ocupar espaço excessivo no armazenamento do navegador.",
+                                "text": "Apenas o risco de o cookie ocupar um espaço excessivo no armazenamento local do navegador.",
                                 "isCorrect": false
                             }
                         ]
@@ -1331,19 +1331,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque muitas pessoas reutilizam a mesma senha em vários serviços, então pares vazados em um site funcionam em outros.",
+                                "text": "Porque muita gente repete a senha em vários sites, e um par vazado funciona em outro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque os servidores aceitam senhas em branco por padrão.",
+                                "text": "Porque a maior parte dos servidores aceita senha em branco como valor padrão de login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTPS não protege a tela de login.",
+                                "text": "Porque o HTTPS criptografa bem a conexão, mas não protege em nada a tela de login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque os navegadores enviam a senha em texto puro para o servidor.",
+                                "text": "Porque o navegador envia a senha sem nenhuma camada extra de proteção até o servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -1353,19 +1353,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Rate limiting (limitação de tentativas).",
+                                "text": "Rate limiting: um limite de tentativas de login aceitas por minuto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Output encoding (codificação da saída).",
+                                "text": "Output encoding: a codificação do conteúdo antes de exibi-lo na tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Prepared statements (consultas parametrizadas).",
+                                "text": "Prepared statements: consultas ao banco com parâmetros separados do SQL.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Content Security Policy (CSP).",
+                                "text": "Content Security Policy: uma política que restringe scripts na página.",
                                 "isCorrect": false
                             }
                         ]
@@ -1375,19 +1375,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Enumeração de usuários: pela diferença das respostas, o atacante descobre quais e-mails têm conta.",
+                                "text": "Enumeração de usuários: a diferença nas respostas revela quais e-mails têm conta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Injeção de SQL no campo de e-mail.",
+                                "text": "Injeção de SQL: o campo de e-mail está sendo concatenado direto dentro da consulta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Session fixation, por não trocar o id de sessão no login.",
+                                "text": "Session fixation: o identificador de sessão não é trocado no momento do login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhuma: mensagens específicas ajudam o usuário e não trazem risco.",
+                                "text": "Nenhuma fraqueza real: mensagens específicas só ajudam o usuário a corrigir o erro.",
                                 "isCorrect": false
                             }
                         ]
@@ -1397,19 +1397,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque combina dois fatores de tipos diferentes: algo que o usuário sabe (a senha) e algo que ele tem (o celular com o app).",
+                                "text": "Porque combina fatores diferentes: a senha, que se sabe, e o app, que se tem.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a senha é digitada duas vezes para confirmação.",
+                                "text": "Porque pede a mesma senha duas vezes seguidas só para confirmar se está correta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque exige duas senhas diferentes, ambas do tipo 'algo que você sabe'.",
+                                "text": "Porque exige duas senhas distintas, sendo as duas do tipo algo que você sabe.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque usa biometria nas duas etapas do login.",
+                                "text": "Porque usa reconhecimento biométrico nas duas etapas seguidas do processo de login.",
                                 "isCorrect": false
                             }
                         ]
@@ -1419,19 +1419,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Um atacante pode errar a senha de propósito para bloquear contas de vítimas, causando negação de serviço; é melhor usar atrasos progressivos e outros sinais.",
+                                "text": "Um atacante pode errar a senha de propósito para bloquear a conta da vítima, causando negação de serviço.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As senhas passam a ser armazenadas em texto puro no banco.",
+                                "text": "As senhas de todas as contas passam a ser gravadas em texto simples dentro do banco de dados da aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O MFA deixa de funcionar para as contas que foram bloqueadas.",
+                                "text": "O MFA para de funcionar em qualquer conta que já tenha sido bloqueada uma única vez pelo sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O rate limiting por IP para de ter qualquer efeito.",
+                                "text": "O rate limiting configurado por endereço IP deixa de produzir qualquer efeito prático no sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -1499,19 +1499,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Usar senhas curtas nos bancos de dados.",
+                                "text": "Configurar senhas fracas demais para as contas do banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Misturar, na mesma string, dados do usuário com o código/comando que será interpretado.",
+                                "text": "Misturar, numa mesma string, o dado do usuário com o comando.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não fazer backup dos dados com frequência.",
+                                "text": "Deixar de renovar o certificado TLS do domínio principal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Servir o site sem um certificado HTTPS.",
+                                "text": "Esquecer de fazer backup periódico dos dados salvos.",
                                 "isCorrect": false
                             }
                         ]
@@ -1521,19 +1521,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o nome da variável 'comando' é reservado pelo banco.",
+                                "text": "Porque o nome da variável 'comando' é uma palavra reservada do banco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque falta um ponto e vírgula no fim da linha.",
+                                "text": "Porque falta um ponto e vírgula ao final do comando montado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a entrada é concatenada na string e pode fechar a aspa e alterar a estrutura do comando, deixando de ser dado e virando instrução.",
+                                "text": "Porque a entrada concatenada fecha a aspa e altera o comando.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a busca deveria estar escrita em letras maiúsculas.",
+                                "text": "Porque a instrução SQL precisa estar toda em letras maiúsculas.",
                                 "isCorrect": false
                             }
                         ]
@@ -1565,19 +1565,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque remover a aspa deixa a consulta mais lenta.",
+                                "text": "Porque remover aspas deixa as consultas mais lentas para o banco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a blacklist resolve o problema por completo, não há fragilidade.",
+                                "text": "Porque uma blacklist bem construída elimina toda fragilidade real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque aspas simples nunca aparecem em ataques reais.",
+                                "text": "Porque aspas simples não aparecem em ataques de injeção reais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque cada contexto tem muitos caracteres e formas de burla; tentar adivinhar e bloquear todos falha. A defesa robusta separa código de dados e codifica a saída para o contexto.",
+                                "text": "Porque sempre sobra algum truque que a blacklist não previu.",
                                 "isCorrect": true
                             }
                         ]
@@ -1618,11 +1618,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Dados do usuário concatenados numa consulta conseguem alterar a estrutura do SQL executado pelo banco.",
+                                "text": "Dado do usuário concatenado na consulta altera a estrutura do SQL.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O banco de dados fica sem espaço em disco e derruba a aplicação.",
+                                "text": "O banco de dados fica sem espaço em disco e a aplicação trava.",
                                 "isCorrect": false
                             },
                             {
@@ -1630,7 +1630,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um script do atacante roda no navegador de outro usuário.",
+                                "text": "Um script do atacante roda no navegador de outro usuário da aplicação.",
                                 "isCorrect": false
                             }
                         ]
@@ -1640,15 +1640,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Servir a aplicação apenas por HTTPS.",
+                                "text": "Servir a aplicação inteira apenas por conexões HTTPS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar o banco de dados por outro fornecedor.",
+                                "text": "Trocar o banco de dados relacional por outro fornecedor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar consultas parametrizadas / prepared statements, enviando a instrução e os valores separadamente.",
+                                "text": "Parametrizar as consultas, separando instrução e valores.",
                                 "isCorrect": true
                             },
                             {
@@ -1662,19 +1662,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A consulta dá erro de sintaxe e a aplicação simplesmente cai.",
+                                "text": "A consulta gera erro de sintaxe e a aplicação simplesmente cai.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A condição vira sempre verdadeira e o -- comenta o resto; o login passa sem uma senha válida.",
+                                "text": "A condição vira sempre verdadeira e o login passa sem senha válida.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O banco apaga a tabela de usuários automaticamente.",
+                                "text": "O banco apaga a tabela inteira de usuários automaticamente após a busca.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada acontece, pois o banco ignora aspas simples.",
+                                "text": "Nada acontece, porque o banco ignora aspas simples na consulta.",
                                 "isCorrect": false
                             }
                         ]
@@ -1706,15 +1706,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não há risco: usar um ORM elimina qualquer possibilidade de SQL injection.",
+                                "text": "Não há risco: usar um ORM elimina qualquer chance de SQL injection.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A parametrização protege valores, mas não identificadores como nome de coluna/ordem; concatenar isso reabre a injeção. O certo é validar contra uma allow-list de colunas.",
+                                "text": "A parametrização protege valores, não identificadores concatenados.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O risco some se a conexão entre a aplicação e o banco usar HTTPS.",
+                                "text": "O risco desaparece se a conexão entre app e banco usar HTTPS.",
                                 "isCorrect": false
                             },
                             {
@@ -1759,19 +1759,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A capacidade de executar comandos no servidor (execução remota de código).",
+                                "text": "A capacidade de executar comandos no servidor da aplicação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas mudar as cores da página exibida.",
+                                "text": "Apenas mudar as cores da página que é exibida ao usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ler os cookies salvos no navegador da vítima.",
+                                "text": "Ler os cookies salvos no navegador de outro usuário logado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente deixar o site mais lento por alguns segundos.",
+                                "text": "Somente deixar o site um pouco mais lento por alguns segundos.",
                                 "isCorrect": false
                             }
                         ]
@@ -1785,15 +1785,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a string inteira é entregue ao shell, então a entrada pode emendar comandos extras.",
+                                "text": "Porque a string toda vai ao shell, que emenda comandos extras.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque exec é mais lento que outras funções.",
+                                "text": "Porque a função exec sempre roda bem mais devagar que as outras.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o host precisa ser sempre um número.",
+                                "text": "Porque o valor do host precisa ser sempre um número válido.",
                                 "isCorrect": false
                             }
                         ]
@@ -1847,19 +1847,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não: usar execFile em vez de exec elimina o risco em qualquer situação.",
+                                "text": "Não: trocar exec por execFile sozinho já elimina o risco de injeção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim: passar por  sh -c  reintroduz o shell e a concatenação, anulando a proteção; o host volta a poder emendar comandos.",
+                                "text": "Sim: sh -c reintroduz o shell, permitindo emendar comandos de novo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não: o array de argumentos sempre impede injeção, mesmo com sh -c.",
+                                "text": "Não: um array de argumentos sempre bloqueia injeção, mesmo com sh -c.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, mas apenas se o servidor for Windows.",
+                                "text": "Sim, só volta a ser um problema quando o servidor roda Windows.",
                                 "isCorrect": false
                             }
                         ]
@@ -1900,15 +1900,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Executar o JavaScript dele no navegador da vítima, podendo roubar a sessão e agir em nome dela.",
+                                "text": "Executar JavaScript no navegador da vítima e roubar a sessão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apagar diretamente as tabelas do banco de dados.",
+                                "text": "Apagar diretamente todas as tabelas inteiras do banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Desligar fisicamente o servidor da aplicação.",
+                                "text": "Desligar fisicamente o servidor onde a aplicação roda.",
                                 "isCorrect": false
                             },
                             {
@@ -1944,19 +1944,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Trocar innerHTML por outerHTML, que é imune a XSS.",
+                                "text": "Trocar innerHTML por outerHTML, que já é imune a XSS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar  alvo.textContent = ..., que insere o valor como texto e nunca o interpreta como HTML.",
+                                "text": "Usar alvo.textContent, que insere o valor como texto puro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Envolver a atribuição em try/catch para capturar o script.",
+                                "text": "Envolver a atribuição num try/catch para capturar o script.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Limitar o tamanho da string a 100 caracteres.",
+                                "text": "Limitar o tamanho da string recebida a cem caracteres.",
                                 "isCorrect": false
                             }
                         ]
@@ -1966,19 +1966,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Criptografar os cookies para que não possam ser roubados.",
+                                "text": "Criptografar todos os cookies para que não possam ser roubados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Validar as consultas SQL antes de irem ao banco.",
+                                "text": "Validar todas as consultas SQL antes de chegarem ao banco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Instruir o navegador a não executar scripts inline nem de origens não confiáveis, funcionando como rede de segurança.",
+                                "text": "Barrar no navegador scripts inline e de fontes não confiáveis.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Comprimir o HTML para a página carregar mais rápido.",
+                                "text": "Comprimir o conteúdo HTML para a página carregar mais rápido.",
                                 "isCorrect": false
                             }
                         ]
@@ -1988,11 +1988,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não há problema: o React sanitiza automaticamente também o dangerouslySetInnerHTML.",
+                                "text": "Não há problema: o React sanitiza automaticamente esse conteúdo também.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "dangerouslySetInnerHTML ignora o auto-escape do React; um comentário com script seria executado. Deve-se sanitizar (ex.: DOMPurify) ou não injetar HTML cru.",
+                                "text": "dangerouslySetInnerHTML ignora o auto-escape; o certo é sanitizar antes.",
                                 "isCorrect": true
                             },
                             {
@@ -2000,7 +2000,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta usar HTTPS para que o HTML injetado não execute.",
+                                "text": "Basta usar HTTPS para que o HTML injetado não seja executado.",
                                 "isCorrect": false
                             }
                         ]
@@ -2041,19 +2041,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Induzir o navegador de uma vítima logada a enviar uma requisição que muda estado, aproveitando o cookie de sessão enviado automaticamente.",
+                                "text": "Fazer o navegador da vítima logada enviar uma requisição usando o cookie dela.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Injetar um script que roda no navegador da vítima dentro do site legítimo.",
+                                "text": "Injetar um script que executa no navegador da vítima, dentro do site legítimo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Descobrir a senha da vítima por força bruta.",
+                                "text": "Descobrir a senha da vítima por força bruta prolongada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Concatenar dados do usuário numa consulta SQL.",
+                                "text": "Concatenar dados do usuário direto numa consulta SQL.",
                                 "isCorrect": false
                             }
                         ]
@@ -2085,19 +2085,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o formulário do atacante consegue ler a senha da vítima.",
+                                "text": "Porque o formulário do atacante consegue ler a senha da vítima direto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador da vítima anexa o cookie de sessão automaticamente à requisição, e o servidor aceita a ação só com base nele.",
+                                "text": "Porque o navegador anexa o cookie de sessão sozinho a cada requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o atacante adivinhou o token anti-CSRF.",
+                                "text": "Porque o atacante conseguiu adivinhar o token anti-CSRF correto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o CORS do banco liberou o domínio do atacante.",
+                                "text": "Porque o CORS configurado no banco liberou o domínio do atacante.",
                                 "isCorrect": false
                             }
                         ]
@@ -2107,19 +2107,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ele criptografa o cookie de sessão da vítima.",
+                                "text": "Ele criptografa por completo o cookie de sessão da vítima atual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor exige, na submissão, um valor aleatório por sessão que o site do atacante não conhece nem consegue ler.",
+                                "text": "Ele exige um valor aleatório por sessão, desconhecido do atacante.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ele impede o JavaScript de rodar na página.",
+                                "text": "Ele impede qualquer JavaScript de rodar na página carregada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele obriga o uso de HTTPS em todas as rotas.",
+                                "text": "Ele obriga o uso de HTTPS em todas as rotas da aplicação inteira.",
                                 "isCorrect": false
                             }
                         ]
@@ -2129,19 +2129,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque faltou marcar o cookie como HttpOnly, a única defesa real contra CSRF.",
+                                "text": "Porque faltou marcar o cookie como HttpOnly; é a única defesa real contra CSRF que existe.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o CORS precisa liberar o domínio do atacante para funcionar.",
+                                "text": "Porque o CORS configurado precisa liberar o próprio domínio do atacante para funcionar direito.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o CORS controla a LEITURA da resposta por JavaScript; ele não impede o navegador de ENVIAR a requisição (um form ou img cross-site passa). HTTPS só cifra o tráfego. Faltam token anti-CSRF e/ou SameSite.",
+                                "text": "Porque CORS só controla a leitura da resposta por JS; não impede o envio. Falta token ou SameSite.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não deveria cair em CSRF; provavelmente é um falso positivo.",
+                                "text": "Não deveria estar caindo em CSRF nesse caso; é provavelmente um falso positivo do teste.",
                                 "isCorrect": false
                             }
                         ]
@@ -2187,19 +2187,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A exposição dos dados é o sintoma; a causa raiz costuma ser uma falha no uso da criptografia.",
+                                "text": "A exposição é o sintoma: a causa raiz quase sempre é falha na criptografia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A exposição de dados deixou de ser um problema relevante na web moderna.",
+                                "text": "A exposição não é mais relevante, pois o HTTPS resolveria tudo sozinho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A categoria passou a tratar apenas de senhas de usuário.",
+                                "text": "A categoria passou a tratar só de senha, por ser o vazamento mais comum.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A criptografia foi removida do OWASP Top 10 de 2025.",
+                                "text": "A criptografia saiu do Top 10 de 2025 por ser um problema já resolvido.",
                                 "isCorrect": false
                             }
                         ]
@@ -2209,19 +2209,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É uma codificação reversível por qualquer um, sem chave; não oferece segurança.",
+                                "text": "É uma codificação reversível sem chave, não é segurança.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É uma criptografia forte, desde que a chave seja mantida secreta.",
+                                "text": "É uma cifra forte, desde que a chave fique em segredo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma função de hash de mão única, ideal para guardar senhas.",
+                                "text": "É uma função de hash de mão única, própria para senhas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Protege dados em trânsito, dispensando o uso de HTTPS.",
+                                "text": "Protege dados em trânsito, o que dispensa o uso de HTTPS.",
                                 "isCorrect": false
                             }
                         ]
@@ -2231,19 +2231,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "CPF: cifrar (reversível com chave); senha: hashear (mão única).",
+                                "text": "CPF: cifrar, pois precisa reaparecer depois. Senha: hashear, sem volta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ambos com Base64, que já é suficiente para dados sensíveis.",
+                                "text": "Ambos com Base64, que já é suficiente para proteger dado sensível.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "CPF: hashear; senha: cifrar para poder recuperá-la depois.",
+                                "text": "CPF: hashear direto. Senha: cifrar, para poder recuperá-la no login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambos podem ficar em texto plano se o banco exigir senha de acesso.",
+                                "text": "Ambos em texto plano, já que o próprio banco pede senha de acesso.",
                                 "isCorrect": false
                             }
                         ]
@@ -2253,19 +2253,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Só sabendo o que é sensível dá para decidir o que cifrar, o que hashear e o que nem guardar.",
+                                "text": "Só sabendo o que é sensível dá para decidir o que cifrar ou hashear.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a LGPD exige que todo dado seja cifrado com a mesma chave.",
+                                "text": "Porque a LGPD exige cifrar todo dado com uma única chave padrão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque classificar dados substitui a necessidade de HTTPS.",
+                                "text": "Porque classificar os dados substitui a necessidade de HTTPS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a classificação deixa as consultas ao banco mais rápidas.",
+                                "text": "Porque a classificação torna as consultas ao banco mais rápidas.",
                                 "isCorrect": false
                             }
                         ]
@@ -2275,19 +2275,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Base64 é apenas codificação reversível; a senha está, na prática, em texto plano no banco.",
+                                "text": "Base64 só codifica de forma reversível: a senha equivale a texto plano.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: Base64 é uma cifra forte o suficiente para senhas.",
+                                "text": "Nenhum: o Base64 já é uma cifra forte o bastante para senhas longas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único problema é o desempenho do Base64 em senhas longas.",
+                                "text": "O único problema real é o desempenho do Base64 com senhas longas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falta apenas adicionar um salt ao Base64 para ficar seguro.",
+                                "text": "Falta só somar um salt ao Base64 para isso ficar seguro de vez.",
                                 "isCorrect": false
                             }
                         ]
@@ -2328,19 +2328,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ler o usuário, a senha e o cookie de sessão, pois tudo trafega em texto plano.",
+                                "text": "Ler usuário, senha e cookie de sessão, pois tudo viaja em texto plano.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nada: o navegador sempre cifra a senha automaticamente antes de enviar.",
+                                "text": "Nada: o navegador cifra a senha sozinho antes mesmo de enviá-la.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas ver o endereço do site, nunca os dados enviados.",
+                                "text": "Só o endereço do site, já que o conteúdo enviado vai sempre oculto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Atacar somente se souber a chave privada do servidor.",
+                                "text": "Só consegue atacar se souber a chave privada do certificado TLS.",
                                 "isCorrect": false
                             }
                         ]
@@ -2350,19 +2350,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Confidencialidade e integridade no caminho, além de autenticação do servidor via certificado.",
+                                "text": "Confidencialidade e integridade no caminho, e autenticação do servidor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Proteção automática dos dados guardados no banco do servidor.",
+                                "text": "Proteção automática para os dados já guardados no banco do servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Garantia de que o site não tem nenhuma outra vulnerabilidade.",
+                                "text": "Garantia de que o site não tem mais nenhuma outra vulnerabilidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Senhas fortes geradas automaticamente para todos os usuários.",
+                                "text": "Geração automática de senhas fortes para todos os usuários novos.",
                                 "isCorrect": false
                             }
                         ]
@@ -2372,19 +2372,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Faz o navegador passar a exigir HTTPS sozinho, evitando o downgrade para HTTP.",
+                                "text": "Faz o navegador exigir HTTPS sozinho, evitando o downgrade para HTTP.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cifra os dados em repouso no banco de dados.",
+                                "text": "Cifra os dados sensíveis que já estão guardados no banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substitui a necessidade de um certificado TLS válido.",
+                                "text": "Substitui de vez a necessidade de ter um certificado TLS válido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bloqueia ataques de injeção de SQL no servidor.",
+                                "text": "Bloqueia tentativas de injeção de SQL contra o servidor de banco.",
                                 "isCorrect": false
                             }
                         ]
@@ -2394,19 +2394,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Falta \"secure: true\", para o cookie de sessão nunca trafegar por HTTP.",
+                                "text": "Falta \"secure: true\", para o cookie nunca trafegar por HTTP puro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Falta \"maxAge\", senão o cookie expira imediatamente.",
+                                "text": "Falta \"maxAge\", senão o cookie expira assim que é criado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falta \"domain\", senão o cookie não chega a ser salvo.",
+                                "text": "Falta \"domain\", senão o navegador nunca chega a salvar o cookie.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada falta: o cookie já é cifrado por padrão pelo navegador.",
+                                "text": "Nada falta: todo cookie já é cifrado por padrão pelo navegador.",
                                 "isCorrect": false
                             }
                         ]
@@ -2416,19 +2416,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Desliga a validação do certificado: a URL continua https, mas a conexão aceita qualquer certificado e fica vulnerável a man-in-the-middle.",
+                                "text": "Aceita qualquer certificado na conexão: abre brecha para man-in-the-middle.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: o \"https\" na URL já garante a segurança, independentemente dessa opção.",
+                                "text": "Nenhum: o prefixo https já garante toda a segurança, mesmo com essa opção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas deixa a requisição um pouco mais lenta.",
+                                "text": "Só torna a chamada perceptivelmente mais lenta do que o normal, nada mais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faz o Node usar HTTP em vez de HTTPS na chamada.",
+                                "text": "Faz o Node ignorar completamente o HTTPS e mandar tudo por HTTP puro.",
                                 "isCorrect": false
                             }
                         ]
@@ -2469,19 +2469,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Aplicar hashing de mão única com bcrypt, scrypt ou argon2.",
+                                "text": "Fazer hashing de mão única da senha, com bcrypt, scrypt ou argon2.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Guardar em texto plano, num banco com acesso restrito.",
+                                "text": "Guardar em texto plano, desde que o acesso ao banco seja restrito.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cifrar com AES para poder recuperar a senha depois.",
+                                "text": "Cifrar com AES, assim dá para recuperar a senha depois se precisar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Codificar em Base64 antes de salvar no banco.",
+                                "text": "Codificar em Base64 antes de salvar, o que já basta para senha.",
                                 "isCorrect": false
                             }
                         ]
@@ -2491,15 +2491,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um valor aleatório e único por usuário, somado à senha antes de gerar o hash.",
+                                "text": "Um valor aleatório e único por usuário, somado à senha antes do hash.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma chave secreta compartilhada por todos os usuários.",
+                                "text": "Uma chave secreta única, compartilhada entre todos os usuários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O algoritmo de cifragem usado para reverter o hash.",
+                                "text": "O algoritmo de cifragem usado depois para reverter o hash gerado.",
                                 "isCorrect": false
                             },
                             {
@@ -2513,19 +2513,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "São rápidos demais: uma GPU testa bilhões de tentativas por segundo em força bruta.",
+                                "text": "São rápidos demais: uma GPU testa bilhões de tentativas por segundo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Geram hashes curtos demais para caber no banco de dados.",
+                                "text": "Geram hashes curtos demais para caber direito nas colunas do banco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não conseguem processar senhas com caracteres especiais.",
+                                "text": "Não conseguem processar senhas que tenham caracteres especiais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "São reversíveis desde que você tenha a chave correta.",
+                                "text": "São reversíveis, bastando apenas ter a chave correta em mãos.",
                                 "isCorrect": false
                             }
                         ]
@@ -2535,19 +2535,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "SHA-1 é rápido demais para senha e não há salt (senhas iguais geram hashes iguais).",
+                                "text": "SHA-1 é rápido demais e sem salt: senha igual gera o mesmo hash.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "SHA-1 é reversível e o hash gerado é curto demais.",
+                                "text": "SHA-1 é reversível, e o hash que ele produz é curto demais para uso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falta cifrar o hash com AES logo depois de gerá-lo.",
+                                "text": "Falta cifrar esse hash com AES logo depois de ele ser gerado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: SHA-1 é o algoritmo recomendado para senhas.",
+                                "text": "Nenhum: o SHA-1 é o algoritmo hoje mais recomendado para senhas.",
                                 "isCorrect": false
                             }
                         ]
@@ -2557,19 +2557,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não: SHA-256 continua rápido demais; é preciso uma função lenta e adaptativa como bcrypt ou argon2.",
+                                "text": "Não: o SHA-256 ainda é rápido demais, falta usar bcrypt ou argon2.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim: com salt e SHA-256 a senha fica totalmente protegida.",
+                                "text": "Sim: com salt e SHA-256 a senha já fica de fato totalmente protegida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque o salt deveria vir depois da senha, e não antes.",
+                                "text": "Não, porque nesse caso o salt deveria vir depois da senha, não antes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, desde que o salt tenha pelo menos 8 caracteres.",
+                                "text": "Sim, desde que esse salt tenha pelo menos uns oito caracteres.",
                                 "isCorrect": false
                             }
                         ]
@@ -2610,19 +2610,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Quando você precisa recuperar o valor original depois, como um token de acesso de terceiros.",
+                                "text": "Quando é preciso ler o valor original depois, como token de terceiros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sempre que o dado for uma senha de usuário.",
+                                "text": "Sempre que o dado guardado for a senha de algum usuário cadastrado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nunca: em repouso, todo dado deve ser hasheado.",
+                                "text": "Nunca: todo dado guardado em repouso deveria ser apenas hasheado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas quando o dado já for público.",
+                                "text": "Só quando esse dado em questão já for público de qualquer forma.",
                                 "isCorrect": false
                             }
                         ]
@@ -2632,19 +2632,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "AES-256-GCM, um modo autenticado com IV aleatório por operação.",
+                                "text": "AES-256-GCM: modo autenticado, com IV aleatório a cada operação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "AES no modo ECB.",
+                                "text": "AES no modo ECB, o mais indicado para arquivos grandes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "DES com chave de 56 bits.",
+                                "text": "DES com chave de 56 bits, robusto para os padrões atuais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "MD5 com salt.",
+                                "text": "MD5 com salt, já é suficiente para proteger dados em repouso.",
                                 "isCorrect": false
                             }
                         ]
@@ -2654,19 +2654,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Blocos de texto iguais geram blocos cifrados iguais, revelando padrões do conteúdo.",
+                                "text": "Blocos de texto iguais geram blocos cifrados iguais, vazando padrões.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque é lento demais para uso em produção.",
+                                "text": "Porque o modo ECB é considerado lento demais para uso em produção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque exige um IV diferente a cada byte cifrado.",
+                                "text": "Porque esse modo exige um IV diferente a cada byte que for cifrado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só funciona com chaves de 512 bits.",
+                                "text": "Porque esse modo só funciona corretamente com chaves de 512 bits.",
                                 "isCorrect": false
                             }
                         ]
@@ -2676,19 +2676,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Modo ECB (vaza padrões) e chave fixa no código (hardcoded).",
+                                "text": "Modo ECB, que vaza padrões, e chave fixa direto no código-fonte.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Chave longa demais e IV aleatório em excesso.",
+                                "text": "Chave longa demais e um IV aleatório sendo usado em excesso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uso de GCM sem definir a tag de autenticação.",
+                                "text": "Uso do modo GCM sem nunca definir a tag de autenticação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: ECB com chave fixa é a configuração segura padrão.",
+                                "text": "Nenhum: ECB com chave fixa já é a configuração segura padrão.",
                                 "isCorrect": false
                             }
                         ]
@@ -2698,19 +2698,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Reutilizar o IV/nonce no GCM quebra a confidencialidade e permite forjar mensagens; o IV deve ser único a cada operação.",
+                                "text": "Reutilizar o IV no GCM quebra a confidencialidade e permite forjar mensagens.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: no GCM o IV pode ser fixo sem qualquer problema.",
+                                "text": "Nenhum problema real: no modo GCM o IV sempre pode ser fixo à vontade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas deixa a cifragem mais lenta.",
+                                "text": "Isso só deixa cada operação de cifragem levemente mais lenta que o normal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é o IV ter só 12 bytes; deveria ter 32 bytes.",
+                                "text": "O problema real está no tamanho do IV: deveria ter 32 bytes, e não 12.",
                                 "isCorrect": false
                             }
                         ]
@@ -2751,19 +2751,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O histórico do Git a guarda para sempre e bots varrem repositórios atrás de chaves; ela deve ser tratada como comprometida.",
+                                "text": "O histórico do Git é permanente, e bots varrem repositórios atrás delas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é perigoso, desde que o repositório seja privado.",
+                                "text": "Não é perigoso, desde que o repositório continue marcado como privado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só é problema se a chave tiver menos de 16 caracteres.",
+                                "text": "Só vira problema real se a chave tiver menos de dezesseis caracteres.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Git cifra o código, então a chave já fica protegida.",
+                                "text": "Nenhum: o próprio Git já cifra o código, então a chave fica protegida.",
                                 "isCorrect": false
                             }
                         ]
@@ -2773,19 +2773,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Em variáveis de ambiente ou em um cofre de segredos, fora do código-fonte.",
+                                "text": "Em variáveis de ambiente ou num cofre de segredos, fora do código.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Em constantes no topo do arquivo principal da aplicação.",
+                                "text": "Em constantes soltas no topo do arquivo principal da aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comentados no código, para não serem executados.",
+                                "text": "Comentados dentro do código-fonte, para nunca serem executados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Em um arquivo .env versionado junto no Git.",
+                                "text": "Num arquivo .env versionado junto com o resto no repositório Git.",
                                 "isCorrect": false
                             }
                         ]
@@ -2795,19 +2795,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não é criptograficamente seguro: a sequência é previsível e o token pode ser adivinhado.",
+                                "text": "Não é seguro: a sequência gerada é previsível e pode ser adivinhada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É lento demais para gerar tokens em produção.",
+                                "text": "É lento demais para gerar tokens em sistemas de alto tráfego.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só gera números, e tokens precisam conter letras.",
+                                "text": "Só produz números, e um bom token precisa conter letras também.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Gera valores grandes demais para caber no banco.",
+                                "text": "Produz valores grandes demais para caber numa coluna do banco.",
                                 "isCorrect": false
                             }
                         ]
@@ -2817,19 +2817,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Trocar por crypto.randomBytes(32).toString(\"hex\"), que usa aleatoriedade criptográfica.",
+                                "text": "Usar crypto.randomBytes(32).toString(\"hex\"), que é criptográfico.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Concatenar dois Math.random() para dobrar o tamanho do token.",
+                                "text": "Concatenar dois Math.random() seguidos para dobrar o tamanho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aplicar Base64 sobre o resultado do Math.random().",
+                                "text": "Aplicar Base64 sobre o resultado que o Math.random() gerar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar a data e a hora atuais ao token.",
+                                "text": "Somar a data e a hora atuais ao valor gerado pelo token.",
                                 "isCorrect": false
                             }
                         ]
@@ -2839,19 +2839,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Considerar o segredo comprometido e rotacioná-lo (gerar um novo), pois ele continua no histórico do Git.",
+                                "text": "Considerar o segredo comprometido e rotacioná-lo: segue no histórico.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nada mais: o commit de remoção já apaga o segredo do histórico.",
+                                "text": "Nada mais: o próprio commit que remove o segredo já o apaga do histórico.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas tornar o repositório privado já resolve.",
+                                "text": "Apenas tornar esse repositório privado já resolve todo o problema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta renomear a variável de ambiente que guarda o segredo.",
+                                "text": "Basta renomear a variável de ambiente que guardava aquele segredo.",
                                 "isCorrect": false
                             }
                         ]
@@ -2897,19 +2897,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um ajuste relevante para segurança que está errado, ausente ou deixado num padrão inseguro — no servidor, framework, banco, nuvem ou container.",
+                                "text": "Um ajuste de segurança errado, ausente ou no padrão inseguro de fábrica.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um bug de lógica escrito pelo desenvolvedor dentro da função de negócio.",
+                                "text": "Um bug de lógica de negócio, escrito pelo próprio time dentro do código.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma falha exclusiva de criptografia, quando o algoritmo escolhido é fraco.",
+                                "text": "Uma falha só de criptografia, quando o algoritmo escolhido é fraco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um ataque em que o invasor injeta comandos SQL no formulário de login.",
+                                "text": "Um ataque que injeta comandos SQL direto no formulário de login do sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -2919,19 +2919,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque são públicas e conhecidas: atacantes varrem a internet testando esses defaults e entram sem precisar de nenhuma outra falha.",
+                                "text": "Porque são credenciais públicas, testadas em massa por atacantes na internet.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque senhas curtas são fáceis de quebrar, mas admin/admin em si é seguro.",
+                                "text": "Porque senhas curtas caem fácil em ataque de força bruta, mesmo sendo admin/admin.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador salva essas senhas em texto puro no histórico.",
+                                "text": "Porque o navegador grava esse tipo de senha em texto puro no histórico.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque contas padrão consomem muita memória do servidor.",
+                                "text": "Porque contas padrão consomem memória extra do servidor no login.",
                                 "isCorrect": false
                             }
                         ]
@@ -2941,19 +2941,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O segredo é público (está no repositório) e provavelmente idêntico em produção; quem vê o código pode forjar sessões válidas.",
+                                "text": "É público no repositório e tende a repetir em produção, dá pra forjar sessão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: como é só um valor padrão, ele nunca é usado em produção.",
+                                "text": "Nenhum: um valor padrão desse tipo nunca chega a ser usado em produção real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único risco é o nome da variável estar em inglês.",
+                                "text": "É só estético: o nome da variável devia estar escrito em português, não inglês.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um problema de performance, pois ler variáveis de ambiente é lento.",
+                                "text": "É performance: ler variável de ambiente em cada requisição deixa tudo mais lento.",
                                 "isCorrect": false
                             }
                         ]
@@ -2963,19 +2963,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É configuração incorreta (default/ambiente): desligue o debug em produção e mantenha configurações separadas e endurecidas por ambiente.",
+                                "text": "Configuração incorreta de ambiente: a correção é desligar o debug em produção.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É um problema de criptografia; basta trocar o certificado TLS.",
+                                "text": "Falha de criptografia: o certificado TLS do site precisa ser trocado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é problema de segurança, apenas estético.",
+                                "text": "Não é risco de segurança, é só um detalhe estético da página de erro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É injeção; basta parametrizar as queries.",
+                                "text": "É injeção de SQL: o certo aqui é parametrizar todas as consultas ao banco.",
                                 "isCorrect": false
                             }
                         ]
@@ -2985,7 +2985,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não semear conta com senha padrão (exigir definição de senha forte no primeiro acesso) e abortar a inicialização se JWT_SECRET não vier do ambiente, sem fallback.",
+                                "text": "Exigir senha forte no primeiro acesso e abortar o boot se faltar JWT_SECRET.",
                                 "isCorrect": true
                             },
                             {
@@ -2993,11 +2993,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mover o usuário admin para outra tabela, mantendo a senha 'admin'.",
+                                "text": "Mover o usuário admin para outra tabela do banco, mantendo a senha 'admin'.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ofuscar o valor 'dev-secret' com base64 no código-fonte.",
+                                "text": "Ofuscar o valor 'dev-secret' em base64 direto no código-fonte.",
                                 "isCorrect": false
                             }
                         ]
@@ -3038,19 +3038,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Vaza informação útil para reconhecimento (caminhos, versões, estrutura de queries e tabelas), ajudando o atacante a planejar o próximo passo.",
+                                "text": "Porque vaza dado útil pro reconhecimento: caminho, versão e estrutura de tabela.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque stack traces deixam a resposta HTTP mais lenta.",
+                                "text": "Porque stack trace deixa a resposta HTTP visivelmente mais lenta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o cliente não consegue renderizar textos longos.",
+                                "text": "Porque o navegador do cliente não consegue renderizar um texto tão longo assim.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é perigoso; quanto mais detalhe o usuário final vê, melhor.",
+                                "text": "Não é perigoso: quanto mais detalhe o usuário final vê, melhor.",
                                 "isCorrect": false
                             }
                         ]
@@ -3060,19 +3060,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Arquivos que não deveriam ser públicos, como .env, .git, backups e código-fonte, navegáveis pelo browser.",
+                                "text": "Arquivo que devia ser privado: .env, .git, backup e código-fonte à mostra.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas imagens otimizadas para a página.",
+                                "text": "Só imagens já otimizadas que compõem o layout da página pública.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente os cabeçalhos HTTP da resposta.",
+                                "text": "Somente os cabeçalhos HTTP devolvidos junto com cada resposta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada relevante; listagem de diretórios é sempre inofensiva.",
+                                "text": "Nada relevante: listagem de diretório é sempre um recurso inofensivo.",
                                 "isCorrect": false
                             }
                         ]
@@ -3082,19 +3082,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Responder uma mensagem genérica com um id de correlação ao cliente, registrar os detalhes só no log do servidor e rodar com NODE_ENV=production.",
+                                "text": "Mensagem genérica com id de correlação, detalhe só no log do servidor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trocar o status 500 por 200 e continuar enviando a stack.",
+                                "text": "Trocar o status 500 por 200 na resposta e continuar enviando a stack.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comprimir a resposta com gzip para 'esconder' a stack.",
+                                "text": "Comprimir a resposta com gzip, isso já esconde a stack trace do cliente final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Enviar a stack apenas quando o User-Agent for de um navegador.",
+                                "text": "Enviar a stack só quando o User-Agent identificar um navegador comum.",
                                 "isCorrect": false
                             }
                         ]
@@ -3104,19 +3104,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Restringir o banco à rede interna/localhost com firewall e usar um usuário de banco com apenas os grants necessários (sem superusuário).",
+                                "text": "Banco restrito à rede interna, usuário só com os grants necessários.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Manter a porta aberta, mas trocar a senha do superusuário por uma mais longa.",
+                                "text": "Manter a porta aberta ao público, só trocar a senha do superusuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mover o banco para a porta 5433 para 'esconder' o serviço.",
+                                "text": "Mover o banco para a porta 5433, isso já esconde o serviço na internet.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Conceder ao usuário da app privilégios de superusuário para evitar erros de permissão.",
+                                "text": "Dar privilégio de superusuário à app para não ter erro de permissão.",
                                 "isCorrect": false
                             }
                         ]
@@ -3126,19 +3126,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ele lista diretórios (autoindex on) e serve o repositório inteiro; o certo é desligar autoindex e servir só a pasta pública de build (ex.: dist), fora .env e .git.",
+                                "text": "Lista diretório e serve o repo inteiro: desligar autoindex e servir só o build.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum problema; autoindex melhora o SEO do site.",
+                                "text": "Nenhum problema: autoindex costuma melhorar o posicionamento em buscadores.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único ajuste é adicionar index.html; pode manter a raiz no repositório.",
+                                "text": "O único ajuste necessário é adicionar um index.html na raiz do projeto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta renomear .env para .env.txt que o risco some.",
+                                "text": "Basta renomear o arquivo .env para .env.txt que o risco de exposição já desaparece.",
                                 "isCorrect": false
                             }
                         ]
@@ -3179,19 +3179,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Instrui o navegador a acessar o site somente via HTTPS por um período, dificultando ataques de downgrade e o roubo de dados em HTTP.",
+                                "text": "Instrui o navegador a usar HTTPS por um tempo, dificultando o downgrade.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografa o banco de dados no servidor.",
+                                "text": "Criptografa o conteúdo do banco de dados direto no servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bloqueia totalmente o carregamento de imagens de outros domínios.",
+                                "text": "Bloqueia todo carregamento de imagem hospedada em outro domínio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Impede que o usuário salve a senha no navegador.",
+                                "text": "Impede que o navegador ofereça salvar a senha digitada pelo usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -3201,19 +3201,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Faz o navegador respeitar o Content-Type declarado em vez de adivinhá-lo, evitando que um arquivo seja interpretado como script.",
+                                "text": "Faz o navegador respeitar o Content-Type declarado, sem tentar adivinhar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ativa a compressão automática das respostas.",
+                                "text": "Ativa a compressão automática para toda resposta enviada pelo servidor web.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Define por quanto tempo o navegador guarda o cache.",
+                                "text": "Define por quanto tempo o navegador guarda a resposta em cache.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Assina digitalmente a resposta HTTP.",
+                                "text": "Assina digitalmente cada resposta HTTP enviada para o cliente.",
                                 "isCorrect": false
                             }
                         ]
@@ -3223,19 +3223,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um atacante na rede pode tentar rebaixar a conexão para HTTP (SSL strip) e interceptar dados, pois o navegador não foi instruído a exigir HTTPS.",
+                                "text": "Um atacante na rede ainda pode rebaixar a conexão pra HTTP e interceptar dado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: usar HTTPS já torna o HSTS irrelevante.",
+                                "text": "Nenhum: usar HTTPS por padrão já torna o cabeçalho HSTS irrelevante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O certificado TLS deixa de ser válido sem HSTS.",
+                                "text": "O certificado TLS do site deixa de ser considerado válido sem o HSTS ativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As imagens do site param de carregar.",
+                                "text": "As imagens hospedadas no site param de carregar direito no navegador do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -3245,19 +3245,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Enviar X-Frame-Options: DENY (ou CSP com frame-ancestors 'none') para impedir que a página seja enquadrada por outros sites.",
+                                "text": "Enviar X-Frame-Options: DENY pra impedir que a página seja enquadrada por outros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Adicionar X-Content-Type-Options: nosniff.",
+                                "text": "Adicionar o cabeçalho X-Content-Type-Options: nosniff nas respostas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Definir Cache-Control: no-store.",
+                                "text": "Definir Cache-Control: no-store em todas as rotas sensíveis da aplicação inteira.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover o cabeçalho Referrer-Policy.",
+                                "text": "Remover de vez o cabeçalho Referrer-Policy de todas as respostas HTTP do servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -3267,19 +3267,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Set-Cookie: session=abc123; HttpOnly; Secure; SameSite=Lax — HttpOnly esconde do JavaScript, Secure exige HTTPS e SameSite mitiga CSRF.",
+                                "text": "session=abc123; HttpOnly; Secure; SameSite=Lax, as três defesas juntas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Set-Cookie: session=abc123; Secure — apenas Secure já basta para todos os riscos.",
+                                "text": "session=abc123; Secure, essa única flag isolada já basta pra cobrir tudo o risco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Set-Cookie: session=abc123; HttpOnly=false; Secure=false.",
+                                "text": "session=abc123; HttpOnly=false; Secure=false, cookie mais simples.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Set-Cookie: session=abc123; Max-Age=999999999 — aumentar a validade resolve a segurança.",
+                                "text": "session=abc123; Max-Age=999999999, aumentar a validade resolve.",
                                 "isCorrect": false
                             }
                         ]
@@ -3320,19 +3320,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "'Componentes vulneráveis e desatualizados' — ampliada para cobrir toda a cadeia (dependências, build, CI/CD, registros), não só bibliotecas velhas.",
+                                "text": "'Componentes vulneráveis e desatualizados', ampliada pra cobrir toda a cadeia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "'Injeção', que passou a incluir XSS.",
+                                "text": "'Injeção', categoria que passou a incluir também os ataques de XSS refletido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "'Controle de acesso quebrado', que subiu para o topo.",
+                                "text": "'Controle de acesso quebrado', que teria subido pro topo do ranking em 2025.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma categoria totalmente nova, sem relação com edições anteriores.",
+                                "text": "Uma categoria totalmente nova, sem nenhuma relação com edição anterior do OWASP.",
                                 "isCorrect": false
                             }
                         ]
@@ -3342,19 +3342,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma dependência das suas dependências — código de terceiros que entra no projeto sem você declará-lo diretamente.",
+                                "text": "Dependência das suas dependências, que entra sem você declarar direto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma dependência que só existe durante os testes.",
+                                "text": "Uma dependência que só existe durante a execução da suíte de testes automatizados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma dependência instalada manualmente, fora do gerenciador de pacotes.",
+                                "text": "Uma dependência instalada na mão, fora do gerenciador de pacotes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma biblioteca escrita por você e publicada no registro.",
+                                "text": "Uma lib escrita por você mesmo e publicada no registro público.",
                                 "isCorrect": false
                             }
                         ]
@@ -3364,19 +3364,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Versionar o lockfile e usar 'npm ci' no pipeline, que instala exatamente as versões travadas e falha se houver divergência.",
+                                "text": "Versionar o lockfile e trocar pra 'npm ci', que trava as versões exatas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Fixar todas as versões e nunca mais atualizá-las.",
+                                "text": "Fixar todas as versões agora mesmo e nunca mais atualizar nenhuma delas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar 'npm install' por 'npm update' no build.",
+                                "text": "Trocar o comando 'npm install' por 'npm update' logo na etapa de build.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apagar o lockfile em todas as máquinas para forçar uma resolução fresca.",
+                                "text": "Apagar o lockfile em toda máquina do time pra forçar uma resolução nova.",
                                 "isCorrect": false
                             }
                         ]
@@ -3386,19 +3386,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Manter um inventário de componentes (SBOM) e rodar varredura de dependências (SCA) que cruza o que você usa com bases de vulnerabilidades.",
+                                "text": "Inventário de componentes (SBOM) mais varredura (SCA) contra base de falha.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Esperar o próximo pentest anual para descobrir.",
+                                "text": "Esperar o próximo pentest anual da empresa pra só então ir descobrir isso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ler o código de todas as bibliotecas manualmente a cada release.",
+                                "text": "Ler manualmente o código-fonte de cada lib a cada nova versão publicada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar que, se estiver quebrado, algum usuário vai reclamar.",
+                                "text": "Confiar que, se algo estiver quebrado, algum usuário acaba reclamando logo.",
                                 "isCorrect": false
                             }
                         ]
@@ -3408,19 +3408,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Uma vulnerabilidade numa dependência transitiva também é sua responsabilidade; lockfile + 'npm ci' + varredura (SCA) no CI + atualizações frequentes formam uma boa base.",
+                                "text": "Falha em dependência transitiva também é sua; lockfile, 'npm ci' e SCA ajudam.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Se a sua dependência direta está atualizada, as transitivas não importam.",
+                                "text": "Se a dependência direta está em dia, a transitiva deixa de importar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Rodar SCA uma vez, na criação do projeto, é suficiente para sempre.",
+                                "text": "Rodar SCA uma única vez, lá na criação do projeto, já resolve pra sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Lockfile e SCA são a mesma coisa e fazem o mesmo trabalho.",
+                                "text": "Lockfile e SCA são a mesma ferramenta, fazem exatamente o mesmo papel.",
                                 "isCorrect": false
                             }
                         ]
@@ -3461,19 +3461,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Publicar um pacote com nome muito parecido com o de um popular (um erro de digitação comum) para que devs o instalem por engano.",
+                                "text": "Publicar pacote com nome parecido a um popular, esperando erro de digitação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Digitar o comando de instalação com a sintaxe errada.",
+                                "text": "Digitar o comando de instalação do pacote com a sintaxe totalmente errada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Renomear o próprio pacote para melhorar o SEO.",
+                                "text": "Renomear o próprio pacote de tempos em tempos só pra melhorar o SEO.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro do gerenciador ao resolver versões semver.",
+                                "text": "Um erro do próprio gerenciador ao resolver a versão no padrão semver.",
                                 "isCorrect": false
                             }
                         ]
@@ -3483,19 +3483,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Eles executam código arbitrário automaticamente na sua máquina ou no CI durante a instalação, podendo roubar variáveis de ambiente e tokens.",
+                                "text": "Rodam código sozinhos na instalação, podendo roubar variável e token.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Eles deixam o download do pacote mais lento.",
+                                "text": "Deixam o download do pacote perceptivelmente mais lento do que o normal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Eles só rodam depois que você chama a função da lib no seu código.",
+                                "text": "Só rodam depois que você chama alguma função da lib no seu código.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Eles não têm acesso a nada além da pasta node_modules e são inofensivos.",
+                                "text": "Não têm acesso a nada além da pasta node_modules, são inofensivos.",
                                 "isCorrect": false
                             }
                         ]
@@ -3505,19 +3505,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É confusão de dependências; previne-se com pacotes de escopo (@acme/utils) apontando o escopo para o registro privado e travando via lockfile.",
+                                "text": "Confusão de dependência: previne com escopo (@acme/utils) e registro privado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É typosquatting; basta conferir a ortografia do nome.",
+                                "text": "Typosquatting: basta conferir com bastante atenção a ortografia do nome do pacote.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É força bruta; basta uma senha mais forte no registro.",
+                                "text": "Força bruta: o suficiente aqui é botar uma senha mais forte no registro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É XSS; basta escapar a saída HTML.",
+                                "text": "Um caso de XSS: o suficiente é escapar direito toda a saída em HTML.",
                                 "isCorrect": false
                             }
                         ]
@@ -3527,19 +3527,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Indica que o artefato baixado difere do que foi travado (adulteração ou versão trocada); o 'npm ci' instala estritamente do lockfile e falha diante da divergência.",
+                                "text": "Artefato baixado difere do travado; 'npm ci' falha diante da divergência.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Indica só que sua internet está lenta; ignore e rode de novo.",
+                                "text": "Só indica que a conexão de internet está lenta nesse momento; ignore e rode de novo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Indica que o pacote está desatualizado; basta rodar 'npm update'.",
+                                "text": "Indica que o pacote está desatualizado, o certo é rodar 'npm update'.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Indica erro de sintaxe no seu código; corrija o import.",
+                                "text": "Indica erro de sintaxe no seu código, o certo é corrigir o import.",
                                 "isCorrect": false
                             }
                         ]
@@ -3549,19 +3549,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Confirmar o pacote oficial (evitar typosquatting), revisar o código e o postinstall, checar reputação/mantenedores e proveniência, e travar a versão no lockfile — instalando com scripts desabilitados se possível.",
+                                "text": "Confirmar o pacote oficial, revisar o postinstall e travar a versão no lockfile.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas rodar 'npm install' e ver se a aplicação sobe sem erros.",
+                                "text": "Rodar 'npm install' uma vez e ver se a aplicação sobe sem erro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adotar mesmo assim, pois todo pacote no registro é auditado oficialmente antes de publicar.",
+                                "text": "Adotar assim mesmo, pois todo pacote publicado no registro passa por auditoria oficial.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar porque o nome é parecido com o de uma lib conhecida, sinal de que é da mesma equipe.",
+                                "text": "Confiar no pacote porque o nome parecido sugere que é da mesma equipe.",
                                 "isCorrect": false
                             }
                         ]
@@ -3607,19 +3607,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O controle de segurança adequado não foi previsto: falta um controle, ou ele é fraco por concepção, e código perfeito não resolve.",
+                                "text": "Falta um controle adequado, ou ele é fraco por concepção; nada no código resolve isso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A ausência de comentários explicativos no código.",
+                                "text": "Faltam comentários explicativos no código, o que dificulta a manutenção futura do time.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro de digitação em uma única linha, fácil de corrigir localmente.",
+                                "text": "Um erro de digitação numa linha, que a próxima revisão de código resolve sem drama nenhum.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um servidor rodando a versão desatualizada de uma biblioteca.",
+                                "text": "Uma biblioteca desatualizada, que uma simples atualização de versão já resolve de vez.",
                                 "isCorrect": false
                             }
                         ]
@@ -3633,15 +3633,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Somente depois que o sistema já sofreu um ataque real.",
+                                "text": "Só depois que o sistema já sofreu um ataque real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas quando o sistema vai ser aposentado.",
+                                "text": "Apenas quando o sistema estiver para ser aposentado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nunca; é responsabilidade exclusiva da equipe de redes.",
+                                "text": "Nunca; a tarefa é exclusiva da equipe de redes.",
                                 "isCorrect": false
                             }
                         ]
@@ -3655,15 +3655,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Injeção, por causa da query usada na recuperação.",
+                                "text": "Injeção, pois toda query que busca dados pelo email é, por natureza, insegura.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falha criptográfica, por não usar HTTPS na página.",
+                                "text": "Falha criptográfica, pois a senha provavelmente trafega em texto puro na rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema algum, já que o código está correto.",
+                                "text": "Nenhum problema real, pois um código sem bugs elimina qualquer risco de segurança.",
                                 "isCorrect": false
                             }
                         ]
@@ -3673,19 +3673,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O atacante aplica o mesmo cupom várias vezes para zerar o valor do pedido.",
+                                "text": "O atacante aplica o mesmo cupom várias vezes seguidas para zerar o pedido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O usuário digita o código do cupom em letras maiúsculas.",
+                                "text": "O usuário digita o código do cupom todo em letras maiúsculas, sem perceber o erro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O usuário fecha a aba antes de finalizar a compra.",
+                                "text": "O usuário fecha a aba do navegador antes de concluir a compra, por distração.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O designer escolhe uma cor pouco atraente para o botão.",
+                                "text": "O designer escolhe uma cor pouco atraente para o botão de aplicar o cupom no carrinho.",
                                 "isCorrect": false
                             }
                         ]
@@ -3695,19 +3695,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A é falha de implementação (o controle existe, faltou aplicar num ponto); B é falha de design (o controle correto nunca foi concebido).",
+                                "text": "A é falha de implementação: faltou aplicar um controle existente; B é falha de design, sem controle.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ambas são falhas de implementação, corrigíveis mexendo só no código.",
+                                "text": "Ambas são falhas de implementação, pois se corrigem mexendo apenas no código já pronto e existente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambas são falhas de design, pois envolvem permissão.",
+                                "text": "Ambas são falhas de design, pois toda checagem de permissão é, por definição, uma questão de design.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A é falha de design e B é falha de implementação.",
+                                "text": "A é falha de design e B é falha de implementação, o inverso exato do que parece à primeira vista.",
                                 "isCorrect": false
                             }
                         ]
@@ -3748,19 +3748,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque o cliente pode alterar o valor; o preço deve vir da fonte da verdade no servidor (o banco).",
+                                "text": "Porque o cliente pode alterar o valor; o preço confiável deve vir do banco, no servidor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque enviar o preço deixa a página mais lenta para carregar.",
+                                "text": "Porque enviar o preço no request deixa a página perceptivelmente mais lenta ao carregar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador não consegue enviar números para o servidor.",
+                                "text": "Porque navegadores modernos não conseguem enviar valores numéricos ao servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTPS proíbe que preços trafeguem na requisição.",
+                                "text": "Porque o protocolo HTTPS proíbe, por padrão, que preços trafeguem na requisição.",
                                 "isCorrect": false
                             }
                         ]
@@ -3770,19 +3770,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Falha de lógica de negócio (design inseguro): a regra não foi tratada como controle.",
+                                "text": "Falha de lógica de negócio: a quantidade não foi tratada como um controle de segurança.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Falha criptográfica, por não cifrar o carrinho.",
+                                "text": "Falha criptográfica, pois o carrinho deveria trafegar cifrado entre cliente e servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Erro de digitação sem qualquer impacto de segurança.",
+                                "text": "Erro de digitação do usuário, sem qualquer impacto real de segurança no sistema todo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Configuração incorreta do servidor web.",
+                                "text": "Configuração incorreta do servidor web, que basta ajustar num arquivo de configuração.",
                                 "isCorrect": false
                             }
                         ]
@@ -3792,19 +3792,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Buscar o preço no banco pelo produtoId e validar a quantidade como inteiro dentro de limites.",
+                                "text": "Buscar o preço no banco pelo produtoId e validar a quantidade dentro de limites aceitáveis.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trocar let por const na declaração das variáveis.",
+                                "text": "Trocar let por const na declaração das variáveis, deixando o código bem mais robusto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Converter o total para string antes de salvar no banco.",
+                                "text": "Converter o total para string antes de salvar no banco, evitando erros de tipo futuros.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Envolver o cálculo em um bloco try/catch.",
+                                "text": "Envolver o cálculo inteiro em um bloco try/catch, para capturar qualquer erro numérico.",
                                 "isCorrect": false
                             }
                         ]
@@ -3814,19 +3814,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Validar o estado do pedido no servidor (máquina de estados): só confirmar se o pagamento foi realmente concluído.",
+                                "text": "Validar o estado do pedido no servidor: só confirmar se o pagamento foi mesmo concluído.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Esconder o botão de confirmar usando CSS.",
+                                "text": "Esconder o botão de confirmar usando CSS, para não aparecer antes da hora certa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar em um campo \"pago: true\" enviado pelo cliente.",
+                                "text": "Confiar num campo \"pago: true\" enviado pelo próprio cliente na requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Renomear o endpoint para um nome difícil de adivinhar.",
+                                "text": "Renomear o endpoint para um nome difícil de adivinhar, dificultando o acesso direto.",
                                 "isCorrect": false
                             }
                         ]
@@ -3836,19 +3836,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Tornar a checagem-e-gravação atômica (transação ou constraint única no banco), eliminando a condição de corrida.",
+                                "text": "Tornar a checagem e a gravação atômicas (transação ou constraint única), eliminando a corrida.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Checar o limite apenas no front-end, para ficar mais rápido.",
+                                "text": "Checar o limite apenas no front-end, o que deixa a validação bem mais rápida para o usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar o timeout do servidor para as requisições não colidirem.",
+                                "text": "Aumentar o timeout do servidor, para que as requisições não cheguem a colidir entre si.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar que duas requisições nunca chegam exatamente ao mesmo tempo.",
+                                "text": "Confiar que duas requisições jamais chegam exatamente no mesmo instante no servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -3889,19 +3889,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Reconstruir um objeto ou estrutura a partir de uma sequência de bytes ou texto (o inverso de serializar).",
+                                "text": "Reconstruir um objeto a partir de bytes ou texto salvos, o inverso de serializar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apagar permanentemente os dados de um objeto da memória.",
+                                "text": "Apagar de forma permanente os dados de um objeto que estava guardado na memória.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografar um arquivo antes de enviá-lo pela rede.",
+                                "text": "Criptografar o conteúdo de um arquivo inteiro antes de transmiti-lo pela rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comprimir uma imagem para ocupar menos espaço.",
+                                "text": "Comprimir uma imagem para que ela passe a ocupar bem menos espaço em disco.",
                                 "isCorrect": false
                             }
                         ]
@@ -3911,19 +3911,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Usar um formato de dados puro como JSON, que gera apenas dados, e validar o schema.",
+                                "text": "Usar um formato de dados puro, como JSON, e validar o schema de cada campo recebido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Usar formatos nativos que reconstroem objetos, como pickle, para ir mais rápido.",
+                                "text": "Usar formatos nativos que reconstroem objetos, como pickle, para ganhar velocidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar no dado se ele estiver codificado em base64.",
+                                "text": "Confiar no dado recebido sempre que ele estiver codificado em base64.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Desativar a validação para evitar que erros apareçam.",
+                                "text": "Desativar a validação de schema, para que erros não apareçam para o usuário final.",
                                 "isCorrect": false
                             }
                         ]
@@ -3933,19 +3933,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Desserialização insegura: um cookie forjado pode instanciar objetos e executar código no servidor (RCE).",
+                                "text": "Desserialização insegura: um cookie forjado pode instanciar objetos e rodar código.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas um erro de codificação base64, sem impacto de segurança.",
+                                "text": "Só um erro de codificação em base64, sem nenhum impacto real de segurança no sistema todo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Vazamento de estilos CSS para o cliente.",
+                                "text": "Vazamento de estilos CSS para o cliente, através do próprio valor armazenado no cookie.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: o pickle valida a origem dos dados automaticamente.",
+                                "text": "Nenhum risco real: o próprio pickle já valida sozinho a origem dos dados recebidos.",
                                 "isCorrect": false
                             }
                         ]
@@ -3955,19 +3955,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Falha de integridade: confiar num token sem verificar a assinatura permite forjar as claims.",
+                                "text": "Falha de integridade: sem verificar a assinatura, o atacante consegue forjar as claims.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Falha de configuração de CSS na página de login.",
+                                "text": "Falha de configuração de CSS presente na própria página de login do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Injeção de SQL no cabeçalho do token.",
+                                "text": "Injeção de SQL, aplicada diretamente dentro do cabeçalho do token JWT.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas uma falha de disponibilidade do serviço.",
+                                "text": "Apenas uma falha de disponibilidade, sem relação alguma com a autenticidade do token.",
                                 "isCorrect": false
                             }
                         ]
@@ -3977,19 +3977,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Assinar o payload com HMAC e verificar a assinatura ANTES de desserializar, além de validar o schema do resultado.",
+                                "text": "Assinar o payload com HMAC, verificar antes de desserializar e validar o schema resultante.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Desserializar primeiro e, se der erro, tentar novamente.",
+                                "text": "Desserializar o dado primeiro e, caso dê erro, simplesmente tentar de novo em seguida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar pickle, mas dentro de um bloco try/except.",
+                                "text": "Usar pickle normalmente, mas envolvendo a chamada num bloco try/except no código.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comprimir o objeto com gzip antes de enviá-lo.",
+                                "text": "Comprimir o objeto inteiro com gzip antes de enviá-lo de volta para o servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -4030,19 +4030,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Para garantir que ela veio mesmo do fornecedor e não foi adulterada no caminho.",
+                                "text": "Para confirmar que ela veio mesmo do fornecedor e não foi alterada no caminho.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Para deixar o download da atualização mais rápido.",
+                                "text": "Para deixar o download da atualização perceptivelmente mais rápido para o usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para economizar espaço em disco no dispositivo.",
+                                "text": "Para economizar espaço em disco disponível no dispositivo do usuário final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a assinatura, sozinha, criptografa o aplicativo.",
+                                "text": "Porque a assinatura, sozinha, já criptografa todo o conteúdo do aplicativo.",
                                 "isCorrect": false
                             }
                         ]
@@ -4052,19 +4052,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um script de CDN adulterado: se o conteúdo não bater com o hash, o browser bloqueia.",
+                                "text": "Um script de CDN adulterado: se o conteúdo não bater o hash, o navegador bloqueia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Páginas que carregam devagar por causa da rede.",
+                                "text": "Páginas que carregam de forma mais devagar por causa de uma conexão de rede lenta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Erros de digitação dentro do código JavaScript.",
+                                "text": "Erros comuns de digitação cometidos dentro do próprio código JavaScript do site.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cookies que já expiraram no navegador.",
+                                "text": "Cookies que já expiraram e continuam guardados dentro do navegador do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -4074,19 +4074,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Executa código baixado sem verificar origem nem integridade; se o servidor ou a rede forem comprometidos, você roda malware.",
+                                "text": "Executa código baixado sem checar origem nem integridade, arriscando rodar malware.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Usa HTTPS, o que é sempre inseguro para downloads.",
+                                "text": "Usa HTTPS na conexão, protocolo sempre inseguro para qualquer tipo de download.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O parâmetro -s do curl desativa a criptografia da conexão.",
+                                "text": "O parâmetro -s do curl desativa, sozinho, toda a criptografia da conexão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum: encadear o download direto no bash é seguro por padrão.",
+                                "text": "Nenhum: encadear o download direto no bash já é seguro por padrão, sem ressalvas.",
                                 "isCorrect": false
                             }
                         ]
@@ -4096,19 +4096,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Uma versão futura (ou adulterada) passa a rodar no pipeline sem revisão; fixar por hash/versão e verificar reduz o risco.",
+                                "text": "Uma versão futura, ou adulterada, roda sem revisão; fixar por hash reduz esse risco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O @latest deixa o build significativamente mais lento.",
+                                "text": "O @latest torna o processo de build significativamente mais lento do que o normal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O @latest só funciona em determinados dias da semana.",
+                                "text": "O @latest funciona corretamente apenas em alguns dias certos da semana, por convenção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há risco: @latest sempre aponta para a versão auditada.",
+                                "text": "Não há risco algum: @latest sempre aponta para a versão já auditada pelo time todo.",
                                 "isCorrect": false
                             }
                         ]
@@ -4118,19 +4118,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Falhou no pipeline de build: uma dependência ou etapa comprometida entrou no artefato ANTES da assinatura. Defesas: proteger o CI/CD, fixar e verificar dependências e gerar procedência do build.",
+                                "text": "Falhou no build: uma dependência comprometida entrou antes de assinar; proteja o CI/CD.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A assinatura estava errada; bastava assinar o instalador de novo.",
+                                "text": "A assinatura estava errada; bastaria simplesmente assinar o instalador de novo depois.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema foi o HTTPS do download; trocar para HTTP resolveria.",
+                                "text": "O problema foi o uso de HTTPS no download; trocar para HTTP resolveria o caso todo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A culpa é do antivírus do usuário; não há nada a fazer do lado do fornecedor.",
+                                "text": "A culpa é do antivírus do usuário; não há nada a fazer do lado do fornecedor final.",
                                 "isCorrect": false
                             }
                         ]
@@ -4171,19 +4171,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Revela detalhes internos (caminhos de arquivo, versões, queries) que ajudam o atacante a planejar o ataque.",
+                                "text": "Revela detalhes internos, como caminhos e queries, que ajudam a planejar o ataque.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixa a resposta de erro visualmente mais bonita.",
+                                "text": "Deixa a resposta de erro exibida na tela visualmente mais bonita para o usuário final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Consome menos banda do que uma mensagem curta.",
+                                "text": "Consome, de forma perceptível, bem menos banda do que uma mensagem de erro curta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Melhora o posicionamento da página no buscador.",
+                                "text": "Melhora o posicionamento da página de erro nos resultados de busca do Google.",
                                 "isCorrect": false
                             }
                         ]
@@ -4193,19 +4193,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Se a checagem falhar ou der erro, o acesso é NEGADO por padrão.",
+                                "text": "Se a checagem falhar ou der erro, o acesso é negado por padrão, sem exceção.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Se a checagem falhar, o acesso é liberado para não atrapalhar o usuário.",
+                                "text": "Se a checagem falhar, o acesso é liberado, para não atrapalhar o usuário final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ignorar o erro em silêncio e continuar a execução.",
+                                "text": "Ignorar o erro em completo silêncio e simplesmente continuar a execução normal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reiniciar o servidor a cada erro de autorização.",
+                                "text": "Reiniciar o servidor inteiro a cada erro de autorização que for detectado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4219,15 +4219,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: retornar true em caso de erro é sempre seguro.",
+                                "text": "Nenhum: retornar true em caso de erro é sempre uma prática segura e recomendada aqui.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Afeta apenas o desempenho, nunca a segurança.",
+                                "text": "Afeta apenas o desempenho da função, nunca chegando a comprometer a segurança real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faltou só um console.log; a lógica de acesso está correta.",
+                                "text": "Faltou só um console.log ali dentro; a lógica de acesso em si já está correta.",
                                 "isCorrect": false
                             }
                         ]
@@ -4237,19 +4237,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O sistema pode ficar em estado inconsistente (ex.: cliente cobrado sem baixa de estoque) e o erro passa despercebido.",
+                                "text": "O sistema pode ficar inconsistente, cobrando o cliente sem baixar o estoque, sem notar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: o catch vazio é a forma recomendada de tratar o erro.",
+                                "text": "Nenhum: um catch vazio é justamente a forma recomendada de tratar esse tipo de erro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas deixa o código mais rápido, sem qualquer risco.",
+                                "text": "Apenas deixa a execução do código mais rápida, sem qualquer risco associado a isso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Afeta somente os logs, nunca a consistência dos dados.",
+                                "text": "Afeta somente o volume dos logs gerados, nunca a consistência dos dados salvos ali.",
                                 "isCorrect": false
                             }
                         ]
@@ -4259,19 +4259,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Falhar fechado (negar) e tratar a indisponibilidade com timeouts curtos, retentativas limitadas e degradação controlada, sem liberar acesso indevido.",
+                                "text": "Falhar fechado e tratar a instabilidade com timeout curto e degradação controlada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Manter o fail-open, pois disponibilidade sempre vence segurança.",
+                                "text": "Manter o fail-open, já que a disponibilidade do site deve sempre vencer a segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Colocar um catch vazio para que o erro simplesmente desapareça.",
+                                "text": "Colocar um catch vazio ali, para que o erro simplesmente desapareça sem ser tratado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Repetir a checagem em um laço infinito até ela funcionar.",
+                                "text": "Repetir a checagem dentro de um laço infinito, até que ela volte a funcionar direito.",
                                 "isCorrect": false
                             }
                         ]
@@ -4317,19 +4317,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque, sem registros e alertas, os outros ataques passam despercebidos e o tempo até a detecção dispara.",
+                                "text": "Sem registro nem alerta, os outros ataques passam despercebidos por mais tempo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque ela permite injetar comandos SQL diretamente no banco de dados.",
+                                "text": "Ela abre uma porta direta para comandos SQL nas tabelas do banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ela expõe o código-fonte da aplicação para qualquer visitante.",
+                                "text": "Ela publica o código-fonte inteiro da aplicação para qualquer visitante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ela desativa o HTTPS e permite interceptar o tráfego.",
+                                "text": "Ela desliga o HTTPS por completo e deixa o tráfego aberto à interceptação.",
                                 "isCorrect": false
                             }
                         ]
@@ -4339,19 +4339,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O token de sessão do usuário autenticado.",
+                                "text": "O token de sessão do usuário que está autenticado no momento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O endereço IP de origem da requisição.",
+                                "text": "O endereço IP de onde a requisição HTTP foi originada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O horário (timestamp) do evento.",
+                                "text": "O horário, com fuso horário, em que o evento ocorreu.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O resultado de uma tentativa de login (sucesso ou falha).",
+                                "text": "O resultado de uma tentativa de login, se foi sucesso ou falha.",
                                 "isCorrect": false
                             }
                         ]
@@ -4361,19 +4361,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ele grava segredos (senha e token) no log; quem tiver acesso aos logs, backups ou agregadores compromete as contas sem precisar invadir mais nada.",
+                                "text": "Grava senha e token em texto puro; quem acessa os logs assume a conta sem invadir mais nada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: registrar a senha e o token facilita o suporte a resolver problemas dos usuários.",
+                                "text": "Nenhum: registrar senha e token no log agiliza o suporte a resolver dúvidas dos usuários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é apenas de desempenho, porque logar objetos JSON é lento.",
+                                "text": "O problema é só desempenho, pois gravar objetos JSON no log deixa a resposta mais lenta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele deveria também registrar o hash da senha para poder auditar depois.",
+                                "text": "Faltou completar o log: deveria incluir também o hash da senha para fins de auditoria.",
                                 "isCorrect": false
                             }
                         ]
@@ -4383,19 +4383,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Tentativas de login falhas não são registradas, então um ataque de força bruta (A07) roda sem deixar rastro nem gerar alerta.",
+                                "text": "As falhas de login não ficam registradas, e um ataque de força bruta roda sem deixar rastro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhuma: como o login falhou, não há o que registrar.",
+                                "text": "Nenhuma falha: como o login deu errado, não existe evento relevante para registrar ali.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A falha é de criptografia, pois o 401 não é enviado por HTTPS.",
+                                "text": "É falha de criptografia, porque a resposta 401 estaria sendo enviada fora do HTTPS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A falha é de injeção, pois o 401 permite SQL injection no formulário.",
+                                "text": "É falha de injeção, porque o código 401 abre caminho para SQL injection no formulário.",
                                 "isCorrect": false
                             }
                         ]
@@ -4405,19 +4405,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Injeção de log (log forging): o atacante forja linhas falsas e polui a investigação; a correção é usar logging estruturado, que trata o valor como um campo isolado.",
+                                "text": "É injeção de log: o atacante forja linhas falsas no arquivo; a correção é usar logging estruturado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "SQL injection: o atacante lê o banco pelo log; a correção é usar prepared statements no logger.",
+                                "text": "É SQL injection: o atacante lê o banco pelo próprio log; a correção é usar prepared statements no logger.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "XSS: o script é executado no navegador de quem lê o log; a correção é aplicar CSP.",
+                                "text": "É XSS: o script forjado roda no navegador de quem abre o log; a correção é aplicar uma política de CSP.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum risco real: quebras de linha em logs são inofensivas e apenas deixam o arquivo maior.",
+                                "text": "Não há risco real: quebras de linha em um log só deixam o arquivo um pouco maior, sem outra consequência.",
                                 "isCorrect": false
                             }
                         ]
@@ -4458,19 +4458,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Logging registra o que aconteceu; o alerta avisa alguém (ou um automatismo) a tempo de agir.",
+                                "text": "Logging registra o que aconteceu; o alerta avisa alguém a tempo de agir.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "São sinônimos: registrar um evento já é alertar sobre ele.",
+                                "text": "São a mesma coisa: registrar um evento já conta como alertar sobre ele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Logging só funciona em produção; alerta só funciona em desenvolvimento.",
+                                "text": "Logging só existe em produção, e o alerta só funciona em desenvolvimento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Alerta guarda os dados em disco; logging os envia por e-mail.",
+                                "text": "O alerta grava os dados em disco, enquanto o logging os envia por e-mail.",
                                 "isCorrect": false
                             }
                         ]
@@ -4480,19 +4480,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque, se o servidor for comprometido, o atacante não consegue apagar os registros — e a centralização facilita a análise e os alertas.",
+                                "text": "Assim, mesmo com o servidor comprometido, o atacante não consegue apagar os registros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque logs locais ocupam muito espaço e deixam o servidor lento.",
+                                "text": "Porque logs guardados localmente ocupam espaço em disco e deixam o servidor mais lento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a lei proíbe guardar qualquer log na mesma máquina que a aplicação.",
+                                "text": "Porque a legislação proíbe guardar qualquer log na mesma máquina que roda a aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque agregadores criptografam automaticamente todas as senhas dos usuários.",
+                                "text": "Porque os agregadores criptografam automaticamente todas as senhas guardadas nos logs.",
                                 "isCorrect": false
                             }
                         ]
@@ -4502,19 +4502,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Faltou o alerta e o monitoramento ativo: o log existia, mas não gerou resposta, o que aumentou o dwell time.",
+                                "text": "Faltou alerta e monitoramento ativo: o log existia, mas ninguém foi avisado a tempo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Faltou criptografia: as falhas de login deveriam ter sido cifradas.",
+                                "text": "Faltou criptografia: as tentativas de login deveriam estar cifradas dentro do banco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faltou validação de entrada no formulário de login.",
+                                "text": "Faltou validação de entrada no formulário, o que permitiu as 200 tentativas seguidas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada falhou: 3 semanas é um tempo normal para detectar ataques.",
+                                "text": "Nada falhou: três semanas é um prazo normal e aceitável para perceber uma invasão.",
                                 "isCorrect": false
                             }
                         ]
@@ -4524,19 +4524,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É fadiga de alertas: o excesso de ruído faz o time ignorar até os avisos reais; a saída é calibrar limiares e agrupar, alertando só em sinais significativos.",
+                                "text": "É fadiga de alertas: o ruído faz o time ignorar avisos reais; a saída é calibrar limiares.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O problema é que 404 deveria ser 500; basta trocar o código de status.",
+                                "text": "O problema é o código de status: bastaria trocar todo 404 por 500 no servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é o SIEM estar lento; basta comprar mais servidores.",
+                                "text": "O problema é o SIEM estar lento demais; a saída é comprar mais servidores para ele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema: quanto mais alertas, mais segura fica a aplicação.",
+                                "text": "Não há problema algum: quanto mais alertas o time recebe, mais segura fica a aplicação.",
                                 "isCorrect": false
                             }
                         ]
@@ -4546,19 +4546,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Sem logs íntegros e retidos, é impossível determinar o escopo do vazamento (o que foi acessado), o que prejudica a forense e a notificação exigida por lei.",
+                                "text": "Sem logs íntegros, fica impossível apurar o escopo do vazamento e cumprir a notificação legal.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum impacto: a resposta a incidentes não depende de logs.",
+                                "text": "Nenhum impacto: a resposta a um incidente de segurança não depende dos logs do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O impacto é só estético: os relatórios ficam menos detalhados, mas a investigação é igual.",
+                                "text": "O impacto é só estético: os relatórios ficam menos detalhados, mas a investigação segue igual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O impacto é positivo: sem logs, o atacante também não obtém informação.",
+                                "text": "O impacto é positivo: sem logs, o próprio atacante também não descobre nada sobre o sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -4599,19 +4599,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque o atacante contorna o navegador e fala direto com a API (curl, Postman, DevTools); só a validação no servidor é confiável.",
+                                "text": "O atacante contorna o navegador e fala direto com a API, ignorando essa validação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a validação no navegador deixa a página lenta para o usuário.",
+                                "text": "Porque a validação no navegador deixa o carregamento da página perceptivelmente mais lento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador não consegue validar campos de texto, só números.",
+                                "text": "Porque o navegador só consegue validar campos numéricos, nunca campos de texto livre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque validar no cliente consome cota do banco de dados.",
+                                "text": "Porque validar dados no navegador consome cota de armazenamento do banco de dados.",
                                 "isCorrect": false
                             }
                         ]
@@ -4621,19 +4621,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Output encoding: tratar o dado como texto (por exemplo, textContent) ou escapá-lo no contexto correto.",
+                                "text": "Aplicar output encoding, tratando o dado como texto simples no contexto certo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Validar o tamanho do campo no formulário do navegador.",
+                                "text": "Validar o tamanho máximo do campo diretamente no formulário do navegador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Servir a página apenas por HTTPS.",
+                                "text": "Servir a página exclusivamente por HTTPS, nunca por uma conexão HTTP simples.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Minificar o JavaScript da página.",
+                                "text": "Minificar todo o código JavaScript antes de publicar a página em produção.",
                                 "isCorrect": false
                             }
                         ]
@@ -4643,19 +4643,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "XSS refletido: um nome com HTML/script é executado; a correção é usar textContent (ou escapar a saída), tratando o dado como texto.",
+                                "text": "É XSS refletido: um nome com HTML ou script é executado; a correção é usar textContent.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "SQL injection: a query lê o nome do banco; a correção é usar prepared statements.",
+                                "text": "É SQL injection: a query final lê esse nome do banco; a correção é usar prepared statements.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "CSRF: falta um token anti-CSRF; a correção é adicionar SameSite ao cookie.",
+                                "text": "É CSRF: falta um token contra falsificação de requisição; a correção é ativar o SameSite no cookie.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "IDOR: o usuário acessa dados alheios; a correção é checar o dono do recurso.",
+                                "text": "É IDOR: o usuário acessa dados de outra conta; a correção é checar o dono do recurso pedido.",
                                 "isCorrect": false
                             }
                         ]
@@ -4665,19 +4665,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O navegador se recusa a carregar o script da origem não permitida — a CSP funciona como camada extra mesmo com a injeção presente.",
+                                "text": "O navegador bloqueia o carregamento desse script externo, pois a origem não está na política.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O script de evil.com é executado normalmente, pois a CSP não afeta scripts externos.",
+                                "text": "O script hospedado em evil.com roda normalmente, já que a CSP não afeta recursos externos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A página inteira deixa de carregar e o servidor retorna erro 500.",
+                                "text": "A página inteira para de carregar e o servidor passa a responder com um erro 500.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A CSP converte o script malicioso em texto e o exibe na tela.",
+                                "text": "A CSP transforma o script malicioso em texto simples e o exibe direto na tela do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -4687,19 +4687,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Blocklist é contornável (por exemplo <img onerror=...> ou variações com encoding); o correto é output encoding contextual na saída, somado a validação por allowlist na entrada, em camadas.",
+                                "text": "É contornável com onerror ou encoding; o certo é encoding na saída e allowlist na entrada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é frágil: remover <script> elimina toda possibilidade de XSS.",
+                                "text": "Não é frágil: remover a string <script> elimina por completo qualquer possibilidade de XSS.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O correto seria bloquear também a palavra SELECT para evitar o XSS.",
+                                "text": "A abordagem correta seria bloquear também a palavra SELECT, o que fecharia o XSS de vez.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta mover a mesma remoção de <script> para o lado do cliente.",
+                                "text": "Bastaria mover essa mesma remoção de <script> para acontecer do lado do navegador.",
                                 "isCorrect": false
                             }
                         ]
@@ -4740,19 +4740,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É um filtro que bloqueia tráfego HTTP malicioso conhecido, como camada extra; mas pode ser contornado e não substitui código seguro.",
+                                "text": "É um filtro que bloqueia tráfego malicioso conhecido, mas pode ser contornado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É um antivírus instalado no computador do usuário final.",
+                                "text": "É um antivírus instalado diretamente no computador de cada usuário final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um banco de dados que guarda as senhas de forma cifrada.",
+                                "text": "É um banco de dados especializado em guardar as senhas dos usuários já cifradas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma ferramenta que corrige automaticamente todos os bugs do código.",
+                                "text": "É uma ferramenta que corrige automaticamente todos os bugs de segurança do código.",
                                 "isCorrect": false
                             }
                         ]
@@ -4762,19 +4762,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Força bruta e credential stuffing (A07).",
+                                "text": "Ataques de força bruta e credential stuffing contra as senhas dos usuários.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cross-site scripting (XSS).",
+                                "text": "Ataques de cross-site scripting refletido nos campos do formulário de login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Clickjacking.",
+                                "text": "Ataques de clickjacking feitos com um iframe transparente sobre a tela de login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Injeção de SQL.",
+                                "text": "Ataques de injeção de SQL feitos diretamente pelo campo de senha do login.",
                                 "isCorrect": false
                             }
                         ]
@@ -4784,19 +4784,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Com uma conta restrita (só leitura/escrita nas tabelas necessárias), a injeção não conseguiria apagar tabelas nem ler dados fora do escopo — o estrago fica contido.",
+                                "text": "Com uma conta restrita às tabelas necessárias, a injeção não conseguiria apagar nem ler tudo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O menor privilégio impediria a existência da SQL injection no código.",
+                                "text": "O menor privilégio evitaria que a própria falha de SQL injection existisse no código.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não faria diferença: uma SQL injection sempre dá controle total do servidor.",
+                                "text": "Não mudaria nada: uma SQL injection sempre garante o controle total do servidor inteiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O menor privilégio só afeta usuários humanos, não a conta da aplicação.",
+                                "text": "O menor privilégio vale só para pessoas; a conta usada pela aplicação fica sempre de fora.",
                                 "isCorrect": false
                             }
                         ]
@@ -4806,19 +4806,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É arriscada: o WAF é mitigação temporária (virtual patching) e contornável; a falha deve ser corrigida no código, pois o WAF não é um conserto.",
+                                "text": "É arriscada: o WAF é contornável e temporário, o código ainda precisa ser corrigido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É correta: se o WAF bloqueia, o problema está resolvido em definitivo.",
+                                "text": "É correta: se o WAF já bloqueia o ataque, o problema está resolvido em definitivo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É correta, desde que o WAF seja de um fornecedor pago.",
+                                "text": "É correta, mas só quando o WAF contratado é de um fornecedor pago e renomado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É indiferente: WAF e correção de código fazem exatamente a mesma coisa.",
+                                "text": "É indiferente: usar o WAF ou corrigir o código dá exatamente no mesmo resultado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4828,19 +4828,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Combinar limite por conta (não só por IP), MFA, CAPTCHA após N falhas e monitoramento/alerta (A09) — camadas independentes, já que o limite por IP é contornável por botnet.",
+                                "text": "Combinar limite por conta, MFA, CAPTCHA após falhas e alerta de monitoramento ativo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas aumentar bastante o limite de requisições por IP.",
+                                "text": "Apenas aumentar bastante o limite de requisições permitidas para cada endereço IP.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas instalar um WAF, que resolve credential stuffing sozinho.",
+                                "text": "Apenas instalar um WAF, já que ele resolve sozinho qualquer credential stuffing.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas exigir senhas com um caractere a mais no cadastro.",
+                                "text": "Apenas exigir uma senha com um caractere a mais no formulário de cadastro.",
                                 "isCorrect": false
                             }
                         ]
@@ -4881,19 +4881,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mover as práticas de segurança para o início do ciclo de desenvolvimento (design e código), onde corrigir é mais barato.",
+                                "text": "Mover as práticas de segurança para o início do ciclo, no design e no código.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixar toda a segurança para a última etapa, pouco antes do lançamento.",
+                                "text": "Deixar toda a segurança concentrada na última etapa, pouco antes do lançamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Terceirizar a segurança para uma empresa externa depois do deploy.",
+                                "text": "Terceirizar toda a segurança para uma empresa externa somente após o deploy.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mover os servidores para a esquerda do data center por questão de resfriamento.",
+                                "text": "Mover fisicamente os servidores para a esquerda do data center por resfriamento.",
                                 "isCorrect": false
                             }
                         ]
@@ -4903,19 +4903,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Analisa as dependências de terceiros contra vulnerabilidades conhecidas — cobre A03 (cadeia de suprimentos).",
+                                "text": "Analisa as dependências de terceiros contra vulnerabilidades já conhecidas; cobre a A03.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Analisa o código-fonte próprio em busca de bugs de lógica — cobre A01.",
+                                "text": "Analisa o código-fonte próprio em busca de bugs de lógica; cobre principalmente a A01.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Testa a aplicação rodando, de fora — cobre A02.",
+                                "text": "Testa a aplicação já em execução, vista de fora como um atacante; cobre a A02.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cifra os dados em repouso — cobre A04.",
+                                "text": "Cifra os dados sensíveis armazenados em repouso no banco; cobre principalmente a A04.",
                                 "isCorrect": false
                             }
                         ]
@@ -4925,19 +4925,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "DAST, que testa a aplicação rodando, de fora, como um atacante.",
+                                "text": "O DAST, que testa a aplicação em execução, olhando de fora como um atacante.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "SAST, que lê o código-fonte parado, sem executá-lo.",
+                                "text": "O SAST, que lê o código-fonte parado, sem chegar a executar a aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "SCA, que analisa as dependências de terceiros.",
+                                "text": "O SCA, que analisa apenas as dependências de terceiros usadas pelo projeto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um linter de estilo de código.",
+                                "text": "Um linter comum, focado apenas no estilo e na formatação do código-fonte.",
                                 "isCorrect": false
                             }
                         ]
@@ -4947,19 +4947,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sem um gate que barre achados de alta severidade, as falhas conhecidas seguem para produção e o valor do shift-left se perde.",
+                                "text": "Sem um gate que barre achados críticos, falhas conhecidas seguem direto para produção.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum: rodar as ferramentas já garante que o código é seguro, mesmo sem barrar o build.",
+                                "text": "Nenhum: só de rodar as ferramentas, o código já fica garantidamente seguro no final.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é rodar duas ferramentas; deveria rodar só uma para não duplicar.",
+                                "text": "O problema é usar duas ferramentas juntas; o certo seria manter apenas uma delas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é que npm audit e SAST não podem rodar no mesmo pipeline.",
+                                "text": "O npm audit e o SAST tecnicamente não conseguem rodar dentro do mesmo pipeline.",
                                 "isCorrect": false
                             }
                         ]
@@ -4969,19 +4969,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Vários: menor privilégio (banco como admin), rate limiting ausente (A07) e A09 (logar o token e não alertar) — a defesa em profundidade falhou em camadas independentes.",
+                                "text": "Vários: menor privilégio no banco, ausência de rate limit e falha de logging em A09.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas a criptografia falhou; os prepared statements já garantiam a segurança.",
+                                "text": "Apenas a criptografia falhou; os prepared statements já bastavam para garantir tudo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum princípio real; o único erro foi não ter comprado um WAF.",
+                                "text": "Nenhum princípio de fato falhou; o único erro foi não ter comprado um bom WAF.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só houve falha de design; as demais camadas estavam corretas.",
+                                "text": "Houve só uma falha de design; todas as outras camadas de defesa estavam corretas.",
                                 "isCorrect": false
                             }
                         ]

@@ -127,19 +127,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Redução da disponibilidade da informação em situações de urgência",
+                                "text": "Menor disponibilidade em urgências médicas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Redução da confidencialidade dos prontuários",
+                                "text": "Menor confidencialidade dos prontuários",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Redução da integridade dos dados clínicos",
+                                "text": "Menor integridade dos dados clínicos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumento do não repúdio das ações médicas",
+                                "text": "Maior não repúdio das ações médicas",
                                 "isCorrect": false
                             }
                         ]
@@ -149,7 +149,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O impacto principal é sobre a disponibilidade, já que os arquivos ficaram inacessíveis; sem evidência de exfiltração, a confidencialidade não é necessariamente comprometida",
+                                "text": "O impacto principal é sobre a disponibilidade, já que os arquivos ficaram inacessíveis para os usuários",
                                 "isCorrect": true
                             },
                             {
@@ -161,7 +161,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há impacto sobre a tríade CIA, pois nenhum dado foi roubado nem alterado permanentemente",
+                                "text": "Não há impacto sobre a tríade CIA, pois nenhum dado foi roubado ou alterado de forma permanente",
                                 "isCorrect": false
                             }
                         ]
@@ -250,11 +250,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Autenticação de fator único, pois ambas as etapas usam o fator 'algo que você sabe'",
+                                "text": "Autenticação de fator único, pois as duas etapas usam 'algo que você sabe'",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Autenticação multifator, pois há duas etapas de verificação",
+                                "text": "Autenticação multifator, pois há duas etapas de verificação distintas",
                                 "isCorrect": false
                             },
                             {
@@ -262,7 +262,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação multifator, pois envolve dois sistemas diferentes",
+                                "text": "Autenticação multifator, pois envolve dois sistemas independentes de login",
                                 "isCorrect": false
                             }
                         ]
@@ -294,11 +294,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ambos os métodos pertencem ao mesmo fator, algo que você é, então a combinação não configura autenticação multifator real",
+                                "text": "Os dois métodos pertencem ao mesmo fator, algo que você é, então não formam MFA de verdade",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Biometria nunca deve ser usada em aplicativos bancários por não ser confiável",
+                                "text": "Biometria não deve ser usada em aplicativos bancários, pois nunca é confiável o bastante",
                                 "isCorrect": false
                             },
                             {
@@ -351,7 +351,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Senha mais código de uso único enviado por um aplicativo autenticador no celular",
+                                "text": "Senha mais código de uso único do aplicativo autenticador",
                                 "isCorrect": true
                             },
                             {
@@ -373,7 +373,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um método que usa sinais como localização, dispositivo e horário para calcular o risco de uma tentativa de login e decidir a resposta apropriada",
+                                "text": "Um método que usa sinais como localização e dispositivo para calcular o risco de um login",
                                 "isCorrect": true
                             },
                             {
@@ -395,7 +395,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Viagem impossível (impossible travel)",
+                                "text": "Viagem impossível",
                                 "isCorrect": true
                             },
                             {
@@ -439,7 +439,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ela permite detectar, ao longo da sessão, se o controle da conta foi assumido por outra pessoa depois de um login legítimo",
+                                "text": "Ela permite detectar, durante a sessão, se a conta foi assumida por outra pessoa",
                                 "isCorrect": true
                             },
                             {
@@ -496,7 +496,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A garantia de que uma pessoa não pode negar de forma válida ter realizado determinada ação",
+                                "text": "A garantia de que uma pessoa não pode negar ter praticado certa ação",
                                 "isCorrect": true
                             },
                             {
@@ -584,7 +584,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A chave privada deixa de comprovar com segurança que apenas o gestor específico gerou aquela assinatura, enfraquecendo o não repúdio",
+                                "text": "A chave deixa de provar com segurança que só o gestor gerou a assinatura, enfraquecendo o não repúdio",
                                 "isCorrect": true
                             },
                             {
@@ -641,19 +641,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O fato de permitir, sozinha ou combinada com outros dados, identificar uma pessoa específica",
+                                "text": "O fato de permitir identificar uma pessoa, só ou combinada a outros dados",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O fato de estar armazenada em um banco de dados criptografado",
+                                "text": "O fato de estar armazenada em um banco de dados com boa criptografia",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O fato de pertencer exclusivamente a um funcionário público",
+                                "text": "O fato de pertencer exclusivamente a um agente público em exercício do cargo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O fato de ter sido coletada há mais de cinco anos",
+                                "text": "O fato de ter sido coletada há mais de cinco anos consecutivos",
                                 "isCorrect": false
                             }
                         ]
@@ -685,7 +685,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Minimização e necessidade, pois coleta mais dados do que o propósito exige",
+                                "text": "Minimização, pois a coleta vai além do que o propósito exige",
                                 "isCorrect": true
                             },
                             {
@@ -729,7 +729,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A clínica mantém um bom nível de segurança da informação, mas viola princípios de privacidade ao usar os dados além da finalidade autorizada pelo paciente",
+                                "text": "A clínica mantém boa segurança, mas viola a privacidade ao usar os dados fora da finalidade autorizada",
                                 "isCorrect": true
                             },
                             {
@@ -831,7 +831,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque não existe, nesse local, uma vulnerabilidade que a ameaça de terremoto possa explorar",
+                                "text": "Porque, nesse local, não existe vulnerabilidade que a ameaça de terremoto possa explorar",
                                 "isCorrect": true
                             },
                             {
@@ -875,7 +875,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Uma vulnerabilidade, por ser uma fragilidade do próprio sistema que pode resultar em decisões discriminatórias e passivos legais",
+                                "text": "Uma vulnerabilidade, por ser uma fragilidade que favorece decisões discriminatórias",
                                 "isCorrect": true
                             },
                             {
@@ -1240,7 +1240,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Buscar, dentro dos meios éticos e legais disponíveis, garantir que o risco à sociedade seja tratado, mesmo que isso exija ultrapassar os limites originais do contrato",
+                                "text": "Buscar, dentro dos meios éticos e legais possíveis, garantir que o risco à sociedade seja tratado, mesmo além do contrato",
                                 "isCorrect": true
                             },
                             {
@@ -1262,15 +1262,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Empregadores, clientes e outras partes para as quais o profissional presta serviço",
+                                "text": "Empregadores, clientes e outras partes que o profissional atende",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas o governo do país onde o profissional atua",
+                                "text": "Apenas o governo do país onde o profissional atua atualmente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente os colegas de equipe do profissional",
+                                "text": "Somente os colegas diretos de equipe do profissional",
                                 "isCorrect": false
                             },
                             {
@@ -1385,19 +1385,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A lei é imposta por um órgão externo e seu cumprimento é obrigatório independentemente da vontade da empresa, enquanto a política é definida e pode ser alterada pela própria organização",
+                                "text": "A lei vem de um órgão externo e é obrigatória; a política é interna e mutável pela empresa",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A política é sempre mais rígida e detalhada do que qualquer lei",
+                                "text": "A política costuma ser mais rígida e detalhada do que qualquer lei aplicável",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A lei só se aplica a empresas do setor de tecnologia",
+                                "text": "A lei só se aplica a empresas do setor de tecnologia e comércio eletrônico",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Política e lei têm exatamente a mesma função e podem substituir uma à outra",
+                                "text": "Política e lei têm exatamente a mesma função e podem substituir uma à outra sem diferença",
                                 "isCorrect": false
                             }
                         ]
@@ -1429,7 +1429,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Funcionários podem inserir dados sensíveis ou pessoais em um serviço externo, sem controle sobre como esses dados serão usados ou armazenados",
+                                "text": "Funcionários podem inserir dados sensíveis em um serviço externo, sem controle sobre o uso desses dados",
                                 "isCorrect": true
                             },
                             {
@@ -1451,7 +1451,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não, porque a LGPD já se aplica a qualquer tratamento de dados pessoais, inclusive quando feito por sistemas de IA, independentemente da existência de uma lei específica sobre IA",
+                                "text": "Não, porque a LGPD já se aplica a qualquer tratamento de dados pessoais, mesmo quando feito por sistemas de IA",
                                 "isCorrect": true
                             },
                             {
@@ -1509,19 +1509,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Eliminar completamente qualquer possibilidade de incidente de segurança.",
+                                "text": "Eliminar por completo qualquer possibilidade de incidente de segurança na organização.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Garantir que as funções essenciais da organização continuem operando, ou voltem a operar rapidamente, durante e depois de um evento disruptivo.",
+                                "text": "Garantir que as funções essenciais continuem operando durante um evento disruptivo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Substituir a necessidade de backups de dados.",
+                                "text": "Substituir a necessidade de manter backups atualizados dos dados críticos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Definir exclusivamente as regras de acesso físico aos data centers.",
+                                "text": "Definir exclusivamente as regras de acesso físico aos data centers da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -1539,11 +1539,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografia de dados em trânsito.",
+                                "text": "Criptografia de dados sensíveis em trânsito na rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Continuidade de negócios, para manter ou restaurar rapidamente as funções críticas durante interrupções.",
+                                "text": "Continuidade de negócios, para restaurar rápido as funções críticas.",
                                 "isCorrect": true
                             }
                         ]
@@ -1583,7 +1583,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque uma interrupção afeta múltiplas áreas, como operações, jurídico, comunicação e RH, que precisam agir de forma coordenada para manter o negócio funcionando.",
+                                "text": "Porque uma interrupção afeta várias áreas, como operações, jurídico e RH, que precisam agir de forma coordenada.",
                                 "isCorrect": true
                             },
                             {
@@ -1601,7 +1601,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A ausência de treinamento das equipes e de testes periódicos que validem se os planos funcionam na prática.",
+                                "text": "A ausência de treinamento das equipes e de testes periódicos dos planos.",
                                 "isCorrect": true
                             },
                             {
@@ -1654,7 +1654,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Identificar os processos críticos do negócio e medir o impacto de sua indisponibilidade ao longo do tempo.",
+                                "text": "Identificar processos críticos e medir o impacto de ficarem indisponíveis.",
                                 "isCorrect": true
                             },
                             {
@@ -1684,7 +1684,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tempo máximo tolerável para restaurar um processo ou sistema após uma interrupção.",
+                                "text": "O tempo máximo tolerável para restaurar um sistema após uma interrupção.",
                                 "isCorrect": true
                             },
                             {
@@ -1724,7 +1724,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Model drift, uma degradação silenciosa da qualidade do modelo que deve ser monitorada e tratada como risco de continuidade, mesmo sem indisponibilidade do sistema.",
+                                "text": "Model drift, a degradação silenciosa do modelo, tratada como risco de continuidade.",
                                 "isCorrect": true
                             },
                             {
@@ -1742,7 +1742,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Configurar replicação ou backup dos dados de transação com frequência de, no máximo, quinze minutos.",
+                                "text": "Configurar replicação ou backup dos dados de transação a cada, no máximo, quinze minutos.",
                                 "isCorrect": true
                             },
                             {
@@ -1811,7 +1811,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Restaurar tecnicamente sistemas, dados e infraestrutura de TI dentro dos objetivos de tempo e ponto de recuperação definidos.",
+                                "text": "Restaurar sistemas e dados dentro do RTO e do RPO definidos.",
                                 "isCorrect": true
                             }
                         ]
@@ -1843,7 +1843,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Hot site, com réplica quase em tempo real do ambiente de produção.",
+                                "text": "Hot site, com réplica quase em tempo real da produção.",
                                 "isCorrect": true
                             },
                             {
@@ -1899,7 +1899,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Migrar o sistema de RH para um warm site ou cold site, já que o RTO de três dias não justifica o custo de um hot site.",
+                                "text": "Migrar o sistema de RH para um warm ou cold site, compatível com o RTO de três dias.",
                                 "isCorrect": true
                             }
                         ]
@@ -1952,7 +1952,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Qualquer evento que viole, ou ameace violar, a confidencialidade, a integridade ou a disponibilidade de um ativo de informação.",
+                                "text": "Evento que ameace a confidencialidade, integridade ou disponibilidade de um ativo.",
                                 "isCorrect": true
                             },
                             {
@@ -1966,19 +1966,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Detectar, conter e resolver incidentes de segurança de forma rápida e organizada, reduzindo dano e tempo de recuperação.",
+                                "text": "Detectar, conter e resolver incidentes com rapidez e organização, reduzindo o dano.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Eliminar permanentemente a possibilidade de novos incidentes.",
+                                "text": "Eliminar permanentemente a possibilidade de qualquer novo incidente de segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substituir o plano de recuperação de desastres.",
+                                "text": "Substituir por completo o plano de recuperação de desastres da empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Definir o orçamento anual de segurança da informação.",
+                                "text": "Definir o orçamento anual de segurança da informação da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -2000,7 +2000,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O gestor do incidente (Incident Manager), que coordena a resposta considerando os diferentes impactos envolvidos.",
+                                "text": "O gestor do incidente (Incident Manager), que coordena a resposta e pondera os impactos.",
                                 "isCorrect": true
                             }
                         ]
@@ -2014,7 +2014,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Avaliar e, se aplicável, cumprir a obrigação de notificação às autoridades competentes e aos titulares afetados.",
+                                "text": "Avaliar e, se aplicável, notificar as autoridades competentes e os titulares afetados.",
                                 "isCorrect": true
                             },
                             {
@@ -2040,7 +2040,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "É aceitável que uma pessoa acumule papéis em empresas pequenas, desde que os papéis estejam claramente definidos e a pessoa esteja preparada para exercê-los.",
+                                "text": "É aceitável que uma pessoa acumule papéis em empresas pequenas, se os papéis forem claros e ela estiver preparada.",
                                 "isCorrect": true
                             },
                             {
@@ -2093,15 +2093,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Planejamento, execução, monitoramento, controle e encerramento.",
+                                "text": "Planejamento, execução, monitoramento, controle, encerramento e homologação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Identificação, classificação, criptografia, backup e auditoria.",
+                                "text": "Identificação, classificação, criptografia, backup, auditoria e retenção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Prevenção, detecção, resposta, mitigação e certificação.",
+                                "text": "Prevenção, detecção, resposta, mitigação, certificação e auditoria.",
                                 "isCorrect": false
                             }
                         ]
@@ -2159,15 +2159,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Recuperação",
+                                "text": "Recuperação dos sistemas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Erradicação",
+                                "text": "Erradicação da causa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Preparação",
+                                "text": "Preparação da equipe",
                                 "isCorrect": false
                             }
                         ]
@@ -2185,7 +2185,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A erradicação foi feita antes de uma contenção adequada, permitindo que o invasor mantivesse outros pontos de acesso ativos na rede.",
+                                "text": "A erradicação ocorreu antes de uma contenção adequada, deixando outros acessos ativos.",
                                 "isCorrect": true
                             },
                             {
@@ -2235,7 +2235,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Se a pessoa é realmente quem ela diz ser, por meio de uma prova como senha, biometria ou token",
+                                "text": "Se a pessoa é realmente quem ela diz ser, por meio de senha, biometria ou token",
                                 "isCorrect": true
                             },
                             {
@@ -2287,7 +2287,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Auditoria (accounting)",
+                                "text": "Auditoria",
                                 "isCorrect": true
                             },
                             {
@@ -2323,19 +2323,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O controle físico está fraco demais para compensar a falta de controle lógico",
+                                "text": "O controle físico está fraco demais para compensar a falta de um controle lógico consistente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A ausência de um controle lógico adequado permite acesso amplo demais aos sistemas para qualquer funcionário autenticado, mesmo com o ambiente físico bem protegido",
+                                "text": "A ausência de controle lógico adequado permite acesso amplo demais, mesmo com o físico protegido",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As câmeras se tornam desnecessárias quando o acesso físico já é forte",
+                                "text": "As câmeras se tornam desnecessárias quando o controle de acesso físico já é forte",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A auditoria deixa de ser necessária quando o controle físico é robusto",
+                                "text": "A auditoria deixa de ser necessária quando o controle físico da empresa é robusto",
                                 "isCorrect": false
                             }
                         ]
@@ -2376,7 +2376,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma barreira que libera a passagem de apenas uma pessoa por vez, mediante credencial válida",
+                                "text": "Uma barreira que libera só uma pessoa por vez, com credencial válida",
                                 "isCorrect": true
                             },
                             {
@@ -2398,7 +2398,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma pessoa sem crachá entra no prédio logo atrás de um funcionário autorizado, aproveitando a porta que ainda não fechou",
+                                "text": "Uma pessoa sem crachá entra atrás de um funcionário pela porta ainda aberta",
                                 "isCorrect": true
                             },
                             {
@@ -2420,19 +2420,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Aumentar a iluminação externa do prédio",
+                                "text": "Aumentar a iluminação externa e interna do prédio inteiro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Instalar um portal de dupla checagem (mantrap) que só libera a segunda porta depois que a primeira fecha e valida uma única credencial por vez",
+                                "text": "Instalar um mantrap (portal de dupla checagem) na entrada do datacenter",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Adicionar mais câmeras de CFTV na área de entrada",
+                                "text": "Adicionar mais câmeras de CFTV na área de entrada e saída",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar as fechaduras das portas por modelos mais robustos",
+                                "text": "Trocar as fechaduras das portas por modelos eletrônicos mais robustos",
                                 "isCorrect": false
                             }
                         ]
@@ -2468,7 +2468,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A ausência de acompanhamento (escolta) permite que o visitante circule livremente por áreas não autorizadas, mesmo estando formalmente identificado",
+                                "text": "A falta de escolta permite ao visitante circular livre por áreas não autorizadas",
                                 "isCorrect": true
                             },
                             {
@@ -2525,7 +2525,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Permitir monitoramento e registro de atividades para dissuasão, detecção e investigação",
+                                "text": "Monitorar e registrar atividades, apoiando dissuasão e investigação",
                                 "isCorrect": true
                             },
                             {
@@ -2547,7 +2547,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Eventos como abertura de porta fora do horário esperado ou quebra de vidro",
+                                "text": "Abertura de porta fora do horário ou quebra de vidro",
                                 "isCorrect": true
                             },
                             {
@@ -2569,7 +2569,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os logs de acesso físico correlacionados com as gravações de CFTV do mesmo horário",
+                                "text": "Os logs de acesso cruzados com o CFTV do mesmo horário",
                                 "isCorrect": true
                             },
                             {
@@ -2587,19 +2587,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Detecção",
+                                "text": "Detecção e resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Dissuasão e, em menor grau, atraso",
+                                "text": "Dissuasão e atraso",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Resposta",
+                                "text": "Resposta e auditoria",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Auditoria",
+                                "text": "Auditoria e detecção",
                                 "isCorrect": false
                             }
                         ]
@@ -2613,7 +2613,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Investigar o padrão como uma possível anomalia de comportamento, já que combina uma tentativa de acesso não autorizado com um horário atípico",
+                                "text": "Investigar o padrão, que une uma tentativa negada a um horário de acesso atípico",
                                 "isCorrect": true
                             },
                             {
@@ -2688,7 +2688,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Garantir que nenhuma pessoa sozinha controle todas as etapas de um processo crítico",
+                                "text": "Garantir que nenhuma pessoa sozinha controle um processo crítico inteiro",
                                 "isCorrect": true
                             },
                             {
@@ -2728,19 +2728,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Exigir autenticação multifator em todos os sistemas",
+                                "text": "Exigir autenticação multifator em todos os sistemas internos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Realizar revisões periódicas de acesso (recertificação) para identificar e remover privilégios que não são mais necessários",
+                                "text": "Revisar periodicamente os acessos para remover privilégios antigos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Instalar câmeras de CFTV na área de TI",
+                                "text": "Instalar câmeras de CFTV na área de TI e no datacenter",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar o tempo de expiração das senhas",
+                                "text": "Aumentar o tempo de expiração das senhas de todos os usuários",
                                 "isCorrect": false
                             }
                         ]
@@ -2754,7 +2754,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco é a ausência de segregação de funções entre quem escreve e quem aprova o código; a mitigação é exigir revisão e aprovação por outra pessoa antes do deploy, mesmo em um fluxo ágil",
+                                "text": "O risco é a falta de segregação de funções entre quem escreve e quem aprova o código, mesmo em fluxo ágil",
                                 "isCorrect": true
                             },
                             {
@@ -2881,7 +2881,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "RBAC, pois associa permissões a papéis organizacionais que podem ser reatribuídos de forma centralizada",
+                                "text": "RBAC, pois liga permissões a papéis organizacionais reatribuíveis centralmente",
                                 "isCorrect": true
                             },
                             {
@@ -2903,7 +2903,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O alerta deve ser priorizado para investigação humana, pois combina acesso a um recurso fora do papel do usuário com um horário atípico, mas a decisão final cabe à equipe de segurança",
+                                "text": "O alerta deve ser priorizado para investigação humana, já que combina acesso fora do papel com horário atípico",
                                 "isCorrect": true
                             },
                             {
@@ -3041,7 +3041,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Camada 2 (Enlace), onde o mapeamento entre endereços IP e MAC é resolvido",
+                                "text": "Camada 2 (Enlace), onde o mapeamento IP-MAC é resolvido",
                                 "isCorrect": true
                             },
                             {
@@ -3186,7 +3186,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O estabelecimento de uma conexão TCP, conhecido como three-way handshake",
+                                "text": "O estabelecimento de uma conexão TCP, o three-way handshake",
                                 "isCorrect": true
                             },
                             {
@@ -3287,7 +3287,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "NAT (Network Address Translation)",
+                                "text": "NAT",
                                 "isCorrect": true
                             },
                             {
@@ -3309,19 +3309,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O esgotamento do espaço de endereços do IPv4 diante do crescimento de dispositivos conectados à internet",
+                                "text": "O esgotamento dos endereços IPv4 com o crescimento de dispositivos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O IPv4 não é compatível com redes Wi-Fi modernas",
+                                "text": "O IPv4 não é compatível com redes Wi-Fi e Bluetooth modernas de última geração",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O IPv6 é exigido por lei em qualquer rede corporativa",
+                                "text": "O IPv6 é exigido por lei em qualquer rede corporativa do mundo todo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O IPv4 não permite o uso do protocolo HTTPS",
+                                "text": "O IPv4 não permite, em nenhuma hipótese, o uso do protocolo HTTPS moderno",
                                 "isCorrect": false
                             }
                         ]
@@ -3454,7 +3454,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O protocolo Telnet, associado a essa porta, transmite dados, incluindo credenciais, sem nenhuma criptografia",
+                                "text": "O protocolo Telnet dessa porta transmite dados e credenciais sem criptografia",
                                 "isCorrect": true
                             },
                             {
@@ -3555,7 +3555,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O nome que identifica a rede sem fio para os dispositivos que tentam se conectar a ela",
+                                "text": "O nome que identifica a rede Wi-Fi disponível",
                                 "isCorrect": true
                             },
                             {
@@ -3599,7 +3599,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Conectar-se por meio de uma VPN, que criptografa o tráfego mesmo em uma rede pública não confiável",
+                                "text": "Conectar-se por uma VPN, que criptografa o tráfego mesmo em rede pública não confiável",
                                 "isCorrect": true
                             },
                             {
@@ -3621,7 +3621,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O invasor pode interceptar e manipular todo o tráfego dos dispositivos que se conectarem ao ponto de acesso falso pensando que é a rede legítima",
+                                "text": "O invasor pode interceptar e manipular o tráfego de quem se conectar ao ponto de acesso falso",
                                 "isCorrect": true
                             },
                             {
@@ -3687,7 +3687,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O vírus precisa se anexar a um arquivo hospedeiro e depende de uma ação humana para ser executado, enquanto o worm se propaga sozinho pela rede, explorando vulnerabilidades.",
+                                "text": "O vírus precisa de um hospedeiro e de ação humana; o worm se propaga sozinho pela rede.",
                                 "isCorrect": true
                             },
                             {
@@ -3713,7 +3713,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um grande volume de tráfego ou requisições, vindo de múltiplas fontes simultaneamente (geralmente uma botnet), que esgota os recursos de um alvo e o torna indisponível para usuários legítimos.",
+                                "text": "Um grande volume de tráfego de múltiplas fontes (geralmente botnet) que esgota os recursos do alvo.",
                                 "isCorrect": true
                             },
                             {
@@ -3739,7 +3739,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trojan, porque se disfarçou de programa legítimo e útil para convencer a vítima a instalá-lo voluntariamente.",
+                                "text": "Trojan, porque se disfarçou de programa útil para enganar a vítima e ser instalado.",
                                 "isCorrect": true
                             }
                         ]
@@ -3753,7 +3753,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Man-in-the-middle (MITM), porque o atacante se posicionou entre Ana e a internet para interceptar e potencialmente alterar sua comunicação.",
+                                "text": "MITM, porque o atacante se posicionou entre Ana e a internet, podendo interceptar o tráfego.",
                                 "isCorrect": true
                             },
                             {
@@ -3783,7 +3783,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ataque de canal lateral, pois extrai informação sensível a partir de efeitos físicos colaterais da implementação (como o consumo de energia), e não de uma falha no algoritmo.",
+                                "text": "Ataque de canal lateral, pois extrai a chave a partir de efeitos físicos do consumo de energia.",
                                 "isCorrect": true
                             }
                         ]
@@ -3828,7 +3828,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O IDS detecta e alerta sobre atividade suspeita, mas não bloqueia o tráfego sozinho, enquanto o IPS é posicionado no caminho do tráfego e pode bloqueá-lo ativamente em tempo real.",
+                                "text": "O IDS detecta e alerta, mas não bloqueia sozinho; o IPS bloqueia o tráfego em tempo real.",
                                 "isCorrect": true
                             },
                             {
@@ -3862,7 +3862,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "HIDS, porque é instalado no próprio host e monitora logs, arquivos e processos daquela máquina especificamente.",
+                                "text": "HIDS, porque roda no próprio host e monitora seus logs, arquivos e processos.",
                                 "isCorrect": true
                             }
                         ]
@@ -3880,7 +3880,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "IPS, porque atua inline no caminho do tráfego e pode bloquear pacotes maliciosos em tempo real, sem depender de ação manual.",
+                                "text": "IPS, porque atua inline no tráfego e bloqueia pacotes maliciosos em tempo real, sem ação manual.",
                                 "isCorrect": true
                             },
                             {
@@ -3906,7 +3906,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Detecção baseada em anomalia, que compara a atividade observada com uma linha de base do comportamento normal e alerta sobre desvios, mesmo de ameaças desconhecidas.",
+                                "text": "Detecção baseada em anomalia, que compara a atividade com uma linha de base e alerta sobre desvios.",
                                 "isCorrect": true
                             }
                         ]
@@ -3928,7 +3928,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque reduz a superfície de ataque ao permitir apenas o tráfego explicitamente necessário, incluindo proteção contra ameaças novas e ainda não catalogadas, ao contrário de uma abordagem de lista negra que só bloqueia o que já é conhecido.",
+                                "text": "Porque reduz a superfície de ataque, liberando só o necessário, mesmo contra ameaças novas.",
                                 "isCorrect": true
                             }
                         ]
@@ -3977,7 +3977,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Assumir a carga elétrica instantaneamente em caso de falha da energia da concessionária, cobrindo o intervalo até outra fonte (como um gerador) assumir.",
+                                "text": "Assumir a carga elétrica na falta de energia, até um gerador assumir.",
                                 "isCorrect": true
                             },
                             {
@@ -4007,7 +4007,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a água danificaria os servidores e equipamentos eletrônicos, mesmo que ajudasse a apagar o fogo, por isso preferem sistemas de agente limpo (gases).",
+                                "text": "Porque a água danificaria os servidores, por isso preferem agente limpo (gases).",
                                 "isCorrect": true
                             }
                         ]
@@ -4029,7 +4029,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "HVAC, porque é o sistema responsável por manter a temperatura e a umidade do datacenter dentro de faixas seguras para o hardware.",
+                                "text": "HVAC, porque é o sistema que mantém a temperatura e a umidade do datacenter em faixas seguras.",
                                 "isCorrect": true
                             }
                         ]
@@ -4039,7 +4039,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A configuração cria pontos únicos de falha (single points of failure): a queda do único link de internet ou da única fonte de energia derruba toda a operação, comprometendo a disponibilidade.",
+                                "text": "A configuração cria pontos únicos de falha: perder o link ou a energia derruba a operação toda.",
                                 "isCorrect": true
                             },
                             {
@@ -4069,7 +4069,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "2N, porque a estrutura inteira está duplicada de forma independente, e cada metade consegue sustentar sozinha a carga total.",
+                                "text": "2N, porque a estrutura está toda duplicada, e cada metade sustenta sozinha a carga total.",
                                 "isCorrect": true
                             },
                             {
@@ -4118,7 +4118,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Isolar esses servidores em um segmento intermediário, de forma que, mesmo comprometidos, não tenham passagem livre até a rede interna.",
+                                "text": "Isolar esses servidores em um segmento à parte, sem passagem livre até a rede interna.",
                                 "isCorrect": true
                             },
                             {
@@ -4152,7 +4152,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Separar logicamente dispositivos em domínios de broadcast diferentes, mesmo que compartilhem a mesma infraestrutura física de switches.",
+                                "text": "Separar logicamente dispositivos em domínios de broadcast diferentes, no mesmo switch físico.",
                                 "isCorrect": true
                             }
                         ]
@@ -4170,7 +4170,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "VPN de acesso remoto, porque cria um túnel criptografado entre o dispositivo do funcionário e a rede interna da empresa.",
+                                "text": "VPN de acesso remoto, porque cria túnel criptografado até a rede interna da empresa.",
                                 "isCorrect": true
                             },
                             {
@@ -4196,7 +4196,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "NAC (Network Access Control), porque avalia a postura de segurança de um dispositivo antes de liberar (ou restringir) seu acesso à rede.",
+                                "text": "NAC, porque avalia a postura do dispositivo antes de liberar o acesso.",
                                 "isCorrect": true
                             }
                         ]
@@ -4218,7 +4218,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Microssegmentação, porque aplica políticas de controle de tráfego no nível de cada workload individual, inclusive entre máquinas dentro do mesmo segmento tradicional.",
+                                "text": "Microssegmentação, porque controla o tráfego de cada workload individualmente.",
                                 "isCorrect": true
                             }
                         ]
@@ -4271,7 +4271,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "SaaS, porque entrega o aplicativo pronto para uso, sem que o cliente precise gerenciar servidor, sistema operacional ou o código da aplicação.",
+                                "text": "SaaS, porque entrega o aplicativo pronto, sem o cliente gerenciar servidor ou código.",
                                 "isCorrect": true
                             },
                             {
@@ -4289,7 +4289,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os níveis de serviço mensuráveis que o fornecedor se compromete a entregar, como disponibilidade garantida, tempo de resposta e penalidades por descumprimento.",
+                                "text": "Os níveis de serviço prometidos, como disponibilidade e tempo de resposta.",
                                 "isCorrect": true
                             },
                             {
@@ -4315,7 +4315,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "IaaS, porque o provedor cuida do hardware físico e da virtualização, enquanto o cliente continua gerenciando sistema operacional, aplicações e dados.",
+                                "text": "IaaS, porque o provedor cuida do hardware e virtualização, e o cliente gerencia o resto.",
                                 "isCorrect": true
                             },
                             {
@@ -4341,7 +4341,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Contratação de um MSP (Managed Service Provider); a contrapartida é que a segurança da empresa passa a depender também da qualidade e confiabilidade do provedor contratado, o que exige um SLA e critério claros na escolha.",
+                                "text": "Contratação de um MSP; a contrapartida é depender também da qualidade do provedor contratado.",
                                 "isCorrect": true
                             }
                         ]
@@ -4363,7 +4363,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O sistema amplia a velocidade e a escala da detecção de ameaças, mas ainda está sujeito a falsos positivos e falsos negativos, por isso decisões críticas continuam exigindo supervisão humana.",
+                                "text": "O sistema amplia a velocidade e a escala da detecção, mas ainda comete falsos positivos e negativos, exigindo supervisão humana.",
                                 "isCorrect": true
                             }
                         ]
@@ -4413,7 +4413,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Na simétrica, a mesma chave cifra e decifra a informação; na assimétrica, um par de chaves diferentes (pública e privada) é usado.",
+                                "text": "Na simétrica, a mesma chave cifra e decifra; na assimétrica, há um par de chaves diferentes.",
                                 "isCorrect": true
                             },
                             {
@@ -4479,7 +4479,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Hash do documento cifrado com a chave privada do remetente, formando uma assinatura digital.",
+                                "text": "Hash do documento, cifrado com a chave privada, formando a assinatura digital.",
                                 "isCorrect": true
                             },
                             {
@@ -4501,7 +4501,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque pesquisadores demonstraram colisões, ou seja, entradas diferentes que geram o mesmo hash, comprometendo a garantia de integridade.",
+                                "text": "Porque pesquisadores já demonstraram colisões, entradas diferentes com o mesmo hash.",
                                 "isCorrect": true
                             },
                             {
@@ -4580,7 +4580,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Marcar visivelmente ou em metadados o nível de classificação do dado, permitindo que pessoas e ferramentas apliquem o tratamento correto.",
+                                "text": "Marcar visivelmente o nível de classificação do dado, em metadado.",
                                 "isCorrect": true
                             },
                             {
@@ -4646,7 +4646,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque essas ações costumam remover apenas a referência ao arquivo no sistema, deixando o conteúdo fisicamente recuperável (remanência de dados).",
+                                "text": "Porque essas ações só removem a referência ao arquivo, e o conteúdo continua recuperável.",
                                 "isCorrect": true
                             },
                             {
@@ -4703,19 +4703,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Proteger os registros contra alteração ou exclusão por um invasor que tenha comprometido o sistema de origem.",
+                                "text": "Proteger os registros de alteração por um invasor que já comprometeu a origem.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Reduzir o espaço em disco usado pelos sistemas de origem.",
+                                "text": "Reduzir o espaço em disco usado pelos sistemas de origem da rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Eliminar a necessidade de monitorar tentativas de autenticação.",
+                                "text": "Eliminar a necessidade de monitorar tentativas de autenticação dos usuários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Permitir que qualquer funcionário acesse os logs livremente.",
+                                "text": "Permitir que qualquer funcionário acesse os logs livremente, sem restrição.",
                                 "isCorrect": false
                             }
                         ]
@@ -4725,7 +4725,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma plataforma que coleta, normaliza e correlaciona logs de múltiplas fontes, gerando alertas de segurança.",
+                                "text": "Uma plataforma que coleta e correlaciona logs de várias fontes em alertas.",
                                 "isCorrect": true
                             },
                             {
@@ -4747,7 +4747,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Priorização de alertas por nível de risco e agrupamento de eventos relacionados em um único incidente.",
+                                "text": "Priorização de alertas por risco e agrupamento de eventos em um único incidente.",
                                 "isCorrect": true
                             },
                             {
@@ -4769,7 +4769,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Consegue detectar desvios de comportamento mesmo quando não existe uma regra específica escrita para aquele padrão de ataque.",
+                                "text": "Detecta desvios de comportamento mesmo sem uma regra específica escrita.",
                                 "isCorrect": true
                             },
                             {
@@ -4791,7 +4791,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não geraria alerta algum, a menos que exista uma regra explícita cobrindo esse volume ou horário específico de download.",
+                                "text": "Não geraria alerta, a menos que exista uma regra explícita para esse volume ou horário.",
                                 "isCorrect": true
                             },
                             {
@@ -4848,19 +4848,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O conjunto documentado de configurações seguras que um tipo de sistema deve ter antes de entrar em produção.",
+                                "text": "O conjunto de configurações seguras exigidas antes de entrar em produção.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A lista de vulnerabilidades conhecidas de um sistema operacional.",
+                                "text": "A lista de vulnerabilidades conhecidas de um sistema operacional específico.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O registro de todos os logs gerados por um servidor em um dia.",
+                                "text": "O registro de todos os logs gerados por um servidor em um dia inteiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O relatório final de um teste de invasão.",
+                                "text": "O relatório final de um teste de invasão realizado na empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -4870,7 +4870,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Definir o que é permitido e o que é proibido no uso dos recursos de TI da empresa.",
+                                "text": "Definir o que é permitido e proibido no uso dos recursos de TI.",
                                 "isCorrect": true
                             },
                             {
@@ -4892,7 +4892,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Configuration drift, um desvio da configuração em relação à baseline aprovada.",
+                                "text": "Configuration drift, um desvio frente à baseline aprovada.",
                                 "isCorrect": true
                             },
                             {
@@ -4914,7 +4914,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Testar o patch em ambiente controlado, obter aprovação formal da mudança, aplicar em janela de manutenção com plano de reversão, e verificar o resultado.",
+                                "text": "Testar o patch em ambiente controlado, aprovar a mudança, aplicar em janela de manutenção e verificar.",
                                 "isCorrect": true
                             },
                             {
@@ -4936,7 +4936,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque não existe correção oficial disponível no momento do ataque, tornando ineficaz a defesa baseada apenas em atualização de patches.",
+                                "text": "Porque não existe correção oficial no momento do ataque, sem patch para se defender.",
                                 "isCorrect": true
                             },
                             {
@@ -4993,7 +4993,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A manipulação de pessoas, explorando confiança, urgência ou autoridade, para obter informações ou acesso indevido.",
+                                "text": "Manipular pessoas, usando confiança ou urgência, para obter acesso indevido.",
                                 "isCorrect": true
                             },
                             {
@@ -5015,7 +5015,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Phishing é enviado em massa para qualquer destinatário; spear phishing é direcionado a uma pessoa ou empresa específica, com informações personalizadas.",
+                                "text": "Phishing é em massa; spear phishing é direcionado a uma pessoa específica.",
                                 "isCorrect": true
                             },
                             {
@@ -5037,7 +5037,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Vishing (engenharia social por telefone) combinado com pretexting (uso de uma história falsa e convincente).",
+                                "text": "Vishing (por telefone) combinado com pretexting (história falsa e convincente).",
                                 "isCorrect": true
                             },
                             {
@@ -5059,7 +5059,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O conteúdo do contrato pode sair do controle da empresa e ficar sujeito aos termos de uso do serviço de IA, incluindo possível armazenamento ou uso para treinar o modelo.",
+                                "text": "O conteúdo pode sair do controle da empresa e ficar sujeito aos termos do serviço de IA.",
                                 "isCorrect": true
                             },
                             {
@@ -5081,7 +5081,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque golpes evoluem constantemente, e reconhecer padrões gerais de manipulação prepara a pessoa até mesmo contra ataques que ainda não existiam quando o treinamento foi feito.",
+                                "text": "Porque golpes evoluem sempre, e padrões gerais preparam a pessoa até contra ataques novos.",
                                 "isCorrect": true
                             },
                             {

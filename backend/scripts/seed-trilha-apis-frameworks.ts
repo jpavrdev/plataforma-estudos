@@ -61,19 +61,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O Express oferece um sistema de rotas e métodos prontos para montar respostas, evitando reimplementar manualmente roteamento e parsing a cada projeto",
+                                "text": "Oferece rotas e respostas prontas, então você não reimplementa roteamento a cada projeto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express é a única forma de o Node.js aceitar requisições HTTP",
+                                "text": "É a única forma de aceitar requisições, pois o Node.js sozinho não abre servidor HTTP",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O módulo http nativo não consegue responder em formato JSON",
+                                "text": "O http nativo não tem como responder em JSON, apenas em texto puro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express substitui completamente o protocolo HTTP por um protocolo próprio",
+                                "text": "Substitui o protocolo HTTP por um protocolo próprio, mais rápido para APIs",
                                 "isCorrect": false
                             }
                         ]
@@ -83,19 +83,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É um framework completo que já inclui banco de dados embutido",
+                                "text": "É um framework completo, já vem com banco de dados e autenticação prontos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É minimalista: cuida bem de roteamento e middleware, e deixa o resto (banco de dados, autenticação etc.) por conta de outros pacotes do ecossistema",
+                                "text": "É minimalista: cuida de rotas e middleware, deixa o resto para outros pacotes",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Obriga uma estrutura fixa de pastas e arquivos em todo projeto",
+                                "text": "Obriga toda aplicação a seguir uma estrutura fixa de pastas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma linguagem própria que substitui o JavaScript no back-end",
+                                "text": "É uma linguagem própria, pensada para substituir o JavaScript no back-end",
                                 "isCorrect": false
                             }
                         ]
@@ -105,19 +105,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O módulo http nativo não consegue responder requisições do tipo GET",
+                                "text": "Não responde requisições GET, pois o http nativo só aceita o método POST",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não será possível escolher a porta em que o servidor escuta sem o Express",
+                                "text": "Não dá para escolher a porta do servidor sem o Express instalado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código vai acumular condicionais manuais comparando método e URL, tornando o roteamento cada vez mais difícil de manter",
+                                "text": "O código acumula condicionais de método e URL, difícil de manter",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Node.js limita o número de rotas que podem existir sem um framework",
+                                "text": "O Node.js passa a limitar o número de rotas sem um framework instalado",
                                 "isCorrect": false
                             }
                         ]
@@ -127,19 +127,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O método app.use(), que remove a necessidade de qualquer resposta",
+                                "text": "app.use(), porque registra automaticamente o Content-Type de toda resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O objeto req, que substitui o corpo da resposta automaticamente",
+                                "text": "O objeto req, que formata e envia o corpo da resposta em JSON",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A função require('http'), que precisa ser chamada dentro de cada rota do Express",
+                                "text": "require('http'), que precisa ser chamado dentro de cada rota do Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O método res.json(), que já define o header Content-Type adequado e serializa o objeto automaticamente",
+                                "text": "res.json(), que define o Content-Type e serializa o objeto automaticamente",
                                 "isCorrect": true
                             }
                         ]
@@ -149,19 +149,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque ele resolve bem roteamento e middleware, mas não impõe decisões sobre banco de dados, autenticação ou estrutura de pastas, deixando essas escolhas para o desenvolvedor e o ecossistema do npm",
+                                "text": "Porque resolve bem rotas e middleware, mas não impõe banco de dados nem estrutura de pastas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque ele não define nenhuma forma de criar rotas, exigindo que cada equipe implemente o roteamento do zero",
+                                "text": "Porque não define nenhuma forma de criar rotas, e cada equipe implementa o roteamento do zero",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ele obriga o uso de um banco de dados específico para funcionar corretamente",
+                                "text": "Porque obriga toda aplicação a usar um banco de dados específico para funcionar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ele foi descontinuado e substituído por frameworks mais completos",
+                                "text": "Porque foi descontinuado pela comunidade e substituído por frameworks mais completos",
                                 "isCorrect": false
                             }
                         ]
@@ -272,19 +272,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Registrar as versões exatas de cada dependência instalada, garantindo que outras pessoas instalem exatamente as mesmas versões",
+                                "text": "Registra as versões exatas de cada dependência, para instalações idênticas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Guardar variáveis de ambiente sensíveis do projeto, como senhas",
+                                "text": "Guarda variáveis de ambiente sensíveis do projeto, como senhas de banco",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substituir o package.json como arquivo principal de configuração",
+                                "text": "Substitui o package.json como arquivo principal de configuração do projeto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Armazenar o código-fonte compilado da aplicação para deploy",
+                                "text": "Armazena o código-fonte já compilado da aplicação, pronto para deploy",
                                 "isCorrect": false
                             }
                         ]
@@ -294,19 +294,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O campo main é apagado automaticamente",
+                                "text": "O campo main é apagado, pois passa a apontar para dentro do Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É adicionado (ou atualizado) o campo dependencies, com uma entrada 'express' apontando para a faixa de versão instalada",
+                                "text": "É adicionado o campo dependencies, com 'express' e a versão instalada",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O nome do projeto (campo name) é renomeado para express",
+                                "text": "O nome do projeto (campo name) é renomeado automaticamente para express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada muda no package.json, a alteração fica restrita à pasta node_modules",
+                                "text": "Nada muda no package.json, a mudança fica restrita à pasta node_modules",
                                 "isCorrect": false
                             }
                         ]
@@ -351,19 +351,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O arquivo package.json do projeto",
+                                "text": "O arquivo package.json, carregado automaticamente ao iniciar o Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A porta em que o servidor vai escutar",
+                                "text": "A porta em que o servidor vai escutar por requisições",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A aplicação Express, usada para declarar rotas, middlewares e iniciar o servidor",
+                                "text": "A aplicação Express, usada para declarar rotas e iniciar o servidor",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma cópia do módulo http nativo do Node.js",
+                                "text": "Uma cópia do módulo http nativo, criada pelo Express",
                                 "isCorrect": false
                             }
                         ]
@@ -395,19 +395,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Já existe outro processo escutando na porta 3000, então é preciso encerrá-lo ou usar outra porta no app.listen",
+                                "text": "Outro processo já escuta na porta 3000; é preciso encerrá-lo ou trocar a porta",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express não foi instalado corretamente no projeto",
+                                "text": "O Express não foi instalado corretamente, e por isso a porta não abre",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O arquivo server.js tem um erro de sintaxe",
+                                "text": "O arquivo server.js tem um erro de sintaxe que impede o servidor de subir",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A porta 3000 é inválida e nunca pode ser usada",
+                                "text": "A porta 3000 é inválida e o sistema operacional nunca permite seu uso",
                                 "isCorrect": false
                             }
                         ]
@@ -417,19 +417,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É executada a cada requisição que o servidor recebe",
+                                "text": "É executada a cada requisição, antes de qualquer rota ser chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É executada uma única vez, assim que o servidor termina de subir e começa a escutar na porta",
+                                "text": "É executada uma única vez, quando o servidor termina de subir",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Define qual rota será tratada primeiro pelo Express",
+                                "text": "Define qual rota o Express vai tratar primeiro, por ordem de prioridade",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substitui a necessidade de declarar rotas com app.get",
+                                "text": "Substitui a necessidade de declarar rotas separadas com app.get",
                                 "isCorrect": false
                             }
                         ]
@@ -439,19 +439,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o Express só aceita configurar portas iguais ou acima de 3000",
+                                "text": "Porque o Express só permite configurar portas iguais ou acima da 3000 por padrão",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a porta 80 está reservada exclusivamente para uso do Node.js",
+                                "text": "Porque a porta 80 fica reservada exclusivamente para uso do Node.js",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque portas abaixo de 1024 são consideradas privilegiadas e costumam exigir permissão especial do sistema operacional para serem usadas",
+                                "text": "Porque portas abaixo de 1024 exigem permissão especial do sistema operacional",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque portas abaixo de 1024 não suportam o protocolo HTTP",
+                                "text": "Porque portas abaixo de 1024 não têm suporte ao protocolo HTTP",
                                 "isCorrect": false
                             }
                         ]
@@ -540,19 +540,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O navegador fica esperando para sempre, sem nenhuma resposta",
+                                "text": "O navegador fica esperando para sempre, porque o Express não responde sem rota",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O navegador recebe uma resposta de erro do próprio Express, algo como 'Cannot GET /', porque nenhuma rota corresponde à requisição",
+                                "text": "O navegador recebe um erro do Express, tipo 'Cannot GET /', pois nenhuma rota casa",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O processo Node.js encerra automaticamente",
+                                "text": "O processo Node.js encerra sozinho, já que não há rota para atender",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express cria uma rota padrão automaticamente respondendo com status 200",
+                                "text": "O Express cria uma rota padrão, respondendo automaticamente com status 200",
                                 "isCorrect": false
                             }
                         ]
@@ -562,19 +562,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O da primeira rota, porque o Express sempre executa a rota declarada primeiro, independentemente do caminho",
+                                "text": "O da primeira rota, pois o Express sempre executa a rota declarada primeiro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, porque só pode existir uma rota GET por aplicação",
+                                "text": "Nenhum, porque só pode existir uma única rota GET em cada aplicação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O da segunda rota declarada, app.get('/tarefas', ...), que responde com res.json([])",
+                                "text": "O da rota app.get('/tarefas', ...), que responde com res.json([])",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Todos os três, na ordem em que foram declarados",
+                                "text": "Todos os três handlers, um após o outro, na ordem em que foram declarados",
                                 "isCorrect": false
                             }
                         ]
@@ -584,19 +584,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Executa apenas handlerB, porque a última declaração sobrescreve a anterior",
+                                "text": "Executa apenas handlerB, pois a última rota declarada sobrescreve a anterior",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Executa handlerA e depois handlerB, um em seguida do outro",
+                                "text": "Executa handlerA e depois handlerB, encadeados como middlewares",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Lança um erro de rota duplicada e encerra o processo",
+                                "text": "Lança um erro de rota duplicada e encerra o processo imediatamente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Executa apenas handlerA; o Express para de procurar assim que encontra a primeira rota correspondente",
+                                "text": "Executa apenas handlerA; o Express para na primeira rota correspondente",
                                 "isCorrect": true
                             }
                         ]
@@ -729,11 +729,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque a barra de endereços do navegador só envia requisições GET, enquanto o curl permite testar qualquer método HTTP e inspecionar status code e headers diretamente",
+                                "text": "Porque o navegador só envia GET, sem testar outros métodos nem ver headers direto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o navegador não consegue exibir respostas em formato JSON",
+                                "text": "Porque o navegador não consegue exibir nenhuma resposta em formato JSON",
                                 "isCorrect": false
                             },
                             {
@@ -741,7 +741,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador exige que o Express esteja configurado com HTTPS",
+                                "text": "Porque o navegador só funciona quando o Express está configurado com certificado HTTPS",
                                 "isCorrect": false
                             }
                         ]
@@ -835,19 +835,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Executa automaticamente o handler da rota GET",
+                                "text": "Executa o handler da rota GET, pois é a primeira rota declarada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Executa automaticamente o handler da rota POST",
+                                "text": "Executa o handler da rota POST, já que ambos os métodos convivem no mesmo caminho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Responde com um erro 404, porque nenhuma rota casa com o método DELETE nesse caminho",
+                                "text": "Responde 404, porque nenhuma rota casa com o método DELETE nesse caminho",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trava o servidor, porque o método DELETE não foi importado",
+                                "text": "Trava o servidor, porque o método DELETE nunca foi importado",
                                 "isCorrect": false
                             }
                         ]
@@ -980,19 +980,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "req.params.id chega como a string '5', e === compara também o tipo, então a comparação com o número 5 falha; é preciso converter com Number() antes",
+                                "text": "req.params.id vem como string '5'; === compara tipo também, e falha",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O nome do parâmetro deveria ser req.params['5'], não req.params.id",
+                                "text": "O parâmetro deveria se chamar req.params['5'], e não req.params.id",
                                 "isCorrect": false
                             },
                             {
-                                "text": "req.params só funciona dentro de rotas POST",
+                                "text": "req.params só é preenchido dentro de rotas que usam o método POST",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faltou declarar app.use(express.params()) antes da rota",
+                                "text": "Faltou declarar app.use(express.params()) antes de definir essa rota",
                                 "isCorrect": false
                             }
                         ]
@@ -1024,19 +1024,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As duas rotas são executadas em sequência, uma depois da outra",
+                                "text": "As duas rotas rodam em sequência, pois o Express nunca para na primeira rota que casa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express detecta que recentes não é um número e pula direto para listarRecentes",
+                                "text": "O Express detecta que recentes não é numérico e pula para listarRecentes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A requisição cai no handler buscarPorId, tratando recentes como o valor de req.params.id, porque o Express usa a primeira rota que casar, na ordem em que foi definida",
+                                "text": "Cai no handler buscarPorId, tratando recentes como req.params.id, pois casa primeiro",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express recusa iniciar o servidor, por causa da rota ambígua",
+                                "text": "O Express recusa iniciar o servidor, por causa da rota ambígua declarada",
                                 "isCorrect": false
                             }
                         ]
@@ -1129,15 +1129,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "req.query entrega os valores sempre como string, então é preciso comparar com a string 'true' (ou converter) e não com o booleano true",
+                                "text": "req.query entrega tudo como string; é preciso comparar com 'true', não booleano",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A chave deveria se chamar req.query.completo, no masculino",
+                                "text": "A chave deveria se chamar req.query.completo, no masculino, não completa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "req.query só é preenchido em rotas que usam POST",
+                                "text": "req.query só é preenchido em rotas que usam o método POST, não GET",
                                 "isCorrect": false
                             }
                         ]
@@ -1169,11 +1169,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "const pagina = req.params.pagina || 1; const limite = req.params.limite || 10;",
+                                "text": "const pagina = Number(req.params.pagina) || 1; const limite = Number(req.params.limite) || 10;",
                                 "isCorrect": false
                             },
                             {
-                                "text": "const pagina = req.query.pagina || 1; const limite = req.query.limite || 10;",
+                                "text": "const pagina = String(req.query.pagina) || 1; const limite = String(req.query.limite) || 10;",
                                 "isCorrect": false
                             },
                             {
@@ -1181,7 +1181,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "const pagina = req.query.pagina ?? 10; const limite = req.query.limite ?? 1;",
+                                "text": "const pagina = Number(req.query.pagina) ?? 10; const limite = Number(req.query.limite) ?? 1;",
                                 "isCorrect": false
                             }
                         ]
@@ -1314,19 +1314,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As rotas usam :id como parte fixa do caminho, o que é sintaxe inválida no Express",
+                                "text": "As rotas usam :id fixo no caminho, o que é sintaxe inválida no Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O recurso deveria estar no singular (/tarefa) e não no plural",
+                                "text": "O recurso deveria estar no singular (/tarefa), e não no plural (/tarefas)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O verbo da ação está na URL (deletar, consultar) em vez de estar expresso pelo método HTTP (DELETE, GET)",
+                                "text": "O verbo está na URL (deletar, consultar) em vez do método HTTP (DELETE, GET)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não existe problema, essa é a forma recomendada para APIs Express",
+                                "text": "Não existe problema; essa é inclusive a forma recomendada pelo próprio Express",
                                 "isCorrect": false
                             }
                         ]
@@ -1459,19 +1459,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Trocar req.params.tarefaId por req.query.tarefaId",
+                                "text": "Trocar req.params.tarefaId por req.query.tarefaId, que captura prefixos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar o app.use por app.get no arquivo principal",
+                                "text": "Trocar o app.use por app.get no arquivo principal da aplicação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar o router filho com express.Router({ mergeParams: true }), para que ele enxergue os parâmetros do prefixo onde foi montado",
+                                "text": "Criar o router com express.Router({ mergeParams: true }), herdando os parâmetros do pai",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é possível: rotas separadas em arquivos diferentes não podem compartilhar parâmetros",
+                                "text": "Não é possível: routers montados em arquivos separados nunca compartilham parâmetros entre si",
                                 "isCorrect": false
                             }
                         ]
@@ -1543,19 +1543,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É o valor do próximo item de req.params",
+                                "text": "É o valor do próximo item dentro do array de req.params",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um objeto com os dados da próxima requisição que vai chegar",
+                                "text": "É um objeto com os dados da próxima requisição que ainda vai chegar ao servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma função que, quando chamada, passa o controle para o próximo middleware ou rota da fila",
+                                "text": "É uma função que, quando chamada, passa o controle ao próximo middleware da fila",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É uma função que envia a resposta ao cliente",
+                                "text": "É uma função que envia a resposta pronta de volta ao cliente",
                                 "isCorrect": false
                             }
                         ]
@@ -1565,19 +1565,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O método é impresso no console, mas a requisição fica parada ali: o handler da rota nunca roda e o cliente não recebe resposta",
+                                "text": "O método é impresso, mas a requisição trava ali; a rota nunca chega a rodar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express chama next() automaticamente assim que a função termina de executar",
+                                "text": "O Express chama next() automaticamente assim que a função termina de rodar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A requisição segue normalmente até a rota, só que sem passar pelo log",
+                                "text": "A requisição segue normalmente até a rota, só que pulando o passo do log",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor recusa iniciar por causa do middleware incompleto",
+                                "text": "O servidor recusa iniciar, por causa do middleware sem next() declarado",
                                 "isCorrect": false
                             }
                         ]
@@ -1587,19 +1587,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Middleware e handler de rota são exatamente a mesma coisa e podem ser usados de forma intercambiável em qualquer situação",
+                                "text": "Middleware e handler de rota são a mesma coisa, intercambiáveis em qualquer app.use ou app.get",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um handler de rota nunca recebe o parâmetro next, então não é possível encadear mais de uma função numa mesma rota",
+                                "text": "Um handler de rota nunca recebe next, então nunca é possível encadear mais de uma função numa rota",
                                 "isCorrect": false
                             },
                             {
-                                "text": "app.use só aceita funções assíncronas, enquanto app.get só aceita funções síncronas",
+                                "text": "app.use só aceita funções assíncronas, enquanto app.get exige funções síncronas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O handler de rota só roda quando o método e o caminho da requisição batem com o que foi definido; um middleware de app.use roda para as requisições que passam por ele, sem depender do método",
+                                "text": "O handler só roda quando método e caminho batem; um middleware de app.use roda sem depender do método",
                                 "isCorrect": true
                             }
                         ]
@@ -1613,7 +1613,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "middlewareC não roda nessa requisição, porque handlerFinal já enviou a resposta antes de o Express chegar até ele",
+                                "text": "middlewareC não roda nessa requisição, pois handlerFinal já enviou a resposta antes",
                                 "isCorrect": true
                             },
                             {
@@ -1688,19 +1688,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O Express retorna 401 porque verificarToken sempre roda primeiro, não importa a posição no arquivo",
+                                "text": "Retorna 401, porque verificarToken sempre roda primeiro, não importa a posição no arquivo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor recusa subir por causa da ordem invertida entre rota e middleware",
+                                "text": "O servidor recusa subir, por causa da ordem invertida entre rota e middleware",
                                 "isCorrect": false
                             },
                             {
-                                "text": "buscarTarefaPorId roda normalmente e responde, porque a rota já foi encontrada e atendida antes de o Express chegar em verificarToken",
+                                "text": "buscarTarefaPorId responde normalmente, pois a rota já foi atendida antes do middleware",
                                 "isCorrect": true
                             },
                             {
-                                "text": "verificarToken roda antes da rota, porque middlewares têm prioridade sobre handlers de rota",
+                                "text": "verificarToken roda antes da rota, porque middlewares sempre têm prioridade sobre handlers",
                                 "isCorrect": false
                             }
                         ]
@@ -1811,19 +1811,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Trocar req.body por req.params dentro da rota",
+                                "text": "Trocar req.body por req.params dentro do handler da rota",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar app.use(express.json()) antes das rotas que leem req.body",
+                                "text": "Adicionar app.use(express.json()) antes da rota que lê req.body",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Reiniciar o servidor, o problema se resolve sozinho",
+                                "text": "Reiniciar o servidor; o problema tende a se resolver sozinho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar a palavra async antes da função da rota",
+                                "text": "Adicionar a palavra async antes da função handler da rota",
                                 "isCorrect": false
                             }
                         ]
@@ -1855,7 +1855,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "express.json()",
+                                "text": "express.json({ extended: true })",
                                 "isCorrect": false
                             },
                             {
@@ -1863,11 +1863,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "express.static('public')",
+                                "text": "express.static('public', { extended: true })",
                                 "isCorrect": false
                             },
                             {
-                                "text": "express.form()",
+                                "text": "express.formData({ extended: true })",
                                 "isCorrect": false
                             }
                         ]
@@ -1877,15 +1877,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "express.json()",
+                                "text": "express.public('public')",
                                 "isCorrect": false
                             },
                             {
-                                "text": "app.use('public')",
+                                "text": "app.static('public')",
                                 "isCorrect": false
                             },
                             {
-                                "text": "express.public()",
+                                "text": "express.serveFiles('public')",
                                 "isCorrect": false
                             },
                             {
@@ -1956,15 +1956,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Escrever uma função (req, res, next) que faz o console.log e chama next(), registrada com app.use antes das rotas",
+                                "text": "Uma função (req, res, next) que loga e chama next(), via app.use antes das rotas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Escrever o console.log dentro de cada handler de rota, separadamente",
+                                "text": "Escrever o console.log dentro de cada handler de rota da aplicação, individualmente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Chamar app.log(req, res) no início do arquivo",
+                                "text": "Chamar app.log(req, res) logo no início do arquivo principal",
                                 "isCorrect": false
                             },
                             {
@@ -2000,19 +2000,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A segunda resposta substitui a primeira normalmente, sem nenhum aviso",
+                                "text": "A segunda resposta substitui a primeira normalmente, sem gerar nenhum aviso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express ignora a segunda chamada de res.json() silenciosamente",
+                                "text": "O Express ignora silenciosamente a segunda chamada de res.json()",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas respostas são combinadas automaticamente em um único JSON",
+                                "text": "As duas respostas são combinadas automaticamente em um único corpo JSON",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Node lança um erro do tipo Cannot set headers after they are sent to the client, porque duas respostas foram enviadas para a mesma requisição",
+                                "text": "O Node lança Cannot set headers after they are sent, por duas respostas enviadas",
                                 "isCorrect": true
                             }
                         ]
@@ -2044,19 +2044,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A requisição é bloqueada com 403, porque verificarApiKey roda para toda a aplicação, independente do caminho",
+                                "text": "Bloqueada com 403, porque verificarApiKey roda para toda a aplicação, não só /tarefas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "verificarApiKey roda, mas ignora a ausência da chave nesse caso específico",
+                                "text": "verificarApiKey roda, mas decide ignorar a ausência da chave nesse caso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "handlerStatus responde normalmente, porque a rota /status não passa por verificarApiKey, nem pelo caminho nem pela ordem de registro",
+                                "text": "Responde normalmente, pois /status não bate com o prefixo /tarefas do middleware",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express gera um erro de inicialização porque a rota foi declarada antes do middleware",
+                                "text": "Erro de inicialização, porque a rota foi declarada antes do middleware",
                                 "isCorrect": false
                             }
                         ]
@@ -2123,19 +2123,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Validar o formato do corpo das requisições recebidas",
+                                "text": "Validar o formato do corpo de cada requisição recebida pela API",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adicionar os cabeçalhos que controlam se um navegador em outra origem pode consumir essa API",
+                                "text": "Adiciona cabeçalhos que liberam acesso à API por outra origem",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Compactar as respostas para reduzir o tamanho enviado",
+                                "text": "Compactar o corpo das respostas para reduzir o tamanho enviado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Registrar em log cada requisição recebida pela API",
+                                "text": "Registrar em log cada requisição recebida, com método e horário",
                                 "isCorrect": false
                             }
                         ]
@@ -2145,11 +2145,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O servidor não consegue iniciar, porque helmet é obrigatório em qualquer app Express",
+                                "text": "O servidor não consegue iniciar, pois helmet é obrigatório em qualquer app Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Todas as rotas passam a responder 500 automaticamente",
+                                "text": "Todas as rotas passam a responder com status 500 automaticamente",
                                 "isCorrect": false
                             },
                             {
@@ -2157,7 +2157,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A aplicação não ganha os cabeçalhos de segurança extras que o helmet adicionaria; nada quebra, mas essa proteção específica não está ativa",
+                                "text": "A aplicação não ganha os cabeçalhos extras de segurança, mas nada quebra",
                                 "isCorrect": true
                             }
                         ]
@@ -2167,11 +2167,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Recebe imediatamente um erro 500 gerado automaticamente pelo Express",
+                                "text": "Recebe de imediato um erro 500 gerado automaticamente pelo Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A requisição fica pendurada, sem resposta nenhuma, até estourar o tempo limite de espera",
+                                "text": "A requisição fica pendurada, sem resposta, até estourar o tempo limite",
                                 "isCorrect": true
                             },
                             {
@@ -2179,7 +2179,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express chama next() sozinho depois de alguns segundos de espera",
+                                "text": "O Express chama next() sozinho depois de alguns segundos parado",
                                 "isCorrect": false
                             }
                         ]
@@ -2189,19 +2189,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "res.status(401) já envia a resposta sozinho, então o next() seguinte é ignorado pelo Express",
+                                "text": "res.status(401) já envia a resposta completa sozinho, então o next() seguinte é ignorado pelo Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express detecta a chamada de res.status e cancela a execução do next() automaticamente",
+                                "text": "O Express detecta a chamada de res.status e cancela automaticamente a execução do next() logo em seguida",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código gera um erro de sintaxe, porque res.status sempre precisa vir acompanhado de .json() na mesma linha",
+                                "text": "Gera um erro de sintaxe, pois res.status sempre precisa vir acompanhado de um .json() na mesma linha",
                                 "isCorrect": false
                             },
                             {
-                                "text": "res.status(401) só define o código da resposta, sem enviar nada; como o middleware chama next() em seguida, é o próximo handler do pipeline quem efetivamente envia a resposta, então o 401 pretendido não chega sozinho ao cliente",
+                                "text": "res.status(401) só define o código; como chama next(), é o próximo handler que envia a resposta de fato",
                                 "isCorrect": true
                             }
                         ]
@@ -2295,19 +2295,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O valor de concluida está em req.query, não em req.body; query string não vai para o corpo da requisição",
+                                "text": "concluida está em req.query, não em req.body; query nunca vai no corpo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nada está errado, req.body e req.query sempre têm os mesmos dados",
+                                "text": "Nada está errado: req.body e req.query sempre trazem os mesmos dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faltou adicionar express.json() para popular req.query",
+                                "text": "Faltou adicionar express.json() para popular req.query corretamente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GET não aceita parâmetros, então concluida nunca chega na rota",
+                                "text": "GET não aceita parâmetros, então concluida nunca chega em nenhuma rota",
                                 "isCorrect": false
                             }
                         ]
@@ -2317,19 +2317,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque req.query.limite chega como a string '5', e '5' + 1 em JavaScript concatena texto, resultando em '51'",
+                                "text": "req.query.limite chega como string '5'; '5' + 1 em JS concatena e vira '51'",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque req.query só aceita valores booleanos",
+                                "text": "Porque req.query só aceita valores do tipo booleano nessa versão do Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o Express bloqueia operações matemáticas dentro de rotas GET",
+                                "text": "Porque o Express bloqueia qualquer operação matemática dentro de rotas GET",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque req.query.limite vem sempre como null até ser validado",
+                                "text": "Porque req.query.limite vem sempre como null até passar por validação",
                                 "isCorrect": false
                             }
                         ]
@@ -2339,19 +2339,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "req.body chega undefined nessa rota, porque o middleware express.json() só afeta rotas registradas depois dele",
+                                "text": "req.body chega undefined; express.json() só afeta rotas depois dele",
                                 "isCorrect": true
                             },
                             {
-                                "text": "req.body é populado normalmente, porque a ordem de app.use não importa",
+                                "text": "req.body é populado normalmente, pois a ordem de app.use nunca importa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor recusa a requisição com status 500 automaticamente",
+                                "text": "O servidor recusa a requisição com status 500 de forma automática",
                                 "isCorrect": false
                             },
                             {
-                                "text": "req.params é que fica undefined, req.body funciona normalmente",
+                                "text": "req.params é que fica undefined; req.body funciona normalmente",
                                 "isCorrect": false
                             }
                         ]
@@ -2396,19 +2396,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um cliente pode enviar a requisição direto para a API (via curl, Postman etc.), sem passar pelo formulário nem pela validação do navegador",
+                                "text": "Um cliente pode chamar a API direto via curl, sem passar pelo formulário",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O atributo required só funciona em navegadores antigos",
+                                "text": "O atributo required só funciona em navegadores mais antigos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express bloqueia automaticamente formulários com required",
+                                "text": "O Express bloqueia automaticamente qualquer formulário com required",
                                 "isCorrect": false
                             },
                             {
-                                "text": "required impede qualquer requisição que não venha de um navegador",
+                                "text": "required impede qualquer requisição que não venha de um navegador comum",
                                 "isCorrect": false
                             }
                         ]
@@ -2418,7 +2418,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Tratar como não confiável e validar no servidor, independentemente de já existir validação no front-end",
+                                "text": "Tratar como não confiável e validar no servidor, mesmo com validação no front-end",
                                 "isCorrect": true
                             },
                             {
@@ -2426,11 +2426,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Validar apenas em rotas GET, já que POST e PUT costumam vir de formulários confiáveis",
+                                "text": "Validar apenas em rotas GET, já que POST e PUT vêm sempre de formulários confiáveis",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar nos dados quando a aplicação front-end for da mesma empresa",
+                                "text": "Confiar nos dados sempre que o front-end pertencer à mesma empresa",
                                 "isCorrect": false
                             }
                         ]
@@ -2440,19 +2440,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A chamada a toUpperCase() num valor undefined lança um erro e a resposta é um 500",
+                                "text": "toUpperCase() num valor undefined lança erro, e a resposta vira um 500",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express substitui automaticamente titulo por uma string vazia",
+                                "text": "O Express substitui automaticamente o titulo por uma string vazia",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A rota responde 400 automaticamente, sem precisar de código extra",
+                                "text": "A rota responde 400 automaticamente, sem exigir nenhum código extra",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A tarefa é criada normalmente com titulo igual a undefined",
+                                "text": "A tarefa é criada normalmente, com titulo valendo undefined",
                                 "isCorrect": false
                             }
                         ]
@@ -2462,7 +2462,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque quem envia a requisição pode ser qualquer programa, não só o navegador com aquele JavaScript de validação carregado",
+                                "text": "Quem envia a requisição pode ser qualquer programa, não só o navegador validando",
                                 "isCorrect": true
                             },
                             {
@@ -2474,7 +2474,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque JavaScript no navegador não consegue validar campos de texto, só números",
+                                "text": "Porque JavaScript no navegador não consegue validar campos de texto, apenas números",
                                 "isCorrect": false
                             }
                         ]
@@ -2541,19 +2541,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O formato esperado dos dados: quais campos existem, o tipo de cada um e as regras de validação",
+                                "text": "O formato esperado do dado: campos, tipos e regras de validação",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O modelo de uma tabela do banco de dados",
+                                "text": "O modelo de uma tabela inteira do banco de dados relacional",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma rota do Express",
+                                "text": "Uma nova rota registrada dentro da aplicação Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um middleware de log de requisições",
+                                "text": "Um middleware que registra em log cada requisição recebida",
                                 "isCorrect": false
                             }
                         ]
@@ -2563,11 +2563,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Lança uma exceção (ZodError) imediatamente, interrompendo a execução",
+                                "text": "Lança uma exceção (ZodError), interrompendo a execução na hora",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Retorna null silenciosamente",
+                                "text": "Retorna null silenciosamente, sem lançar nenhum erro",
                                 "isCorrect": false
                             },
                             {
@@ -2575,7 +2575,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Retorna false",
+                                "text": "Retorna false, indicando que a validação não passou",
                                 "isCorrect": false
                             }
                         ]
@@ -2607,19 +2607,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Lança uma ZodError, porque 'ok' tem menos caracteres que o mínimo exigido",
+                                "text": "Lança uma ZodError, pois 'ok' é menor que o mínimo exigido",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aceita normalmente, porque 2 é maior que zero",
+                                "text": "Aceita normalmente, porque 2 caracteres já é maior que zero",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Completa o texto automaticamente até atingir 3 caracteres",
+                                "text": "Completa o texto automaticamente até atingir os 3 caracteres",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ignora a regra de min porque o valor é uma string válida",
+                                "text": "Ignora a regra de min, porque o valor já é uma string válida",
                                 "isCorrect": false
                             }
                         ]
@@ -2629,15 +2629,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque nem todo erro dentro do try é de validação; um erro inesperado (como falha ao acessar um banco de dados) não deveria ser tratado como se fosse entrada inválida do cliente",
+                                "text": "Nem todo erro do try é de validação; uma falha de banco não é 'entrada inválida'",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque ZodError é o único tipo de erro que o JavaScript reconhece dentro de um catch",
+                                "text": "Porque ZodError é o único tipo de erro que o JavaScript reconhece num catch",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque sem o instanceof o Node.js recusa executar o bloco catch",
+                                "text": "Porque sem o instanceof, o Node.js se recusa a executar o bloco catch",
                                 "isCorrect": false
                             },
                             {
@@ -2686,19 +2686,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "safeParse nunca lança exceção, devolve um objeto indicando sucesso ou falha; parse lança uma exceção",
+                                "text": "safeParse nunca lança exceção e devolve um objeto de sucesso ou falha",
                                 "isCorrect": true
                             },
                             {
-                                "text": "safeParse é tecnicamente mais rápido, mas aplica as mesmas regras de parse",
+                                "text": "safeParse é apenas mais rápido tecnicamente, mas aplica as mesmas regras do parse",
                                 "isCorrect": false
                             },
                             {
-                                "text": "parse só funciona com req.body; safeParse só funciona com req.query",
+                                "text": "parse só funciona com req.body, e safeParse só funciona com req.query",
                                 "isCorrect": false
                             },
                             {
-                                "text": "safeParse não aplica as regras de validação do schema, só confere se o campo existe",
+                                "text": "safeParse não aplica as regras de validação, só confere se os campos existem",
                                 "isCorrect": false
                             }
                         ]
@@ -2730,11 +2730,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Fica claro exatamente qual campo falhou e por quê, o que ajuda a corrigir a requisição sem precisar adivinhar",
+                                "text": "Fica claro qual campo falhou e por quê, sem precisar adivinhar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A resposta fica mais rápida de ser processada pelo servidor",
+                                "text": "A resposta fica bem mais rápida de ser processada pelo servidor",
                                 "isCorrect": false
                             },
                             {
@@ -2742,7 +2742,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Isso faz o status HTTP mudar de 400 para 422 automaticamente",
+                                "text": "Isso faz o status HTTP mudar de 400 para 422 de forma automática",
                                 "isCorrect": false
                             }
                         ]
@@ -2752,7 +2752,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque, se a validação falhar, o handler final da rota não deve rodar; a resposta 400 já foi enviada e a cadeia de middleware deve parar ali",
+                                "text": "Se a validação falhar, o handler final não deve rodar; o 400 já foi enviado",
                                 "isCorrect": true
                             },
                             {
@@ -2774,7 +2774,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Nenhuma: as duas aplicam as mesmas regras do schema e as duas podem devolver 400 com mensagem clara; a diferença é só de estilo no código do servidor",
+                                "text": "Nenhuma: as duas aplicam as mesmas regras do schema; a diferença é só de estilo",
                                 "isCorrect": true
                             },
                             {
@@ -2853,19 +2853,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Descarta esse campo silenciosamente do resultado validado",
+                                "text": "Descarta esse campo em silêncio, fora do resultado validado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Lança um erro de validação automaticamente",
+                                "text": "Lança um erro de validação automaticamente, mesmo em modo padrão",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mantém o campo extra normalmente no resultado",
+                                "text": "Mantém o campo extra normalmente dentro do resultado validado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Converte o campo extra para string antes de manter",
+                                "text": "Converte o campo extra para string antes de mantê-lo no resultado",
                                 "isCorrect": false
                             }
                         ]
@@ -2897,7 +2897,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não, porque campos fora do schema são descartados por padrão; isAdmin nunca chega no dado validado",
+                                "text": "Não: campos fora do schema são descartados por padrão automaticamente",
                                 "isCorrect": true
                             },
                             {
@@ -3003,19 +3003,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "200, porque é o status padrão do Express quando nenhum é definido",
+                                "text": "200, porque é o status padrão do Express quando nada é definido",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum status é enviado, e a requisição fica pendente",
+                                "text": "Nenhum status é enviado, e a requisição fica pendente para sempre",
                                 "isCorrect": false
                             },
                             {
-                                "text": "500, porque faltou definir o status manualmente",
+                                "text": "500, porque faltou definir o status manualmente antes do corpo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "204, porque não houve chamada explícita a status()",
+                                "text": "204, porque não houve nenhuma chamada explícita a status()",
                                 "isCorrect": false
                             }
                         ]
@@ -3047,19 +3047,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "res.json() sempre trata o valor como JSON e mantém o Content-Type application/json em qualquer situação, mesmo quando o valor não é um objeto; res.send() muda de comportamento dependendo do tipo do valor passado",
+                                "text": "res.json() sempre fixa Content-Type JSON; res.send() varia com o tipo do valor",
                                 "isCorrect": true
                             },
                             {
-                                "text": "res.send() não existe mais nas versões atuais do Express",
+                                "text": "res.send() não existe mais nas versões mais recentes do Express, foi removido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "res.json() é executado mais rápido pelo motor do Node.js",
+                                "text": "res.json() roda mais rápido que res.send(), otimizado pelo motor do Node.js",
                                 "isCorrect": false
                             },
                             {
-                                "text": "res.send() não aceita objetos JavaScript como argumento",
+                                "text": "res.send() não aceita objetos JavaScript como argumento, só texto puro",
                                 "isCorrect": false
                             }
                         ]
@@ -3069,19 +3069,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A resposta já sai com o status padrão 200, porque .json() envia a resposta antes de .status(201) ser chamado; a ordem das chamadas encadeadas importa",
+                                "text": "Sai com status 200 padrão, pois .json() já envia a resposta antes do .status()",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express detecta a inversão e reordena as chamadas automaticamente, enviando 201 do mesmo jeito",
+                                "text": "O Express detecta a inversão e reordena as chamadas, enviando 201 do mesmo jeito",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código não executa, porque .json() não pode ser encadeado antes de .status()",
+                                "text": "O código não executa, pois .json() não pode ser encadeado antes de .status()",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A resposta sai com status 404, porque o Express interpreta a ordem invertida como rota não encontrada",
+                                "text": "Sai com status 404, porque o Express lê a ordem invertida como rota inexistente",
                                 "isCorrect": false
                             }
                         ]
@@ -3214,7 +3214,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "404, porque o próprio Express já responde automaticamente quando nenhuma rota bate com o caminho pedido",
+                                "text": "404, porque o Express já responde sozinho quando nenhuma rota bate com o caminho",
                                 "isCorrect": true
                             },
                             {
@@ -3226,7 +3226,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "nenhum status é enviado, porque só rotas explícitas conseguem gerar uma resposta",
+                                "text": "nenhum status é enviado, porque só rotas explícitas geram alguma resposta",
                                 "isCorrect": false
                             }
                         ]
@@ -3271,19 +3271,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque quem consome a API pode tratar qualquer erro de forma genérica, sem precisar de um código especial para cada rota",
+                                "text": "Porque quem consome a API trata qualquer erro de forma genérica, sem código extra",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o Express recusa iniciar o servidor se detectar formatos de erro diferentes entre rotas",
+                                "text": "Porque o Express recusa iniciar se detectar formatos de erro diferentes entre rotas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque isso deixa a resposta HTTP mais rápida de ser enviada",
+                                "text": "Porque isso deixa a resposta HTTP visivelmente mais rápida de ser enviada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque é a única forma de usar res.status() corretamente",
+                                "text": "Porque é a única forma correta de usar res.status() no Express",
                                 "isCorrect": false
                             }
                         ]
@@ -3315,7 +3315,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "padronizar todas as rotas para responder erros sempre no mesmo formato, por exemplo { error: { message } }",
+                                "text": "padronizar todas as rotas para responder erro sempre no mesmo formato",
                                 "isCorrect": true
                             },
                             {
@@ -3359,7 +3359,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "o cliente entende a resposta como sucesso, porque o status 200 não bate com o conteúdo de erro; um formato consistente não substitui a escolha do status HTTP correto",
+                                "text": "o cliente entende a resposta como sucesso, pois 200 não combina com um corpo de erro",
                                 "isCorrect": true
                             },
                             {
@@ -3371,7 +3371,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "a função lança uma exceção automaticamente ao perceber que o status não combina com um erro",
+                                "text": "a função lança uma exceção ao perceber que o status não combina com um erro",
                                 "isCorrect": false
                             }
                         ]
@@ -3460,19 +3460,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "next(err), passando o erro como argumento",
+                                "text": "next(err), passando o erro adiante",
                                 "isCorrect": true
                             },
                             {
-                                "text": "next(), sem nenhum argumento",
+                                "text": "next(), chamado sem nenhum argumento",
                                 "isCorrect": false
                             },
                             {
-                                "text": "res.error(err)",
+                                "text": "res.error(err), direto no handler",
                                 "isCorrect": false
                             },
                             {
-                                "text": "return err dentro do corpo da rota",
+                                "text": "return err, dentro do corpo da rota",
                                 "isCorrect": false
                             }
                         ]
@@ -3482,7 +3482,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "o middleware de erro precisa vir depois das rotas; registrado antes, o Express nunca o alcança quando o erro acontece dentro de uma rota posterior",
+                                "text": "o middleware de erro precisa vir depois das rotas, senão o Express nunca o alcança",
                                 "isCorrect": true
                             },
                             {
@@ -3504,7 +3504,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "falta o parâmetro err na assinatura da função; com apenas três parâmetros (req, res, next), o Express trata a função como middleware comum, não como tratador de erro",
+                                "text": "falta o parâmetro err; com três parâmetros, vira middleware comum, não de erro",
                                 "isCorrect": true
                             },
                             {
@@ -3605,7 +3605,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "porque uma rejeição de Promise depois de um await não é a mesma coisa que um throw síncrono, e nem toda versão do Express encaminha isso sozinho para o next(err); tratar com try/catch é o jeito confiável de garantir isso",
+                                "text": "uma rejeição após await não é como um throw síncrono; nem todo Express encaminha isso sozinho",
                                 "isCorrect": true
                             },
                             {
@@ -3627,7 +3627,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "evita repetir try/catch em cada rota assíncrona, já que a própria função encaminha qualquer rejeição da Promise para next(err)",
+                                "text": "evita repetir try/catch em cada rota; encaminha a rejeição direto para next(err)",
                                 "isCorrect": true
                             },
                             {
@@ -3649,7 +3649,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "o catch sempre responde 400, mesmo que o erro venha de outra causa (como uma falha ao salvar, que mereceria 500); o ideal é chamar next(err) e deixar o middleware central decidir o status certo",
+                                "text": "o catch sempre responde 400, mesmo quando o erro real mereceria 500",
                                 "isCorrect": true
                             },
                             {
@@ -3711,15 +3711,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Cada camada passa a ter uma responsabilidade clara, o que facilita achar, testar e reaproveitar o código.",
+                                "text": "Cada camada ganha responsabilidade clara, mais fácil de achar e testar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express passa a responder as requisições mais rápido.",
+                                "text": "O Express passa a responder as requisições visivelmente mais rápido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O projeto deixa de precisar de um arquivo principal (app.js).",
+                                "text": "O projeto deixa de precisar de um arquivo principal, tipo app.js.",
                                 "isCorrect": false
                             },
                             {
@@ -3755,7 +3755,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque a regra de negócio está isolada no service, sem depender de req, res ou de qualquer coisa do Express.",
+                                "text": "Porque a regra de negócio vive isolada no service, sem depender do Express.",
                                 "isCorrect": true
                             },
                             {
@@ -3874,19 +3874,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Chamar next(err) para repassar o erro ao middleware de tratamento centralizado.",
+                                "text": "Chamar next(err), repassando o erro ao middleware de tratamento central.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Responder diretamente com res.send(err), devolvendo o objeto de erro cru.",
+                                "text": "Responder direto com res.send(err), devolvendo o erro cru ao cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ignorar o erro e responder com uma lista vazia.",
+                                "text": "Ignorar o erro e responder normalmente com uma lista vazia.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Lançar o erro de novo com throw err, sem usar next.",
+                                "text": "Lançar o erro de novo com throw err, sem chamar next.",
                                 "isCorrect": false
                             }
                         ]
@@ -3896,11 +3896,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Validar os dados de novo, por segurança, antes de qualquer outra coisa.",
+                                "text": "Chamar o service com os dados, aguardar o resultado e responder o status certo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Chamar a função do service passando os dados, aguardar o resultado e responder com o status adequado.",
+                                "text": "Validar os dados de novo, por segurança, antes de qualquer outra coisa.",
                                 "isCorrect": true
                             },
                             {
@@ -3922,7 +3922,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque isso mistura a camada HTTP com a lógica da aplicação, dificultando reaproveitar e testar essa regra.",
+                                "text": "Porque mistura a camada HTTP com a lógica da aplicação, dificultando testar.",
                                 "isCorrect": true
                             },
                             {
@@ -3944,7 +3944,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A regra de negócio não estar no controller, permitindo testar o service isoladamente, sem simular req e res.",
+                                "text": "A regra de negócio não estar no controller, dá para testar o service isolado.",
                                 "isCorrect": true
                             },
                             {
@@ -4045,7 +4045,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o service deve funcionar independente de como é chamado, seja por uma rota HTTP, um script ou um teste.",
+                                "text": "Porque o service precisa funcionar sozinho, sem depender do Express.",
                                 "isCorrect": true
                             },
                             {
@@ -4085,7 +4085,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Só a implementação interna do service; as rotas e os controllers continuam chamando as mesmas funções.",
+                                "text": "Só a implementação interna do service; rotas e controllers continuam iguais.",
                                 "isCorrect": true
                             },
                             {
@@ -4142,7 +4142,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Para carregar as variáveis definidas num arquivo .env dentro de process.env.",
+                                "text": "Para carregar as variáveis de um arquivo .env dentro de process.env.",
                                 "isCorrect": true
                             },
                             {
@@ -4190,7 +4190,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque garante um valor padrão quando a variável de ambiente não estiver definida, evitando quebrar a aplicação.",
+                                "text": "Porque garante um valor padrão quando a variável de ambiente não existe.",
                                 "isCorrect": true
                             },
                             {
@@ -4212,11 +4212,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reduz o tempo de resposta das requisições da API.",
+                                "text": "Reduz visivelmente o tempo de resposta das requisições da API.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Facilita localizar, documentar e ajustar todas as configurações da aplicação num só lugar.",
+                                "text": "Facilita localizar e ajustar todas as configurações num só lugar.",
                                 "isCorrect": true
                             },
                             {
@@ -4234,7 +4234,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Documentar quais variáveis a aplicação espera, sem expor valores sensíveis reais no repositório.",
+                                "text": "Documentar as variáveis esperadas, sem expor valores sensíveis reais.",
                                 "isCorrect": true
                             },
                             {
@@ -4313,7 +4313,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "res.status(204).send(), sem corpo na resposta.",
+                                "text": "res.status(204).send(), sem corpo.",
                                 "isCorrect": true
                             },
                             {
@@ -4331,11 +4331,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O middleware chama next() mesmo assim, e o controller decide se ignora os dados inválidos.",
+                                "text": "O middleware chama next() mesmo assim, e o controller decide se ignora os dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O próprio middleware responde com status 400 e o controller atualizar nunca chega a ser executado.",
+                                "text": "O middleware responde 400 direto, e o controller atualizar nunca chega a rodar.",
                                 "isCorrect": true
                             },
                             {
@@ -4357,7 +4357,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque centraliza a montagem da resposta de erro num único middleware, mantendo o formato consistente em toda a API.",
+                                "text": "Porque centraliza a resposta de erro, mantendo o formato consistente na API.",
                                 "isCorrect": true
                             },
                             {
@@ -4375,7 +4375,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Só o arquivo dentro de services/, mantendo as assinaturas das funções que routes/ e controllers/ já usam.",
+                                "text": "Só o arquivo em services/, mantendo as assinaturas que routes/ e controllers/ já usam.",
                                 "isCorrect": true
                             },
                             {
@@ -4437,7 +4437,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque em produção não há terminal aberto nem DevTools acompanhando a aplicação; o log é o principal registro do que aconteceu para investigar problemas depois.",
+                                "text": "Em produção não há terminal nem DevTools; o log é o registro do que houve.",
                                 "isCorrect": true
                             },
                             {
@@ -4459,11 +4459,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O método HTTP e a rota chamada",
+                                "text": "O método HTTP e a rota que foi chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O status code da resposta",
+                                "text": "O status code de cada resposta enviada",
                                 "isCorrect": false
                             },
                             {
@@ -4471,7 +4471,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "O tempo de resposta em milissegundos",
+                                "text": "O tempo de resposta de cada rota, em milissegundos",
                                 "isCorrect": false
                             }
                         ]
@@ -4481,7 +4481,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O status code só é definitivo depois que a resposta é enviada; é preciso registrar o log num listener do evento 'finish' de res, não antes do next().",
+                                "text": "O status code só é definitivo após a resposta ser enviada, no evento 'finish'.",
                                 "isCorrect": true
                             },
                             {
@@ -4507,7 +4507,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "'combined', porque registra informações mais completas (como IP e user-agent), úteis para investigar problemas em produção",
+                                "text": "'combined', porque registra IP e user-agent, úteis para investigar em produção",
                                 "isCorrect": true
                             },
                             {
@@ -4525,15 +4525,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Logar o corpo inteiro sem filtro pode gravar senhas e dados sensíveis em texto puro; a correção é logar apenas os campos necessários (ou mascarar/excluir campos sensíveis como senha e token) antes de escrever no log.",
+                                "text": "Logar o corpo sem filtro grava senhas em texto puro; a correção é mascarar dados sensíveis.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O problema é que req.body não deveria existir sem express.json(); a correção é remover o middleware de parsing.",
+                                "text": "O problema é que req.body não deveria existir sem express.json(); a correção é remover o middleware.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é o uso do morgan em vez de um logger próprio; a correção é sempre escrever o logger manualmente.",
+                                "text": "O problema é o uso do morgan em vez de um logger próprio; a correção é escrever tudo manualmente.",
                                 "isCorrect": false
                             },
                             {
@@ -4582,7 +4582,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Aplicar, de uma vez, um conjunto de cabeçalhos HTTP de resposta que dificultam ataques comuns, além de remover o cabeçalho X-Powered-By.",
+                                "text": "Aplicar cabeçalhos HTTP de segurança, removendo o X-Powered-By.",
                                 "isCorrect": true
                             },
                             {
@@ -4626,7 +4626,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O stack trace e a mensagem original do erro podem expor detalhes internos do servidor (caminhos de arquivo, bibliotecas, versões), informações úteis para um atacante.",
+                                "text": "O stack trace expõe caminhos, bibliotecas e versões internas, úteis para um atacante.",
                                 "isCorrect": true
                             },
                             {
@@ -4652,7 +4652,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "windowMs define a duração da janela de tempo considerada, e limit define quantas requisições cada origem pode fazer dentro dessa janela.",
+                                "text": "windowMs define a duração da janela de tempo; limit define o total de requisições por origem.",
                                 "isCorrect": true
                             },
                             {
@@ -4670,7 +4670,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Rate limiting por IP protege contra abuso vindo de poucas origens, mas não impede um ataque distribuído por muitos IPs; nesse caso, defesas adicionais (como CAPTCHA, bloqueio progressivo por conta ou MFA) se tornam necessárias.",
+                                "text": "Rate limit por IP não barra um ataque distribuído por muitos IPs; faltam defesas extras, tipo CAPTCHA.",
                                 "isCorrect": true
                             },
                             {
@@ -4727,7 +4727,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O navegador do cliente, que aplica a Same-Origin Policy e impede a leitura de respostas de outra origem sem autorização explícita do servidor.",
+                                "text": "O navegador, que aplica a Same-Origin Policy sem autorização do servidor.",
                                 "isCorrect": true
                             },
                             {
@@ -4749,19 +4749,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O mesmo caminho e os mesmos parâmetros de query",
+                                "text": "O mesmo caminho e os mesmos parâmetros de query da URL",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O mesmo esquema (http/https), o mesmo domínio e a mesma porta",
+                                "text": "O mesmo esquema, o mesmo domínio e a mesma porta",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O mesmo método HTTP usado na requisição",
+                                "text": "O mesmo método HTTP usado em cada requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O mesmo corpo de resposta (mesmo Content-Type)",
+                                "text": "O mesmo corpo de resposta, ou seja, o mesmo Content-Type",
                                 "isCorrect": false
                             }
                         ]
@@ -4771,7 +4771,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É o preflight: uma verificação automática que o navegador faz antes de requisições cross-origin mais sensíveis, perguntando ao servidor se aquela chamada é permitida.",
+                                "text": "É o preflight: o navegador confere antes se a chamada cross-origin é permitida.",
                                 "isCorrect": true
                             },
                             {
@@ -4801,11 +4801,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Adiciona os cabeçalhos de resposta que autorizam especificamente https://meufront.com a ler as respostas da API em requisições cross-origin.",
+                                "text": "Adiciona o cabeçalho que autoriza só https://meufront.com a ler as respostas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Substitui a necessidade de validar o corpo da requisição com um schema.",
+                                "text": "Substitui totalmente a necessidade de validar o corpo da requisição com um schema Zod.",
                                 "isCorrect": false
                             }
                         ]
@@ -4815,7 +4815,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Liberar qualquer origem enquanto se aceitam credenciais (cookies) abre a porta para que sites maliciosos façam requisições autenticadas em nome do usuário; o ajuste correto é restringir origin a uma lista explícita de domínios confiáveis.",
+                                "text": "Liberar qualquer origem com credenciais deixa sites maliciosos fazerem requisições autenticadas; o certo é restringir origin.",
                                 "isCorrect": true
                             },
                             {
@@ -4872,11 +4872,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Em qual ambiente a aplicação está rodando no momento, como 'development' ou 'production'.",
+                                "text": "Em qual ambiente a aplicação roda, tipo 'development' ou 'production'.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A versão do Node.js instalada na máquina.",
+                                "text": "A versão exata do Node.js que está instalada na máquina atual.",
                                 "isCorrect": false
                             },
                             {
@@ -4884,7 +4884,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome do banco de dados que a aplicação deve usar.",
+                                "text": "O nome do banco de dados que a aplicação deve usar em cada ambiente.",
                                 "isCorrect": false
                             }
                         ]
@@ -4916,19 +4916,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "'production', porque é o padrão mais seguro",
+                                "text": "'production', porque é sempre o padrão mais seguro do Express",
                                 "isCorrect": false
                             },
                             {
-                                "text": "'development', o valor padrão quando NODE_ENV não está definida",
+                                "text": "'development', valor padrão do Express quando NODE_ENV não existe",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um erro é lançado e o servidor não sobe",
+                                "text": "Um erro é lançado de imediato e o servidor não sobe",
                                 "isCorrect": false
                             },
                             {
-                                "text": "'test', porque é o valor padrão do Node.js",
+                                "text": "'test', porque é o valor padrão definido pelo próprio Node.js",
                                 "isCorrect": false
                             }
                         ]
@@ -4938,15 +4938,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Melhorar a performance do servidor em produção.",
+                                "text": "Melhorar visivelmente a performance do servidor em produção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mostrar a mensagem detalhada do erro apenas em desenvolvimento, e uma mensagem genérica em produção, evitando vazar detalhes internos ao cliente.",
+                                "text": "Mostrar erro detalhado em dev, e algo genérico em produção, sem vazar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Impedir que o middleware de erro seja executado em produção.",
+                                "text": "Impedir totalmente que o middleware de erro seja executado em produção.",
                                 "isCorrect": false
                             },
                             {
@@ -4960,7 +4960,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O cmd.exe do Windows não entende a sintaxe de atribuir uma variável de ambiente inline antes do comando; a correção idiomática é usar o pacote cross-env para definir a variável de forma multiplataforma.",
+                                "text": "O cmd.exe não aceita a sintaxe de variável inline; a correção é usar o pacote cross-env.",
                                 "isCorrect": true
                             },
                             {
@@ -5017,7 +5017,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Não é prático reexecutar manualmente todos os testes de todas as rotas toda vez que o código muda, o que torna fácil deixar uma quebra passar despercebida.",
+                                "text": "Não é prático reexecutar tudo manualmente a cada mudança no código.",
                                 "isCorrect": true
                             },
                             {
@@ -5061,7 +5061,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Separar a criação do app (rotas e middlewares) num arquivo que apenas exporta o app, deixando a chamada de app.listen() isolada em outro arquivo, como server.js; os testes importam só o app.",
+                                "text": "Separar a criação do app num arquivo que só exporta; app.listen() fica isolado em outro.",
                                 "isCorrect": true
                             },
                             {
@@ -5083,15 +5083,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Design de interfaces e testes de usabilidade",
+                                "text": "Design de interfaces e testes de usabilidade com usuários reais",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Banco de dados (persistência real dos dados) e autenticação (identificar e proteger rotas por usuário)",
+                                "text": "Banco de dados (persistência real) e autenticação (proteger rotas)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deploy em nuvem e otimização de imagens",
+                                "text": "Deploy em nuvem e otimização de imagens para produção",
                                 "isCorrect": false
                             },
                             {
@@ -5105,7 +5105,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não. Os testes confirmam apenas o comportamento das rotas no momento, mas não resolvem duas lacunas estruturais da API: os dados não persistem entre reinícios (array em memória) e não há controle de quem pode acessar cada recurso (falta autenticação); ambos exigem os próximos estágios do roadmap.",
+                                "text": "Não. Os testes confirmam as rotas agora, mas faltam persistência real e autenticação.",
                                 "isCorrect": true
                             },
                             {

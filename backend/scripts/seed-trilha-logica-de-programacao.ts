@@ -64,11 +64,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Dar instruções precisas e ordenadas para o computador executar",
+                                "text": "Dar instruções ordenadas para o computador executar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Decorar todos os comandos de uma linguagem de programação",
+                                "text": "Decorar de cor os comandos de uma linguagem de programação",
                                 "isCorrect": false
                             },
                             {
@@ -86,7 +86,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma receita de bolo, com os passos para preparar a massa e assar",
+                                "text": "Uma receita de bolo, passo a passo",
                                 "isCorrect": true
                             },
                             {
@@ -94,7 +94,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome de um restaurante",
+                                "text": "O nome de um restaurante preferido pela família",
                                 "isCorrect": false
                             },
                             {
@@ -108,15 +108,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "quem segue instruções à risca faz exatamente o que foi dito, mesmo que pareça óbvio para quem pediu",
+                                "text": "instruções são seguidas ao pé da letra, mesmo quando algo parece óbvio",
                                 "isCorrect": true
                             },
                             {
-                                "text": "sanduíches são tarefas impossíveis de descrever como algoritmo",
+                                "text": "não é possível descrever o preparo de um sanduíche como uma sequência de passos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "faltou comprar mais pão antes de começar",
+                                "text": "faltou comprar mais pão antes de começar a receita",
                                 "isCorrect": false
                             },
                             {
@@ -130,19 +130,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque com o carro no chão, o atrito com o solo impede que a roda gire enquanto se força a chave; com o carro no ar, a roda giraria livre",
+                                "text": "Porque o atrito com o chão trava a roda, facilitando soltar as porcas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a ordem dos passos nunca faz diferença no resultado final",
+                                "text": "Porque a ordem dos passos nunca muda o resultado de um algoritmo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o macaco só funciona depois que todas as porcas são retiradas",
+                                "text": "Porque o macaco só consegue erguer o carro após soltar todas as porcas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque assim o carro fica melhor estacionado",
+                                "text": "Porque assim o carro fica mais estável quando é erguido pelo macaco",
                                 "isCorrect": false
                             }
                         ]
@@ -152,19 +152,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Um algoritmo é a sequência de passos em si, e pode ser descrita em português, em um desenho ou em código; ela não depende de uma linguagem de programação específica",
+                                "text": "É a sequência de passos em si, descrita em texto, desenho ou código",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um algoritmo só existe depois de estar escrito em uma linguagem de programação como JavaScript",
+                                "text": "Só passa a existir depois de escrito em uma linguagem como o JavaScript",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar a ordem dos passos de um algoritmo nunca muda o resultado final",
+                                "text": "Mudar a ordem dos passos nunca altera o resultado final",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Todo algoritmo obrigatoriamente precisa de um computador para ser executado",
+                                "text": "Precisa sempre de um computador para existir e ser executado",
                                 "isCorrect": false
                             }
                         ]
@@ -209,11 +209,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Quebrar um problema grande em partes menores e mais fáceis de resolver",
+                                "text": "Quebrar um problema grande em partes menores",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apagar um programa que não funciona",
+                                "text": "Apagar um programa que não funciona mais",
                                 "isCorrect": false
                             },
                             {
@@ -221,7 +221,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escrever todo o código de uma vez, sem planejar nada antes",
+                                "text": "Escrever todo o código de uma vez, sem planejar nada",
                                 "isCorrect": false
                             }
                         ]
@@ -231,19 +231,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "reconhecimento de padrões",
+                                "text": "identificar um padrão que se repete",
                                 "isCorrect": true
                             },
                             {
-                                "text": "abstração",
+                                "text": "abstração dos detalhes menos importantes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "um erro de lógica",
+                                "text": "um erro de lógica no meio do processo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "um algoritmo impossível de repetir",
+                                "text": "um algoritmo que não pode ser repetido",
                                 "isCorrect": false
                             }
                         ]
@@ -253,11 +253,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "decomposição: dividir um problema grande em partes menores",
+                                "text": "decomposição: dividiu a festa em partes menores",
                                 "isCorrect": true
                             },
                             {
-                                "text": "abstração: ignorar detalhes importantes da festa",
+                                "text": "abstração: ignorou detalhes importantes da festa",
                                 "isCorrect": false
                             },
                             {
@@ -265,7 +265,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "um fluxograma, porque ela organizou tudo em tópicos",
+                                "text": "um fluxograma, porque desenhou setas no papel",
                                 "isCorrect": false
                             }
                         ]
@@ -283,7 +283,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "sequência",
+                                "text": "sequência de passos",
                                 "isCorrect": false
                             },
                             {
@@ -297,19 +297,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "decomposição, reconhecimento de padrões e abstração são formas de organizar o raciocínio, e podem ser aplicadas mesmo antes de escrever qualquer código",
+                                "text": "decomposição, padrões e abstração organizam o raciocínio antes mesmo de programar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "só é possível aplicar pensamento computacional depois de aprender uma linguagem de programação",
+                                "text": "pensamento computacional só existe depois de aprender uma linguagem de programação real",
                                 "isCorrect": false
                             },
                             {
-                                "text": "reconhecer padrões significa copiar e colar o mesmo código várias vezes sem entender o que ele faz",
+                                "text": "reconhecer padrões é copiar e colar o mesmo código sem entender o que ele faz",
                                 "isCorrect": false
                             },
                             {
-                                "text": "abstração significa incluir o máximo de detalhes possível na descrição de um problema",
+                                "text": "abstração significa incluir o máximo de detalhes possível no problema",
                                 "isCorrect": false
                             }
                         ]
@@ -354,19 +354,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O que o programa recebe para trabalhar, como um número digitado pelo usuário",
+                                "text": "O que o programa recebe para usar, como um número digitado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O resultado final mostrado na tela",
+                                "text": "O resultado final que aparece na tela, pronto para o usuário ver",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome da pessoa que escreveu o programa",
+                                "text": "O nome da pessoa que escreveu o programa originalmente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tempo que o programa demora para rodar",
+                                "text": "O tempo que o programa demora para terminar de rodar",
                                 "isCorrect": false
                             }
                         ]
@@ -376,15 +376,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "o número 10 mostrado na tela",
+                                "text": "o número 10 exibido na tela",
                                 "isCorrect": true
                             },
                             {
-                                "text": "os números 4 e 6",
+                                "text": "os números 4 e 6 digitados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "a soma sendo calculada",
+                                "text": "a soma sendo calculada por dentro",
                                 "isCorrect": false
                             },
                             {
@@ -398,19 +398,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "o aplicativo calculando a previsão a partir dos dados da cidade",
+                                "text": "o cálculo da previsão a partir dos dados da cidade",
                                 "isCorrect": true
                             },
                             {
-                                "text": "o nome da cidade que o usuário digitou",
+                                "text": "o nome da cidade que o usuário digitou no início",
                                 "isCorrect": false
                             },
                             {
-                                "text": "a frase mostrada na tela com a previsão",
+                                "text": "a frase final mostrada na tela com a previsão",
                                 "isCorrect": false
                             },
                             {
-                                "text": "o usuário abrindo o aplicativo no celular",
+                                "text": "o usuário abrindo o aplicativo no celular para consultar",
                                 "isCorrect": false
                             }
                         ]
@@ -420,19 +420,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "a maioria dos programas segue esse ciclo, mesmo quando a entrada já vem pronta, como um arquivo salvo, em vez de ser digitada na hora",
+                                "text": "a maioria segue esse ciclo, mesmo com a entrada vindo de um arquivo salvo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "todo programa precisa obrigatoriamente pedir uma entrada digitada no teclado",
+                                "text": "todo programa obrigatoriamente precisa pedir uma entrada digitada no teclado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "a saída sempre precisa ser um número",
+                                "text": "a saída de todo programa sempre precisa ser um número",
                                 "isCorrect": false
                             },
                             {
-                                "text": "o processamento é uma etapa opcional, que pode ser pulada",
+                                "text": "o processamento é uma etapa opcional, que dá para pular",
                                 "isCorrect": false
                             }
                         ]
@@ -442,7 +442,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "entrada: as leituras do sensor; processamento: o cálculo da média e a comparação com 40 graus; saída: o alarme sonoro sendo ligado",
+                                "text": "entrada: leituras do sensor; processamento: média e comparação com 40; saída: alarme ligado",
                                 "isCorrect": true
                             },
                             {
@@ -454,7 +454,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "nesse caso não existe entrada nem saída, porque tudo acontece automaticamente",
+                                "text": "nesse caso não existe entrada nem saída, porque tudo acontece automaticamente sem intervenção",
                                 "isCorrect": false
                             }
                         ]
@@ -499,19 +499,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma forma de descrever os passos de um algoritmo em português estruturado, sem seguir a sintaxe exata de uma linguagem de programação",
+                                "text": "Uma forma de descrever os passos de um algoritmo em português",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um tipo de erro que aparece no console",
+                                "text": "Um tipo de erro que aparece no console do navegador",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome de uma linguagem de programação real",
+                                "text": "O nome de uma linguagem de programação real, tipo Python",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um desenho feito só com setas, sem nenhuma palavra",
+                                "text": "Um desenho feito só com setas e caixas, sem nenhuma palavra escrita",
                                 "isCorrect": false
                             }
                         ]
@@ -543,19 +543,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Escrevendo um pseudocódigo para organizar o raciocínio antes de programar",
+                                "text": "Escrevendo um pseudocódigo para organizar o raciocínio",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Escrevendo o código final em JavaScript",
+                                "text": "Escrevendo diretamente o código final em JavaScript, sem rascunho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Desenhando um fluxograma",
+                                "text": "Desenhando um fluxograma com caixas e setas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Testando o programa em busca de erros",
+                                "text": "Testando o programa pronto em busca de erros",
                                 "isCorrect": false
                             }
                         ]
@@ -565,19 +565,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Pseudocódigo descreve os passos em texto estruturado, enquanto o fluxograma representa os mesmos passos visualmente, com caixas e setas",
+                                "text": "Pseudocódigo usa texto estruturado; fluxograma usa desenhos com caixas e setas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Pseudocódigo só pode ser usado por programadores avançados, e fluxograma só por iniciantes",
+                                "text": "Pseudocódigo é só para programadores avançados; fluxograma é só para iniciantes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Fluxograma é uma linguagem de programação, e pseudocódigo não é",
+                                "text": "Fluxograma é uma linguagem de programação de verdade; pseudocódigo não é",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não existe diferença: são exatamente a mesma coisa, só com nomes diferentes",
+                                "text": "Não existe diferença real: são a mesma coisa, só com nomes diferentes",
                                 "isCorrect": false
                             }
                         ]
@@ -587,19 +587,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Os três podem descrever o mesmo algoritmo, mudando apenas a forma de representação: texto estruturado, desenho, ou uma linguagem que o computador entende",
+                                "text": "Os três podem descrever o mesmo algoritmo, mudando só a forma de representação",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É obrigatório desenhar um fluxograma antes de qualquer linha de código, mesmo em programas de uma linha só",
+                                "text": "É obrigatório desenhar um fluxograma antes de escrever qualquer linha de código",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O pseudocódigo precisa seguir exatamente as mesmas regras de sintaxe do JavaScript",
+                                "text": "O pseudocódigo precisa seguir exatamente a sintaxe do JavaScript",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Depois de escrever o pseudocódigo, o fluxograma deixa de ser útil para sempre, em qualquer situação",
+                                "text": "Depois do pseudocódigo pronto, o fluxograma nunca mais serve pra nada",
                                 "isCorrect": false
                             }
                         ]
@@ -674,11 +674,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "\"Olá, mundo!\" (com as aspas aparecendo na tela)",
+                                "text": "\"Olá, mundo!\", com as aspas incluídas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhuma saída, porque falta alguma coisa no código",
+                                "text": "Nenhuma saída aparece no console",
                                 "isCorrect": false
                             }
                         ]
@@ -700,7 +700,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro, porque números não podem ficar dentro dos parênteses",
+                                "text": "Erro, porque números não podem ficar entre parênteses",
                                 "isCorrect": false
                             }
                         ]
@@ -710,11 +710,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O texto Olá, mundo! deveria estar entre aspas; sem elas, o JavaScript tenta interpretar como um comando ou uma variável que não existe",
+                                "text": "Faltou colocar aspas no texto, então o JavaScript não reconhece",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A palavra console foi escrita errada",
+                                "text": "A palavra console foi escrita errada, com letra maiúscula demais",
                                 "isCorrect": false
                             },
                             {
@@ -732,15 +732,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O console é um lugar onde o programa pode mostrar mensagens de texto, números e resultados, sendo muito usado também para testar e entender o que o código está fazendo",
+                                "text": "O console mostra textos, números e resultados, e ajuda a testar o código",
                                 "isCorrect": true
                             },
                             {
-                                "text": "console.log só funciona se o programa não tiver mais nenhuma outra instrução",
+                                "text": "console.log só funciona se for o único comando do programa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tudo que aparece no console vira automaticamente parte do código salvo no arquivo",
+                                "text": "Tudo que aparece no console é salvo automaticamente dentro do arquivo do projeto",
                                 "isCorrect": false
                             },
                             {
@@ -842,7 +842,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O JavaScript para o programa com um erro, porque const não pode ser reatribuída",
+                                "text": "O programa trava com erro, pois const não é reatribuível",
                                 "isCorrect": true
                             },
                             {
@@ -890,11 +890,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código para com um erro, porque não é permitido declarar a mesma variável com let duas vezes",
+                                "text": "O código dá erro: let não permite redeclarar pontos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O console mostra 10 e depois 20",
+                                "text": "O console mostra 10 primeiro, e depois mostra 20",
                                 "isCorrect": false
                             }
                         ]
@@ -1039,7 +1039,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro de execução, porque não dá para somar texto com número",
+                                "text": "Erro de execução, por misturar texto com número",
                                 "isCorrect": false
                             }
                         ]
@@ -1277,11 +1277,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A linha 1 guarda 18 dentro de idade; a linha 2 pergunta se idade é igual a 18, e devolve true ou false",
+                                "text": "A linha 1 guarda 18 em idade; a linha 2 pergunta se é igual a 18",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A linha 1 compara valores; a linha 2 guarda um valor",
+                                "text": "A linha 1 compara valores; a linha 2 guarda um valor booleano",
                                 "isCorrect": false
                             },
                             {
@@ -1590,7 +1590,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "\"Entrou no if\", porque = atribui 5 a numero e o if considera 5 (diferente de zero) como verdadeiro",
+                                "text": "\"Entrou no if\", pois = atribui 5 a numero, e o if trata 5 como verdadeiro",
                                 "isCorrect": true
                             },
                             {
@@ -1757,7 +1757,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "\"Conta ativa\", porque ativo = true atribui true a ativo e o if considera esse valor verdadeiro",
+                                "text": "\"Conta ativa\", pois ativo = true atribui true e vira a condição do if",
                                 "isCorrect": true
                             },
                             {
@@ -1880,19 +1880,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Em nenhuma situação, porque toda nota que chegaria a \"nota >= 9\" já teria passado por \"nota >= 5\" antes",
+                                "text": "Em nenhuma situação, pois quem chegaria a isso já caiu antes em nota >= 5",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Quando nota for exatamente 9 ou mais",
+                                "text": "Quando nota for exatamente 9 ou mais, pois passa direto pela primeira checagem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quando nota for menor que 5",
+                                "text": "Quando nota for menor que 5, pulando as duas primeiras condições",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sempre que nota for um número par",
+                                "text": "Sempre que nota for um número par, independente do valor exato",
                                 "isCorrect": false
                             }
                         ]
@@ -2170,15 +2170,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Comparar uma mesma variável com vários valores exatos, como o número do mês (1 a 12)",
+                                "text": "Comparar uma variável com vários valores exatos, como o mês",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Verificar se um número está dentro de uma faixa, como nota >= 7",
+                                "text": "Verificar se um número está dentro de uma faixa ampla, como nota >= 7",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Combinar duas condições com && ao mesmo tempo",
+                                "text": "Combinar duas condições diferentes usando && ao mesmo tempo",
                                 "isCorrect": false
                             },
                             {
@@ -2192,19 +2192,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Primeira e Segunda, porque falta break no case \"a\" e o break do case \"b\" interrompe a execução ali",
+                                "text": "Primeira e Segunda, pois falta break no case \"a\" e o de \"b\" para ali",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas Primeira",
+                                "text": "Apenas Primeira, pois o switch para assim que encontra o case certo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Primeira, Segunda e Terceira",
+                                "text": "Primeira, Segunda e Terceira, pois nenhum break interrompe nada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas Segunda, porque letra não é igual a \"b\"",
+                                "text": "Apenas Segunda, pois letra não é igual a nenhum outro case",
                                 "isCorrect": false
                             }
                         ]
@@ -2254,7 +2254,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Passar o aspirador em cada cômodo da casa, um de cada vez, até não sobrar cômodo",
+                                "text": "Passar o aspirador em cada cômodo da casa, um de cada vez",
                                 "isCorrect": true
                             },
                             {
@@ -2298,7 +2298,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A quantidade de água que ainda resta no copo",
+                                "text": "A água que ainda resta dentro do copo",
                                 "isCorrect": true
                             },
                             {
@@ -2310,7 +2310,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número de pessoas na sala",
+                                "text": "O número de pessoas que estão na sala",
                                 "isCorrect": false
                             }
                         ]
@@ -2342,7 +2342,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Executar automaticamente um conjunto de instruções várias vezes, sem precisar copiar e colar o código",
+                                "text": "Executar um conjunto de instruções várias vezes, sem copiar e colar o código",
                                 "isCorrect": true
                             },
                             {
@@ -2399,19 +2399,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Repete um bloco de código enquanto uma condição for verdadeira",
+                                "text": "Repete um bloco enquanto a condição continuar verdadeira",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Executa um bloco de código apenas uma vez",
+                                "text": "Executa um bloco de código apenas uma única vez",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escolhe entre dois caminhos diferentes, como o if",
+                                "text": "Escolhe entre dois caminhos possíveis, igual o comando if",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Encerra o programa imediatamente",
+                                "text": "Encerra o programa imediatamente, sem terminar o resto",
                                 "isCorrect": false
                             }
                         ]
@@ -2421,11 +2421,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Mudar, dentro do laço, o valor da variável usada na condição",
+                                "text": "Alterar, a cada volta, o valor da variável da condição",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Declarar a variável de novo, com let, a cada volta",
+                                "text": "Declarar de novo a variável, com let, a cada nova volta",
                                 "isCorrect": false
                             },
                             {
@@ -2465,7 +2465,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Entra em loop infinito, porque n nunca é alterada dentro do laço",
+                                "text": "Entra em loop infinito, pois n nunca muda dentro do laço",
                                 "isCorrect": true
                             },
                             {
@@ -2473,7 +2473,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não mostra nada, porque a condição n > 0 já começa falsa",
+                                "text": "Não mostra nada, porque a condição n > 0 já começa como falsa",
                                 "isCorrect": false
                             },
                             {
@@ -2566,11 +2566,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Soma 1 ao valor de j; é o mesmo que j = j + 1",
+                                "text": "Soma 1 ao valor de j, igual a j = j + 1",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Compara se j é maior que outro número",
+                                "text": "Compara se j é maior do que outro número",
                                 "isCorrect": false
                             },
                             {
@@ -2632,19 +2632,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o for reúne início, condição e incremento numa linha só, deixando claro logo de cara quantas vezes o laço roda",
+                                "text": "Porque o for junta início, condição e incremento numa linha só",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o for é mais rápido de executar no computador",
+                                "text": "Porque o for roda mais rápido que o while no computador",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o while não consegue repetir mais de 10 vezes",
+                                "text": "Porque o while não consegue repetir mais do que 10 vezes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o for não precisa de uma variável de controle",
+                                "text": "Porque o for não precisa de nenhuma variável de controle declarada antes de começar",
                                 "isCorrect": false
                             }
                         ]
@@ -2711,7 +2711,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Soma 1 toda vez que uma condição é satisfeita, para saber quantas vezes ela ocorreu",
+                                "text": "Soma 1 cada vez que uma condição é satisfeita",
                                 "isCorrect": true
                             },
                             {
@@ -2834,7 +2834,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Interrompe o laço imediatamente; nenhuma volta seguinte acontece",
+                                "text": "Para o laço na hora, sem rodar mais nenhuma volta",
                                 "isCorrect": true
                             },
                             {
@@ -2846,7 +2846,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Troca o valor da variável de controle para zero",
+                                "text": "Troca o valor da variável de controle para zero imediatamente",
                                 "isCorrect": false
                             }
                         ]
@@ -2856,7 +2856,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Pula o restante do código daquela volta e segue direto para a próxima repetição",
+                                "text": "Pula o resto do código daquela volta e já vai para a próxima",
                                 "isCorrect": true
                             },
                             {
@@ -2864,11 +2864,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faz o laço rodar em dobro",
+                                "text": "Faz o laço rodar em dobro a cada volta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reinicia o valor de todas as variáveis do programa",
+                                "text": "Reinicia o valor de todas as variáveis do programa inteiro",
                                 "isCorrect": false
                             }
                         ]
@@ -3046,7 +3046,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Para dar nome a um pedaço de lógica e poder reaproveitá-lo sem reescrever o código",
+                                "text": "Para dar nome a um pedaço de lógica e reaproveitá-lo sem reescrever",
                                 "isCorrect": true
                             },
                             {
@@ -3318,7 +3318,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "12 e, em seguida, 12",
+                                "text": "12 e, em seguida, 12 de novo",
                                 "isCorrect": false
                             },
                             {
@@ -3358,7 +3358,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Nada mais: o console.log escrito depois do return nunca chega a ser executado",
+                                "text": "Nada mais: o código depois do return nunca chega a ser executado",
                                 "isCorrect": true
                             },
                             {
@@ -3415,19 +3415,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma variável declarada dentro de uma função, que só existe ali dentro",
+                                "text": "Uma variável declarada dentro de uma função, existindo só ali",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma variável que existe em todo o programa",
+                                "text": "Uma variável que existe em todo o programa, em qualquer função",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma variável que nunca muda de valor",
+                                "text": "Uma variável que nunca muda de valor depois de criada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma variável declarada com console.log",
+                                "text": "Uma variável declarada usando o comando console.log",
                                 "isCorrect": false
                             }
                         ]
@@ -3437,19 +3437,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Imprime 100 e depois quebra com um erro, porque total não existe fora da função",
+                                "text": "Imprime 100, depois quebra: total não existe fora da função",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Imprime 100 duas vezes",
+                                "text": "Imprime 100 duas vezes, pois a função roda de novo no final",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Imprime 100 e depois undefined",
+                                "text": "Imprime 100 e depois undefined, pois a variável global some",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quebra com erro antes mesmo de chamar calcular()",
+                                "text": "Quebra com erro antes mesmo de a função calcular ser chamada",
                                 "isCorrect": false
                             }
                         ]
@@ -3503,7 +3503,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque variáveis locais não conflitam com variáveis de mesmo nome usadas em outras partes do código",
+                                "text": "Porque variáveis locais não conflitam com nomes usados em outras partes do código",
                                 "isCorrect": true
                             },
                             {
@@ -3556,19 +3556,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Quebrar um problema grande em partes menores, cada uma resolvida por uma função",
+                                "text": "Quebrar um problema grande em várias partes menores e simples",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Dividir o valor de uma variável por dois",
+                                "text": "Dividir o valor de uma variável inteira por dois, sempre",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar o maior número possível de variáveis globais",
+                                "text": "Criar o maior número possível de variáveis globais no programa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Excluir do código as partes que não funcionam",
+                                "text": "Excluir do código as partes que não estão funcionando direito",
                                 "isCorrect": false
                             }
                         ]
@@ -3578,11 +3578,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Evitar repetir a mesma lógica em vários lugares, colocando-a numa função reutilizável",
+                                "text": "Não repetir a mesma lógica em vários lugares do código",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nunca declarar mais de uma função no mesmo programa",
+                                "text": "Nunca declarar mais de uma função no mesmo arquivo de código",
                                 "isCorrect": false
                             },
                             {
@@ -3622,7 +3622,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Fica mais difícil entender, testar e reaproveitar cada parte separadamente",
+                                "text": "Fica mais difícil entender, testar e reaproveitar cada parte",
                                 "isCorrect": true
                             },
                             {
@@ -3750,19 +3750,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "\"c\", porque é o último elemento",
+                                "text": "\"c\", porque é sempre o último elemento do array",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro de sintaxe, o programa para",
+                                "text": "Um erro de sintaxe, e o programa para de rodar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "undefined, porque o índice 3 não existe nesse array",
+                                "text": "undefined, pois o índice 3 não existe no array",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma string vazia \"\"",
+                                "text": "Uma string vazia \"\", padrão para índices inválidos",
                                 "isCorrect": false
                             }
                         ]
@@ -4233,11 +4233,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Objeto só pode ter uma propriedade, enquanto array pode ter várias posições",
+                                "text": "Objeto só pode ter uma única propriedade, mas array pode ter várias posições",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Array guarda valores em posições numeradas (índice), objeto guarda valores em propriedades nomeadas (chave)",
+                                "text": "Array usa posições numeradas; objeto usa chaves nomeadas como propriedade",
                                 "isCorrect": true
                             },
                             {
@@ -4308,19 +4308,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um único valor numérico",
+                                "text": "Um único valor numérico, sempre um índice do array",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um objeto completo, com suas próprias propriedades",
+                                "text": "Um objeto completo, com propriedades próprias",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O nome de uma variável",
+                                "text": "O nome de uma variável usada no array",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sempre um texto",
+                                "text": "Sempre um texto entre aspas",
                                 "isCorrect": false
                             }
                         ]
@@ -4360,7 +4360,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Percorrer o array com for...of e, para cada tarefa, se tarefa.concluida for true, somar 1 a um contador",
+                                "text": "Percorrer com for...of e somar 1 ao contador quando concluida for true",
                                 "isCorrect": true
                             },
                             {
@@ -4454,11 +4454,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Cada parte fica mais simples de pensar, resolver e testar sozinha",
+                                "text": "Cada parte fica mais fácil de pensar e testar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O código final fica mais longo e completo",
+                                "text": "O código final fica mais longo, mas mais completo",
                                 "isCorrect": false
                             },
                             {
@@ -4498,7 +4498,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Fica mais fácil descobrir em qual parte específica está o erro",
+                                "text": "Fica mais fácil descobrir em qual parte está o erro",
                                 "isCorrect": true
                             },
                             {
@@ -4577,7 +4577,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Pode parar e retornar o resultado, sem precisar olhar os itens restantes",
+                                "text": "Pode parar e devolver o resultado na hora",
                                 "isCorrect": true
                             },
                             {
@@ -4599,11 +4599,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma variável contadora que começa em 0 e soma 1 dentro do if",
+                                "text": "Uma variável contadora que começa em 0 e soma 1",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma variável que começa em 1 e nunca é alterada",
+                                "text": "Uma variável que começa em 1 e nunca muda de valor",
                                 "isCorrect": false
                             },
                             {
@@ -4643,7 +4643,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque, se todos os números do array forem negativos, começar com 0 daria um resultado errado",
+                                "text": "Porque, se todos os números forem negativos, começar com 0 daria erro",
                                 "isCorrect": true
                             },
                             {
@@ -4722,7 +4722,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Reorganizar os itens seguindo um critério, como do menor para o maior",
+                                "text": "Reorganizar os itens do array seguindo um critério",
                                 "isCorrect": true
                             },
                             {
@@ -4788,7 +4788,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Repete o processo para achar o menor valor do restante do array, ignorando o item já posicionado",
+                                "text": "Repete o processo no restante, ignorando o item já posicionado",
                                 "isCorrect": true
                             },
                             {
@@ -4893,15 +4893,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "return",
+                                "text": "return, dentro de uma função",
                                 "isCorrect": false
                             },
                             {
-                                "text": "if",
+                                "text": "if, junto de uma condição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "sort()",
+                                "text": "sort(), para ordenar arrays",
                                 "isCorrect": false
                             }
                         ]
@@ -4911,7 +4911,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A função esqueceu de usar return para devolver o resultado",
+                                "text": "A função esqueceu de usar return no final",
                                 "isCorrect": true
                             },
                             {
@@ -4933,7 +4933,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ele tenta acessar numeros[3], que não existe, e imprime undefined na última volta",
+                                "text": "Ele tenta acessar numeros[3], que não existe",
                                 "isCorrect": true
                             },
                             {
@@ -4945,7 +4945,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele imprime os itens do array em ordem invertida",
+                                "text": "Ele imprime todos os itens do array em ordem invertida",
                                 "isCorrect": false
                             }
                         ]
@@ -4955,7 +4955,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O return false está dentro do laço, fora do if, então ele para e devolve false já na primeira comparação",
+                                "text": "O return false ficou fora do if, dentro do laço",
                                 "isCorrect": true
                             },
                             {
@@ -4967,7 +4967,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O array [5, 8, 2, 9] não é um array válido em JavaScript",
+                                "text": "O array [5, 8, 2, 9] não é considerado válido nessa versão do JavaScript",
                                 "isCorrect": false
                             }
                         ]
@@ -5078,7 +5078,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Muda o campo concluida dessa tarefa para true",
+                                "text": "Muda o campo concluida da tarefa para true",
                                 "isCorrect": true
                             },
                             {
@@ -5086,7 +5086,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cria uma tarefa nova com o mesmo título",
+                                "text": "Cria uma tarefa nova com esse mesmo título de novo",
                                 "isCorrect": false
                             },
                             {
@@ -5100,7 +5100,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O laço percorre todo o array sem encontrar correspondência e a função termina sem alterar nada",
+                                "text": "O laço não acha correspondência, e termina sem alterar nada",
                                 "isCorrect": true
                             },
                             {

@@ -79,19 +79,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Usar várias camadas de proteção, de modo que a falha de uma não comprometa todo o sistema",
+                                "text": "Usar camadas de proteção, para que a falha de uma não comprometa tudo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Concentrar toda a segurança em um único firewall forte",
+                                "text": "Confiar toda a defesa em um único firewall muito bem configurado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confiar em todos os usuários que já estão dentro da rede da empresa",
+                                "text": "Confiar em qualquer usuário que já esteja dentro da rede corporativa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substituir a criptografia por senhas mais longas",
+                                "text": "Trocar a criptografia por senhas cada vez mais longas",
                                 "isCorrect": false
                             }
                         ]
@@ -145,19 +145,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O cliente, pois na IaaS o provedor cuida da infraestrutura física, mas o sistema operacional fica com o cliente",
+                                "text": "O cliente, pois na IaaS o sistema operacional continua sob sua responsabilidade",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O provedor de nuvem, que corrige o sistema operacional de todas as VMs dos clientes",
+                                "text": "O provedor, que corrige o sistema operacional de todas as VMs dos clientes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ninguém, pois máquinas virtuais não recebem atualizações de sistema operacional",
+                                "text": "Ninguém, pois VMs de IaaS não recebem atualização de sistema operacional",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O provedor, porque na IaaS toda a responsabilidade passa a ser dele",
+                                "text": "O provedor, pois na IaaS toda a responsabilidade passa a ser dele",
                                 "isCorrect": false
                             }
                         ]
@@ -339,7 +339,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Transforma o texto legível em texto cifrado, que só é lido com a chave correta",
+                                "text": "Transforma o texto legível em texto cifrado",
                                 "isCorrect": true
                             },
                             {
@@ -427,19 +427,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Hashing, de preferência com salt, pois é irreversível e permite apenas comparar",
+                                "text": "Hashing com salt, pois permite comparar sem guardar a senha original",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografia simétrica, guardando a chave junto do banco de dados",
+                                "text": "Criptografia simétrica, guardando a chave junto ao banco de dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografia assimétrica com a chave privada publicada",
+                                "text": "Criptografia assimétrica, publicando a chave privada para conferência",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Compactar as senhas em um arquivo protegido por senha",
+                                "text": "Compactação protegida por senha, o que impede a leitura do conteúdo",
                                 "isCorrect": false
                             }
                         ]
@@ -568,7 +568,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Governança, pois define as regras e os controles internos que dirigem a organização",
+                                "text": "Governança, pois define regras e controles que dirigem a organização",
                                 "isCorrect": true
                             },
                             {
@@ -621,19 +621,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque, com nuvem, mobile e trabalho remoto, o antigo perímetro de rede se dissolveu e cada acesso passa a começar pela verificação de quem está pedindo",
+                                "text": "Porque a nuvem e o trabalho remoto dissolveram o perímetro de rede tradicional",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque os firewalls de rede deixaram de existir por completo",
+                                "text": "Porque os firewalls de perímetro deixaram de existir em qualquer rede corporativa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque as senhas se tornaram desnecessárias na nuvem",
+                                "text": "Porque as senhas pararam de ser necessárias com a chegada da nuvem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a identidade elimina a necessidade de autorização",
+                                "text": "Porque a identidade substitui por completo a necessidade de autorização",
                                 "isCorrect": false
                             }
                         ]
@@ -709,7 +709,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Federação, uma relação de confiança entre os provedores de identidade das duas organizações",
+                                "text": "Federação, a relação de confiança entre provedores de identidade",
                                 "isCorrect": true
                             },
                             {
@@ -717,7 +717,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um serviço de diretório local compartilhado por cabo entre as empresas",
+                                "text": "Diretório local compartilhado fisicamente entre as empresas",
                                 "isCorrect": false
                             },
                             {
@@ -807,19 +807,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O Entra ID é um serviço de identidade em nuvem que usa protocolos como SAML e OpenID Connect, enquanto o AD DS gerencia a rede local com domínios e GPO",
+                                "text": "O Entra ID gerencia identidade na nuvem; o AD DS gerencia a rede local com domínios e GPO",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Entra ID e o AD DS são o mesmo produto, só muda o nome",
+                                "text": "O Entra ID e o AD DS são exatamente o mesmo produto, só com nome comercial diferente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O AD DS roda na nuvem e o Entra ID roda apenas em servidores locais",
+                                "text": "O AD DS é o serviço que roda na nuvem, enquanto o Entra ID depende de servidores locais",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Entra ID usa domínios, florestas e unidades organizacionais exatamente como o AD DS",
+                                "text": "O Entra ID organiza tudo em domínios, florestas e unidades organizacionais, como o AD DS",
                                 "isCorrect": false
                             }
                         ]
@@ -952,15 +952,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Usuário membro",
+                                "text": "Usuário membro (member)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Grupo de segurança",
+                                "text": "Grupo de segurança (security group)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usuário convidado",
+                                "text": "Usuário convidado (guest)",
                                 "isCorrect": false
                             }
                         ]
@@ -1093,7 +1093,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Autenticação de passagem (PTA)",
+                                "text": "Autenticação de passagem em tempo real (PTA)",
                                 "isCorrect": false
                             },
                             {
@@ -1252,19 +1252,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque a MFA exige fatores de categorias diferentes, e duas senhas são ambas 'algo que você sabe'",
+                                "text": "Porque as duas senhas são da mesma categoria de fator",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a MFA só funciona com biometria",
+                                "text": "Porque a MFA só é válida quando o segundo fator é biometria",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a MFA exige exatamente três fatores",
+                                "text": "Porque a MFA exige a combinação de exatamente três fatores",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a senha não pode ser usada em MFA",
+                                "text": "Porque a senha é antiga demais para ser aceita em qualquer MFA",
                                 "isCorrect": false
                             }
                         ]
@@ -1274,7 +1274,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A MFA, que exigiu um segundo fator que os atacantes não possuíam",
+                                "text": "A MFA, que bloqueou o login sem o segundo fator",
                                 "isCorrect": true
                             },
                             {
@@ -1331,15 +1331,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Smart lockout",
+                                "text": "Bloqueio temporário após tentativas erradas (smart lockout)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Federação",
+                                "text": "Federação com um provedor externo (AD FS)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Grupo dinâmico",
+                                "text": "Grupo dinâmico baseado em atributos do usuário",
                                 "isCorrect": false
                             }
                         ]
@@ -1353,11 +1353,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Logon único (SSO)",
+                                "text": "Logon único (SSO), com um único login para todos os aplicativos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Managed identity",
+                                "text": "Managed identity, sem senha para gerenciar",
                                 "isCorrect": false
                             },
                             {
@@ -1393,19 +1393,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Configurar a lista de senhas banidas personalizada no Microsoft Entra Password Protection",
+                                "text": "Lista personalizada de senhas banidas no Password Protection",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ativar o smart lockout",
+                                "text": "Ativar o smart lockout para tentativas repetidas de login",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Habilitar o SSPR",
+                                "text": "Habilitar o SSPR para autoatendimento de redefinição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar uma identidade gerenciada",
+                                "text": "Criar uma identidade gerenciada para o aplicativo",
                                 "isCorrect": false
                             }
                         ]
@@ -1419,11 +1419,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Smart lockout",
+                                "text": "Smart lockout para bloquear tentativas de login",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Lista de senhas banidas",
+                                "text": "Lista de senhas banidas do Password Protection",
                                 "isCorrect": false
                             },
                             {
@@ -1517,7 +1517,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Uma política que usa a localização como sinal e toma a decisão de bloquear o acesso",
+                                "text": "Uma política que usa a localização e bloqueia o acesso",
                                 "isCorrect": true
                             },
                             {
@@ -1525,7 +1525,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um pacote de acesso com aprovação obrigatória",
+                                "text": "Um pacote de acesso com aprovação obrigatória para todos os países",
                                 "isCorrect": false
                             },
                             {
@@ -1543,15 +1543,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Bloquear todos os aplicativos de e-mail",
+                                "text": "Bloquear por completo todos os aplicativos de e-mail corporativo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exigir a criação de um pacote de acesso",
+                                "text": "Exigir a criação de um pacote de acesso no entitlement management",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Exigir a ativação do papel via PIM",
+                                "text": "Exigir a ativação do papel de administrador via PIM",
                                 "isCorrect": false
                             }
                         ]
@@ -1561,7 +1561,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Uma política de Acesso Condicional baseada em risco que usa o sinal de risco de entrada do Entra ID Protection e concede o acesso exigindo MFA",
+                                "text": "Política de Acesso Condicional por risco de entrada, exigindo MFA",
                                 "isCorrect": true
                             },
                             {
@@ -1658,19 +1658,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Atribuir o papel de Colaborador via RBAC do Azure no escopo daquele grupo de recursos",
+                                "text": "Atribuir RBAC do Azure como Colaborador, com escopo no grupo de recursos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Atribuir o papel de Administrador Global do Entra",
+                                "text": "Atribuir o papel de Administrador Global do Entra para toda a organização",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Atribuir o papel de Administrador de Usuário do Entra",
+                                "text": "Atribuir o papel de Administrador de Usuário do Entra no tenant inteiro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar uma política de Acesso Condicional para as VMs",
+                                "text": "Criar uma política de Acesso Condicional restrita às VMs",
                                 "isCorrect": false
                             }
                         ]
@@ -1680,7 +1680,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Papéis do Entra controlam recursos de identidade e diretório; o RBAC do Azure controla recursos do Azure, como assinaturas e VMs",
+                                "text": "Papéis do Entra controlam identidade e diretório; RBAC do Azure controla recursos como VMs",
                                 "isCorrect": true
                             },
                             {
@@ -1702,7 +1702,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Uma atribuição de papel do Entra (para as contas) e, separadamente, uma atribuição de RBAC do Azure (para o armazenamento), pois são sistemas independentes",
+                                "text": "Um papel do Entra para as contas, e um RBAC do Azure separado para o armazenamento",
                                 "isCorrect": true
                             },
                             {
@@ -1755,19 +1755,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Gerenciamento de titularidade (entitlement management), com pacotes de acesso",
+                                "text": "Gerenciamento de titularidade, com pacotes de acesso",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Privileged Identity Management (PIM)",
+                                "text": "Privileged Identity Management (PIM), com ativação temporária",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Acesso Condicional",
+                                "text": "Acesso Condicional, bloqueando por localização",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Detecção de risco do ID Protection",
+                                "text": "Detecção de risco do ID Protection, sinalizando o login",
                                 "isCorrect": false
                             }
                         ]
@@ -1777,7 +1777,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Revisões de acesso (access reviews)",
+                                "text": "Revisões de acesso",
                                 "isCorrect": true
                             },
                             {
@@ -1799,7 +1799,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Gerenciamento do ciclo de vida, com fluxos de trabalho de ciclo de vida",
+                                "text": "Gerenciamento do ciclo de vida (lifecycle management)",
                                 "isCorrect": true
                             },
                             {
@@ -1843,7 +1843,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Gerenciamento de titularidade (pacotes de acesso) para a solicitação e revisões de acesso para a recertificação",
+                                "text": "Gerenciamento de titularidade para a solicitação e revisões de acesso para a recertificação",
                                 "isCorrect": true
                             },
                             {
@@ -1900,15 +1900,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Acesso Condicional",
+                                "text": "Acesso Condicional baseado em localização",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Revisões de acesso",
+                                "text": "Revisões de acesso periódicas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Gerenciamento de titularidade",
+                                "text": "Gerenciamento de titularidade e pacotes",
                                 "isCorrect": false
                             }
                         ]
@@ -1962,7 +1962,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Reduz o privilégio permanente, pois o poder só existe durante a janela de ativação e depois expira",
+                                "text": "Reduz o privilégio permanente, pois o poder só existe durante a ativação",
                                 "isCorrect": true
                             },
                             {
@@ -1984,7 +1984,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "PIM com atribuições elegíveis e aprovação na ativação, somado a revisões de acesso dos papéis privilegiados",
+                                "text": "PIM com ativação elegível e aprovada, mais revisões periódicas de acesso",
                                 "isCorrect": true
                             },
                             {
@@ -2059,7 +2059,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Detectar, investigar e ajudar a remediar riscos baseados em identidade",
+                                "text": "Detectar, investigar e remediar riscos de identidade",
                                 "isCorrect": true
                             },
                             {
@@ -2103,19 +2103,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Com políticas de Acesso Condicional baseadas em risco, integradas ao Entra ID Protection",
+                                "text": "Com Acesso Condicional baseado em risco, integrado ao ID Protection",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Com atribuições elegíveis no PIM",
+                                "text": "Com atribuições elegíveis no PIM para administradores de risco",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Com pacotes de acesso do entitlement management",
+                                "text": "Com pacotes de acesso do entitlement management com validade curta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Com papéis do Entra atribuídos aos usuários de risco",
+                                "text": "Com papéis do Entra atribuídos manualmente aos usuários de risco",
                                 "isCorrect": false
                             }
                         ]
@@ -2223,7 +2223,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque limita o movimento lateral: se a camada web for comprometida, fica mais difícil o invasor alcançar o banco de dados",
+                                "text": "Porque limita o movimento lateral do invasor entre as camadas",
                                 "isCorrect": true
                             },
                             {
@@ -2267,7 +2267,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A segmentação organiza e isola os recursos, mas para de fato permitir ou negar o tráfego entre as sub-redes é preciso aplicar controles como NSGs ou o Azure Firewall",
+                                "text": "A segmentação isola os recursos, mas só NSGs ou o Firewall controlam o tráfego entre elas",
                                 "isCorrect": true
                             },
                             {
@@ -2320,7 +2320,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Network security group (NSG)",
+                                "text": "Network security group",
                                 "isCorrect": true
                             },
                             {
@@ -2364,7 +2364,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ele é stateful: o tráfego de retorno de uma conexão permitida é liberado automaticamente",
+                                "text": "Ele é stateful: libera automaticamente o tráfego de retorno",
                                 "isCorrect": true
                             },
                             {
@@ -2408,7 +2408,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Associando um NSG à sub-rede para as regras comuns e outro NSG à interface de rede da VM para a regra específica",
+                                "text": "Um NSG na sub-rede para as regras comuns, e outro na NIC da VM para a regra extra",
                                 "isCorrect": true
                             },
                             {
@@ -2509,15 +2509,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Azure Key Vault e Azure Bastion",
+                                "text": "Azure Key Vault, Azure Bastion e o Azure Monitor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Máquinas virtuais e sub-redes",
+                                "text": "Máquinas virtuais, sub-redes e grupos de recursos do Azure",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure DDoS Protection e NSGs",
+                                "text": "Azure DDoS Protection, NSGs e o Azure Monitor",
                                 "isCorrect": false
                             }
                         ]
@@ -2531,15 +2531,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Azure Firewall",
+                                "text": "Azure Firewall central da rede",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure Bastion",
+                                "text": "Azure Bastion para acesso remoto seguro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Peering de VNets",
+                                "text": "Peering de VNets entre duas redes",
                                 "isCorrect": false
                             }
                         ]
@@ -2620,7 +2620,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Muitas máquinas inundam um serviço com tráfego para torná-lo indisponível",
+                                "text": "Muitas máquinas inundam um serviço até torná-lo indisponível",
                                 "isCorrect": true
                             },
                             {
@@ -2642,7 +2642,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Habilitar o nível aprimorado do Azure DDoS Protection nesses recursos",
+                                "text": "Habilitar o nível aprimorado do DDoS Protection nos recursos",
                                 "isCorrect": true
                             },
                             {
@@ -2664,19 +2664,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Azure DDoS Protection para os ataques de rede e um WAF para a camada de aplicação",
+                                "text": "DDoS Protection para a rede e um WAF para a aplicação",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas o Azure Bastion",
+                                "text": "Apenas o Azure Bastion, protegendo o acesso administrativo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure Key Vault para os dois casos",
+                                "text": "Azure Key Vault, guardando as chaves dos dois lados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas um NSG na sub-rede",
+                                "text": "Apenas um NSG básico associado à sub-rede web",
                                 "isCorrect": false
                             }
                         ]
@@ -2686,7 +2686,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não: o DDoS Protection mitiga ataques que inundam a rede, mas injeção de SQL e XSS são tratados por um Web Application Firewall",
+                                "text": "Não: o DDoS Protection mitiga floods de rede; SQL injection e XSS cabem ao WAF",
                                 "isCorrect": true
                             },
                             {
@@ -2805,7 +2805,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Azure Bastion, que provê RDP/SSH pelo portal sem IP público na VM",
+                                "text": "Azure Bastion, com RDP/SSH pelo portal sem IP público",
                                 "isCorrect": true
                             },
                             {
@@ -2885,15 +2885,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Microsoft Sentinel",
+                                "text": "Microsoft Sentinel, o SIEM da Microsoft",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Azure Key Vault",
+                                "text": "Azure Key Vault, o cofre de segredos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Microsoft Entra ID",
+                                "text": "Microsoft Entra ID, a identidade em nuvem",
                                 "isCorrect": false
                             }
                         ]
@@ -2903,7 +2903,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Gestão da postura de segurança (CSPM) e proteção de cargas de trabalho (CWP)",
+                                "text": "Gestão de postura (CSPM) e proteção de cargas (CWP)",
                                 "isCorrect": true
                             },
                             {
@@ -2925,19 +2925,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Com conectores multicloud para a AWS e o Azure Arc para os servidores locais",
+                                "text": "Com conectores multicloud e o Azure Arc para servidores locais",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas recursos do Azure são suportados",
+                                "text": "Apenas recursos nativos do Azure são suportados atualmente pela ferramenta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Instalando o Microsoft Sentinel em cada servidor",
+                                "text": "Instalando o Microsoft Sentinel em cada servidor local",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Migrando tudo para o Azure primeiro",
+                                "text": "Migrando tudo para o Azure antes de habilitar a proteção",
                                 "isCorrect": false
                             }
                         ]
@@ -2969,19 +2969,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A proteção de cargas de trabalho (CWP), habilitada pelos planos do Defender",
+                                "text": "A proteção de cargas de trabalho (CWP), pelos planos do Defender",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A gestão de postura (CSPM), pelo secure score",
+                                "text": "A gestão de postura (CSPM), pelo secure score e pelas recomendações",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O inventário de recursos",
+                                "text": "O inventário de recursos do Azure Resource Graph",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As recomendações de segurança",
+                                "text": "As recomendações de segurança do painel de conformidade",
                                 "isCorrect": false
                             }
                         ]
@@ -3022,19 +3022,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma métrica única, em porcentagem, que resume a postura de segurança; quanto maior, melhor",
+                                "text": "Uma métrica em porcentagem que resume a postura de segurança",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O custo mensal dos planos do Defender",
+                                "text": "O custo mensal total de todos os planos do Defender habilitados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número de usuários com MFA ativada",
+                                "text": "O número de usuários com MFA ativada na assinatura",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de ameaças bloqueadas por dia",
+                                "text": "A quantidade de ameaças bloqueadas automaticamente por dia",
                                 "isCorrect": false
                             }
                         ]
@@ -3048,15 +3048,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "PCI-DSS",
+                                "text": "PCI-DSS, o padrão de pagamentos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "ISO 27001",
+                                "text": "ISO 27001, a norma internacional",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GDPR",
+                                "text": "GDPR, a lei europeia de proteção de dados",
                                 "isCorrect": false
                             }
                         ]
@@ -3066,19 +3066,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Adicionando o PCI-DSS como padrão de conformidade regulatória e acompanhando o painel de conformidade",
+                                "text": "Adicionando o PCI-DSS ao painel de conformidade regulatória",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aumentando o secure score manualmente",
+                                "text": "Aumentando o secure score manualmente todo mês",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Habilitando o Microsoft Sentinel",
+                                "text": "Habilitando o Microsoft Sentinel para o PCI-DSS",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criando uma máquina virtual dedicada à auditoria",
+                                "text": "Criando uma máquina virtual dedicada à auditoria de pagamentos",
                                 "isCorrect": false
                             }
                         ]
@@ -3088,7 +3088,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A equipe implementou várias recomendações de segurança",
+                                "text": "A equipe implementou recomendações de segurança",
                                 "isCorrect": true
                             },
                             {
@@ -3110,19 +3110,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As recomendações agrupadas em controles de segurança, que pontuam no secure score",
+                                "text": "As recomendações agrupadas em controles de segurança",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Os alertas de segurança dos planos do Defender",
+                                "text": "Os alertas de segurança gerados pelos planos do Defender",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os conectores de dados do Sentinel",
+                                "text": "Os conectores de dados do Microsoft Sentinel",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os playbooks de automação",
+                                "text": "Os playbooks de automação de resposta",
                                 "isCorrect": false
                             }
                         ]
@@ -3229,7 +3229,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A recomendação aponta uma falha de configuração a corrigir (proativa); o alerta sinaliza uma ameaça ativa (reativa)",
+                                "text": "A recomendação aponta uma falha a corrigir; o alerta sinaliza uma ameaça ativa",
                                 "isCorrect": true
                             },
                             {
@@ -3326,19 +3326,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Coletar e analisar eventos e logs de toda a organização para detectar ameaças",
+                                "text": "Coletar e correlacionar logs da organização para detectar ameaças",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Automatizar a resposta às ameaças com playbooks",
+                                "text": "Automatizar a resposta às ameaças por meio de playbooks de ação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografar os discos das máquinas virtuais",
+                                "text": "Criptografar os discos de todas as máquinas virtuais",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Emitir certificados digitais para os usuários",
+                                "text": "Emitir certificados digitais para todos os usuários",
                                 "isCorrect": false
                             }
                         ]
@@ -3493,15 +3493,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Os conectores de dados",
+                                "text": "Os conectores de dados de origem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os playbooks",
+                                "text": "Os playbooks de resposta automática",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O secure score",
+                                "text": "O secure score da assinatura",
                                 "isCorrect": false
                             }
                         ]
@@ -3515,15 +3515,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um conector de dados",
+                                "text": "Um conector de dados de origem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um workbook",
+                                "text": "Um workbook de visualização",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma regra de análise",
+                                "text": "Uma regra de análise agendada",
                                 "isCorrect": false
                             }
                         ]
@@ -3613,19 +3613,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma suíte que correlaciona sinais de várias cargas (e-mail, dispositivos, identidades e apps) e agrupa alertas relacionados em incidentes",
+                                "text": "Uma suíte que correlaciona sinais e agrupa alertas em incidentes",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um firewall de rede que filtra o tráfego entre sub-redes",
+                                "text": "Um firewall de rede que filtra o tráfego entre sub-redes do Azure",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um serviço de backup e recuperação de máquinas virtuais",
+                                "text": "Um serviço de backup e recuperação de máquinas virtuais no Azure",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um cofre para guardar chaves e segredos de aplicativos",
+                                "text": "Um cofre para guardar chaves e segredos de aplicativos na nuvem",
                                 "isCorrect": false
                             }
                         ]
@@ -3635,19 +3635,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A correlação de alertas relacionados em um único incidente",
+                                "text": "A correlação de alertas em um único incidente",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Os Links Seguros do e-mail",
+                                "text": "Os Links Seguros do e-mail no clique",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um grupo de segurança de rede (NSG)",
+                                "text": "Um grupo de segurança de rede (NSG) na sub-rede",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma revisão de acesso (access review)",
+                                "text": "Uma revisão de acesso (access review) trimestral",
                                 "isCorrect": false
                             }
                         ]
@@ -3669,7 +3669,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "No portal de conformidade do Service Trust Portal",
+                                "text": "No portal de conformidade do Microsoft Service Trust Portal",
                                 "isCorrect": false
                             }
                         ]
@@ -3798,19 +3798,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Treinamento de simulação de ataque (attack simulation training)",
+                                "text": "Treinamento de simulação de ataque (attack simulation)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Links Seguros (Safe Links)",
+                                "text": "Links Seguros (Safe Links) no momento do clique",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Análise de ameaças (threat analytics)",
+                                "text": "Análise de ameaças (threat analytics) do Defender",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Revisões de acesso (access reviews)",
+                                "text": "Revisões de acesso (access reviews) trimestrais",
                                 "isCorrect": false
                             }
                         ]
@@ -4173,15 +4173,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Microsoft Defender Vulnerability Management",
+                                "text": "Microsoft Defender Vulnerability Management (MDVM)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Microsoft Defender for Endpoint",
+                                "text": "Microsoft Defender for Endpoint, com o EDR ativado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Microsoft Defender for Cloud Apps",
+                                "text": "Microsoft Defender for Cloud Apps, atuando como CASB",
                                 "isCorrect": false
                             }
                         ]
@@ -4217,15 +4217,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Microsoft Defender Vulnerability Management",
+                                "text": "Microsoft Defender Vulnerability Management (MDVM)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Microsoft Defender for Identity",
+                                "text": "Microsoft Defender for Identity, olhando o AD local",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Microsoft Defender for Endpoint",
+                                "text": "Microsoft Defender for Endpoint, isolando o dispositivo",
                                 "isCorrect": false
                             }
                         ]
@@ -4319,15 +4319,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Transparência",
+                                "text": "Transparência sobre a coleta de dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Controle",
+                                "text": "Controle total do usuário sobre os dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Segurança",
+                                "text": "Segurança forte com criptografia",
                                 "isCorrect": false
                             }
                         ]
@@ -4381,7 +4381,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O Service Trust Portal publica a documentação de conformidade da própria Microsoft, enquanto o Compliance Manager ajuda a gerenciar e pontuar a conformidade da sua organização",
+                                "text": "O Service Trust Portal publica a conformidade da própria Microsoft; o Compliance Manager gerencia a da sua organização",
                                 "isCorrect": true
                             },
                             {
@@ -4456,7 +4456,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um agrupamento de controles para um regulamento ou padrão específico",
+                                "text": "Um agrupamento de controles para um regulamento específico",
                                 "isCorrect": true
                             },
                             {
@@ -4579,15 +4579,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Classificador treinável",
+                                "text": "Classificador treinável por exemplos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Rótulo de retenção",
+                                "text": "Rótulo de retenção do documento",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Activity explorer",
+                                "text": "Activity explorer do Purview",
                                 "isCorrect": false
                             }
                         ]
@@ -4601,15 +4601,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Rótulo de retenção",
+                                "text": "Rótulo de retenção aplicado ao documento",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tipo de informação confidencial",
+                                "text": "Tipo de informação confidencial (SIT) do texto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Política de DLP",
+                                "text": "Política de DLP configurada no Purview",
                                 "isCorrect": false
                             }
                         ]
@@ -4716,7 +4716,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Retenção, com política ou rótulo de retenção",
+                                "text": "Retenção, por política ou rótulo",
                                 "isCorrect": true
                             },
                             {
@@ -4782,19 +4782,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Gestão de registros (records management), por meio de rótulo de retenção",
+                                "text": "Gestão de registros, por meio de rótulo de retenção",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Rótulo de confidencialidade",
+                                "text": "Rótulo de confidencialidade aplicado ao arquivo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Política de DLP",
+                                "text": "Política de DLP monitorando o compartilhamento",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Content explorer",
+                                "text": "Content explorer mostrando onde o item está",
                                 "isCorrect": false
                             }
                         ]
@@ -4861,15 +4861,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "eDiscovery",
+                                "text": "eDiscovery para processos judiciais em andamento",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Auditoria (audit)",
+                                "text": "Auditoria (audit) dos acessos e alterações",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Compliance Manager",
+                                "text": "Compliance Manager e o compliance score da empresa",
                                 "isCorrect": false
                             }
                         ]

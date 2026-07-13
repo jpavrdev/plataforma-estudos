@@ -89,6 +89,15 @@ const STAGES: Stage[] = [
         tags: ["JWT", "bcrypt", "OAuth"],
         refs: [{ type: "trail", ref: "Autenticação" }],
     },
+    {
+        phase: "avancado",
+        position: 6,
+        title: "Cache, filas & performance",
+        description:
+            "Deixe o back-end rápido e escalável: medir performance, cache com Redis e sua invalidação, filas e processamento assíncrono com workers, e como escalar.",
+        tags: ["Redis", "Filas", "Performance"],
+        refs: [{ type: "trail", ref: "Cache, Filas e Performance" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
