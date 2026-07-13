@@ -96,6 +96,15 @@ const STAGES: Stage[] = [
         tags: ["matplotlib", "seaborn", "EDA"],
         refs: [{ type: "trail", ref: "Visualização de Dados" }],
     },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Machine learning",
+        description:
+            "O coração da ciência de dados: o fluxo de um projeto de ML, regressão e classificação com scikit-learn, como avaliar modelos e fugir do overfitting, preparar dados e o aprendizado não-supervisionado.",
+        tags: ["scikit-learn", "Regressão", "Classificação"],
+        refs: [{ type: "trail", ref: "Machine Learning" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
