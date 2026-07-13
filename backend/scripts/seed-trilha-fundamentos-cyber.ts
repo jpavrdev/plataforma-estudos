@@ -57,19 +57,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A prática de proteger sistemas, dados e pessoas contra ataques e acessos indevidos no mundo digital.",
+                                "text": "Proteger sistemas, dados e pessoas contra ataques e acessos indevidos no ambiente digital.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um programa antivírus que se instala uma vez e resolve todos os problemas para sempre.",
+                                "text": "Instalar um antivírus uma única vez, que resolve todos os problemas de segurança para sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma área que só diz respeito a grandes bancos e governos, sem relação com a vida das pessoas comuns.",
+                                "text": "Um tema que interessa apenas a bancos e governos, sem nenhuma relação com pessoas comuns.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O ato de criar sites e aplicativos bonitos e fáceis de usar.",
+                                "text": "Criar sites e aplicativos com visual bonito e fácil de usar para qualquer público em geral.",
                                 "isCorrect": false
                             }
                         ]
@@ -79,19 +79,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque a maioria dos ataques é automática e oportunista: atinge qualquer pessoa desatenta, independentemente de fama ou dinheiro.",
+                                "text": "Porque a maioria dos ataques é automática e oportunista, atingindo quem estiver desatento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque, na verdade, golpes digitais só atingem quem usa computador, e não celular.",
+                                "text": "Porque golpes digitais, na verdade, só acontecem em computadores, nunca em celulares.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque famosos e ricos são, na verdade, os únicos que estão totalmente protegidos.",
+                                "text": "Porque pessoas famosas e ricas são, na prática, as únicas com proteção total garantida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque golpes digitais deixaram de existir e hoje só há riscos no mundo físico.",
+                                "text": "Porque golpes digitais já deixaram de existir, restando apenas riscos no mundo físico.",
                                 "isCorrect": false
                             }
                         ]
@@ -101,19 +101,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Que um ataque digital pode sair da tela e afetar o mundo físico e a vida das pessoas, tornando a cibersegurança uma questão de segurança coletiva.",
+                                "text": "Que um ataque digital pode sair da tela e afetar o mundo físico, virando questão coletiva.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que cibersegurança só tem impacto financeiro, nunca impacto sobre a saúde ou a vida.",
+                                "text": "Que cibersegurança causa apenas prejuízo financeiro, nunca afeta a saúde das pessoas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que hospitais não deveriam usar sistemas digitais em nenhuma hipótese.",
+                                "text": "Que hospitais jamais deveriam usar qualquer tipo de sistema digital em suas rotinas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o problema se resolve sozinho, pois ataques digitais nunca afetam serviços essenciais.",
+                                "text": "Que ataques digitais nunca chegam a atrapalhar serviços considerados essenciais.",
                                 "isCorrect": false
                             }
                         ]
@@ -127,15 +127,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhuma consequência relevante, pois dados de clientes não têm valor algum.",
+                                "text": "Nenhuma consequência relevante, pois dados de clientes não têm valor algum no mercado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas um pequeno aborrecimento passageiro, sem qualquer efeito no negócio.",
+                                "text": "Apenas um pequeno aborrecimento passageiro, sem qualquer efeito real sobre o negócio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um aumento automático nas vendas, já que o vazamento serve de propaganda.",
+                                "text": "Um aumento automático nas vendas, já que o vazamento funciona como propaganda gratuita.",
                                 "isCorrect": false
                             }
                         ]
@@ -145,19 +145,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Que a segurança depende também dos hábitos das pessoas: os ataques costumam ser oportunistas, e uma única brecha humana pode contornar boas defesas técnicas.",
+                                "text": "Que a segurança também depende de hábitos: uma brecha humana contorna boas defesas técnicas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que investir em segurança é inútil, pois nada impede ataques.",
+                                "text": "Que investir em segurança é inútil, já que nenhum tipo de ataque pode ser evitado nunca.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a culpa é exclusivamente dos equipamentos, que deveriam ter adivinhado a senha do funcionário.",
+                                "text": "Que a culpa é exclusivamente dos equipamentos, que deveriam ter adivinhado a senha certa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que reutilizar senhas é seguro, desde que a empresa tenha bons equipamentos.",
+                                "text": "Que reutilizar senhas pessoais é seguro, desde que a empresa tenha bons equipamentos.",
                                 "isCorrect": false
                             }
                         ]
@@ -198,19 +198,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Em qualquer formato: digital, em papel, falada e até na memória das pessoas.",
+                                "text": "Em qualquer formato: digital, em papel, falado e até guardado na memória das pessoas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Somente em formato digital, dentro de computadores.",
+                                "text": "Somente no formato digital, dentro de computadores e servidores conectados à rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas em papel, como contratos e fichas impressas.",
+                                "text": "Apenas em papel, como contratos impressos e fichas de cadastro arquivadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente informações faladas em reuniões presenciais.",
+                                "text": "Somente em informações faladas durante reuniões presenciais dentro da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -220,19 +220,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O dado é um fato bruto sem contexto; a informação é o dado com significado, o que a torna um ativo valioso.",
+                                "text": "O dado é um fato bruto sem contexto; a informação é o dado com significado, um ativo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não há diferença: dado e informação são exatamente a mesma coisa.",
+                                "text": "Não há diferença alguma: dado e informação são exatamente a mesma coisa no dia a dia.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O dado é sempre digital e a informação é sempre em papel.",
+                                "text": "O dado é sempre digital, enquanto a informação existe apenas em papel impresso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A informação é sempre pública, e o dado é sempre secreto.",
+                                "text": "A informação é sempre pública, e o dado é sempre secreto e protegido por lei.",
                                 "isCorrect": false
                             }
                         ]
@@ -242,19 +242,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É uma falha de segurança da informação, mas não de cibersegurança, pois não envolveu meios digitais.",
+                                "text": "É falha de segurança da informação, não de cibersegurança, pois não envolveu meio digital.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É uma falha de cibersegurança, pois todo vazamento é digital.",
+                                "text": "É uma falha de cibersegurança, já que todo vazamento de dados é, por definição, digital.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é falha de segurança nenhuma, já que o papel não é um sistema.",
+                                "text": "Não é falha de segurança nenhuma, afinal um simples papel não é considerado um sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um problema apenas de tecnologia, sem relação com processos ou pessoas.",
+                                "text": "É um problema apenas de tecnologia, sem nenhuma relação com processos ou pessoas da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -264,19 +264,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Toda cibersegurança é segurança da informação, mas nem toda segurança da informação é cibersegurança.",
+                                "text": "Toda cibersegurança é segurança da informação, mas o contrário nem sempre é verdade.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "São termos idênticos e totalmente intercambiáveis em qualquer contexto.",
+                                "text": "São termos idênticos e totalmente intercambiáveis, usados em qualquer contexto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A cibersegurança é mais ampla e engloba a segurança da informação.",
+                                "text": "A cibersegurança é mais ampla e, na verdade, engloba toda a segurança da informação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas não têm relação alguma entre si.",
+                                "text": "As duas áreas não têm relação alguma entre si, sendo campos completamente separados.",
                                 "isCorrect": false
                             }
                         ]
@@ -286,19 +286,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A informação foi protegida em repouso, mas ficou desprotegida em trânsito; os três estados precisam de proteção.",
+                                "text": "Ficou protegida em repouso, mas desprotegida em trânsito: os estados pedem cuidado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A empresa protegeu a informação em uso, mas esqueceu do repouso.",
+                                "text": "A empresa protegeu a informação em uso, mas se esqueceu de protegê-la em repouso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não houve falha, pois criptografar os arquivos guardados já basta em qualquer situação.",
+                                "text": "Não houve falha alguma, pois criptografar os arquivos guardados já basta sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é que a informação não deveria existir em formato digital.",
+                                "text": "O problema é que a informação sigilosa jamais deveria existir em formato digital.",
                                 "isCorrect": false
                             }
                         ]
@@ -343,15 +343,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Controle, Investigação e Auditoria.",
+                                "text": "Autenticação, Autorização e Contabilização.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografia, Internet e Antivírus.",
+                                "text": "Identificação, Classificação e Rastreabilidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cadastro, Identidade e Acesso.",
+                                "text": "Governança, Conformidade e Rastreabilidade.",
                                 "isCorrect": false
                             }
                         ]
@@ -361,19 +361,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Confidencialidade.",
+                                "text": "Confidencialidade, o pilar ligado ao sigilo da informação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Integridade.",
+                                "text": "Integridade, o pilar ligado à exatidão dos dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Disponibilidade.",
+                                "text": "Disponibilidade, o pilar ligado ao acesso no momento certo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Redundância.",
+                                "text": "Redundância, uma técnica de proteção, não um pilar da tríade.",
                                 "isCorrect": false
                             }
                         ]
@@ -383,19 +383,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Integridade, pois a informação foi alterada de forma indevida.",
+                                "text": "Integridade, pois os dados do boleto foram alterados sem autorização no pagamento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Disponibilidade, pois o boleto ficou fora do ar.",
+                                "text": "Disponibilidade, pois o sistema de pagamento do boleto ficou fora do ar um tempo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Confidencialidade, pois o boleto foi apenas visualizado.",
+                                "text": "Confidencialidade, pois o boleto foi apenas visualizado por alguém sem permissão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, pois pagar um boleto é uma ação sempre segura.",
+                                "text": "Nenhum pilar, pois pagar um boleto pela internet é sempre uma ação totalmente segura.",
                                 "isCorrect": false
                             }
                         ]
@@ -405,19 +405,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Disponibilidade, pois o sistema ficou inacessível para quem precisava usá-lo.",
+                                "text": "Disponibilidade, pois o sistema ficou inacessível para quem precisava comprar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Confidencialidade, pois os dados dos clientes foram lidos.",
+                                "text": "Confidencialidade, pois os dados pessoais dos clientes foram lidos pelos atacantes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Integridade, pois os produtos da loja foram alterados.",
+                                "text": "Integridade, pois os preços e produtos da loja foram alterados durante o ataque.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticidade, pois a loja passou a ser falsa.",
+                                "text": "Autenticidade, pois o site da loja passou a ser, na prática, uma página falsa.",
                                 "isCorrect": false
                             }
                         ]
@@ -427,19 +427,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Confidencialidade, pois informações foram acessadas por quem não tinha autorização, ainda que nada tenha sido alterado.",
+                                "text": "Confidencialidade, pois os dados foram acessados sem autorização, mesmo sem alteração.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Integridade, pois os dados financeiros foram modificados.",
+                                "text": "Integridade, pois os dados financeiros da empresa foram modificados pelo invasor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Disponibilidade, pois os sistemas ficaram fora do ar.",
+                                "text": "Disponibilidade, pois os sistemas da empresa ficaram fora do ar durante semanas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, pois, se nada foi alterado nem derrubado, não houve dano.",
+                                "text": "Nenhum pilar, pois, sem alteração nem queda de sistema, não existe dano algum.",
                                 "isCorrect": false
                             }
                         ]
@@ -480,19 +480,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Que uma informação, mensagem ou usuário é genuíno e veio mesmo de quem afirma ter vindo.",
+                                "text": "Que uma informação, mensagem ou usuário é genuíno e veio mesmo de quem diz ter enviado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que a informação está sempre disponível quando se precisa dela.",
+                                "text": "Que a informação esteja sempre disponível para acesso no momento em que se precisa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a informação nunca poderá ser lida por ninguém.",
+                                "text": "Que a informação jamais possa ser lida por nenhuma pessoa, em qualquer hipótese.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que os dados são apagados automaticamente após o uso.",
+                                "text": "Que os dados sejam apagados automaticamente logo depois de serem utilizados.",
                                 "isCorrect": false
                             }
                         ]
@@ -502,19 +502,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Que quem realizou uma ação não possa, depois, negar que a realizou.",
+                                "text": "Que quem realizou uma ação não possa, depois, negar que foi o autor dela.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que a informação seja criptografada em todos os momentos.",
+                                "text": "Que a informação seja criptografada durante todos os momentos possíveis.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o sistema tenha vários servidores para não cair.",
+                                "text": "Que o sistema tenha vários servidores reserva para nunca sair do ar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que qualquer pessoa possa acessar qualquer dado livremente.",
+                                "text": "Que qualquer pessoa possa acessar livremente qualquer dado disponível.",
                                 "isCorrect": false
                             }
                         ]
@@ -524,19 +524,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A autenticidade, pois o golpista finge ser uma origem confiável que ele não é.",
+                                "text": "A autenticidade, pois o golpista finge ser uma origem confiável que não é.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A disponibilidade, pois o banco saiu do ar.",
+                                "text": "A disponibilidade, pois o site do banco de fato saiu do ar durante o golpe.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A integridade, pois o saldo da conta foi alterado.",
+                                "text": "A integridade, pois o saldo da conta bancária foi diretamente alterado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O não-repúdio, pois o banco negou ter enviado o e-mail.",
+                                "text": "O não-repúdio, pois o banco depois negou publicamente ter enviado o e-mail.",
                                 "isCorrect": false
                             }
                         ]
@@ -546,19 +546,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O não-repúdio.",
+                                "text": "O não-repúdio, que impede quem assinou de negar depois a própria autoria.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A disponibilidade.",
+                                "text": "A disponibilidade, que garante o acesso ao contrato a qualquer momento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A confidencialidade.",
+                                "text": "A confidencialidade, que impede qualquer outra pessoa de ler o contrato.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A redundância.",
+                                "text": "A redundância, que mantém cópias do contrato em vários servidores.",
                                 "isCorrect": false
                             }
                         ]
@@ -568,19 +568,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A autenticidade, pois, apesar de intacto, o documento não veio de quem dizia tê-lo enviado.",
+                                "text": "A autenticidade: o documento, mesmo intacto, não veio de quem dizia tê-lo enviado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A integridade, pois o conteúdo do documento foi alterado.",
+                                "text": "A integridade, pois o conteúdo do documento foi alterado durante o envio, no caminho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A disponibilidade, pois o documento não pôde ser aberto.",
+                                "text": "A disponibilidade, pois o documento não pôde ser aberto pelo destinatário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, pois, se o conteúdo está intacto, não há problema de segurança.",
+                                "text": "Nenhum objetivo, pois, se o conteúdo está intacto, não existe problema algum.",
                                 "isCorrect": false
                             }
                         ]
@@ -621,19 +621,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma fraqueza ou brecha que uma ameaça pode explorar, como uma senha fraca ou um sistema desatualizado.",
+                                "text": "Uma fraqueza ou brecha que uma ameaça pode explorar, como uma senha fraca.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O agente que provoca o dano, como um hacker ou um malware.",
+                                "text": "O agente que provoca o dano diretamente, como um hacker ou um malware.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O prejuízo financeiro que um ataque causa a uma empresa.",
+                                "text": "O prejuízo financeiro que um ataque acaba causando para uma empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um programa que protege o computador contra invasões.",
+                                "text": "Um programa instalado para proteger o computador contra invasões.",
                                 "isCorrect": false
                             }
                         ]
@@ -643,19 +643,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um criminoso na internet tentando invadir sistemas.",
+                                "text": "Um criminoso na internet tentando invadir sistemas de outras pessoas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma senha fraca usada por um funcionário.",
+                                "text": "Uma senha fraca escolhida e usada por um funcionário desatento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um servidor sem as atualizações de segurança.",
+                                "text": "Um servidor da empresa sem as atualizações de segurança recentes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um antivírus recém-instalado e atualizado.",
+                                "text": "Um antivírus recém-instalado e devidamente atualizado no sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -669,15 +669,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Os criminosos na internet, pois são a fraqueza a ser corrigida.",
+                                "text": "Os criminosos na internet, pois são, na verdade, a fraqueza a corrigir.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A empresa como um todo, que representa o risco.",
+                                "text": "A empresa como um todo, pois ela sozinha já representa todo o risco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A internet, que é sempre a ameaça principal.",
+                                "text": "A internet em si, pois ela é sempre a principal ameaça de qualquer ataque.",
                                 "isCorrect": false
                             }
                         ]
@@ -687,19 +687,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A superfície de ataque está grande; desativar o que não é usado reduz os pontos de entrada e, com isso, o risco.",
+                                "text": "A superfície de ataque está grande; desativar o que não se usa reduz o risco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não há problema algum: quanto mais programas e portas abertas, mais seguro fica.",
+                                "text": "Não há problema algum: quanto mais programas e portas abertas, mais segura fica a rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O ideal é abrir ainda mais portas para o sistema respirar melhor.",
+                                "text": "O ideal, na verdade, é abrir ainda mais portas para o sistema respirar melhor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único caminho é desligar a empresa da internet para sempre.",
+                                "text": "O único caminho possível é desligar a empresa inteira da internet para sempre.",
                                 "isCorrect": false
                             }
                         ]
@@ -709,19 +709,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o risco não depende só da ameaça: com a mesma ameaça, quem tem mais vulnerabilidade corre mais risco.",
+                                "text": "Porque o risco não depende só da ameaça: com a mesma ameaça, mais brecha é mais risco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a ameaça, na verdade, é muito maior para a loja B.",
+                                "text": "Porque a ameaça, na verdade, acaba sendo bem maior para a loja B do que para a A.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque risco e ameaça são exatamente a mesma coisa.",
+                                "text": "Porque risco e ameaça são, no fim das contas, exatamente a mesma coisa em segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a loja B tem uma superfície de ataque menor que a da loja A.",
+                                "text": "Porque a loja B tem, na verdade, uma superfície de ataque menor que a da loja A.",
                                 "isCorrect": false
                             }
                         ]
@@ -767,19 +767,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Qualquer pessoa ou grupo por trás de uma ação que pode causar dano a sistemas, dados ou pessoas.",
+                                "text": "Pessoa ou grupo responsável por uma ação que causa dano.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um programa de antivírus que protege o computador.",
+                                "text": "Programa de antivírus que evita infecções no computador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo de firewall usado por empresas.",
+                                "text": "Tipo de firewall que filtra o tráfego da rede corporativa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A vítima que sofre um ataque cibernético.",
+                                "text": "Vítima que sofre as consequências de um ataque cibernético.",
                                 "isCorrect": false
                             }
                         ]
@@ -789,15 +789,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um script kiddie.",
+                                "text": "Um script kiddie iniciante.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma APT patrocinada por um Estado.",
+                                "text": "Uma APT ligada a um Estado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um insider malicioso.",
+                                "text": "Um insider malicioso interno.",
                                 "isCorrect": false
                             },
                             {
@@ -811,19 +811,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Hacktivistas, movidos por ideologia.",
+                                "text": "Hacktivistas, agindo por ideologia política.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cibercriminosos, movidos por dinheiro.",
+                                "text": "Cibercriminosos, agindo só por dinheiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Script kiddies, sem nenhum objetivo.",
+                                "text": "Script kiddies, sem nenhum objetivo real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma APT fazendo espionagem silenciosa.",
+                                "text": "Uma APT, fazendo espionagem em silêncio.",
                                 "isCorrect": false
                             }
                         ]
@@ -833,19 +833,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Como uma ameaça interna não intencional (um insider que cometeu um descuido).",
+                                "text": "Uma ameaça interna não intencional.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Como um ataque de hacktivismo.",
+                                "text": "Um ataque de hacktivismo direcionado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como a ação de um script kiddie.",
+                                "text": "A ação isolada de um script kiddie.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como nenhuma ameaça, já que não houve má intenção.",
+                                "text": "Nenhuma ameaça, pois não houve má intenção.",
                                 "isCorrect": false
                             }
                         ]
@@ -855,19 +855,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Uma APT: avançada (técnicas sofisticadas), persistente (ficou infiltrada por muito tempo sem ser detectada) e focada em espionagem, típica de grupos patrocinados por Estados.",
+                                "text": "Uma APT: ficou infiltrada por meses, com paciência de grupo patrocinado por Estado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um script kiddie apenas testando ferramentas prontas.",
+                                "text": "Um script kiddie: só testaria ferramentas prontas, sem fôlego para meses de operação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um hacktivista protestando contra a empresa.",
+                                "text": "Um hacktivista: agiria às claras e rápido para chamar atenção, não em silêncio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um cibercriminoso comum, que buscaria dinheiro rápido em vez de ficar quieto por anos.",
+                                "text": "Um cibercriminoso comum: buscaria lucro rápido, não ficaria quieto por dois anos.",
                                 "isCorrect": false
                             }
                         ]
@@ -908,7 +908,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O caminho ou método que o atacante usa para chegar até o alvo.",
+                                "text": "O caminho que o atacante usa para chegar ao alvo.",
                                 "isCorrect": true
                             },
                             {
@@ -916,11 +916,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um programa de antivírus.",
+                                "text": "Um programa de antivírus instalado no computador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A motivação que leva alguém a atacar.",
+                                "text": "A motivação que leva alguém a cometer um ataque.",
                                 "isCorrect": false
                             }
                         ]
@@ -930,7 +930,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A soma de todos os pontos por onde alguém poderia tentar entrar.",
+                                "text": "O total de pontos por onde é possível entrar.",
                                 "isCorrect": true
                             },
                             {
@@ -938,11 +938,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A lista de senhas guardadas pela empresa.",
+                                "text": "A lista de senhas guardadas por toda a empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome do grupo hacker que fez o ataque.",
+                                "text": "O nome do grupo hacker responsável pelo ataque.",
                                 "isCorrect": false
                             }
                         ]
@@ -952,7 +952,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Reduzir a superfície de ataque, diminuindo os pontos expostos.",
+                                "text": "Reduzir a superfície de ataque, cortando os pontos expostos.",
                                 "isCorrect": true
                             },
                             {
@@ -960,11 +960,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar um novo vetor de ataque de propósito.",
+                                "text": "Criar de propósito um novo vetor de ataque na rede interna.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada disso muda a segurança da empresa.",
+                                "text": "Nada disso mudaria a segurança geral da empresa toda.",
                                 "isCorrect": false
                             }
                         ]
@@ -974,19 +974,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Terceiros / cadeia de suprimentos (um fornecedor mais frágil).",
+                                "text": "Terceiros: entrou pela empresa terceirizada, mais frágil.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Mídia removível, como um pendrive infectado.",
+                                "text": "Mídia removível: um pendrive infectado foi conectado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Phishing por e-mail direto ao alvo.",
+                                "text": "Phishing: um e-mail falso foi enviado direto ao alvo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Força bruta de senha no sistema do alvo.",
+                                "text": "Força bruta: senhas foram tentadas no sistema do alvo.",
                                 "isCorrect": false
                             }
                         ]
@@ -996,19 +996,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Credencial roubada: como o login e a senha são válidos, o atacante entra pela porta da frente e o acesso parece legítimo, o que dificulta a detecção.",
+                                "text": "Credencial roubada: login e senha válidos parecem acesso legítimo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Software vulnerável, porque uma falha do programa foi explorada.",
+                                "text": "Software vulnerável: uma falha do sistema teria sido explorada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mídia removível, porque foi usado um pendrive.",
+                                "text": "Mídia removível: um pendrive infectado teria sido conectado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é um vetor de ataque, pois a senha era da própria vítima.",
+                                "text": "Não seria vetor: a senha era da própria vítima, sem roubo.",
                                 "isCorrect": false
                             }
                         ]
@@ -1049,19 +1049,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um ataque é uma cadeia de fases, e quebrar qualquer uma delas já frustra o ataque.",
+                                "text": "Um ataque é uma cadeia de fases, e quebrar uma já frustra tudo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um ataque acontece num único passo instantâneo, impossível de interromper.",
+                                "text": "Um ataque é um passo único e instantâneo, impossível de deter.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A defesa só é possível na última fase do ataque.",
+                                "text": "A defesa só funciona na última fase do ataque, nunca antes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A kill chain é um tipo de vírus muito perigoso.",
+                                "text": "A kill chain é um tipo de vírus especialmente perigoso.",
                                 "isCorrect": false
                             }
                         ]
@@ -1071,15 +1071,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Pesquisa e reúne informações sobre o alvo, muitas delas públicas.",
+                                "text": "Pesquisa e reúne informações públicas sobre o alvo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografa os arquivos da vítima e pede resgate.",
+                                "text": "Criptografa os arquivos da vítima e cobra um resgate.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Instala um backdoor permanente na máquina invadida.",
+                                "text": "Instala um backdoor permanente na máquina já invadida.",
                                 "isCorrect": false
                             },
                             {
@@ -1115,7 +1115,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Na entrega, porque o material foi barrado a caminho da vítima.",
+                                "text": "Na entrega.",
                                 "isCorrect": true
                             },
                             {
@@ -1137,19 +1137,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Exploração: o código foi disparado ao explorar uma falha, então a ameaça deixou de ser potencial e virou execução real na máquina da vítima.",
+                                "text": "Exploração: o código disparou e já virou execução real na máquina.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Entrega, porque o e-mail acabou de chegar à caixa de entrada.",
+                                "text": "Entrega: o e-mail só teria chegado à caixa de entrada, nada rodou ainda.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Armamento, porque o arquivo malicioso foi preparado.",
+                                "text": "Armamento: o arquivo malicioso ainda estaria sendo preparado pelo atacante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reconhecimento, porque o atacante ainda está juntando informações.",
+                                "text": "Reconhecimento: o atacante ainda estaria só juntando dados públicos do alvo.",
                                 "isCorrect": false
                             }
                         ]
@@ -1190,7 +1190,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Persistência: um backdoor para continuar acessando a máquina mesmo depois de ela reiniciar.",
+                                "text": "Instalar um backdoor que garanta persistência.",
                                 "isCorrect": true
                             },
                             {
@@ -1198,7 +1198,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Enviar o anexo malicioso para a vítima.",
+                                "text": "Enviar o anexo malicioso para a caixa da vítima.",
                                 "isCorrect": false
                             },
                             {
@@ -1212,7 +1212,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O canal pelo qual o atacante controla remotamente a máquina infectada.",
+                                "text": "O canal que controla a máquina infectada à distância.",
                                 "isCorrect": true
                             },
                             {
@@ -1224,7 +1224,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A criptografia usada por um ransomware.",
+                                "text": "A criptografia usada por um ransomware nos arquivos.",
                                 "isCorrect": false
                             }
                         ]
@@ -1234,19 +1234,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ações sobre os objetivos (exfiltração de dados).",
+                                "text": "As ações sobre os objetivos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Instalação.",
+                                "text": "A instalação de um backdoor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comando e controle.",
+                                "text": "O comando e controle remoto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reconhecimento.",
+                                "text": "O reconhecimento inicial.",
                                 "isCorrect": false
                             }
                         ]
@@ -1256,19 +1256,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque quanto mais cedo o ataque é interrompido, menor o dano: barrar na entrega custa muito menos do que descobrir só quando os dados já estão vazando.",
+                                "text": "Porque quanto mais cedo se interrompe, menor é o dano causado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque as fases finais são sempre as mais fáceis de detectar.",
+                                "text": "Porque as fases finais seriam sempre as mais fáceis de detectar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só a primeira fase de um ataque pode ser defendida.",
+                                "text": "Porque só a primeira fase do ataque poderia ser defendida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque não faz diferença nenhuma em qual fase se atua.",
+                                "text": "Porque não faria diferença alguma em qual fase se atua.",
                                 "isCorrect": false
                             }
                         ]
@@ -1278,19 +1278,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Comando e Controle: a máquina já está sendo controlada de fora, mas cortar esse canal ainda impede as ações finais (roubo, resgate), quebrando a cadeia antes do objetivo.",
+                                "text": "Comando e Controle: cortar esse canal agora ainda evita o roubo final.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Reconhecimento, e a essa altura não há mais nada a fazer.",
+                                "text": "Reconhecimento: nessa fase inicial, ainda não haveria nada relevante a fazer.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Entrega, então basta bloquear o e-mail que deu origem a tudo.",
+                                "text": "Entrega: bastaria bloquear o e-mail que originou o ataque todo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Armamento, pois o arquivo malicioso ainda está sendo montado.",
+                                "text": "Armamento: o arquivo malicioso ainda estaria sendo montado pelo atacante.",
                                 "isCorrect": false
                             }
                         ]
@@ -1331,19 +1331,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O objetivo do atacante em um passo (o 'porquê'), como acesso inicial ou exfiltração.",
+                                "text": "O objetivo do atacante em um determinado passo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A maneira específica de executar uma ação.",
+                                "text": "A maneira específica de executar essa ação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo de antivírus corporativo.",
+                                "text": "Um tipo de antivírus usado por empresas grandes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome de um grupo hacker famoso.",
+                                "text": "O nome de um grupo hacker bastante conhecido.",
                                 "isCorrect": false
                             }
                         ]
@@ -1353,19 +1353,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma base de conhecimento que cataloga táticas e técnicas usadas por atacantes reais.",
+                                "text": "Uma base de conhecimento sobre táticas e técnicas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um antivírus gratuito para empresas.",
+                                "text": "Um antivírus gratuito voltado para empresas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma lei brasileira de proteção de dados.",
+                                "text": "Uma lei brasileira de proteção de dados pessoais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo de firewall de última geração.",
+                                "text": "Um tipo de firewall descrito como de última geração.",
                                 "isCorrect": false
                             }
                         ]
@@ -1375,19 +1375,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Acesso inicial é a tática (o objetivo) e phishing é a técnica (o modo).",
+                                "text": "Acesso inicial é a tática, e phishing é a técnica.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Phishing é a tática e acesso inicial é a técnica.",
+                                "text": "Phishing é a tática, e acesso inicial é a técnica.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambos são táticas.",
+                                "text": "Os dois termos são táticas nesse relatório.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ambos são técnicas.",
+                                "text": "Os dois termos são técnicas nesse relatório.",
                                 "isCorrect": false
                             }
                         ]
@@ -1397,19 +1397,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A separação entre tática (o objetivo, persistir) e técnica (o modo, o backdoor).",
+                                "text": "A separação entre tática, o objetivo, e técnica, o modo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As sete fases da cyber kill chain.",
+                                "text": "As sete fases da cyber kill chain, do início ao fim.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A tríade CIA (confidencialidade, integridade, disponibilidade).",
+                                "text": "A tríade CIA: confidencialidade, integridade e disponibilidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os fatores de autenticação.",
+                                "text": "Os fatores de autenticação usados para confirmar identidade.",
                                 "isCorrect": false
                             }
                         ]
@@ -1419,7 +1419,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Mesma tática (acesso inicial) alcançada por técnicas diferentes: um mesmo objetivo pode ter várias técnicas.",
+                                "text": "A mesma tática alcançada por duas técnicas diferentes.",
                                 "isCorrect": true
                             },
                             {
@@ -1427,11 +1427,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "São exatamente o mesmo ataque, sem diferença nenhuma.",
+                                "text": "O mesmo ataque repetido, sem nenhuma diferença real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O ATT&CK não consegue descrever dois caminhos para o mesmo objetivo.",
+                                "text": "Algo que o ATT&CK não teria como descrever ou catalogar.",
                                 "isCorrect": false
                             }
                         ]
@@ -1477,7 +1477,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Software malicioso: qualquer programa feito de propósito para causar dano.",
+                                "text": "Um programa malicioso, criado de propósito para causar dano.",
                                 "isCorrect": true
                             },
                             {
@@ -1485,11 +1485,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma peça de hardware defeituosa dentro do computador.",
+                                "text": "Uma peça de hardware com defeito dentro da máquina.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo específico e famoso de antivírus.",
+                                "text": "Um tipo específico e bastante famoso de programa antivírus.",
                                 "isCorrect": false
                             }
                         ]
@@ -1511,7 +1511,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O antivírus da máquina funcionando corretamente.",
+                                "text": "O antivírus da máquina, funcionando de forma correta.",
                                 "isCorrect": false
                             }
                         ]
@@ -1521,11 +1521,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ganho financeiro (dinheiro).",
+                                "text": "Ganho financeiro: extorquir dinheiro da vítima.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Curiosidade acadêmica, sem qualquer interesse próprio.",
+                                "text": "Curiosidade acadêmica, sem interesse financeiro.",
                                 "isCorrect": false
                             },
                             {
@@ -1533,7 +1533,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma rotina de manutenção preventiva do computador.",
+                                "text": "Uma rotina de manutenção preventiva do sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -1543,7 +1543,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque muitos vetores de entrada dependem de uma ação humana, como clicar ou plugar algo.",
+                                "text": "Porque muitos vetores de entrada dependem de uma ação humana, como um clique.",
                                 "isCorrect": true
                             },
                             {
@@ -1555,7 +1555,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque malware só infecta quem nunca fez um curso de segurança.",
+                                "text": "Porque malware só ataca quem nunca fez nenhum curso de segurança digital.",
                                 "isCorrect": false
                             }
                         ]
@@ -1565,19 +1565,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Que a carga (o que o malware faz) pode ser a mesma mesmo quando o vetor (como chega) é diferente.",
+                                "text": "Que o vetor pode mudar e a carga continuar a mesma.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que pendrive e e-mail são, na verdade, o mesmo vetor de ataque.",
+                                "text": "Que pendrive e e-mail são, na prática, o mesmo vetor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o ransomware deixou de ser malware por usar dois caminhos.",
+                                "text": "Que o ransomware deixou de ser malware nesse caso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a carga sempre muda de acordo com o vetor de entrada.",
+                                "text": "Que a carga muda sempre que o vetor muda.",
                                 "isCorrect": false
                             }
                         ]
@@ -1618,7 +1618,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Worm, que se espalha sozinho pela rede.",
+                                "text": "Worm, que se espalha sozinho pela rede, sem clique nenhum.",
                                 "isCorrect": true
                             },
                             {
@@ -1640,19 +1640,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Trojan (cavalo de Troia), que se disfarça de algo útil e é você mesmo quem instala.",
+                                "text": "Trojan (cavalo de Troia): disfarçado de algo útil, é você quem instala.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Worm, que se espalha sozinho pela rede sem ação humana.",
+                                "text": "Worm, pois se espalha sozinho pela rede, sem nenhuma ação humana.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Vírus, pois todo programa malicioso é chamado de vírus.",
+                                "text": "Vírus, pois qualquer programa malicioso recebe esse nome.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada disso: um programa que você instalou por vontade própria nunca é malware.",
+                                "text": "Nada disso: um programa instalado por vontade própria nunca é malware.",
                                 "isCorrect": false
                             }
                         ]
@@ -1662,7 +1662,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O vírus tende a ficar inativo até que o arquivo hospedeiro seja executado.",
+                                "text": "O vírus fica inativo até que o hospedeiro seja executado.",
                                 "isCorrect": true
                             },
                             {
@@ -1684,7 +1684,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O trojan não se replica sozinho; ele depende de enganar o usuário para ser instalado.",
+                                "text": "O trojan não se replica sozinho; depende de enganar o usuário.",
                                 "isCorrect": true
                             },
                             {
@@ -1706,7 +1706,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque, por não dependerem de ação humana, se replicam de máquina em máquina automaticamente pela rede.",
+                                "text": "Porque se replicam sozinhos pela rede, sem depender de cliques.",
                                 "isCorrect": true
                             },
                             {
@@ -1785,15 +1785,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Adware.",
+                                "text": "Adware (programa de anúncios).",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ransomware.",
+                                "text": "Ransomware (sequestro de arquivos).",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Rootkit.",
+                                "text": "Rootkit (acesso oculto ao sistema).",
                                 "isCorrect": false
                             }
                         ]
@@ -1825,7 +1825,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque operam nas camadas profundas do sistema e se escondem, enganando o antivírus.",
+                                "text": "Porque operam no fundo do sistema e enganam o antivírus.",
                                 "isCorrect": true
                             },
                             {
@@ -1847,7 +1847,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Pagar o resgate não garante a recuperação, pois se depende da palavra de um criminoso; manter backups é a defesa mais confiável.",
+                                "text": "Pagar não garante nada; manter backups é a defesa mais confiável.",
                                 "isCorrect": true
                             },
                             {
@@ -1918,11 +1918,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque o HTTPS criptografa os dados, impedindo que alguém que fareje a rede leia o conteúdo.",
+                                "text": "Porque o HTTPS criptografa os dados e impede leitura por terceiros.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o HTTPS deixa a internet mais rápida.",
+                                "text": "Porque o HTTPS deixa a conexão de internet mais rápida e leve.",
                                 "isCorrect": false
                             },
                             {
@@ -1930,7 +1930,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque sites com https nunca podem ser falsos ou maliciosos.",
+                                "text": "Porque sites com https nunca podem ser falsos, clonados ou maliciosos.",
                                 "isCorrect": false
                             }
                         ]
@@ -1948,11 +1948,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Força bruta de senha.",
+                                "text": "Força bruta, tentando todas as senhas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um backup automático da rede.",
+                                "text": "Um backup automático da rede, sem ataque.",
                                 "isCorrect": false
                             }
                         ]
@@ -1962,7 +1962,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque os acessos maliciosos vêm de milhares de máquinas diferentes ao mesmo tempo, muitas vezes de uma botnet.",
+                                "text": "Porque os acessos vêm de milhares de máquinas ao mesmo tempo.",
                                 "isCorrect": true
                             },
                             {
@@ -1970,7 +1970,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o DDoS criptografa os arquivos do servidor.",
+                                "text": "Porque o DDoS criptografa todos os arquivos do servidor.",
                                 "isCorrect": false
                             },
                             {
@@ -1984,7 +1984,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "No sniffing o atacante apenas lê o tráfego que passa; no MITM ele se coloca no meio da conversa e pode também alterar as mensagens.",
+                                "text": "No sniffing o atacante só lê; no MITM ele também altera as mensagens.",
                                 "isCorrect": true
                             },
                             {
@@ -2059,7 +2059,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque, quanto mais longa, mais combinações possíveis existem, tornando o teste de todas inviável.",
+                                "text": "Porque, quanto mais longa, mais combinações existem para testar.",
                                 "isCorrect": true
                             },
                             {
@@ -2081,7 +2081,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um atacante pode testar essa senha vazada nas outras contas dela e invadi-las (credential stuffing).",
+                                "text": "Um atacante pode testar essa senha vazada nas outras contas dela.",
                                 "isCorrect": true
                             },
                             {
@@ -2103,7 +2103,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque estão nas listas de ataque de dicionário e são testadas primeiro, caindo em segundos.",
+                                "text": "Porque estão nas listas de dicionário e caem em segundos.",
                                 "isCorrect": true
                             },
                             {
@@ -2125,7 +2125,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O sistema confiou em uma entrada não validada do usuário, a raiz dos ataques de injeção.",
+                                "text": "Uma entrada do usuário não validada, a raiz da injeção.",
                                 "isCorrect": true
                             },
                             {
@@ -2183,19 +2183,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Manipular pessoas para que revelem informações ou façam algo que comprometa a segurança.",
+                                "text": "É manipular pessoas para revelar dados ou burlar a segurança.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um método de construir redes de computadores mais rápidas.",
+                                "text": "Técnica usada para deixar redes de computadores mais rápidas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo de criptografia usada em redes sociais.",
+                                "text": "Tipo de criptografia aplicada a mensagens de redes sociais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um programa antivírus que protege contra vírus sociais.",
+                                "text": "Programa antivírus especializado em vírus de redes sociais.",
                                 "isCorrect": false
                             }
                         ]
@@ -2227,19 +2227,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Autoridade: ele se passa por uma figura que costuma ter acesso legítimo e dar ordens.",
+                                "text": "Autoridade: finge ser do suporte de TI para ser obedecido sem questionamento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Prova social: ele diz que todos os colegas já fizeram o mesmo.",
+                                "text": "Prova social: alega que todos os colegas já confirmaram a própria senha.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Curiosidade: ele desperta a vontade de descobrir um segredo.",
+                                "text": "Curiosidade: desperta a vontade de descobrir um segredo qualquer.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escassez: ele avisa que a oferta é por tempo limitado.",
+                                "text": "Escassez: avisa que a liberação de acesso vale por tempo limitado.",
                                 "isCorrect": false
                             }
                         ]
@@ -2249,19 +2249,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque a engenharia social ataca a pessoa, não o sistema; não há correção técnica que conserte a pressa, o medo ou a boa vontade de um funcionário.",
+                                "text": "Porque a engenharia social ataca a pessoa; não existe patch para a pressa ou o medo humano.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque firewalls não funcionam contra ataques que vêm da internet.",
+                                "text": "Porque o firewall bloqueia ataques de rede, mas não impede ligações telefônicas enganosas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a criptografia usada estava, com certeza, desatualizada.",
+                                "text": "Porque a criptografia protege dados em trânsito, mas não impede alguém de entregar a senha.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o antivírus não é capaz de detectar nenhum tipo de vírus por telefone.",
+                                "text": "Porque o antivírus detecta arquivos maliciosos, mas não identifica um golpe feito por voz.",
                                 "isCorrect": false
                             }
                         ]
@@ -2271,19 +2271,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Reciprocidade: ao fazer um \"favor\" primeiro, ele cria a sensação de que você deve retribuir com o que ele pede.",
+                                "text": "Reciprocidade: finge ajudar primeiro, criando a sensação de dívida que cobra depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Prova social: ele sugere que muitas outras pessoas já confirmaram o código.",
+                                "text": "Prova social: afirma que diversos outros clientes já confirmaram esse mesmo código.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Curiosidade: ele desperta a vontade de descobrir o conteúdo do SMS.",
+                                "text": "Curiosidade: desperta a vontade de descobrir o conteúdo secreto do SMS recebido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escassez: ele indica que o ajuste só vale para poucos clientes.",
+                                "text": "Escassez: informa que esse ajuste especial vale só para poucos clientes selecionados.",
                                 "isCorrect": false
                             }
                         ]
@@ -2324,19 +2324,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O envio de mensagens fraudulentas que se passam por uma fonte confiável para roubar dados ou instalar malware.",
+                                "text": "Mensagem fraudulenta que finge ser de uma fonte confiável para roubar dados.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um esporte de pesca praticado pela internet.",
+                                "text": "Um esporte de pesca à distância, praticado hoje em dia pela internet.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo de firewall que filtra e-mails.",
+                                "text": "Um tipo de firewall que examina e filtra e-mails suspeitos automaticamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um programa antivírus gratuito para e-mail.",
+                                "text": "Um programa antivírus gratuito, especializado em proteger contas de e-mail.",
                                 "isCorrect": false
                             }
                         ]
@@ -2346,19 +2346,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ele é direcionado a uma pessoa específica e personalizado com informações reais sobre ela.",
+                                "text": "Ele mira uma pessoa específica, com dados reais para parecer legítimo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ele é sempre enviado por SMS, nunca por e-mail.",
+                                "text": "Ele é sempre enviado por SMS, e nunca chega por e-mail comum.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele é inofensivo, porque atinge apenas uma pessoa.",
+                                "text": "Ele é inofensivo, já que atinge apenas uma única pessoa por vez.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele atinge muito mais pessoas de uma só vez.",
+                                "text": "Ele atinge muito mais pessoas ao mesmo tempo, sem nenhum alvo fixo.",
                                 "isCorrect": false
                             }
                         ]
@@ -2368,19 +2368,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Whaling: um spear phishing direcionado a um alto executivo.",
+                                "text": "Whaling: spear phishing direcionado a um alvo de alto escalão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Phishing em massa, disparado sem personalização.",
+                                "text": "Phishing em massa: mensagem genérica disparada para muita gente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Smishing, por se tratar de um pedido de pagamento.",
+                                "text": "Smishing: um golpe que chega por SMS, não por e-mail corporativo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Baiting, porque envolve uma isca financeira.",
+                                "text": "Baiting: uma isca, como um pen drive, deixada para a vítima morder.",
                                 "isCorrect": false
                             }
                         ]
@@ -2390,19 +2390,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Confirmar a mudança pelo canal oficial já conhecido do fornecedor (um telefone verificado), antes de alterar qualquer pagamento.",
+                                "text": "Ligar para um telefone já conhecido do fornecedor antes de mudar o pagamento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Rodar o antivírus no e-mail, já que o risco está sempre no anexo.",
+                                "text": "Rodar o antivírus no e-mail, pois o risco de golpe está sempre no anexo enviado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Responder ao próprio e-mail pedindo confirmação por escrito.",
+                                "text": "Responder ao próprio e-mail, pedindo por escrito a confirmação dos novos dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pagar rapidamente na nova conta para não perder o prazo.",
+                                "text": "Pagar logo na nova conta indicada, para não perder o prazo do boleto atual.",
                                 "isCorrect": false
                             }
                         ]
@@ -2412,19 +2412,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque é spear phishing: a personalização com dados reais faz a mensagem parecer legítima e derruba a desconfiança, que seria justamente o que protegeria a vítima.",
+                                "text": "Porque é spear phishing: dados reais tornam a mensagem convincente e confiável.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque e-mails enviados a uma só pessoa sempre carregam vírus mais fortes.",
+                                "text": "Porque mensagens enviadas a uma só pessoa sempre carregam vírus mais fortes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o primeiro e-mail, por ser genérico, não é phishing de verdade.",
+                                "text": "Porque o primeiro e-mail, por ser genérico, sequer é considerado phishing.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque planilhas nunca podem ser abertas com segurança, em nenhum caso.",
+                                "text": "Porque nenhuma planilha enviada por e-mail pode ser aberta com segurança.",
                                 "isCorrect": false
                             }
                         ]
@@ -2465,19 +2465,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um golpe de engenharia social feito por ligação telefônica (voz).",
+                                "text": "Um golpe de engenharia social aplicado por telefone.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um golpe feito por SMS.",
+                                "text": "Um golpe aplicado somente por mensagem de texto (SMS).",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um golpe feito por e-mail.",
+                                "text": "Um golpe aplicado somente por mensagens de e-mail.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um golpe feito por QR code.",
+                                "text": "Um golpe aplicado somente por meio de QR code.",
                                 "isCorrect": false
                             }
                         ]
@@ -2487,19 +2487,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Por SMS e aplicativos de mensagem, como o WhatsApp.",
+                                "text": "Por SMS e por apps de mensagem, como o WhatsApp.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas por ligações de voz.",
+                                "text": "Apenas por meio de ligações telefônicas de voz.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas por e-mail corporativo.",
+                                "text": "Apenas por mensagens de e-mail corporativo interno.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Por cabos de rede conectados ao computador.",
+                                "text": "Por cabos de rede conectados diretamente ao computador.",
                                 "isCorrect": false
                             }
                         ]
@@ -2509,19 +2509,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não informar o código, desligar e ligar de volta para o número oficial do banco (no cartão ou no app) para verificar.",
+                                "text": "Não informar o código; desligar e ligar ao número oficial do banco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Informar o código, já que a ligação claramente partiu do banco.",
+                                "text": "Informar o código, já que a ligação partiu claramente do banco de verdade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ligar de volta para o mesmo número que fez a chamada e confirmar com ele.",
+                                "text": "Ligar de volta para o mesmo número que ligou, e assim confirmar o pedido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Responder ao SMS com o código, para agilizar o cancelamento.",
+                                "text": "Responder ao SMS com o código recebido, para agilizar o cancelamento pedido.",
                                 "isCorrect": false
                             }
                         ]
@@ -2531,19 +2531,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A combinação de número novo, pedido de dinheiro e urgência, sem nenhuma confirmação, por um canal já conhecido, de que é realmente a pessoa.",
+                                "text": "Número novo, pedido de dinheiro e urgência, sem confirmar por outro canal.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O simples fato de ser um primo, pois parentes nunca pedem dinheiro.",
+                                "text": "O simples fato de ser um primo, já que parentes nunca pedem dinheiro assim.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O horário em que a mensagem foi enviada.",
+                                "text": "O horário da mensagem, enviada fora do expediente comercial normal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O uso do WhatsApp em vez de SMS.",
+                                "text": "O uso do WhatsApp para pedir o dinheiro, em vez de uma ligação.",
                                 "isCorrect": false
                             }
                         ]
@@ -2553,19 +2553,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Reconhecer a voz ou o nome não prova a identidade; qualquer pedido incomum de pagamento deve ser confirmado por um segundo canal antes de agir.",
+                                "text": "A voz não prova identidade; todo pedido incomum deve ser confirmado por outro canal.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ligações do chefe devem sempre ser obedecidas de imediato, sem questionar.",
+                                "text": "Ligações do chefe devem sempre ser obedecidas na hora, sem qualquer questionamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Golpes por voz não existem de fato, então era seguro pagar o boleto.",
+                                "text": "Golpes por clonagem de voz não existem de verdade, então era seguro pagar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bastaria ter um antivírus atualizado no computador para evitar o golpe.",
+                                "text": "Um antivírus atualizado no computador seria suficiente para evitar o golpe.",
                                 "isCorrect": false
                             }
                         ]
@@ -2606,19 +2606,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Entrar em uma área restrita seguindo de perto uma pessoa autorizada.",
+                                "text": "Entrar numa área restrita seguindo de perto alguém autorizado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Enviar e-mails falsos em massa para muitas pessoas.",
+                                "text": "Enviar um grande volume de e-mails falsos para muitas pessoas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Espiar a senha de alguém por cima do ombro.",
+                                "text": "Espiar a senha alheia digitada por cima do ombro da pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar um pen drive infectado à vista para alguém pegar.",
+                                "text": "Deixar um pen drive infectado à vista para que alguém o pegue.",
                                 "isCorrect": false
                             }
                         ]
@@ -2628,19 +2628,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Baiting (isca): algo tentador é deixado para a vítima morder.",
+                                "text": "Baiting: uma isca tentadora é deixada para a vítima morder.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Shoulder surfing.",
+                                "text": "Shoulder surfing: espiar a senha por cima do ombro da vítima.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tailgating.",
+                                "text": "Tailgating: entrar num local restrito seguindo alguém de perto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Vishing.",
+                                "text": "Vishing: golpe de engenharia social aplicado por telefone.",
                                 "isCorrect": false
                             }
                         ]
@@ -2650,19 +2650,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Quid pro quo: um \"benefício\" (a ajuda) é oferecido em troca de uma ação que abre a porta ao golpista.",
+                                "text": "Quid pro quo: oferece ajuda em troca de uma ação que abre a porta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Dumpster diving.",
+                                "text": "Dumpster diving: vasculhar o lixo em busca de documentos descartados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Whaling.",
+                                "text": "Whaling: um spear phishing direcionado a um alto executivo da empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Shoulder surfing.",
+                                "text": "Shoulder surfing: espiar a senha alheia por cima do ombro da vítima.",
                                 "isCorrect": false
                             }
                         ]
@@ -2672,19 +2672,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É pretexting (um personagem e uma história inventados); o certo é confirmar a identidade do \"João\" pelos canais oficiais da empresa antes de fornecer qualquer dado.",
+                                "text": "É pretexting: um personagem inventado; o certo é confirmar pelo canal oficial.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É baiting; basta não pegar nada físico que ele oferecer.",
+                                "text": "É baiting, então basta não pegar o objeto físico que ele oferecer.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema: como é do RH, basta fornecer os dados pedidos.",
+                                "text": "Não há problema algum: por ser do RH, basta fornecer os dados que ele pediu.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É smishing; então basta não clicar em nenhum link.",
+                                "text": "É smishing, então basta não clicar em nenhum link que ele venha a enviar.",
                                 "isCorrect": false
                             }
                         ]
@@ -2694,19 +2694,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "É tailgating: o atacante explora a sua gentileza e o medo de parecer rude para burlar o controle de acesso; ceder deixa entrar alguém não verificado, então o correto é orientá-la ao caminho oficial de acesso.",
+                                "text": "É tailgating: o golpista usa a gentileza da vítima para burlar o controle de acesso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não há risco algum: como está de mãos cheias, ela é claramente uma funcionária.",
+                                "text": "Não há risco algum: quem está de mãos cheias é sempre um funcionário de verdade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco só existiria se ela estivesse carregando um pen drive.",
+                                "text": "O risco só existiria se a pessoa estivesse carregando um pen drive infectado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Segurar a porta é sempre a atitude mais segura e mais educada.",
+                                "text": "Segurar a porta para qualquer pessoa é sempre a atitude mais segura e educada.",
                                 "isCorrect": false
                             }
                         ]
@@ -2747,19 +2747,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ela pede a sua senha ou o código de verificação que chegou no seu celular.",
+                                "text": "Ela pede a sua senha ou o código de verificação recebido por SMS.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ela chama você pelo seu nome completo, corretamente.",
+                                "text": "Ela chama você pelo seu nome completo, de forma correta e pessoal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela não impõe nenhum prazo para você responder.",
+                                "text": "Ela não impõe qualquer prazo, deixando você responder com calma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela foi enviada dentro do horário comercial.",
+                                "text": "Ela foi enviada dentro do horário comercial de um dia útil comum.",
                                 "isCorrect": false
                             }
                         ]
@@ -2769,19 +2769,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Desacelerar: parar, pensar e verificar antes de agir.",
+                                "text": "Desacelerar: parar, pensar e verificar com calma antes de agir.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Responder à mensagem o mais rápido possível.",
+                                "text": "Responder à mensagem recebida o mais rápido possível, sem demora.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Instalar vários antivírus ao mesmo tempo.",
+                                "text": "Instalar vários programas antivírus diferentes ao mesmo tempo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nunca mais usar e-mail nem telefone.",
+                                "text": "Parar de usar e-mail e telefone completamente, para sempre.",
                                 "isCorrect": false
                             }
                         ]
@@ -2791,19 +2791,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Falar com o chefe pessoalmente ou por um canal que você já usa com ele, nunca respondendo ao próprio e-mail suspeito.",
+                                "text": "Falar com o chefe por um canal já conhecido, nunca pelo e-mail suspeito.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Responder ao e-mail perguntando se é ele mesmo quem escreveu.",
+                                "text": "Responder ao e-mail recebido, perguntando se é mesmo ele quem escreveu aquilo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comprar os cartões imediatamente, afinal o chefe pediu.",
+                                "text": "Comprar os cartões-presente imediatamente, já que foi o chefe quem pediu.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Encaminhar o e-mail aos colegas para pedir a opinião deles.",
+                                "text": "Encaminhar o e-mail para os colegas, pedindo a opinião deles sobre o pedido.",
                                 "isCorrect": false
                             }
                         ]
@@ -2813,19 +2813,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Reportar imediatamente à equipe de segurança; quanto antes o incidente é avisado, mais rápido o estrago é contido, e por isso a cultura deve ser sem punição.",
+                                "text": "Reportar de imediato à equipe de segurança, para conter o estrago.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não contar a ninguém, para não se meter em encrenca.",
+                                "text": "Não contar a ninguém sobre o ocorrido, para não se meter em encrenca.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apagar o e-mail e fingir que nada aconteceu.",
+                                "text": "Apagar o e-mail recebido e fingir que absolutamente nada aconteceu.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Esperar para ver se algo dá errado antes de avisar alguém.",
+                                "text": "Esperar alguns dias para ver se algo dá errado antes de avisar alguém.",
                                 "isCorrect": false
                             }
                         ]
@@ -2835,19 +2835,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "São simulações de phishing para medir e treinar a atenção do time; não punir é essencial para que as pessoas reportem os erros em vez de escondê-los, o que fortalece a defesa coletiva.",
+                                "text": "Simulações para treinar a atenção do time; sem punição, as pessoas reportam em vez de esconder.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O objetivo é demitir quem clica, e a falta de punição é apenas uma formalidade legal.",
+                                "text": "O objetivo real é demitir quem clica, sendo a falta de punição apenas uma formalidade legal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma forma de invadir os computadores dos funcionários para testar o antivírus.",
+                                "text": "É uma forma disfarçada de invadir os computadores dos funcionários para testar o antivírus.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Serve para provar que treinamento não funciona, já que sempre há quem clique.",
+                                "text": "Serve apenas para provar que treinamento não funciona, já que sempre alguém acaba clicando.",
                                 "isCorrect": false
                             }
                         ]
@@ -2893,19 +2893,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Usar várias camadas independentes de proteção, assumindo que qualquer uma pode falhar.",
+                                "text": "Combinar várias camadas de proteção independentes, pois qualquer uma pode falhar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Investir tudo em uma única proteção, desde que ela seja muito forte.",
+                                "text": "Escolher uma única proteção muito forte e investir todos os recursos apenas nela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Esconder o sistema para que ninguém saiba que ele existe.",
+                                "text": "Manter o funcionamento do sistema em segredo para que ninguém o conheça.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Fazer backup dos dados uma vez por ano.",
+                                "text": "Programar backups completos dos dados uma vez por ano, sem outras medidas.",
                                 "isCorrect": false
                             }
                         ]
@@ -2915,19 +2915,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Várias camadas de defesa que o invasor precisa vencer, uma após a outra.",
+                                "text": "As várias camadas de defesa que o invasor precisa vencer, uma depois da outra.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma decoração que não tem função de segurança.",
+                                "text": "Apenas uma decoração do castelo, sem nenhuma função de proteção real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma única barreira que, sozinha, garante a proteção total.",
+                                "text": "Uma única barreira que, sozinha, já garante a proteção completa do castelo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tesouro que está sendo protegido.",
+                                "text": "O tesouro guardado no centro do castelo, que está sendo protegido.",
                                 "isCorrect": false
                             }
                         ]
@@ -2937,19 +2937,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Depender de uma única camada de defesa, em vez de adotar defesa em profundidade.",
+                                "text": "Depender de uma única camada de proteção, sem nenhuma camada por trás.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ter usado um firewall, já que firewalls não servem para nada.",
+                                "text": "Ter usado um firewall, uma ferramenta que não gera proteção nenhuma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ter treinado os funcionários contra phishing em excesso.",
+                                "text": "Ter oferecido treinamento excessivo contra phishing aos funcionários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ter cifrado os dados, o que atrapalhou a defesa.",
+                                "text": "Ter cifrado todos os dados sensíveis armazenados pela empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -2959,19 +2959,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um elemento do qual tudo depende e que, se falhar sozinho, derruba a proteção inteira.",
+                                "text": "Um elemento do qual tudo depende, cuja falha sozinha derruba a proteção.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um erro que só pode acontecer uma vez na vida do sistema.",
+                                "text": "Um erro que, por definição, só pode acontecer uma única vez no sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O primeiro alarme que dispara durante um ataque.",
+                                "text": "O primeiro alarme disparado no exato momento em que um ataque começa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma senha que só pode ser digitada uma vez.",
+                                "text": "Uma senha criada para ser digitada apenas uma vez e depois descartada.",
                                 "isCorrect": false
                             }
                         ]
@@ -2981,19 +2981,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O time B, porque empilha camadas de tipos diferentes (rede, contas, dados, pessoas), cobrindo o que uma camada não pega.",
+                                "text": "O time B, por combinar camadas de tipos diferentes: rede, contas, dados e pessoas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O time A, porque quanto mais antivírus, mais completa é a defesa em profundidade.",
+                                "text": "O time A, porque três antivírus iguais já cobrem qualquer tipo de ameaça.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os dois são idênticos, já que ambos usam mais de uma ferramenta.",
+                                "text": "Os dois, porque usar mais de uma ferramenta já basta para ser em profundidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, porque defesa em profundidade não permite usar antivírus.",
+                                "text": "Nenhum, porque defesa em profundidade exclui qualquer uso de antivírus.",
                                 "isCorrect": false
                             }
                         ]
@@ -3034,19 +3034,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Cada pessoa ou sistema deve ter apenas os acessos necessários para o seu trabalho, nada além.",
+                                "text": "Cada pessoa ou sistema deve receber somente o acesso necessário ao seu trabalho.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Todo mundo deve ter acesso de administrador, para agilizar o trabalho.",
+                                "text": "Todos os funcionários devem ter acesso irrestrito de administrador o tempo todo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os privilégios devem ser sorteados entre os funcionários.",
+                                "text": "Os acessos devem ser sorteados aleatoriamente entre os funcionários da empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só o dono da empresa pode ter qualquer acesso.",
+                                "text": "Apenas o dono da empresa pode ter qualquer tipo de acesso aos sistemas.",
                                 "isCorrect": false
                             }
                         ]
@@ -3060,15 +3060,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "\"Uma vez dentro da rede, você é confiável para sempre.\"",
+                                "text": "\"Quem entrou uma vez, é confiável para sempre.\"",
                                 "isCorrect": false
                             },
                             {
-                                "text": "\"Confie em todos, mas guarde os logs.\"",
+                                "text": "\"Confie em todos e não verifique nada.\"",
                                 "isCorrect": false
                             },
                             {
-                                "text": "\"Quem não tem senha não entra, e o resto é confiável.\"",
+                                "text": "\"Basta uma senha forte, o resto não importa.\"",
                                 "isCorrect": false
                             }
                         ]
@@ -3078,19 +3078,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O menor privilégio, pois ele recebeu muito mais acesso do que precisava.",
+                                "text": "O menor privilégio, pois o acesso concedido foi muito maior do que o necessário.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A defesa em profundidade, pois faltou uma segunda muralha.",
+                                "text": "A defesa em profundidade, pois faltou uma segunda camada de proteção depois.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O fail-safe default, pois o sistema negou o acesso corretamente.",
+                                "text": "O fail-safe default, pois o sistema negou esse acesso automaticamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A segurança por obscuridade, pois o acesso ficou escondido.",
+                                "text": "A segurança por obscuridade, pois esse acesso ficou escondido dos outros.",
                                 "isCorrect": false
                             }
                         ]
@@ -3100,19 +3100,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Segregação de funções: pessoas diferentes devem controlar partes diferentes do processo.",
+                                "text": "A segregação de funções, pois pessoas diferentes deveriam cuidar de cada etapa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Zero Trust, para que ela verifique a própria identidade antes de aprovar.",
+                                "text": "O Zero Trust, pois ela mesma deveria verificar sua identidade antes de aprovar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Menor privilégio, para que ela tenha acesso de administrador ao sistema financeiro.",
+                                "text": "O menor privilégio, pois ela deveria ter acesso total ao sistema financeiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Obscuridade, para esconder o processo de pagamento dos outros.",
+                                "text": "A obscuridade, pois o processo de pagamento deveria ficar escondido dos outros.",
                                 "isCorrect": false
                             }
                         ]
@@ -3122,19 +3122,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque esconder o funcionamento não é o mesmo que protegê-lo; no dia em que o segredo vazar, não sobra defesa. O sistema deveria ser seguro mesmo com o atacante conhecendo seu funcionamento.",
+                                "text": "Porque esconder o funcionamento não é o mesmo que protegê-lo, e o segredo pode vazar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque manter o funcionamento em segredo é ilegal na maioria dos países.",
+                                "text": "Porque manter o funcionamento em sigilo seria proibido pelas leis da maioria dos países.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a obscuridade é a defesa mais forte que existe e dispensa qualquer outra.",
+                                "text": "Porque a obscuridade sozinha já é a defesa mais forte que qualquer sistema pode ter.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, se ninguém entende o sistema, ele deixa de funcionar sozinho.",
+                                "text": "Porque um sistema que ninguém entende simplesmente para de funcionar sozinho.",
                                 "isCorrect": false
                             }
                         ]
@@ -3175,19 +3175,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Qualquer medida que ajuda a reduzir um risco (uma tranca, uma senha, um treinamento, um backup).",
+                                "text": "Qualquer medida que ajuda a reduzir um risco, como uma senha.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas o painel de administração de um servidor.",
+                                "text": "Apenas o painel usado para administrar um servidor da empresa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente equipamentos físicos, como cadeados e câmeras.",
+                                "text": "Somente equipamentos físicos, como cadeados, grades e câmeras.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um relatório que lista os funcionários da empresa.",
+                                "text": "Um relatório com a lista de todos os funcionários da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -3197,19 +3197,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Preventivo, porque agem antes, tentando impedir o incidente.",
+                                "text": "Preventivo, porque atuam antes, tentando impedir o incidente.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Corretivo, porque consertam o que já foi quebrado.",
+                                "text": "Corretivo, porque atuam depois, consertando o que já foi danificado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Detectivo, porque só avisam depois que algo aconteceu.",
+                                "text": "Detectivo, porque apenas avisam depois que o incidente já aconteceu.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Dissuasivo, porque apenas desencorajam sem impedir.",
+                                "text": "Dissuasivo, porque apenas desencorajam o ataque, sem impedir nada.",
                                 "isCorrect": false
                             }
                         ]
@@ -3219,19 +3219,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Corretivo, porque atua depois do incidente para reparar e restaurar.",
+                                "text": "Corretivo, porque atua depois do incidente, reparando o sistema.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Preventivo, porque impediu o ransomware de acontecer.",
+                                "text": "Preventivo, porque impediu que o ataque de ransomware acontecesse.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Dissuasivo, porque assustou o atacante.",
+                                "text": "Dissuasivo, porque serviu apenas para assustar o autor do ataque.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Detectivo, porque descobriu quem era o atacante.",
+                                "text": "Detectivo, porque serviu para descobrir a identidade do atacante.",
                                 "isCorrect": false
                             }
                         ]
@@ -3249,7 +3249,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Todos os três são controles técnicos.",
+                                "text": "Os três são controles técnicos, sem exceção.",
                                 "isCorrect": false
                             },
                             {
@@ -3263,19 +3263,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Compensatório, pois substitui o controle ideal (inviável agora) por medidas alternativas que reduzem o risco.",
+                                "text": "Compensatório, pois substitui o controle ideal por uma medida alternativa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Preventivo, pois o problema do sistema antigo foi totalmente eliminado.",
+                                "text": "Preventivo, pois a falha do sistema antigo foi completamente eliminada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Corretivo, pois o sistema já foi consertado e restaurado.",
+                                "text": "Corretivo, pois o sistema antigo já foi consertado e devolvido ao normal.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Dissuasivo, pois o objetivo era apenas assustar possíveis atacantes.",
+                                "text": "Dissuasivo, pois a meta ali era apenas assustar possíveis atacantes.",
                                 "isCorrect": false
                             }
                         ]
@@ -3316,19 +3316,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A soma de todos os pontos por onde um atacante poderia tentar entrar (portas, serviços, contas, programas).",
+                                "text": "A soma de todos os pontos por onde alguém pode tentar invadir o sistema.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A tela de login onde o atacante digita a senha.",
+                                "text": "A tela de login onde o atacante digita a senha para tentar entrar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de ataques que o sistema já sofreu.",
+                                "text": "A quantidade total de ataques que aquele sistema já sofreu até hoje.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tamanho do monitor usado pela equipe de segurança.",
+                                "text": "O tamanho do monitor usado pela equipe de segurança da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -3338,7 +3338,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Reduzir a superfície de ataque, desligando e removendo tudo o que não é necessário.",
+                                "text": "Reduzir a superfície de ataque, desligando tudo o que não é necessário.",
                                 "isCorrect": true
                             },
                             {
@@ -3346,11 +3346,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar todas as portas de rede abertas para facilitar as conexões.",
+                                "text": "Deixar todas as portas de rede abertas, para facilitar as conexões.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Manter as senhas de fábrica, que já são seguras por padrão.",
+                                "text": "Manter as senhas de fábrica, que já vêm seguras por padrão de origem.",
                                 "isCorrect": false
                             }
                         ]
@@ -3360,19 +3360,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Trocar a senha padrão por uma forte, desligar os serviços que não serão usados e remover a conta de teste.",
+                                "text": "Trocar a senha padrão, desligar serviços sem uso e remover a conta teste.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Manter a senha \"admin/admin\" para não esquecer e ligar ainda mais serviços por precaução.",
+                                "text": "Manter a senha \"admin/admin\" e ativar ainda mais serviços no servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Abrir todas as portas de rede para garantir que nada deixe de funcionar.",
+                                "text": "Abrir todas as portas de rede disponíveis, sem exceção nenhuma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Dar acesso de administrador a todos os usuários para agilizar o suporte.",
+                                "text": "Dar acesso de administrador a todos os usuários do servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -3386,7 +3386,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Instalar vários programas extras \"por via das dúvidas\", mesmo sem necessidade.",
+                                "text": "Instalar vários programas extras por precaução, mesmo sem necessidade.",
                                 "isCorrect": false
                             },
                             {
@@ -3404,19 +3404,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Trocar a senha padrão de fábrica e desabilitar (ou fechar) o serviço de administração remota que não era usado.",
+                                "text": "Trocar a senha de fábrica e desligar o serviço remoto sem uso, reduzindo os riscos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Manter a senha padrão, já que ela é conhecida e fácil de lembrar.",
+                                "text": "Manter a senha de fábrica, pois trocá-la exigiria treinamento extra dos usuários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Abrir mais portas de rede para distribuir melhor o tráfego dos ataques.",
+                                "text": "Abrir mais portas de rede, pois isso ajudaria a distribuir o tráfego malicioso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Instalar programas adicionais nos dispositivos para deixá-los mais ocupados.",
+                                "text": "Instalar mais programas nos dispositivos, pois isso disfarçaria o ataque em andamento.",
                                 "isCorrect": false
                             }
                         ]
@@ -3457,19 +3457,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Proteger o sigilo: transformar o dado em algo ilegível para quem não tem a chave.",
+                                "text": "Proteger o sigilo, tornando o dado ilegível para quem não tem a chave certa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apagar o dado permanentemente para que ninguém o use.",
+                                "text": "Apagar o dado de forma permanente, para que ninguém consiga usá-lo depois.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Deixar o dado mais leve, ocupando menos espaço no disco.",
+                                "text": "Deixar o dado mais leve, fazendo com que ocupe menos espaço no disco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Traduzir o dado para outro idioma automaticamente.",
+                                "text": "Traduzir automaticamente o dado para outro idioma, sem ajuda humana.",
                                 "isCorrect": false
                             }
                         ]
@@ -3479,19 +3479,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Cifra a comunicação entre o seu navegador e o site, protegendo os dados em trânsito.",
+                                "text": "Cifra a comunicação entre navegador e site, protegendo os dados em trânsito.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deixa o site carregar mais rápido, sem relação com segurança.",
+                                "text": "Faz o site carregar mais rápido, sem nenhuma relação com segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Garante que o dono do site é uma pessoa honesta e confiável.",
+                                "text": "Garante que o dono do site é uma pessoa honesta e completamente confiável.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faz backup automático de tudo o que você digita.",
+                                "text": "Faz backup automático de tudo o que você digita durante a navegação.",
                                 "isCorrect": false
                             }
                         ]
@@ -3501,19 +3501,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Para verificar a integridade: se os resumos forem diferentes, o arquivo foi alterado ou corrompido no caminho.",
+                                "text": "Verificar a integridade do arquivo baixado, comparando os dois resumos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Para recuperar a senha do site a partir do resumo.",
+                                "text": "Recuperar a senha cadastrada no site a partir do resumo apresentado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para descriptografar o arquivo e abri-lo sem programa.",
+                                "text": "Descriptografar o arquivo automaticamente, dispensando qualquer programa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para deixar o download mais rápido.",
+                                "text": "Deixar o download do arquivo mais rápido do que seria sem o resumo.",
                                 "isCorrect": false
                             }
                         ]
@@ -3523,19 +3523,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Criptografia de dados em repouso (os dados parados e guardados no disco).",
+                                "text": "A criptografia dos dados em repouso, os dados parados e guardados no disco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografia de dados em trânsito (os dados viajando pela rede).",
+                                "text": "A criptografia dos dados em trânsito, os dados enquanto viajam pela rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um hash da senha da funcionária.",
+                                "text": "Um hash gerado a partir da senha de acesso daquela funcionária.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A troca da senha de fábrica do notebook.",
+                                "text": "A troca da senha de fábrica configurada originalmente no notebook.",
                                 "isCorrect": false
                             }
                         ]
@@ -3545,19 +3545,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o cadeado garante apenas que a conexão está cifrada, e não que o dono do site é honesto; um golpista também pode ter HTTPS no site de phishing dele.",
+                                "text": "Porque o cadeado garante só a conexão cifrada, não a honestidade do site.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o cadeado do HTTPS significa que o site está infectado por malware.",
+                                "text": "Porque o cadeado do HTTPS é um sinal de que o site está infectado por malware.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTPS só funciona em sites falsos, nunca nos verdadeiros.",
+                                "text": "Porque o HTTPS funciona apenas em sites falsos, nunca nos sites verdadeiros.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, com cadeado, os dados são enviados em texto claro e ficam expostos.",
+                                "text": "Porque, mesmo com cadeado, os dados trafegam em texto claro e ficam expostos.",
                                 "isCorrect": false
                             }
                         ]
@@ -3603,19 +3603,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Com a nuvem e o trabalho remoto, não dá mais para confiar em alguém só por estar \"dentro da rede\"; agora o login e a identidade de cada um é que definem a segurança.",
+                                "text": "Que a rede não garante mais confiança sozinha: o login e a identidade de cada um definem o acesso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que os firewalls e as muralhas de rede se tornaram a única defesa que importa.",
+                                "text": "Que o firewall e as muralhas de rede seguem sendo a única defesa que realmente importa hoje.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que basta estar fisicamente dentro do escritório para ter acesso liberado a tudo.",
+                                "text": "Que estar fisicamente dentro do prédio da empresa já libera acesso completo a qualquer sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a identidade visual da empresa (logo e cores) protege os sistemas.",
+                                "text": "Que a identidade visual da empresa, como logo e cores, é o que protege os sistemas de invasão.",
                                 "isCorrect": false
                             }
                         ]
@@ -3625,19 +3625,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Antivírus, Antispam e Antimalware.",
+                                "text": "Antivírus, Antispam e Firewall de borda da rede.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação, Autorização e Auditoria (accounting).",
+                                "text": "Autenticação, Autorização e Auditoria (ou accounting).",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Acesso, Alerta e Auditoria.",
+                                "text": "Acesso, Alerta e Auditoria de eventos do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação, Atualização e Armazenamento.",
+                                "text": "Autenticação, Atualização e Armazenamento dos dados.",
                                 "isCorrect": false
                             }
                         ]
@@ -3647,19 +3647,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque firewalls pararam de funcionar em qualquer situação e devem ser desligados.",
+                                "text": "Porque o firewall é uma tecnologia ultrapassada, que já não funciona em nenhuma situação hoje.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque trabalhar de casa é sempre seguro e dispensa qualquer proteção.",
+                                "text": "Porque trabalhar de casa elimina todo risco, tornando qualquer camada extra de proteção inútil.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque os dados e as pessoas não estão mais atrás de uma única muralha; o acesso acontece de qualquer lugar, então a identidade de quem faz login virou a principal linha de defesa.",
+                                "text": "Porque o acesso passa a vir de qualquer lugar, sem muralha única; a identidade é a defesa central.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a nuvem elimina a necessidade de autenticar usuários.",
+                                "text": "Porque a nuvem verifica sozinha a identidade de cada pessoa, dispensando login e senha de fato.",
                                 "isCorrect": false
                             }
                         ]
@@ -3669,19 +3669,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Autenticação — a prova de que João é João.",
+                                "text": "Autenticação, pois o log mostra a senha que João digitou para provar quem é.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autorização — a decisão sobre o que João pode acessar.",
+                                "text": "Autorização, pois o log mostra a permissão que liberou o relatório para João.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Auditoria (accounting) — o registro do que foi feito, para consultar depois.",
+                                "text": "Auditoria (accounting): o registro do que foi feito, para consultar depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Antivírus — a checagem de arquivos maliciosos.",
+                                "text": "Antivírus, pois o log mostra que o arquivo foi varrido antes de ser aberto.",
                                 "isCorrect": false
                             }
                         ]
@@ -3691,19 +3691,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As câmeras e a lista de presença, que correspondem à Auditoria (accounting): é o registro que permite reconstruir quem esteve ali e o que foi feito.",
+                                "text": "As câmeras, que correspondem à Auditoria (accounting): registram tudo para reconstruir o que houve.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A conferência de documentos, que corresponde à Autorização, pois decide quem entra.",
+                                "text": "A conferência de documentos na entrada, que corresponde à Autorização, pois decide quem pode entrar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A pulseira VIP, que corresponde à Autenticação, pois prova a identidade.",
+                                "text": "A pulseira do camarote, que corresponde à Autenticação, pois comprova a identidade de quem entra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O firewall da balada, que corresponde à Auditoria, pois bloqueia estranhos.",
+                                "text": "O tapume da pista de dança, que corresponde à Auditoria, pois impede a entrada de estranhos.",
                                 "isCorrect": false
                             }
                         ]
@@ -3744,19 +3744,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Você é mesmo quem diz ser?",
+                                "text": "Você é realmente a pessoa que diz ser ao entrar no sistema?",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O que você tem permissão de fazer aqui dentro?",
+                                "text": "O que você tem permissão de fazer dentro deste sistema específico?",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quantas vezes você já acessou este sistema?",
+                                "text": "Quantas vezes você já entrou neste mesmo sistema hoje?",
                                 "isCorrect": false
                             },
                             {
-                                "text": "De qual cidade você está acessando?",
+                                "text": "De qual cidade ou país você está tentando acessar agora?",
                                 "isCorrect": false
                             }
                         ]
@@ -3766,19 +3766,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Da prova da sua identidade na hora do login.",
+                                "text": "Da prova de que você é você mesmo, feita logo no início do login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Das permissões: o que você pode ver e fazer depois de identificado.",
+                                "text": "Das permissões: o que você pode ver e fazer depois de já identificado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Da velocidade da sua conexão com a internet.",
+                                "text": "Da velocidade da conexão de internet usada para acessar o sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Da criação de uma nova senha.",
+                                "text": "Da criação e troca periódica da sua senha de acesso ao sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -3788,19 +3788,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A senha de Ana está errada e por isso o login falhou.",
+                                "text": "A senha de Ana está errada, pois o login não deveria ter funcionado daquele jeito.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ana foi autenticada com sucesso (o login funcionou), mas não está autorizada a usar o painel de administrador — falta permissão, não é erro de senha.",
+                                "text": "Ana está autenticada, o login funcionou, mas falta autorização para abrir o painel.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O sistema não conseguiu identificar quem é Ana.",
+                                "text": "O sistema não reconheceu a identidade de Ana, mesmo com usuário e senha corretos digitados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ana precisa criar uma nova conta para acessar qualquer coisa.",
+                                "text": "Ana precisa criar uma conta nova, pois a antiga não serve mais para nenhum acesso.",
                                 "isCorrect": false
                             }
                         ]
@@ -3810,19 +3810,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um deles não se autenticou de verdade.",
+                                "text": "Um dos dois não se autenticou de verdade, apesar de o login ter parecido funcionar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O que vê a folha usou uma senha mais forte.",
+                                "text": "O funcionário que vê a folha simplesmente usa uma senha mais longa e forte.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A autorização deles é diferente: ambos se autenticaram, mas têm permissões distintas sobre o que podem acessar.",
+                                "text": "A autorização de cada um é diferente: os dois se autenticaram, mas têm permissões distintas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O sistema está com defeito, pois pessoas autenticadas deveriam ver tudo igual.",
+                                "text": "O sistema está com defeito, pois todo autenticado deveria enxergar exatamente as mesmas telas.",
                                 "isCorrect": false
                             }
                         ]
@@ -3832,19 +3832,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque a autorização é opcional e quase nunca é usada.",
+                                "text": "Porque a autorização é só um detalhe opcional, que a maioria dos sistemas nem chega a usar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a autenticação é mais lenta e precisa de mais tempo para carregar.",
+                                "text": "Porque a autenticação é mais lenta, então roda primeiro só para não atrasar o processo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque as permissões são sempre iguais para todo mundo, então a ordem não muda nada.",
+                                "text": "Porque as permissões já vêm sempre iguais para todo mundo, então a ordem nunca faz diferença.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o sistema só consegue decidir o que alguém pode fazer depois de saber quem é essa pessoa; sem uma identidade confirmada, não há como consultar quais permissões aplicar.",
+                                "text": "Porque só depois de saber quem é a pessoa o sistema consegue consultar quais permissões ela tem.",
                                 "isCorrect": true
                             }
                         ]
@@ -3885,19 +3885,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Algo que você é (biometria).",
+                                "text": "Algo que você é, a biometria.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Algo que você sabe.",
+                                "text": "Algo que você sabe de cor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Algo que você tem.",
+                                "text": "Algo físico que você tem.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Algo que você compra.",
+                                "text": "Algo que você compra pronto.",
                                 "isCorrect": false
                             }
                         ]
@@ -3907,19 +3907,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma senha mais uma pergunta secreta.",
+                                "text": "Uma senha mais uma pergunta secreta sobre você.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Duas senhas diferentes, uma depois da outra.",
+                                "text": "Duas senhas diferentes, digitadas uma depois da outra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma senha mais um código gerado pelo aplicativo no celular.",
+                                "text": "Uma senha somada a um código gerado pelo aplicativo no celular.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um PIN de quatro dígitos e depois um de seis dígitos.",
+                                "text": "Um PIN de quatro dígitos seguido de outro PIN de seis dígitos.",
                                 "isCorrect": false
                             }
                         ]
@@ -3929,19 +3929,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque a senha vazada se apaga sozinha depois de um tempo.",
+                                "text": "Porque toda senha vazada se apaga automaticamente do sistema depois de algumas horas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Além da senha, seria preciso o segundo fator (o código do aplicativo no celular de Marcos), que os invasores não tinham.",
+                                "text": "Porque faltava o segundo fator: o código do aplicativo autenticador no celular de Marcos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o MFA troca a senha automaticamente a cada acesso, tornando o vazamento inofensivo.",
+                                "text": "Porque o MFA troca a senha de Marcos sozinho a cada novo acesso feito ao sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque sites que sofrem vazamento bloqueiam todos os logins para sempre.",
+                                "text": "Porque sites que sofrem vazamento bloqueiam todos os logins de todo mundo para sempre.",
                                 "isCorrect": false
                             }
                         ]
@@ -3951,19 +3951,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sim, qualquer coisa pedida em duas etapas já conta como MFA.",
+                                "text": "Sim, qualquer verificação feita em duas etapas separadas já conta como MFA de verdade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, porque a pergunta secreta é um \"algo que você tem\".",
+                                "text": "Sim, porque a pergunta secreta conta como um \"algo que você tem\" guardado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não. Senha e pergunta secreta são, as duas, \"algo que você sabe\" — é o mesmo fator repetido, não fatores diferentes, então não é MFA.",
+                                "text": "Não, senha e pergunta secreta são as duas \"algo que você sabe\", o mesmo fator repetido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não, porque MFA precisa de exatamente três senhas.",
+                                "text": "Não, porque MFA exige sempre exatamente três senhas diferentes cadastradas.",
                                 "isCorrect": false
                             }
                         ]
@@ -3973,19 +3973,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A MFA falhou sozinha; esse tipo de proteção não serve para nada.",
+                                "text": "A MFA falhou completamente sozinha, o que prova que esse tipo de proteção não serve para nada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema foi a senha estar forte demais, o que atrapalha a MFA.",
+                                "text": "O problema real foi a senha dela estar forte demais, o que acaba atrapalhando a MFA.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As notificações de aprovação são sempre seguras, então o erro foi outro.",
+                                "text": "As notificações de aprovação de login são sempre seguras, então o erro foi outra coisa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela aprovou o segundo fator de um login que não era dela; aprovar avisos de MFA que você não iniciou entrega o acesso ao atacante. O certo é ignorar e nunca aprovar pedidos que você não fez.",
+                                "text": "Ela aprovou o login de um estranho; aprovar pedido de MFA que não é seu entrega o acesso a ele.",
                                 "isCorrect": true
                             }
                         ]
@@ -4026,19 +4026,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O tamanho: senhas longas, como uma frase-senha com várias palavras, são as mais difíceis de quebrar.",
+                                "text": "O tamanho: uma frase-senha longa é sempre mais difícil de quebrar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trocar a senha todos os dias.",
+                                "text": "Trocar a senha todos os dias, mesmo sem nenhum motivo aparente para isso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar o nome de um familiar para não esquecer.",
+                                "text": "Usar o nome de um familiar querido, assim fica bem mais fácil de lembrar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar a mesma senha forte em todos os sites.",
+                                "text": "Usar essa mesma senha forte em todos os sites e aplicativos que você tem.",
                                 "isCorrect": false
                             }
                         ]
@@ -4048,19 +4048,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque sites diferentes não aceitam senhas iguais.",
+                                "text": "Porque sites diferentes nunca aceitam exatamente a mesma senha cadastrada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Se um único site vazar essa senha, todas as outras contas que usam a mesma senha ficam em risco de uma vez.",
+                                "text": "Se um site vazar essa senha, as outras contas com a mesma senha caem junto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a senha fica mais lenta para digitar.",
+                                "text": "Porque digitar essa mesma senha em vários sites deixa tudo mais lento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há perigo nenhum; reutilizar é o mais seguro.",
+                                "text": "Não há perigo nenhum nisso; reutilizar a senha é, na real, mais seguro.",
                                 "isCorrect": false
                             }
                         ]
@@ -4070,19 +4070,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O e-mail e o Instagram vazaram sozinhos, sem relação com o fórum.",
+                                "text": "O e-mail e o Instagram dela vazaram sozinhos, sem nenhuma relação com o fórum invadido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Foi coincidência; senhas iguais não têm a ver com invasões.",
+                                "text": "Foi só coincidência: usar a mesma senha em vários lugares não tem relação com invasões.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Carla usava a mesma senha nesses serviços; com a senha vazada do fórum, os criminosos a testaram em outros sites (credential stuffing) e entraram.",
+                                "text": "Carla repetia a senha; com a senha vazada do fórum, os criminosos testaram em outros sites.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O provedor de e-mail apagou a senha dela por engano.",
+                                "text": "O provedor de e-mail dela apagou a senha por engano durante uma atualização do sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -4092,19 +4092,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Usar uma única senha muito forte em tudo, para ter só uma para lembrar.",
+                                "text": "Usar uma única senha bem forte em absolutamente tudo, para lembrar só dessa uma senha.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criar variações fáceis como Senha1, Senha2, Senha3 para cada site.",
+                                "text": "Criar variações bem simples como Senha1, Senha2 e Senha3 para cada site diferente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Anotar todas num arquivo de texto sem proteção na área de trabalho.",
+                                "text": "Anotar todas as senhas num arquivo de texto solto, sem proteção, na área de trabalho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Usar um gerenciador de senhas, que gera e guarda senhas únicas e fortes num cofre criptografado; ele só precisa lembrar a senha mestra.",
+                                "text": "Usar um gerenciador de senhas: ele gera e guarda tudo atrás de uma senha mestra única.",
                                 "isCorrect": true
                             }
                         ]
@@ -4114,19 +4114,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Diferente da senha, a passkey não é um segredo compartilhado que trafega: a chave secreta fica guardada no seu aparelho e nunca é enviada, então um site falso não tem o que capturar.",
+                                "text": "Porque a chave fica só no aparelho e nunca é enviada; o site falso não tem o que roubar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a passkey é uma senha muito mais longa e complicada, impossível de digitar errado.",
+                                "text": "Porque a passkey é apenas uma senha muito mais longa e difícil de digitar errada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque as passkeys trocam de senha automaticamente a cada hora.",
+                                "text": "Porque as passkeys trocam de senha automaticamente a cada nova hora do dia.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o site falso também precisaria da sua digital enviada pela internet.",
+                                "text": "Porque o site falso também precisaria capturar a sua digital enviada pela internet toda vez.",
                                 "isCorrect": false
                             }
                         ]
@@ -4167,19 +4167,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Pelo seu papel (cargo ou função) dentro da organização.",
+                                "text": "Pelo papel, ou cargo, que a pessoa ocupa dentro da organização.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Pela vontade do dono de cada arquivo.",
+                                "text": "Pela vontade pessoal do dono de cada arquivo específico.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Por uma classificação de sigilo fixa e central.",
+                                "text": "Por uma classificação de sigilo fixa, definida de forma central.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pela ordem em que as pessoas foram contratadas.",
+                                "text": "Pela ordem cronológica em que as pessoas foram contratadas.",
                                 "isCorrect": false
                             }
                         ]
@@ -4189,19 +4189,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Todo mundo deve ter acesso de administrador para não travar o trabalho.",
+                                "text": "Todo mundo deveria ter acesso total de administrador, para nunca travar o trabalho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cada pessoa ou sistema deve ter apenas o acesso necessário para o seu trabalho, e nada além disso.",
+                                "text": "Cada pessoa deve ter só o acesso necessário ao seu trabalho, e nada além disso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É melhor liberar acesso a tudo por precaução.",
+                                "text": "É sempre melhor liberar acesso a absolutamente tudo, só por precaução extra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ninguém deve ter acesso a nada, nem para trabalhar.",
+                                "text": "Ninguém deveria ter acesso a nada, nem mesmo para conseguir trabalhar direito.",
                                 "isCorrect": false
                             }
                         ]
@@ -4211,19 +4211,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "DAC: cada enfermeiro decide sozinho quais acessos quer ter.",
+                                "text": "DAC: cada enfermeiro novo decide sozinho quais acessos prefere ter.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "MAC: o próprio enfermeiro classifica os documentos que vai acessar.",
+                                "text": "MAC: cada enfermeiro classifica sozinho os documentos que vai acessar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "RBAC: basta atribuir o papel \"enfermagem\", e a pessoa herda todas as permissões ligadas a esse papel.",
+                                "text": "RBAC: basta atribuir o papel \"enfermagem\" e a pessoa já herda as permissões dele.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum modelo permite padronizar acessos por função.",
+                                "text": "Nenhum modelo consegue padronizar acessos automaticamente por função do cargo.",
                                 "isCorrect": false
                             }
                         ]
@@ -4233,19 +4233,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "MAC: o sistema obrigou o compartilhamento com base em classificações.",
+                                "text": "MAC: o sistema central obrigou esse compartilhamento com base em classificações fixas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "RBAC: o papel da pessoa liberou o acesso automaticamente.",
+                                "text": "RBAC: o papel da pessoa dentro da empresa liberou esse acesso automaticamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum modelo; compartilhar arquivos não é controle de acesso.",
+                                "text": "Nenhum modelo específico; compartilhar arquivo no Drive não é controle de acesso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "DAC: como o dono decide o compartilhamento, o modelo é flexível, mas depende do bom senso dele e facilita o excesso de liberação por engano.",
+                                "text": "DAC: o dono decide o compartilhamento, o que é flexível, mas depende do bom senso dele.",
                                 "isCorrect": true
                             }
                         ]
@@ -4255,19 +4255,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O princípio do menor privilégio: como a conta só tinha o acesso necessário ao trabalho dele, o invasor alcançou muito pouco.",
+                                "text": "O menor privilégio: como a conta só tinha acesso à pasta do time, o invasor alcançou pouco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A autenticação multifator, que impede qualquer phishing.",
+                                "text": "A autenticação multifator, que sozinha já impede qualquer tipo de phishing por completo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O modelo DAC, que sempre limita o acesso automaticamente.",
+                                "text": "O modelo DAC, que por natureza sempre limita o acesso de forma automática e total.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A força da senha, que reduz o dano depois da conta já invadida.",
+                                "text": "A força da senha usada, que reduz o estrago mesmo depois de a conta já ter sido invadida.",
                                 "isCorrect": false
                             }
                         ]
@@ -4313,19 +4313,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A probabilidade de algo ruim acontecer e o impacto que isso teria.",
+                                "text": "A probabilidade de o problema ocorrer e o impacto gerado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O preço do antivírus e a velocidade da internet.",
+                                "text": "O preço do antivírus contratado e a velocidade da internet.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de senhas e o número de funcionários.",
+                                "text": "A quantidade de senhas cadastradas e o número de funcionários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A idade do sistema e a marca do computador.",
+                                "text": "A idade do sistema instalado e a marca do computador usado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4335,19 +4335,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Vulnerabilidade, a fraqueza que a ameaça pode explorar.",
+                                "text": "Vulnerabilidade, pois é a falha que a ameaça explora.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ameaça, pois é o criminoso que quer atacar.",
+                                "text": "Ameaça, pois é o criminoso que quer atacar o alvo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ativo, pois é o que se quer proteger.",
+                                "text": "Ativo, pois é o bem valioso que se quer proteger.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Impacto, pois é o tamanho do estrago.",
+                                "text": "Impacto, pois é o tamanho do estrago causado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4357,19 +4357,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O ativo, aquilo de valor que se deseja proteger.",
+                                "text": "O ativo, o bem de valor que se quer proteger.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A ameaça, aquilo que pode causar o dano.",
+                                "text": "A ameaça, o agente que pode causar o dano.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A vulnerabilidade, a fraqueza que abre a porta.",
+                                "text": "A vulnerabilidade, a falha que abre a porta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A probabilidade de o ataque acontecer.",
+                                "text": "A probabilidade, a chance de o ataque ocorrer.",
                                 "isCorrect": false
                             }
                         ]
@@ -4379,19 +4379,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque tempo, pessoas e orçamento são limitados, e é preciso priorizar o que é mais provável e mais danoso.",
+                                "text": "Porque os recursos são limitados, e é preciso priorizar o mais grave e provável.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque proteger demais deixa os sistemas mais rápidos.",
+                                "text": "Porque proteger demais deixa os sistemas mais lentos e mais caros de manter.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a lei proíbe usar mais de um controle de segurança.",
+                                "text": "Porque a lei só permite usar um único controle de segurança por vez.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque riscos com baixa probabilidade nunca precisam de atenção.",
+                                "text": "Porque riscos de baixa probabilidade nunca causam impacto nenhum.",
                                 "isCorrect": false
                             }
                         ]
@@ -4401,19 +4401,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Que se deve cruzar probabilidade E impacto: mesmo raro, um risco de impacto catastrófico pode ser prioridade máxima.",
+                                "text": "Que se cruzam a probabilidade e o impacto, pois raro mas grave é prioridade alta.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que só a probabilidade importa, então um risco raro pode ser sempre descartado.",
+                                "text": "Que só a probabilidade importa, então um risco raro pode ser sempre ignorado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que só o impacto importa, então a probabilidade é irrelevante em qualquer caso.",
+                                "text": "Que só o impacto importa, então a chance de ocorrer é sempre irrelevante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que riscos raros devem ser sempre eliminados a qualquer custo, sem avaliar impacto.",
+                                "text": "Que todo risco raro deve ser eliminado de imediato, custe o que custar.",
                                 "isCorrect": false
                             }
                         ]
@@ -4458,7 +4458,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografar, deletar, esconder e ignorar.",
+                                "text": "Criptografar, apagar, esconder e ignorar.",
                                 "isCorrect": false
                             },
                             {
@@ -4466,7 +4466,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Detectar, alertar, punir e esquecer.",
+                                "text": "Detectar, alertar, culpar e esquecer.",
                                 "isCorrect": false
                             }
                         ]
@@ -4476,19 +4476,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Transferir, pois passa o custo financeiro a um terceiro.",
+                                "text": "Transferir, pois passa o custo a um terceiro.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Evitar, pois deixa de fazer a atividade arriscada.",
+                                "text": "Evitar, pois deixa de fazer a atividade de risco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aceitar, pois decide conviver com o risco.",
+                                "text": "Aceitar, pois decide conviver com o risco assumido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Mitigar, pois reduz a probabilidade do ataque.",
+                                "text": "Mitigar, pois reduz a chance e o efeito do ataque.",
                                 "isCorrect": false
                             }
                         ]
@@ -4498,19 +4498,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Mitigar, pois aplica controles que reduzem a probabilidade e o impacto.",
+                                "text": "Mitigar, pois aplica controles que reduzem o risco.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Transferir, pois divide o prejuízo com outra empresa.",
+                                "text": "Transferir, pois divide o prejuízo com uma seguradora.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Evitar, pois abandona a atividade de risco.",
+                                "text": "Evitar, pois encerra por completo a atividade arriscada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aceitar, pois decide não fazer nada a respeito.",
+                                "text": "Aceitar, pois decide conviver com o risco sem agir.",
                                 "isCorrect": false
                             }
                         ]
@@ -4520,19 +4520,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Aceitar o risco, pois foi uma decisão consciente e documentada.",
+                                "text": "Aceitar o risco, pois a decisão foi consciente e registrada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ignorar o risco, pois ninguém deveria ter olhado para ele.",
+                                "text": "Ignorar o risco, pois ninguém chegou a avaliar a situação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Evitar o risco, pois a atividade foi encerrada.",
+                                "text": "Evitar o risco, pois a atividade foi totalmente encerrada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transferir o risco, pois foi passado a um terceiro.",
+                                "text": "Transferir o risco, pois o custo foi passado a um terceiro.",
                                 "isCorrect": false
                             }
                         ]
@@ -4542,19 +4542,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "É o risco residual; como risco zero não existe, o certo é reduzi-lo ao aceitável e conviver com ele conscientemente.",
+                                "text": "Risco residual; a postura correta é aceitar esse resto de forma consciente.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É uma falha grave dos controles, que deve ser eliminada a qualquer custo até chegar a zero.",
+                                "text": "Falha grave dos controles; a postura correta é refazer tudo até zerar o risco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um sinal de que os controles foram mal aplicados e precisam ser todos refeitos.",
+                                "text": "Erro de configuração; a postura correta é reiniciar todos os sistemas afetados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma vulnerabilidade que, obrigatoriamente, precisa ser transferida para a seguradora.",
+                                "text": "Vulnerabilidade não tratada; a postura correta é transferi-la para a seguradora.",
                                 "isCorrect": false
                             }
                         ]
@@ -4595,19 +4595,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A preparação: escrever o plano, testar backups e treinar a equipe em tempos de paz.",
+                                "text": "A preparação: escrever o plano e treinar a equipe com antecedência.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A erradicação: remover o malware das máquinas.",
+                                "text": "A erradicação: remover o malware de todas as máquinas afetadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A recuperação: restaurar os sistemas a partir do backup.",
+                                "text": "A recuperação: restaurar os sistemas a partir de um backup limpo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As lições aprendidas: documentar o que houve depois do incidente.",
+                                "text": "As lições aprendidas: documentar o incidente depois de encerrado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4617,19 +4617,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Impedir que o dano se espalhe, isolando o que já foi afetado.",
+                                "text": "Impedir que o dano se espalhe pelos demais sistemas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Descobrir quem foi o culpado dentro da equipe.",
+                                "text": "Descobrir quem foi o culpado dentro da equipe técnica.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Comprar um seguro para cobrir os prejuízos.",
+                                "text": "Contratar um seguro para cobrir os prejuízos financeiros.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Escrever o relatório final do incidente.",
+                                "text": "Escrever o relatório final a ser entregue à diretoria.",
                                 "isCorrect": false
                             }
                         ]
@@ -4639,11 +4639,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Contenção, pois está estancando o sangramento e evitando a propagação.",
+                                "text": "Contenção, pois está isolando o problema para impedir a propagação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Recuperação, pois está devolvendo os sistemas ao normal.",
+                                "text": "Recuperação, pois está devolvendo os sistemas à operação normal.",
                                 "isCorrect": false
                             },
                             {
@@ -4651,7 +4651,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Lições aprendidas, pois está avaliando o que melhorar.",
+                                "text": "Lições aprendidas, pois está avaliando o que pode melhorar.",
                                 "isCorrect": false
                             }
                         ]
@@ -4661,19 +4661,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Lições aprendidas; sem culpados (blameless), as pessoas continuam reportando os próximos incidentes.",
+                                "text": "Lições aprendidas; sem culpa, o time segue relatando incidentes.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Contenção; sem culpados, o dano para de se espalhar mais rápido.",
+                                "text": "Contenção; sem culpa, o dano para de se espalhar mais depressa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Identificação; sem culpados, os alertas chegam antes.",
+                                "text": "Identificação; sem culpa, os alertas chegam bem mais cedo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Erradicação; sem culpados, o malware é removido sozinho.",
+                                "text": "Erradicação; sem culpa, o malware some sem qualquer ação.",
                                 "isCorrect": false
                             }
                         ]
@@ -4683,11 +4683,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Recuperar sem antes erradicar a causa raiz deixa a porta aberta e leva à reinfecção; a ordem correta é erradicar antes de recuperar.",
+                                "text": "Pular a erradicação deixa a causa ativa, permitindo a reinfecção do ambiente.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O backup certamente estava corrompido, e nenhum backup pode ser confiável após um ataque.",
+                                "text": "O backup usado estava corrompido, e por isso a reinfecção era inevitável.",
                                 "isCorrect": false
                             },
                             {
@@ -4695,7 +4695,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A fase de lições aprendidas deveria ter sido feita antes da identificação do incidente.",
+                                "text": "A fase de lições aprendidas deveria ocorrer antes da identificação do incidente.",
                                 "isCorrect": false
                             }
                         ]
@@ -4758,19 +4758,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Proteger os dados pessoais das pessoas no Brasil e garantir direitos ao titular.",
+                                "text": "Proteger os dados pessoais e garantir direitos ao titular.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Obrigar todas as empresas a usarem o mesmo antivírus.",
+                                "text": "Obrigar todas as empresas a usar o mesmo antivírus nacional.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Proibir o uso de senhas em sistemas de governo.",
+                                "text": "Proibir o uso de senhas fracas em sistemas do governo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Definir a velocidade mínima da internet no país.",
+                                "text": "Definir qual é a velocidade mínima de internet no país.",
                                 "isCorrect": false
                             }
                         ]
@@ -4780,19 +4780,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A certificação ISO/IEC 27001.",
+                                "text": "A certificação ISO/IEC 27001, obtida por auditoria externa.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A LGPD, obtendo um selo de lei cumprida.",
+                                "text": "A LGPD, que também emite um selo de lei cumprida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os CIS Controls, que emitem certificados oficiais.",
+                                "text": "Os CIS Controls, que emitem certificados oficiais reconhecidos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O NIST CSF, que concede um diploma internacional.",
+                                "text": "O NIST CSF, que concede um diploma internacional de segurança.",
                                 "isCorrect": false
                             }
                         ]
@@ -4802,19 +4802,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Detectar, pois é sobre perceber que algo errado está acontecendo.",
+                                "text": "Detectar, pois trata de perceber que algo está errado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Recuperar, pois é sobre voltar ao normal após o estrago.",
+                                "text": "Recuperar, pois trata de voltar ao normal após o estrago.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Identificar, pois é sobre listar ativos antes de qualquer ataque.",
+                                "text": "Identificar, pois trata de listar ativos antes do ataque.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Proteger, pois é sobre aplicar controles preventivos.",
+                                "text": "Proteger, pois trata de aplicar controles preventivos.",
                                 "isCorrect": false
                             }
                         ]
@@ -4824,19 +4824,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "CIS, NIST e ISO são voluntários e sobre segurança; a LGPD é lei obrigatória e sobre privacidade. Boas práticas ajudam a cumpri-la, mas não substituem a lei, e conformidade não é sinônimo de segurança.",
+                                "text": "Está errado, pois a LGPD é lei obrigatória e os CIS Controls são só boas práticas.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Está certo: seguir qualquer framework de segurança dispensa automaticamente o cumprimento de leis.",
+                                "text": "Está certo, pois seguir qualquer framework de segurança dispensa o cumprimento das leis.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Está errado apenas porque os CIS Controls são proibidos no Brasil.",
+                                "text": "Está errado apenas porque os CIS Controls são oficialmente proibidos no Brasil desde 2020.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Está errado porque a LGPD é um framework voluntário mais fraco que os CIS Controls.",
+                                "text": "Está errado porque a LGPD é apenas um framework voluntário, mais fraco que os CIS Controls.",
                                 "isCorrect": false
                             }
                         ]
@@ -4877,19 +4877,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O red team ataca (segurança ofensiva) e o blue team defende (segurança defensiva).",
+                                "text": "O red team ataca de forma ofensiva e o blue team defende no dia a dia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O red team cuida do financeiro e o blue team, do marketing.",
+                                "text": "O red team cuida do financeiro e o blue team, do setor de marketing.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O red team trabalha de dia e o blue team, de noite.",
+                                "text": "O red team atua de dia e o blue team, apenas durante a noite.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os dois fazem exatamente a mesma coisa, só muda o nome.",
+                                "text": "Os dois fazem exatamente a mesma função, só muda o nome do time.",
                                 "isCorrect": false
                             }
                         ]
@@ -4899,19 +4899,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "GRC (Governança, Risco e Conformidade).",
+                                "text": "GRC, a área de governança, risco e conformidade.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Red team (segurança ofensiva).",
+                                "text": "Red team, a área de segurança ofensiva.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "AppSec (segurança de aplicações).",
+                                "text": "AppSec, a área de segurança de aplicações.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Forense digital.",
+                                "text": "Forense digital, a área de investigação pós-incidente.",
                                 "isCorrect": false
                             }
                         ]
@@ -4921,19 +4921,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Red team (ofensiva); o que o separa de um criminoso é a autorização.",
+                                "text": "Red team (ofensiva); a diferença para um criminoso é ter autorização.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Blue team (defensiva); o que o separa é o horário de trabalho.",
+                                "text": "Blue team (defensiva); a diferença estaria no horário de trabalho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GRC; o que o separa é o diploma universitário.",
+                                "text": "GRC; a diferença estaria apenas no diploma universitário obtido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Forense; o que o separa é o tipo de computador que usa.",
+                                "text": "Forense; a diferença estaria apenas no tipo de computador usado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4943,19 +4943,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Forense digital, que investiga e reconstrói os fatos após o incidente.",
+                                "text": "Forense digital, que reconstrói os fatos após o incidente.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Red team, que ataca os sistemas para achar falhas.",
+                                "text": "Red team, que ataca sistemas em produção para achar falhas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GRC, que cuida de políticas e auditorias.",
+                                "text": "GRC, que cuida de políticas, auditorias e normas internas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Purple team, que une ataque e defesa no dia a dia.",
+                                "text": "Purple team, que une ataque e defesa no dia a dia da empresa.",
                                 "isCorrect": false
                             }
                         ]
@@ -4965,7 +4965,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "AppSec (segurança de aplicações), focada em construir software seguro desde o código.",
+                                "text": "AppSec, focada em construir software seguro desde o código-fonte.",
                                 "isCorrect": true
                             },
                             {
@@ -4973,11 +4973,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Red team, focado em atacar sistemas já prontos e em produção.",
+                                "text": "Red team, focado em atacar sistemas que já estão em produção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Forense digital, focada em investigar o que houve depois de um incidente.",
+                                "text": "Forense digital, focada em investigar incidentes após eles ocorrerem.",
                                 "isCorrect": false
                             }
                         ]
