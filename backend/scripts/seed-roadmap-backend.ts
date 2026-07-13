@@ -98,6 +98,15 @@ const STAGES: Stage[] = [
         tags: ["Redis", "Filas", "Performance"],
         refs: [{ type: "trail", ref: "Cache, Filas e Performance" }],
     },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Testes & qualidade",
+        description:
+            "Garanta que o back-end continua correto quando o código muda: testes unitários e de integração, mocks, TDD, cobertura e a qualidade além dos testes (lint, tipos, review).",
+        tags: ["Testes", "Vitest", "TDD"],
+        refs: [{ type: "trail", ref: "Testes e Qualidade" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
