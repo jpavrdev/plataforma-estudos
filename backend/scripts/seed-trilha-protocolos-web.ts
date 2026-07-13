@@ -101,19 +101,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque servidor é, antes de tudo, o programa que espera e responde requisições; ele pode rodar até no notebook do próprio desenvolvedor.",
+                                "text": "Porque servidor é, antes de tudo, um programa; roda até num notebook comum.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque só o cliente pode rodar em uma máquina local; o servidor sempre precisa estar na nuvem.",
+                                "text": "Porque só o cliente pode rodar numa máquina local; o servidor sempre mora na nuvem.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A afirmação está correta: sem um data center dedicado, não existe servidor de verdade.",
+                                "text": "Não é imprecisa: sem um data center dedicado não existe servidor de verdade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque servidor e cliente são sempre o mesmo programa, apenas com nomes diferentes.",
+                                "text": "Porque servidor e cliente são, na prática, o mesmo programa com nomes diferentes.",
                                 "isCorrect": false
                             }
                         ]
@@ -123,19 +123,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Cliente, porque é ele quem inicia o pedido; qualquer programa que peça algo primeiro exerce esse papel, não só o navegador.",
+                                "text": "Cliente, porque é o script quem inicia o pedido à API pública.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Servidor, porque está executando uma lógica própria.",
+                                "text": "Servidor, porque o script executa uma lógica própria ao rodar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nem cliente nem servidor: scripts não participam do modelo requisição-resposta.",
+                                "text": "Nenhum dos dois, porque scripts não entram no modelo requisição-resposta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Servidor, porque scripts sempre respondem a outros programas.",
+                                "text": "Servidor, porque scripts sempre respondem a chamadas de outros programas.",
                                 "isCorrect": false
                             }
                         ]
@@ -145,19 +145,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não: no modelo clássico o servidor só responde a pedidos que o cliente faz, então o cliente precisaria perguntar de novo (existem técnicas específicas para atualizações em tempo real, mas elas fogem do modelo básico).",
+                                "text": "Não: no modelo clássico, o servidor só fala quando chamado (tempo real foge à regra).",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim, qualquer servidor pode enviar dados a qualquer momento para qualquer cliente conectado à internet.",
+                                "text": "Sim, qualquer servidor pode mandar dados a qualquer cliente conectado a qualquer momento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, porque o HTTP foi criado justamente para esse tipo de envio espontâneo do servidor.",
+                                "text": "Sim, porque o HTTP foi criado exatamente para esse envio espontâneo do servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, e não existe nenhuma forma de um servidor avisar um cliente sobre mudanças; é uma limitação definitiva da web.",
+                                "text": "Não, e não existe nenhuma técnica capaz de avisar o cliente sobre mudanças no estoque.",
                                 "isCorrect": false
                             }
                         ]
@@ -202,19 +202,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O navegador decompõe a URL, descobre o IP do servidor, abre uma conexão e só então envia a requisição.",
+                                "text": "O navegador decompõe a URL, descobre o IP e só então envia a requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O navegador renderiza a página e, depois, descobre para qual servidor mandar a requisição.",
+                                "text": "O navegador renderiza a página primeiro, e só depois descobre o servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor responde primeiro, e só depois o navegador monta a requisição correspondente.",
+                                "text": "O servidor responde primeiro, e só depois o navegador monta a requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A resolução de DNS acontece depois que a resposta HTTP já foi recebida.",
+                                "text": "A resolução de DNS só acontece depois que a resposta HTTP já chegou.",
                                 "isCorrect": false
                             }
                         ]
@@ -224,19 +224,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A porta usada para se conectar ao servidor.",
+                                "text": "A porta usada para abrir a conexão com o servidor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O identificador do pedido.",
+                                "text": "O número que identifica exatamente esse pedido feito.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O protocolo de comunicação usado.",
+                                "text": "O protocolo de comunicação usado na conexão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um parâmetro de busca (query string).",
+                                "text": "Um parâmetro de busca dentro da query string.",
                                 "isCorrect": false
                             }
                         ]
@@ -246,15 +246,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o HTML costuma referenciar outros recursos, como CSS, JavaScript e imagens, que precisam ser buscados em requisições separadas.",
+                                "text": "Porque o HTML costuma referenciar CSS, JavaScript e imagens, buscados à parte.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o HTML sempre chega corrompido na primeira tentativa e precisa ser pedido de novo.",
+                                "text": "Porque o HTML sempre chega corrompido na primeira tentativa e precisa repetir.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o servidor exige uma confirmação de recebimento antes de liberar qualquer conteúdo.",
+                                "text": "Porque o servidor exige confirmação de recebimento antes de liberar o conteúdo.",
                                 "isCorrect": false
                             },
                             {
@@ -268,19 +268,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Antes de abrir a conexão com o servidor, já que é o IP que indica para onde o navegador deve se conectar.",
+                                "text": "Antes de abrir a conexão, pois é o IP que diz ao navegador para onde ir.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Depois de renderizar a página, apenas para validar o conteúdo já recebido.",
+                                "text": "Depois de renderizar a página por completo, só para validar o conteúdo recebido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Somente quando o servidor solicita essa informação explicitamente.",
+                                "text": "Somente quando o servidor pede essa informação de forma explícita.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Essa etapa não é necessária quando o site usa HTTPS.",
+                                "text": "Essa etapa deixa de ser necessária quando o site usa HTTPS.",
                                 "isCorrect": false
                             }
                         ]
@@ -290,19 +290,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "11: uma requisição e uma resposta para cada um dos 11 arquivos (1 HTML + 2 CSS + 3 JS + 5 imagens).",
+                                "text": "11: uma requisição e uma resposta para cada um dos 11 arquivos ao todo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas 1, porque tudo vem junto na mesma resposta do HTML.",
+                                "text": "Apenas 1, porque o HTML já traz junto todos os outros arquivos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "2: uma requisição para o HTML e outra agrupando todo o restante.",
+                                "text": "2: uma requisição para o HTML e outra que agrupa todo o restante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Isso depende apenas do tamanho da página em megabytes, não da quantidade de arquivos.",
+                                "text": "Depende só do tamanho da página em megabytes, não da quantidade de arquivos.",
                                 "isCorrect": false
                             }
                         ]
@@ -351,15 +351,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Consultar o banco de dados para buscar informações.",
+                                "text": "Consultar o banco de dados para buscar as informações pedidas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Decidir qual status HTTP deve ser devolvido.",
+                                "text": "Decidir qual código de status HTTP deve ser devolvido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Executar a lógica de negócio da aplicação.",
+                                "text": "Executar a lógica de negócio principal da aplicação.",
                                 "isCorrect": false
                             }
                         ]
@@ -369,19 +369,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ficar escutando conexões em uma porta e responder às requisições que chegam.",
+                                "text": "Ficar numa porta escutando e responder às requisições que chegam.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Renderizar o HTML na tela do usuário.",
+                                "text": "Renderizar o HTML recebido, montando a página na tela do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aplicar o CSS para estilizar a página.",
+                                "text": "Aplicar o CSS que define cores, fontes e layout da página.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Gerenciar o histórico de navegação do usuário.",
+                                "text": "Gerenciar o histórico de navegação e os dados salvos do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -391,15 +391,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não: cliente é definido pelo papel de iniciar a requisição e consumir a resposta, não pela forma como o conteúdo é exibido.",
+                                "text": "Não: cliente é quem inicia o pedido, não quem exibe HTML na tela.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim, só o navegador pode ser considerado um cliente de verdade.",
+                                "text": "Sim, porque só o navegador pode ser considerado um cliente de verdade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, porque sem HTML não existe requisição HTTP.",
+                                "text": "Sim, porque sem HTML não existe requisição HTTP de verdade.",
                                 "isCorrect": false
                             },
                             {
@@ -413,19 +413,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O JavaScript, executado pelo navegador, pode montar e enviar novas requisições HTTP por conta própria, continuando a exercer o papel de cliente.",
+                                "text": "Porque o JavaScript do navegador pode enviar requisições por conta própria.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor assume o controle do navegador durante esse momento.",
+                                "text": "Porque o servidor assume o controle total do navegador nesse momento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Isso é, na verdade, uma exceção ao modelo requisição-resposta.",
+                                "text": "Porque isso é, na prática, uma exceção ao modelo requisição-resposta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O HTML sozinho, sem JavaScript, já é capaz de enviar requisições.",
+                                "text": "Porque o HTML, mesmo sem JavaScript, já é capaz de enviar requisições sozinho.",
                                 "isCorrect": false
                             }
                         ]
@@ -435,19 +435,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Como o navegador roda na máquina do usuário, ele pode ser manipulado ou ter o JavaScript desativado, permitindo o envio de dados inválidos direto ao servidor; validar só no cliente não impede dados incorretos de chegar.",
+                                "text": "Porque o navegador roda no aparelho do usuário, dá para burlar a validação em JavaScript.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum risco relevante, já que o navegador sempre garante que a validação rodou antes do envio.",
+                                "text": "Nenhum risco relevante, porque o navegador sempre garante que a validação rodou antes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor rejeitaria automaticamente qualquer requisição que não tivesse passado por essa validação.",
+                                "text": "O servidor rejeitaria sozinho qualquer requisição que não tivesse passado pela validação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco é apenas estético, já que o formato JSON é sempre validado pelo próprio protocolo HTTP.",
+                                "text": "O risco é só estético, porque o formato JSON já é validado pelo próprio protocolo HTTP.",
                                 "isCorrect": false
                             }
                         ]
@@ -492,19 +492,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Traduzir nomes de domínio, como loja.com.br, em endereços IP que as máquinas usam para se conectar.",
+                                "text": "Traduzir nomes de domínio, como loja.com.br, no IP que as máquinas usam.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografar os dados trafegados entre cliente e servidor.",
+                                "text": "Criptografar os dados trafegados entre o navegador e o servidor, na íntegra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Definir qual método HTTP deve ser usado em cada requisição.",
+                                "text": "Definir qual método HTTP cada requisição deve usar na conexão.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Armazenar o HTML das páginas mais visitadas.",
+                                "text": "Armazenar em cache o HTML das páginas mais visitadas pelo usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -514,19 +514,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O número do apartamento, indicando qual serviço específico, dentro da máquina, deve atender a conexão.",
+                                "text": "O número do apartamento, indicando qual serviço deve atender a conexão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O nome da rua, outra forma de identificar o mesmo prédio.",
+                                "text": "O nome da rua, apenas uma outra forma de identificar esse mesmo prédio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O porteiro, que decide se a visita pode entrar.",
+                                "text": "O porteiro, que decide sozinho se a visita pode entrar no prédio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O CEP da região onde o prédio está localizado.",
+                                "text": "O CEP da região onde esse mesmo prédio está localizado.",
                                 "isCorrect": false
                             }
                         ]
@@ -536,7 +536,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque cada serviço escuta em uma porta diferente; o IP identifica a máquina, mas é a porta que direciona a conexão para o serviço correto.",
+                                "text": "Porque cada serviço escuta numa porta diferente dentro do mesmo IP.",
                                 "isCorrect": true
                             },
                             {
@@ -544,11 +544,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque apenas um serviço pode ficar ativo por vez, e eles se revezam.",
+                                "text": "Porque só um serviço pode ficar ativo por vez, e eles se revezam.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o DNS separa os dois serviços automaticamente.",
+                                "text": "Porque o DNS separa fisicamente os dois serviços de forma automática.",
                                 "isCorrect": false
                             }
                         ]
@@ -558,7 +558,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque HTTPS usa por padrão a porta 443, e o navegador já assume esse valor quando nenhuma porta é informada.",
+                                "text": "Porque HTTPS usa por padrão a porta 443, que o navegador já assume sozinho.",
                                 "isCorrect": true
                             },
                             {
@@ -566,11 +566,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a porta é definida pelo DNS no momento da resolução.",
+                                "text": "Porque a porta é definida pelo DNS no exato momento da resolução.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador sempre tenta a porta 80 primeiro, e só usa a 443 se falhar.",
+                                "text": "Porque o navegador sempre tenta a porta 80 primeiro, e só usa a 443 se essa falhar.",
                                 "isCorrect": false
                             }
                         ]
@@ -580,11 +580,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Que serviços diferentes na mesma máquina são independentes entre si quando escutam em portas diferentes; um pode falhar sem necessariamente afetar o outro.",
+                                "text": "Que serviços na mesma máquina ficam independentes em portas diferentes.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que o IP do servidor mudou automaticamente para atender o painel administrativo.",
+                                "text": "Que o IP do servidor mudou sozinho para atender o painel administrativo.",
                                 "isCorrect": false
                             },
                             {
@@ -592,7 +592,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o DNS redirecionou o tráfego da porta 443 para a 8443 automaticamente.",
+                                "text": "Que o DNS redirecionou sozinho o tráfego da porta 443 para a 8443.",
                                 "isCorrect": false
                             }
                         ]
@@ -637,7 +637,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O código que roda no servidor e cuida de regras de negócio, dados e segurança.",
+                                "text": "O código do servidor, responsável por regras, dados e segurança.",
                                 "isCorrect": true
                             },
                             {
@@ -645,11 +645,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O design das telas e a experiência do usuário.",
+                                "text": "O design das telas e toda a experiência visual do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas o banco de dados, sem nenhum código associado.",
+                                "text": "Apenas o banco de dados, sem qualquer código de aplicação associado.",
                                 "isCorrect": false
                             }
                         ]
@@ -659,19 +659,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Validar os dados recebidos e gravar um novo registro no banco de dados.",
+                                "text": "Validar os dados recebidos e gravar o registro no banco de dados.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Estilizar um botão com CSS.",
+                                "text": "Estilizar um botão da tela usando uma regra de CSS bem específica.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Definir a animação de transição entre duas telas.",
+                                "text": "Definir a animação de transição visual entre duas telas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Renderizar o HTML diretamente na tela do usuário.",
+                                "text": "Renderizar o HTML recebido diretamente na tela do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -681,19 +681,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "No back-end, pois é o servidor quem tem acesso controlado aos dados reais de estoque e pode garantir que a regra seja realmente aplicada.",
+                                "text": "No back-end, pois só o servidor tem acesso controlado aos dados reais de estoque.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "No front-end, pois é mais rápido para o usuário.",
+                                "text": "No front-end, pois assim a resposta fica mais rápida para o usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tanto faz: front-end e back-end têm o mesmo nível de controle sobre os dados.",
+                                "text": "Tanto faz, pois front-end e back-end têm o mesmo nível de controle sobre os dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No navegador do cliente, usando apenas JavaScript.",
+                                "text": "No navegador do cliente, usando apenas uma validação em JavaScript.",
                                 "isCorrect": false
                             }
                         ]
@@ -703,7 +703,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Pelo modelo requisição-resposta: o front-end (cliente) envia requisições, e o back-end (servidor) devolve respostas, geralmente com dados em JSON.",
+                                "text": "Pelo modelo requisição-resposta: o front-end pede, o back-end responde em JSON.",
                                 "isCorrect": true
                             },
                             {
@@ -711,11 +711,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O back-end sempre inicia a conversa enviando dados ao front-end.",
+                                "text": "O back-end sempre inicia a conversa por conta própria, enviando dados ao front-end.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Front-end e back-end precisam estar escritos na mesma linguagem de programação para se comunicar.",
+                                "text": "Precisam estar escritos na mesma linguagem de programação para se comunicar.",
                                 "isCorrect": false
                             }
                         ]
@@ -725,19 +725,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O back-end ficaria exposto a receber dados inválidos ou maliciosos diretamente, já que qualquer cliente pode enviar requisições que ignorem ou burlem a validação do front-end.",
+                                "text": "O back-end fica exposto a dados inválidos, pois o cliente pode ignorar a validação do front-end.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não há problema algum, já que o front-end sempre garante que os dados estão corretos antes de qualquer envio.",
+                                "text": "Não há problema, pois o front-end sempre garante que os dados chegam corretos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é apenas de desempenho, pois o front-end fica sobrecarregado.",
+                                "text": "O problema é só de desempenho, pois o front-end fica sobrecarregado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A validação no front-end torna a validação no back-end desnecessária por definição, já que os dados nunca mudam no caminho.",
+                                "text": "A validação no front-end torna a do back-end desnecessária, pois os dados nunca mudam no caminho.",
                                 "isCorrect": false
                             }
                         ]
@@ -787,19 +787,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Na linha de requisição, junto com o caminho e a versão do protocolo",
+                                "text": "Na linha de requisição, com caminho e versão",
                                 "isCorrect": true
                             },
                             {
-                                "text": "No header Content-Type",
+                                "text": "No header Content-Type, entre os metadados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No corpo da requisição",
+                                "text": "No corpo da requisição, depois dos headers",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No header Host",
+                                "text": "No header Host, ao lado do nome do domínio",
                                 "isCorrect": false
                             }
                         ]
@@ -809,19 +809,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma linha em branco",
+                                "text": "Uma linha em branco entre os headers e o corpo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O header Content-Length",
+                                "text": "O header Content-Length, presente entre os headers",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O caractere ;",
+                                "text": "O caractere de ponto e vírgula (;)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não existe separação, eles ficam sempre juntos",
+                                "text": "Nenhuma separação, headers e corpo ficam sempre juntos",
                                 "isCorrect": false
                             }
                         ]
@@ -831,19 +831,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Muitos servidores vão rejeitar a requisição, porque Host é obrigatório desde o HTTP/1.1",
+                                "text": "Muitos servidores recusam a requisição, já que o Host é obrigatório",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhuma, o Host só é usado em requisições POST",
+                                "text": "Nenhuma, já que o header Host só importa em requisições POST",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor vai assumir automaticamente que o caminho pedido é a raiz /",
+                                "text": "O servidor assume sozinho que o caminho pedido é a raiz /",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O próprio protocolo completa o Host sozinho usando o valor do Content-Type",
+                                "text": "O protocolo preenche o Host automaticamente com o valor do Content-Type",
                                 "isCorrect": false
                             }
                         ]
@@ -853,19 +853,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O servidor pode não saber com precisão onde termina o corpo da requisição",
+                                "text": "O servidor pode não identificar com exatidão onde o corpo termina",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor vai rejeitar automaticamente por falta do header Accept",
+                                "text": "O servidor recusa automaticamente por faltar o header Accept",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O método POST deixa de ser válido sem Content-Length",
+                                "text": "O método POST deixa de ser válido sem o Content-Length",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O JSON enviado deixa de ser sintaticamente válido",
+                                "text": "O corpo enviado deixa de ser um JSON sintaticamente válido",
                                 "isCorrect": false
                             }
                         ]
@@ -875,19 +875,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o domínio já foi resolvido via DNS e usado para abrir a conexão com aquele servidor; o header Host informa por qual domínio a requisição deve ser tratada",
+                                "text": "Porque o domínio guiou a conexão via DNS; o Host diz a qual domínio ela pertence",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o HTTP/1.1 não permite o uso de domínios em nenhuma parte da requisição",
+                                "text": "Porque o HTTP/1.1 proíbe o uso de domínios em qualquer parte da requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o header Content-Type substitui a necessidade de informar o domínio",
+                                "text": "Porque o header Content-Type já substitui a necessidade de informar o domínio",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o domínio só é necessário em requisições feitas por HTTPS",
+                                "text": "Porque o domínio só é exigido em requisições feitas por HTTPS",
                                 "isCorrect": false
                             }
                         ]
@@ -932,19 +932,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Versão do protocolo, código de status e uma frase descritiva",
+                                "text": "Versão do protocolo, código de status e frase curta",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Método, caminho e versão do protocolo",
+                                "text": "Método, caminho do recurso e versão do protocolo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apenas o código de status, sem mais nada",
+                                "text": "Somente o código de status, sem mais nenhum dado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Content-Type e Content-Length",
+                                "text": "Os headers Content-Type e Content-Length da resposta",
                                 "isCorrect": false
                             }
                         ]
@@ -954,19 +954,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "204 No Content",
+                                "text": "204 No Content, que confirma sucesso sem corpo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "200 OK",
+                                "text": "200 OK, que também dispensa corpo por padrão",
                                 "isCorrect": false
                             },
                             {
-                                "text": "201 Created",
+                                "text": "201 Created, que proíbe corpo por definição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "404 Not Found",
+                                "text": "404 Not Found, que também dispensa corpo",
                                 "isCorrect": false
                             }
                         ]
@@ -976,19 +976,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque a reason phrase é só texto para leitura humana e pode variar entre servidores; quem define o resultado é o código numérico",
+                                "text": "A reason phrase é só texto para humanos e varia entre servidores; quem decide é o código",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque toda resposta HTTP usa exatamente a mesma reason phrase, então a checagem nunca funcionaria",
+                                "text": "Porque toda resposta HTTP usa sempre a mesma reason phrase, então checar não funcionaria",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a reason phrase só existe em respostas de erro",
+                                "text": "Porque a reason phrase só aparece em respostas de erro do servidor, nunca em sucesso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o Content-Type já garante sozinho que a resposta foi bem-sucedida",
+                                "text": "Porque o Content-Type sozinho já garante que a resposta teve sucesso",
                                 "isCorrect": false
                             }
                         ]
@@ -998,19 +998,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O cliente pode ter dificuldade para saber com precisão onde o corpo da resposta termina",
+                                "text": "O cliente pode ter dificuldade para saber onde o corpo termina",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A resposta deixa de ter uma linha de status válida",
+                                "text": "A resposta deixa de ter uma linha de status válida no HTTP/1.1",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor é obrigado a trocar o código de status para 500",
+                                "text": "O servidor é obrigado a trocar o status de sucesso para 500",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O JSON do corpo deixa de poder ser interpretado pelo cliente",
+                                "text": "O corpo em JSON deixa de poder ser interpretado pelo cliente",
                                 "isCorrect": false
                             }
                         ]
@@ -1020,19 +1020,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Nenhuma na estrutura da resposta, já que as duas têm linha de status, headers e corpo; a diferença está no código, que comunica de forma mais precisa que um novo recurso foi criado",
+                                "text": "Nenhuma na estrutura; o código é que comunica melhor que algo foi criado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "200 não permite corpo na resposta, enquanto 201 exige corpo obrigatoriamente",
+                                "text": "O código 200 não permite corpo, enquanto 201 exige corpo obrigatoriamente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "201 obriga o uso de HTTP/2, enquanto 200 é exclusivo do HTTP/1.1",
+                                "text": "O código 201 exige o uso de HTTP/2, enquanto 200 é exclusivo do HTTP/1.1",
                                 "isCorrect": false
                             },
                             {
-                                "text": "200 só pode ser usado com GET e 201 só com POST, então a escolha depende do método usado",
+                                "text": "O código 200 só vale para GET e 201 só para POST, dependendo do método usado",
                                 "isCorrect": false
                             }
                         ]
@@ -1077,11 +1077,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Que o servidor não guarda memória de requisições anteriores do mesmo cliente",
+                                "text": "Que o servidor não guarda memória de requisições anteriores",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que as requisições nunca podem ter corpo",
+                                "text": "Que as requisições nunca podem carregar um corpo de dados",
                                 "isCorrect": false
                             },
                             {
@@ -1089,7 +1089,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que só é possível usar o método GET",
+                                "text": "Que só é possível usar o método GET nesse protocolo",
                                 "isCorrect": false
                             }
                         ]
@@ -1099,19 +1099,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Alguma informação de identidade precisa ser reenviada em cada requisição, como um token ou cookie",
+                                "text": "Informação de identidade reenviada a cada requisição, como um token",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nada, o servidor reconhece automaticamente o usuário pelo endereço IP",
+                                "text": "Nada, o servidor já reconhece o usuário sozinho pelo endereço IP",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas requisições precisam usar a mesma conexão TCP para sempre",
+                                "text": "As duas requisições precisarem sempre usar a mesma conexão TCP aberta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O navegador guarda o estado da sessão dentro do header Content-Type",
+                                "text": "O navegador guardar sozinho o estado da sessão dentro do Content-Type",
                                 "isCorrect": false
                             }
                         ]
@@ -1121,15 +1121,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A API trata a requisição como se viesse de um cliente não autenticado, provavelmente respondendo 401 Unauthorized",
+                                "text": "A API trata a requisição como não autenticada e responde 401",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A API reconhece a sessão automaticamente pelo endereço IP de origem",
+                                "text": "A API reconhece a sessão sozinha pelo endereço IP de origem",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A API reaproveita a conexão TCP anterior e mantém o usuário logado",
+                                "text": "A API reaproveita a conexão TCP anterior e mantém o login ativo",
                                 "isCorrect": false
                             },
                             {
@@ -1143,11 +1143,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O HTTP é stateless, então qualquer servidor pode atender qualquer requisição, desde que ela carregue tudo que é preciso para respondê-la",
+                                "text": "O HTTP é stateless, então qualquer servidor atende a requisição",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O HTTP/1.1 sincroniza automaticamente a memória entre todos os servidores do cluster",
+                                "text": "O HTTP/1.1 sincroniza automaticamente a memória entre os servidores",
                                 "isCorrect": false
                             },
                             {
@@ -1155,7 +1155,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Isso só é possível porque o Content-Length garante a ordem de chegada das requisições",
+                                "text": "O Content-Length garante sozinho a ordem de chegada das requisições",
                                 "isCorrect": false
                             }
                         ]
@@ -1165,19 +1165,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O carrinho pode \"sumir\" quando o balanceador direcionar o usuário para uma instância diferente, porque o estado ficou preso na memória de um único servidor, contrariando a natureza stateless do HTTP",
+                                "text": "O carrinho some ao trocar de instância, pois o estado ficou preso num servidor",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O JSON do carrinho vai automaticamente ultrapassar o limite do Content-Length",
+                                "text": "O dicionário é replicado automaticamente entre instâncias pelo próprio HTTP",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor deixa de aceitar requisições GET a partir desse momento",
+                                "text": "O servidor deixa de aceitar novas requisições GET a partir desse momento",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O protocolo HTTP rejeita a requisição por excesso de headers",
+                                "text": "O protocolo HTTP passa a rejeitar a requisição por excesso de headers",
                                 "isCorrect": false
                             }
                         ]
@@ -1222,19 +1222,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "HTTP/1.1 é texto puro e o HTTP/2 usa um formato binário",
+                                "text": "O HTTP/1.1 é texto puro e o HTTP/2 usa formato binário",
                                 "isCorrect": true
                             },
                             {
-                                "text": "HTTP/1.1 não tem headers e o HTTP/2 tem",
+                                "text": "O HTTP/1.1 não tem headers e o HTTP/2 introduziu esse recurso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HTTP/1.1 só funciona com HTTPS e o HTTP/2 só com HTTP",
+                                "text": "O HTTP/1.1 só funciona com HTTPS e o HTTP/2 só com HTTP",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HTTP/1.1 não permite corpo na resposta",
+                                "text": "O HTTP/1.1 não permite corpo em nenhuma resposta",
                                 "isCorrect": false
                             }
                         ]
@@ -1248,15 +1248,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "FTP",
+                                "text": "FTP, herdado do HTTP/1.1",
                                 "isCorrect": false
                             },
                             {
-                                "text": "SMTP",
+                                "text": "SMTP, adaptado para tráfego web",
                                 "isCorrect": false
                             },
                             {
-                                "text": "TLS puro, sem nenhum protocolo de transporte abaixo",
+                                "text": "TLS puro, sem transporte abaixo dele",
                                 "isCorrect": false
                             }
                         ]
@@ -1266,19 +1266,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Multiplexação: várias requisições e respostas trafegam intercaladas na mesma conexão",
+                                "text": "Multiplexação: requisições e respostas viajam intercaladas na conexão",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O uso de múltiplas conexões TCP abertas em paralelo com o servidor",
+                                "text": "O uso de várias conexões TCP abertas em paralelo com o servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A compressão do corpo das respostas com gzip",
+                                "text": "A compressão do corpo das respostas usando o algoritmo gzip",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O uso do método HEAD em todas as requisições",
+                                "text": "O uso do método HEAD em todas as requisições feitas pela página web",
                                 "isCorrect": false
                             }
                         ]
@@ -1288,15 +1288,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o QUIC, base do HTTP/3, multiplexa também na camada de transporte, então a perda de um pacote afeta só a requisição dele, não as outras",
+                                "text": "O QUIC multiplexa no transporte; um pacote perdido afeta só uma requisição",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o HTTP/3 elimina o uso de headers, reduzindo o tamanho dos pacotes",
+                                "text": "Porque o HTTP/3 elimina todos os headers, reduzindo o tamanho dos pacotes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTP/3 não permite envio de corpo, só de headers",
+                                "text": "Porque o HTTP/3 não permite envio de corpo, apenas de headers",
                                 "isCorrect": false
                             },
                             {
@@ -1310,19 +1310,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Normalmente não: método, path, status, headers e corpo continuam com o mesmo significado; a negociação da versão do protocolo é resolvida nas camadas de conexão e servidor, não no código de rotas da aplicação",
+                                "text": "Normalmente não: método, status, headers e corpo mantêm o mesmo significado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim, cada rota precisa ser reescrita porque o HTTP/2 usa um conjunto de métodos diferente do HTTP/1.1",
+                                "text": "Sim, cada rota precisa ser reescrita porque o HTTP/2 usa métodos diferentes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, porque no HTTP/2 os códigos de status têm significados diferentes dos usados no HTTP/1.1",
+                                "text": "Sim, porque no HTTP/2 os códigos de status passam a ter outro significado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é possível ter as duas versões disponíveis no mesmo servidor ao mesmo tempo",
+                                "text": "Não é possível manter as duas versões do protocolo ativas no mesmo servidor",
                                 "isCorrect": false
                             }
                         ]
@@ -1367,7 +1367,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Uma camada de criptografia que protege os dados em trânsito",
+                                "text": "Uma camada de criptografia que protege os dados",
                                 "isCorrect": true
                             },
                             {
@@ -1375,11 +1375,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A obrigação de usar apenas o método POST",
+                                "text": "A obrigação de usar somente o método POST nas rotas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A remoção dos headers da requisição",
+                                "text": "A remoção completa dos headers de toda requisição",
                                 "isCorrect": false
                             }
                         ]
@@ -1389,19 +1389,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "443",
+                                "text": "443, reservada para tráfego HTTPS",
                                 "isCorrect": true
                             },
                             {
-                                "text": "80",
+                                "text": "80, a mesma porta usada pelo HTTP",
                                 "isCorrect": false
                             },
                             {
-                                "text": "8080",
+                                "text": "8080, comum em ambientes de teste",
                                 "isCorrect": false
                             },
                             {
-                                "text": "21",
+                                "text": "21, tradicionalmente usada por FTP",
                                 "isCorrect": false
                             }
                         ]
@@ -1411,19 +1411,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Qualquer pessoa capturando o tráfego dessa rede pode ler a senha em texto aberto, já que não há criptografia",
+                                "text": "Qualquer um capturando o tráfego da rede lê a senha em texto aberto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum, porque o método POST já criptografa o corpo da requisição automaticamente",
+                                "text": "Nenhum, porque o método POST já criptografa o corpo automaticamente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum, porque o header Content-Type protege dados sensíveis",
+                                "text": "Nenhum, porque o header Content-Type já protege dados sensíveis",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco só existe se a senha tiver menos de 8 caracteres",
+                                "text": "O risco só existe se a senha tiver menos de oito caracteres",
                                 "isCorrect": false
                             }
                         ]
@@ -1433,19 +1433,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Comprovar a identidade do servidor, garantindo ao cliente que ele está falando com o domínio esperado e não com um impostor",
+                                "text": "Comprovar a identidade do servidor, confirmando o domínio esperado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Definir qual método HTTP será usado na requisição",
+                                "text": "Definir qual método HTTP será usado ao longo da requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substituir a necessidade do header Host",
+                                "text": "Substituir por completo a necessidade de enviar o header Host",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Compactar o corpo da resposta para economizar banda",
+                                "text": "Compactar o corpo da resposta para economizar banda de rede",
                                 "isCorrect": false
                             }
                         ]
@@ -1455,19 +1455,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As credenciais enviadas no corpo dessa rota trafegariam sem cifra, expostas a qualquer um capturando a rede, mesmo que o restante da API esteja protegido",
+                                "text": "As credenciais dessa rota trafegam sem cifra, expostas a quem capturar a rede",
                                 "isCorrect": true
                             },
                             {
-                                "text": "HTTP puro não permite o método POST, então a rota de login simplesmente pararia de funcionar",
+                                "text": "O HTTP puro não permite o método POST, então a rota de login pararia de funcionar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Misturar HTTP e HTTPS no mesmo domínio é tecnicamente impossível, então a API inteira deixaria de responder",
+                                "text": "Misturar HTTP e HTTPS no mesmo domínio é tecnicamente impossível para o servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é só estético, já que o navegador oculta o aviso de \"não seguro\" em rotas de login",
+                                "text": "O problema é só estético, já que o navegador oculta o aviso de não seguro em login",
                                 "isCorrect": false
                             }
                         ]
@@ -1517,19 +1517,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "GET sempre precisa de um corpo em JSON",
+                                "text": "GET sempre exige um corpo em JSON, como o POST",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GET nunca tem corpo, os dados vão na URL",
+                                "text": "GET não tem corpo, os dados vão sempre na URL",
                                 "isCorrect": true
                             },
                             {
-                                "text": "GET usa corpo apenas quando a URL é muito longa",
+                                "text": "GET usa corpo só quando a URL passa de um certo tamanho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GET envia o corpo como texto plano, nunca como JSON",
+                                "text": "GET envia o corpo em texto plano, nunca em JSON",
                                 "isCorrect": false
                             }
                         ]
@@ -1547,11 +1547,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Na query string da URL",
+                                "text": "Na query string, junto à URL",
                                 "isCorrect": true
                             },
                             {
-                                "text": "No path, criando um novo segmento de URL para cada filtro",
+                                "text": "No path, com um segmento novo de URL para cada filtro",
                                 "isCorrect": false
                             }
                         ]
@@ -1561,19 +1561,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "GET está sendo usado para uma ação com efeito colateral, o que viola a expectativa de que GET é seguro",
+                                "text": "GET foi usado para uma ação com efeito colateral, mesmo devendo ser seguro",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O crawler está com bug e não deveria seguir links públicos",
+                                "text": "O crawler tem um bug sério e nunca deveria seguir links públicos daquele jeito",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O endpoint deveria estar hospedado em outro domínio",
+                                "text": "O endpoint deveria estar hospedado em um domínio separado dos outros serviços",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O PDF deveria ser cacheado no navegador do crawler",
+                                "text": "O PDF deveria ficar sempre cacheado no navegador de cada crawler que passa",
                                 "isCorrect": false
                             }
                         ]
@@ -1583,19 +1583,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Parâmetro de caminho é sempre opcional; query string é sempre obrigatória",
+                                "text": "Caminho é sempre opcional na URL; query string é sempre obrigatória",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Query string identifica o recurso; caminho serve só para filtros",
+                                "text": "Query string identifica o recurso principal; caminho serve só para filtros",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há diferença prática entre os dois",
+                                "text": "Os dois têm exatamente o mesmo papel; a escolha entre eles é só estilo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Parâmetro de caminho identifica um recurso específico; query string ajusta como a busca é feita",
+                                "text": "Caminho identifica um recurso específico; query string ajusta a busca",
                                 "isCorrect": true
                             }
                         ]
@@ -1605,19 +1605,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O servidor está com bug, GET nunca deveria ter limite de tamanho de URL",
+                                "text": "É sempre um bug do servidor: por especificação, GET nunca deveria ter limite nenhum de tamanho de URL",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é sempre do DNS, que não resolve URLs longas",
+                                "text": "A causa é sempre um problema de DNS, que nunca consegue resolver URLs tão longas quanto essa",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A URL, incluindo a query string, ultrapassou o limite prático aceito pelo servidor ou por proxies no caminho; para payloads grandes de busca, um método com corpo, como POST, é mais adequado",
+                                "text": "A URL ultrapassou o limite aceito por proxies no caminho; para buscas grandes, POST é mais indicado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O cliente deveria trocar o header Accept para text/plain",
+                                "text": "O cliente deveria trocar o header Accept para text/plain, que sozinho já aceita URLs bem maiores",
                                 "isCorrect": false
                             }
                         ]
@@ -1662,19 +1662,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "204 No Content",
+                                "text": "204 No Content, sem corpo na resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "200 OK",
+                                "text": "200 OK, sucesso genérico sem indicar criação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "302 Found",
+                                "text": "302 Found, redirecionamento temporário",
                                 "isCorrect": false
                             },
                             {
-                                "text": "201 Created",
+                                "text": "201 Created, indicando um recurso novo",
                                 "isCorrect": true
                             }
                         ]
@@ -1692,11 +1692,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "HEAD, seguido de um GET",
+                                "text": "HEAD, e depois um GET complementar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OPTIONS, para descobrir como criar o pedido",
+                                "text": "OPTIONS, só para descobrir os métodos aceitos",
                                 "isCorrect": false
                             }
                         ]
@@ -1718,7 +1718,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Para onde o navegador deve redirecionar automaticamente, sempre",
+                                "text": "Para onde o navegador deve redirecionar, sempre",
                                 "isCorrect": false
                             }
                         ]
@@ -1728,19 +1728,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Convencionalmente, quem decide a URL e o identificador do recurso criado é o servidor, não o cliente, no POST",
+                                "text": "No POST, quem decide a URL e o id do novo recurso é o servidor, não o cliente",
                                 "isCorrect": true
                             },
                             {
-                                "text": "POST não aceita nenhum campo chamado id no corpo, por restrição do protocolo",
+                                "text": "POST não aceita, por especificação do protocolo HTTP, nenhum campo chamado id no corpo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O id deveria obrigatoriamente ir na query string, nunca no corpo",
+                                "text": "O id de um recurso novo deve sempre ir na query string da URL, nunca no corpo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema nenhum, essa é exatamente a forma como o POST deve funcionar",
+                                "text": "Não há problema nenhum, essa é exatamente a forma correta e recomendada de usar o POST",
                                 "isCorrect": false
                             }
                         ]
@@ -1750,19 +1750,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "POST é seguro (safe), então esse tipo de duplicidade não deveria ser possível",
+                                "text": "Isso mostra que POST é sempre seguro (safe), então essa duplicidade nunca deveria acontecer",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é exclusivamente de rede e não tem nenhuma relação com o método HTTP escolhido",
+                                "text": "Isso mostra que o problema é só de rede, sem relação com o método HTTP escolhido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "POST deveria ter sido trocado por GET para evitar a duplicidade",
+                                "text": "Isso mostra que POST deveria ser trocado por GET, que nunca duplica ao repetir",
                                 "isCorrect": false
                             },
                             {
-                                "text": "POST não é idempotente por padrão: repetir a chamada pode criar um novo recurso a cada vez, por isso operações sensíveis costumam usar estratégias como chave de idempotência",
+                                "text": "Isso mostra que POST não é idempotente: repetir a chamada cria um novo recurso a cada vez",
                                 "isCorrect": true
                             }
                         ]
@@ -1807,19 +1807,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "PUT nunca tem corpo; PATCH sempre tem",
+                                "text": "PUT não precisa de corpo; PATCH sempre exige corpo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "PUT é usado para leitura; PATCH é usado para criação",
+                                "text": "PUT serve para leitura; PATCH serve para criação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "PUT substitui o recurso inteiro; PATCH altera só uma parte dele",
+                                "text": "PUT troca o recurso inteiro; PATCH muda só uma parte",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não existe diferença real, os dois são sinônimos no HTTP",
+                                "text": "PUT e PATCH são sinônimos; a escolha é só estilo",
                                 "isCorrect": false
                             }
                         ]
@@ -1829,7 +1829,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "PUT, enviando todos os campos da tarefa",
+                                "text": "PUT, reenviando todos os campos da tarefa",
                                 "isCorrect": false
                             },
                             {
@@ -1837,11 +1837,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "POST, criando uma nova tarefa",
+                                "text": "POST, criando uma tarefa completamente nova",
                                 "isCorrect": false
                             },
                             {
-                                "text": "DELETE, seguido de um POST",
+                                "text": "DELETE da tarefa, seguido de um novo POST",
                                 "isCorrect": false
                             }
                         ]
@@ -1851,19 +1851,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Como PUT substitui o recurso inteiro, esses campos tendem a ser removidos ou zerados, já que não vieram na requisição",
+                                "text": "Como PUT substitui o recurso inteiro, campos ausentes tendem a ser removidos ou zerados",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Eles permanecem inalterados automaticamente, como aconteceria num PATCH",
+                                "text": "Eles continuam intactos sozinhos, porque PUT também preserva campos não enviados, igual ao PATCH",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor busca os valores antigos no cache e os reaplica sozinho",
+                                "text": "O servidor busca os valores antigos num cache interno e os reaplica automaticamente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor sempre rejeita a requisição com erro 400 nesse caso",
+                                "text": "O servidor sempre recusa a requisição com erro 400 quando falta algum campo",
                                 "isCorrect": false
                             }
                         ]
@@ -1873,19 +1873,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Para deletar o recurso quando o corpo vem vazio",
+                                "text": "Para deletar o recurso inteiro, caso o corpo da requisição venha vazio",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para listar todos os recursos de uma coleção",
+                                "text": "Para listar todos os recursos de uma coleção inteira, como faria um GET",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para verificar se um recurso existe sem retornar corpo",
+                                "text": "Para só verificar se o recurso já existe no servidor, sem devolver corpo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para criar um recurso num id específico definido pelo cliente, caso ele ainda não exista",
+                                "text": "Para criar um recurso num id definido pelo cliente, se ainda não existir",
                                 "isCorrect": true
                             }
                         ]
@@ -1895,19 +1895,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não há problema, PATCH e PUT podem ser implementados de forma idêntica sem consequência",
+                                "text": "Não há problema real, porque PATCH e PUT podem ser implementados de forma idêntica",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O handler está, na prática, se comportando como um PUT, o que quebra a expectativa semântica de atualização parcial do PATCH e pode apagar dados que o cliente não pretendia alterar",
+                                "text": "O handler está se comportando como um PUT, quebrando a atualização parcial do PATCH e apagando dados",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O problema está em usar JSON no corpo do PATCH, o formato correto seria outro",
+                                "text": "O problema está no formato JSON usado no corpo do PATCH, que deveria ser outro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "PATCH nunca deveria retornar o recurso atualizado no corpo da resposta",
+                                "text": "O problema é o PATCH devolver o recurso já atualizado no corpo da resposta, o que nunca deveria acontecer",
                                 "isCorrect": false
                             }
                         ]
@@ -1952,19 +1952,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "204 No Content",
+                                "text": "204 No Content, sem nada no corpo da resposta",
                                 "isCorrect": true
                             },
                             {
-                                "text": "200 OK",
+                                "text": "200 OK, como se fosse uma leitura comum",
                                 "isCorrect": false
                             },
                             {
-                                "text": "201 Created",
+                                "text": "201 Created, como se tivesse criado algo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "404 Not Found",
+                                "text": "404 Not Found, como se o recurso já não existisse",
                                 "isCorrect": false
                             }
                         ]
@@ -1974,19 +1974,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "GET",
+                                "text": "GET, mas isso baixaria o arquivo inteiro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OPTIONS",
+                                "text": "OPTIONS, que não devolve nada sobre o arquivo em si",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HEAD",
+                                "text": "HEAD, que devolve só os headers do arquivo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "DELETE",
+                                "text": "DELETE, que removeria o arquivo do servidor",
                                 "isCorrect": false
                             }
                         ]
@@ -1996,19 +1996,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "HEAD usa um caminho de URL diferente do GET",
+                                "text": "HEAD usa um formato de URL totalmente diferente do GET",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HEAD só funciona em recursos protegidos por autenticação",
+                                "text": "HEAD só pode ser usado em recursos que exigem autenticação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HEAD sempre retorna 204, independente do recurso pedido",
+                                "text": "HEAD sempre devolve 204, não importa qual recurso foi pedido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HEAD retorna os mesmos headers que o GET retornaria, mas nunca com corpo na resposta",
+                                "text": "HEAD devolve os mesmos headers do GET, mas nunca devolve corpo",
                                 "isCorrect": true
                             }
                         ]
@@ -2018,19 +2018,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "HEAD, para checar o tamanho do corpo que será enviado",
+                                "text": "HEAD, disparado só para medir o tamanho do corpo que seria enviado no PUT",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OPTIONS, para checar com o servidor se aquela origem e aquele método são permitidos (preflight de CORS)",
+                                "text": "OPTIONS, para checar se a origem e o método são permitidos (preflight de CORS)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "GET, para carregar uma página de erro caso a permissão falhe",
+                                "text": "GET, disparado para carregar uma página de erro, caso a permissão acabe falhando",
                                 "isCorrect": false
                             },
                             {
-                                "text": "DELETE, para limpar o cache do navegador antes da requisição",
+                                "text": "DELETE, disparado para limpar todo o cache do navegador antes de enviar o PUT",
                                 "isCorrect": false
                             }
                         ]
@@ -2040,19 +2040,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O servidor deveria recriar o pedido antes de deletar de novo, para manter coerência",
+                                "text": "O servidor deveria recriar o pedido inteiro antes de deletar de novo, só por coerência",
                                 "isCorrect": false
                             },
                             {
-                                "text": "DELETE não é idempotente, então esse comportamento indica um bug grave no cliente",
+                                "text": "Isso prova que o DELETE não é idempotente, revelando um bug grave no cliente que fez o retry",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A segunda chamada deve obrigatoriamente retornar 204 de novo, senão o método deixou de ser idempotente",
+                                "text": "A segunda chamada tem que devolver 204 de novo, obrigatoriamente, senão o método deixa de ser idempotente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A segunda chamada pode retornar 404, mas o estado final do servidor é o mesmo de antes: o pedido não existe. Isso é compatível com DELETE ser idempotente, mesmo que o código de status individual mude",
+                                "text": "A segunda chamada pode retornar 404, mas o estado final é o mesmo: o pedido não existe",
                                 "isCorrect": true
                             }
                         ]
@@ -2097,7 +2097,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ele não altera o estado do servidor",
+                                "text": "Ele não altera nada no estado do servidor",
                                 "isCorrect": true
                             },
                             {
@@ -2105,11 +2105,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele usa HTTPS obrigatoriamente",
+                                "text": "Ele só pode ser usado sobre HTTPS",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele sempre retorna status 200",
+                                "text": "Ele sempre retorna o status 200 OK",
                                 "isCorrect": false
                             }
                         ]
@@ -2119,19 +2119,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "POST, PUT e PATCH",
+                                "text": "POST, PUT e PATCH, que sempre alteram dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "DELETE e PATCH",
+                                "text": "DELETE e PATCH, que removem ou ajustam dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GET, HEAD e OPTIONS",
+                                "text": "GET, HEAD e OPTIONS, que só consultam o servidor",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Todos os métodos HTTP são seguros por padrão",
+                                "text": "Todos os métodos HTTP são seguros, por definição do protocolo",
                                 "isCorrect": false
                             }
                         ]
@@ -2141,19 +2141,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Navegadores não conseguem processar corretamente a resposta de um GET",
+                                "text": "Navegadores modernos, por padrão, recusam completamente processar esse tipo de resposta de um GET",
                                 "isCorrect": false
                             },
                             {
-                                "text": "GET não permite nenhum parâmetro na URL, então o id do item se perderia",
+                                "text": "GET não aceita nenhum tipo de parâmetro dentro da URL, então o id do item sempre se perderia",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há risco real, é apenas uma questão de estilo de código sem consequência prática",
+                                "text": "Não existe nenhum risco real nisso, é apenas uma escolha de estilo de código sem consequência",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como GET é esperado como seguro, agentes automáticos como crawlers, prefetch de navegador e proxies podem disparar a remoção sem intenção do usuário",
+                                "text": "Como GET deveria ser seguro, crawlers e prefetch do navegador podem disparar a remoção sem querer",
                                 "isCorrect": true
                             }
                         ]
@@ -2163,19 +2163,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque isso é uma regra arbitrária da especificação, sem relação com o comportamento real dos métodos",
+                                "text": "Porque essa é apenas uma regra arbitrária da especificação do protocolo, sem relação alguma com o comportamento real dos métodos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque não alterar nada, repetido qualquer número de vezes, sempre resulta no mesmo estado (nenhuma alteração); já PUT e DELETE alteram o servidor, mas repetir a chamada leva ao mesmo resultado final",
+                                "text": "Porque não alterar nada sempre resulta no mesmo estado; PUT e DELETE alteram o servidor, mas repetir leva ao mesmo resultado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque idempotência é apenas um sinônimo de segurança usado em contextos diferentes",
+                                "text": "Porque idempotência é só um sinônimo de segurança, usado em contextos diferentes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque PUT e DELETE nunca alteram o servidor de fato",
+                                "text": "Porque, na prática, PUT e DELETE nunca chegam a alterar o servidor de fato",
                                 "isCorrect": false
                             }
                         ]
@@ -2185,19 +2185,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "PATCH é sempre idempotente por definição, então o bug deve estar em outra parte do sistema",
+                                "text": "Isso prova que PATCH é sempre idempotente por definição, então o bug está em outra parte",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é exclusivo do cliente HTTP, que nunca deveria fazer retry automático",
+                                "text": "Isso mostra apenas que o problema é do cliente HTTP, que nunca deveria ter sido configurado para fazer retry automático",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O PATCH foi implementado de forma não idempotente, com um incremento relativo ao valor atual, o que o torna arriscado para retry automático; uma alternativa mais segura seria enviar o valor final desejado ou usar uma chave de idempotência",
+                                "text": "O PATCH soma ao valor atual, então não é idempotente; o ideal seria enviar o valor final ou usar chave de idempotência",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Deveria ter sido usado GET para essa operação, já que é mais simples de implementar",
+                                "text": "Isso indica que deveria ter sido usado GET, porque é mais simples de implementar",
                                 "isCorrect": false
                             }
                         ]
@@ -2281,7 +2281,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "2xx, sucesso parcial",
+                                "text": "2xx, sucesso total da requisição",
                                 "isCorrect": false
                             }
                         ]
@@ -2291,19 +2291,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "1xx, o servidor está avisando que o cliente pode continuar e enviar o restante da requisição",
+                                "text": "1xx, indica que o cliente pode continuar enviando o corpo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "2xx, o servidor confirma que o arquivo já foi salvo",
+                                "text": "2xx, indica que o servidor já salvou o arquivo com sucesso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "4xx, o corpo enviado até agora está incompleto",
+                                "text": "4xx, indica que o corpo enviado até agora está incompleto",
                                 "isCorrect": false
                             },
                             {
-                                "text": "3xx, o upload deve ser redirecionado para outro servidor",
+                                "text": "3xx, indica redirecionamento do upload para outro servidor",
                                 "isCorrect": false
                             }
                         ]
@@ -2313,7 +2313,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O servidor falhou ao processar uma requisição que, pelo que se pode ver, estava correta",
+                                "text": "O servidor falhou mesmo com uma requisição aparentemente válida",
                                 "isCorrect": true
                             },
                             {
@@ -2325,7 +2325,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não é possível saber de quem é o erro só pelo status 500",
+                                "text": "Não é possível saber de quem é o erro só com base no status 500",
                                 "isCorrect": false
                             }
                         ]
@@ -2335,11 +2335,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "4xx indica que o problema está na requisição enviada pelo cliente; 5xx indica que o servidor falhou mesmo diante de uma requisição aparentemente válida",
+                                "text": "4xx aponta erro na requisição do cliente; 5xx é falha do servidor mesmo com requisição válida",
                                 "isCorrect": true
                             },
                             {
-                                "text": "4xx é usada apenas para erros de autenticação, e 5xx para todo o resto",
+                                "text": "4xx é usada apenas para erros de autenticação, e 5xx cobre todos os outros casos",
                                 "isCorrect": false
                             },
                             {
@@ -2440,7 +2440,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "200 OK com corpo vazio",
+                                "text": "200 OK",
                                 "isCorrect": false
                             },
                             {
@@ -2480,7 +2480,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ela ignora status mais precisos como 201 e 204, obrigando quem consome a API a abrir o corpo para entender o que de fato aconteceu",
+                                "text": "Ela ignora status mais precisos como 201 e 204, escondendo isso no corpo",
                                 "isCorrect": true
                             },
                             {
@@ -2559,19 +2559,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Que o recurso solicitado não mudou desde a última vez, e o navegador pode usar a cópia em cache",
+                                "text": "Que o recurso não mudou, e o navegador usa a cópia em cache",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que o recurso foi movido permanentemente para outra URL",
+                                "text": "Que o recurso foi movido de forma permanente para uma nova URL",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o recurso não existe mais no servidor",
+                                "text": "Que o recurso solicitado não existe mais no servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o servidor está temporariamente fora do ar",
+                                "text": "Que o servidor está temporariamente indisponível",
                                 "isCorrect": false
                             }
                         ]
@@ -2603,7 +2603,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ela não tem corpo, economizando banda porque o navegador já tem o conteúdo em cache",
+                                "text": "Ela não tem corpo, o navegador reaproveita o que já tem em cache",
                                 "isCorrect": true
                             },
                             {
@@ -2625,11 +2625,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "301 sinaliza que a mudança é definitiva, então o cliente deve atualizar a referência; 302 sinaliza que é temporário e a URL original continua válida",
+                                "text": "301 marca mudança definitiva; 302 marca mudança temporária, URL original segue válida",
                                 "isCorrect": true
                             },
                             {
-                                "text": "301 é usado só em APIs REST, e 302 só em sites HTML",
+                                "text": "301 é usado apenas em APIs REST, e 302 apenas em sites HTML",
                                 "isCorrect": false
                             },
                             {
@@ -2748,11 +2748,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "405 Method Not Allowed, com o header Allow listando os métodos suportados",
+                                "text": "405 Method Not Allowed, acompanhado do header Allow",
                                 "isCorrect": true
                             },
                             {
-                                "text": "404 Not Found, já que o método não existe",
+                                "text": "404 Not Found, como se o método nem existisse para essa rota",
                                 "isCorrect": false
                             },
                             {
@@ -2893,7 +2893,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Ferramentas e clientes HTTP que confiam no status code (cache, monitoramento, bibliotecas) não conseguem identificar a falha sem inspecionar o corpo",
+                                "text": "Ferramentas que confiam no status não percebem a falha sem abrir o corpo",
                                 "isCorrect": true
                             },
                             {
@@ -2915,7 +2915,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "4xx, porque o problema está na requisição do cliente (pedir um recurso que não existe), não numa falha do servidor",
+                                "text": "4xx, porque o cliente pediu algo que não existe, não é falha do servidor",
                                 "isCorrect": true
                             },
                             {
@@ -2977,19 +2977,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um par nome/valor que carrega metadados sobre a requisição ou a resposta, separado do corpo",
+                                "text": "Um par nome e valor que carrega metadados da requisição ou da resposta, fora do corpo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O corpo da requisição já convertido para texto",
+                                "text": "O corpo da mensagem HTTP inteiro, já convertido para uma string de texto simples",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um parâmetro que aparece apenas na query string da URL, depois do ponto de interrogação",
+                                "text": "Um parâmetro que só existe dentro da query string da URL, após o ponto de interrogação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código de status da resposta, escrito por extenso",
+                                "text": "O código de status da resposta HTTP, escrito por extenso em vez de número",
                                 "isCorrect": false
                             }
                         ]
@@ -2999,19 +2999,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "User-Agent",
+                                "text": "User-Agent, porque é o header que identifica a ferramenta ou navegador que fez a chamada",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Host",
+                                "text": "Host, porque é o header que identifica o programa cliente que originou a chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Accept-Language",
+                                "text": "Accept-Language, porque é o header que informa qual programa está fazendo a requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cookie",
+                                "text": "Cookie, porque é o header que armazena o nome do cliente que fez a chamada",
                                 "isCorrect": false
                             }
                         ]
@@ -3021,19 +3021,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Content-Type e Content-Length",
+                                "text": "Content-Type e Content-Length, que descrevem e medem o corpo enviado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Accept e Accept-Language",
+                                "text": "Accept e Accept-Language, que descrevem o idioma aceito na resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Host e User-Agent",
+                                "text": "Host e User-Agent, que identificam o domínio e o programa cliente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cache-Control e ETag",
+                                "text": "Cache-Control e ETag, que controlam o cache da resposta recebida",
                                 "isCorrect": false
                             }
                         ]
@@ -3043,19 +3043,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Host",
+                                "text": "Host, porque toda resposta também precisa informar o domínio de destino",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Accept",
+                                "text": "Accept, porque esse header só existe do lado da resposta, nunca do cliente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Set-Cookie",
+                                "text": "Set-Cookie, porque é o servidor quem pede para o cliente guardar algo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Authorization",
+                                "text": "Authorization, porque só a resposta pode carregar credenciais de autenticação",
                                 "isCorrect": false
                             }
                         ]
@@ -3065,19 +3065,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Pelo header Host, que o cliente envia informando o domínio desejado",
+                                "text": "Pelo header Host, que o cliente envia dizendo qual domínio deseja acessar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Pelo header User-Agent, que identifica o site de origem da requisição",
+                                "text": "Pelo header User-Agent, que informa qual site originou a requisição atual",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pelo corpo da requisição, que traz o nome do domínio",
+                                "text": "Pelo corpo da requisição, que carrega o nome do domínio de destino desejado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pela porta TCP, que é sempre diferente para cada domínio",
+                                "text": "Pela porta TCP, que muda automaticamente de acordo com o domínio acessado",
                                 "isCorrect": false
                             }
                         ]
@@ -3122,19 +3122,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Content-Type",
+                                "text": "Content-Type, que indica o formato do corpo enviado nessa requisição",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Accept",
+                                "text": "Accept, que indica o formato do corpo enviado nessa requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Content-Length",
+                                "text": "Content-Length, que indica o formato do corpo enviado nessa requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Host",
+                                "text": "Host, que indica o formato do corpo enviado nessa requisição",
                                 "isCorrect": false
                             }
                         ]
@@ -3144,19 +3144,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Content-Type",
+                                "text": "Content-Type, que expressa a preferência de formato para a resposta recebida",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Accept",
+                                "text": "Accept, que expressa a preferência de formato para a resposta recebida",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Content-Length",
+                                "text": "Content-Length, que expressa a preferência de formato para a resposta recebida",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Set-Cookie",
+                                "text": "Set-Cookie, que expressa a preferência de formato para a resposta recebida",
                                 "isCorrect": false
                             }
                         ]
@@ -3166,19 +3166,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "400 Bad Request",
+                                "text": "400 Bad Request, porque o formato do corpo enviado não é o que a API entende",
                                 "isCorrect": false
                             },
                             {
-                                "text": "415 Unsupported Media Type",
+                                "text": "415 Unsupported Media Type, porque o corpo veio num formato que a API não aceita",
                                 "isCorrect": true
                             },
                             {
-                                "text": "406 Not Acceptable",
+                                "text": "406 Not Acceptable, porque o formato do corpo enviado não é o que a API entende",
                                 "isCorrect": false
                             },
                             {
-                                "text": "422 Unprocessable Entity",
+                                "text": "422 Unprocessable Entity, porque o formato do corpo enviado não é o que a API entende",
                                 "isCorrect": false
                             }
                         ]
@@ -3188,19 +3188,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "200 OK, com o corpo em XML mesmo assim",
+                                "text": "200 OK, com o corpo em XML mesmo assim, ignorando a preferência do cliente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "406 Not Acceptable",
+                                "text": "406 Not Acceptable, porque nenhum formato aceito pelo cliente pode ser produzido",
                                 "isCorrect": true
                             },
                             {
-                                "text": "415 Unsupported Media Type",
+                                "text": "415 Unsupported Media Type, porque o corpo enviado veio num formato inválido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "500 Internal Server Error",
+                                "text": "500 Internal Server Error, porque a API não sabe lidar com esse tipo de pedido",
                                 "isCorrect": false
                             }
                         ]
@@ -3210,19 +3210,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A preferência relativa do cliente entre os formatos, numa escala de 0 a 1, sendo maior valor igual a maior preferência",
+                                "text": "A preferência relativa do cliente entre os formatos, numa escala de 0 a 1",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A versão mínima do protocolo HTTP exigida pelo cliente",
+                                "text": "A versão mínima do protocolo HTTP que o cliente aceita usar na resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade máxima de bytes que o cliente aceita receber na resposta",
+                                "text": "A quantidade máxima de bytes que o cliente aceita receber de volta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número de vezes que o cliente vai tentar a requisição antes de desistir",
+                                "text": "O número de tentativas que o cliente fará antes de desistir da chamada",
                                 "isCorrect": false
                             }
                         ]
@@ -3267,19 +3267,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Definir se e por quanto tempo a resposta pode ser reaproveitada sem uma nova ida ao servidor",
+                                "text": "Definir se e por quanto tempo a resposta pode ficar guardada em cache",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Definir o formato do corpo da resposta",
+                                "text": "Definir em qual formato o corpo da resposta deve ser interpretado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticar o cliente que fez a requisição",
+                                "text": "Autenticar o cliente que fez a requisição, validando suas credenciais",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Redirecionar o cliente para outra URL",
+                                "text": "Redirecionar o cliente automaticamente para uma URL diferente",
                                 "isCorrect": false
                             }
                         ]
@@ -3289,19 +3289,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Houve um erro ao processar a requisição",
+                                "text": "Houve um erro grave ao processar a requisição enviada pelo cliente agora",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O recurso não mudou desde a última vez que o cliente o buscou, então ele pode reaproveitar a cópia que já tem",
+                                "text": "O recurso não mudou, então o cliente reaproveita a cópia que já tinha guardado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O recurso foi criado com sucesso",
+                                "text": "O recurso foi criado com sucesso a partir dos dados que o cliente enviou agora",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor não suporta o formato pedido pelo cliente",
+                                "text": "O servidor não suporta o formato de resposta que o cliente pediu para receber",
                                 "isCorrect": false
                             }
                         ]
@@ -3311,19 +3311,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "ETag sozinho, sem Cache-Control",
+                                "text": "ETag sozinho, sem Cache-Control, o que ainda exige perguntar ao servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cache-Control: public, max-age=31536000",
+                                "text": "Cache-Control: public, max-age=31536000, que guarda por um ano sem revalidar",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cache-Control: no-store",
+                                "text": "Cache-Control: no-store, que impede qualquer tipo de cache do lado do cliente",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Content-Type: image/png com um parâmetro de cache",
+                                "text": "Content-Type: image/png com um parâmetro de cache que não existe de verdade",
                                 "isCorrect": false
                             }
                         ]
@@ -3333,19 +3333,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Cache-Control: no-cache",
+                                "text": "Cache-Control: no-cache, que também influencia como o cache é revalidado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "If-None-Match: \"abc123\"",
+                                "text": "If-None-Match: \"abc123\", que pergunta se esse ETag ainda é o atual",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Accept: \"abc123\"",
+                                "text": "Accept: \"abc123\", que informa esse valor como formato aceito na resposta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Content-Type: \"abc123\"",
+                                "text": "Content-Type: \"abc123\", que declara esse valor como formato do corpo",
                                 "isCorrect": false
                             }
                         ]
@@ -3355,19 +3355,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "São sinônimos: os dois proíbem qualquer tipo de cache",
+                                "text": "São sinônimos: as duas diretivas proíbem exatamente qualquer tipo de cache",
                                 "isCorrect": false
                             },
                             {
-                                "text": "no-store proíbe guardar a resposta em qualquer cache; no-cache permite guardar, mas exige revalidação com o servidor antes de reutilizar",
+                                "text": "no-store bloqueia todo cache; no-cache guarda mas exige revalidar sempre",
                                 "isCorrect": true
                             },
                             {
-                                "text": "no-store é usado em respostas de erro; no-cache é usado em respostas de sucesso",
+                                "text": "no-store vale só para respostas de erro; no-cache vale para respostas de sucesso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "no-store se aplica a requisições; no-cache se aplica a respostas",
+                                "text": "no-store se aplica somente a requisições; no-cache se aplica somente a respostas",
                                 "isCorrect": false
                             }
                         ]
@@ -3412,19 +3412,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um esquema seguido das credenciais, como em Bearer eyJhbGci... ou Basic YWRtaW46c2VuaGE=",
+                                "text": "Um esquema seguido das credenciais, como Bearer eyJhbGci ou Basic YWRtaW4=",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apenas o código de status esperado pela requisição",
+                                "text": "Apenas o código de status HTTP que a requisição espera receber de volta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O mesmo valor usado no header Content-Type",
+                                "text": "O mesmo tipo de valor usado no header Content-Type da mesma requisição",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Authorization não usa header, só aparece no corpo da requisição",
+                                "text": "Um valor que só aparece dentro do corpo da requisição, nunca em headers",
                                 "isCorrect": false
                             }
                         ]
@@ -3434,19 +3434,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "403 Forbidden",
+                                "text": "403 Forbidden, porque o cliente não tem permissão para acessar esse recurso",
                                 "isCorrect": false
                             },
                             {
-                                "text": "401 Unauthorized",
+                                "text": "401 Unauthorized, porque a requisição não trouxe nenhuma credencial válida",
                                 "isCorrect": true
                             },
                             {
-                                "text": "404 Not Found",
+                                "text": "404 Not Found, porque a rota pedida não existe nesse servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "400 Bad Request",
+                                "text": "400 Bad Request, porque a requisição está malformada de alguma maneira",
                                 "isCorrect": false
                             }
                         ]
@@ -3456,19 +3456,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Um token assinado digitalmente",
+                                "text": "Um token assinado digitalmente pelo servidor de autenticação usado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O usuário e a senha, unidos por dois-pontos e convertidos para base64, sem nenhuma criptografia",
+                                "text": "O usuário e a senha, unidos por dois-pontos, convertidos para base64",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O endereço IP do cliente",
+                                "text": "O endereço IP do cliente que originou essa requisição específica",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um identificador de sessão gerado pelo servidor",
+                                "text": "Um identificador de sessão único, gerado e controlado pelo servidor",
                                 "isCorrect": false
                             }
                         ]
@@ -3478,19 +3478,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Basic",
+                                "text": "Basic, porque reenvia um valor obtido no login em cada nova chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bearer",
+                                "text": "Bearer, porque reenvia um valor obtido no login em cada nova chamada",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Content-Type",
+                                "text": "Content-Type, porque reenvia um valor obtido no login em cada nova chamada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cookie",
+                                "text": "Cookie, porque reenvia um valor obtido no login em cada nova chamada",
                                 "isCorrect": false
                             }
                         ]
@@ -3500,19 +3500,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o header Basic tem tamanho limitado e corta a senha no meio",
+                                "text": "Porque o header Basic tem tamanho limitado e corta a senha no meio do valor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque as credenciais em Basic são apenas codificadas em base64, não criptografadas, e podem ser decodificadas por quem interceptar o tráfego",
+                                "text": "Porque Basic só codifica em base64, sem criptografia, e qualquer um decodifica",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o servidor rejeita automaticamente qualquer uso de Basic sem HTTPS",
+                                "text": "Porque o servidor sempre rejeita automaticamente qualquer uso de Basic sem HTTPS",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o esquema Basic exige, obrigatoriamente, um certificado digital do cliente",
+                                "text": "Porque o esquema Basic exige, sempre, um certificado digital válido do cliente",
                                 "isCorrect": false
                             }
                         ]
@@ -3557,19 +3557,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Set-Cookie",
+                                "text": "Set-Cookie, que o servidor envia numa resposta para guardar um valor novo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cookie",
+                                "text": "Cookie, que o servidor envia numa resposta para guardar um valor novo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cache-Control",
+                                "text": "Cache-Control, que o servidor envia numa resposta para guardar um valor novo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Authorization",
+                                "text": "Authorization, que o servidor envia numa resposta para guardar um valor novo",
                                 "isCorrect": false
                             }
                         ]
@@ -3579,19 +3579,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Apenas o domínio, sem considerar protocolo ou porta",
+                                "text": "Apenas o domínio do site, sem considerar o protocolo ou a porta usada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A combinação de protocolo, domínio e porta, como em https://app.exemplo.com",
+                                "text": "A combinação entre protocolo, domínio e porta, como em https://app.com",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O endereço IP do servidor de destino",
+                                "text": "O endereço IP do servidor que está recebendo essa requisição agora",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O user agent do navegador que fez a requisição",
+                                "text": "O user agent do navegador que originou essa requisição específica",
                                 "isCorrect": false
                             }
                         ]
@@ -3601,19 +3601,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O script consegue ler o cookie normalmente, HttpOnly não afeta o acesso via JavaScript",
+                                "text": "O script consegue ler o cookie normalmente, pois HttpOnly não bloqueia JavaScript",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O script não consegue ler o cookie, porque HttpOnly bloqueia justamente esse tipo de acesso",
+                                "text": "O script não consegue ler o cookie, porque HttpOnly bloqueia esse tipo de acesso",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O navegador bloqueia a página inteira de carregar",
+                                "text": "O navegador bloqueia o carregamento inteiro da página, por segurança",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O cookie é apagado automaticamente assim que o script tenta lê-lo",
+                                "text": "O cookie é apagado automaticamente assim que o script tenta lê-lo agora",
                                 "isCorrect": false
                             }
                         ]
@@ -3623,19 +3623,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Content-Type: application/json",
+                                "text": "Content-Type: application/json, que declara o formato do corpo devolvido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Access-Control-Allow-Origin: https://app.loja.com",
+                                "text": "Access-Control-Allow-Origin: https://app.loja.com, liberando essa origem",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Set-Cookie: permitido=true",
+                                "text": "Set-Cookie: permitido=true, que tenta autorizar a origem por cookie",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cache-Control: public",
+                                "text": "Cache-Control: public, que permite caches compartilhados guardarem isso",
                                 "isCorrect": false
                             }
                         ]
@@ -3645,19 +3645,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o protocolo HTTP não permite tecnicamente requisições entre domínios diferentes",
+                                "text": "Porque o protocolo HTTP em si não permite pedidos técnicos entre domínios diferentes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, sem essa restrição, um script malicioso em um site poderia usar os cookies e credenciais que o navegador já guarda do usuário para chamar outro site em nome dele, sem o usuário perceber",
+                                "text": "Porque um script malicioso poderia usar os cookies do usuário para agir em nome dele",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque servidores diferentes sempre usam formatos de dados incompatíveis entre si",
+                                "text": "Porque servidores diferentes sempre usam formatos de dados totalmente incompatíveis",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque apenas requisições GET podem cruzar domínios, todas as outras são proibidas pelo próprio HTTP",
+                                "text": "Porque só requisições do tipo GET podem cruzar domínios, todas as outras são proibidas",
                                 "isCorrect": false
                             }
                         ]
@@ -3799,7 +3799,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um array pode conter valores de tipos diferentes entre si, misturando números, strings, objects e até outros arrays",
+                                "text": "Um array pode misturar tipos diferentes, como number, string, object ou array",
                                 "isCorrect": true
                             },
                             {
@@ -3900,7 +3900,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "As posições de cada array interno não têm nome, obrigando quem lê a saber de cor o que cada índice representa",
+                                "text": "As posições do array interno não são nomeadas; é preciso decorar cada índice",
                                 "isCorrect": true
                             },
                             {
@@ -3948,7 +3948,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A especificação do JSON não define um limite oficial de profundidade, mas parsers e servidores costumam impor limites práticos por segurança e desempenho",
+                                "text": "O JSON não define limite oficial de aninhamento, mas parsers impõem limites práticos",
                                 "isCorrect": true
                             },
                             {
@@ -4041,19 +4041,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O campo é removido do resultado; funções não têm representação em JSON e são ignoradas pelo stringify",
+                                "text": "O campo é removido do resultado, pois funções não têm representação em JSON",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O campo vira null automaticamente",
+                                "text": "O campo vira null, pois o stringify troca valores não serializáveis por null",
                                 "isCorrect": false
                             },
                             {
-                                "text": "JSON.stringify lança um erro e interrompe a execução",
+                                "text": "JSON.stringify lança um erro, pois funções não podem ser serializadas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O campo vira a string \"function() {}\"",
+                                "text": "O campo vira a string \"function(){}\", pois o stringify converte funções em texto",
                                 "isCorrect": false
                             }
                         ]
@@ -4063,19 +4063,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O servidor esqueceu de colocar aspas duplas ao redor da chave \"id\"",
+                                "text": "Faltaram aspas duplas ao redor da chave \"id\", o que corrompe o valor numérico",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Números muito grandes podem perder precisão porque o tipo number do JSON costuma ser representado em ponto flutuante de 64 bits; por isso é comum enviar ids grandes como string",
+                                "text": "Number em JSON usa float de 64 bits; ids grandes perdem precisão nesse formato",
                                 "isCorrect": true
                             },
                             {
-                                "text": "JSON não suporta números com mais de cinco dígitos",
+                                "text": "JSON limita o tipo number a cinco dígitos, cortando o restante do valor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O front-end está chamando JSON.parse de forma incorreta",
+                                "text": "O front-end está chamando JSON.parse de forma errada, o que arredonda os números",
                                 "isCorrect": false
                             }
                         ]
@@ -4097,7 +4097,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A especificação do JSON não garante formalmente a ordem das chaves; o código não deveria depender dela, mesmo que muitas implementações preservem a ordem de inserção na prática",
+                                "text": "A especificação não garante a ordem das chaves; muitas implementações preservam a inserção",
                                 "isCorrect": true
                             }
                         ]
@@ -4220,7 +4220,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A versão em XML tende a ser mais verbosa, porque repete o nome de cada campo em uma tag de abertura e em uma de fechamento",
+                                "text": "XML é mais verboso: repete o nome do campo na tag de abertura e fechamento",
                                 "isCorrect": true
                             }
                         ]
@@ -4230,7 +4230,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O JSON não tem validação de schema nativa na sua especificação original; quando é preciso validar formato e tipos de forma rigorosa, é comum adotar um padrão à parte chamado JSON Schema",
+                                "text": "O JSON não tem schema nativo na especificação original; para validar tipos com rigor, existe o padrão à parte JSON Schema",
                                 "isCorrect": true
                             },
                             {
@@ -4287,19 +4287,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "application/json",
+                                "text": "application/json, usado quando o corpo é JSON explícito",
                                 "isCorrect": false
                             },
                             {
-                                "text": "application/x-www-form-urlencoded",
+                                "text": "application/x-www-form-urlencoded, padrão do HTML",
                                 "isCorrect": true
                             },
                             {
-                                "text": "multipart/form-data",
+                                "text": "multipart/form-data, usado com upload de arquivo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "text/plain",
+                                "text": "text/plain, usado para texto simples sem estrutura",
                                 "isCorrect": false
                             }
                         ]
@@ -4339,7 +4339,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor pode falhar ao interpretar o corpo como JSON, já que o Content-Type informado não corresponde ao formato real dos dados, o que costuma gerar erro de parsing ou resposta 415",
+                                "text": "O servidor pode falhar ao interpretar o corpo como JSON, pois o Content-Type não bate com o formato real dos dados",
                                 "isCorrect": true
                             },
                             {
@@ -4365,7 +4365,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor não consegue identificar onde uma parte termina e a próxima começa, e falha ao separar os campos enviados",
+                                "text": "O servidor não identifica onde cada parte termina, e falha ao separar os campos enviados",
                                 "isCorrect": true
                             }
                         ]
@@ -4383,7 +4383,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "multipart/form-data é necessário para enviar dados binários de forma segura, como arquivos, enquanto x-www-form-urlencoded é limitado a pares chave/valor de texto simples, sem uma forma nativa de representar aninhamento",
+                                "text": "multipart/form-data é feito para arquivos binários; x-www-form-urlencoded só aceita chave e valor simples",
                                 "isCorrect": true
                             },
                             {
@@ -4433,7 +4433,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Statelessness (sem estado)",
+                                "text": "Statelessness",
                                 "isCorrect": true
                             },
                             {
@@ -4455,7 +4455,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um substantivo que representa uma entidade ou coleção manipulada pela API, como /usuarios ou /pedidos",
+                                "text": "Um substantivo que representa uma entidade/coleção, como /usuarios",
                                 "isCorrect": true
                             },
                             {
@@ -4463,11 +4463,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome do banco de dados usado pelo servidor",
+                                "text": "O nome da tabela do banco usada internamente, como tb_usuarios",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O verbo HTTP usado na requisição",
+                                "text": "O verbo HTTP usado na requisição, como GET ou POST",
                                 "isCorrect": false
                             }
                         ]
@@ -4499,11 +4499,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Como uma API RESTful pragmática, que segue os princípios mais usados no dia a dia mas não implementa HATEOAS por completo",
+                                "text": "Como uma API RESTful pragmática, que segue os princípios do dia a dia, sem HATEOAS",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Como uma API que não é REST de forma alguma, e precisa ser reescrita antes de ir para produção",
+                                "text": "Como uma API que não é REST de forma alguma, e precisa ser reescrita do zero",
                                 "isCorrect": false
                             },
                             {
@@ -4511,7 +4511,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Como uma API stateful, já que toda API sem HATEOAS depende de sessão guardada no servidor",
+                                "text": "Como uma API stateful, pois toda API sem HATEOAS depende de sessão guardada no servidor",
                                 "isCorrect": false
                             }
                         ]
@@ -4521,7 +4521,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Cacheable: a resposta poderia indicar que pode ser reaproveitada, por exemplo com Cache-Control ou ETag, até os dados mudarem",
+                                "text": "Cacheable: a resposta poderia indicar que pode ser reaproveitada, com Cache-Control ou ETag",
                                 "isCorrect": true
                             },
                             {
@@ -4533,7 +4533,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Código sob demanda: o servidor deveria enviar um script para o cliente calcular o relatório localmente",
+                                "text": "Código sob demanda: o servidor deveria mandar um script para o cliente calcular localmente",
                                 "isCorrect": false
                             }
                         ]
@@ -4578,19 +4578,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Ela usa um verbo na URL quando a ação já está implícita no método GET",
+                                "text": "Ela coloca um verbo na URL em vez de usar o método HTTP",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ela usa letras minúsculas",
+                                "text": "Ela usa letras minúsculas em vez de maiúsculas no caminho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela não começa com barra",
+                                "text": "Ela não começa com uma barra no início do caminho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela deveria usar POST em vez de GET",
+                                "text": "Ela deveria usar POST em vez de GET para listar clientes",
                                 "isCorrect": false
                             }
                         ]
@@ -4644,19 +4644,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A segunda opção evita verbo na URL ao tratar o cancelamento como mudança de estado do recurso; a primeira só ficaria alinhada a REST se o cancelamento virasse um sub-recurso, como POST /pedidos/10/cancelamentos",
+                                "text": "A segunda evita verbo na URL, tratando o cancelamento como mudança de estado do pedido via PATCH",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A primeira opção é sempre a única correta, porque toda ação que muda dados precisa de um verbo explícito na URL",
+                                "text": "A primeira é sempre a única correta, pois toda ação que muda dados exige um verbo explícito na URL",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas formas são equivalentes em termos de design REST, a escolha é só uma questão de estilo pessoal",
+                                "text": "As duas formas são equivalentes em design REST; a escolha é só uma questão de estilo pessoal",
                                 "isCorrect": false
                             },
                             {
-                                "text": "PATCH não pode ser usado para alterar o campo status de um recurso, apenas PUT tem essa permissão",
+                                "text": "PATCH não pode alterar o campo status de um recurso; apenas PUT tem essa permissão",
                                 "isCorrect": false
                             }
                         ]
@@ -4666,19 +4666,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O aninhamento ficou profundo demais para ser previsível; o ideal é promover \"ajustes-salariais\" a um recurso de nível mais alto e filtrar por query string, como GET /ajustes-salariais?funcionarioId=15",
+                                "text": "O aninhamento ficou profundo demais; o ideal é promover \"ajustes-salariais\" a um recurso de nível mais alto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Falta um verbo no início da URL indicando que a operação é uma busca",
+                                "text": "Falta um verbo no início da URL, já que toda operação de busca de verdade precisa de um verbo bem explícito",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A URL deveria usar letras maiúsculas para deixar a hierarquia mais visível",
+                                "text": "A URL deveria usar letras maiúsculas em cada segmento do caminho, deixando a hierarquia bem mais visível",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema: URLs REST devem sempre espelhar 100% da hierarquia real do domínio, não importa quantos níveis isso exija",
+                                "text": "Não há problema algum: URLs REST devem sempre espelhar 100% da hierarquia real do domínio, sem exceções",
                                 "isCorrect": false
                             }
                         ]
@@ -4753,7 +4753,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "200 OK, com corpo vazio",
+                                "text": "200 OK",
                                 "isCorrect": false
                             }
                         ]
@@ -4785,7 +4785,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O estado final do pedido é o mesmo, tenha o servidor processado a chamada uma ou duas vezes; no máximo um campo de auditoria como \"atualizadoEm\" muda",
+                                "text": "O estado final do pedido é o mesmo nas duas vezes, já que PUT é idempotente por definição",
                                 "isCorrect": true
                             },
                             {
@@ -4807,7 +4807,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Como o cliente sempre substitui o recurso inteiro, o verbo semanticamente mais correto seria PUT; usar só PATCH funciona, mas esconde a intenção de que a operação é sempre uma substituição completa",
+                                "text": "Como o cliente substitui o recurso inteiro, o verbo semanticamente correto seria PUT, não PATCH",
                                 "isCorrect": true
                             },
                             {
@@ -4864,7 +4864,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Versionamento da API, como em /v1/pedidos e /v2/pedidos",
+                                "text": "Versionar a API, como /v1/pedidos e /v2/pedidos",
                                 "isCorrect": true
                             },
                             {
@@ -4886,19 +4886,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Paginação, retornando um subconjunto por vez com parâmetros como page e limit",
+                                "text": "Paginação, devolvendo um subconjunto por vez (page e limit)",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Versionamento da URL",
+                                "text": "Versionamento da URL, para não quebrar os clientes antigos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar o método GET por POST",
+                                "text": "Trocar o método GET por POST em todos os endpoints",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover os status codes das respostas",
+                                "text": "Remover os status codes das respostas HTTP",
                                 "isCorrect": false
                             }
                         ]
@@ -4908,7 +4908,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A paginação por offset é sensível a inserções e remoções entre uma chamada e outra; paginação por cursor tende a ser mais estável nesse cenário",
+                                "text": "A paginação por offset é sensível a inserções/remoções; cursor é mais estável",
                                 "isCorrect": true
                             },
                             {
@@ -4952,7 +4952,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Informações sobre o limite, normalmente em headers: o total permitido, quanto ainda resta na janela atual e, com o header padronizado Retry-After, quanto tempo esperar antes de tentar de novo",
+                                "text": "Informações do limite em headers, como total permitido, restante e o header Retry-After",
                                 "isCorrect": true
                             },
                             {
@@ -5005,7 +5005,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O cliente precisa escrever um tratamento de erro diferente para cada endpoint, em vez de reaproveitar uma única lógica",
+                                "text": "O cliente precisa tratar o erro de forma diferente em cada endpoint, sem reaproveitar lógica",
                                 "isCorrect": true
                             },
                             {
@@ -5027,19 +5027,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Permitir que o cliente trate o erro programaticamente, por exemplo com um switch, sem depender do texto exato da mensagem",
+                                "text": "Permitir que o cliente trate o erro por código, sem depender do texto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Substituir a necessidade de devolver um status HTTP",
+                                "text": "Substituir por completo a necessidade de devolver um status HTTP",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ser exibido diretamente ao usuário final, sem nenhuma tradução",
+                                "text": "Ser exibido diretamente ao usuário final da tela, sem tradução",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Indicar qual método HTTP deve ser usado na próxima tentativa",
+                                "text": "Indicar qual método HTTP repetir na próxima tentativa de chamada",
                                 "isCorrect": false
                             }
                         ]
@@ -5049,7 +5049,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "422 Unprocessable Entity (ou 400, dependendo da convenção da equipe), com um corpo de erro indicando o campo \"quantidade\" e o motivo da falha",
+                                "text": "422 Unprocessable Entity (ou 400), com um corpo indicando o campo e o motivo da falha",
                                 "isCorrect": true
                             },
                             {
@@ -5071,7 +5071,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Recursos bem nomeados no plural, métodos e status usados com o significado correto, URLs previsíveis e erros no mesmo formato em toda a API",
+                                "text": "Recursos bem nomeados no plural, métodos e status corretos, e erros no mesmo formato em toda API",
                                 "isCorrect": true
                             },
                             {
@@ -5093,7 +5093,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Um framework web, como Express, FastAPI ou Spring, responsável por rotear cada requisição até o código certo e montar a resposta HTTP conforme o design definido",
+                                "text": "Um framework web, como Express, FastAPI ou Spring, que roteia a requisição e monta a resposta",
                                 "isCorrect": true
                             },
                             {
