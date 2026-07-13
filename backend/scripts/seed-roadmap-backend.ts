@@ -1,12 +1,10 @@
 // Seed do roadmap "Back-end": camada de orquestracao sobre as trilhas de fundacao
 // (Logica de Programacao, Protocolos da Web, APIs e Frameworks, Banco de Dados,
 // Autenticacao, Cache/Filas/Performance, Testes e Qualidade, Docker e Containers,
-// CI/CD e Cloud). Cobre os estagios 1 a 9 do desenho de 10 estagios; o estagio 10
-// (arquitetura e escala) entra depois, conforme o conteudo for autorado.
+// CI/CD e Cloud, Arquitetura e Escala). Cobre os 10 estagios do desenho completo.
 //
 // Idempotente POR ESTAGIO: cria o roadmap se faltar e insere apenas os estagios
-// que ainda nao existem (casados por titulo). Assim, para adicionar o estagio 10
-// depois, basta acrescenta-lo em STAGES e rodar de novo.
+// que ainda nao existem (casados por titulo). Rodar de novo nao duplica nada.
 //
 // O Back-end e o roadmap principal do catalogo: na criacao, entra na posicao 1 e
 // empurra os roadmaps existentes uma posicao para baixo.
@@ -124,6 +122,15 @@ const STAGES: Stage[] = [
             "Automatize o caminho do código até o ar: integração contínua a cada push, GitHub Actions construindo e publicando a imagem, deploy contínuo e a aplicação rodando na nuvem com HTTPS, secrets e observabilidade.",
         tags: ["CI/CD", "GitHub Actions", "Cloud"],
         refs: [{ type: "trail", ref: "CI/CD e Cloud" }],
+    },
+    {
+        phase: "avancado",
+        position: 10,
+        title: "Arquitetura & escala",
+        description:
+            "O fechamento do roadmap: como o back-end evolui pra aguentar carga. Escala vertical e horizontal, monólito com réplicas stateless, banco em escala, mensageria assíncrona, de monólito a serviços e padrões de resiliência.",
+        tags: ["Arquitetura", "Escala", "Resiliência"],
+        refs: [{ type: "trail", ref: "Arquitetura e Escala" }],
     },
 ];
 
