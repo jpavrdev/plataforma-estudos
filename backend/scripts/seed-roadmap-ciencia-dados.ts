@@ -78,6 +78,24 @@ const STAGES: Stage[] = [
         tags: ["pandas", "NumPy", "Dados"],
         refs: [{ type: "trail", ref: "Análise de Dados" }],
     },
+    {
+        phase: "core",
+        position: 5,
+        title: "SQL e bancos de dados",
+        description:
+            "De onde os dados vêm: SQL do zero, modelo relacional, consultas com joins e agregações, e PostgreSQL na prática. Um cientista de dados vive de SQL.",
+        tags: ["SQL", "PostgreSQL", "Consultas"],
+        refs: [{ type: "trail", ref: "Banco de Dados" }],
+    },
+    {
+        phase: "core",
+        position: 6,
+        title: "Visualização e análise exploratória",
+        description:
+            "Veja e comunique os dados: quando usar cada gráfico, matplotlib e seaborn, análise exploratória visual, boas práticas (e os gráficos que enganam) e storytelling com dados.",
+        tags: ["matplotlib", "seaborn", "EDA"],
+        refs: [{ type: "trail", ref: "Visualização de Dados" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
