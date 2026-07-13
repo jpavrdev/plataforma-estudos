@@ -114,6 +114,15 @@ const STAGES: Stage[] = [
         tags: ["Ensembles", "Boosting", "Tuning"],
         refs: [{ type: "trail", ref: "Machine Learning na Prática" }],
     },
+    {
+        phase: "avancado",
+        position: 9,
+        title: "Do modelo ao produto",
+        description:
+            "O fechamento do roadmap: colocar um modelo em produção. Do notebook ao produto, servir previsões com uma API, empacotar com Docker, monitorar o modelo e o drift, retreinar, e a ética e a IA responsável.",
+        tags: ["MLOps", "Deploy", "IA responsável"],
+        refs: [{ type: "trail", ref: "Do Modelo ao Produto" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
