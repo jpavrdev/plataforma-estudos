@@ -14,6 +14,11 @@ export const updateTrailSchema = z.object({
     tagIds: z.array(z.uuid()).optional(),
 });
 
+export const reviewTrailSchema = z.object({
+    stars: z.number().int().min(1, "Nota de 1 a 5").max(5, "Nota de 1 a 5"),
+    comment: z.string().max(1000, "Comentário muito longo").optional(),
+});
+
 export const createTagSchema = z.object({
     name: z.string().min(2, "Nome deve ter ao menos 2 caracteres").max(60, "Nome muito longo"),
 });

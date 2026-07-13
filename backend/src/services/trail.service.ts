@@ -12,8 +12,10 @@ import {
     roadmaps,
     roadmapStages,
     roadmapStageRefs,
+    trailReviews,
+    users,
 } from "../../schema.ts";
-import { eq, asc, count, countDistinct, inArray, and } from "drizzle-orm";
+import { eq, asc, desc, count, countDistinct, inArray, and } from "drizzle-orm";
 import type { z } from "zod";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -287,10 +289,84 @@ export async function detalheDaTrilha(trailId: string, userId: string) {
         .orderBy(asc(roadmaps.position))
         .limit(1);
 
+    const revs = await db
+        .select({
+            userId: trailReviews.userId,
+            name: users.name,
+            stars: trailReviews.stars,
+            comment: trailReviews.comment,
+        })
+        .from(trailReviews)
+        .innerJoin(users, eq(users.id, trailReviews.userId))
+        .where(eq(trailReviews.trailId, trailId))
+        .orderBy(desc(trailReviews.createdAt));
+
+    const reviewCount = revs.length;
+    const rating = reviewCount
+        ? Math.round((revs.reduce((s, r) => s + r.stars, 0) / reviewCount) * 10) / 10
+        : null;
+    const ratingDistribution = [5, 4, 3, 2, 1].map((star) => {
+        const n = revs.filter((r) => r.stars === star).length;
+        return { star, count: n, pct: reviewCount ? Math.round((n / reviewCount) * 100) : 0 };
+    });
+    const reviews = revs
+        .filter((r) => r.comment && r.comment.trim())
+        .map((r) => ({ name: r.name, stars: r.stars, comment: r.comment as string }));
+    const minha = revs.find((r) => r.userId === userId);
+    const myReview = minha ? { stars: minha.stars, comment: minha.comment } : null;
+    const canReview = todasAulas.some((a) => concluidas.has(a.id));
+
     return {
         ...trilha,
         category: rm?.name ?? null,
         studentsCount: Number(studs.n),
+        rating,
+        reviewCount,
+        ratingDistribution,
+        reviews,
+        myReview,
+        canReview,
         modules: modulosComAulas,
     };
+}
+
+// Cria ou atualiza a avaliacao do usuario. So quem ja tem progresso na trilha avalia.
+export async function avaliarTrilha(
+    trailId: string,
+    userId: string,
+    stars: number,
+    comment: string | null,
+) {
+    const [trilha] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
+    if (!trilha) {
+        throw new AppError(404, "Trilha não encontrada");
+    }
+
+    const ls = await db.select({ id: lessons.id }).from(lessons).where(eq(lessons.trailId, trailId));
+    const lessonIds = ls.map((l) => l.id);
+    const progresso = lessonIds.length
+        ? await db
+              .select({ id: lessonProgress.id })
+              .from(lessonProgress)
+              .where(
+                  and(
+                      eq(lessonProgress.userId, userId),
+                      inArray(lessonProgress.lessonId, lessonIds),
+                  ),
+              )
+              .limit(1)
+        : [];
+    if (progresso.length === 0) {
+        throw new AppError(403, "Comece a trilha para poder avaliar");
+    }
+
+    const texto = comment && comment.trim() ? comment.trim() : null;
+    await db
+        .insert(trailReviews)
+        .values({ trailId, userId, stars, comment: texto })
+        .onConflictDoUpdate({
+            target: [trailReviews.userId, trailReviews.trailId],
+            set: { stars, comment: texto, updatedAt: new Date() },
+        });
+    return { stars, comment: texto };
 }

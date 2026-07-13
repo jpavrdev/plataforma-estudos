@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import {
     createTrailSchema,
+    reviewTrailSchema,
     createModuleSchema,
     createLessonSchema,
     createQuestionSchema,
@@ -52,6 +53,7 @@ import {
     listarTrilhas,
     trilhasDoUsuario,
     detalheDaTrilha,
+    avaliarTrilha,
 } from "../services/trail.service.ts";
 import { detalheDaAula } from "../services/lesson.service.ts";
 import { corrigirQuiz, conferirResposta } from "../services/quiz.service.ts";
@@ -340,6 +342,17 @@ export const getMyTrails = async (req: Request, res: Response, next: NextFunctio
 export const getTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await detalheDaTrilha(String(req.params.id), req.userId!));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const submitTrailReview = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = reviewTrailSchema.parse(req.body);
+        res.json(
+            await avaliarTrilha(String(req.params.id), req.userId!, dados.stars, dados.comment ?? null),
+        );
     } catch (err) {
         next(err);
     }

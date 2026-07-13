@@ -257,9 +257,13 @@ export function Home() {
                         role="button"
                         tabIndex={0}
                         style={{ cursor: 'pointer' }}
-                        onClick={() => abrirTrilha(t.id)}
+                        onClick={() =>
+                          mostrandoEmAndamento ? abrirTrilha(t.id) : navigate(`/trilhas/${t.id}`)
+                        }
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') abrirTrilha(t.id);
+                          if (e.key !== 'Enter') return;
+                          if (mostrandoEmAndamento) abrirTrilha(t.id);
+                          else navigate(`/trilhas/${t.id}`);
                         }}
                       >
                         <div className="trilha__head">

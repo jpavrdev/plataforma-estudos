@@ -218,6 +218,13 @@
       "when": 1783951612904,
       "tag": "0030_tough_the_executioner",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1783956666971,
+      "tag": "0031_careless_fenris",
+      "breakpoints": true
     }
   ]
 }
