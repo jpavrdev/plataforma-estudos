@@ -69,6 +69,15 @@ const STAGES: Stage[] = [
         tags: ["Estatística", "Probabilidade", "Inferência"],
         refs: [{ type: "trail", ref: "Estatística e Probabilidade" }],
     },
+    {
+        phase: "core",
+        position: 4,
+        title: "Análise de dados com pandas",
+        description:
+            "O carro-chefe prático: NumPy e pandas pra carregar, selecionar, filtrar, agrupar e juntar dados, e a limpeza que consome a maior parte do tempo. De uma planilha bruta a dados prontos pra modelar.",
+        tags: ["pandas", "NumPy", "Dados"],
+        refs: [{ type: "trail", ref: "Análise de Dados" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
