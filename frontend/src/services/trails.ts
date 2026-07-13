@@ -79,6 +79,21 @@ export interface ModuleWithLessons {
   lessons: LessonRef[];
 }
 
+export interface TrailReview {
+  name: string;
+  stars: number;
+  comment: string;
+}
+export interface RatingBar {
+  star: number;
+  count: number;
+  pct: number;
+}
+export interface MyReview {
+  stars: number;
+  comment: string | null;
+}
+
 export interface TrailDetail {
   id: string;
   name: string;
@@ -88,11 +103,25 @@ export interface TrailDetail {
   whatYouLearn?: string[] | null;
   prerequisites?: string[] | null;
   studentsCount?: number;
+  rating?: number | null;
+  reviewCount?: number;
+  ratingDistribution?: RatingBar[];
+  reviews?: TrailReview[];
+  myReview?: MyReview | null;
+  canReview?: boolean;
   modules: ModuleWithLessons[];
 }
 
 export async function obterTrilha(trailId: string) {
   const { data } = await api.get<TrailDetail>(`/trails/${trailId}`);
+  return data;
+}
+
+export async function avaliarTrilha(trailId: string, stars: number, comment: string | null) {
+  const { data } = await api.post<MyReview>(`/trails/${trailId}/review`, {
+    stars,
+    comment: comment ?? undefined,
+  });
   return data;
 }
 

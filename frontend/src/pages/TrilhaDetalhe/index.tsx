@@ -22,7 +22,7 @@ import {
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
-import { obterTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
+import { obterTrilha, avaliarTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
 
 const NIVEL: Record<TrailDetail['trailLevel'], string> = {
   iniciante: 'Iniciante',
@@ -52,6 +52,30 @@ function dispDe(l: LessonRef): Disp {
   return 'locked';
 }
 
+const STAR_PATH = 'M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.3 3.2L7 14.2l-5-4.8 7-.9z';
+
+function Stars({ value, size = 16 }: { value: number; size?: number }) {
+  return (
+    <div className="td-stars">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <svg
+          key={i}
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill={i < value ? 'var(--gold)' : 'var(--border-strong)'}
+        >
+          <path d={STAR_PATH} />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+function formatNota(n: number | null | undefined): string {
+  return (n ?? 0).toFixed(1).replace('.', ',');
+}
+
 export function TrilhaDetalhe() {
   const { trailId } = useParams();
   const { user: authUser } = useAuth();
@@ -64,6 +88,9 @@ export function TrilhaDetalhe() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [abertos, setAbertos] = useState<Set<string>>(new Set());
+  const [stars, setStars] = useState(0);
+  const [comment, setComment] = useState('');
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
     if (!trailId) return;
@@ -71,6 +98,8 @@ export function TrilhaDetalhe() {
     obterTrilha(trailId)
       .then((t) => {
         setTrilha(t);
+        setStars(t.myReview?.stars ?? 0);
+        setComment(t.myReview?.comment ?? '');
         const atual = t.modules.find((m) => m.lessons.some((l) => l.state === 'current'));
         setAbertos(new Set([(atual ?? t.modules[0])?.id].filter(Boolean) as string[]));
       })
@@ -103,6 +132,20 @@ export function TrilhaDetalhe() {
       n.has(id) ? n.delete(id) : n.add(id);
       return n;
     });
+  }
+
+  async function enviarAvaliacao() {
+    if (!trailId || stars < 1) return;
+    setSalvando(true);
+    try {
+      await avaliarTrilha(trailId, stars, comment.trim() || null);
+      const t = await obterTrilha(trailId);
+      setTrilha(t);
+    } catch {
+      setErro('Não foi possível enviar sua avaliação.');
+    } finally {
+      setSalvando(false);
+    }
   }
 
   const alunos = trilha?.studentsCount ?? 0;
@@ -180,11 +223,20 @@ export function TrilhaDetalhe() {
                   <h1 className="td-hero__title">{trilha.name}</h1>
                   <p className="td-hero__desc">{trilha.description}</p>
 
-                  {alunos > 0 && (
+                  {((trilha.reviewCount ?? 0) > 0 || alunos > 0) && (
                     <div className="td-hero__rating">
-                      <div className="td-hero__students">
-                        <Users size={17} /> <b>{alunos.toLocaleString('pt-BR')}</b> alunos nesta trilha
-                      </div>
+                      {(trilha.reviewCount ?? 0) > 0 && (
+                        <div className="td-rating">
+                          <span className="td-rating__num">{formatNota(trilha.rating)}</span>
+                          <Stars value={Math.round(trilha.rating ?? 0)} size={16} />
+                          <span className="td-rating__count">({trilha.reviewCount} avaliações)</span>
+                        </div>
+                      )}
+                      {alunos > 0 && (
+                        <div className="td-hero__students">
+                          <Users size={17} /> <b>{alunos.toLocaleString('pt-BR')}</b> alunos nesta trilha
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -354,9 +406,103 @@ export function TrilhaDetalhe() {
 
                 <div className="card">
                   <h3 className="td-h3">Avaliações</h3>
-                  <p className="td-empty">
-                    Ainda não há avaliações nesta trilha. Conclua e seja o primeiro a avaliar.
-                  </p>
+                  {(trilha.reviewCount ?? 0) > 0 ? (
+                    <div className="td-ratings">
+                      <div className="td-ratings__big">
+                        <div className="td-ratings__num">{formatNota(trilha.rating)}</div>
+                        <Stars value={Math.round(trilha.rating ?? 0)} size={13} />
+                        <div className="td-ratings__count">{trilha.reviewCount} avaliações</div>
+                      </div>
+                      <div className="td-ratings__bars">
+                        {(trilha.ratingDistribution ?? []).map((rb) => (
+                          <div key={rb.star} className="td-rbar">
+                            <span className="td-rbar__star">{rb.star}</span>
+                            <div className="td-rbar__track">
+                              <span style={{ width: `${rb.pct}%` }} />
+                            </div>
+                            <span className="td-rbar__pct">{rb.pct}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="td-empty">Ainda não há avaliações. Seja o primeiro a avaliar.</p>
+                  )}
+
+                  {trilha.reviews && trilha.reviews.length > 0 && (
+                    <>
+                      <hr className="rule" />
+                      <div className="td-reviews">
+                        {trilha.reviews.map((rv, i) => (
+                          <div key={i}>
+                            <div className="td-review__head">
+                              <span className="avatar avatar--sm">{getInitials(rv.name)}</span>
+                              <span className="td-review__name">{rv.name}</span>
+                              <div className="td-review__stars">
+                                <Stars value={rv.stars} size={11} />
+                              </div>
+                            </div>
+                            <div className="td-review__text">{rv.comment}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {trilha.canReview ? (
+                    <>
+                      <hr className="rule" />
+                      <div className="td-form">
+                        <div className="td-form__title">
+                          {trilha.myReview ? 'Sua avaliação' : 'Avalie esta trilha'}
+                        </div>
+                        <div className="td-form__stars">
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <button
+                              key={n}
+                              type="button"
+                              className="td-form__star"
+                              onClick={() => setStars(n)}
+                              aria-label={`${n} estrela${n > 1 ? 's' : ''}`}
+                            >
+                              <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 24 24"
+                                fill={n <= stars ? 'var(--gold)' : 'var(--border-strong)'}
+                              >
+                                <path d={STAR_PATH} />
+                              </svg>
+                            </button>
+                          ))}
+                        </div>
+                        <textarea
+                          className="td-form__text"
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                          placeholder="Conte como foi a trilha (opcional)"
+                          maxLength={1000}
+                          rows={3}
+                        />
+                        <button
+                          className="td-form__submit"
+                          onClick={enviarAvaliacao}
+                          disabled={stars < 1 || salvando}
+                        >
+                          {salvando
+                            ? 'Enviando...'
+                            : trilha.myReview
+                              ? 'Atualizar avaliação'
+                              : 'Enviar avaliação'}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <hr className="rule" />
+                      <p className="td-empty">Comece a trilha para poder avaliar.</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

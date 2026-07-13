@@ -98,6 +98,15 @@
 .td-review__stars { margin-left: auto; }
 .td-review__text { font-size: 13px; line-height: 1.5; color: var(--muted); }
 
+.td-form { display: flex; flex-direction: column; gap: 10px; }
+.td-form__title { font-size: 13px; font-weight: 700; }
+.td-form__stars { display: flex; gap: 4px; }
+.td-form__star { background: none; border: none; padding: 0; cursor: pointer; display: flex; }
+.td-form__text { width: 100%; box-sizing: border-box; resize: vertical; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); color: var(--text); font-family: inherit; font-size: 13.5px; padding: 9px 11px; }
+.td-form__text:focus { outline: none; border-color: var(--accent); }
+.td-form__submit { height: 42px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer; }
+.td-form__submit:disabled { opacity: 0.55; cursor: default; }
+
 .td-empty { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
 .td-back { display: inline-flex; align-items: center; gap: 5px; color: rgba(255,255,255,.75); text-decoration: none; font-size: 13px; font-weight: 600; }
 .td-back:hover { color: #fff; }

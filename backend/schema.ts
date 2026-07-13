@@ -100,6 +100,25 @@ export const trails = pgTable("trails", {
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
+// Avaliacao de uma trilha: uma por usuario, nota obrigatoria e comentario opcional.
+export const trailReviews = pgTable(
+    "trail_reviews",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        stars: integer("stars").notNull(),
+        comment: text("comment"),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.userId, table.trailId)],
+);
+
 export const modules = pgTable("modules", {
     id: uuid("id").primaryKey().defaultRandom(),
     trailId: uuid("trail_id")
