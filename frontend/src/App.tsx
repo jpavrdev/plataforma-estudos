@@ -8,6 +8,7 @@ import { Trilhas } from './pages/Trilhas';
 import { Roadmaps } from './pages/Roadmaps';
 import { RoadmapDetalhe } from './pages/Roadmaps/Detalhe';
 import { Aula } from './pages/Aula';
+import { TrilhaDetalhe } from './pages/TrilhaDetalhe';
 import { Estudio } from './pages/Estudio';
 import { EstudioHome } from './pages/EstudioHome';
 import { Usuarios } from './pages/Usuarios';
@@ -92,6 +93,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <Trilhas />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/trilhas/:trailId"
+        element={
+          <PrivateRoute>
+            <TrilhaDetalhe />
           </PrivateRoute>
         }
       />

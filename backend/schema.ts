@@ -95,6 +95,8 @@ export const trails = pgTable("trails", {
     name: varchar("name", { length: 255 }).notNull(),
     trailLevel: trailLevel("level").notNull(),
     description: text("description").notNull(),
+    whatYouLearn: jsonb("what_you_learn").$type<string[]>(),
+    prerequisites: jsonb("prerequisites").$type<string[]>(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -121,6 +123,8 @@ export const lessons = pgTable("lessons", {
     contentBlocks: jsonb("content_blocks").$type<{ type: string; value: string }[]>(),
     position: integer("position").notNull(),
     published: boolean("published").default(false).notNull(),
+    durationMin: integer("duration_min"),
+    preview: boolean("preview").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

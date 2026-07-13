@@ -1,0 +1,349 @@
+// Preenche os campos da tela de detalhe da trilha:
+//  - what_you_learn e prerequisites (autorados por trilha, no mapa DETALHES);
+//  - duration_min de cada aula (estimativa de tempo de leitura dos blocos + quiz);
+//  - preview = true na primeira aula de cada trilha (deixa espiar sem estar inscrito).
+// Idempotente: sempre reescreve os valores. Trilha fora do mapa fica sem what/prereq
+// (a tela simplesmente nao mostra essas secoes), mas ainda recebe duracao e preview.
+//
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-detalhes-trilhas.ts
+import { db } from "../db.ts";
+import { trails, modules, lessons, questions } from "../schema.ts";
+import { eq, asc, inArray, count } from "drizzle-orm";
+
+const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[] }> = {
+    "Lógica de Programação": {
+        whatYouLearn: [
+            "Pensar em algoritmos e resolver problemas passo a passo",
+            "Variáveis, tipos de dados e operadores",
+            "Condicionais, laços e repetição",
+            "Funções, coleções e um mini-projeto do zero",
+        ],
+        prerequisites: ["Nenhum: é o ponto de partida, só vontade de aprender"],
+    },
+    Python: {
+        whatYouLearn: [
+            "Escrever e rodar código Python do zero",
+            "Tipos, strings, controle de fluxo e estruturas de dados",
+            "Funções, módulos e a biblioteca padrão",
+            "Ler arquivos e CSV, tratar erros, e a ponte pra dados",
+        ],
+        prerequisites: ["Lógica de programação (algoritmos, laços, condicionais)"],
+    },
+    "Estatística e Probabilidade": {
+        whatYouLearn: [
+            "Estatística descritiva: média, mediana, desvio e distribuições",
+            "Probabilidade, amostragem e o Teorema Central do Limite",
+            "Inferência: intervalos de confiança e teste de hipótese",
+            "Correlação e por que ela não é causalidade",
+        ],
+        prerequisites: ["Python básico", "Matemática do ensino médio"],
+    },
+    "Análise de Dados": {
+        whatYouLearn: [
+            "Manipular dados com NumPy e pandas",
+            "Carregar, filtrar, ordenar e agrupar (groupby)",
+            "Limpar dados: faltantes, tipos, duplicatas e outliers",
+            "Juntar tabelas com merge e um fluxo de análise completo",
+        ],
+        prerequisites: ["Python (estruturas de dados, funções)", "Noções de estatística descritiva"],
+    },
+    "Protocolos da Web": {
+        whatYouLearn: [
+            "Como a web funciona: cliente-servidor e o ciclo de uma requisição",
+            "HTTP: métodos, cabeçalhos e códigos de status",
+            "REST e o design de APIs",
+            "URLs, cookies e o básico de HTTPS",
+        ],
+        prerequisites: ["Lógica de programação"],
+    },
+    "APIs e Frameworks": {
+        whatYouLearn: [
+            "Construir uma API REST com Node.js e Express",
+            "Rotas, middleware e validação de dados",
+            "Tratamento de erros e estrutura de projeto",
+            "Um CRUD completo de ponta a ponta",
+        ],
+        prerequisites: ["Lógica de programação", "Protocolos da web (HTTP, REST)"],
+    },
+    "Banco de Dados": {
+        whatYouLearn: [
+            "Modelo relacional e SQL do zero",
+            "Modelagem com relacionamentos e chaves",
+            "PostgreSQL na prática e conexão segura",
+            "O papel dos ORMs",
+        ],
+        prerequisites: ["Lógica de programação"],
+    },
+    Autenticação: {
+        whatYouLearn: [
+            "Hash de senha com bcrypt e por que nunca guardar senha em texto",
+            "Sessões, cookies e tokens JWT",
+            "Autorização por papéis (RBAC) e falhas comuns como IDOR",
+            "OAuth e login social",
+        ],
+        prerequisites: ["APIs e Frameworks (Express, rotas)", "Banco de dados"],
+    },
+    "Cache, Filas e Performance": {
+        whatYouLearn: [
+            "Medir e melhorar a performance do back-end",
+            "Cache com Redis e estratégias de invalidação",
+            "Filas e processamento assíncrono com workers",
+            "Como escalar sob carga",
+        ],
+        prerequisites: ["APIs e Frameworks", "Banco de dados"],
+    },
+    "Testes e Qualidade": {
+        whatYouLearn: [
+            "Testes unitários e de integração com Vitest",
+            "Mocks, TDD e cobertura de código",
+            "Testar uma API de ponta a ponta",
+            "Qualidade além dos testes: lint, tipos e review",
+        ],
+        prerequisites: ["APIs e Frameworks (uma app pra testar)"],
+    },
+    "Docker e Containers": {
+        whatYouLearn: [
+            "O que são containers e por que usá-los",
+            "Escrever um Dockerfile e construir imagens",
+            "Volumes e Docker Compose pra orquestrar serviços",
+            "Imagens enxutas e seguras a caminho do deploy",
+        ],
+        prerequisites: ["APIs e Frameworks", "Banco de dados"],
+    },
+    "CI/CD e Cloud": {
+        whatYouLearn: [
+            "Integração contínua rodando testes a cada push",
+            "GitHub Actions na prática",
+            "Build e publicação de imagens, e deploy contínuo",
+            "Onde a aplicação roda na nuvem, com HTTPS e observabilidade",
+        ],
+        prerequisites: ["Docker e containers", "Testes e qualidade"],
+    },
+    "Arquitetura e Escala": {
+        whatYouLearn: [
+            "Escala vertical e horizontal, e o monólito com réplicas stateless",
+            "Banco em escala: réplicas de leitura e cache",
+            "Comunicação assíncrona e mensageria",
+            "De monólito a serviços e padrões de resiliência",
+        ],
+        prerequisites: ["O caminho de back-end (APIs, banco, cache, deploy)"],
+    },
+    JavaScript: {
+        whatYouLearn: [
+            "A sintaxe e os tipos do JavaScript moderno",
+            "Funções, objetos, arrays e seus métodos",
+            "Assíncrono: callbacks, promises e async/await",
+            "Manipular o DOM e eventos no navegador",
+        ],
+        prerequisites: ["Lógica de programação"],
+    },
+    HTML: {
+        whatYouLearn: [
+            "Estruturar páginas com HTML semântico",
+            "Textos, links, imagens, listas e tabelas",
+            "Formulários e seus controles",
+            "Boas práticas de acessibilidade",
+        ],
+        prerequisites: ["Nenhum: um ótimo primeiro passo no front-end"],
+    },
+    CSS: {
+        whatYouLearn: [
+            "Estilizar páginas: cores, tipografia e o box model",
+            "Layout com Flexbox e Grid",
+            "Design responsivo com media queries",
+            "Transições e um toque de animação",
+        ],
+        prerequisites: ["HTML"],
+    },
+    "UI/UX Design": {
+        whatYouLearn: [
+            "Princípios de usabilidade e design de interface",
+            "Hierarquia visual, tipografia, cor e espaçamento",
+            "O processo de UX: pesquisa, wireframe e protótipo",
+            "Design systems e acessibilidade",
+        ],
+        prerequisites: ["Nenhum: uma porta de entrada para produto e front-end"],
+    },
+    "Fundamentos de Cibersegurança": {
+        whatYouLearn: [
+            "A tríade CIA e os princípios de defesa",
+            "O panorama de ameaças e atores",
+            "Malware, engenharia social e phishing",
+            "Criptografia e higiene de segurança no dia a dia",
+        ],
+        prerequisites: ["Nenhum: começa do zero em segurança"],
+    },
+    "Segurança de Aplicações Web": {
+        whatYouLearn: [
+            "O OWASP Top 10 na prática",
+            "Injeção (SQL, XSS) e controle de acesso quebrado",
+            "Configuração insegura e componentes vulneráveis",
+            "Pensar e testar como um atacante para defender",
+        ],
+        prerequisites: ["Noções de web (HTTP)", "Fundamentos de cibersegurança ajudam"],
+    },
+    "ISC2 Certified in Cybersecurity (CC)": {
+        whatYouLearn: [
+            "Os cinco domínios do exame ISC2 CC",
+            "Princípios de segurança e controle de acesso",
+            "Resposta a incidentes e continuidade de negócio",
+            "Segurança de redes e operações, vendor-neutral",
+        ],
+        prerequisites: ["Fundamentos de cibersegurança recomendado"],
+    },
+    "AZURE SC-900": {
+        whatYouLearn: [
+            "Conceitos de segurança, conformidade e identidade",
+            "Identidade e acesso com o Microsoft Entra",
+            "As soluções de segurança da Microsoft",
+            "Recursos de conformidade do Microsoft 365 e Azure",
+        ],
+        prerequisites: ["Noções básicas de nuvem ajudam"],
+    },
+    "AZURE AI-900": {
+        whatYouLearn: [
+            "Fundamentos de IA e IA responsável",
+            "Machine learning: conceitos e fluxo",
+            "Visão computacional e processamento de linguagem natural",
+            "IA generativa, mapeado para o exame AI-900",
+        ],
+        prerequisites: ["Nenhum: introdução conceitual à IA na Azure"],
+    },
+    "AZURE AI-901": {
+        whatYouLearn: [
+            "IA e IA responsável em profundidade",
+            "Modelos e o Microsoft Foundry",
+            "Visão, fala e análise de texto aplicadas",
+            "IA generativa, agentes e extração de informação",
+        ],
+        prerequisites: ["AI-900 ou noções de IA recomendado"],
+    },
+    "AZURE DP-900": {
+        whatYouLearn: [
+            "Conceitos centrais de dados",
+            "Dados relacionais e não relacionais no Azure",
+            "Cargas de trabalho analíticas",
+            "Os serviços de dados do Azure, para o exame DP-900",
+        ],
+        prerequisites: ["Nenhum: introdução a dados na nuvem"],
+    },
+    "AZURE AZ-900": {
+        whatYouLearn: [
+            "Conceitos de nuvem: modelos e benefícios",
+            "Os principais serviços do Azure",
+            "Segurança, identidade e governança",
+            "Preços e suporte, mapeado para o exame AZ-900",
+        ],
+        prerequisites: ["Nenhum: porta de entrada para a nuvem Azure"],
+    },
+    "AWS CLF-C02": {
+        whatYouLearn: [
+            "Conceitos de nuvem e a proposta da AWS",
+            "Segurança e o modelo de responsabilidade compartilhada",
+            "Os principais serviços da AWS (computação, storage, rede, banco)",
+            "Preços, suporte e faturamento, para o Cloud Practitioner",
+        ],
+        prerequisites: ["Nenhum: certificação de entrada na AWS"],
+    },
+    "AWS DVA-C02": {
+        whatYouLearn: [
+            "Desenvolver e implantar aplicações na AWS",
+            "Serviços-chave: Lambda, DynamoDB, S3 e API Gateway",
+            "Segurança, IAM e boas práticas para desenvolvedores",
+            "CI/CD e observabilidade, para o Developer Associate",
+        ],
+        prerequisites: ["Cloud Practitioner (CLF-C02) ou equivalente", "Saber programar"],
+    },
+};
+
+// Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
+// mais um custo por bloco de codigo e por questao do quiz. Minimo de 3 min.
+function estimarMin(blocks: { type: string; value: string }[] | null, numQuestoes: number): number {
+    let palavras = 0;
+    let codeBlocks = 0;
+    for (const b of blocks ?? []) {
+        if (b.type === "text" || b.type === "quote") {
+            palavras += b.value.trim().split(/\s+/).filter(Boolean).length;
+        } else if (b.type === "code") {
+            codeBlocks += 1;
+        } else if (b.type === "table") {
+            palavras += 25;
+        }
+    }
+    const minutos = palavras / 180 + codeBlocks * 0.5 + numQuestoes * 1.2;
+    return Math.max(3, Math.round(minutos));
+}
+
+async function seed() {
+    const todas = await db.select().from(trails);
+    let metaAtualizadas = 0;
+    let aulasAtualizadas = 0;
+    let previews = 0;
+    const semDetalhe: string[] = [];
+
+    for (const t of todas) {
+        const d = DETALHES[t.name];
+        if (d) {
+            await db
+                .update(trails)
+                .set({ whatYouLearn: d.whatYouLearn, prerequisites: d.prerequisites })
+                .where(eq(trails.id, t.id));
+            metaAtualizadas++;
+        } else {
+            semDetalhe.push(t.name);
+        }
+
+        const mods = await db
+            .select()
+            .from(modules)
+            .where(eq(modules.trailId, t.id))
+            .orderBy(asc(modules.position));
+        const posDoModulo = new Map(mods.map((m) => [m.id, m.position]));
+
+        const aulas = await db.select().from(lessons).where(eq(lessons.trailId, t.id));
+        if (aulas.length === 0) continue;
+
+        const aulaIds = aulas.map((a) => a.id);
+        const contagens = await db
+            .select({ lessonId: questions.lessonId, n: count() })
+            .from(questions)
+            .where(inArray(questions.lessonId, aulaIds))
+            .groupBy(questions.lessonId);
+        const questoesPorAula = new Map(contagens.map((c) => [c.lessonId, Number(c.n)]));
+
+        const ordenadas = [...aulas].sort(
+            (a, b) =>
+                (posDoModulo.get(a.moduleId) ?? 0) - (posDoModulo.get(b.moduleId) ?? 0) ||
+                a.position - b.position,
+        );
+
+        for (let i = 0; i < ordenadas.length; i++) {
+            const a = ordenadas[i];
+            const min = estimarMin(a.contentBlocks, questoesPorAula.get(a.id) ?? 0);
+            const preview = i === 0;
+            await db.update(lessons).set({ durationMin: min, preview }).where(eq(lessons.id, a.id));
+            aulasAtualizadas++;
+            if (preview) previews++;
+        }
+    }
+
+    console.log(
+        "Detalhes seed: " +
+            metaAtualizadas +
+            " trilhas com what/prereq, " +
+            aulasAtualizadas +
+            " aulas com duracao, " +
+            previews +
+            " previews.",
+    );
+    if (semDetalhe.length) {
+        console.log("Sem what/prereq (nao estao no mapa DETALHES): " + semDetalhe.join(", "));
+    }
+}
+
+seed()
+    .then(() => process.exit(0))
+    .catch((e) => {
+        console.error("Falha no seed de detalhes:", e);
+        process.exit(1);
+    });
