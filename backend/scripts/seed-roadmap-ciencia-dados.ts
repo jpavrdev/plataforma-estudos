@@ -105,6 +105,15 @@ const STAGES: Stage[] = [
         tags: ["scikit-learn", "Regressão", "Classificação"],
         refs: [{ type: "trail", ref: "Machine Learning" }],
     },
+    {
+        phase: "avancado",
+        position: 8,
+        title: "Machine learning na prática",
+        description:
+            "ML além do básico: feature engineering, ajuste de hiperparâmetros, ensembles (random forest e boosting), pipelines robustos, lidar com desbalanceamento e overfitting, e uma introdução a deep learning.",
+        tags: ["Ensembles", "Boosting", "Tuning"],
+        refs: [{ type: "trail", ref: "Machine Learning na Prática" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
