@@ -476,3 +476,41 @@ export const BookOpen = ({ size = 13 }: IconProps) => (
     <path d="M12 6.5C13.5 5 16 4.5 21 4.8V19c-5-.3-7.5.2-9 1.7z" />
   </svg>
 );
+
+export const Users = ({ size = 17 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="8" r="3.2" />
+    <path d="M2.5 20c0-3.4 3-5.2 6.5-5.2s6.5 1.8 6.5 5.2" />
+    <path d="M17 6a3 3 0 0 1 0 6M21 20c0-2.2-1.2-3.8-3.2-4.6" />
+  </svg>
+);
+
+export const Award = ({ size = 15 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="9" r="5" />
+    <path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5" />
+  </svg>
+);
+
+export const Globe = ({ size = 15 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" />
+  </svg>
+);
+
+export const DocLines = ({ size = 26 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    <path d="M9 7h7M9 11h7" />
+  </svg>
+);
+
+export const Grid4 = ({ size = 17 }: IconProps) => (
+  <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <rect x="14" y="14" width="7" height="7" rx="1" />
+  </svg>
+);

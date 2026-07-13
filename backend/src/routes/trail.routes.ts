@@ -10,6 +10,7 @@ import {
     createQuestion,
     listTrails,
     getTrail,
+    submitTrailReview,
     getLesson,
     getMyTrails,
     getMyXp,
@@ -86,6 +87,7 @@ router.post("/lessons/:id/questions", autenticar, exigirAdmin, createQuestion);
 router.patch("/lessons/:id/published", autenticar, exigirAdmin, setLessonPublished);
 router.get("/trails", autenticar, listTrails);
 router.get("/trails/:id", autenticar, getTrail);
+router.post("/trails/:id/review", autenticar, submitTrailReview);
 router.get("/lessons/:id", autenticar, getLesson);
 
 // Estúdio (admin): edição de estrutura e conteúdo das aulas

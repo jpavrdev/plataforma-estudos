@@ -95,8 +95,29 @@ export const trails = pgTable("trails", {
     name: varchar("name", { length: 255 }).notNull(),
     trailLevel: trailLevel("level").notNull(),
     description: text("description").notNull(),
+    whatYouLearn: jsonb("what_you_learn").$type<string[]>(),
+    prerequisites: jsonb("prerequisites").$type<string[]>(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+// Avaliacao de uma trilha: uma por usuario, nota obrigatoria e comentario opcional.
+export const trailReviews = pgTable(
+    "trail_reviews",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        stars: integer("stars").notNull(),
+        comment: text("comment"),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.userId, table.trailId)],
+);
 
 export const modules = pgTable("modules", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -121,6 +142,8 @@ export const lessons = pgTable("lessons", {
     contentBlocks: jsonb("content_blocks").$type<{ type: string; value: string }[]>(),
     position: integer("position").notNull(),
     published: boolean("published").default(false).notNull(),
+    durationMin: integer("duration_min"),
+    preview: boolean("preview").default(false).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

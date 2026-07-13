@@ -211,6 +211,20 @@
       "when": 1783695348882,
       "tag": "0029_nosy_nick_fury",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1783951612904,
+      "tag": "0030_tough_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1783956666971,
+      "tag": "0031_careless_fenris",
+      "breakpoints": true
     }
   ]
 }

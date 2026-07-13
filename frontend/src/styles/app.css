@@ -1258,8 +1258,8 @@
 
 /* ===================== TRILHAS ===================== */
 .trilhas-page {
-  padding: 32px 48px;
-  max-width: 1180px;
+  padding: 32px 32px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 .trilhas-page__head {
@@ -1451,6 +1451,26 @@
 }
 
 .select-filtro select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.filters__search {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  min-width: 220px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.filters__search:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }

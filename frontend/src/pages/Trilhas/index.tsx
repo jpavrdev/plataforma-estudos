@@ -87,6 +87,7 @@ export function Trilhas() {
   const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
   const [nivel, setNivel] = useState('');
   const [categoria, setCategoria] = useState('');
+  const [busca, setBusca] = useState('');
 
   useEffect(() => {
     async function carregar() {
@@ -121,6 +122,16 @@ export function Trilhas() {
 
   const aulasConcluidas = minhas.reduce((soma, t) => soma + t.done, 0);
   const emAndamento = minhas.filter((t) => t.done < t.lessons).length;
+
+  const normalizar = (s: string) =>
+    s
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .toLowerCase();
+  const termoBusca = normalizar(busca.trim());
+  const trilhasFiltradas = termoBusca
+    ? trilhas.filter((t) => normalizar(t.name).includes(termoBusca))
+    : trilhas;
 
   return (
     <div className="home-shell">
@@ -209,6 +220,16 @@ export function Trilhas() {
           {/* Filtros */}
           <div className="filters">
             <label className="select-filtro">
+              <span className="filters__label">Buscar</span>
+              <input
+                className="filters__search"
+                type="text"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                placeholder="Nome da trilha"
+              />
+            </label>
+            <label className="select-filtro">
               <span className="filters__label">Nível</span>
               <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
                 {NIVEIS.map((n) => (
@@ -230,22 +251,24 @@ export function Trilhas() {
               </select>
             </label>
             <div className="topbar__spacer" />
-            <span className="filters__count">{trilhas.length} trilhas</span>
+            <span className="filters__count">{trilhasFiltradas.length} trilhas</span>
           </div>
 
           {carregando && <p className="track__desc">Carregando trilhas...</p>}
           {erro && <div className="auth__alert">{erro}</div>}
-          {!carregando && !erro && trilhas.length === 0 && (
+          {!carregando && !erro && trilhasFiltradas.length === 0 && (
             <p className="track__desc">
-              {nivel || categoria
-                ? 'Nenhuma trilha com esse filtro.'
-                : 'Nenhuma trilha disponível ainda.'}
+              {busca
+                ? 'Nenhuma trilha encontrada.'
+                : nivel || categoria
+                  ? 'Nenhuma trilha com esse filtro.'
+                  : 'Nenhuma trilha disponível ainda.'}
             </p>
           )}
 
           {/* Grade */}
           <div className="track-grid">
-            {trilhas.map((catalogo) => {
+            {trilhasFiltradas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
               const t = { ...catalogo, done: progresso?.done ?? 0 };
@@ -259,9 +282,9 @@ export function Trilhas() {
                   className="track track--clickable"
                   role="button"
                   tabIndex={0}
-                  onClick={() => abrirTrilha(t.id)}
+                  onClick={() => navigate(`/trilhas/${t.id}`)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') abrirTrilha(t.id);
+                    if (e.key === 'Enter') navigate(`/trilhas/${t.id}`);
                   }}
                 >
                   <div className="track__head">
