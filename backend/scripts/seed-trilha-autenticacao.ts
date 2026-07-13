@@ -69,11 +69,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação e autorização são a mesma coisa, apenas com nomes diferentes.",
+                                "text": "Autenticação e autorização são a mesma coisa dentro de um sistema, só muda o nome usado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação só existe em sistemas com senha; autorização só existe em sistemas com papéis de usuário.",
+                                "text": "Autenticação só existe em sistemas com senha; autorização só existe em sistemas com papéis.",
                                 "isCorrect": false
                             }
                         ]
@@ -87,15 +87,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Autenticação, porque prova que o crachá é válido.",
+                                "text": "Autenticação, porque é o crachá que confirma a identidade na catraca de entrada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Identificação, porque mostra o nome do funcionário impresso no crachá.",
+                                "text": "Identificação, porque o crachá exibe o nome e a foto do funcionário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Criptografia, porque protege fisicamente o cofre do financeiro.",
+                                "text": "Criptografia, porque impede fisicamente a abertura do cofre sem a senha certa.",
                                 "isCorrect": false
                             }
                         ]
@@ -105,19 +105,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "403 Forbidden, porque o usuário está autenticado, mas não tem permissão para essa ação.",
+                                "text": "403 Forbidden, porque o usuário está autenticado, mas não tem permissão para apagar posts.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "401 Unauthorized, porque o usuário não está autenticado.",
+                                "text": "401 Unauthorized, porque um token de usuário comum não conta como autenticação válida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "200 OK, porque um token válido já é suficiente para apagar o post.",
+                                "text": "200 OK, porque qualquer token válido já autoriza automaticamente a exclusão de posts.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "404 Not Found, porque o post não existe para esse usuário.",
+                                "text": "404 Not Found, porque o post pertence a outro usuário e por isso não pode ser encontrado.",
                                 "isCorrect": false
                             }
                         ]
@@ -127,19 +127,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Falha de autorização: a identidade foi verificada, mas o que o usuário pode fazer não foi checado direito.",
+                                "text": "Falha de autorização, já que a identidade foi confirmada mas a permissão não foi checada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Falha de autenticação: o sistema não sabe quem é o usuário.",
+                                "text": "Falha de autenticação, já que o sistema nunca confirma de fato a identidade de quem loga.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falha de criptografia: os dados do pedido não foram criptografados.",
+                                "text": "Falha de criptografia, já que os dados do pedido trafegam sem nenhuma proteção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Falha de identificação: o usuário não informou o próprio nome de usuário.",
+                                "text": "Falha de identificação, já que o cancelamento não exige o nome de usuário no formulário.",
                                 "isCorrect": false
                             }
                         ]
@@ -149,19 +149,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ele tem autenticação implementada, mas praticamente não tem autorização, já que não existe distinção do que cada usuário pode fazer.",
+                                "text": "Ele tem autenticação, mas praticamente não tem autorização, pois não existe distinção do que cada um pode fazer.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ele não tem autenticação nem autorização, porque as duas sempre precisam existir juntas ou nenhuma conta.",
+                                "text": "Ele não tem autenticação nem autorização, pois as duas precisam sempre existir juntas ou nenhuma existe.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele tem autorização completa, porque exige login para todas as rotas.",
+                                "text": "Ele tem autorização completa, porque só usuários autenticados chegam a ver qualquer rota da API.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele tem os dois implementados corretamente, já que exigir login já garante controle de acesso total.",
+                                "text": "Ele tem os dois implementados direito, já que pedir login em toda rota já garante o controle total de acesso.",
                                 "isCorrect": false
                             }
                         ]
@@ -210,15 +210,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Se autenticou por completo.",
+                                "text": "Se autenticou por completo, sem precisar da senha.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Foi autorizada a usar o sistema.",
+                                "text": "Foi autorizada a acessar qualquer área do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Provou quem é, já que o e-mail é único.",
+                                "text": "Provou quem é, porque o e-mail sozinho já basta.",
                                 "isCorrect": false
                             }
                         ]
@@ -228,19 +228,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um aplicativo autenticador no celular que gera códigos temporários.",
+                                "text": "Um aplicativo autenticador no celular, que gera códigos que mudam sozinhos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma senha memorizada.",
+                                "text": "Uma senha memorizada, escolhida e guardada apenas na cabeça do próprio usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma impressão digital.",
+                                "text": "Uma impressão digital, lida por um sensor biométrico embutido no aparelho.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O nome de usuário cadastrado.",
+                                "text": "O nome de usuário cadastrado, que serve apenas para identificar qual é a conta.",
                                 "isCorrect": false
                             }
                         ]
@@ -250,19 +250,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não, porque senha e pergunta secreta são as duas \"algo que você sabe\"; MFA de verdade combina categorias diferentes de fator.",
+                                "text": "Não, porque as duas são \"algo que você sabe\"; MFA de verdade exige categorias diferentes de fator.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim, porque são duas perguntas diferentes, feitas em momentos diferentes.",
+                                "text": "Sim, porque qualquer segunda pergunta depois da senha já conta como um fator adicional de segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, porque a pergunta secreta é um fator do tipo \"algo que você é\".",
+                                "text": "Sim, porque a resposta sobre o animal de estimação é considerada um dado biométrico do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque MFA exige sempre o uso de biometria.",
+                                "text": "Não, porque MFA de verdade só é reconhecido quando pelo menos um dos fatores é biometria.",
                                 "isCorrect": false
                             }
                         ]
@@ -272,19 +272,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Algo que você tem, já que esse fator depende de um objeto físico que pode ser perdido ou roubado.",
+                                "text": "Algo que você tem, pois depende de um objeto físico que pode ser perdido ou roubado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Algo que você sabe, já que o código recebido é uma informação memorizada.",
+                                "text": "Algo que você sabe, já que o código recebido por SMS é só uma informação para memorizar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Algo que você é, já que o celular reconhece a digital do dono.",
+                                "text": "Algo que você é, já que o aparelho perdido reconhece a digital cadastrada do dono.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum risco, porque códigos enviados ao celular nunca podem ser interceptados.",
+                                "text": "Nenhum risco relevante, porque códigos enviados por SMS nunca chegam a ser interceptados.",
                                 "isCorrect": false
                             }
                         ]
@@ -294,19 +294,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque autenticação com um único fator não distingue o dono legítimo de alguém que apenas descobriu a senha, e um segundo fator reduziria esse risco.",
+                                "text": "Porque autenticação de um único fator não distingue o dono real de quem só descobriu a senha vazada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é um problema, porque uma senha correta sempre garante que quem está logando é o dono legítimo da conta.",
+                                "text": "Não é um problema, porque uma senha correta é sempre prova suficiente de que é o dono legítimo da conta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um problema de autorização, não de autenticação, já que a senha enviada estava correta.",
+                                "text": "É um problema de autorização, e não de autenticação, já que a senha enviada realmente era a correta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um problema de identificação, porque o e-mail usado não pertencia ao atacante.",
+                                "text": "É um problema de identificação, porque o e-mail usado no login não pertencia ao atacante de verdade.",
                                 "isCorrect": false
                             }
                         ]
@@ -351,19 +351,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Que cada requisição é tratada de forma independente, sem que o servidor guarde memória da requisição anterior.",
+                                "text": "Que cada requisição é tratada de forma independente, sem memória da requisição anterior.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que o HTTP não permite enviar dados no corpo da requisição.",
+                                "text": "Que o HTTP nunca permite enviar nenhum dado dentro do corpo de uma requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o servidor guarda para sempre o histórico de todas as requisições de um cliente.",
+                                "text": "Que o servidor guarda para sempre o histórico de todas as requisições de cada cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o HTTP só funciona para páginas estáticas, sem login.",
+                                "text": "Que o HTTP só serve para páginas estáticas, sem suporte a login algum.",
                                 "isCorrect": false
                             }
                         ]
@@ -373,7 +373,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O servidor não vai saber quem é o usuário, porque a segunda requisição não carrega nenhuma informação sobre o login anterior.",
+                                "text": "O servidor não reconhece o usuário, pois a nova requisição não carrega dado nenhum do login anterior.",
                                 "isCorrect": true
                             },
                             {
@@ -385,7 +385,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O HTTP guarda automaticamente o histórico de login por 24 horas.",
+                                "text": "O HTTP guarda automaticamente, por padrão, o histórico de login de cada cliente por 24 horas.",
                                 "isCorrect": false
                             }
                         ]
@@ -395,7 +395,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O código ainda não implementou nenhum mecanismo (sessão ou token) para levar a informação do login de uma requisição para a outra, então o servidor não tem como saber quem fez login antes.",
+                                "text": "Falta implementar sessão ou token; sem isso, o servidor não sabe quem fez login antes.",
                                 "isCorrect": true
                             },
                             {
@@ -403,11 +403,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A senha do usuário estava incorreta na segunda requisição.",
+                                "text": "A senha do usuário estava incorreta nessa segunda tentativa de acessar o perfil.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor está com a autorização mal configurada para a rota /perfil.",
+                                "text": "O servidor está com a autorização mal configurada especificamente para a rota /perfil.",
                                 "isCorrect": false
                             }
                         ]
@@ -417,7 +417,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o HTTP foi desenhado para que cada requisição carregue tudo o que o servidor precisa para respondê-la, sem depender de um histórico guardado entre requisições.",
+                                "text": "Porque o HTTP foi desenhado para que cada requisição já traga tudo que o servidor precisa para respondê-la.",
                                 "isCorrect": true
                             },
                             {
@@ -425,11 +425,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTP só é usado hoje em sistemas antigos, sem necessidade de autenticação.",
+                                "text": "Porque o HTTP só é usado hoje em sistemas antigos, que nunca chegaram a precisar de autenticação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque servidores modernos sempre lembram de tudo por padrão, tornando essa característica irrelevante.",
+                                "text": "Porque servidores modernos sempre lembram de tudo por padrão, o que torna essa característica irrelevante.",
                                 "isCorrect": false
                             }
                         ]
@@ -439,19 +439,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "As duas dão um jeito de a requisição seguinte \"lembrar\" quem fez login, contornando o fato de o HTTP não guardar isso sozinho.",
+                                "text": "As duas dão um jeito de a requisição seguinte \"lembrar\" o login que o HTTP esquece.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As duas eliminam por completo a necessidade de autenticação nas requisições futuras.",
+                                "text": "As duas eliminam de vez qualquer necessidade de autenticação em requisições futuras.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas fazem o HTTP deixar de ser stateless, mudando o funcionamento do próprio protocolo.",
+                                "text": "As duas fazem o HTTP deixar de ser stateless, mudando o funcionamento do protocolo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas são exatamente a mesma técnica, apenas com nomes diferentes.",
+                                "text": "As duas são, no fundo, exatamente a mesma técnica de autenticação, com outro nome.",
                                 "isCorrect": false
                             }
                         ]
@@ -496,19 +496,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque aumenta a exposição da senha (ela passa a trafegar o tempo todo), impede um logout de verdade e encarece a verificação a cada chamada.",
+                                "text": "Porque a senha passa a trafegar sempre, sem permitir logout real nem verificação barata.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o HTTP não permite, tecnicamente, enviar credenciais em uma requisição.",
+                                "text": "Porque o protocolo HTTP não permite, em nenhuma hipótese, enviar credenciais numa requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque isso deixa a senha automaticamente mais forte.",
+                                "text": "Porque reenviar a senha sempre a deixa automaticamente mais forte contra ataques.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque essa prática nunca chegou a ser usada de verdade, é só um exemplo teórico.",
+                                "text": "Porque essa prática nunca chegou a ser usada de verdade fora de exemplos teóricos.",
                                 "isCorrect": false
                             }
                         ]
@@ -518,19 +518,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Codificada em Base64, que não é criptografia e pode ser decodificada por qualquer um.",
+                                "text": "Codificada em Base64, que não é criptografia e qualquer pessoa consegue reverter.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografada com uma chave secreta pertencente ao servidor.",
+                                "text": "Criptografada com uma chave secreta que pertence só ao servidor que recebe o login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Transformada em hash com bcrypt antes de sair do cliente.",
+                                "text": "Transformada em um hash com bcrypt antes mesmo de sair do navegador do cliente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A senha nunca é enviada, apenas um token derivado dela.",
+                                "text": "A senha em si nunca chega a ser enviada, apenas um token já derivado dela antes.",
                                 "isCorrect": false
                             }
                         ]
@@ -540,19 +540,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Trocar a senha, já que não existe nenhum mecanismo de sessão para revogar apenas aquele acesso específico.",
+                                "text": "Trocar a senha, pois não existe sessão nenhuma para revogar só aquele acesso específico.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Clicar em um botão de logout, que vai revogar só aquele acesso específico.",
+                                "text": "Clicar em um botão de logout, que revoga especificamente apenas aquele acesso usado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada, porque esse esquema expira sozinho assim que o navegador é fechado.",
+                                "text": "Não precisa fazer nada, porque esse esquema expira sozinho ao fechar o navegador usado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Esperar 24 horas, tempo padrão de expiração de qualquer sessão HTTP.",
+                                "text": "Esperar 24 horas, que é o tempo padrão de expiração de qualquer sessão em HTTP.",
                                 "isCorrect": false
                             }
                         ]
@@ -562,19 +562,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O tempo de resposta e o custo do servidor tendem a subir bastante, já que um hash lento passaria a ser recalculado em cada requisição.",
+                                "text": "O tempo de resposta tende a subir bastante, pois um hash lento seria recalculado em toda requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhuma consequência relevante, porque o bcrypt é rápido o suficiente para qualquer volume de requisições.",
+                                "text": "Nenhuma consequência relevante, já que o bcrypt é rápido o bastante para qualquer volume de tráfego.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A API fica mais segura, sem nenhum custo adicional de performance.",
+                                "text": "A API fica mais segura, e isso acontece sem nenhum custo adicional de performance no servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O bcrypt para de funcionar depois de muitas verificações seguidas.",
+                                "text": "O bcrypt para de funcionar corretamente depois de muitas verificações seguidas em pouco tempo.",
                                 "isCorrect": false
                             }
                         ]
@@ -584,19 +584,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Depois do login, o cliente passa a apresentar uma prova (id de sessão ou token) que não é a própria senha, permitindo revogação e uma verificação mais barata do que reconferir a senha inteira.",
+                                "text": "O cliente passa a apresentar uma prova (sessão ou token) no lugar da senha, permitindo revogar e conferir barato.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sessões e tokens eliminam por completo a necessidade de autenticação, já que o login passa a acontecer uma única vez em toda a vida do usuário, sem qualquer verificação futura.",
+                                "text": "Sessões e tokens eliminam por completo a necessidade de autenticação, pois o login passa a valer para sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessões e tokens criptografam a senha de um jeito que ela pode ser enviada com segurança em toda requisição.",
+                                "text": "Sessões e tokens criptografam a própria senha de um jeito que permite reenviá-la com segurança a toda requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessões e tokens fazem o HTTP deixar de ser stateless, permitindo que o servidor lembre sozinho de cada cliente.",
+                                "text": "Sessões e tokens fazem o HTTP deixar de ser stateless, e assim o servidor lembra sozinho de cada cliente que chega.",
                                 "isCorrect": false
                             }
                         ]
@@ -637,7 +637,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Guardar a senha direito, depois lembrar do login com sessão ou token, depois autorização por papéis, depois login social com OAuth.",
+                                "text": "Guardar a senha direito, depois sessão ou token, depois papéis, depois OAuth e login social.",
                                 "isCorrect": true
                             },
                             {
@@ -645,11 +645,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Papéis e permissões primeiro, porque autorização é mais importante do que autenticação.",
+                                "text": "Papéis e permissões primeiro, já que autorização importa mais do que autenticação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessão e token primeiro, deixando a senha como um detalhe para o final.",
+                                "text": "Sessão e token primeiro, deixando a senha guardada como um detalhe só para o final.",
                                 "isCorrect": false
                             }
                         ]
@@ -659,19 +659,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Os dados do usuário já identificado a partir do token validado, prontos para a rota usar.",
+                                "text": "Os dados do usuário identificado a partir do token validado, prontos para a rota usar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A senha em texto puro do usuário, para ser conferida dentro da rota.",
+                                "text": "A senha em texto puro do usuário, pronta para ser conferida dentro da própria rota.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A lista de todas as rotas que existem na API.",
+                                "text": "A lista completa de todas as rotas que existem cadastradas na API.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código-fonte do próprio middleware de autenticação.",
+                                "text": "O código-fonte completo do próprio middleware de autenticação usado.",
                                 "isCorrect": false
                             }
                         ]
@@ -681,19 +681,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Papéis e permissões (autorização), já que a autenticação e a emissão do token já existem, mas falta checar o que cada usuário pode fazer.",
+                                "text": "Papéis e permissões, pois autenticação e token já existem, mas falta checar permissões.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Senha guardada direito, já que o hash com bcrypt ainda não seria suficiente.",
+                                "text": "Senha guardada direito, já que o hash com bcrypt usado ainda não seria forte o bastante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OAuth, porque somente o login social resolveria esse tipo de problema.",
+                                "text": "OAuth, porque somente login social seria capaz de resolver esse tipo de problema de acesso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessão, porque tokens nunca deveriam ser usados junto com autorização.",
+                                "text": "Sessão, porque tokens jamais deveriam ser combinados com nenhum tipo de autorização.",
                                 "isCorrect": false
                             }
                         ]
@@ -703,7 +703,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "OAuth e login social, que delegam a autenticação para o próprio Google.",
+                                "text": "OAuth e login social, que delegam a autenticação do usuário para o próprio Google.",
                                 "isCorrect": true
                             },
                             {
@@ -711,11 +711,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Hash de senha com bcrypt, aplicado à senha do Google antes de guardá-la.",
+                                "text": "Hash de senha com bcrypt, aplicado diretamente à senha do Google antes de guardá-la.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Papéis e permissões, que decidem se o Google pode autenticar o usuário.",
+                                "text": "Papéis e permissões, que decidem se a conta do Google pode autenticar o usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -725,11 +725,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Limita o tempo em que um token roubado continua útil, já que o access token expira rápido, e o refresh token renova o acesso sem pedir a senha de novo.",
+                                "text": "Limita o tempo útil de um token roubado: o access token expira rápido e o refresh renova o acesso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Elimina totalmente a necessidade de HTTPS, já que dois tokens já bastam para proteger a comunicação.",
+                                "text": "Elimina totalmente a necessidade de HTTPS, já que dois tokens bastam para proteger a comunicação toda.",
                                 "isCorrect": false
                             },
                             {
@@ -737,7 +737,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substitui a necessidade de hash de senha, já que os tokens sozinhos já protegem a senha do usuário.",
+                                "text": "Substitui de vez a necessidade de hash de senha, já que os tokens sozinhos protegem a senha do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -783,19 +783,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Nada grave, porque bancos de dados já são protegidos por senha de acesso",
+                                "text": "Nada grave, porque o acesso ao banco de dados exige uma camada própria de autenticação, independente da tabela",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só as contas de administrador ficam em risco",
+                                "text": "Só as contas de administrador ficam expostas, porque são as únicas com privilégios elevados de acesso ao sistema",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Todos os usuários daquele sistema têm a senha exposta de imediato, sem o atacante precisar quebrar nada",
+                                "text": "Todos os usuários ficam com a senha exposta, pois o valor gravado já é a senha real",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O atacante ainda precisa quebrar cada senha uma por uma, o que pode levar anos",
+                                "text": "O atacante ainda precisa quebrar cada senha manualmente, uma por uma, num processo que pode levar anos",
                                 "isCorrect": false
                             }
                         ]
@@ -805,19 +805,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque grande parte das pessoas reutiliza a mesma senha (ou uma variação dela) em vários serviços diferentes",
+                                "text": "Porque muita gente reutiliza a mesma senha, ou uma variação dela, em outros serviços",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o texto puro danifica o disco do servidor onde o banco roda",
+                                "text": "Porque o texto puro corrói fisicamente o disco onde o banco de dados é armazenado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador passa a marcar o usuário como inseguro em outros sites",
+                                "text": "Porque o navegador passa a exibir avisos de perigo em todos os outros sites visitados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque uma senha em texto puro ocupa mais espaço no banco do que um hash",
+                                "text": "Porque uma senha em texto puro ocupa um espaço muito maior no banco do que um hash",
                                 "isCorrect": false
                             }
                         ]
@@ -827,19 +827,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O argumento está certo, o risco só existiria se houvesse mais de um desenvolvedor com acesso",
+                                "text": "O argumento está certo, já que só um desenvolvedor com acesso direto representa risco real",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um banco pode vazar por vários caminhos além do acesso direto do desenvolvedor: backup exposto, injeção de SQL, cópia de dados em ambiente de teste, entre outros",
+                                "text": "Um banco pode vazar por outros caminhos, além do acesso do desenvolvedor, como backup exposto",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Bancos de dados relacionais não permitem colunas de texto muito longas, então a senha nunca cabe",
+                                "text": "Bancos de dados relacionais rejeitam colunas de texto longas, então a senha nunca chegaria a vazar inteira",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é apenas ético e contratual, não é uma questão técnica",
+                                "text": "O problema é apenas ético e contratual, sem nenhuma implicação técnica real para a segurança do sistema",
                                 "isCorrect": false
                             }
                         ]
@@ -849,19 +849,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Nada, o importante é validar apenas o formato do email",
+                                "text": "Nada, pois validar apenas o formato do email já garante a segurança do cadastro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele deveria ser compactado, para ocupar menos espaço na tabela",
+                                "text": "Ele deveria ser compactado antes de gravar, para ocupar menos espaço na tabela",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele deveria virar um hash, e é esse hash (nunca a senha original) que vai para o banco",
+                                "text": "Ele deveria virar um hash antes de gravar, nunca a senha original",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ele deveria ser convertido para maiúsculas, para facilitar a comparação no login",
+                                "text": "Ele deveria ser convertido para maiúsculas, o que facilita a comparação no login",
                                 "isCorrect": false
                             }
                         ]
@@ -871,19 +871,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não é grave, backups antigos não contam como vazamento de dados",
+                                "text": "Não é grave, já que backups antigos deixam de valer como vazamento real de dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Backups de banco de dados nunca incluem a tabela de usuários, só dados de configuração",
+                                "text": "Backups de banco de dados nunca incluem a tabela de usuários, apenas registros de configuração do sistema",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É grave apenas para as contas criadas no dia exato em que o backup foi feito",
+                                "text": "É grave apenas para as contas criadas no dia exato em que aquele backup foi gerado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Muitas pessoas não trocam de senha por anos, então uma senha antiga capturada costuma continuar sendo a senha atual (ou muito parecida) em vários serviços",
+                                "text": "Muitas pessoas não trocam de senha por anos, então a antiga tende a continuar válida hoje",
                                 "isCorrect": true
                             }
                         ]
@@ -924,19 +924,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Hash é sempre mais lento de calcular que criptografia, e essa é a única diferença",
+                                "text": "Hash é sempre mais lento de calcular do que criptografia, e essa seria a única diferença",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Hash é de mão única e não pode ser revertido; criptografia é reversível através de uma chave",
+                                "text": "Hash é de mão única e não pode ser revertido; criptografia é reversível com uma chave",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criptografia só pode ser usada em arquivos; hash só pode ser usado em senhas",
+                                "text": "Criptografia só serve para arquivos; hash só serve para senhas, cada um no seu domínio",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não existe diferença real, são dois nomes para a mesma técnica",
+                                "text": "Não existe diferença real entre as duas, são apenas dois nomes para a mesma técnica",
                                 "isCorrect": false
                             }
                         ]
@@ -946,19 +946,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque hash ocupa menos espaço em disco do que qualquer forma de criptografia",
+                                "text": "Porque hash ocupa sempre menos espaço em disco do que qualquer forma de criptografia",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque usar criptografia em senha é proibido pela maioria das linguagens de programação",
+                                "text": "Porque usar criptografia para senha é proibido pela maioria das linguagens de programação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o sistema nunca precisa recuperar a senha original de volta, só confirmar se ela confere",
+                                "text": "Porque o sistema nunca precisa recuperar a senha original, só confirmar se ela confere",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque hash é sempre mais rápido de calcular do que criptografia",
+                                "text": "Porque hash é sempre mais rápido de calcular do que qualquer algoritmo de criptografia",
                                 "isCorrect": false
                             }
                         ]
@@ -968,19 +968,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Nenhum risco relevante, desde que a chave tenha um tamanho razoável",
+                                "text": "Nenhum risco relevante, desde que a chave secreta tenha um tamanho suficientemente grande",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quem tiver acesso à chave consegue descriptografar e enxergar a senha real de qualquer usuário, a qualquer momento",
+                                "text": "Quem tiver acesso à chave consegue descriptografar e ver a senha real de qualquer usuário",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O login fica mais lento, mas sem nenhum risco adicional de segurança",
+                                "text": "O login fica um pouco mais lento, mas isso não traz nenhum risco adicional de segurança",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bancos de dados relacionais rejeitam automaticamente colunas com dados criptografados",
+                                "text": "Bancos de dados relacionais rejeitam automaticamente qualquer coluna com dados criptografados",
                                 "isCorrect": false
                             }
                         ]
@@ -990,19 +990,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Quando o próprio sistema vai precisar ler o valor original de volta mais tarde, como o conteúdo de uma mensagem que será exibido ao destinatário",
+                                "text": "Quando o próprio sistema precisa reler o valor original depois, como o texto de uma mensagem",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Quando se quer guardar a senha de login de forma mais segura do que com hash",
+                                "text": "Quando se quer guardar a senha de login de um jeito ainda mais seguro e sofisticado do que com hash",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quando o dado guardado é pequeno, como um CEP",
+                                "text": "Quando o dado guardado é pequeno, como um CEP, que dispensa qualquer proteção extra",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nunca: hash deveria substituir criptografia em qualquer situação, sem exceção",
+                                "text": "Nunca, porque hash deveria substituir totalmente a criptografia em qualquer situação existente",
                                 "isCorrect": false
                             }
                         ]
@@ -1012,19 +1012,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque dados criptografados sempre ocupam mais espaço em disco do que um hash, sobrecarregando o banco",
+                                "text": "Porque dados criptografados ocupam sempre mais espaço em disco, o que sobrecarrega o banco de dados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, ao contrário do hash, a criptografia pode ser revertida: basta a chave vazar em algum momento futuro (um bug, um funcionário, outro incidente) para expor todas as senhas de uma vez, mesmo anos depois",
+                                "text": "Porque a criptografia pode ser revertida, bastando a chave vazar algum dia no futuro",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque bancos de dados relacionais não aceitam colunas com valores criptografados",
+                                "text": "Porque bancos de dados relacionais não aceitam, em nenhuma hipótese, colunas com valores criptografados",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque criptografar consome tanto processamento que a API de cadastro fica inviável",
+                                "text": "Porque criptografar consome tanto processamento que a API de cadastro se torna inviável na prática",
                                 "isCorrect": false
                             }
                         ]
@@ -1065,19 +1065,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque, na prática, eles não são funções de mão única de verdade",
+                                "text": "Porque, na prática, essas funções não são realmente de mão única, como muita gente afirma",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque geram uma saída de tamanho variável, difícil de guardar numa coluna do banco",
+                                "text": "Porque geram uma saída de tamanho variável, o que dificulta o armazenamento numa coluna do banco",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque não existem implementações prontas deles disponíveis para Node.js",
+                                "text": "Porque não existem, em nenhuma linguagem popular, bibliotecas prontas para esses algoritmos de hash",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque foram projetados para calcular muito rápido, o que ajuda um atacante a testar bilhões de senhas por segundo",
+                                "text": "Porque foram projetados para calcular rápido, o que ajuda a testar bilhões de senhas por segundo",
                                 "isCorrect": true
                             }
                         ]
@@ -1087,15 +1087,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Para verificar a integridade de um arquivo baixado, conferindo se ele não foi alterado",
+                                "text": "Para verificar a integridade de um arquivo baixado, confirmando que ele não foi alterado",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Para guardar a senha de login de um usuário",
+                                "text": "Para guardar a senha de login de um usuário, já que o hash sozinho já garante proteção",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para guardar a senha de acesso ao banco de dados de produção",
+                                "text": "Para guardar a senha de acesso ao banco de produção, dispensando qualquer outra camada",
                                 "isCorrect": false
                             },
                             {
@@ -1109,19 +1109,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o SHA-256 é reversível, bastando aplicar a chave certa",
+                                "text": "Porque o SHA-256 é reversível, bastando aplicar a chave de decodificação certa ao resultado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque hardware comum hoje calcula um volume enorme de hashes SHA-256 por segundo, permitindo testar senhas comuns e listas de dicionário muito rapidamente",
+                                "text": "Porque hardware comum hoje calcula um volume enorme de hashes por segundo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o SHA-256 sempre gera o mesmo resultado para senhas diferentes",
+                                "text": "Porque o SHA-256 sempre gera exatamente o mesmo resultado para senhas diferentes entre si",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, por padrão, o banco de dados guarda a senha original ao lado do hash",
+                                "text": "Porque, por padrão, todo banco de dados guarda a senha original logo ao lado do hash salvo",
                                 "isCorrect": false
                             }
                         ]
@@ -1131,19 +1131,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O hash de arquivo precisa ser rápido, para conferir grandes volumes de dados sem demora perceptível; o hash de senha precisa ser lento de propósito, para encarecer tentativas de adivinhação",
+                                "text": "O hash de arquivo precisa ser rápido, para grandes volumes; o de senha, lento de propósito",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Os dois têm exatamente o mesmo objetivo e podem ser usados de forma intercambiável",
+                                "text": "Os dois compartilham exatamente o mesmo objetivo e podem ser usados de forma totalmente intercambiável",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O hash de arquivo precisa de salt; o hash de senha não precisa",
+                                "text": "O hash de arquivo depende de salt para funcionar; o hash de senha dispensa esse cuidado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O hash de senha precisa ser reversível, para que o suporte técnico recupere a senha do usuário quando pedido",
+                                "text": "O hash de senha precisa ser reversível, para que o suporte técnico recupere a senha quando pedido",
                                 "isCorrect": false
                             }
                         ]
@@ -1153,19 +1153,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque salt só é compatível com MD5, nunca com a família SHA",
+                                "text": "Porque salt só é compatível com a família MD5, nunca funcionando junto com algoritmos SHA",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o SHA-256 com salt gera um resultado maior do que qualquer coluna de banco de dados suporta",
+                                "text": "Porque o SHA-256 com salt gera um resultado maior do que qualquer coluna de banco suporta",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o SHA-256 continua sendo uma função rápida: o salt impede reaproveitar uma tabela pré-computada entre contas, mas não impede que o atacante ainda teste um volume enorme de tentativas por segundo contra aquele hash específico",
+                                "text": "Porque o SHA-256 continua rápido, e o salt não barra bilhões de tentativas por segundo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque adicionar salt transforma o SHA-256 num algoritmo de criptografia reversível",
+                                "text": "Porque adicionar salt transforma o SHA-256 num algoritmo de criptografia totalmente reversível",
                                 "isCorrect": false
                             }
                         ]
@@ -1206,19 +1206,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É uma segunda senha que o usuário precisa memorizar além da principal",
+                                "text": "É uma segunda senha que o usuário precisa memorizar, além da principal, por segurança extra do sistema",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É o nome da tabela do banco de dados onde as senhas ficam guardadas",
+                                "text": "É o nome dado à tabela do banco de dados onde as senhas ficam efetivamente guardadas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um valor aleatório, único por usuário, somado à senha antes do cálculo do hash, para que senhas iguais não produzam hashes iguais",
+                                "text": "É um valor aleatório, único por usuário, somado à senha antes do hash, para evitar repetição",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É uma técnica que torna o hash reversível, para casos de recuperação de senha",
+                                "text": "É uma técnica que torna o hash reversível, permitindo recuperar a senha original se pedido",
                                 "isCorrect": false
                             }
                         ]
@@ -1228,19 +1228,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Hashes completamente diferentes entre si, sem nenhuma relação",
+                                "text": "Hashes completamente diferentes entre si, mesmo com a senha sendo idêntica nos dois casos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Suas senhas trocadas automaticamente pelo sistema, por segurança",
+                                "text": "Suas senhas trocadas automaticamente pelo sistema, como medida preventiva de segurança",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O mesmo hash guardado no banco, o que entrega ao atacante uma pista imediata de que as duas contas compartilham senha",
+                                "text": "O mesmo hash gravado no banco, uma pista imediata de que as duas contas compartilham senha",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um erro no cadastro, já que o banco rejeita senhas repetidas entre usuários",
+                                "text": "Um erro no cadastro, já que o banco rejeita automaticamente senhas repetidas entre usuários",
                                 "isCorrect": false
                             }
                         ]
@@ -1250,19 +1250,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "É uma lista de emails vazados; ela não tem relação nenhuma com o uso de salt",
+                                "text": "É uma lista de emails vazados publicamente, sem nenhuma relação real com o funcionamento do salt",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É um tipo de ataque que só afeta bancos de dados NoSQL, sem relação real com hash",
+                                "text": "É um tipo de ataque que atinge apenas bancos de dados NoSQL, sem nenhuma relação real com hash",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma técnica de criptografia reversível que substitui completamente o uso de hash",
+                                "text": "É uma técnica de criptografia reversível, pensada para substituir completamente o uso de hash",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É uma tabela pré-computada que liga senhas comuns aos seus hashes; com salt, o atacante precisaria de uma tabela pré-computada diferente para cada salt (ou seja, para cada usuário), o que inviabiliza o ataque em escala",
+                                "text": "É uma tabela pré-computada de senhas e hashes; com salt, precisaria de uma por usuário",
                                 "isCorrect": true
                             }
                         ]
@@ -1272,19 +1272,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sim, se o salt vazar junto com o hash, o ataque de rainbow table volta a funcionar normalmente",
+                                "text": "Sim, o vazamento do salt junto ao hash reativa totalmente o ataque de rainbow table",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, o salt costuma ficar guardado junto com o próprio hash; sua função é garantir unicidade entre contas, não sigilo",
+                                "text": "Não, o salt fica junto ao hash; sua função é garantir unicidade entre contas, não sigilo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim, o salt deveria existir apenas na memória do servidor, nunca gravado em disco",
+                                "text": "Sim, o salt deveria existir apenas na memória do servidor, e nunca ser gravado em disco",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Essa preocupação não existe, porque o salt é sempre igual para todos os usuários de um mesmo sistema",
+                                "text": "Essa preocupação não existe: o salt é sempre igual para todos os usuários de um mesmo sistema",
                                 "isCorrect": false
                             }
                         ]
@@ -1294,19 +1294,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Nada, com salt aleatório e único por usuário essa solução já é equivalente ao bcrypt",
+                                "text": "Nada, com salt aleatório e único por usuário essa solução já seria totalmente equivalente ao bcrypt",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faltaria criptografar o resultado do SHA-256 com uma segunda chave, guardada separadamente",
+                                "text": "Faltaria criptografar o resultado do SHA-256 com uma segunda chave, guardada em local separado",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faltaria trocar o SHA-256 por um algoritmo de hash lento e com custo ajustável (como bcrypt ou argon2), já que o salt resolve a repetição de hashes, mas não resolve a velocidade do algoritmo diante de força bruta",
+                                "text": "Faltaria trocar o SHA-256 por um algoritmo lento e ajustável, como bcrypt ou argon2",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Faltaria reduzir o salt para 4 bytes, porque 16 bytes deixa o cálculo do hash lento demais",
+                                "text": "Faltaria reduzir o salt para apenas 4 bytes, já que 16 bytes deixa o cálculo do hash lento demais",
                                 "isCorrect": false
                             }
                         ]
@@ -1351,7 +1351,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "bcrypt.compare(senha, hash)",
+                                "text": "bcrypt.compare(senha, hashGuardado)",
                                 "isCorrect": false
                             },
                             {
@@ -1359,11 +1359,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "bcrypt.encrypt(senha)",
+                                "text": "bcrypt.encrypt(senha, chave)",
                                 "isCorrect": false
                             },
                             {
-                                "text": "bcrypt.decode(senha)",
+                                "text": "bcrypt.decode(hash, chave)",
                                 "isCorrect": false
                             }
                         ]
@@ -1373,11 +1373,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Comparar as duas strings diretamente com o operador ===",
+                                "text": "Comparar as duas strings diretamente com o operador ===, já que ambas têm o mesmo formato",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Gerar um novo hash da senha digitada com bcrypt.hash e comparar essa string com === contra o hash guardado",
+                                "text": "Gerar um novo hash da senha digitada com bcrypt e comparar essa string diretamente com === contra o hash guardado",
                                 "isCorrect": false
                             },
                             {
@@ -1385,7 +1385,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Decodificar o hash guardado para obter a senha original e comparar as duas senhas",
+                                "text": "Decodificar o hash guardado para obter a senha original e então comparar as duas senhas",
                                 "isCorrect": false
                             }
                         ]
@@ -1395,19 +1395,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque bcrypt.hash gera um salt aleatório novo a cada chamada, então o resultado sai diferente do hash guardado mesmo quando a senha é a mesma",
+                                "text": "Porque bcrypt.hash gera um salt novo a cada chamada, então o hash muda mesmo com a senha igual",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque bcrypt.hash só pode ser chamado uma única vez por usuário em todo o sistema",
+                                "text": "Porque bcrypt.hash só pode ser chamado uma única vez para cada usuário em todo o sistema",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o operador === nunca funciona corretamente ao comparar strings em JavaScript",
+                                "text": "Porque o operador === nunca funciona corretamente para comparar strings na linguagem JavaScript",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o número de rounds precisaria ser 12 em vez de 10 para o hash bater",
+                                "text": "Porque o número de rounds precisaria ser 12 em vez de 10 para os dois hashes coincidirem",
                                 "isCorrect": false
                             }
                         ]
@@ -1417,19 +1417,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A quantidade de caracteres do salt que será gerado",
+                                "text": "A quantidade de caracteres do salt que será gerado junto com o hash da senha",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um valor que controla o quanto o cálculo do hash é caro: mais rounds, mais lento, e pode ser aumentado com o tempo conforme o hardware evolui",
+                                "text": "Um valor que controla o custo do hash: mais rounds, mais lento",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A quantidade de vezes que o usuário precisa digitar a senha durante o cadastro",
+                                "text": "A quantidade de vezes que o usuário precisa redigitar a senha durante o cadastro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tamanho máximo, em caracteres, que a senha pode ter",
+                                "text": "O tamanho máximo, em caracteres, que a senha do usuário pode ter no cadastro",
                                 "isCorrect": false
                             }
                         ]
@@ -1439,19 +1439,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque, depois de calculado, o hash não preserva as características da senha original (tamanho, presença de números, etc.), então essas regras não têm mais como ser checadas nele",
+                                "text": "Porque o hash não guarda as características da senha original, como tamanho ou números",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque bcrypt.hash só aceita como entrada senhas que já passaram por um middleware específico de validação",
+                                "text": "Porque bcrypt.hash só aceita senhas que já passaram por um middleware específico de validação",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque validar depois do hash deixaria a senha original visível nos logs do servidor",
+                                "text": "Porque validar a senha depois do hash deixaria o valor original visível nos logs do servidor",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não faz diferença nenhuma: a validação pode acontecer antes ou depois do hash, com o mesmo resultado",
+                                "text": "Não faz diferença nenhuma, a validação funciona igual antes ou depois de calcular o hash",
                                 "isCorrect": false
                             }
                         ]
@@ -1497,19 +1497,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Cria uma sessão associando um ID único aos dados do usuário (como o id dele) e devolve esse ID pro cliente.",
+                                "text": "Cria uma sessão associando um ID único aos dados do usuário e devolve esse ID pro cliente apresentar depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Guarda a senha em texto puro numa variável pra comparar depois.",
+                                "text": "Guarda a senha em texto puro numa variável do servidor, pra comparar direto nas próximas requisições.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Passa a exigir que o cliente reenvie usuário e senha em toda requisição futura.",
+                                "text": "Passa a exigir que o cliente reenvie usuário e senha em toda requisição futura, como confirmação extra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não faz nada: o próprio navegador lembra sozinho de quem fez login, sem participação do servidor.",
+                                "text": "Delega a tarefa ao navegador, que passa a lembrar sozinho de quem fez login, sem envolver o servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -1519,19 +1519,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque a senha é guardada automaticamente em cookie.",
+                                "text": "Porque a própria senha passa a ficar guardada dentro de um cookie, enviado automaticamente a cada requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ele passa a mandar só o ID de sessão, e o servidor usa esse ID pra descobrir quem ele é.",
+                                "text": "Porque ele passa a mandar só o ID de sessão, que o servidor usa pra identificar quem fez a requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o servidor memoriza o endereço IP de quem fez login.",
+                                "text": "Porque o servidor passa a memorizar o endereço IP de quem fez login e associa isso à identidade dele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o HTTP deixa de ser stateless a partir do login.",
+                                "text": "Porque o HTTP deixa de ser stateless assim que o login acontece, passando a lembrar sozinho do cliente.",
                                 "isCorrect": false
                             }
                         ]
@@ -1541,19 +1541,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Nenhum, o ID de sessão pode ser público sem problema.",
+                                "text": "Nenhum risco relevante, já que o ID de sessão pode ser público sem trazer problema pro sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um atacante pode tentar outros números (43, 44...) e se passar por outros usuários, já que o ID ficou previsível.",
+                                "text": "Um atacante pode tentar outros números e se passar por outros usuários, já que o ID ficou previsível.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor vai gastar memória demais guardando o id.",
+                                "text": "O servidor passa a gastar memória demais guardando esse id numérico, o que derruba o desempenho com o tempo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O bcrypt usado no login vai parar de funcionar.",
+                                "text": "O bcrypt usado na validação da senha no login para de funcionar corretamente com esse tipo de id.",
                                 "isCorrect": false
                             }
                         ]
@@ -1563,19 +1563,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O cliente precisa reenviar o ID de sessão, e o servidor usa esse valor pra localizar a sessão correspondente.",
+                                "text": "O cliente precisa reenviar o ID de sessão, que o servidor usa pra localizar a sessão correspondente já guardada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor precisa adivinhar com base no endereço IP de quem está requisitando.",
+                                "text": "O servidor precisa adivinhar quem está requisitando com base só no endereço IP de origem da chamada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O cliente precisa repetir o processo de login inteiro a cada chamada.",
+                                "text": "O cliente precisa repetir o processo de login inteiro, enviando usuário e senha de novo a cada chamada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor grava um novo hash de senha a cada requisição.",
+                                "text": "O servidor precisa gravar um novo hash de senha a cada requisição recebida, pra validar quem está por trás.",
                                 "isCorrect": false
                             }
                         ]
@@ -1585,19 +1585,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ele já carrega a identidade do usuário sozinho, sem precisar que o servidor consulte nada.",
+                                "text": "Ele já carrega a identidade do usuário embutida nele mesmo, sem precisar que o servidor consulte nada depois.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele é uma referência opaca: só ganha significado quando o servidor o usa pra buscar os dados guardados naquela sessão.",
+                                "text": "Ele é uma referência opaca, que só ganha significado quando o servidor a usa pra buscar os dados da sessão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Depois que a sessão é criada, o servidor volta a ser totalmente stateless.",
+                                "text": "Depois que a sessão é criada, o servidor volta a ser totalmente stateless, sem guardar mais nenhum dado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ele substitui a necessidade de comparar o hash da senha no momento do login.",
+                                "text": "Ele substitui de vez a necessidade de comparar o hash da senha no momento em que o login acontece.",
                                 "isCorrect": false
                             }
                         ]
@@ -1664,19 +1664,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Pergunta ao usuário se pode reenviar o cookie a cada requisição.",
+                                "text": "Pergunta ao usuário, numa caixa de diálogo, se pode reenviar aquele cookie a cada nova requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Envia esse cookie de volta sozinho, no header Cookie, sem precisar de código no front-end.",
+                                "text": "Envia esse cookie de volta sozinho, no header Cookie, sem precisar de nenhum código extra no front-end.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Apaga o cookie automaticamente depois da primeira requisição em que ele foi usado.",
+                                "text": "Apaga o cookie automaticamente logo depois da primeira requisição em que ele chegou a ser usado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só envia o cookie se o JavaScript da página pedir explicitamente.",
+                                "text": "Só envia o cookie de volta quando o JavaScript da página pede isso de forma explícita.",
                                 "isCorrect": false
                             }
                         ]
@@ -1686,19 +1686,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque cookies nunca são enviados pelo navegador, só lidos pelo back-end.",
+                                "text": "Porque cookies nunca chegam a ser enviados pelo navegador, eles servem só pra leitura direta pelo back-end.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o cookie fica associado ao domínio (e opcionalmente ao caminho) que o criou, e o navegador só reenvia pra esse mesmo domínio.",
+                                "text": "Porque o cookie fica associado ao domínio (e opcionalmente ao caminho) que o criou, e só volta pra esse domínio.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque cookies expiram automaticamente assim que a aba é trocada.",
+                                "text": "Porque cookies expiram automaticamente assim que o usuário troca de aba dentro do mesmo navegador aberto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o protocolo HTTP proíbe cookies em requisições do tipo GET.",
+                                "text": "Porque o protocolo HTTP proíbe o envio de cookies em requisições do tipo GET, permitindo só em POST.",
                                 "isCorrect": false
                             }
                         ]
@@ -1730,19 +1730,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O front-end precisa ler manualmente o Set-Cookie da resposta e escrever código pra reenviar o valor depois.",
+                                "text": "O front-end precisa ler manualmente o header Set-Cookie da resposta e escrever código pra reenviar o valor depois.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cookies dispensam a necessidade de HTTPS pra proteger dados sensíveis.",
+                                "text": "Cookies dispensam totalmente a necessidade de HTTPS pra proteger dados sensíveis trafegando entre cliente e servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O que torna o cookie prático é o navegador guardar e reenviar automaticamente, sem o JavaScript da aplicação precisar orquestrar isso.",
+                                "text": "O que torna o cookie prático é o navegador guardar e reenviar o valor sozinho, sem o JavaScript precisar orquestrar nada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Um cookie definido por um site é reenviado pra qualquer outro domínio que o usuário visitar depois.",
+                                "text": "Um cookie definido por um site é reenviado automaticamente pra qualquer outro domínio que o usuário visitar depois.",
                                 "isCorrect": false
                             }
                         ]
@@ -1809,19 +1809,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Impede que o cookie seja lido por JavaScript.",
+                                "text": "Impede que o valor do cookie seja lido diretamente por JavaScript rodando na página.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Faz o cookie expirar mais rápido.",
+                                "text": "Faz o cookie expirar mais rápido do que o tempo configurado originalmente nele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Garante que o cookie só seja enviado em conexões HTTPS.",
+                                "text": "Garante que o cookie só seja enviado pelo navegador em conexões HTTPS.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Impede que o cookie seja enviado em requisições de outros sites.",
+                                "text": "Impede que o cookie seja enviado em requisições vindas de outros sites.",
                                 "isCorrect": false
                             }
                         ]
@@ -1831,7 +1831,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O ataque funciona normalmente, HttpOnly não tem relação com XSS.",
+                                "text": "O ataque funciona normalmente, já que o atributo HttpOnly não tem nenhuma relação com falhas de XSS.",
                                 "isCorrect": false
                             },
                             {
@@ -1839,11 +1839,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "O navegador bloqueia a página inteira assim que detecta o atributo HttpOnly.",
+                                "text": "O navegador bloqueia o carregamento da página inteira assim que detecta o atributo HttpOnly no cookie.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O cookie é enviado automaticamente pro atacante, independente do HttpOnly.",
+                                "text": "O cookie é enviado automaticamente pro atacante mesmo assim, porque HttpOnly não impede esse tipo de envio.",
                                 "isCorrect": false
                             }
                         ]
@@ -1875,19 +1875,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Definir Expires ou Max-Age torna o cookie automaticamente protegido contra XSS.",
+                                "text": "Definir Expires ou Max-Age torna o cookie automaticamente protegido contra ataques de XSS na aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HttpOnly impede que o cookie seja enviado pela rede, permitindo só leitura local.",
+                                "text": "HttpOnly impede que o cookie seja enviado pela rede, permitindo só a leitura dele localmente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HttpOnly, Secure e SameSite mitigam riscos diferentes (leitura via JavaScript, transporte inseguro e uso indevido por outro site) e podem ser combinados no mesmo cookie.",
+                                "text": "HttpOnly, Secure e SameSite mitigam riscos diferentes entre si e podem ser combinados no mesmo cookie de sessão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "SameSite substitui a necessidade de usar HTTPS.",
+                                "text": "SameSite substitui completamente a necessidade de usar HTTPS pra proteger a conexão entre cliente e servidor.",
                                 "isCorrect": false
                             }
                         ]
@@ -1932,19 +1932,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "No banco de dados PostgreSQL, automaticamente.",
+                                "text": "No banco de dados PostgreSQL, de forma automática e sem nenhuma configuração adicional.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Na memória do próprio processo Node (MemoryStore).",
+                                "text": "Na memória do próprio processo Node, na chamada MemoryStore usada por padrão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "No Redis.",
+                                "text": "No Redis, que já vem configurado como store padrão do express-session.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No localStorage do navegador.",
+                                "text": "No localStorage do navegador, sincronizado automaticamente a cada requisição feita.",
                                 "isCorrect": false
                             }
                         ]
@@ -1954,19 +1954,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "É a opção mais lenta de todas pra ler uma sessão.",
+                                "text": "É de longe a opção mais lenta de todas as disponíveis para ler uma sessão a cada requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As sessões somem quando o processo reinicia, e não são compartilhadas entre múltiplas instâncias do servidor.",
+                                "text": "As sessões somem quando o processo reinicia e não valem entre instâncias do servidor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não é possível usar HttpOnly em sessões guardadas em memória.",
+                                "text": "Não é possível usar o atributo HttpOnly em sessões que ficam guardadas apenas na memória.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A memória do processo só aceita um usuário logado por vez.",
+                                "text": "A memória do processo só consegue manter um único usuário logado por vez em toda a aplicação.",
                                 "isCorrect": false
                             }
                         ]
@@ -1976,19 +1976,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Tudo funciona normal, a memória é compartilhada automaticamente entre as instâncias.",
+                                "text": "Tudo funciona normalmente, porque a memória é compartilhada automaticamente entre todas as instâncias do servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A instância B não tem a sessão criada na instância A, então o usuário parece deslogado mesmo tendo acabado de entrar.",
+                                "text": "A instância B não enxerga a sessão criada na instância A, e o usuário parece deslogado outra vez.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Redis assume automaticamente a sessão nesse cenário, mesmo sem ter sido configurado.",
+                                "text": "O Redis assume automaticamente essa sessão nesse cenário, mesmo sem nunca ter sido configurado pela aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O load balancer copia a sessão sozinho de uma instância pra outra.",
+                                "text": "O load balancer copia sozinho a sessão de uma instância pra outra, sem precisar de Redis.",
                                 "isCorrect": false
                             }
                         ]
@@ -1998,19 +1998,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o Redis é a única forma de usar o atributo HttpOnly.",
+                                "text": "Porque o Redis é a única forma possível de usar o atributo HttpOnly num cookie de sessão do servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o Redis é compartilhado entre todas as instâncias do servidor e sobrevive a um reinício do processo Node.",
+                                "text": "Porque o Redis é compartilhado entre as instâncias e sobrevive a um reinício do processo Node.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o Redis dispensa a necessidade de ID de sessão.",
+                                "text": "Porque o Redis dispensa por completo a necessidade de existir qualquer ID de sessão no fluxo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o Redis torna o cookie automaticamente Secure.",
+                                "text": "Porque o Redis torna o cookie de sessão automaticamente Secure, sem precisar configurar mais nada.",
                                 "isCorrect": false
                             }
                         ]
@@ -2020,19 +2020,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Banco de dados nunca deve ser usado pra sessão, só Redis é válido em produção.",
+                                "text": "Banco de dados nunca deve ser usado pra guardar sessão, só Redis é considerado válido em produção.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Memória do processo é sempre a melhor escolha, inclusive em produção com várias instâncias.",
+                                "text": "Memória do processo é sempre a melhor escolha, inclusive em produção com várias instâncias rodando ao mesmo tempo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cada opção troca simplicidade por escalabilidade: memória é mais simples mas não escala nem sobrevive a reinícios, enquanto Redis e banco resolvem isso ao custo de mais uma peça de infraestrutura.",
+                                "text": "Cada opção troca simplicidade por escala: memória é simples, mas não escala nem sobrevive a reinícios.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O tipo de armazenamento escolhido muda o formato do ID de sessão enviado ao cliente.",
+                                "text": "O tipo de armazenamento escolhido muda o formato do ID de sessão enviado ao cliente a cada novo login.",
                                 "isCorrect": false
                             }
                         ]
@@ -2077,19 +2077,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Nada, o navegador cuida de tudo sozinho.",
+                                "text": "Nada muda no servidor, o próprio navegador sozinho cuida de todo o processo de logout.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A sessão correspondente àquele ID deve ser destruída ou invalidada no armazenamento do servidor.",
+                                "text": "A sessão correspondente àquele ID precisa ser destruída ou invalidada no armazenamento.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor deve trocar a senha do usuário automaticamente.",
+                                "text": "O servidor deve trocar a senha atual do usuário de forma automática a cada logout realizado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor deve gerar um novo hash pra senha atual do usuário.",
+                                "text": "O servidor deve gerar um novo hash pra senha atual do usuário logo em seguida ao logout.",
                                 "isCorrect": false
                             }
                         ]
@@ -2125,15 +2125,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Essa cópia continua funcionando normalmente até a sessão expirar sozinha no servidor, porque ela nunca foi invalidada lá.",
+                                "text": "Essa cópia continua funcionando até a sessão expirar sozinha no servidor, porque nunca foi invalidada lá.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor detecta a duplicidade de cookies e bloqueia as duas cópias.",
+                                "text": "O servidor detecta essa duplicidade de cookies iguais e bloqueia o acesso das duas cópias imediatamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O ataque só funciona se quem tem a cópia também souber a senha do usuário.",
+                                "text": "O ataque só funciona se quem tem a cópia também souber a senha original do usuário afetado no sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -2143,7 +2143,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sessões nunca expiram, o que é mais conveniente pro usuário.",
+                                "text": "Sessões nunca expiram nesse modelo, o que se torna mais conveniente pro usuário final.",
                                 "isCorrect": false
                             },
                             {
@@ -2151,11 +2151,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sessões dispensam completamente o uso de HTTPS.",
+                                "text": "Sessões dispensam completamente o uso de HTTPS pra proteger a comunicação entre cliente e servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessões eliminam a necessidade de qualquer cookie.",
+                                "text": "Sessões eliminam por completo a necessidade de usar qualquer cookie pra identificar o cliente.",
                                 "isCorrect": false
                             }
                         ]
@@ -2165,19 +2165,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Sessões são sempre mais rápidas que qualquer outra abordagem de autenticação, sem nenhuma desvantagem.",
+                                "text": "Sessões são sempre mais rápidas que qualquer outra abordagem de autenticação, sem nenhuma desvantagem real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ganha-se controle total (revogar na hora, invalidar quando quiser), mas se paga o preço de sincronizar esse estado entre instâncias do servidor conforme a aplicação escala.",
+                                "text": "Ganha-se controle total sobre o acesso, mas paga-se o preço de sincronizar o estado conforme a aplicação escala.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sessões eliminam a necessidade de comparar hash de senha no momento do login.",
+                                "text": "Sessões eliminam por completo a necessidade de comparar hash de senha no momento do login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessões só funcionam em aplicações que usam exclusivamente bancos de dados relacionais.",
+                                "text": "Sessões só funcionam em aplicações que usam exclusivamente bancos de dados relacionais como armazenamento.",
                                 "isCorrect": false
                             }
                         ]
@@ -2223,19 +2223,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O servidor deixa de guardar qualquer estado sobre o login; basta verificar a assinatura do token recebido em cada requisição.",
+                                "text": "O servidor deixa de guardar estado sobre o login; só verifica a assinatura do token recebido a cada requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O servidor passa a guardar a sessão numa tabela ainda mais rápida do banco.",
+                                "text": "O servidor passa a guardar a sessão numa tabela ainda mais rápida do banco, para não perder desempenho na troca.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor deixa de validar a senha no momento do login.",
+                                "text": "O servidor deixa de validar a senha no momento do login, já que o token substituiria essa conferência inicial.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor passa a exigir que o token venha sempre dentro de um cookie.",
+                                "text": "O servidor passa a exigir que o token venha sempre dentro de um cookie, do mesmo jeito que a sessão funcionava.",
                                 "isCorrect": false
                             }
                         ]
@@ -2267,19 +2267,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não é necessário: com token, a prova de identidade viaja com o cliente, e o servidor só verifica a assinatura a cada requisição, sem depender de um registro de login salvo.",
+                                "text": "Não é necessário: com token, a prova viaja com o cliente, e o servidor só verifica a assinatura a cada requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sim, sessão e token sempre precisam conviver na mesma tabela do banco.",
+                                "text": "Sim, sessão e token sempre precisam conviver na mesma tabela do banco, para manter os dois mecanismos sincronizados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, porque o token só é considerado válido se existir uma sessão espelhada no servidor.",
+                                "text": "Sim, porque o token só é considerado válido se existir uma sessão espelhada no servidor para conferência extra.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Depende: só é dispensável se a aplicação for para celular.",
+                                "text": "Depende: só é dispensável se a aplicação for para celular, já que apps nativos não usam cookie.",
                                 "isCorrect": false
                             }
                         ]
@@ -2289,19 +2289,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o valor do token muda a cada requisição e precisa ser gerado de novo pelo front-end.",
+                                "text": "Porque o valor do token muda a cada requisição e precisa ser gerado de novo pelo front-end antes de cada chamada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, ao contrário do cookie de sessão, o token não é reenviado automaticamente pelo navegador; cada requisição precisa levar sua própria prova de identidade.",
+                                "text": "Porque, ao contrário do cookie de sessão, o token não é reenviado automaticamente pelo navegador a cada requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o servidor exige que o token venha em dobro, uma vez no cookie e outra no cabeçalho.",
+                                "text": "Porque o servidor exige que o token venha em dobro, uma vez no cookie e outra no cabeçalho Authorization.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o localStorage apaga o token sozinho depois de alguns segundos.",
+                                "text": "Porque o localStorage apaga o token sozinho depois de alguns segundos, exigindo reenvio constante.",
                                 "isCorrect": false
                             }
                         ]
@@ -2311,19 +2311,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o token é sempre enviado por HTTPS, e o HTTPS sozinho já garante quem é o usuário.",
+                                "text": "Porque o token é sempre enviado por HTTPS, e o HTTPS sozinho já garante quem é o usuário, sem necessidade de mais verificação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador verifica o token antes de enviar, e o servidor só confirma o que o navegador já validou.",
+                                "text": "Porque o navegador verifica o token antes de enviar, e o servidor só confirma o que o navegador já validou previamente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o token nunca expira, então o servidor não precisa reconferir nada.",
+                                "text": "Porque o token nunca expira, então o servidor não precisa reconferir nada durante toda a sessão do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque toda a informação necessária para identificar o usuário viaja dentro do próprio token, e a autenticidade dele é confirmada só verificando a assinatura, sem consultar nada guardado antes.",
+                                "text": "Porque a informação que identifica o usuário viaja no token, e a assinatura confirma a autenticidade sem consultar nada.",
                                 "isCorrect": true
                             }
                         ]
@@ -2386,19 +2386,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Criptografia AES de 256 bits.",
+                                "text": "AES de 256 bits, um algoritmo de criptografia simétrica.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Base64url, uma variação do Base64 segura para uso em URLs e cabeçalhos.",
+                                "text": "Base64url, uma variação do Base64 usada em URLs e cabeçalhos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Texto puro, sem nenhuma codificação.",
+                                "text": "Texto puro, sem qualquer codificação aplicada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Hexadecimal (base 16).",
+                                "text": "Hexadecimal, a base 16 usada em hashes e cores.",
                                 "isCorrect": false
                             }
                         ]
@@ -2408,19 +2408,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sim, um JWT correto nunca pode ser decodificado sem a senha do usuário.",
+                                "text": "Sim, um JWT correto nunca pode ser decodificado sem a senha do usuário, já que o payload deveria estar protegido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, isso só acontece quando o servidor esquece de assinar o token.",
+                                "text": "Sim, isso só acontece quando o servidor esquece de assinar o token antes de enviar a resposta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não: o payload de um JWT é só Base64url, não é criptografia; conseguir lê-lo sem segredo é o comportamento normal e esperado.",
+                                "text": "Não: o payload de um JWT é só Base64url, não é criptografia; conseguir lê-lo sem segredo é o comportamento esperado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não, mas isso só é normal quando o token usa o algoritmo RS256.",
+                                "text": "Não, mas isso só é normal quando o token usa o algoritmo RS256 em vez de HS256 para assinar.",
                                 "isCorrect": false
                             }
                         ]
@@ -2430,19 +2430,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Está correto: o header costuma trazer só o algoritmo de assinatura (alg) e o tipo do token (typ); as informações do usuário ficam no payload, não no header.",
+                                "text": "Está correto: o header traz só o algoritmo de assinatura e o tipo; os dados do usuário ficam no payload.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Está errado: o header deveria conter os dados do usuário, como id e nome.",
+                                "text": "Está errado: o header deveria conter os dados do usuário, como id e nome, para facilitar a leitura rápida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Está errado: o header deveria conter a senha do usuário, para autenticação dupla.",
+                                "text": "Está errado: o header deveria conter a senha do usuário, para permitir autenticação dupla no servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Está correto, mas só porque esse token usa RS256; em HS256 o header traz mais campos.",
+                                "text": "Está correto, mas só porque esse token usa RS256; em HS256 o header sempre traz mais campos que esses.",
                                 "isCorrect": false
                             }
                         ]
@@ -2452,19 +2452,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque a assinatura embaralha o payload de um jeito que só o servidor consegue desfazer.",
+                                "text": "Porque a assinatura embaralha o conteúdo do payload de um jeito que só o próprio servidor consegue desfazer depois.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque Base64url é reversível por qualquer pessoa sem precisar de nenhuma chave; criptografia de verdade exigiria uma chave para reverter a codificação, o que não é o caso aqui.",
+                                "text": "Porque Base64url é reversível por qualquer um sem chave nenhuma; criptografia exigiria uma chave para reverter isso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o header também precisaria estar cifrado para o conjunto ser considerado criptografado.",
+                                "text": "Porque o header também precisaria estar cifrado para o conjunto inteiro ser considerado criptografado de fato.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só tokens RS256 são criptografados; tokens HS256 não são.",
+                                "text": "Porque só tokens assinados com RS256 são criptografados de verdade; tokens HS256, por outro lado, não seriam.",
                                 "isCorrect": false
                             }
                         ]
@@ -2505,19 +2505,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque o servidor manda a chave de leitura junto com o token.",
+                                "text": "Porque o servidor manda a chave de leitura para o cliente junto com o próprio token, no mesmo pacote.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só tokens mal configurados permitem essa leitura.",
+                                "text": "Porque só tokens mal configurados por engano permitem esse tipo de leitura sem autorização prévia.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o navegador descriptografa o payload automaticamente antes de mostrar.",
+                                "text": "Porque o navegador descriptografa o payload automaticamente antes de exibir o conteúdo na tela.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o payload é apenas codificado em Base64url, uma codificação reversível sem chave nenhuma, e não uma criptografia.",
+                                "text": "Porque o payload é só codificado em Base64url, uma codificação reversível sem chave, não criptografia.",
                                 "isCorrect": true
                             }
                         ]
@@ -2549,19 +2549,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o payload tem um limite de tamanho que não permite guardar senhas.",
+                                "text": "Porque o payload tem um limite fixo de tamanho que não permite guardar senhas de qualquer comprimento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o payload de um JWT não é secreto: qualquer pessoa com o token consegue decodificá-lo e ler a senha, mesmo sem invadir o servidor.",
+                                "text": "Porque o payload de um JWT não é secreto: qualquer um com o token consegue decodificá-lo e ler a senha.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque claims customizadas, como password, não são permitidas pela especificação do JWT.",
+                                "text": "Porque claims customizadas, como password, não são permitidas pela especificação oficial do JWT.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque isso deixaria o token grande demais para caber no cabeçalho Authorization.",
+                                "text": "Porque isso deixaria o token grande demais para caber no cabeçalho Authorization da requisição.",
                                 "isCorrect": false
                             }
                         ]
@@ -2571,19 +2571,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Não há problema de sigilo nisso: role não é um segredo, e qualquer claim do payload já é visível a quem tiver o token; o cuidado real é o servidor não confiar cegamente nela para decisões sensíveis sem revalidar.",
+                                "text": "Não é problema de sigilo: role não é segredo e é visível a quem tem o token; o cuidado é não confiar nela cegamente.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É um erro grave, porque nenhuma claim além de sub e exp pode aparecer no payload.",
+                                "text": "É um erro grave, porque nenhuma claim além de sub e exp pode legalmente aparecer dentro do payload de um JWT.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É seguro porque o payload é criptografado e ninguém além do servidor consegue lê-lo.",
+                                "text": "É seguro porque o payload inteiro é criptografado antes de ser enviado, e ninguém além do servidor consegue lê-lo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Só é seguro se o valor de role também for guardado hasheado, com bcrypt.",
+                                "text": "Só é seguro se o valor da claim role também for guardado hasheado, do mesmo jeito que se faz com uma senha.",
                                 "isCorrect": false
                             }
                         ]
@@ -2593,19 +2593,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O atacante não consegue ler o payload, só a assinatura; por isso não sabe o que alterar.",
+                                "text": "O atacante não consegue ler o payload, só a assinatura anexada ao final; por isso não sabe exatamente o que alterar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O payload muda de valor sozinho a cada minuto, o que impede qualquer alteração útil.",
+                                "text": "O payload muda de valor sozinho a cada minuto de forma totalmente aleatória, o que impede qualquer alteração útil.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ler o payload exige só decodificar Base64url, o que não depende de segredo nenhum; já gerar um token válido exige recalcular a assinatura, o que exige o segredo do servidor, que o atacante não tem.",
+                                "text": "Ler o payload é só decodificar Base64url; forjar uma assinatura válida exige o segredo do servidor, que ele não tem.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A leitura é possível, mas o servidor bloqueia qualquer IP que tente decodificar um token.",
+                                "text": "A leitura do payload é possível, mas o servidor bloqueia automaticamente qualquer IP que tente decodificar um token.",
                                 "isCorrect": false
                             }
                         ]
@@ -2646,19 +2646,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Que o conteúdo do payload fica sigiloso e ilegível para qualquer um.",
+                                "text": "Que o conteúdo do payload fica sigiloso e totalmente ilegível para qualquer pessoa que o intercepte.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o token foi emitido por quem tem o segredo (o servidor) e que o conteúdo não foi alterado depois de assinado.",
+                                "text": "Que o token foi emitido por quem tem o segredo do servidor, e que o conteúdo não foi alterado depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Que o token nunca vai expirar.",
+                                "text": "Que o token nunca vai expirar, não importa quanto tempo passe desde que foi emitido originalmente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que a senha do usuário está protegida dentro do token.",
+                                "text": "Que a senha do usuário fica protegida e totalmente cifrada dentro do próprio conteúdo do token.",
                                 "isCorrect": false
                             }
                         ]
@@ -2690,19 +2690,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Nenhum, contanto que o segredo escolhido tenha alguns caracteres de comprimento.",
+                                "text": "Nenhum, contanto que o segredo escolhido tenha vários caracteres e alguma letra maiúscula no meio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é só que isso deixaria o tempo de expiração do token curto demais.",
+                                "text": "O problema é só que isso deixaria o tempo de expiração do token bem mais curto do que deveria ser.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quem tiver acesso ao repositório (ou a um vazamento dele) descobre o segredo e passa a conseguir forjar tokens válidos para qualquer usuário; o segredo deveria vir de uma variável de ambiente.",
+                                "text": "Quem acessa o repositório, ou um vazamento dele, descobre o segredo e forja tokens de qualquer usuário.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "É um problema só de estilo de código, não de segurança: funciona igual, apenas fica menos organizado.",
+                                "text": "É um problema só de estilo de código, não de segurança: funciona igual, só fica menos organizado assim.",
                                 "isCorrect": false
                             }
                         ]
@@ -2712,19 +2712,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Recalcula a assinatura a partir do header e do payload recebidos e, como ela não bate com a assinatura anexada ao token, lança um erro e rejeita o token.",
+                                "text": "Recalcula a assinatura do header e do payload recebidos; como ela não bate com a anexada, rejeita o token.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Aceita o token normalmente, porque o servidor confia em qualquer payload bem formatado em JSON.",
+                                "text": "Aceita o token normalmente, porque o servidor confia em qualquer payload que esteja bem formatado em JSON.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Corrige sozinho o valor da claim role de volta para o original.",
+                                "text": "Corrige sozinho o valor da claim role de volta para o original, sem interromper a requisição atual.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aceita o token, mas rebaixa automaticamente o usuário para o papel correto.",
+                                "text": "Aceita o token, mas rebaixa automaticamente o usuário de volta para o papel correto no sistema todo.",
                                 "isCorrect": false
                             }
                         ]
@@ -2734,19 +2734,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "HS256, porque o segredo único pode ser copiado com segurança para quantos serviços forem necessários, sem risco.",
+                                "text": "HS256, porque o segredo único pode ser copiado com segurança para quantos serviços forem necessários, sem nenhum risco real.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "RS256, porque nesse algoritmo a chave pública também permite emitir novos tokens, o que agiliza o trabalho das equipes.",
+                                "text": "RS256, porque nesse algoritmo a chave pública também permite emitir novos tokens, o que agiliza bastante o trabalho das equipes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HS256, porque esse algoritmo dispensa qualquer segredo compartilhado entre os serviços.",
+                                "text": "HS256, porque esse algoritmo dispensa qualquer tipo de segredo compartilhado entre os serviços A e B.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "RS256, porque o serviço central assina com a chave privada e distribui só a chave pública para as equipes A e B, que conseguem verificar mas não conseguem assinar novos tokens.",
+                                "text": "RS256: o serviço central assina com a chave privada e distribui só a chave pública, que verifica mas não pode assinar.",
                                 "isCorrect": true
                             }
                         ]
@@ -2787,19 +2787,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "As requisições ficam maiores, porque o token inteiro (header, payload e assinatura) precisa ser enviado a cada vez, e não só um id pequeno.",
+                                "text": "As requisições ficam maiores, porque o token inteiro viaja a cada vez, não só um id pequeno como no cookie.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "As requisições ficam menores, porque o JWT substitui todos os outros cabeçalhos.",
+                                "text": "As requisições ficam menores, porque o JWT substitui todos os outros cabeçalhos da requisição HTTP inteira.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não muda nada: o tamanho do cookie e do token são sempre iguais.",
+                                "text": "Não muda nada: o tamanho do cookie de sessão e do token JWT acabam sempre sendo exatamente iguais.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As requisições ficam maiores só quando o usuário é administrador.",
+                                "text": "As requisições ficam maiores só quando o usuário logado é administrador do sistema todo.",
                                 "isCorrect": false
                             }
                         ]
@@ -2809,19 +2809,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque o JWT não tem uma claim de expiração, então nunca vence sozinho.",
+                                "text": "Porque o JWT não tem nenhuma claim de expiração, então ele nunca vence sozinho, em hipótese alguma.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o servidor não guarda o JWT em lugar nenhum; o token continua com assinatura válida até a claim exp vencer, a menos que se mantenha algum controle extra.",
+                                "text": "Porque o servidor não guarda o JWT em lugar nenhum; ele segue válido até a claim exp vencer, sem mais nada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque revogar uma sessão também é sempre igualmente difícil.",
+                                "text": "Porque revogar uma sessão também é sempre igualmente difícil, não existe diferença real entre as duas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o JWT é criptografado, e o servidor não consegue nem ler o que precisaria revogar.",
+                                "text": "Porque o JWT é totalmente criptografado, e o servidor não consegue nem ler o que precisaria revogar.",
                                 "isCorrect": false
                             }
                         ]
@@ -2831,19 +2831,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "JWT, porque cada serviço consegue verificar a assinatura sozinho, sem precisar de um estado compartilhado consultado a cada requisição.",
+                                "text": "JWT, porque cada serviço verifica a assinatura sozinho, sem estado compartilhado a cada requisição.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sessão com cookie, porque cookies funcionam automaticamente em qualquer app mobile.",
+                                "text": "Sessão com cookie, porque cookies funcionam automaticamente em qualquer app mobile ou serviço externo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sessão em memória local de cada serviço, sem compartilhar nada entre eles.",
+                                "text": "Sessão em memória local de cada serviço, sem compartilhar absolutamente nada entre os serviços.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhuma das duas abordagens funciona fora de um único domínio.",
+                                "text": "Nenhuma das duas abordagens funciona fora de um único domínio compartilhado pelos serviços.",
                                 "isCorrect": false
                             }
                         ]
@@ -2853,19 +2853,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sessão sempre gera tokens menores que o JWT, o que já resolveria o requisito citado.",
+                                "text": "Sessão sempre gera tokens bem menores que o JWT, o que já resolveria sozinho o requisito citado pelo suporte.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "JWT não permite login em aplicações que rodam num único domínio.",
+                                "text": "JWT não permite login em aplicações que rodam dentro de um único domínio compartilhado como esse.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Com sessão, basta apagar o registro no servidor para o acesso parar imediatamente; com JWT puro, o token continuaria válido até expirar.",
+                                "text": "Com sessão, apagar o registro no servidor já corta o acesso; com JWT puro, o token seguiria válido até expirar.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Sessão dispensa completamente o uso de HTTPS, o que simplifica o trabalho do suporte.",
+                                "text": "Sessão dispensa completamente o uso de HTTPS, o que simplifica bastante o trabalho do time de suporte.",
                                 "isCorrect": false
                             }
                         ]
@@ -2875,19 +2875,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o refresh token substitui a necessidade de assinatura no access token.",
+                                "text": "Porque o refresh token substitui totalmente a necessidade de assinatura e verificação no access token JWT.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o JWT de vida curta limita o estrago de um token vazado ou de um usuário banido a poucos minutos, enquanto o refresh token, esse sim revogável no banco, continua controlando quem pode pedir novos access tokens.",
+                                "text": "Porque o JWT curto limita o dano de um vazamento a minutos; o refresh token, revogável no banco, controla os acessos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o access token deixa de precisar de uma claim exp quando existe um refresh token.",
+                                "text": "Porque o access token deixa de precisar de uma claim exp quando já existe um refresh token guardado no banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o refresh token é enviado no mesmo cabeçalho Authorization que o access token, dobrando a segurança.",
+                                "text": "Porque o refresh token é enviado sempre no mesmo cabeçalho Authorization que o access token, dobrando a segurança.",
                                 "isCorrect": false
                             }
                         ]
@@ -2933,19 +2933,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O hash gerado por bcrypt.hash, nunca a senha original",
+                                "text": "O hash gerado por bcrypt.hash, já que a senha original não pode ficar salva",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A senha original digitada pelo usuário, para caso ele esqueça",
+                                "text": "A senha original digitada pelo usuário, caso ele esqueça e precise vê-la de novo",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A senha e o hash, os dois juntos, por segurança extra",
+                                "text": "A senha e o hash juntos, para o login poder conferir de dois jeitos diferentes",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um hash MD5 da senha, mais rápido de calcular que o bcrypt",
+                                "text": "Um hash MD5 da senha, que é bem mais rápido de calcular do que o do bcrypt",
                                 "isCorrect": false
                             }
                         ]
@@ -2959,11 +2959,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o email precisa identificar um único usuário, já que o login busca a conta por ele",
+                                "text": "Porque o email precisa ser único para identificar a conta certa no login",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o Express recusa automaticamente emails repetidos, e a checagem só confirma isso",
+                                "text": "Porque o Express recusa emails repetidos sozinho, e a checagem confirma",
                                 "isCorrect": false
                             },
                             {
@@ -2985,7 +2985,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O hash nunca deveria sair da API, pois dá a um atacante material para tentar quebrá-lo offline",
+                                "text": "O hash nunca deveria sair da API, pois ajuda um atacante a quebrá-lo offline",
                                 "isCorrect": true
                             },
                             {
@@ -3007,11 +3007,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pedir para o usuário confirmar a senha digitando em letras maiúsculas",
+                                "text": "Pedir para o usuário confirmar a senha digitando tudo em letras maiúsculas",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Validar a senha antes do hash (como um tamanho mínimo), já que o bcrypt não julga se a senha é fraca",
+                                "text": "Validar a senha antes do hash, pois o bcrypt não recusa senha fraca",
                                 "isCorrect": true
                             }
                         ]
@@ -3021,19 +3021,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O custo (número de rounds) do algoritmo, que define quão lento é gerar o hash",
+                                "text": "O custo do algoritmo, que define quantos rounds e quão lento é o hash",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O tamanho máximo, em caracteres, que a senha pode ter",
+                                "text": "O tamanho máximo, em caracteres, que a senha pode ter por segurança",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número de tentativas de login permitidas antes de bloquear a conta",
+                                "text": "O número de tentativas de login, que bloqueia a conta após excedido",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O tempo, em minutos, que o hash leva para expirar",
+                                "text": "O tempo em minutos, que faz o hash expirar e exigir novo cadastro",
                                 "isCorrect": false
                             }
                         ]
@@ -3096,7 +3096,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O hash da senha armazenado no banco, para conferência",
+                                "text": "O hash da senha, direto da coluna senha_hash",
                                 "isCorrect": false
                             },
                             {
@@ -3108,7 +3108,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "A senha do usuário, para confirmar que ela está correta",
+                                "text": "A senha do usuário, em texto puro",
                                 "isCorrect": false
                             }
                         ]
@@ -3130,7 +3130,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para não revelar, a quem tenta o login, se aquele email está cadastrado na plataforma",
+                                "text": "Para não revelar se aquele email está cadastrado na plataforma",
                                 "isCorrect": true
                             }
                         ]
@@ -3140,19 +3140,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "401, com a mesma mensagem genérica usada quando a senha está errada",
+                                "text": "401, com a mesma mensagem genérica usada para senha errada",
                                 "isCorrect": true
                             },
                             {
-                                "text": "200, sugerindo que o usuário se cadastre com aquele email",
+                                "text": "200, sugerindo que o usuário refaça o cadastro com aquele email",
                                 "isCorrect": false
                             },
                             {
-                                "text": "404, informando que o email não está cadastrado",
+                                "text": "404, avisando que aquele email não está cadastrado no banco",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Redirecionar automaticamente a requisição para a rota de cadastro",
+                                "text": "Redirecionar a requisição automaticamente para a rota de cadastro",
                                 "isCorrect": false
                             }
                         ]
@@ -3166,7 +3166,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o payload de um JWT não é criptografado, e sim codificado em base64url, legível por qualquer um com o token",
+                                "text": "Porque o payload do JWT é só codificado em base64url, não criptografado",
                                 "isCorrect": true
                             },
                             {
@@ -3215,19 +3215,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "No corpo (body) da requisição",
+                                "text": "No corpo (body) da requisição, junto com a senha",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Em um cookie chamado token",
+                                "text": "Em um cookie de sessão que se chama token",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No header Authorization, no formato Bearer <token>",
+                                "text": "No header Authorization, como Bearer <token>",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Na URL, como parâmetro de busca",
+                                "text": "Na URL, como parâmetro de busca (query string)",
                                 "isCorrect": false
                             }
                         ]
@@ -3271,7 +3271,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Express ignora headers ausentes e libera qualquer rota automaticamente",
+                                "text": "O Express ignora headers ausentes e libera a rota sozinho",
                                 "isCorrect": false
                             }
                         ]
@@ -3281,7 +3281,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Deixar o erro estourar sem tratamento",
+                                "text": "Deixar o erro estourar sem tratamento, travando toda a requisição",
                                 "isCorrect": false
                             },
                             {
@@ -3311,7 +3311,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque centraliza a verificação num único lugar, evitando duplicação e o risco de esquecer a checagem em alguma rota",
+                                "text": "Porque centraliza a verificação num lugar, evitando duplicação e esquecimentos",
                                 "isCorrect": true
                             },
                             {
@@ -3360,11 +3360,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Reduzir o tamanho do arquivo JSON gerado pelo jwt.sign",
+                                "text": "Reduzir o tamanho do arquivo JSON gerado pelo jwt.sign a cada login",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Fazer o bcrypt processar as senhas mais rápido",
+                                "text": "Fazer o bcrypt processar e comparar as senhas mais rápido",
                                 "isCorrect": false
                             },
                             {
@@ -3372,7 +3372,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Limitar o estrago caso o token seja roubado, já que ele perde a validade rápido",
+                                "text": "Limitar o estrago caso o token seja roubado, pois expira rápido",
                                 "isCorrect": true
                             }
                         ]
@@ -3382,15 +3382,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Para obter um novo access token sem pedir a senha do usuário de novo",
+                                "text": "Para obter um novo access token sem pedir a senha de novo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Para substituir a senha do usuário na próxima vez que ele fizer login",
+                                "text": "Para substituir a senha do usuário na próxima vez que ele logar",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Para criptografar o payload do access token",
+                                "text": "Para criptografar o payload do access token a cada requisição",
                                 "isCorrect": false
                             },
                             {
@@ -3408,7 +3408,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque o cliente usa o refresh token na rota /refresh para obter um novo access token",
+                                "text": "Não, porque o cliente usa o refresh token para pedir um novo access token",
                                 "isCorrect": true
                             },
                             {
@@ -3434,7 +3434,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ele é usado com bem menos frequência, só para pedir um novo access token, então pode durar mais",
+                                "text": "Porque ele é usado bem menos, então pode durar mais sem tanto risco",
                                 "isCorrect": true
                             },
                             {
@@ -3460,7 +3460,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Responder 401, obrigando o usuário a fazer login de novo com email e senha",
+                                "text": "Responder 401, obrigando o usuário a logar de novo com email e senha",
                                 "isCorrect": true
                             }
                         ]
@@ -3501,11 +3501,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Guarda o token para reenviá-lo nas próximas requisições",
+                                "text": "Guarda o token em memória para reenviá-lo nas próximas requisições",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Descarta o token, já que ele só serve para a resposta do login",
+                                "text": "Descarta o token, pois ele só vale para a resposta do login",
                                 "isCorrect": false
                             },
                             {
@@ -3523,19 +3523,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Content-Type",
+                                "text": "O header Content-Type",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Authorization",
+                                "text": "O header Authorization",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cookie",
+                                "text": "Um cookie chamado token",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um header customizado chamado Token",
+                                "text": "Um header chamado Token",
                                 "isCorrect": false
                             }
                         ]
@@ -3553,11 +3553,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O token pode ser interceptado por alguém na rede e reutilizado para se passar pelo usuário",
+                                "text": "O token pode ser interceptado na rede e usado para se passar pelo usuário",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O Express bloqueia automaticamente conexões sem HTTPS",
+                                "text": "O Express detecta e bloqueia sozinho qualquer conexão que não seja HTTPS",
                                 "isCorrect": false
                             }
                         ]
@@ -3579,7 +3579,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O token continua tecnicamente válido até expirar, mesmo depois do logout, pois o servidor não guarda estado",
+                                "text": "O token continua válido até expirar, já que o servidor não guarda estado nenhum",
                                 "isCorrect": true
                             }
                         ]
@@ -3589,19 +3589,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Login com email e senha -> servidor emite o token -> cliente guarda e envia no header Authorization -> middleware verifica -> rota responde",
+                                "text": "Login com email e senha -> servidor emite o token -> cliente envia no header Authorization -> middleware verifica -> rota responde",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Cliente envia o token -> servidor cria a senha -> middleware guarda a sessão -> rota responde",
+                                "text": "Cliente envia o token primeiro -> servidor cria uma senha nova -> middleware guarda a sessão -> rota confere o banco -> resposta é enviada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Servidor emite o token -> cliente faz login -> middleware apaga o token -> rota responde",
+                                "text": "Servidor emite o token -> cliente faz login logo em seguida -> middleware apaga o token -> rota confere o banco -> resposta é enviada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Login com email e senha -> middleware verifica antes de o token existir -> servidor emite o token -> rota responde",
+                                "text": "Login com email e senha -> middleware verifica o token antes mesmo de ele existir -> servidor emite o token -> rota responde",
                                 "isCorrect": false
                             }
                         ]
@@ -3651,19 +3651,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "O usuário está identificado, mas ainda pode não ter permissão para a ação que está tentando fazer.",
+                                "text": "O usuário está identificado, mas isso não garante que ele tenha permissão para a ação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O usuário pode executar qualquer ação da API, já que provou sua identidade.",
+                                "text": "Pode executar qualquer ação, pois provar identidade também concede acesso total ao sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O usuário é automaticamente tratado como administrador.",
+                                "text": "É tratado como administrador, já que passou pela validação do token com sucesso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhuma outra checagem precisa rodar nas próximas rotas.",
+                                "text": "Nenhuma outra checagem é necessária, pois o middleware autenticar já cobre toda a rota.",
                                 "isCorrect": false
                             }
                         ]
@@ -3673,19 +3673,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Nenhum risco: só chega até ali quem tem um token válido.",
+                                "text": "Nenhum risco: um token válido já garante que quem está pedindo tem permissão para apagar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Qualquer usuário autenticado, mesmo um aluno comum, consegue apagar uma trilha.",
+                                "text": "Qualquer usuário autenticado, mesmo um aluno comum, apaga uma trilha por faltar checagem de papel.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O risco só existe se o token estiver expirado.",
+                                "text": "O risco só existe se o token estiver expirado, porque um token válido já basta para autorizar a ação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A rota falha automaticamente, porque o Express exige checagem de papel por padrão.",
+                                "text": "A rota falha automaticamente, porque o Express exige checagem de papel em qualquer rota por padrão.",
                                 "isCorrect": false
                             }
                         ]
@@ -3695,19 +3695,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o Express não permite reaproveitar middleware de autenticação em mais de uma rota.",
+                                "text": "Porque o Express não permite reaproveitar o mesmo middleware de autenticação em rotas diferentes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque autorização só existe em APIs que usam sessão, não em APIs com JWT.",
+                                "text": "Porque autorização só é necessária em APIs que usam sessão, nunca em APIs baseadas em JWT.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque validar um token é sempre a mesma operação, mas as regras de quem pode fazer o quê mudam de recurso para recurso.",
+                                "text": "Porque validar um token é sempre a mesma operação, mas as regras de acesso variam por recurso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque autenticação é opcional e autorização é obrigatória.",
+                                "text": "Porque autenticação é uma etapa opcional da API, enquanto autorização é sempre obrigatória.",
                                 "isCorrect": false
                             }
                         ]
@@ -3717,19 +3717,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A autenticação deveria falhar, já que ele não é admin.",
+                                "text": "A autenticação deveria falhar, já que apenas administradores têm tokens considerados válidos.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A requisição deve ser aceita, porque um token válido já garante acesso total.",
+                                "text": "A requisição deve ser aceita, porque um token válido já garante acesso total a qualquer rota.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O servidor deve ignorar o token e pedir um novo login.",
+                                "text": "O servidor deve ignorar o token e pedir um novo login, já que o papel não veio especificado nele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A autenticação passa normalmente, mas uma checagem de autorização separada deve barrar a ação porque o papel dele não permite.",
+                                "text": "A autenticação passa, mas uma checagem de autorização separada barra a ação pelo papel dele.",
                                 "isCorrect": true
                             }
                         ]
@@ -3739,19 +3739,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Ela trata autorização como se fosse a mesma coisa que autenticação, dando a qualquer usuário autenticado o mesmo poder que qualquer outro.",
+                                "text": "Ela trata autorização como sinônimo de autenticação, dando a todo usuário autenticado o mesmo poder.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ela torna o JWT inválido antes da hora.",
+                                "text": "Ela torna o JWT inválido antes da hora, porque cada ação sensível força a geração de um token novo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela impede novos usuários de se cadastrarem.",
+                                "text": "Ela impede novos usuários de se cadastrarem, já que o cadastro também passa pela checagem de token válido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela é impossível de implementar usando Express e jsonwebtoken.",
+                                "text": "Ela é impossível de implementar usando Express e jsonwebtoken, que exigem checagem explícita de papel.",
                                 "isCorrect": false
                             }
                         ]
@@ -3796,19 +3796,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um protocolo de autenticação que substitui o JWT.",
+                                "text": "Um protocolo de autenticação alternativo, pensado para substituir o JWT em APIs modernas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um jeito de agrupar permissões em papéis nomeados e associar cada usuário a um papel, em vez de listar permissões uma a uma para cada pessoa.",
+                                "text": "Um jeito de agrupar permissões em papéis nomeados, associando cada usuário a um papel específico.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma biblioteca do Node.js para gerar tokens.",
+                                "text": "Uma biblioteca do Node.js usada especificamente para gerar e assinar tokens de acesso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um tipo de criptografia usada para proteger senhas.",
+                                "text": "Um tipo de criptografia usada especificamente para proteger as senhas antes de gravá-las no banco.",
                                 "isCorrect": false
                             }
                         ]
@@ -3818,19 +3818,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Admin, com acesso total até ser rebaixado manualmente.",
+                                "text": "Admin, com acesso total até algum outro administrador rebaixar a conta manualmente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nenhum papel, até um admin aprovar o cadastro.",
+                                "text": "Nenhum papel, porque o cadastro fica pendente até um admin aprovar manualmente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aluno, que consome conteúdo e acompanha o próprio progresso.",
+                                "text": "Aluno, o papel padrão de quem consome trilhas e acompanha o próprio progresso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Moderador, até completar a primeira trilha.",
+                                "text": "Moderador, um papel intermediário até o usuário completar a primeira trilha.",
                                 "isCorrect": false
                             }
                         ]
@@ -3840,19 +3840,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Nenhuma, porque o JWT sempre reflete o estado atual do banco de dados.",
+                                "text": "Nenhuma consequência relevante, porque o JWT sempre reflete o estado mais atual do banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O token deixa de poder ser verificado com jwt.verify.",
+                                "text": "O token deixa de poder ser verificado com jwt.verify, já que claims extras quebram a assinatura.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As requisições ficam mais rápidas, mas uma mudança de papel só passa a valer quando o usuário pegar um token novo.",
+                                "text": "As requisições ficam mais rápidas, mas uma mudança de papel só vale quando o usuário pegar um token novo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A aplicação passa a exigir cookies em vez de header Authorization.",
+                                "text": "A aplicação passa a exigir cookies em vez de header Authorization, pois um payload maior não cabe no header.",
                                 "isCorrect": false
                             }
                         ]
@@ -3862,15 +3862,15 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A ação é barrada imediatamente, porque o servidor sempre confere o banco antes do token.",
+                                "text": "A ação é barrada imediatamente, porque o servidor sempre confere o banco antes de aceitar o token.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O token se torna inválido automaticamente assim que o papel muda no banco.",
+                                "text": "O token se torna inválido automaticamente assim que o papel do usuário muda no banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O usuário é deslogado à força na próxima requisição.",
+                                "text": "O usuário é deslogado à força na próxima requisição, pois o servidor detecta a mudança de papel.",
                                 "isCorrect": false
                             },
                             {
@@ -3884,19 +3884,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque papéis só existem em bancos de dados relacionais, e permissões só em JWT.",
+                                "text": "Porque papéis só podem existir em bancos relacionais, enquanto permissões vivem exclusivamente no JWT.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque uma permissão nunca pode ser retirada de um papel depois de criado.",
+                                "text": "Porque uma permissão, uma vez atribuída a um papel, nunca poderia ser removida dele mais tarde.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque, na prática, todo usuário tem exatamente um papel e uma permissão, sempre em par.",
+                                "text": "Porque, na prática, todo usuário sempre tem exatamente um papel e uma permissão, sempre em par.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o papel é um agrupamento nomeado de várias permissões, e checar o papel de alguém já responde a várias perguntas de autorização de uma vez.",
+                                "text": "Porque o papel agrupa várias permissões sob um nome e checá-lo responde muitas perguntas de uma vez.",
                                 "isCorrect": true
                             }
                         ]
@@ -3945,15 +3945,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "403 Forbidden, porque a ação não é permitida.",
+                                "text": "403 Forbidden, porque a ausência de header já conta como uma ação proibida.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "404 Not Found, porque a rota não existe sem token.",
+                                "text": "404 Not Found, porque a rota deixa de existir para quem não envia token.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "200 OK, porque a requisição chegou corretamente.",
+                                "text": "200 OK, porque a ausência de token é tratada como um acesso anônimo permitido.",
                                 "isCorrect": false
                             }
                         ]
@@ -3963,19 +3963,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "400 Bad Request, porque o corpo da requisição está errado.",
+                                "text": "400 Bad Request, porque o corpo dessa requisição está mal formatado ou incompleto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "403 Forbidden, porque a identidade está provada, mas a ação não é permitida para o papel dele.",
+                                "text": "403 Forbidden, porque a identidade está provada, mas o papel dele não permite essa ação.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "500 Internal Server Error, porque o middleware falhou.",
+                                "text": "500 Internal Server Error, porque o middleware de papel lançou uma exceção não tratada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "401 Unauthorized, porque falta permissão.",
+                                "text": "401 Unauthorized, porque a falta de permissão é tratada como se fosse falta de identidade.",
                                 "isCorrect": false
                             }
                         ]
@@ -3985,19 +3985,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque o Express executa sempre o último middleware da lista primeiro.",
+                                "text": "Porque o Express sempre executa o último middleware registrado na rota primeiro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque exigirAdmin também valida o token, tornando autenticar dispensável.",
+                                "text": "Porque exigirAdmin também valida a assinatura do token, o que torna autenticar redundante.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A ordem não importa: os dois fazem exatamente a mesma checagem.",
+                                "text": "A ordem não importa nesse caso, porque os dois middlewares fazem exatamente a mesma checagem.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque exigirAdmin depende de req.user já estar populado, o que só acontece depois que autenticar validou o token.",
+                                "text": "Porque exigirAdmin depende de req.user, populado só depois que autenticar valida o token.",
                                 "isCorrect": true
                             }
                         ]
@@ -4007,19 +4007,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O front-end interpreta como sessão expirada e manda o usuário para o login de novo, mesmo que fazer login de novo não resolva nada.",
+                                "text": "O front-end interpreta como sessão expirada e manda o usuário para o login, mesmo sem resolver nada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum problema: 401 e 403 são intercambiáveis em qualquer situação.",
+                                "text": "Nenhum problema prático, porque 401 e 403 são tratados como sinônimos por qualquer cliente HTTP moderno.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O navegador bloqueia automaticamente todas as requisições futuras.",
+                                "text": "O navegador passa a bloquear automaticamente todas as futuras requisições daquele usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O token passa a ser aceito em qualquer outra rota da API.",
+                                "text": "O token passa a ser aceito em qualquer outra rota da API, mesmo as que exigem outro papel.",
                                 "isCorrect": false
                             }
                         ]
@@ -4029,19 +4029,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O Express insere automaticamente um req.user padrão com role admin.",
+                                "text": "O Express insere automaticamente um req.user padrão com role admin, para não travar a rota.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Nada acontece, porque exigirAdmin sempre roda antes de qualquer outro middleware.",
+                                "text": "Nada acontece, porque exigirAdmin sempre roda antes de qualquer outro middleware da rota.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A rota passa a exigir autenticação por cookie em vez de token.",
+                                "text": "A rota passa a exigir autenticação por cookie em vez de token, já que req.user ficou vazio.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A checagem de req.user.role pode falhar de forma inesperada, ou, se mal escrita, deixar passar quem não deveria.",
+                                "text": "A checagem de req.user.role pode falhar, ou, se mal feita, liberar quem não deveria passar.",
                                 "isCorrect": true
                             }
                         ]
@@ -4082,19 +4082,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Todo usuário novo deve começar como administrador, para facilitar o suporte.",
+                                "text": "Todo usuário novo deve começar como administrador, o que facilita o trabalho do suporte.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Cada usuário deve receber apenas as permissões estritamente necessárias para o que ele precisa fazer, nada além disso.",
+                                "text": "Cada usuário deve receber apenas as permissões estritamente necessárias para o que precisa fazer.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Quanto mais permissões um usuário tiver, mais seguro o sistema fica.",
+                                "text": "Quanto mais permissões um usuário acumula, mais seguro o sistema inteiro fica contra falhas internas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Permissões devem ser atribuídas uma única vez e nunca revistas.",
+                                "text": "Permissões devem ser atribuídas uma única vez, no cadastro, e nunca mais revistas depois.",
                                 "isCorrect": false
                             }
                         ]
@@ -4104,19 +4104,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Porque o Express não permite ler campos extras do corpo da requisição.",
+                                "text": "Porque o Express bloqueia, por padrão, a leitura de campos extras no corpo da requisição.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o campo role sempre quebra a validação de senha.",
+                                "text": "Porque a presença do campo role sempre quebra a validação de senha durante o cadastro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque bcrypt não funciona em cadastros que enviam esse campo.",
+                                "text": "Porque o bcrypt deixa de funcionar em cadastros que incluem esse campo extra no corpo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque um atacante poderia se cadastrar já como administrador, só declarando isso no corpo da requisição.",
+                                "text": "Porque um atacante se cadastraria como admin, só declarando isso no corpo da requisição.",
                                 "isCorrect": true
                             }
                         ]
@@ -4126,19 +4126,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sim, porque a checagem de autenticação sozinha não garante que o recurso pedido pertence a quem está autenticado.",
+                                "text": "Sim, porque a checagem de autenticação sozinha não garante que o recurso pertence ao autenticado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não, porque o Express bloqueia automaticamente edições em recursos de outros usuários.",
+                                "text": "Não, porque o Express bloqueia automaticamente qualquer edição em recursos de outros usuários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque o banco de dados rejeita updates sem checagem de dono.",
+                                "text": "Não, porque o próprio banco de dados rejeita updates que não venham acompanhados de checagem de dono.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, mas só se o aluno também for administrador.",
+                                "text": "Sim, mas só nos casos em que o aluno autenticado também tiver o papel de administrador.",
                                 "isCorrect": false
                             }
                         ]
@@ -4148,19 +4148,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque admin nunca pode editar tarefa nenhuma, nem a própria.",
+                                "text": "Porque um admin nunca pode editar tarefa nenhuma, nem mesmo as que ele mesmo criou.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque só o admin precisa passar pela checagem de dono, o aluno não.",
+                                "text": "Porque só o admin precisa passar pela checagem de dono, o aluno fica sempre dispensado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o campo usuarioId não existe para contas admin.",
+                                "text": "Porque o campo usuarioId simplesmente não existe para tarefas associadas a contas admin.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o papel admin já concede uma permissão mais ampla, então a regra libera o admin sem exigir que ele seja o dono do recurso.",
+                                "text": "Porque o papel admin concede permissão mais ampla e libera a ação sem exigir a posse.",
                                 "isCorrect": true
                             }
                         ]
@@ -4170,19 +4170,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque req.user.id vem de um token que o servidor validou e não pode ser forjado pelo cliente, enquanto um campo no corpo da requisição é escolhido livremente por quem envia a requisição.",
+                                "text": "Porque req.user.id vem de um token validado pelo servidor, e o corpo da requisição é escolhido por quem o envia.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o corpo da requisição nunca pode conter o campo usuarioId, tecnicamente.",
+                                "text": "Porque o corpo da requisição nunca pode, tecnicamente, conter um campo chamado usuarioId em nenhuma circunstância.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque comparar com o token é mais lento, mas não mais seguro.",
+                                "text": "Porque comparar um valor com o token é sempre mais lento de processar do que comparar com o corpo, mas não mais seguro.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há diferença de segurança entre as duas abordagens.",
+                                "text": "Não há diferença de segurança real entre as duas abordagens, apenas uma diferença de nomenclatura entre os campos.",
                                 "isCorrect": false
                             }
                         ]
@@ -4227,19 +4227,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um ataque que quebra a assinatura de um JWT para forjar um token novo.",
+                                "text": "Um ataque que quebra a assinatura de um token JWT para conseguir forjar um novo, válido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar um identificador (como o id numa URL) para tentar acessar ou alterar um recurso que pertence a outro usuário, quando o servidor não confere o dono.",
+                                "text": "Trocar um identificador, como o id na URL, para acessar um recurso alheio sem checagem de dono.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Uma técnica para descobrir a senha de outro usuário por força bruta.",
+                                "text": "Uma técnica para descobrir a senha de outro usuário testando muitas combinações por força bruta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um erro de configuração que deixa o banco de dados acessível pela internet.",
+                                "text": "Um erro de configuração que deixa o banco de dados da aplicação acessível direto pela internet.",
                                 "isCorrect": false
                             }
                         ]
@@ -4249,19 +4249,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "A verificação de que o token JWT foi assinado com o segredo correto.",
+                                "text": "A verificação de que o token JWT foi assinado com o segredo correto do servidor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A verificação de que a senha do aluno ainda é válida.",
+                                "text": "A verificação de que a senha do aluno autenticado ainda é válida no momento da leitura.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "A verificação de que a tarefa 124 pertence ao usuário autenticado antes de devolver a resposta.",
+                                "text": "A verificação de que a tarefa 124 pertence ao usuário autenticado antes de responder.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A verificação de que o método HTTP usado é GET.",
+                                "text": "A verificação de que o método HTTP usado nessa requisição é realmente um GET.",
                                 "isCorrect": false
                             }
                         ]
@@ -4271,19 +4271,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque ele só funciona contra servidores desatualizados sem patches de segurança.",
+                                "text": "Porque ele só funciona contra servidores desatualizados, ainda sem os patches de segurança mais recentes.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque explorá-lo exige só editar um identificador numa requisição já autenticada, sem quebrar criptografia nem senha, mas pode expor ou alterar dados de qualquer outro usuário.",
+                                "text": "Porque exige só editar um identificador numa requisição já autenticada, mas pode expor dados alheios.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque ele exige acesso físico ao servidor da aplicação.",
+                                "text": "Porque ele exige acesso físico direto ao servidor onde a aplicação está efetivamente hospedada.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque ele depende de o atacante já ser administrador do sistema.",
+                                "text": "Porque ele só funciona nos casos em que o atacante já é administrador do próprio sistema.",
                                 "isCorrect": false
                             }
                         ]
@@ -4293,19 +4293,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sim: sem ids sequenciais, é matematicamente impossível acessar o recurso de outra pessoa.",
+                                "text": "Sim, porque sem ids sequenciais é impossível adivinhar o recurso de qualquer outra pessoa.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, desde que o UUID tenha pelo menos 32 caracteres.",
+                                "text": "Sim, desde que o UUID gerado tenha pelo menos 32 caracteres de comprimento total.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não: um UUID só dificulta adivinhar outros ids, mas se um id vazar (num link, e-mail ou log), o recurso continua acessível sem a checagem de dono.",
+                                "text": "Não: o UUID dificulta adivinhar ids, mas se um vazar num link ou log, o recurso segue acessível.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não resolve, mas também não ajuda em nada, então não vale o esforço de trocar.",
+                                "text": "Não resolve o IDOR, e ainda por cima não ajuda em nada, então trocar os ids seria esforço perdido.",
                                 "isCorrect": false
                             }
                         ]
@@ -4315,19 +4315,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não, porque corrigir a leitura automaticamente corrige todas as outras rotas relacionadas ao mesmo recurso.",
+                                "text": "Não, porque corrigir a checagem numa rota já corrige automaticamente todas as outras do mesmo recurso.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque DELETE nunca é alvo de IDOR, só GET e PATCH são.",
+                                "text": "Não, porque a operação DELETE nunca é considerada alvo de IDOR, só GET e PATCH são.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim, mas apenas se o usuário autenticado for administrador.",
+                                "text": "Sim, mas apenas nos casos em que o usuário autenticado tiver o papel de administrador.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Sim: a checagem de dono precisa existir em cada operação que recebe um identificador, e a rota de exclusão desprotegida permite apagar tarefas de outros usuários.",
+                                "text": "Sim: a checagem de dono precisa existir em toda operação, e a exclusão aberta apaga tarefas alheias.",
                                 "isCorrect": true
                             }
                         ]
@@ -4373,19 +4373,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Evita que o site precise pedir ou guardar a senha da conta Google do usuário, autorizando um acesso limitado por meio de um token.",
+                                "text": "Evita que o site peça ou guarde a senha do Google, usando um token de acesso limitado.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Torna a senha do usuário automaticamente mais forte.",
+                                "text": "Fortalece a senha do usuário, aplicando uma criptografia extra sobre ela a cada login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substitui a necessidade de usar HTTPS na aplicação.",
+                                "text": "Dispensa o uso de HTTPS, já que o próprio token cuida da criptografia do tráfego.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Garante que o usuário nunca mais precise fazer login em lugar nenhum.",
+                                "text": "Elimina a necessidade de login em qualquer outro site, unindo todas as sessões num token.",
                                 "isCorrect": false
                             }
                         ]
@@ -4395,19 +4395,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Client (a aplicação que solicita acesso aos dados do usuário).",
+                                "text": "Client, a aplicação que solicita acesso aos dados do usuário junto ao Google.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Resource Owner (o dono dos dados).",
+                                "text": "Resource Owner, já que o ensina.dev é quem decide liberar o acesso aos dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Authorization Server (quem autentica o usuário e emite a autorização).",
+                                "text": "Authorization Server, pois é o ensina.dev quem autentica o login do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Resource Server (quem guarda os dados protegidos).",
+                                "text": "Resource Server, pois é o ensina.dev quem guarda os dados protegidos do usuário.",
                                 "isCorrect": false
                             }
                         ]
@@ -4417,19 +4417,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "O site passaria a conhecer a senha da conta Google inteira do usuário, sem possibilidade de acesso limitado ou de revogação simples.",
+                                "text": "O site passaria a conhecer a senha inteira da conta Google, sem acesso limitado nem revogação simples.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque formulários HTML não suportam campos de senha.",
+                                "text": "Formulários HTML não suportam campos de senha, então o navegador acabaria expondo o texto digitado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o Google bloqueia automaticamente qualquer senha digitada fora do site dele.",
+                                "text": "O Google bloqueia automaticamente qualquer senha digitada fora do próprio domínio dele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não há problema, desde que o formulário use HTTPS.",
+                                "text": "Não há problema real, pois o HTTPS por si só já limita e revoga esse tipo de acesso.",
                                 "isCorrect": false
                             }
                         ]
@@ -4439,19 +4439,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Autenticar o usuário e emitir a autorização (o token) para o client, como faz o servidor de login do Google.",
+                                "text": "Autenticar o usuário e emitir o token de autorização ao client, como faz o Google.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Ser a aplicação cliente que quer acessar os dados do usuário.",
+                                "text": "Ser a aplicação cliente que solicita acesso aos dados do usuário em nome dele.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ser o banco de dados que armazena os dados da própria aplicação.",
+                                "text": "Ser o banco de dados que guarda as tabelas e os registros da própria aplicação.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ser o navegador do usuário, responsável por guardar os cookies de sessão.",
+                                "text": "Ser o navegador do usuário, responsável por armazenar os cookies da sessão ativa.",
                                 "isCorrect": false
                             }
                         ]
@@ -4461,19 +4461,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "OAuth 2.0 foi desenhado para autorização, dar acesso a recursos; o OIDC adiciona um padrão de autenticação e identidade sobre o OAuth.",
+                                "text": "OAuth 2.0 foi desenhado para autorização, dar acesso a recursos; o OIDC acrescenta autenticação de identidade por cima dele.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "OAuth 2.0 foi desenhado para hash de senhas; o OIDC adiciona criptografia simétrica.",
+                                "text": "OAuth 2.0 foi desenhado para fazer hash de senhas; o OIDC acrescenta uma camada de criptografia simétrica sobre esse hash.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OAuth 2.0 foi desenhado para armazenar sessões em Redis; o OIDC adiciona cookies HttpOnly.",
+                                "text": "OAuth 2.0 foi desenhado para armazenar sessões em Redis; o OIDC acrescenta o uso de cookies HttpOnly sobre essas sessões.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "OAuth 2.0 e OIDC são exatamente a mesma especificação, apenas com nomes diferentes.",
+                                "text": "OAuth 2.0 e o OIDC são, na prática, a mesma especificação original, apenas publicada sob dois nomes comerciais diferentes.",
                                 "isCorrect": false
                             }
                         ]
@@ -4514,19 +4514,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Numa página do próprio Google, para onde a aplicação redireciona o navegador; a senha nunca passa pela aplicação.",
+                                "text": "Numa página do próprio Google, para onde a aplicação redireciona o navegador antes do login.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "No formulário de login da aplicação, que depois repassa a senha ao Google.",
+                                "text": "No formulário de login da própria aplicação, que depois repassa a senha ao Google por trás.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Na URL de redirecionamento, como parâmetro de consulta.",
+                                "text": "Na URL de redirecionamento, como um parâmetro de consulta visível na barra de endereço.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No corpo do code que o Google devolve no redirecionamento.",
+                                "text": "Dentro do próprio code que o Google devolve no redirecionamento final do fluxo de login.",
                                 "isCorrect": false
                             }
                         ]
@@ -4536,19 +4536,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Um código de autorização de uso único, que ainda precisa ser trocado por um token.",
+                                "text": "Um código de autorização de uso único, que ainda precisa ser trocado por um token depois.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A senha do usuário, para validar localmente.",
+                                "text": "A senha do usuário em texto claro, para a aplicação validar localmente contra o Google.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O token de acesso definitivo, já pronto para uso imediato.",
+                                "text": "O token de acesso definitivo, já pronto para autenticar o usuário de forma imediata.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O client_secret da própria aplicação.",
+                                "text": "O client_secret da própria aplicação, reenviado pelo Google como confirmação do login.",
                                 "isCorrect": false
                             }
                         ]
@@ -4558,19 +4558,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque essa troca exige o client_secret, que não pode ser exposto no navegador nem em URLs visíveis ao usuário.",
+                                "text": "Porque essa troca exige o client_secret, que não pode ficar exposto no navegador nem em URLs visíveis.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque navegadores não conseguem enviar requisições do tipo POST.",
+                                "text": "Porque navegadores não conseguem enviar requisições do tipo POST para servidores externos como o Google.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o Google só aceita conexões vindas de endereços IP de datacenter.",
+                                "text": "Porque o Google só aceita essa troca vinda de endereços IP cadastrados como servidores de datacenter.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É só uma convenção sem motivo de segurança; poderia ser feito pelo navegador sem problema.",
+                                "text": "É apenas uma convenção sem motivo de segurança; o mesmo poderia ser feito direto pelo navegador.",
                                 "isCorrect": false
                             }
                         ]
@@ -4580,19 +4580,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Proteger contra ataques de CSRF, garantindo que o redirecionamento de volta corresponde à mesma requisição que a aplicação iniciou.",
+                                "text": "Proteger contra CSRF, confirmando que o retorno do Google bate com a requisição enviada.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Definir por quanto tempo o token de acesso vai durar.",
+                                "text": "Definir por quanto tempo o token de acesso emitido pelo Google ainda vai permanecer válido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Informar ao Google qual banco de dados a aplicação usa.",
+                                "text": "Informar ao Google qual banco de dados a aplicação usa para guardar os usuários.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Substituir a necessidade de HTTPS na comunicação.",
+                                "text": "Substituir a necessidade de HTTPS na comunicação entre a aplicação e os servidores do Google.",
                                 "isCorrect": false
                             }
                         ]
@@ -4602,19 +4602,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Pouca coisa: sem o client_secret da aplicação, que fica só no servidor, o código não pode ser trocado por um token válido.",
+                                "text": "Pouca coisa: sem o client_secret, que fica só no servidor da aplicação, o código não vira um token válido.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Consegue logar imediatamente como a vítima, pois o código já equivale a um token de acesso.",
+                                "text": "Consegue logar imediatamente como a vítima, já que o código sozinho equivale a um token de acesso pronto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Consegue redefinir a senha da conta Google da vítima.",
+                                "text": "Consegue redefinir a senha da conta Google da vítima, usando esse código como comprovante de identidade.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Consegue decodificar o código para obter a senha original do usuário.",
+                                "text": "Consegue decodificar o código e obter diretamente a senha original da conta Google da vítima.",
                                 "isCorrect": false
                             }
                         ]
@@ -4659,19 +4659,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Buscar ou criar um registro de usuário local, vinculado aos dados recebidos do provedor, e então emitir a própria sessão ou token da aplicação.",
+                                "text": "Buscar ou criar um usuário local vinculado aos dados do provedor, e emitir a sessão local.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nada; o usuário já pode navegar usando apenas o token do Google para sempre.",
+                                "text": "Nada além disso; o usuário já pode navegar normalmente usando só o token do Google para sempre.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Pedir para o usuário também cadastrar uma senha local antes de liberar qualquer acesso.",
+                                "text": "Pedir que o usuário cadastre também uma senha local, antes de liberar qualquer acesso ao sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Redirecionar o usuário de volta ao Google para que a conta seja criada lá.",
+                                "text": "Redirecionar o usuário de volta ao Google, para que a conta local seja criada lá no provedor.",
                                 "isCorrect": false
                             }
                         ]
@@ -4681,19 +4681,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Dados básicos do perfil, como email, nome e um identificador único do usuário no provedor.",
+                                "text": "Dados básicos do perfil, como email, nome e um identificador único no provedor.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "A senha da conta do usuário no provedor, para a aplicação guardar localmente.",
+                                "text": "A senha da conta do usuário no provedor, para a aplicação guardar localmente e reusar.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O número do cartão de crédito cadastrado na conta do usuário.",
+                                "text": "O número do cartão de crédito cadastrado na conta do usuário dentro do provedor.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O histórico completo de navegação do usuário no site do provedor.",
+                                "text": "O histórico completo de navegação do usuário dentro do site do provedor OAuth usado.",
                                 "isCorrect": false
                             }
                         ]
@@ -4703,19 +4703,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Sem verificar assinatura, emissor e audiência do token, a aplicação não tem garantia de que os dados vieram realmente do Google e eram destinados a ela, abrindo espaço para um token forjado ou reaproveitado.",
+                                "text": "Sem checar assinatura, emissor e audiência do token, a aplicação aceitaria dados forjados ou alheios.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Não há risco algum, já que todo JWT é confiável apenas por existir.",
+                                "text": "Não há risco real, pois qualquer JWT já nasce confiável pelo simples fato de estar assinado.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco é somente de desempenho, pois decodificar sem verificar é mais lento.",
+                                "text": "O risco é apenas de desempenho, já que decodificar sem verificar consome mais tempo de processamento.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O risco é o token ficar visível na URL, o que é inevitável de qualquer forma.",
+                                "text": "O risco é o token ficar visível na URL de retorno do provedor, algo inevitável em qualquer fluxo OAuth.",
                                 "isCorrect": false
                             }
                         ]
@@ -4725,19 +4725,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Vincular o login social à conta já existente, pelo email, permitindo acessar a mesma conta tanto por senha quanto por login social.",
+                                "text": "Vincular o login social à conta existente pelo email, permitindo entrar por senha ou pelo Google.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Criar automaticamente uma segunda conta, sem qualquer vínculo com a primeira.",
+                                "text": "Criar automaticamente uma segunda conta separada, já que os métodos de login não podem coexistir.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Bloquear o login social sempre que já existir uma conta com senha cadastrada para aquele email.",
+                                "text": "Bloquear o login social sempre que já existir uma conta com senha cadastrada para aquele mesmo email.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Apagar a senha antiga e obrigar o uso exclusivo de login social dali em diante.",
+                                "text": "Apagar a senha antiga da conta e obrigar o uso exclusivo do login social dali em diante.",
                                 "isCorrect": false
                             }
                         ]
@@ -4747,19 +4747,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque garante que o token foi emitido especificamente para a sua aplicação, evitando aceitar um token válido do Google mas destinado a outra aplicação.",
+                                "text": "Porque garante que o token foi emitido para a sua aplicação específica, e não para outra qualquer.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o campo aud define o tempo de expiração do token.",
+                                "text": "Porque o campo aud define o tempo de expiração do token, evitando que ele seja usado depois desse prazo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o campo aud contém a senha criptografada do usuário.",
+                                "text": "Porque o campo aud contém a senha criptografada do usuário, cifrada com a chave pública do Google.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Verificar o aud é opcional e serve só para fins de log, sem impacto de segurança.",
+                                "text": "Porque verificar o aud é opcional, servindo só para fins de log, sem qualquer impacto real de segurança.",
                                 "isCorrect": false
                             }
                         ]
@@ -4804,19 +4804,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Rate limiting: limitar quantas tentativas de login um mesmo IP ou usuário pode fazer num intervalo de tempo.",
+                                "text": "Rate limiting: limitar quantas tentativas de login um mesmo IP pode fazer num intervalo de tempo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Trocar bcrypt por MD5 para acelerar a verificação da senha.",
+                                "text": "Trocar bcrypt por MD5, já que um hash mais rápido reduz a chance de erro na verificação da senha.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar o tamanho máximo da resposta HTTP.",
+                                "text": "Aumentar o tamanho máximo da resposta HTTP, dificultando o processamento de tentativas automatizadas.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover a exigência de senha forte no cadastro.",
+                                "text": "Remover a exigência de senha forte no cadastro, o que reduz a superfície de ataque do formulário.",
                                 "isCorrect": false
                             }
                         ]
@@ -4826,19 +4826,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Em variáveis de ambiente, fora do código-fonte e fora do controle de versão.",
+                                "text": "Em variáveis de ambiente, fora do código-fonte e fora do controle de versão do projeto.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Direto no código-fonte, para facilitar o acesso durante o desenvolvimento.",
+                                "text": "Direto no código-fonte, o que facilita a leitura e o versionamento junto com o resto do projeto.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No próprio repositório Git, num arquivo de configuração versionado junto com o código.",
+                                "text": "No próprio repositório Git, num arquivo de configuração versionado junto com o código-fonte.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "No corpo da resposta enviada ao cliente, para ele guardar localmente.",
+                                "text": "No corpo da resposta enviada ao cliente, para que o front-end guarde e reenvie quando precisar.",
                                 "isCorrect": false
                             }
                         ]
@@ -4848,19 +4848,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Permite que um atacante descubra, por tentativa, quais emails têm conta cadastrada na base de usuários (enumeração de usuários).",
+                                "text": "Permite que um atacante descubra, por tentativa, quais emails têm conta (enumeração de usuários).",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum, desde que as senhas estejam guardadas com hash bcrypt.",
+                                "text": "Nenhum problema real, desde que as senhas estejam guardadas com hash bcrypt no banco de dados.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é apenas de usabilidade, sem relação com segurança.",
+                                "text": "O problema é apenas de usabilidade, já que mensagens diferentes não revelam nada sobre a base.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Isso, sozinho, já impede ataques de força bruta.",
+                                "text": "Isso, sozinho, já impede ataques de força bruta, pois confunde scripts automatizados de login.",
                                 "isCorrect": false
                             }
                         ]
@@ -4870,19 +4870,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque, sem criptografia no transporte, senha e token podem ser interceptados em texto claro por quem está no meio da comunicação.",
+                                "text": "Porque, sem criptografia no transporte, senha e token viajam em texto claro e são interceptados.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o HTTPS torna o hash da senha automaticamente mais forte.",
+                                "text": "Porque o HTTPS torna automaticamente o hash da senha mais forte contra ataques de força bruta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o protocolo HTTP não permite o uso de cookies.",
+                                "text": "Porque o protocolo HTTP puro não permite o uso de cookies para manter a sessão do usuário.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "HTTPS é opcional; o que importa de fato é só o hash da senha estar correto.",
+                                "text": "Porque HTTPS é opcional na prática; o que realmente importa é o hash da senha estar correto.",
                                 "isCorrect": false
                             }
                         ]
@@ -4892,19 +4892,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Se um token vazar ou for roubado, ele continua válido e utilizável por um atacante durante um período muito longo, até expirar.",
+                                "text": "Se um token vazar ou for roubado, ele segue válido e utilizável por um atacante por um período muito longo.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nenhum risco relevante, já que um JWT assinado não pode ser usado por terceiros.",
+                                "text": "Nenhum risco relevante, já que um token assinado não pode ser copiado nem reaproveitado por terceiros.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O único problema é o tamanho do token, que fica maior quanto mais longo o prazo.",
+                                "text": "O único problema real é o tamanho do token, que cresce proporcionalmente quanto maior o prazo escolhido.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Tokens de longa duração impedem automaticamente ataques de força bruta.",
+                                "text": "Tokens de longa duração reduzem automaticamente a chance de ataques de força bruta na rota de login.",
                                 "isCorrect": false
                             }
                         ]
@@ -4945,19 +4945,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Identidade, senha, sessão, token, login completo, autorização e OAuth.",
+                                "text": "Identidade, senha, sessão, token, login, autorização e, por fim, OAuth.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "OAuth, senha, autorização, token, sessão, identidade e login.",
+                                "text": "OAuth, senha, autorização, token, sessão, identidade e, por fim, login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autorização, autenticação, OAuth, senha, sessão, token e login.",
+                                "text": "Autorização, autenticação, OAuth, senha, sessão, token e, por fim, login.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Token, sessão, senha, OAuth, autorização, identidade e login.",
+                                "text": "Token, sessão, senha, OAuth, autorização, identidade e, por fim, login.",
                                 "isCorrect": false
                             }
                         ]
@@ -4967,19 +4967,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Colocar a aplicação em produção com segurança: ambientes separados, HTTPS, segredos protegidos e monitoramento.",
+                                "text": "Colocar a aplicação em produção com segurança: ambientes separados, HTTPS e segredos protegidos.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Voltar ao início do roadmap e aprender HTML e CSS do zero.",
+                                "text": "Voltar ao início do roadmap e aprender HTML e CSS do zero, antes de seguir para frente.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Trocar toda a autenticação da aplicação por hash MD5, para simplificar.",
+                                "text": "Trocar toda a autenticação da aplicação por hash MD5, o que simplificaria bastante o código.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Remover o uso de variáveis de ambiente, para facilitar o deploy.",
+                                "text": "Remover o uso de variáveis de ambiente, o que facilitaria e agilizaria o processo de deploy.",
                                 "isCorrect": false
                             }
                         ]
@@ -4989,19 +4989,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Porque cada peça resolve um problema diferente (guardar senha, manter o usuário autenticado sem estado, revogar acesso rapidamente, controlar o que cada usuário pode fazer, oferecer login sem senha própria); nenhuma sozinha cobre autenticação e autorização por completo.",
+                                "text": "Porque cada peça resolve um problema diferente, e nenhuma delas sozinha cobre tudo o que é preciso.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o Express exige, por padrão, que todas essas tecnologias estejam presentes ao mesmo tempo.",
+                                "text": "Porque o Express, por padrão, exige que todas essas tecnologias estejam configuradas ao mesmo tempo.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "É apenas redundância; qualquer uma dessas peças, sozinha, já seria suficiente.",
+                                "text": "Porque é apenas redundância; qualquer uma dessas peças, sozinha, já seria suficiente na prática.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque um JWT não funciona tecnicamente sem o OAuth estar configurado.",
+                                "text": "Porque um JWT, tecnicamente, não consegue funcionar sem o OAuth estar configurado antes dele.",
                                 "isCorrect": false
                             }
                         ]
@@ -5011,19 +5011,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Autenticação prova quem é o usuário; autorização decide o que esse usuário, já identificado, pode fazer.",
+                                "text": "Autenticação prova quem é o usuário; autorização decide, depois disso, o que esse usuário pode fazer.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Autenticação decide o papel do usuário; autorização verifica a senha dele.",
+                                "text": "Autenticação decide qual papel o usuário tem; autorização verifica se a senha dele está correta.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "São a mesma coisa, apenas tratada com nomes diferentes conforme o contexto.",
+                                "text": "São a mesma coisa na prática, apenas tratadas com nomes diferentes conforme o contexto do sistema.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação é feita somente com OAuth; autorização é feita somente com JWT.",
+                                "text": "Autenticação é feita somente por OAuth; autorização é feita somente por meio de JWT assinado.",
                                 "isCorrect": false
                             }
                         ]
@@ -5033,19 +5033,19 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A proteção dos segredos: client_secret e outras chaves sensíveis precisam ficar em variável de ambiente, fora do controle de versão, senão qualquer pessoa com acesso ao repositório obtém as chaves.",
+                                "text": "A proteção dos segredos: chaves como o client_secret ficam fora do código e do controle de versão.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Nada; se o hash e o JWT estão corretos, o restante é irrelevante para a segurança.",
+                                "text": "Nada relevante; se o hash e o JWT já estão corretos, o restante deixa de ter peso para a segurança.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é que o OAuth deveria ser removido, já que ele é, por natureza, o elo mais fraco.",
+                                "text": "O problema é que o OAuth deveria ser removido do projeto, por ser, por natureza, o elo mais fraco.",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O problema é usar JWT junto com OAuth ao mesmo tempo, algo que nunca deveria ser feito.",
+                                "text": "O problema é usar JWT junto com OAuth ao mesmo tempo, uma combinação que nunca deveria ser feita.",
                                 "isCorrect": false
                             }
                         ]
