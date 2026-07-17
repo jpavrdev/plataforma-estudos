@@ -113,6 +113,15 @@ const STAGES: Stage[] = [
         tags: ["Spark", "PySpark", "Distribuído"],
         refs: [{ type: "trail", ref: "Processamento com Spark" }],
     },
+    {
+        phase: "avancado",
+        position: 9,
+        title: "Data lake e lakehouse",
+        description:
+            "Guardar e organizar dados em escala sobre object storage e evoluir do data lake ao lakehouse: do data warehouse ao data lake, as zonas e o particionamento, os limites do lake cru (sem ACID, upsert ou time travel), os table formats abertos (Delta Lake, Apache Iceberg, Hudi), a arquitetura medalhão (bronze, silver, gold) e operar tabelas do lakehouse.",
+        tags: ["Data Lake", "Lakehouse", "Delta"],
+        refs: [{ type: "trail", ref: "Data Lake e Lakehouse" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
