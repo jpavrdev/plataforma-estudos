@@ -122,6 +122,15 @@ const STAGES: Stage[] = [
         tags: ["Data Lake", "Lakehouse", "Delta"],
         refs: [{ type: "trail", ref: "Data Lake e Lakehouse" }],
     },
+    {
+        phase: "avancado",
+        position: 10,
+        title: "Streaming e dados em tempo real",
+        description:
+            "Processar dados em movimento: batch x streaming, o Apache Kafka como espinha dorsal (tópicos, partições, offsets, producers e consumers), as garantias de entrega (at-least-once, exactly-once), tempo de evento, watermark e janelas, o processamento com Spark Structured Streaming e o streaming na prática de engenharia de dados.",
+        tags: ["Kafka", "Streaming", "Tempo real"],
+        refs: [{ type: "trail", ref: "Streaming de Dados" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
