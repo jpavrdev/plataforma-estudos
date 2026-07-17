@@ -86,6 +86,15 @@ const STAGES: Stage[] = [
         tags: ["Modelagem", "Data Warehouse", "Dimensional"],
         refs: [{ type: "trail", ref: "Modelagem de Dados e Data Warehousing" }],
     },
+    {
+        phase: "core",
+        position: 6,
+        title: "ETL e ELT: ingestão de dados",
+        description:
+            "Construir pipelines que trazem dados de bancos, APIs e arquivos até o destino analítico: ETL x ELT, extração incremental e change data capture, formatos (CSV, JSON, Parquet, Avro), transformação e limpeza, estratégias de carga e idempotência, e a confiabilidade da ingestão.",
+        tags: ["ETL", "ELT", "Ingestão"],
+        refs: [{ type: "trail", ref: "ETL e Ingestão de Dados" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
