@@ -95,6 +95,15 @@ const STAGES: Stage[] = [
         tags: ["ETL", "ELT", "Ingestão"],
         refs: [{ type: "trail", ref: "ETL e Ingestão de Dados" }],
     },
+    {
+        phase: "core",
+        position: 7,
+        title: "Orquestração de pipelines",
+        description:
+            "Agendar, encadear e monitorar pipelines de forma confiável: do problema (o cron não escala) aos DAGs, a arquitetura do Apache Airflow, agendamento e data intervals, dependências e trigger rules, retries e idempotência de tasks, sensores e dependências entre DAGs, e a operação em produção.",
+        tags: ["Airflow", "DAG", "Orquestração"],
+        refs: [{ type: "trail", ref: "Orquestração de Pipelines" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
