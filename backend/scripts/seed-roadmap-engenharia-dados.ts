@@ -131,6 +131,15 @@ const STAGES: Stage[] = [
         tags: ["Kafka", "Streaming", "Tempo real"],
         refs: [{ type: "trail", ref: "Streaming de Dados" }],
     },
+    {
+        phase: "avancado",
+        position: 11,
+        title: "Modern data stack e analytics engineering",
+        description:
+            "Transformar dados no warehouse com o dbt e entregar métricas confiáveis: o modern data stack e o ELT na nuvem, o dbt (modelos, ref e a linhagem, materializações view/table/incremental), testes e documentação de dados, dbt avançado (Jinja, macros, packages, snapshots) e o modern data stack na prática (semantic layer, CI/CD para dados).",
+        tags: ["dbt", "Analytics Engineering", "ELT"],
+        refs: [{ type: "trail", ref: "Modern Data Stack" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
