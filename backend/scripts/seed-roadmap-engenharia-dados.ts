@@ -140,6 +140,33 @@ const STAGES: Stage[] = [
         tags: ["dbt", "Analytics Engineering", "ELT"],
         refs: [{ type: "trail", ref: "Modern Data Stack" }],
     },
+    {
+        phase: "deploy",
+        position: 12,
+        title: "Containers e empacotamento de pipelines",
+        description:
+            "Empacotar o ambiente de dados de forma reprodutível: o que são containers e por que usá-los, Dockerfile e imagens, volumes e Docker Compose, e imagens enxutas e seguras. A base para rodar pipelines igual em qualquer lugar.",
+        tags: ["Docker", "Containers", "Reprodutibilidade"],
+        refs: [{ type: "trail", ref: "Docker e Containers" }],
+    },
+    {
+        phase: "deploy",
+        position: 13,
+        title: "CI/CD e cloud para dados",
+        description:
+            "Automatizar testes e implantação e levar o pipeline à nuvem: integração contínua rodando testes a cada push, GitHub Actions na prática, build e publicação de imagens, deploy contínuo, e onde a aplicação roda com HTTPS e observabilidade.",
+        tags: ["CI/CD", "GitHub Actions", "Cloud"],
+        refs: [{ type: "trail", ref: "CI/CD e Cloud" }],
+    },
+    {
+        phase: "deploy",
+        position: 14,
+        title: "Qualidade, governança e confiabilidade de dados",
+        description:
+            "O capstone: tornar a plataforma de dados confiável, governada e sustentável. Dimensões de qualidade, testes e observabilidade de dados, data lineage e catálogo, governança (ownership e classificação), privacidade e a LGPD, e o controle de acesso e o custo (FinOps de dados). Do zero a engenheiro de dados.",
+        tags: ["Qualidade", "Governança", "LGPD"],
+        refs: [{ type: "trail", ref: "Qualidade e Governança de Dados" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
