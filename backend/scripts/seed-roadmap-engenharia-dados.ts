@@ -104,6 +104,15 @@ const STAGES: Stage[] = [
         tags: ["Airflow", "DAG", "Orquestração"],
         refs: [{ type: "trail", ref: "Orquestração de Pipelines" }],
     },
+    {
+        phase: "avancado",
+        position: 8,
+        title: "Processamento distribuído com Spark",
+        description:
+            "Processar dados em escala com o Apache Spark: por que distribuir, a arquitetura do Spark (driver, executors, partições, avaliação lazy), RDDs e DataFrames, a API de DataFrame e Spark SQL com PySpark, o shuffle e o particionamento, otimização e tuning (cache, Catalyst, AQE, Spark UI) e o Spark na prática de engenharia de dados.",
+        tags: ["Spark", "PySpark", "Distribuído"],
+        refs: [{ type: "trail", ref: "Processamento com Spark" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
