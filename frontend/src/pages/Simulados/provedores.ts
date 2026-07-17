@@ -7,11 +7,13 @@ export const PROVEDORES: Record<
   aws: { nome: 'Amazon Web Services', label: 'AWS', cor: '#ff9900', sigla: 'aws' },
   azure: { nome: 'Microsoft Azure', label: 'Azure', cor: '#0078d4', sigla: 'Az' },
   gcp: { nome: 'Google Cloud', label: 'Google Cloud', cor: '#1a73e8', sigla: 'GC' },
+  databricks: { nome: 'Databricks', label: 'Databricks', cor: '#ff3621', sigla: 'db' },
+  isc2: { nome: 'ISC2', label: 'ISC2', cor: '#00a4a6', sigla: 'i2' },
 };
 
 const PROV_PADRAO = { nome: 'Certificação', label: 'Outros', cor: '#6b7280', sigla: '•' };
 
-export const ORDEM_PROV = ['aws', 'azure', 'gcp'];
+export const ORDEM_PROV = ['aws', 'azure', 'gcp', 'databricks', 'isc2'];
 
 export function provedorDe(p: string | null) {
   return (p && PROVEDORES[p]) || PROV_PADRAO;
