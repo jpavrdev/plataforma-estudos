@@ -19,7 +19,6 @@ import {
 } from '../../services/trails';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { statusErro } from '../../utils/erro';
 import { BlocosConteudo, md } from '../../components/BlocosConteudo';
 import { getTrailLang } from '../../utils/trailLang';
 
@@ -49,11 +48,8 @@ export function Aula() {
         setAula(a);
       } catch (e: unknown) {
         if (!ativo) return;
-        setErro(
-          statusErro(e) === 403
-            ? 'Esta aula está bloqueada. Conclua a aula anterior.'
-            : 'Não foi possível carregar a aula.',
-        );
+        console.error('Falha ao carregar a aula:', e);
+        setErro('Não foi possível carregar a aula.');
       } finally {
         if (ativo) setCarregando(false);
       }
@@ -160,7 +156,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
                 <Link
                   key={l.id}
                   to={`/trilhas/${trilha.id}/aula/${l.id}`}
-                  className={`lesson__item lesson__item--${l.state}${ativa ? ' lesson__item--active' : ''}${l.state === 'locked' ? ' lesson__item--disabled' : ''}`}
+                  className={`lesson__item lesson__item--${l.state}${ativa ? ' lesson__item--active' : ''}`}
                   onClick={() => setAberto(false)}
                 >
                   <span className="lesson__bullet">

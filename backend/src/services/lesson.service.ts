@@ -85,11 +85,9 @@ export async function detalheDaAula(lessonId: string, userId: string, lang?: str
         throw new AppError(404, "Aula não encontrada");
     }
 
-    // Admin não é travado pelo bloqueio sequencial (pode pré-visualizar qualquer aula).
+    // O estado (done/current/locked) é só um guia visual de progresso: nenhuma aula
+    // publicada trava o acesso, o aluno percorre a trilha na ordem que quiser.
     const estado = await estadoDaAula(userId, aula, lang);
-    if (estado === "locked" && !admin) {
-        throw new AppError(403, "Aula bloqueada. Conclua a aula anterior.");
-    }
 
     const qs = await db
         .select()
