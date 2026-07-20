@@ -341,7 +341,8 @@ export const getMyTrails = async (req: Request, res: Response, next: NextFunctio
 // Estado sequencial na trilha toda: done | current | locked.
 export const getTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await detalheDaTrilha(String(req.params.id), req.userId!));
+        const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
+        res.json(await detalheDaTrilha(String(req.params.id), req.userId!, lang));
     } catch (err) {
         next(err);
     }
@@ -361,7 +362,8 @@ export const submitTrailReview = async (req: Request, res: Response, next: NextF
 // Retorna a aula com conteúdo e questões SEM revelar a alternativa correta.
 export const getLesson = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await detalheDaAula(String(req.params.id), req.userId!));
+        const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
+        res.json(await detalheDaAula(String(req.params.id), req.userId!, lang));
     } catch (err) {
         next(err);
     }

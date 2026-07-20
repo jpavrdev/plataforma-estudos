@@ -144,6 +144,8 @@ export const lessons = pgTable("lessons", {
     published: boolean("published").default(false).notNull(),
     durationMin: integer("duration_min"),
     preview: boolean("preview").default(false).notNull(),
+    // null = aula neutra, compartilhada por todas as linguagens da trilha.
+    language: varchar("language", { length: 20 }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

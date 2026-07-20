@@ -1,0 +1,729 @@
+{
+  "aulas": [
+    {
+      "titulo": "Tomando decisões com if",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Condicionais: o programa toma decisões\n\nAté aqui, os seus programas rodam sempre do mesmo jeito: começam na primeira linha e vão até a última, sem desviar. Mas o mundo real está cheio de decisões, e um programa útil também precisa decidir. Uma loja só aprova uma compra se o cliente tiver saldo suficiente. Um site só libera o conteúdo se o usuário estiver logado. Um jogo só declara vitória se o jogador atingiu a pontuação certa.\n\nPense em uma decisão do seu dia a dia: **se chover, eu levo o guarda-chuva**. Repare na estrutura dessa frase: existe uma condição (\"chover\") e existe uma ação que só acontece quando essa condição é verdadeira (\"levar o guarda-chuva\"). Se não chover, a ação simplesmente não acontece, e você segue a vida sem guarda-chuva.\n\n## Conhecendo o if\n\nEm Python, essa ideia tem um nome e uma sintaxe: a estrutura `if` (do inglês, \"se\"). Ela testa uma condição booleana, o `True` ou `False` que você já viu no módulo 2, e só executa um bloco de código quando essa condição é `True`."
+        },
+        {
+          "type": "code",
+          "value": "saldo = 200\npreco = 150\n\nif saldo >= preco:\n    print(\"Compra aprovada!\")\n\n# saída: Compra aprovada!"
+        },
+        {
+          "type": "text",
+          "value": "Repare nas partes do `if`:\n\n- A palavra `if`, seguida de uma condição e de dois-pontos: `saldo >= preco:`. Essa condição precisa resultar em `True` ou `False`, exatamente como os operadores de comparação que você já usou no módulo 2. Em Python, os parênteses em volta da condição são opcionais; o que não pode faltar são os dois-pontos no fim.\n- Um bloco de código indentado logo abaixo, com 4 espaços à esquerda. É essa indentação que diz ao Python o que pertence ao `if`; não existem chaves `{ }` como em outras linguagens.\n- Se a condição for `False`, o bloco indentado é ignorado, como se nem existisse, e o programa segue direto para a próxima linha que estiver alinhada com o `if`.\n\n## Quando a condição é falsa\n\nVamos ver o outro lado: o que acontece quando a condição não se cumpre."
+        },
+        {
+          "type": "code",
+          "value": "idade = 15\n\nif idade >= 18:\n    print(\"Pode entrar na festa\")\n\nprint(\"Programa terminou\")\n\n# saída:\n# Programa terminou"
+        },
+        {
+          "type": "text",
+          "value": "Como `idade` vale 15, a condição `idade >= 18` é `False`. O bloco do `if` nunca roda, então a mensagem \"Pode entrar na festa\" nunca aparece. Mas o `print(\"Programa terminou\")` está fora do bloco indentado, alinhado com o `if` e sem os 4 espaços, então ele roda de qualquer forma: o `if` só controla o que está indentado dentro dele.\n\n## Dois erros muito comuns\n\nO primeiro erro é esquecer os dois-pontos no fim da condição, ou indentar o bloco de forma errada. Como é a indentação que marca o bloco em Python, esquecer de indentar ou misturar espaços faz o programa parar com um erro (`IndentationError` ou `SyntaxError`). A boa notícia é que o Python avisa na hora, então esse engano é fácil de perceber e corrigir.\n\nO segundo erro é digitar `=` (atribuição) no lugar de `==` (comparação) dentro da condição. Em Python, isso não passa despercebido: escrever `if idade = 18:` gera um erro de sintaxe imediato. A linguagem te protege desse deslize, mas continua sendo essencial entender a diferença: `=` guarda um valor numa variável, enquanto `==` pergunta se dois valores são iguais."
+        },
+        {
+          "type": "code",
+          "value": "idade = 15\n\n# Erro: usar = (atribuição) no lugar de == (comparação)\nif idade = 18:\n    print(\"Maior de idade\")\n\n# saída:\n# SyntaxError: invalid syntax\n\n# Em Python, tentar usar = dentro da condição do if gera um erro de\n# sintaxe na hora, antes mesmo de o programa rodar. O certo é usar ==,\n# que compara dois valores: if idade == 18"
+        },
+        {
+          "type": "quote",
+          "value": "O if executa um bloco somente quando sua condição é True. Termine a condição com dois-pontos, indente o bloco com 4 espaços, e use == para comparar, nunca =."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é a saída deste código?\n\nnota = 7\n\nif nota >= 6:\n    print(\"Aprovado\")\n\nprint(\"Fim\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Apenas Aprovado",
+              "isCorrect": false
+            },
+            {
+              "text": "Apenas Fim",
+              "isCorrect": false
+            },
+            {
+              "text": "Aprovado, e depois Fim",
+              "isCorrect": true
+            },
+            {
+              "text": "Nenhuma mensagem; o código gera erro",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nidade = 12\n\nif idade >= 18:\n    print(\"Maior de idade\")\n\nprint(\"Verificação concluída\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Maior de idade, e depois Verificação concluída",
+              "isCorrect": false
+            },
+            {
+              "text": "Apenas Verificação concluída",
+              "isCorrect": true
+            },
+            {
+              "text": "Apenas Maior de idade",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma mensagem aparece",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nx = 3\n\nif x > 5:\n    print(\"x é grande\")\nprint(\"sempre imprime\")",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Apenas sempre imprime",
+              "isCorrect": true
+            },
+            {
+              "text": "Apenas x é grande",
+              "isCorrect": false
+            },
+            {
+              "text": "x é grande e depois sempre imprime",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma mensagem, porque a indentação está errada",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código, e por quê?\n\nnumero = 0\n\nif numero = 5:\n    print(\"Entrou no if\")",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "\"Entrou no if\", pois = atribui 5 e o Python trata 5 como verdadeiro",
+              "isCorrect": false
+            },
+            {
+              "text": "Nada é impresso, porque numero valia 0, que é um valor falso",
+              "isCorrect": false
+            },
+            {
+              "text": "\"Entrou no if\", pois = e == funcionam igual dentro de uma condição",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro de sintaxe, porque em Python não se usa = para comparar num if",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Você quer aprovar uma compra somente quando o saldo for maior ou igual ao preço. Qual trecho faz isso corretamente?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "if saldo => preco:\n    print(\"Aprovado\")",
+              "isCorrect": false
+            },
+            {
+              "text": "if saldo >= preco\n    print(\"Aprovado\")",
+              "isCorrect": false
+            },
+            {
+              "text": "if saldo >= preco:\n    print(\"Aprovado\")",
+              "isCorrect": true
+            },
+            {
+              "text": "if saldo >= preco:\nprint(\"Aprovado\")",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "if/else: o outro caminho",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## if/else: o outro caminho\n\nNo módulo anterior você viu o `if`: ele executa um bloco quando a condição é verdadeira e, quando é falsa, simplesmente não faz nada. Mas muitas decisões do dia a dia têm dois lados. Se chover, você leva guarda-chuva; se não chover, você leva boné para o sol. Sempre existe uma ação para os dois casos, não só para um.\n\nEm Python, quem representa esse \"caso contrário\" é a palavra `else` (em inglês, \"senão\"). Ela se junta ao `if` para criar dois caminhos: um para quando a condição é verdadeira, outro para quando é falsa."
+        },
+        {
+          "type": "code",
+          "value": "idade = 15\n\nif idade >= 18:\n    print(\"Maior de idade\")\nelse:\n    print(\"Menor de idade\")\n\n# saída: Menor de idade"
+        },
+        {
+          "type": "text",
+          "value": "## Como o else funciona\n\nRepare em três detalhes importantes:\n\n- O `else` nunca tem sua própria condição. Ele representa \"em qualquer outro caso\", ou seja, quando a condição do `if` deu `False`. Por isso é escrito sozinho, seguido apenas de dois-pontos: `else:`.\n- O `else` é opcional. Você pode usar só `if`, sem `else`, como fez no módulo anterior. Mas quando usa os dois juntos, sempre um dos blocos roda, nunca os dois, e nunca nenhum.\n- Assim como no `if`, o bloco do `else` é definido pela indentação de 4 espaços, e o `else` precisa ficar alinhado com o `if` ao qual pertence.\n\nUm uso clássico do if/else é decidir se um número é par ou ímpar. Um número é par quando o resto da divisão dele por 2 é zero, e você já conhece o operador que calcula esse resto: o `%`, do módulo 2."
+        },
+        {
+          "type": "code",
+          "value": "numero = 7\n\nif numero % 2 == 0:\n    print(f\"{numero} é par\")\nelse:\n    print(f\"{numero} é ímpar\")\n\n# saída: 7 é ímpar"
+        },
+        {
+          "type": "code",
+          "value": "# Outro exemplo clássico: descobrir qual de dois números é o maior\na = 12\nb = 7\n\nif a >= b:\n    print(f\"{a} é o maior\")\nelse:\n    print(f\"{b} é o maior\")\n\n# saída: 12 é o maior"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Condição do if\",\"Sem else\",\"Com else\"],[\"True\",\"Executa o bloco do if\",\"Executa o bloco do if\"],[\"False\",\"Não executa nada\",\"Executa o bloco do else\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "O else é o caminho de quando a condição do if é falsa. Ele não tem condição própria, é opcional, e junto com o if garante que sempre um dos dois blocos vai rodar."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é a saída?\n\nidade = 20\n\nif idade >= 18:\n    print(\"Maior de idade\")\nelse:\n    print(\"Menor de idade\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Menor de idade",
+              "isCorrect": false
+            },
+            {
+              "text": "Maior de idade e Menor de idade, os dois",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma mensagem aparece",
+              "isCorrect": false
+            },
+            {
+              "text": "Maior de idade",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nnumero = 10\n\nif numero % 2 == 0:\n    print(\"par\")\nelse:\n    print(\"ímpar\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "ímpar",
+              "isCorrect": false
+            },
+            {
+              "text": "par",
+              "isCorrect": true
+            },
+            {
+              "text": "10",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\na = 6\nb = 6\n\nif a >= b:\n    print(f\"{a} é o maior\")\nelse:\n    print(f\"{b} é o maior\")",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "6 é o maior",
+              "isCorrect": true
+            },
+            {
+              "text": "Nenhuma mensagem, porque os dois números são iguais",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro de execução, porque a e b têm o mesmo valor",
+              "isCorrect": false
+            },
+            {
+              "text": "6 é o maior aparece duas vezes seguidas",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Numa estrutura if/else, é possível o bloco do if e o bloco do else rodarem os dois na mesma execução do programa?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Sim, sempre que a condição for True",
+              "isCorrect": false
+            },
+            {
+              "text": "Depende da posição da indentação no código",
+              "isCorrect": false
+            },
+            {
+              "text": "Não, sempre apenas um dos dois roda",
+              "isCorrect": true
+            },
+            {
+              "text": "Sim, os dois blocos sempre rodam juntos",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código, e por quê?\n\nativo = False\n\nif ativo = True:\n    print(\"Conta ativa\")\nelse:\n    print(\"Conta inativa\")",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "\"Conta ativa\", pois ativo = True atribui True e vira a condição",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro de sintaxe, pois o Python não aceita = na condição; use ==",
+              "isCorrect": true
+            },
+            {
+              "text": "\"Conta inativa\", porque ativo começou valendo False",
+              "isCorrect": false
+            },
+            {
+              "text": "\"Conta ativa\" na primeira execução e \"Conta inativa\" nas próximas",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "elif: várias condições em cadeia",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## elif: encadeando várias condições\n\nAté agora você viu decisões com dois caminhos: `if` sozinho (um caminho) e `if/else` (dois caminhos). Mas muita decisão da vida real tem mais de duas opções. Pense em como uma escola costuma classificar uma prova: nota de 9 a 10 é conceito A, de 7 a 8.9 é B, de 5 a 6.9 é C, abaixo de 5 é D. São quatro caminhos possíveis, não dois.\n\nPara isso, o Python deixa você encadear condições com `elif`, uma abreviação de \"else if\" (\"senão, se\"). Você pode usar quantos `elif` precisar entre o `if` e o `else` final."
+        },
+        {
+          "type": "code",
+          "value": "nota = 8\n\nif nota >= 9:\n    print(\"Conceito A\")\nelif nota >= 7:\n    print(\"Conceito B\")\nelif nota >= 5:\n    print(\"Conceito C\")\nelse:\n    print(\"Conceito D\")\n\n# saída: Conceito B"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Faixa de nota\",\"Conceito\"],[\"nota >= 9\",\"A\"],[\"7 <= nota < 9\",\"B\"],[\"5 <= nota < 7\",\"C\"],[\"nota < 5\",\"D\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## A ordem importa\n\nO Python testa as condições de cima para baixo e para no primeiro `if` ou `elif` que der `True`. Todos os outros, mesmo que também fossem verdadeiros, são ignorados. Por isso a ordem das checagens não é um detalhe, é parte da lógica.\n\nVeja o que acontece quando a ordem está errada:"
+        },
+        {
+          "type": "code",
+          "value": "nota = 9.5\n\nif nota >= 5:\n    print(\"Conceito C\")\nelif nota >= 7:\n    print(\"Conceito B\")\nelif nota >= 9:\n    print(\"Conceito A\")\n\n# saída: Conceito C\n\n# nota vale 9.5, então as três condições seriam verdadeiras. Mas o\n# Python para na primeira que encontra: \"nota >= 5\" já é True, então\n# os dois elif seguintes nunca chegam a ser testados. Nesse código,\n# \"Conceito A\" e \"Conceito B\" nunca aparecem para nenhuma nota, porque\n# toda nota que passaria neles também passa em \"nota >= 5\", que vem\n# primeiro."
+        },
+        {
+          "type": "code",
+          "value": "idade = 15\n\nif idade < 13:\n    print(\"Criança\")\nelif idade < 18:\n    print(\"Adolescente\")\nelif idade < 60:\n    print(\"Adulto\")\nelse:\n    print(\"Idoso\")\n\n# saída: Adolescente"
+        },
+        {
+          "type": "quote",
+          "value": "O elif encadeia várias condições em ordem. O Python testa de cima para baixo e para na primeira verdadeira, então a ordem das checagens muda o resultado."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é a saída?\n\nnota = 9\n\nif nota >= 9:\n    print(\"Conceito A\")\nelif nota >= 7:\n    print(\"Conceito B\")\nelif nota >= 5:\n    print(\"Conceito C\")\nelse:\n    print(\"Conceito D\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Conceito C",
+              "isCorrect": false
+            },
+            {
+              "text": "Conceito B",
+              "isCorrect": false
+            },
+            {
+              "text": "Conceito A",
+              "isCorrect": true
+            },
+            {
+              "text": "Conceito D",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nidade = 70\n\nif idade < 13:\n    print(\"Criança\")\nelif idade < 18:\n    print(\"Adolescente\")\nelif idade < 60:\n    print(\"Adulto\")\nelse:\n    print(\"Idoso\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Adolescente",
+              "isCorrect": false
+            },
+            {
+              "text": "Adulto",
+              "isCorrect": false
+            },
+            {
+              "text": "Criança",
+              "isCorrect": false
+            },
+            {
+              "text": "Idoso",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nnota = 4\n\nif nota >= 9:\n    print(\"Conceito A\")\nelif nota >= 7:\n    print(\"Conceito B\")\nelif nota >= 5:\n    print(\"Conceito C\")\nelse:\n    print(\"Conceito D\")",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Conceito C",
+              "isCorrect": false
+            },
+            {
+              "text": "Conceito D",
+              "isCorrect": true
+            },
+            {
+              "text": "Nenhum conceito é exibido",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro, porque nenhuma condição bateu",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "No código abaixo, em que situação a mensagem \"Conceito A\" seria exibida?\n\nif nota >= 5:\n    print(\"Conceito C\")\nelif nota >= 7:\n    print(\"Conceito B\")\nelif nota >= 9:\n    print(\"Conceito A\")",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Quando nota valer exatamente 9 ou mais, já que passa direto pela primeira checagem",
+              "isCorrect": false
+            },
+            {
+              "text": "Quando nota for menor que 5, pulando as duas primeiras condições da cadeia",
+              "isCorrect": false
+            },
+            {
+              "text": "Em nenhuma situação, pois quem chegaria lá já caiu em nota >= 5",
+              "isCorrect": true
+            },
+            {
+              "text": "Sempre que nota for um número par, seja qual for o valor exato",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Se a cadeia de categorias por idade fosse escrita nesta ordem:\n\nif idade < 60:\n    print(\"Adulto\")\nelif idade < 18:\n    print(\"Adolescente\")\nelif idade < 13:\n    print(\"Criança\")\nelse:\n    print(\"Idoso\")\n\nQual seria a saída para idade = 10?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Adulto",
+              "isCorrect": true
+            },
+            {
+              "text": "Criança",
+              "isCorrect": false
+            },
+            {
+              "text": "Adolescente",
+              "isCorrect": false
+            },
+            {
+              "text": "Idoso",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Condições compostas com e, ou, não",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Condições compostas: e, ou, não\n\nMuitas decisões dependem de mais de uma coisa ao mesmo tempo. Para entrar em uma festa, normalmente é preciso ter idade suficiente **e** ter o ingresso, as duas coisas juntas. Já um desconto de meia-entrada costuma valer para quem é estudante **ou** idoso, basta uma das duas condições.\n\nVocê já conheceu esses operadores lógicos no módulo 2:\n\n- `and` (e): o resultado só é `True` quando as duas condições são `True`.\n- `or` (ou): o resultado é `True` quando pelo menos uma das condições é `True`.\n- `not` (não): inverte um valor booleano, transforma `True` em `False` e vice-versa.\n\nAgora vamos usar os três dentro de condições de `if`, para tomar decisões mais completas. Um exemplo clássico que pede o `and`: descobrir qual de três números é o maior. Um número só é o maior quando ele é maior ou igual aos outros dois ao mesmo tempo."
+        },
+        {
+          "type": "code",
+          "value": "a = 4\nb = 15\nc = 9\n\nif a >= b and a >= c:\n    print(f\"{a} é o maior\")\nelif b >= a and b >= c:\n    print(f\"{b} é o maior\")\nelse:\n    print(f\"{c} é o maior\")\n\n# saída: 15 é o maior"
+        },
+        {
+          "type": "code",
+          "value": "estudante = False\nidoso = True\n\nif estudante or idoso:\n    print(\"Tem direito a meia-entrada\")\nelse:\n    print(\"Paga o valor cheio\")\n\n# saída: Tem direito a meia-entrada"
+        },
+        {
+          "type": "text",
+          "value": "Repare na diferença entre os dois operadores. No exemplo dos três números, `a` só é o maior quando `a >= b` e `a >= c` ao mesmo tempo: se qualquer uma dessas duas comparações for `False`, o `and` inteiro vira `False` e aquele `if` (ou `elif`) não roda. Já no exemplo do desconto, basta uma das duas condições (`estudante` ou `idoso`) ser `True` para o `or` valer `True`.\n\nO terceiro operador, `not`, inverte uma condição. Ele é útil quando você quer testar \"quando NÃO for o caso\"."
+        },
+        {
+          "type": "code",
+          "value": "bloqueado = False\n\nif not bloqueado:\n    print(\"Acesso liberado\")\nelse:\n    print(\"Acesso negado\")\n\n# saída: Acesso liberado\n\n# not bloqueado inverte o valor de bloqueado. Como bloqueado é False,\n# not bloqueado vira True, e o bloco do if roda."
+        },
+        {
+          "type": "table",
+          "value": "[[\"condição1\",\"condição2\",\"condição1 and condição2\",\"condição1 or condição2\"],[\"True\",\"True\",\"True\",\"True\"],[\"True\",\"False\",\"False\",\"True\"],[\"False\",\"True\",\"False\",\"True\"],[\"False\",\"False\",\"False\",\"False\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "Use and quando todas as condições precisam ser verdadeiras, or quando basta uma, e not para inverter uma condição. Combinar esses operadores deixa o if pronto para decisões mais completas."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é a saída?\n\na = 4\nb = 4\nc = 9\n\nif a >= b and a >= c:\n    print(f\"{a} é o maior\")\nelif b >= a and b >= c:\n    print(f\"{b} é o maior\")\nelse:\n    print(f\"{c} é o maior\")",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "4 é o maior",
+              "isCorrect": false
+            },
+            {
+              "text": "O código dá erro porque a e b são iguais",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma mensagem aparece",
+              "isCorrect": false
+            },
+            {
+              "text": "9 é o maior",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nestudante = False\nidoso = False\n\nif estudante or idoso:\n    print(\"Tem direito a meia-entrada\")\nelse:\n    print(\"Paga o valor cheio\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Tem direito a meia-entrada",
+              "isCorrect": false
+            },
+            {
+              "text": "As duas mensagens aparecem",
+              "isCorrect": false
+            },
+            {
+              "text": "Paga o valor cheio",
+              "isCorrect": true
+            },
+            {
+              "text": "Nenhuma mensagem aparece",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nbloqueado = True\n\nif not bloqueado:\n    print(\"Acesso liberado\")\nelse:\n    print(\"Acesso negado\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Acesso negado",
+              "isCorrect": true
+            },
+            {
+              "text": "Acesso liberado",
+              "isCorrect": false
+            },
+            {
+              "text": "True",
+              "isCorrect": false
+            },
+            {
+              "text": "False",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual condição é verdadeira somente quando idade representa um adolescente, ou seja, está entre 13 e 17 anos, incluindo os dois extremos?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "idade >= 13 or idade <= 17",
+              "isCorrect": false
+            },
+            {
+              "text": "idade >= 13 and idade <= 17",
+              "isCorrect": true
+            },
+            {
+              "text": "idade > 13 and idade < 17",
+              "isCorrect": false
+            },
+            {
+              "text": "idade >= 13 and idade <= 12",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nidade = 16\ncom_responsavel = True\n\nif idade >= 18 or (idade >= 12 and com_responsavel):\n    print(\"Pode assistir o filme\")\nelse:\n    print(\"Não pode assistir\")",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Não pode assistir",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro de sintaxe por causa dos parênteses na condição",
+              "isCorrect": false
+            },
+            {
+              "text": "Não dá para saber sem rodar o código várias vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "Pode assistir o filme",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Muitos casos: elif em cadeia (e match/case)",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Muitos casos: comparando um valor com vários\n\nPense em transformar o número do dia da semana (1 a 7) no nome do dia. Ou em decidir uma mensagem diferente para cada opção de um menu. Nesses casos, você compara sempre a mesma variável com vários valores exatos, um por um.\n\nEm muitas linguagens existe uma estrutura chamada `switch` só para isso. O Python não tem `switch`, e nem precisa: uma cadeia de `elif` já resolve. E, a partir da versão 3.10, o Python ganhou o `match`/`case`, uma forma moderna e organizada de escrever essa mesma comparação quando os casos são muitos."
+        },
+        {
+          "type": "code",
+          "value": "dia = 3\n\nif dia == 1:\n    print(\"Domingo\")\nelif dia == 2:\n    print(\"Segunda-feira\")\nelif dia == 3:\n    print(\"Terça-feira\")\nelif dia == 4:\n    print(\"Quarta-feira\")\nelif dia == 5:\n    print(\"Quinta-feira\")\nelif dia == 6:\n    print(\"Sexta-feira\")\nelif dia == 7:\n    print(\"Sábado\")\nelse:\n    print(\"Dia inválido\")\n\n# saída: Terça-feira"
+        },
+        {
+          "type": "code",
+          "value": "dia = 3\n\nmatch dia:\n    case 1:\n        print(\"Domingo\")\n    case 2:\n        print(\"Segunda-feira\")\n    case 3:\n        print(\"Terça-feira\")\n    case 4:\n        print(\"Quarta-feira\")\n    case 5:\n        print(\"Quinta-feira\")\n    case 6:\n        print(\"Sexta-feira\")\n    case 7:\n        print(\"Sábado\")\n    case _:\n        print(\"Dia inválido\")\n\n# saída: Terça-feira"
+        },
+        {
+          "type": "text",
+          "value": "Os dois códigos acima fazem exatamente a mesma coisa, mas repare como o `match`/`case` deixa mais organizado quando são muitos valores exatos para comparar. Veja as peças:\n\n- `match dia:`: o valor que vai ser comparado, uma vez só, com cada `case`.\n- `case 3:`: significa \"se dia for igual a 3\". Quando bate, o Python executa o bloco indentado logo abaixo.\n- `case _:`: o `_` (underline) é um coringa que combina com qualquer coisa. Ele roda quando nenhum `case` anterior bateu, funcionando como o `else`.\n\nUm detalhe que costuma surpreender quem vem de outras linguagens: no `match`/`case` do Python, **só o primeiro `case` que bate é executado**, e o `match` termina ali. Não existe o comportamento de \"escorregar\" para os próximos casos, então você não precisa (nem tem como usar) um comando `break` no fim de cada `case`."
+        },
+        {
+          "type": "code",
+          "value": "dia = 9\n\nmatch dia:\n    case 1:\n        print(\"Domingo\")\n    case 2:\n        print(\"Segunda-feira\")\n    case 3:\n        print(\"Terça-feira\")\n\n# saída:\n# (nada é impresso)\n\n# dia vale 9 e nenhum case bate. Diferente do switch de outras\n# linguagens, o match/case do Python não \"escorrega\" para os casos\n# seguintes: ou um case bate sozinho, ou nenhum roda. Repare que não\n# dá erro; o match simplesmente termina sem imprimir nada. Para tratar\n# \"qualquer outro valor\", adicione um case _ (coringa) no final, o\n# equivalente ao else."
+        },
+        {
+          "type": "text",
+          "value": "## Quando usar elif e quando usar match/case\n\nUse `match`/`case` quando você compara a mesma variável com vários valores exatos, como número do dia, opção de menu ou categoria fixa, e está rodando um Python 3.10 ou mais novo. Use `elif` quando as condições envolvem faixas (`nota >= 7`), comparações diferentes em cada checagem, ou operadores lógicos (`and`, `or`), e também quando precisa de compatibilidade com versões mais antigas do Python.\n\nNa prática, todo `match`/`case` de valores exatos pode ser reescrito como uma cadeia de `elif`. O `match`/`case` só deixa o código mais limpo quando há muitos casos; ele não substitui um `elif` cheio de faixas e condições compostas."
+        },
+        {
+          "type": "quote",
+          "value": "O match/case compara um único valor com vários case possíveis, e o case _ cobre o que sobrar. No Python só o primeiro case que bate roda, sem escorregar para os seguintes, então não existe break. Para faixas e condições compostas, o elif continua sendo a ferramenta certa."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é a saída?\n\ndia = 5\n\nmatch dia:\n    case 1:\n        print(\"Domingo\")\n    case 5:\n        print(\"Quinta-feira\")\n    case _:\n        print(\"Dia inválido\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Domingo",
+              "isCorrect": false
+            },
+            {
+              "text": "Dia inválido",
+              "isCorrect": false
+            },
+            {
+              "text": "Quinta-feira",
+              "isCorrect": true
+            },
+            {
+              "text": "Quinta-feira e depois Dia inválido",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nopcao = 9\n\nmatch opcao:\n    case 1:\n        print(\"Criar conta\")\n    case 2:\n        print(\"Entrar\")\n    case _:\n        print(\"Opção inválida\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Criar conta",
+              "isCorrect": false
+            },
+            {
+              "text": "Opção inválida",
+              "isCorrect": true
+            },
+            {
+              "text": "Entrar",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma mensagem aparece",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nnumero = 2\n\nmatch numero:\n    case 1:\n        print(\"um\")\n    case 2:\n        print(\"dois\")\n    case 3:\n        print(\"três\")\n    case _:\n        print(\"outro\")",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "dois, três e outro, nessa ordem",
+              "isCorrect": false
+            },
+            {
+              "text": "Apenas outro, porque é o caso coringa",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro, porque falta o comando break em cada case",
+              "isCorrect": false
+            },
+            {
+              "text": "Apenas dois",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual situação é mais adequada para usar match/case em vez de elif?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Comparar uma variável com vários valores exatos, como o mês",
+              "isCorrect": true
+            },
+            {
+              "text": "Verificar se um número está dentro de uma faixa ampla, como nota >= 7",
+              "isCorrect": false
+            },
+            {
+              "text": "Combinar duas condições diferentes usando and ao mesmo tempo",
+              "isCorrect": false
+            },
+            {
+              "text": "Verificar se uma variável é diferente de outra usando !=",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída?\n\nletra = \"x\"\n\nmatch letra:\n    case \"a\":\n        print(\"Primeira\")\n    case \"b\":\n        print(\"Segunda\")\n    case \"c\":\n        print(\"Terceira\")",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Erro de execução, pois nenhum dos três case corresponde à letra x",
+              "isCorrect": false
+            },
+            {
+              "text": "Terceira, porque é sempre o último case que vale",
+              "isCorrect": false
+            },
+            {
+              "text": "Nada é impresso: nenhum case bate e não há um case _ coringa",
+              "isCorrect": true
+            },
+            {
+              "text": "Primeira, Segunda e Terceira, um após o outro",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

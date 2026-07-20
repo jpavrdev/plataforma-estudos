@@ -1,0 +1,725 @@
+{
+  "aulas": [
+    {
+      "titulo": "O que é uma função e como criar uma",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# O que é uma função?\n\nImagine uma receita de bolo escrita num caderno. Toda vez que alguém quiser fazer o bolo, não precisa reinventar os passos: basta seguir a receita, que já tem um nome (\"Bolo de cenoura\") e uma lista de passos pronta para ser usada de novo, quantas vezes for preciso.\n\nUma **função** é isso dentro do código: um pedaço de lógica que você escreve uma única vez, dá um nome, e pode chamar (executar) sempre que precisar, em qualquer parte do programa.\n\nAté o Módulo 4, todo código que você escreveu rodava direto, de cima para baixo. Se quisesse repetir uma tarefa mais adiante, teria que copiar e colar o mesmo trecho de novo. Funções resolvem exatamente esse problema."
+        },
+        {
+          "type": "text",
+          "value": "## Criando uma função\n\nEm Python, você cria (define) uma função com a palavra `def`, um nome, parênteses `()`, dois-pontos `:` e o corpo escrito logo abaixo, com um recuo (a indentação):\n\n- `def` avisa: a partir daqui você está definindo uma função\n- o nome, escolhido por você, é como vai chamar essa função depois (segue a mesma convenção das variáveis: letras minúsculas, sem espaços, com as palavras separadas por `_`, tipo `saudar` ou `mostrar_linha`)\n- os parênteses `()` guardam as entradas da função (você vai ver isso com calma na próxima aula)\n- os dois-pontos `:` marcam o começo do corpo, e tudo o que ficar indentado logo abaixo faz parte da função: é o que ela faz quando é executada"
+        },
+        {
+          "type": "code",
+          "value": "def saudar():\n    print(\"Bom dia!\")\n\n# Só definir a função não executa nada ainda.\n# Para rodar o código de dentro dela, é preciso CHAMAR pelo nome:\nsaudar()\n# saida: Bom dia!\n\n# A mesma função pode ser chamada quantas vezes você quiser:\nsaudar()\nsaudar()\n# saida: Bom dia!\n# saida: Bom dia!"
+        },
+        {
+          "type": "text",
+          "value": "## Definir x chamar\n\nDefinir uma função é como programar um botão de controle remoto: você decide o que ele vai fazer quando for apertado, mas nada acontece só por ter programado o botão. Chamar a função é apertar o botão de verdade, e é aí que o código de dentro roda.\n\nSe uma função for definida mas nunca chamada em nenhum lugar do programa, o código de dentro dela simplesmente nunca executa. Ela fica ali, guardada, esperando ser usada."
+        },
+        {
+          "type": "code",
+          "value": "def mostrar_linha():\n    print(\"------------------------\")\n\nmostrar_linha()\nprint(\"Lista de compras\")\nmostrar_linha()\nprint(\"1. Arroz\")\nprint(\"2. Feijão\")\nmostrar_linha()\n\n# saida:\n# ------------------------\n# Lista de compras\n# ------------------------\n# 1. Arroz\n# 2. Feijão\n# ------------------------\n# repare: a mesma função mostrar_linha foi reaproveitada 3 vezes,\n# sem copiar e colar o print de novo"
+        },
+        {
+          "type": "quote",
+          "value": "Uma função é um pedaço de lógica com nome, escrito uma vez e usado quantas vezes você precisar. Definir a função não executa nada: só chamar (o nome seguido de parênteses) roda o código de dentro dela."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que acontece quando uma função é apenas definida, mas nunca chamada em nenhum lugar do programa?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "O código de dentro dela roda uma vez, automaticamente",
+              "isCorrect": false
+            },
+            {
+              "text": "O código de dentro dela nunca é executado",
+              "isCorrect": true
+            },
+            {
+              "text": "O Python mostra um erro de sintaxe na hora",
+              "isCorrect": false
+            },
+            {
+              "text": "O código roda só no final do programa",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Depois de definir a função abaixo, qual linha executa (chama) essa função?\n\ndef saudar():\n    print(\"Oi\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "saudar",
+              "isCorrect": false
+            },
+            {
+              "text": "def saudar()",
+              "isCorrect": false
+            },
+            {
+              "text": "saudar()",
+              "isCorrect": true
+            },
+            {
+              "text": "chamar saudar()",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef mostrar_linha():\n    print(\"---\")\n\nmostrar_linha()\nmostrar_linha()\nprint(\"fim\")\n\nQuantas vezes o texto \"---\" aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "2 vezes",
+              "isCorrect": true
+            },
+            {
+              "text": "1 vez",
+              "isCorrect": false
+            },
+            {
+              "text": "3 vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma vez",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual das alternativas descreve melhor por que usamos funções no código?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Para deixar o programa mais lento de propósito, sem outro motivo",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque o Python exige que todo código esteja dentro de uma função",
+              "isCorrect": false
+            },
+            {
+              "text": "Para impedir que uma mesma variável seja usada mais de uma vez",
+              "isCorrect": false
+            },
+            {
+              "text": "Para nomear um trecho de lógica e reusá-lo quando precisar",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef mostrar_mensagem():\n    print(\"Você me chamou!\")\n\nprint(\"Início do programa\")\n\nO que aparece no console quando esse código roda?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "\"Início do programa\" e, logo depois, \"Você me chamou!\"",
+              "isCorrect": false
+            },
+            {
+              "text": "Só \"Você me chamou!\"",
+              "isCorrect": false
+            },
+            {
+              "text": "Só \"Início do programa\"",
+              "isCorrect": true
+            },
+            {
+              "text": "Um erro, porque toda função precisa ser chamada",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Parâmetros e argumentos: entradas da função",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Funções que recebem informações\n\nA função `saudar`, da aula passada, sempre imprime a mesma mensagem fixa. Mas e se você quiser saudar pessoas diferentes, cada uma pelo seu nome, sem escrever uma função nova para cada pessoa?\n\nÉ para isso que existem os **parâmetros**: eles permitem que uma função receba informações de fora e use esses valores no que ela faz."
+        },
+        {
+          "type": "text",
+          "value": "### Parâmetro x argumento\n\nOs dois termos parecem sinônimos, mas cada um tem seu momento certo:\n\n- **Parâmetro** é o nome que você dá à entrada quando DEFINE a função (funciona como uma variável reservada para receber um valor).\n- **Argumento** é o valor de verdade que você passa quando CHAMA a função.\n\nAnalogia: pense numa máquina de suco. O parâmetro é o encaixe onde a fruta entra (\"aqui entra uma fruta\"). O argumento é a fruta específica que você coloca ali: uma maçã hoje, uma laranja amanhã. O encaixe é sempre o mesmo, mas o que passa por ele muda a cada uso."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Termo\", \"Onde aparece\", \"Exemplo\"], [\"Parâmetro\", \"Na definição da função\", \"def somar(a, b):\"], [\"Argumento\", \"Na chamada da função\", \"somar(2, 3)\"]]"
+        },
+        {
+          "type": "code",
+          "value": "def saudar(nome):\n    print(f\"Bom dia, {nome}!\")\n\nsaudar(\"Ana\")\n# saida: Bom dia, Ana!\n\nsaudar(\"Carlos\")\n# saida: Bom dia, Carlos!\n\nsaudar(\"Mariana\")\n# saida: Bom dia, Mariana!\n\n# é a mesma função, mas o parâmetro nome recebe um argumento\n# diferente em cada chamada, então o resultado muda"
+        },
+        {
+          "type": "code",
+          "value": "def somar(a, b):\n    resultado = a + b\n    print(resultado)\n\nsomar(2, 3)\n# saida: 5\n\nsomar(10, 20)\n# saida: 30\n\n# a função tem dois parâmetros: a e b\n# cada chamada envia dois argumentos, na mesma ordem"
+        },
+        {
+          "type": "text",
+          "value": "### A ordem dos argumentos importa\n\nOs argumentos são associados aos parâmetros seguindo a mesma ordem em que aparecem. Em `somar(2, 3)`, o `2` vai para `a` e o `3` vai para `b`. Nesse caso, trocar a ordem não muda o resultado da soma, mas em operações onde a ordem faz diferença (como a subtração ou a divisão), inverter os argumentos muda o resultado.\n\nE se faltar um argumento? Em Python, se você chamar a função sem passar um valor que ela espera, o programa para com um erro (um `TypeError`) avisando que faltou aquele argumento. Uma forma de deixar um argumento opcional é dar a ele um **valor padrão** na definição: assim, quando você não passa esse argumento, a função usa o padrão no lugar."
+        },
+        {
+          "type": "code",
+          "value": "def saudar(nome, saudacao=\"Olá\"):\n    print(f\"{saudacao}, {nome}!\")\n\nsaudar(\"Ana\")\n# saida: Olá, Ana!\n\nsaudar(\"Ana\", \"Bom dia\")\n# saida: Bom dia, Ana!\n\n# saudacao tem um valor padrão (\"Olá\"): se o segundo argumento\n# não for passado, a função usa esse padrão sozinha"
+        },
+        {
+          "type": "quote",
+          "value": "Parâmetro é o nome combinado na definição da função. Argumento é o valor real enviado na chamada. A mesma função, alimentada com argumentos diferentes, produz resultados diferentes: é isso que a torna reutilizável de verdade."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Na função def multiplicar(x, y): return x * y, o que são x e y?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Parâmetros",
+              "isCorrect": true
+            },
+            {
+              "text": "Argumentos",
+              "isCorrect": false
+            },
+            {
+              "text": "Variáveis globais",
+              "isCorrect": false
+            },
+            {
+              "text": "Valores de retorno",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Na chamada multiplicar(4, 5), o que são 4 e 5?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Parâmetros",
+              "isCorrect": false
+            },
+            {
+              "text": "Nomes de função",
+              "isCorrect": false
+            },
+            {
+              "text": "Escopos",
+              "isCorrect": false
+            },
+            {
+              "text": "Argumentos",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef subtrair(a, b):\n    print(a - b)\n\nsubtrair(10, 3)\n\nO que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "-7",
+              "isCorrect": false
+            },
+            {
+              "text": "7",
+              "isCorrect": true
+            },
+            {
+              "text": "13",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Usando a mesma função subtrair(a, b) da questão anterior, o que muda se você chamar subtrair(3, 10) em vez de subtrair(10, 3)?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Nada muda, porque a subtração não depende da ordem dos números",
+              "isCorrect": false
+            },
+            {
+              "text": "O programa não roda: a ordem dos argumentos precisa ser crescente",
+              "isCorrect": false
+            },
+            {
+              "text": "O resultado muda, porque a ordem define quem é a e quem é b",
+              "isCorrect": true
+            },
+            {
+              "text": "A função ignora o segundo argumento por ser maior que o primeiro",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef saudar(nome):\n    print(f\"Oi, {nome}\")\n\nsaudar()\n\nO que acontece quando saudar() é chamada sem passar nenhum argumento?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Imprime Oi, None, porque o parâmetro fica vazio sozinho",
+              "isCorrect": false
+            },
+            {
+              "text": "Imprime Oi, nome, com a palavra nome escrita literalmente",
+              "isCorrect": false
+            },
+            {
+              "text": "Imprime Oi, e nada depois, sem erro nenhum no caminho",
+              "isCorrect": false
+            },
+            {
+              "text": "Um erro: falta passar o argumento nome que a função exige",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "return: devolvendo um resultado (x só imprimir)",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Devolvendo um resultado com return\n\nAs funções que você viu até agora mostram algo diretamente no console, usando `print` lá dentro delas. Isso é ótimo para exibir uma mensagem na tela, mas e se você quiser usar o RESULTADO da função em outro lugar do programa: guardar numa variável, somar com outro valor, passar para outra função?\n\nPara isso existe a palavra `return`: ela devolve um valor para quem chamou a função, e esse valor passa a poder ser usado de verdade pelo resto do programa."
+        },
+        {
+          "type": "code",
+          "value": "# Essa função só IMPRIME a soma, não devolve nada\ndef somar_imprime(a, b):\n    print(a + b)\n\nsomar_imprime(2, 3)\n# saida: 5\n\n# e se eu tentar guardar o \"resultado\" dela?\nresultado1 = somar_imprime(2, 3)\n# saida: 5   (isso é o print de dentro da função rodando de novo)\n\nprint(resultado1)\n# saida: None\n# a função não tem return, então ela devolve None por padrão"
+        },
+        {
+          "type": "code",
+          "value": "# Essa função DEVOLVE a soma com return\ndef somar_retorna(a, b):\n    return a + b\n\nresultado2 = somar_retorna(2, 3)\nprint(resultado2)\n# saida: 5\n\n# agora o valor devolvido pode ser usado em outras contas:\ndobro = somar_retorna(2, 3) * 2\nprint(dobro)\n# saida: 10"
+        },
+        {
+          "type": "text",
+          "value": "### A diferença crucial: return x print\n\nEsse é um dos erros mais comuns de quem está aprendendo a programar, por isso vale a pena grifar:\n\n- `print(...)` só MOSTRA um valor no console. Depois de mostrado, esse valor não fica guardado em lugar nenhum do programa.\n- `return ...` DEVOLVE um valor para quem chamou a função. Esse valor pode ser guardado numa variável, usado numa conta ou enviado para outra função.\n\n### O que acontece depois do return\n\nAssim que o `return` é executado, a função para ali mesmo: nenhuma linha escrita depois dele, dentro da mesma função, chega a rodar.\n\nE se a função não tiver nenhum `return`? Ela termina depois da última linha e devolve `None` para quem chamou, mesmo que tenha feito algum `print` pelo caminho."
+        },
+        {
+          "type": "table",
+          "value": "[[\"\", \"print dentro da função\", \"return dentro da função\"], [\"O que faz\", \"Mostra um valor no console\", \"Devolve um valor para quem chamou\"], [\"Dá para guardar numa variável?\", \"Não, guarda None\", \"Sim\"], [\"Serve para\", \"O humano ler na tela\", \"O programa usar o valor depois\"]]"
+        },
+        {
+          "type": "code",
+          "value": "def verificar_idade(idade):\n    if idade >= 18:\n        return \"maior de idade\"\n    print(\"essa linha só roda se a idade for menor que 18\")\n    return \"menor de idade\"\n\nprint(verificar_idade(20))\n# saida: maior de idade\n# repare: o print do meio nem chega a rodar,\n# porque o return de dentro do if já encerra a função antes dele"
+        },
+        {
+          "type": "quote",
+          "value": "return devolve um valor para quem chamou a função, pronto para ser usado no resto do programa. print só mostra um valor na tela. Uma função sem return sempre devolve None, mesmo que ela imprima coisas no console."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que a palavra return faz dentro de uma função?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Mostra um valor no console, na tela",
+              "isCorrect": false
+            },
+            {
+              "text": "Apaga o valor de uma variável criada",
+              "isCorrect": false
+            },
+            {
+              "text": "Devolve um valor para quem chamou",
+              "isCorrect": true
+            },
+            {
+              "text": "Chama a função de novo, automaticamente",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef dobro(n):\n    return n * 2\n\nvalor = dobro(5)\nprint(valor)\n\nO que aparece no console?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "10",
+              "isCorrect": true
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            },
+            {
+              "text": "n * 2",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef triplo(n):\n    print(n * 3)\n\nvalor = triplo(4)\nprint(valor)\n\nO que aparece no console, na ordem?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "12 e, em seguida, None",
+              "isCorrect": true
+            },
+            {
+              "text": "12 e, em seguida, 12 de novo",
+              "isCorrect": false
+            },
+            {
+              "text": "Só 12",
+              "isCorrect": false
+            },
+            {
+              "text": "Só None",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef classificar(nota):\n    if nota >= 6:\n        return \"aprovado\"\n    return \"reprovado\"\n\nprint(classificar(8))\n\nO que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "reprovado",
+              "isCorrect": false
+            },
+            {
+              "text": "8",
+              "isCorrect": false
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            },
+            {
+              "text": "aprovado",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef verificar(numero):\n    if numero > 0:\n        return \"positivo\"\n        print(\"chequei o número\")\n    return \"não positivo\"\n\nprint(verificar(5))\n\nAlém do resultado devolvido, o que mais aparece no console?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Nada mais: o código depois do return nunca chega a rodar",
+              "isCorrect": true
+            },
+            {
+              "text": "\"chequei o número\" aparece antes de \"positivo\"",
+              "isCorrect": false
+            },
+            {
+              "text": "\"chequei o número\" aparece depois de \"positivo\"",
+              "isCorrect": false
+            },
+            {
+              "text": "Um erro de sintaxe, pois não pode haver código após um return",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Escopo: variáveis locais e globais",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Escopo: onde cada variável existe\n\nToda variável tem um lugar onde ela existe e pode ser usada: esse território chama-se **escopo**. Entender escopo evita um erro bem comum entre iniciantes: tentar usar uma variável fora do lugar onde ela foi criada e o programa reclamar que ela nem existe.\n\nAnalogia: pense numa sala de reunião. O que é combinado ali dentro (papéis na mesa, um quadro rabiscado) fica só naquela sala; quando a reunião acaba e todo mundo sai, aquilo some. Já um aviso pregado no mural da entrada do prédio, todo mundo que passa por ali consegue ver."
+        },
+        {
+          "type": "text",
+          "value": "### Escopo local e escopo global\n\n- **Escopo local**: variáveis criadas dentro de uma função só existem ali dentro. Fora da função, ninguém enxerga essas variáveis.\n- **Escopo global**: variáveis criadas fora de qualquer função existem no programa inteiro, e podem ser lidas de dentro de qualquer função."
+        },
+        {
+          "type": "code",
+          "value": "def calcular_dobro(numero):\n    resultado = numero * 2  # resultado é uma variável LOCAL\n    print(resultado)\n\ncalcular_dobro(5)\n# saida: 10\n\n# print(resultado)\n# se você tirar o # da linha acima, o programa quebra com um erro:\n# NameError: name 'resultado' is not defined\n# porque resultado só existe DENTRO de calcular_dobro"
+        },
+        {
+          "type": "code",
+          "value": "nome_do_app = \"ensina.dev\"  # variável global\n\ndef mostrar_boas_vindas():\n    print(f\"Bem-vindo ao {nome_do_app}\")\n    # a função consegue ler nome_do_app porque ela é global\n\nmostrar_boas_vindas()\n# saida: Bem-vindo ao ensina.dev"
+        },
+        {
+          "type": "text",
+          "value": "### Por que variável local é bom\n\nParece uma limitação, mas escopo local é uma proteção: cada função pode usar os nomes de variável que quiser, sem se preocupar em conflitar com outra parte do programa. Duas funções diferentes podem ter, cada uma, uma variável chamada `resultado`, sem conflito nenhum, porque cada `resultado` só existe dentro da sua própria função.\n\nUma função consegue LER uma variável global, como você viu acima. Mas para REATRIBUIR (mudar o valor de) uma global de dentro da função, o Python exige a palavra `global` antes do nome. Na prática, evite isso: é mais seguro receber valores por parâmetro e devolver o resultado com `return` do que ficar alterando variáveis globais espalhadas pelo programa."
+        },
+        {
+          "type": "code",
+          "value": "def area_quadrado(lado):\n    resultado = lado * lado\n    return resultado\n\ndef area_triangulo(base, altura):\n    resultado = (base * altura) / 2\n    return resultado\n\nprint(area_quadrado(4))\n# saida: 16\n\nprint(area_triangulo(6, 3))\n# saida: 9.0\n\n# cada resultado é local à sua própria função: não existe conflito"
+        },
+        {
+          "type": "quote",
+          "value": "Variável criada dentro de uma função é local: só existe, e só pode ser usada, ali dentro. Variável criada fora de qualquer função é global e pode ser lida de qualquer lugar do programa. Preferir variáveis locais evita que uma parte do código interfira, sem querer, em outra."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que é uma variável local?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Uma variável que existe no programa todo, em qualquer função",
+              "isCorrect": false
+            },
+            {
+              "text": "Uma variável que nunca muda de valor depois de criada",
+              "isCorrect": false
+            },
+            {
+              "text": "Uma variável criada usando o comando print",
+              "isCorrect": false
+            },
+            {
+              "text": "Uma variável criada dentro de uma função, só existe ali",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef calcular():\n    total = 100\n    print(total)\n\ncalcular()\nprint(total)\n\nO que acontece quando esse código roda?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Imprime 100 e depois quebra: total não existe fora da função",
+              "isCorrect": true
+            },
+            {
+              "text": "Imprime 100 duas vezes, pois a função roda de novo no final",
+              "isCorrect": false
+            },
+            {
+              "text": "Imprime 100 e depois None, pois a variável global some",
+              "isCorrect": false
+            },
+            {
+              "text": "Quebra com erro antes mesmo de a função calcular ser chamada",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ncidade = \"Recife\"\n\ndef mostrar_cidade():\n    print(f\"Cidade: {cidade}\")\n\nmostrar_cidade()\n\nO que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Cidade: None",
+              "isCorrect": false
+            },
+            {
+              "text": "Cidade:  (em branco)",
+              "isCorrect": false
+            },
+            {
+              "text": "Cidade: Recife",
+              "isCorrect": true
+            },
+            {
+              "text": "Um erro, porque a função não pode ler cidade",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef contar_ovelhas():\n    total = 5\n    return total\n\ndef contar_patos():\n    total = 12\n    return total\n\nprint(contar_ovelhas())\nprint(contar_patos())\n\nO que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "12 e, em seguida, 12",
+              "isCorrect": false
+            },
+            {
+              "text": "5 e, em seguida, 12",
+              "isCorrect": true
+            },
+            {
+              "text": "Um erro, porque total foi declarado duas vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "5 e, em seguida, 5",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Por que é considerada boa prática criar variáveis dentro da função em vez de sempre usar variáveis globais?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Porque variáveis globais são mais lentas para o computador processar",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque o Python proíbe ter mais de uma variável global por programa",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque variáveis locais podem ser lidas de qualquer parte do programa",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque variáveis locais não conflitam com nomes usados fora dela",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Dividir para conquistar: funções que usam funções",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Por que usar funções: dividir para conquistar\n\nVocê já viu como criar funções, passar parâmetros e devolver resultados com `return`. Agora é hora de juntar tudo e entender POR QUE isso importa tanto na prática.\n\nQuando um problema é grande, a estratégia mais poderosa da programação é dividir para conquistar: quebrar um problema grande em pedaços menores, resolver cada pedaço com sua própria função, e depois juntar tudo. É a mesma lógica de organizar uma festa: em vez de uma pessoa fazer tudo sozinha, alguém cuida da comida, outra da decoração, outra da música, cada tarefa isolada e com um responsável."
+        },
+        {
+          "type": "text",
+          "value": "### Não repetir código (DRY)\n\nExistem duas razões enormes para usar funções:\n\n1. **Não repetir código**: se a mesma lógica aparece em vários lugares do programa, ela deveria estar dentro de uma função, chamada onde for preciso. Isso tem até um nome conhecido no mundo da programação: **DRY** (Don't Repeat Yourself, algo como \"não se repita\").\n2. **Dar nome e legibilidade**: uma função com um bom nome, como `eh_par(numero)` ou `calcular_media(notas)`, deixa o código quase uma frase em português, mais fácil de entender do que um monte de contas soltas."
+        },
+        {
+          "type": "code",
+          "value": "def eh_par(numero):\n    return numero % 2 == 0\n\nprint(eh_par(4))\n# saida: True\n\nprint(eh_par(7))\n# saida: False\n\n# dá para usar o retorno direto dentro de um if:\nif eh_par(10):\n    print(\"10 é par\")\n# saida: 10 é par"
+        },
+        {
+          "type": "code",
+          "value": "def maior_de_dois(a, b):\n    if a > b:\n        return a\n    return b\n\ndef maior_de_tres(a, b, c):\n    # uma função chamando outra: maior_de_tres reaproveita maior_de_dois\n    maior_entre_a_e_b = maior_de_dois(a, b)\n    return maior_de_dois(maior_entre_a_e_b, c)\n\nprint(maior_de_dois(4, 9))\n# saida: 9\n\nprint(maior_de_tres(4, 9, 2))\n# saida: 9\n\nprint(maior_de_tres(4, 9, 15))\n# saida: 15\n\n# maior_de_tres não precisou reescrever a lógica de comparar dois\n# números: ela reaproveitou maior_de_dois duas vezes"
+        },
+        {
+          "type": "text",
+          "value": "### Boa prática: uma função, uma responsabilidade\n\nUma função bem escrita faz **uma coisa só**, e faz bem feita. Se uma função calcula, imprime, valida e salva tudo ao mesmo tempo, ela fica difícil de entender, testar e reaproveitar. Prefira várias funções pequenas e bem nomeadas a uma função gigante que faz de tudo.\n\nO nome também importa: `maior_de_dois`, `eh_par` e `calcular_media` já contam, só pelo nome, o que a função faz. Nomes vagos como `funcao1` ou `faz_coisa` obrigam quem lê o código a abrir a função inteira só para entender para que ela serve."
+        },
+        {
+          "type": "quote",
+          "value": "Dividir para conquistar é quebrar um problema grande em funções menores, cada uma cuidando de uma parte, e uma função pode chamar outra para montar a solução completa. Funções pequenas, bem nomeadas e com uma responsabilidade só são mais fáceis de entender, testar e reaproveitar."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que significa \"dividir para conquistar\" na programação?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Dividir o valor de uma variável inteira por dois, sempre",
+              "isCorrect": false
+            },
+            {
+              "text": "Quebrar um problema grande em partes menores e simples",
+              "isCorrect": true
+            },
+            {
+              "text": "Criar o maior número possível de variáveis globais no programa",
+              "isCorrect": false
+            },
+            {
+              "text": "Excluir do código as partes que não estão funcionando direito",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que o princípio DRY (Don't Repeat Yourself) recomenda?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Nunca declarar mais de uma função no mesmo arquivo de código",
+              "isCorrect": false
+            },
+            {
+              "text": "Escrever todo o código do programa numa única linha longa",
+              "isCorrect": false
+            },
+            {
+              "text": "Não repetir a mesma lógica em vários lugares do código",
+              "isCorrect": true
+            },
+            {
+              "text": "Sempre usar return no lugar de print em toda função",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando as funções abaixo:\n\ndef maior_de_dois(a, b):\n    if a > b:\n        return a\n    return b\n\ndef maior_de_tres(a, b, c):\n    maior_entre_a_e_b = maior_de_dois(a, b)\n    return maior_de_dois(maior_entre_a_e_b, c)\n\nO que maior_de_tres(7, 3, 5) devolve?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "3",
+              "isCorrect": false
+            },
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            },
+            {
+              "text": "7",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Uma função chamada calcular_e_imprimir_relatorio calcula valores, formata texto e imprime tudo de uma vez. Qual é o problema mais provável dessa abordagem, segundo a boa prática de funções?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Fica difícil entender, testar e reusar cada parte dela",
+              "isCorrect": true
+            },
+            {
+              "text": "O Python não permite funções com mais de uma linha de código",
+              "isCorrect": false
+            },
+            {
+              "text": "A função roda mais devagar só por causa do nome comprido",
+              "isCorrect": false
+            },
+            {
+              "text": "Não há problema: quanto mais uma função faz, sempre melhor",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ndef dobro(n):\n    return n * 2\n\ndef quadruplo(n):\n    return dobro(dobro(n))\n\nprint(quadruplo(3))\n\nO que aparece no console?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "6",
+              "isCorrect": false
+            },
+            {
+              "text": "12",
+              "isCorrect": true
+            },
+            {
+              "text": "9",
+              "isCorrect": false
+            },
+            {
+              "text": "24",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

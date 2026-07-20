@@ -29,7 +29,7 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "# O que é Python e por que é a linguagem da ciência de dados\n\nVocê já passou pela trilha de Lógica de Programação: já sabe o que é uma variável, uma condição, um laço, uma função. Agora chega a hora de aplicar tudo isso numa linguagem real, e a escolhida aqui é o Python.\n\nPython é uma linguagem de programação de propósito geral, criada por Guido van Rossum e lançada em 1991. O nome não tem relação com a cobra: veio do grupo de comédia britânico Monty Python, um dos programas favoritos do criador da linguagem."
+                        "value": "# O que é Python e por que é a linguagem da ciência de dados\n\nVocê já passou pela trilha de Matplotlib: já sabe o que é uma variável, uma condição, um laço, uma função. Agora chega a hora de aplicar tudo isso numa linguagem real, e a escolhida aqui é o Python.\n\nPython é uma linguagem de programação de propósito geral, criada por Guido van Rossum e lançada em 1991. O nome não tem relação com a cobra: veio do grupo de comédia britânico Monty Python, um dos programas favoritos do criador da linguagem."
                     },
                     {
                         "type": "text",
@@ -4691,7 +4691,7 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "# A dor que o pandas vai resolver\n\nNa aula passada você calculou a média de uma coluna, filtrou linhas e agrupou por categoria usando só `for`, `if` e dicionários. Funcionou, mas deu trabalho. Agora vamos aumentar um pouco a complexidade da tarefa e sentir essa dor de verdade, para você entender exatamente o problema que uma biblioteca chamada **pandas** foi criada para resolver.\n\nCalma: esta aula não ensina pandas. A próxima trilha do roadmap faz isso com calma. Aqui a missão é uma só: motivar por que ele existe."
+                        "value": "# A dor que o pandas vai resolver\n\nNa aula passada você calculou a média de uma coluna, filtrou linhas e agrupou por categoria usando só `for`, `if` e dicionários. Funcionou, mas deu trabalho. Agora vamos aumentar um pouco a complexidade da tarefa e sentir essa dor de verdade, para você entender exatamente o problema que uma biblioteca chamada **pandas** foi criada para resolver.\n\nCalma: esta aula não ensina pandas. Uma trilha dedicada faz isso com calma mais adiante. Aqui a missão é uma só: motivar por que ele existe."
                     },
                     {
                         "type": "code",
@@ -5001,7 +5001,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## O que vem depois desta trilha\n\nFechando este módulo, vale olhar para trás: você saiu de \"o que é um algoritmo\" (lá na trilha de Lógica de Programação) para escrever Python de verdade, com tipos, controle de fluxo, listas, dicionários, funções, arquivos, tratamento de erros e um gostinho de classes. E nesta última aula, viu na prática por que uma lista de dicionários processada na mão é o tipo de tarefa que motivou a existência do pandas.\n\nNo roadmap de Ciência de Dados, os próximos passos são:\n\n- **Estatística e Probabilidade**: o raciocínio por trás de toda análise de dados (média, mediana, distribuição, correlação, o porquê dos números, não só o como calculá-los).\n- **Análise de Dados com pandas**: onde a dor sentida nesta trilha vira solução. DataFrames, leitura de CSVs enormes em uma linha, agrupamentos, filtros e cálculos que aqui exigiam dezenas de linhas.\n\nVocê já programa em Python. Agora vem domar os dados."
+                        "value": "## O que vem depois desta trilha\n\nFechando este módulo, vale olhar para trás: você saiu de \"o que é um algoritmo\" (lá na trilha de Lógica de Programação) para escrever Python de verdade, com tipos, controle de fluxo, listas, dicionários, funções, arquivos, tratamento de erros e um gostinho de classes. E nesta última aula, viu na prática por que uma lista de dicionários processada na mão é o tipo de tarefa que motivou a existência do pandas.\n\nDaqui pra frente, cada roadmap usa esse Python de um jeito: em ciência de dados ele vira a ferramenta da estatística e da análise com pandas; em engenharia de dados, a base para mexer com bancos, pipelines e processamento em escala. Abra o seu roadmap e siga para a próxima trilha, é ela que aponta o próximo passo.\n\nVocê já programa em Python. Agora é aplicar isso ao seu caminho."
                     },
                     {
                         "type": "quote",
@@ -5076,15 +5076,15 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Segundo o fechamento deste módulo, qual trilha do roadmap de Ciência de Dados ensina a manipular dados com DataFrames, o que aqui ainda foi feito na mão?",
+                        "statement": "Segundo o fechamento deste módulo, qual biblioteca de Python é feita para manipular tabelas com DataFrames, o trabalho que aqui você fez na mão com listas de dicionários?",
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Análise de Dados com pandas",
+                                "text": "pandas",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Estatística e Probabilidade",
+                                "text": "NumPy",
                                 "isCorrect": false
                             },
                             {
@@ -5092,7 +5092,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Machine Learning",
+                                "text": "o módulo os",
                                 "isCorrect": false
                             }
                         ]

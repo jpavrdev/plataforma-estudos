@@ -1,0 +1,729 @@
+{
+  "aulas": [
+    {
+      "titulo": "Por que repetir: a ideia de laço",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Por que repetir: a ideia de laço\n\nAté aqui você aprendeu a guardar valores em variáveis (módulo 2) e a fazer o programa escolher caminhos com `if` (módulo 3). Agora vem uma pergunta bem comum no dia a dia de quem programa: e se eu precisar fazer a mesma coisa várias vezes seguidas?\n\nPense em mostrar os números de 1 a 5 no console. Você já sabe fazer isso:"
+        },
+        {
+          "type": "code",
+          "value": "# Imagine que você precisa mostrar os números de 1 a 5 no console.\nprint(1)\nprint(2)\nprint(3)\nprint(4)\nprint(5)\n\n# Funciona! Mas e se fossem 100 números? Ou 1000?\n# Copiar e colar essa linha centenas de vezes não é programar, é sofrer."
+        },
+        {
+          "type": "text",
+          "value": "Funcionou. Agora imagine que o pedido fosse mostrar os números de 1 a 100. Ou de 1 a 10.000. Copiar e colar `print` centenas de vezes não é programar, é trabalho braçal, e ainda por cima arriscado: um erro de digitação em uma das linhas e ninguém percebe.\n\nA programação tem uma ferramenta pronta para isso: o **laço** (em inglês, *loop*). Um laço repete um trecho de código quantas vezes for preciso, sem você escrever a mesma linha de novo."
+        },
+        {
+          "type": "text",
+          "value": "## A receita de um laço\n\nPense numa situação bem simples: beber um copo de água, um gole de cada vez, até ele esvaziar. Essa ideia tem três partes:\n\n- **Um ponto de partida**: o copo começa cheio.\n- **Uma condição que diz quando parar**: 'enquanto ainda tiver água no copo'.\n- **Algo que muda a cada repetição**: a cada gole, sai um pouco de água, até a condição deixar de ser verdadeira.\n\nTodo laço que você vai aprender (`while` e `for`) segue essa mesma receita: repita um bloco de código enquanto uma condição for verdadeira, mudando algo a cada volta até a condição virar falsa."
+        },
+        {
+          "type": "code",
+          "value": "# A mesma ideia (mostrar números em sequência), agora usando um laço:\nfor i in range(1, 101):\n    print(i)\n# Duas linhas mostram os números de 1 a 100. Se fossem 10.000, o código\n# continuaria do mesmo tamanho: só mudaria o número lá em cima.\n# (range vai ATÉ o número de trás sem incluí-lo; as próximas aulas\n# explicam cada peça dessa receita com calma: while e for.)"
+        },
+        {
+          "type": "text",
+          "value": "Sempre que você perceber que vai 'fazer a mesma coisa várias vezes' dentro de um problema, isso é sinal de que um laço vai ajudar: mostrar uma sequência de números, repetir uma pergunta até o usuário responder certo, processar item por item de uma lista (você vai ver isso com calma no módulo 6). Nas próximas aulas você aprende as duas formas de escrever um laço em Python: `while` e `for`."
+        },
+        {
+          "type": "quote",
+          "value": "Um laço é a receita repita enquanto for verdade. Você escreve a instrução uma única vez; o computador se encarrega de repetir o quanto for necessário."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual destas situações do dia a dia é mais parecida com a ideia de um laço (loop) na programação?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Escolher entre pizza ou hambúrguer no jantar",
+              "isCorrect": false
+            },
+            {
+              "text": "Passar o aspirador em cada cômodo da casa, um de cada vez",
+              "isCorrect": true
+            },
+            {
+              "text": "Guardar o número de telefone de um amigo numa agenda",
+              "isCorrect": false
+            },
+            {
+              "text": "Comparar a idade de duas pessoas para saber quem é mais velho",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Por que escrever print cem vezes seguidas para mostrar os números de 1 a 100 é uma má prática?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Porque o Python não permite mais que 10 linhas de código repetidas",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque a função print só pode ser usada uma vez em cada programa",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque números maiores que 10 não podem ser exibidos no console",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque dá trabalho, é fácil errar e fica difícil de mudar depois",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Pense na ideia 'beba um gole de água até o copo esvaziar', usada para explicar um laço. Nessa comparação, o que representa a parte que muda a cada repetição, aproximando o fim?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "A água que ainda resta dentro do copo",
+              "isCorrect": true
+            },
+            {
+              "text": "O formato do copo",
+              "isCorrect": false
+            },
+            {
+              "text": "A vontade de beber água",
+              "isCorrect": false
+            },
+            {
+              "text": "O número de pessoas que estão na sala",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nfor i in range(1, 101):\n    print(i)\n\nQuantos números esse código mostra no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "101",
+              "isCorrect": false
+            },
+            {
+              "text": "99",
+              "isCorrect": false
+            },
+            {
+              "text": "100",
+              "isCorrect": true
+            },
+            {
+              "text": "Depende do computador que executa o código",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual das alternativas abaixo descreve corretamente para que serve um laço (loop) na programação?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Fazer o programa escolher entre dois caminhos, dependendo de uma condição",
+              "isCorrect": false
+            },
+            {
+              "text": "Executar várias vezes um conjunto de instruções, sem copiar e colar",
+              "isCorrect": true
+            },
+            {
+              "text": "Guardar vários valores diferentes dentro de uma única variável",
+              "isCorrect": false
+            },
+            {
+              "text": "Impedir que o programa tenha erros de digitação",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "while: repetindo enquanto for verdade (e o loop infinito)",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## A primeira forma de repetir: while\n\nA primeira forma de repetir código em Python é o `while` (em inglês, 'enquanto'). A ideia é direta: **enquanto uma condição for verdadeira, repita o bloco de código**. Assim que a condição virar falsa, o laço para.\n\nA estrutura lembra o `if` que você já conhece, só que em vez de rodar uma vez só, o `while` volta a testar a condição depois de cada repetição. Repare nos dois-pontos no fim da linha e na indentação do bloco, igual ao `if`:"
+        },
+        {
+          "type": "code",
+          "value": "i = 1  # variável de controle, começa em 1\n\nwhile i <= 5:  # repete ENQUANTO i for menor ou igual a 5\n    print(i)\n    i = i + 1  # sem isso, i nunca mudaria: loop infinito!\n\nprint(\"Terminou! i agora vale\", i)\n# saida:\n# 1\n# 2\n# 3\n# 4\n# 5\n# Terminou! i agora vale 6"
+        },
+        {
+          "type": "text",
+          "value": "## O perigo do loop infinito\n\nRepare em duas coisas no código acima: a variável `i` é criada **antes** do `while`, e ela muda **dentro** do laço (`i = i + 1`). Isso não é opcional. Se a variável usada na condição nunca mudar, a condição nunca vai virar falsa, e o laço repete para sempre. Isso se chama **loop infinito**, e ele trava o programa (no terminal, ele nunca termina e você precisa interromper à força, geralmente com Ctrl+C).\n\nVeja um exemplo do que **não** fazer:"
+        },
+        {
+          "type": "code",
+          "value": "# CUIDADO: exemplo de loop infinito. Não rode isso de verdade!\ncontador = 1\n\nwhile contador <= 5:\n    print(contador)\n    # esqueceram de mudar \"contador\" aqui dentro...\n    # a condição \"contador <= 5\" nunca vai ficar falsa.\n    # o programa trava, repetindo para sempre."
+        },
+        {
+          "type": "text",
+          "value": "Nesse exemplo, `contador` começa em 1 e a condição é `contador <= 5`, mas nada dentro do laço muda o valor de `contador`. A condição vai ser sempre verdadeira, para sempre.\n\nAntes de rodar qualquer `while`, vale a pena checar três pontos:\n\n- A variável de controle existe **antes** do `while`.\n- A condição depende dessa variável.\n- Alguma linha **dentro** do laço muda essa variável, aproximando o fim.\n\nSe o seu programa 'travar' ao testar um laço, desconfie de loop infinito e revise esses três pontos. (Existe um caso em que o loop infinito é proposital: escrever `while True:` e sair dele com `break` no momento certo, um comando que você vai conhecer na última aula.)"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Volta\", \"i no início\", \"i <= 5 ?\", \"O que acontece\"], [\"1\", \"1\", \"verdadeira\", \"imprime 1; depois i passa a valer 2\"], [\"2\", \"2\", \"verdadeira\", \"imprime 2; depois i passa a valer 3\"], [\"3\", \"3\", \"verdadeira\", \"imprime 3; depois i passa a valer 4\"], [\"4\", \"4\", \"verdadeira\", \"imprime 4; depois i passa a valer 5\"], [\"5\", \"5\", \"verdadeira\", \"imprime 5; depois i passa a valer 6\"], [\"6\", \"6\", \"falsa\", \"o laço para; nada é impresso\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "while repete enquanto a condição for verdadeira. Toda variável usada na condição precisa mudar dentro do laço, senão a condição nunca vira falsa e o laço nunca para."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que o comando while faz em um programa Python?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Executa um bloco de código apenas uma única vez",
+              "isCorrect": false
+            },
+            {
+              "text": "Escolhe entre dois caminhos possíveis, igual o comando if",
+              "isCorrect": false
+            },
+            {
+              "text": "Repete um bloco enquanto a condição continuar verdadeira",
+              "isCorrect": true
+            },
+            {
+              "text": "Encerra o programa imediatamente, sem terminar o resto",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Depois de criar a variável de controle de um while (como i = 1) e escrever a condição (i <= 5), o que ainda é indispensável fazer dentro do laço para ele não travar?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Declarar a variável de novo, do zero, a cada nova volta",
+              "isCorrect": false
+            },
+            {
+              "text": "Alterar, a cada volta, o valor da variável da condição",
+              "isCorrect": true
+            },
+            {
+              "text": "Usar print pelo menos duas vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "Trocar a condição por uma igualdade, com ==",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ni = 0\nwhile i < 3:\n    print('Oi')\n    i = i + 1\n\nQuantas vezes a palavra 'Oi' aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "2",
+              "isCorrect": false
+            },
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "Infinitas vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nn = 10\nwhile n > 0:\n    print(n)\n\nO que acontece quando esse código roda?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Mostra os números de 10 até 1 e depois para sozinho",
+              "isCorrect": false
+            },
+            {
+              "text": "Não mostra nada, porque a condição n > 0 já começa como falsa",
+              "isCorrect": false
+            },
+            {
+              "text": "Entra em loop infinito, pois n nunca muda dentro do laço",
+              "isCorrect": true
+            },
+            {
+              "text": "Dá um erro de sintaxe antes mesmo de rodar",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\ni = 1\nwhile i <= 4:\n    i = i + 1\nprint(i)\n\nQual valor aparece no console?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "5",
+              "isCorrect": true
+            },
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "6",
+              "isCorrect": false
+            },
+            {
+              "text": "1",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "for: o laço contado",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## for: quando você já sabe quantas vezes\n\nO `while` funciona bem, mas quando você já sabe de antemão quantas vezes quer repetir algo, o Python oferece uma forma mais direta: o `for` com `range`. Em vez de você mesmo criar a variável de controle, testar a condição e mudar o valor a cada volta (as três tarefas da aula passada), o `range` cuida disso: ele gera a sequência de números, e o `for` percorre um por um.\n\nVeja o mesmo exemplo da aula anterior, primeiro do jeito `while` e depois reescrito com `for`:"
+        },
+        {
+          "type": "code",
+          "value": "# Do jeito while (aula passada)\ni = 1\nwhile i <= 5:\n    print(i)\n    i = i + 1\n\n# A mesma coisa com for e range: bem mais curto\nfor j in range(1, 6):\n    print(j)\n\n# as duas versões imprimem exatamente a mesma coisa: 1 2 3 4 5"
+        },
+        {
+          "type": "text",
+          "value": "## Como o range funciona\n\nO `range(1, 6)` é o coração desse laço. Ele recebe dois números e gera a sequência que o `for` vai percorrer:\n\n- **Início** (`1`): o primeiro número da sequência, onde o laço começa.\n- **Fim** (`6`): onde a sequência para, mas com um detalhe importante: o fim **não entra**. `range(1, 6)` gera `1, 2, 3, 4, 5`, ou seja, vai até um a menos que o número de trás.\n\nEsse é o ponto que mais confunde no começo: para percorrer de 1 até 5, você escreve `range(1, 6)`, e não `range(1, 5)`. Guarde essa ideia com carinho, porque ela é a origem de muito erro de 'um a mais ou um a menos' (o famoso *off-by-one*)."
+        },
+        {
+          "type": "text",
+          "value": "Quando usar `for` em vez de `while`? Na prática, sempre que você já sabe (ou consegue calcular) quantas vezes quer repetir, como percorrer um intervalo de números de um valor até outro. Como o `range` cuida do começo, do fim e do passo sozinho, você não corre o risco de esquecer de mudar a variável de controle, o que evita o loop infinito visto na aula passada.\n\nDois atalhos ajudam bastante. Se você começa do zero, pode passar só um número: `range(n)` já significa de 0 até `n - 1`. E quando quiser andar de dois em dois (ou de qualquer outro tamanho), existe um terceiro número, o **passo**: `range(inicio, fim, passo)`."
+        },
+        {
+          "type": "code",
+          "value": "# range(n) começa em 0 e vai até n - 1 (aqui, n = 10)\nn = 10\nfor i in range(n):\n    print(i)\n# saida: 0 1 2 3 4 5 6 7 8 9 (dez números, de 0 a 9 -- o 10 NÃO entra)\n\n# Com o passo, dá para andar de dois em dois:\nfor i in range(0, 11, 2):\n    print(i)\n# saida: 0 2 4 6 8 10 (começa em 0, para antes de 11, andando de 2 em 2)"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Volta\", \"j vale\", \"dentro de range(1, 6)?\", \"Imprime\"], [\"1\", \"1\", \"sim\", \"1\"], [\"2\", \"2\", \"sim\", \"2\"], [\"3\", \"3\", \"sim\", \"3\"], [\"4\", \"4\", \"sim\", \"4\"], [\"5\", \"5\", \"sim\", \"5\"], [\"-\", \"6\", \"não (o fim 6 não entra)\", \"(nada, o laço para)\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "O for com range percorre uma sequência de números pronta: você diz onde ela começa, onde termina (sem incluir o fim) e, se quiser, de quanto em quanto andar. Quando você já sabe quantas vezes repetir, o for costuma ser a escolha mais natural."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "No laço for i in range(1, 6), o que significam os dois números dentro do range?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "1 é o início e 6 é o fim, e nesse caso o 6 também entra",
+              "isCorrect": false
+            },
+            {
+              "text": "1 é onde começa; 6 é onde para, sem incluir o 6",
+              "isCorrect": true
+            },
+            {
+              "text": "1 é o passo e 6 é a quantidade de voltas do laço",
+              "isCorrect": false
+            },
+            {
+              "text": "1 é a condição e 6 é o incremento do laço",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que o laço for i in range(5) faz?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Repete 5 vezes, com i indo de 0 a 4",
+              "isCorrect": true
+            },
+            {
+              "text": "Repete 5 vezes, com i indo de 1 a 5",
+              "isCorrect": false
+            },
+            {
+              "text": "Repete 6 vezes, com i indo de 0 a 5",
+              "isCorrect": false
+            },
+            {
+              "text": "Repete uma vez só, com i valendo 5",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo, com n valendo 10:\n\nfor i in range(n):\n    print(i)\n\nQuantas vezes esse laço executa?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "11 vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "9 vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "10 vezes",
+              "isCorrect": true
+            },
+            {
+              "text": "12 vezes",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o laço a seguir:\n\nfor i in range(1, 6):\n    print(i)\n\nQual é o último número que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "6",
+              "isCorrect": false
+            },
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "5",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Você precisa repetir uma ação exatamente 20 vezes, uma quantidade já conhecida antes de o laço começar. Por que o for com range costuma ser mais indicado que o while nesse caso?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Porque o for roda mais rápido que o while no computador",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque o while não consegue repetir mais do que 10 vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque o range controla início, fim e passo sozinho",
+              "isCorrect": true
+            },
+            {
+              "text": "Porque o for não precisa de dois-pontos nem de indentação",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Contador e acumulador: somando e contando",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Usando um laço para calcular algo\n\nCom `while` e `for` você já sabe repetir código. Agora vem a parte mais útil no dia a dia: usar um laço para **calcular algo**, não só imprimir números. Dois padrões aparecem o tempo todo:\n\n- **Acumulador**: uma variável que vai guardando um total, somando um pouco a cada volta (por exemplo, uma soma).\n- **Contador**: uma variável que vai contando quantas vezes algo aconteceu (por exemplo, quantos números pares existem numa faixa).\n\nOs dois seguem o mesmo princípio: a variável começa **antes** do laço, com um valor inicial neutro, e é atualizada **dentro** do laço, a cada volta."
+        },
+        {
+          "type": "code",
+          "value": "# Somar os números de 1 até n usando um acumulador\nn = 5\nsoma = 0  # acumulador, começa em 0 (o \"neutro\" da soma)\n\nfor i in range(1, n + 1):\n    soma += i  # a cada volta, soma o valor de i no total (o mesmo que soma = soma + i)\n\nprint(soma)  # saida: 15  (1 + 2 + 3 + 4 + 5)"
+        },
+        {
+          "type": "table",
+          "value": "[[\"i\", \"soma antes da volta\", \"conta feita\", \"soma depois da volta\"], [\"1\", \"0\", \"0 + 1\", \"1\"], [\"2\", \"1\", \"1 + 2\", \"3\"], [\"3\", \"3\", \"3 + 3\", \"6\"], [\"4\", \"6\", \"6 + 4\", \"10\"], [\"5\", \"10\", \"10 + 5\", \"15\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Contador: quantas vezes algo acontece\n\nO contador é parecido com o acumulador, mas em vez de somar valores diferentes, ele soma sempre 1, e só quando uma condição é satisfeita. É assim que você responde perguntas do tipo 'quantos números pares existem entre 1 e 10?'."
+        },
+        {
+          "type": "code",
+          "value": "# Contar quantos números pares existem de 1 até 10\ntotal = 10\nquantidade_pares = 0  # contador, começa em 0\n\nfor i in range(1, total + 1):\n    if i % 2 == 0:  # resto da divisão por 2 é zero: número par\n        quantidade_pares += 1\n\nprint(quantidade_pares)  # saida: 5  (2, 4, 6, 8, 10)"
+        },
+        {
+          "type": "code",
+          "value": "# Calcular a média dos números de 1 até n, usando acumulador e contador juntos\nn = 5\nsoma = 0        # acumulador: guarda o total\nquantidade = 0  # contador: guarda quantos números entraram na soma\n\nfor i in range(1, n + 1):\n    soma += i\n    quantidade += 1\n\nmedia = soma / quantidade\nprint(media)  # saida: 3.0  (a divisão / sempre devolve número com casa decimal em Python)"
+        },
+        {
+          "type": "quote",
+          "value": "Acumulador e contador são o mesmo truque: uma variável criada antes do laço, atualizada a cada volta. O acumulador soma valores; o contador soma 1 cada vez que uma condição é satisfeita."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual valor inicial é mais indicado para um acumulador que vai somar números dentro de um laço?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": true
+            },
+            {
+              "text": "O maior valor possível",
+              "isCorrect": false
+            },
+            {
+              "text": "Não precisa de valor inicial, o Python decide sozinho",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que um contador faz dentro de um laço?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Guarda o último valor lido, sobrescrevendo o anterior",
+              "isCorrect": false
+            },
+            {
+              "text": "Multiplica todos os números que passam pelo laço",
+              "isCorrect": false
+            },
+            {
+              "text": "Soma 1 cada vez que uma condição é satisfeita",
+              "isCorrect": true
+            },
+            {
+              "text": "Impede que o laço se repita mais de uma vez",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nsoma = 0\nfor i in range(1, 4):\n    soma += i\nprint(soma)\n\nQual o valor de soma no final?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "6",
+              "isCorrect": true
+            },
+            {
+              "text": "10",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            },
+            {
+              "text": "7",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nquantidade = 0\nfor i in range(1, 11):\n    if i % 2 != 0:\n        quantidade += 1\nprint(quantidade)\n\nQual o valor de quantidade no final?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "6",
+              "isCorrect": false
+            },
+            {
+              "text": "10",
+              "isCorrect": false
+            },
+            {
+              "text": "5",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "O código abaixo deveria somar os números de 1 até 5, mas tem um erro sutil no range. Qual o valor de soma no final?\n\nsoma = 0\nfor i in range(1, 5):\n    soma += i\nprint(soma)",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "15",
+              "isCorrect": false
+            },
+            {
+              "text": "10",
+              "isCorrect": true
+            },
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "14",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "break, continue e laços aninhados",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Mais controle dentro do laço\n\nAté agora, todo laço que você viu roda do início ao fim, sempre testando a condição a cada volta. Mas às vezes você quer mais controle: parar o laço mais cedo, ou pular uma volta específica sem parar tudo. Para isso existem dois comandos:\n\n- **`break`**: interrompe o laço imediatamente, como quando você procura uma chave num molho e para de procurar assim que acha a certa.\n- **`continue`**: pula o restante da volta atual e já vai para a próxima, como quando você folheia uma revista pulando as páginas de propaganda, sem parar de folhear."
+        },
+        {
+          "type": "code",
+          "value": "# Procurar o primeiro número, entre 1 e 20, que seja divisível por 7\nfor i in range(1, 21):\n    if i % 7 == 0:\n        print(\"Achei:\", i)\n        break  # para o laço assim que encontra, não precisa continuar\n# saida: Achei: 7"
+        },
+        {
+          "type": "code",
+          "value": "# Mostrar os números de 1 a 10, mas pulando os múltiplos de 3\nfor i in range(1, 11):\n    if i % 3 == 0:\n        continue  # pula esta volta, vai direto para a próxima\n    print(i)\n# saida: 1 2 4 5 7 8 10   (pulou o 3, o 6 e o 9)"
+        },
+        {
+          "type": "text",
+          "value": "## Laço dentro de laço\n\nUm laço pode conter outro laço dentro dele. Em Python, o que mostra que um laço está **dentro** do outro é a indentação: o laço de dentro fica com um nível a mais de recuo. Isso é útil quando você precisa repetir algo para cada repetição de outra coisa, como montar uma tabuada inteira (uma tabela de multiplicação para cada número) ou percorrer uma grade com linhas e colunas.\n\nA regra é simples: para **cada** volta do laço de fora, o laço de dentro roda **inteiro**, do começo ao fim. Por isso, o custo de laços aninhados cresce rápido: se o laço de fora roda `n` vezes e o de dentro roda `m` vezes, o total de voltas é `n × m`, não `n + m`."
+        },
+        {
+          "type": "code",
+          "value": "# Tabuada de 1 a 3 usando laços aninhados (for dentro de for)\nfor tabuada in range(1, 4):\n    print(f\"Tabuada do {tabuada}:\")\n    for vez in range(1, 4):\n        print(f\"{tabuada} x {vez} = {tabuada * vez}\")\n# para cada valor de \"tabuada\" (3 no total), o laço de dentro roda 3 vezes\n# por completo: ao todo, são 3 x 3 = 9 linhas de multiplicação impressas"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Voltas de fora\", \"Voltas de dentro\", \"Total de voltas (fora × dentro)\"], [\"3\", \"3\", \"9\"], [\"5\", \"5\", \"25\"], [\"10\", \"10\", \"100\"], [\"100\", \"100\", \"10000\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "break interrompe o laço inteiro; continue pula só a volta atual e segue para a próxima; e um laço dentro do outro multiplica o trabalho, já que o de fora decide quantas vezes o de dentro roda inteiro."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que o comando break faz dentro de um laço?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Pula só a volta atual e continua no laço",
+              "isCorrect": false
+            },
+            {
+              "text": "Reinicia o laço do começo",
+              "isCorrect": false
+            },
+            {
+              "text": "Para o laço na hora, sem rodar mais nenhuma volta",
+              "isCorrect": true
+            },
+            {
+              "text": "Troca o valor da variável de controle para zero imediatamente",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que o comando continue faz dentro de um laço?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Encerra o laço por completo, sem repetir mais nenhuma vez",
+              "isCorrect": false
+            },
+            {
+              "text": "Pula o resto daquela volta e já vai para a próxima",
+              "isCorrect": true
+            },
+            {
+              "text": "Faz o laço rodar em dobro a cada volta",
+              "isCorrect": false
+            },
+            {
+              "text": "Reinicia o valor de todas as variáveis do programa inteiro",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nfor i in range(1, 6):\n    if i == 3:\n        break\n    print(i)\n\nO que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "1, 2 e 3",
+              "isCorrect": false
+            },
+            {
+              "text": "1, 2, 3, 4 e 5",
+              "isCorrect": false
+            },
+            {
+              "text": "1 e 2",
+              "isCorrect": true
+            },
+            {
+              "text": "Nada é impresso",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nfor i in range(1, 6):\n    if i == 3:\n        continue\n    print(i)\n\nO que aparece no console?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "1, 2, 3, 4 e 5",
+              "isCorrect": false
+            },
+            {
+              "text": "1 e 2",
+              "isCorrect": false
+            },
+            {
+              "text": "1, 2 e 3",
+              "isCorrect": false
+            },
+            {
+              "text": "1, 2, 4 e 5",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Considerando o código abaixo:\n\nfor a in range(1, 5):\n    for b in range(1, 4):\n        print(a, b)\n\nQuantas vezes o print de dentro executa, ao todo?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "4 vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "12 vezes",
+              "isCorrect": true
+            },
+            {
+              "text": "16 vezes",
+              "isCorrect": false
+            },
+            {
+              "text": "7 vezes",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

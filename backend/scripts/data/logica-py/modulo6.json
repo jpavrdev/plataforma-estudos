@@ -1,0 +1,729 @@
+{
+  "aulas": [
+    {
+      "titulo": "Listas: guardando uma sequência de valores",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Listas: guardando uma sequência de valores\n\nAté agora, cada dado que você quis guardar morou em uma variável separada: `nome = \"Ana\"`, `idade = 20`. Isso funciona bem para um ou dois valores. Mas e se você precisasse guardar os preços de 5 produtos de um carrinho de compras? Ou os nomes de 30 alunos de uma turma? Criar `preco1`, `preco2`, `preco3` e assim por diante vira uma bagunça rapidamente, ainda mais quando você nem sabe de antemão quantos valores vai precisar guardar.\n\nPara isso existe a **lista** (em outras linguagens você vai ouvir os nomes _array_ ou _vetor_ para a mesma ideia): uma única variável que guarda vários valores, organizados em ordem, um atrás do outro. Pense em uma fileira de caixinhas numeradas: cada caixinha guarda um valor, e você acessa qualquer uma delas pelo número dela."
+        },
+        {
+          "type": "text",
+          "value": "## Criando uma lista e o índice que começa em 0\n\nUma lista é criada com colchetes `[ ]`, com os valores separados por vírgula. Você guarda a lista inteira em uma variável, do mesmo jeito que guardaria um número ou um texto.\n\nCada valor dentro da lista ocupa uma posição chamada **índice**. Aqui está o detalhe mais importante deste módulo, o que mais confunde quem está começando: em Python, e na grande maioria das linguagens de programação, a contagem de posições começa em **0**, não em 1. O primeiro elemento está no índice 0, o segundo no índice 1, e assim por diante."
+        },
+        {
+          "type": "code",
+          "value": "precos = [10, 25, 8, 40]\nfrutas = [\"maçã\", \"banana\", \"uva\"]\n\nprint(precos)\n# saida: [10, 25, 8, 40]\n\nprint(frutas)\n# saida: ['maçã', 'banana', 'uva']\n\n# para ler um valor, uso o nome da lista e o indice entre colchetes\nprint(frutas[0])  # saida: maçã (primeiro elemento, indice 0)\nprint(frutas[1])  # saida: banana\nprint(frutas[2])  # saida: uva (terceiro e ultimo elemento, indice 2)"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Índice\",\"Elemento\"],[\"0\",\"maçã\"],[\"1\",\"banana\"],[\"2\",\"uva\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Tamanho, índice negativo e o índice que não existe\n\nPara saber quantos elementos uma lista tem, use `len(lista)` (repare: é `len(lista)`, e não `lista.length` como em algumas outras linguagens). Como a contagem começa em 0, o índice do último elemento é sempre `len(lista) - 1` (e não `len(lista)`, esse é um erro comum). Em `frutas`, que tem 3 elementos, `len(frutas)` vale 3, e o último índice válido é 2.\n\nO Python ainda oferece um atalho muito prático: os **índices negativos**. `frutas[-1]` pega o último elemento, `frutas[-2]` pega o penúltimo, e assim por diante, sem você precisar calcular o tamanho.\n\nVocê também pode trocar o valor guardado em uma posição, atribuindo um novo valor a ela com `=`. Mas atenção a uma diferença importante: se você tentar acessar um índice que não existe na lista (por exemplo, o índice 10 em uma lista de 3 posições), o Python **gera um erro** chamado `IndexError` e interrompe o programa. Ele não devolve um valor vazio silenciosamente: ele avisa alto e claro que aquela posição não existe."
+        },
+        {
+          "type": "code",
+          "value": "frutas = [\"maçã\", \"banana\", \"uva\"]\n\nprint(len(frutas))  # saida: 3\n\n# o indice do ultimo elemento e sempre len - 1\nprint(frutas[len(frutas) - 1])  # saida: uva\n\n# atalho: indice negativo conta a partir do fim\nprint(frutas[-1])  # saida: uva (o ultimo)\nprint(frutas[-2])  # saida: banana (o penultimo)\n\n# trocando o valor da posicao 1\nfrutas[1] = \"pera\"\nprint(frutas)\n# saida: ['maçã', 'pera', 'uva']\n\n# indice que nao existe: gera erro (IndexError)\n# print(frutas[10])  # IndexError: list index out of range"
+        },
+        {
+          "type": "quote",
+          "value": "Uma lista é uma variável que guarda vários valores em ordem. Você cria com `[ ]`, acessa e altera cada posição pelo índice, e o índice sempre começa em 0. Índices negativos, como `[-1]`, contam a partir do fim. Diferente de algumas outras linguagens, tentar acessar uma posição que não existe gera um erro (`IndexError`) e interrompe o programa."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Dado o código a seguir, qual é o índice do primeiro elemento, \"azul\"?\n\ncores = [\"azul\", \"verde\", \"amarelo\"]",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "0",
+              "isCorrect": true
+            },
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "2",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Dado numeros = [10, 20, 30, 40], o que print(numeros[1]) mostra na tela?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "10",
+              "isCorrect": false
+            },
+            {
+              "text": "20",
+              "isCorrect": true
+            },
+            {
+              "text": "30",
+              "isCorrect": false
+            },
+            {
+              "text": "40",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Dado letras = [\"a\", \"b\", \"c\"], o que acontece quando você executa print(letras[3])?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Imprime \"c\", porque o índice sempre volta para o último elemento",
+              "isCorrect": false
+            },
+            {
+              "text": "Imprime None, o valor padrão para posições que não existem",
+              "isCorrect": false
+            },
+            {
+              "text": "Imprime uma string vazia \"\"",
+              "isCorrect": false
+            },
+            {
+              "text": "Gera um erro (IndexError), pois o índice 3 não existe na lista",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Uma lista tarefas tem 5 elementos. Contando a partir do zero, qual é o índice do último elemento?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "4",
+              "isCorrect": true
+            },
+            {
+              "text": "6",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nlista = [5, 12, 8, 21]\nlista[3] = 100\nprint(lista[len(lista) - 1])",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "21",
+              "isCorrect": false
+            },
+            {
+              "text": "8",
+              "isCorrect": false
+            },
+            {
+              "text": "100",
+              "isCorrect": true
+            },
+            {
+              "text": "Um erro (IndexError)",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Mexendo na lista: adicionar, remover e o tamanho",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Listas não são fixas: elas crescem e encolhem\n\nUma das coisas mais úteis de uma lista é que ela não tem um tamanho fixo. Você pode começar com uma lista vazia e ir adicionando itens conforme o programa roda, como uma lista de compras que cresce enquanto você anota o que falta no mercado. Também dá para remover itens, como quando você risca um item já comprado.\n\nO Python tem métodos prontos para isso, chamados com um ponto depois do nome da lista: `lista.metodo()`. O primeiro é o `append`, que adiciona um valor no **final** da lista, fazendo ela crescer. Uma diferença em relação a outras linguagens: o `append` adiciona **um** item por vez. Quando quiser juntar vários de uma vez, use o `extend`, passando uma lista com os novos valores."
+        },
+        {
+          "type": "code",
+          "value": "tarefas = [\"estudar\", \"almoçar\"]\nprint(tarefas)\n# saida: ['estudar', 'almoçar']\n\ntarefas.append(\"malhar\")\nprint(tarefas)\n# saida: ['estudar', 'almoçar', 'malhar']\nprint(len(tarefas))  # saida: 3\n\n# append adiciona um item; para varios de uma vez, use extend com uma lista\ntarefas.extend([\"dormir\", \"repetir\"])\nprint(tarefas)\n# saida: ['estudar', 'almoçar', 'malhar', 'dormir', 'repetir']\nprint(len(tarefas))  # saida: 5"
+        },
+        {
+          "type": "text",
+          "value": "## pop: removendo do fim\n\nO `pop` faz o oposto do `append`: remove o **último** elemento da lista e devolve esse valor removido, fazendo a lista encolher uma posição. Guardar esse valor em uma variável é útil quando você quer usar o item que saiu. Um cuidado: se a lista já estiver vazia, o `pop()` **gera um erro** (`IndexError`), porque não há nada para remover. Diferente de algumas linguagens que devolvem um valor vazio nesse caso, o Python avisa com um erro."
+        },
+        {
+          "type": "code",
+          "value": "tarefas = [\"estudar\", \"almoçar\", \"malhar\"]\n\nultima = tarefas.pop()\nprint(ultima)  # saida: malhar (o valor que foi removido)\nprint(tarefas)\n# saida: ['estudar', 'almoçar']\nprint(len(tarefas))  # saida: 2\n\n# em uma lista vazia, pop gera um erro (IndexError), nao devolve None\nvazio = []\n# vazio.pop()  # IndexError: pop from empty list"
+        },
+        {
+          "type": "text",
+          "value": "## insert(0) e pop(0): mexendo no começo\n\nE se você quiser mexer no **início** da lista, e não no fim? O Python não tem métodos com nome próprio para isso (como algumas linguagens têm), mas resolve com os mesmos métodos que você já conhece, passando a posição 0.\n\nPara adicionar no começo, use `lista.insert(0, valor)`: o `0` diz em qual posição o novo valor entra, e todo o resto anda uma casa para a direita. Por exemplo, `cores.insert(0, \"vermelho\")` coloca \"vermelho\" na frente de tudo. Para remover o primeiro elemento, use `lista.pop(0)`: assim como o `pop()` sem número tira o último, o `pop(0)` tira e devolve o primeiro. Na prática, mexer no fim (com `append` e `pop()`) é bem mais comum do que mexer no começo, mas vale saber que dá para fazer os dois."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Método\",\"O que faz\",\"Onde mexe\"],[\"append(valor)\",\"Adiciona um valor\",\"No fim\"],[\"pop()\",\"Remove e devolve o último valor\",\"No fim\"],[\"insert(0, valor)\",\"Adiciona um valor\",\"No começo\"],[\"pop(0)\",\"Remove e devolve o primeiro valor\",\"No começo\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "Listas não têm tamanho fixo: `append` adiciona um item no fim, `pop()` remove e devolve o último, e `len(lista)` sempre reflete o tamanho atual. Para juntar vários de uma vez use `extend`, e para mexer no começo use `insert(0, valor)` e `pop(0)`."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é a forma correta de adicionar o valor 4 no fim da lista numeros em Python?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "numeros.append(4)",
+              "isCorrect": true
+            },
+            {
+              "text": "numeros.push(4)",
+              "isCorrect": false
+            },
+            {
+              "text": "numeros.add(4)",
+              "isCorrect": false
+            },
+            {
+              "text": "numeros.insert(4)",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que o método pop() faz em uma lista (quando chamado sem número)?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Remove e devolve o primeiro elemento da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Adiciona um elemento no fim da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Remove e devolve o último elemento da lista",
+              "isCorrect": true
+            },
+            {
+              "text": "Apaga todos os elementos da lista",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nnumeros = [5, 10]\nnumeros.append(15)\nremovido = numeros.pop()\nprint(removido)",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "15",
+              "isCorrect": true
+            },
+            {
+              "text": "10",
+              "isCorrect": false
+            },
+            {
+              "text": "[5, 10]",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Depois de rodar cores = [\"azul\", \"verde\"] e cores.insert(0, \"vermelho\"), qual é o valor de cores[0]?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "\"azul\"",
+              "isCorrect": false
+            },
+            {
+              "text": "\"verde\"",
+              "isCorrect": false
+            },
+            {
+              "text": "\"vermelho\"",
+              "isCorrect": true
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\npilha = [10, 20, 30]\npilha.pop()\npilha.extend([40, 50])\nprint(pilha[len(pilha) - 1])",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "30",
+              "isCorrect": false
+            },
+            {
+              "text": "50",
+              "isCorrect": true
+            },
+            {
+              "text": "40",
+              "isCorrect": false
+            },
+            {
+              "text": "20",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Percorrendo listas (for e for-in)",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Por que percorrer uma lista\n\nVocê já sabe usar `for` e `while` para repetir uma ação várias vezes (módulo 4). Agora que os dados moram dentro de uma lista, a repetição mais comum do dia a dia de quem programa é: passar por cada elemento da lista, um de cada vez, para ler, somar, contar ou verificar alguma coisa. Isso se chama **percorrer** a lista (em inglês, iterar).\n\nDá para escrever `lista[0]`, `lista[1]`, `lista[2]`... na mão, mas isso só funciona se você souber exatamente quantos elementos tem, e vira inviável se a lista tiver 1000 posições. É para isso que usamos um laço.\n\n## for com range: percorrendo pelo índice\n\nUm jeito de percorrer é usar um contador `i` que passa por todos os índices válidos. Em Python, isso é feito com `range(len(lista))`, que gera os números de 0 até o último índice: para uma lista de 3 elementos, `range(len(lista))` produz 0, 1 e 2. Repare que o `range` **para antes** do tamanho (não chega a 3), que é justamente o índice que não existe. Dentro do laço, você acessa cada valor com `lista[i]`."
+        },
+        {
+          "type": "code",
+          "value": "frutas = [\"maçã\", \"banana\", \"uva\"]\n\nfor i in range(len(frutas)):\n    print(f\"{i}: {frutas[i]}\")\n# saida:\n# 0: maçã\n# 1: banana\n# 2: uva"
+        },
+        {
+          "type": "text",
+          "value": "## for-in: percorrendo direto pelos valores\n\nMuitas vezes você só quer o valor de cada elemento, sem se preocupar com o índice. Para esses casos, o Python tem uma forma mais simples e direta: `for item in lista:`, que entrega cada valor da lista, um por vez, sem você precisar escrever `lista[i]`. Na prática, essa é a forma mais comum e mais natural de percorrer uma lista em Python.\n\nE quando você precisar do índice **e** do valor ao mesmo tempo? Aí entra o `enumerate`, que a cada volta entrega os dois juntos: `for i, item in enumerate(lista):`."
+        },
+        {
+          "type": "code",
+          "value": "frutas = [\"maçã\", \"banana\", \"uva\"]\n\n# quando so preciso do valor, uso o for-in direto\nfor fruta in frutas:\n    print(fruta)\n# saida:\n# maçã\n# banana\n# uva\n\n# quando preciso do indice E do valor, uso enumerate\nfor i, fruta in enumerate(frutas):\n    print(f\"{i}: {fruta}\")\n# saida:\n# 0: maçã\n# 1: banana\n# 2: uva"
+        },
+        {
+          "type": "text",
+          "value": "## Somando e contando elementos de uma lista\n\nLembra do acumulador do módulo de laços, aquela variável que vai guardando um total conforme o laço repete? Com listas, o padrão é o mesmo: você cria uma variável fora do laço (o acumulador, começando em 0) e, a cada volta, soma ou verifica o valor daquele elemento."
+        },
+        {
+          "type": "code",
+          "value": "precos = [10, 25, 8, 40]\n\n# somando todos os precos\ntotal = 0\nfor preco in precos:\n    total = total + preco\nprint(total)  # saida: 83\n\n# contando quantos precos sao maiores que 10\nquantos = 0\nfor preco in precos:\n    if preco > 10:\n        quantos = quantos + 1\nprint(quantos)  # saida: 2"
+        },
+        {
+          "type": "quote",
+          "value": "Para percorrer uma lista, use `for item in lista:` quando só precisar do valor (a forma mais comum), e `range(len(lista))` ou `enumerate(lista)` quando também precisar do índice. O padrão do acumulador, uma variável que vai somando ou contando a cada volta, funciona igual dentro de uma lista."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "No laço for i in range(len(lista)), com qual valor a variável i começa?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": true
+            },
+            {
+              "text": "len(lista)",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual código abaixo percorre corretamente a lista numeros, imprimindo cada valor?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "for n in numeros:\n    print(n)",
+              "isCorrect": true
+            },
+            {
+              "text": "for n of numeros:\n    print(n)",
+              "isCorrect": false
+            },
+            {
+              "text": "for n in numeros.length:\n    print(n)",
+              "isCorrect": false
+            },
+            {
+              "text": "foreach n in numeros:\n    print(n)",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nnumeros = [3, 6, 9]\ntotal = 0\nfor n in numeros:\n    total = total + n\nprint(total)",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "9",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            },
+            {
+              "text": "18",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Uma lista tem 6 elementos. Qual laço percorre TODOS eles pelo índice, sem pular nenhum e sem estourar?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "for i in range(len(lista) - 1):",
+              "isCorrect": false
+            },
+            {
+              "text": "for i in range(1, len(lista)):",
+              "isCorrect": false
+            },
+            {
+              "text": "for i in range(len(lista)):",
+              "isCorrect": true
+            },
+            {
+              "text": "for i in range(len(lista) + 1):",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nidades = [15, 22, 17, 30, 16]\nmenores = 0\nfor i in range(len(idades)):\n    if idades[i] < 18:\n        menores = menores + 1\nprint(menores)",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "2",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": true
+            },
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "18",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Dicionários: descrevendo uma coisa com chave e valor",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Descrevendo uma coisa só, com várias informações\n\nA lista é ótima para guardar uma sequência de valores parecidos: preços, nomes, tarefas. Mas e quando você precisa descrever **uma coisa só**, com várias informações diferentes? Por exemplo, uma pessoa tem nome, idade e cidade. Você até poderia usar uma lista, `[\"Ana\", 20, \"São Paulo\"]`, mas aí precisaria decorar que a posição 0 é o nome, a 1 é a idade e a 2 é a cidade. Isso é frágil: um dia você troca a ordem sem querer e todo o programa quebra.\n\nPara isso existe o **dicionário**: uma coleção de informações identificadas por **nome**, não por posição. Cada informação é um par **chave e valor**: a chave é o nome da informação, e o valor é o conteúdo dela. Um dicionário é criado com chaves `{ }`, e cada par é escrito como `\"chave\": valor`. Repare que, em Python, a chave é sempre escrita entre aspas."
+        },
+        {
+          "type": "code",
+          "value": "pessoa = {\n    \"nome\": \"Ana\",\n    \"idade\": 20,\n    \"cidade\": \"São Paulo\"\n}\n\nprint(pessoa)\n# saida: {'nome': 'Ana', 'idade': 20, 'cidade': 'São Paulo'}"
+        },
+        {
+          "type": "text",
+          "value": "## Acessando um valor: colchetes com a chave\n\nCada par chave-valor de um dicionário é uma **entrada**. Para ler o valor de uma chave, você usa colchetes com o nome da chave entre aspas: `dicionario[\"chave\"]`. Se o nome da chave estiver guardado em uma variável, também funciona: `chave = \"nome\"` e depois `pessoa[chave]`.\n\nExiste um cuidado importante: se você pedir uma chave que **não existe** com colchetes, o Python gera um erro (`KeyError`). Quando você não tem certeza se a chave existe, use o método `.get(\"chave\")`, que devolve `None` em vez de quebrar o programa."
+        },
+        {
+          "type": "code",
+          "value": "pessoa = {\n    \"nome\": \"Ana\",\n    \"idade\": 20\n}\n\n# acessando um valor pela chave, entre colchetes e aspas\nprint(pessoa[\"nome\"])   # saida: Ana\nprint(pessoa[\"idade\"])  # saida: 20\n\n# alterando um valor existente\npessoa[\"idade\"] = 21\n\n# criando uma chave nova\npessoa[\"cidade\"] = \"Recife\"\n\nprint(pessoa)\n# saida: {'nome': 'Ana', 'idade': 21, 'cidade': 'Recife'}\n\n# chave que nao existe: o .get devolve None em vez de dar erro\nprint(pessoa.get(\"telefone\"))  # saida: None"
+        },
+        {
+          "type": "text",
+          "value": "## Lista ou dicionário: qual usar?\n\nEsse é o ponto principal para não confundir os dois. Uma **lista** é uma sequência ordenada, em que cada valor tem uma posição numérica (0, 1, 2...) e normalmente todos os valores são do mesmo tipo de coisa (uma lista de preços, uma lista de nomes). Um **dicionário** descreve uma coisa só, com chaves nomeadas: cada informação tem um nome que diz o que ela é (nome, idade, cidade)."
+        },
+        {
+          "type": "table",
+          "value": "[[\"\",\"Lista\",\"Dicionário\"],[\"Como cria\",\"[ ]\",\"{ }\"],[\"Cada item tem\",\"Um índice numérico (0, 1, 2...)\",\"Uma chave com nome, entre aspas\"],[\"Como acessa um valor\",\"lista[0]\",\"dicionario[\\\"chave\\\"]\"],[\"Usado mais para\",\"Uma sequência de valores parecidos\",\"Descrever algo com vários detalhes\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "O dicionário guarda informações sobre uma coisa só, usando pares chave e valor. Você acessa e altera cada valor pela chave, sempre entre colchetes e aspas (`dicionario[\"chave\"]`), não por índice numérico. Use lista para uma sequência de valores parecidos, e dicionário para descrever algo com várias características diferentes."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Dado aluno = {\"nome\": \"Carlos\", \"idade\": 17}, o que print(aluno[\"idade\"]) mostra na tela?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "\"Carlos\"",
+              "isCorrect": false
+            },
+            {
+              "text": "17",
+              "isCorrect": true
+            },
+            {
+              "text": "\"idade\"",
+              "isCorrect": false
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a forma correta de criar um dicionário vazio em Python?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "obj = []",
+              "isCorrect": false
+            },
+            {
+              "text": "obj = ()",
+              "isCorrect": false
+            },
+            {
+              "text": "obj = \"\"",
+              "isCorrect": false
+            },
+            {
+              "text": "obj = {}",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Dado produto = {\"nome\": \"Caderno\", \"preco\": 15}, qual código lê o valor da chave preco?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "produto[\"preco\"]",
+              "isCorrect": true
+            },
+            {
+              "text": "produto.preco",
+              "isCorrect": false
+            },
+            {
+              "text": "produto(preco)",
+              "isCorrect": false
+            },
+            {
+              "text": "produto{preco}",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\ncarro = {\"modelo\": \"Fusca\", \"ano\": 1975}\ncarro[\"ano\"] = 1980\nprint(carro[\"ano\"])",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "1975",
+              "isCorrect": false
+            },
+            {
+              "text": "1980",
+              "isCorrect": true
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            },
+            {
+              "text": "\"Fusca\"",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a principal diferença entre uma lista e um dicionário em Python?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "A lista só guarda números, e o dicionário só guarda textos",
+              "isCorrect": false
+            },
+            {
+              "text": "O dicionário só pode ter uma chave, mas a lista pode ter vários índices",
+              "isCorrect": false
+            },
+            {
+              "text": "A lista usa posições numeradas; o dicionário usa chaves com nome",
+              "isCorrect": true
+            },
+            {
+              "text": "Lista e dicionário são a mesma coisa, só muda a forma de escrever",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Lista de dicionários: uma lista de registros",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Juntando tudo: uma lista de registros\n\nVocê já sabe guardar vários valores parecidos em uma lista, e já sabe descrever uma coisa só com várias informações usando um dicionário. Agora vem a combinação mais usada na prática, e a mais parecida com o que você vai encontrar no back-end: uma **lista de dicionários**, uma lista em que cada posição é um dicionário completo.\n\nPense em uma lista de tarefas: você não quer só os títulos (uma lista de textos), você quer, para cada tarefa, saber também se ela já foi concluída. A solução é uma lista em que cada elemento é um dicionário com as chaves `titulo` e `concluida`. Repare que isso se parece com uma planilha: cada posição da lista é uma linha, e cada chave do dicionário é uma coluna. Esse é o mesmo modelo mental que você vai usar mais para a frente, quando trabalhar com registros vindos de um banco de dados."
+        },
+        {
+          "type": "code",
+          "value": "tarefas = [\n    {\"titulo\": \"estudar Python\", \"concluida\": True},\n    {\"titulo\": \"lavar louça\", \"concluida\": False},\n    {\"titulo\": \"fazer exercício\", \"concluida\": True},\n    {\"titulo\": \"ler um livro\", \"concluida\": False}\n]\n\nprint(len(tarefas))          # saida: 4\nprint(tarefas[0])            # saida: {'titulo': 'estudar Python', 'concluida': True}\nprint(tarefas[0][\"titulo\"])  # saida: estudar Python"
+        },
+        {
+          "type": "text",
+          "value": "## Percorrendo a lista de dicionários\n\nPara percorrer uma lista de dicionários, o `for item in lista:` que você já conhece funciona perfeitamente: a cada volta, a variável recebe um dicionário inteiro, e você lê os valores dele pelas chaves, entre colchetes, igual fez com dicionários soltos."
+        },
+        {
+          "type": "code",
+          "value": "tarefas = [\n    {\"titulo\": \"estudar Python\", \"concluida\": True},\n    {\"titulo\": \"lavar louça\", \"concluida\": False},\n    {\"titulo\": \"fazer exercício\", \"concluida\": True},\n    {\"titulo\": \"ler um livro\", \"concluida\": False}\n]\n\nfor tarefa in tarefas:\n    print(f\"{tarefa['titulo']} - concluida: {tarefa['concluida']}\")\n# saida:\n# estudar Python - concluida: True\n# lavar louça - concluida: False\n# fazer exercício - concluida: True\n# ler um livro - concluida: False"
+        },
+        {
+          "type": "text",
+          "value": "## Buscando e contando dentro da lista\n\nJuntando o laço com o `if` que você já conhece do módulo de condicionais, dá para responder perguntas sobre a lista: quantas tarefas estão concluídas? Existe uma tarefa com um título específico? O padrão é sempre o mesmo: percorrer a lista e, a cada volta, checar uma condição usando as chaves do dicionário atual."
+        },
+        {
+          "type": "code",
+          "value": "tarefas = [\n    {\"titulo\": \"estudar Python\", \"concluida\": True},\n    {\"titulo\": \"lavar louça\", \"concluida\": False},\n    {\"titulo\": \"fazer exercício\", \"concluida\": True},\n    {\"titulo\": \"ler um livro\", \"concluida\": False}\n]\n\n# contando quantas tarefas estao concluidas\ntotal_concluidas = 0\nfor tarefa in tarefas:\n    if tarefa[\"concluida\"]:\n        total_concluidas = total_concluidas + 1\nprint(total_concluidas)  # saida: 2\n\n# buscando uma tarefa pelo titulo\nbuscada = \"lavar louça\"\nfor tarefa in tarefas:\n    if tarefa[\"titulo\"] == buscada:\n        print(f\"encontrada, concluida: {tarefa['concluida']}\")\n# saida: encontrada, concluida: False"
+        },
+        {
+          "type": "quote",
+          "value": "Uma lista de dicionários é uma lista de registros: cada posição é um dicionário com suas próprias chaves. Para trabalhar com ela, percorra com `for item in lista:` e, dentro do laço, leia os valores pelas chaves entre colchetes. Somar um `if` à repetição é como você conta, filtra ou busca dentro da lista."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Dado tarefas = [{\"titulo\": \"estudar\", \"concluida\": True}, {\"titulo\": \"correr\", \"concluida\": False}], o que tarefas[0][\"titulo\"] devolve?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "\"correr\"",
+              "isCorrect": false
+            },
+            {
+              "text": "True",
+              "isCorrect": false
+            },
+            {
+              "text": "\"estudar\"",
+              "isCorrect": true
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Em uma lista de dicionários, o que cada posição da lista representa?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Um único valor numérico, sempre um índice da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Um dicionário completo, com suas próprias chaves",
+              "isCorrect": true
+            },
+            {
+              "text": "O nome de uma variável usada na lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Sempre um texto entre aspas",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nitens = [{\"nome\": \"caneta\", \"preco\": 2}, {\"nome\": \"caderno\", \"preco\": 15}]\ntotal = 0\nfor item in itens:\n    total = total + item[\"preco\"]\nprint(total)",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "17",
+              "isCorrect": true
+            },
+            {
+              "text": "2",
+              "isCorrect": false
+            },
+            {
+              "text": "15",
+              "isCorrect": false
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a forma correta de contar quantas tarefas estão concluídas em uma lista de dicionários tarefas, cada um com a chave concluida (True ou False)?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Comparar o primeiro dicionário com o último da lista inteira",
+              "isCorrect": false
+            },
+            {
+              "text": "Percorrer com for-in e somar 1 quando concluida for True",
+              "isCorrect": true
+            },
+            {
+              "text": "Usar pop() até a lista esvaziar, contando cada remoção feita",
+              "isCorrect": false
+            },
+            {
+              "text": "Somar o valor de len(tarefas), que já dá o total de tudo",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída deste código?\n\nprodutos = [\n    {\"nome\": \"mouse\", \"estoque\": 5},\n    {\"nome\": \"teclado\", \"estoque\": 0},\n    {\"nome\": \"monitor\", \"estoque\": 3}\n]\nsem_estoque = 0\nfor produto in produtos:\n    if produto[\"estoque\"] == 0:\n        sem_estoque = sem_estoque + 1\nprint(sem_estoque)",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "0",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            },
+            {
+              "text": "8",
+              "isCorrect": false
+            },
+            {
+              "text": "1",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,729 @@
+{
+  "aulas": [
+    {
+      "titulo": "O que é programar e o que é um algoritmo",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# O que é programar e o que é um algoritmo\n\nSe você nunca escreveu uma linha de código na vida, este é o lugar certo para começar. Esqueça por um instante a ideia de que programar é algo misterioso, cheio de fórmulas complicadas ou reservado para gênios. Programar é, antes de tudo, uma forma de pensar e de se comunicar. E é exatamente isso que você vai aprender a partir de agora, com calma, um passo de cada vez.\n\nNesta aula você vai entender o que realmente significa \"programar\" e o que é um \"algoritmo\", as duas ideias mais importantes de toda a programação. Todo o resto que você vai aprender daqui para frente (variáveis, condições, repetições, funções) é só uma forma de expressar algoritmos de um jeito que o computador entenda."
+        },
+        {
+          "type": "text",
+          "value": "## O computador faz exatamente o que você manda\n\nProgramar é dar instruções para o computador executar. Parece simples, mas tem um detalhe que muda tudo: o computador faz exatamente o que você manda, nem mais, nem menos, e na ordem exata em que você manda.\n\nImagine que você pede para alguém que nunca fez um sanduíche na vida: \"faça um sanduíche de pão com manteiga\". Para você, isso envolve abrir o pacote de pão, pegar duas fatias, abrir o pote de manteiga, passar com uma faca, e juntar as fatias. Mas se essa pessoa seguir literalmente só as palavras que você disse, sem usar nenhum conhecimento prévio, ela pode tentar passar manteiga direto no pacote fechado.\n\nO computador é exatamente essa pessoa. Ele não tem senso comum, não \"adivinha\" o que você quis dizer e não completa etapas que você esqueceu de escrever. Por isso, programar exige ser preciso: você precisa descrever cada passo, na ordem certa, sem pular nada que pareça óbvio para um ser humano."
+        },
+        {
+          "type": "text",
+          "value": "## O que é um algoritmo\n\nUm algoritmo é uma sequência de passos, bem definida e ordenada, para resolver um problema ou realizar uma tarefa. Repare que essa definição não fala em computador em nenhum momento: algoritmos existem muito antes dos computadores, e você usa vários deles no seu dia a dia sem perceber.\n\nUma receita de bolo é um algoritmo: ela descreve, passo a passo, o que fazer para transformar ingredientes soltos em um bolo pronto. Trocar um pneu furado também é um algoritmo: existe uma ordem de passos que leva do \"pneu furado\" ao \"carro rodando de novo\", e essa ordem não é qualquer uma.\n\nQuando você programa, está basicamente escrevendo um algoritmo numa linguagem que o computador consegue entender e executar, como o Python, que é a linguagem que vamos usar aqui."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Passo\",\"O que fazer\"],[\"1\",\"Separar os ingredientes: farinha, ovos, açúcar, leite e fermento\"],[\"2\",\"Misturar os ingredientes secos e os líquidos em uma tigela\"],[\"3\",\"Bater a massa até ficar homogênea\"],[\"4\",\"Untar a forma e despejar a massa dentro dela\"],[\"5\",\"Assar no forno preaquecido por cerca de 40 minutos\"],[\"6\",\"Esperar esfriar antes de desenformar e servir\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Por que a ordem e a precisão importam\n\nNum algoritmo, a ordem dos passos não é um detalhe: ela faz parte da solução. Trocar a ordem pode fazer o algoritmo falhar completamente, ou até causar um acidente.\n\nPense de novo na troca de pneu. Não dá para colocar o estepe antes de tirar a roda furada, nem abaixar o carro antes de apertar as porcas. A tarefa é a mesma, os passos são os mesmos, mas **a ordem** entre eles é o que garante que tudo funcione (e que ninguém se machuque).\n\nO mesmo vale para precisão: dizer \"misture os ingredientes\" é vago, mas dizer \"misture a farinha, o açúcar e o fermento numa tigela, depois adicione os ovos e o leite\" já é preciso o bastante para alguém (ou um computador) seguir sem depender de adivinhação."
+        },
+        {
+          "type": "code",
+          "value": "# Um algoritmo pode ser escrito assim, passo a passo, mesmo antes de virar código de verdade.\n# Isto aqui já é um arquivo Python válido: comentários não fazem o computador executar nada,\n# mas ajudam a organizar o raciocínio antes de programar.\n\n# Algoritmo: trocar um pneu furado\n# 1. Parar o carro em um local seguro e sinalizar\n# 2. Pegar o estepe, o macaco e a chave de rodas\n# 3. Afrouxar um pouco as porcas da roda furada (ainda com o carro no chão)\n# 4. Levantar o carro com o macaco\n# 5. Terminar de tirar as porcas e retirar a roda furada\n# 6. Colocar a roda do estepe no lugar\n# 7. Colocar e apertar as porcas\n# 8. Abaixar o carro e apertar as porcas com mais força"
+        },
+        {
+          "type": "quote",
+          "value": "Programar é dar instruções precisas e ordenadas para o computador executar. Um algoritmo é a receita por trás de qualquer programa: uma sequência de passos que resolve um problema, na ordem certa."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que melhor descreve o que significa \"programar\"?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Dar instruções ordenadas para o computador executar",
+              "isCorrect": true
+            },
+            {
+              "text": "Decorar de cor os comandos de uma linguagem de programação",
+              "isCorrect": false
+            },
+            {
+              "text": "Desenhar a tela de um aplicativo ou site",
+              "isCorrect": false
+            },
+            {
+              "text": "Consertar o computador quando ele trava",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual das opções abaixo é um exemplo de algoritmo do dia a dia?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Uma receita de bolo, passo a passo",
+              "isCorrect": true
+            },
+            {
+              "text": "A cor da capa de um livro",
+              "isCorrect": false
+            },
+            {
+              "text": "O nome de um restaurante preferido pela família",
+              "isCorrect": false
+            },
+            {
+              "text": "O preço de uma passagem de ônibus",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Você pede para um amigo que nunca cozinhou: \"faça um sanduíche de pão com manteiga\". Ele segue exatamente as palavras que você disse, na ordem que disse, e tenta passar manteiga direto no pacote de pão ainda fechado. Esse exemplo mostra principalmente que:",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "instruções são seguidas ao pé da letra, mesmo quando algo parece óbvio",
+              "isCorrect": true
+            },
+            {
+              "text": "não é possível descrever o preparo de um sanduíche como uma sequência de passos",
+              "isCorrect": false
+            },
+            {
+              "text": "faltou comprar mais pão antes de começar a receita",
+              "isCorrect": false
+            },
+            {
+              "text": "seu amigo não sabe seguir receitas de cozinha",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "No algoritmo de trocar um pneu, as porcas da roda são afrouxadas ainda com o carro no chão, antes de levantá-lo com o macaco. Por que essa ordem é importante?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Porque o atrito com o chão trava a roda, facilitando soltar as porcas",
+              "isCorrect": true
+            },
+            {
+              "text": "Porque a ordem dos passos nunca muda o resultado de um algoritmo",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque o macaco só consegue erguer o carro após soltar todas as porcas",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque assim o carro fica mais estável quando é erguido pelo macaco",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual afirmação sobre algoritmos é verdadeira?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "É a sequência de passos em si, descrita em texto, desenho ou código",
+              "isCorrect": true
+            },
+            {
+              "text": "Só passa a existir depois de escrito em uma linguagem como o Python",
+              "isCorrect": false
+            },
+            {
+              "text": "Mudar a ordem dos passos nunca altera o resultado final",
+              "isCorrect": false
+            },
+            {
+              "text": "Precisa sempre de um computador para existir e ser executado",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Pensando como um programador: quebrar o problema em passos",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Pensando como um programador\n\nNa aula anterior você viu que programar é dar instruções precisas, e que um algoritmo é a sequência de passos por trás de qualquer solução. Mas como alguém chega a essa sequência de passos, especialmente quando o problema parece grande e complicado?\n\nÉ aí que entra o pensamento computacional: um jeito de encarar problemas que todo programador desenvolve com a prática, e que você também pode treinar desde já, mesmo sem escrever uma linha de código. Ele se apoia em três ideias principais: decompor, reconhecer padrões e abstrair."
+        },
+        {
+          "type": "text",
+          "value": "## Decomposição: quebrar o problema grande\n\nDecomposição é dividir um problema grande em partes menores, que são mais fáceis de entender e resolver uma de cada vez. Em vez de tentar resolver tudo de uma só vez (o que costuma travar qualquer pessoa, programando ou não), você separa o problema em pedaços menores e ataca um pedaço por vez.\n\nImagine organizar a festa de aniversário do seu filho. Encarada de uma vez só, a tarefa parece enorme: \"organizar a festa\". Mas se você quebrar em partes menores, como escolher a data e o local, montar a lista de convidados, comprar comida e decorar a casa, cada parte sozinha é bem mais simples de resolver. Depois é só juntar as partes."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Parte menor do problema\",\"O que envolve\"],[\"Escolher a data e o local\",\"Ver a agenda da família e reservar o espaço\"],[\"Montar a lista de convidados\",\"Decidir quem vai ser convidado e enviar os convites\"],[\"Comprar comida e bebida\",\"Definir o cardápio e fazer as compras\"],[\"Decorar a casa\",\"Comprar ou preparar a decoração e montar tudo no dia\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Reconhecer padrões\n\nReconhecer padrões é perceber que problemas, ou partes de um problema, se repetem ou se parecem entre si, mesmo que os detalhes mudem. Quando você percebe um padrão, pode reaproveitar a mesma solução várias vezes, em vez de reinventar tudo do zero a cada situação parecida.\n\nPor exemplo, toda vez que você troca uma lâmpada, os passos são praticamente os mesmos: desligar a energia, tirar a lâmpada queimada, colocar a nova, ligar a energia de novo. Não importa se é a lâmpada da cozinha ou do quarto, o padrão de passos se repete. Na programação, reconhecer esse tipo de padrão é o que leva a criar, por exemplo, uma função que você usa várias vezes (você vai estudar isso no módulo de funções), em vez de reescrever a mesma lógica sem parar."
+        },
+        {
+          "type": "text",
+          "value": "## Abstração: focar no essencial\n\nAbstração é decidir o que é essencial para resolver o problema, e ignorar de propósito os detalhes que não importam para aquela tarefa específica. Toda solução boa deixa coisas de fora, e isso não é preguiça: é foco.\n\nUm mapa de aplicativo de trânsito é um bom exemplo de abstração. Ele representa ruas como linhas e pontos de referência como ícones, e ignora completamente detalhes como a cor das casas ou o tipo de árvore em cada calçada. Para o problema de chegar de um ponto a outro, esses detalhes não importam, então eles ficam de fora."
+        },
+        {
+          "type": "code",
+          "value": "# Problema: calcular o total de uma compra, aplicando desconto quando for o caso\n# Antes de programar, vale decompor o problema em passos menores:\n\n# Passo 1: somar o preço de todos os itens do carrinho\n# Passo 2: verificar se essa soma passa de um valor mínimo para ganhar desconto\n# Passo 3: se passar do valor mínimo, aplicar o desconto sobre a soma\n# Passo 4: mostrar o valor final para o cliente\n\n# Repare que cada passo, sozinho, é bem mais simples do que calcular a compra inteira de uma vez só"
+        },
+        {
+          "type": "quote",
+          "value": "Pensar como programador é treinar o olhar: quebrar o grande em pedaços menores (decomposição), notar o que se repete (padrões) e manter o foco só no que realmente importa para o problema (abstração)."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que é \"decomposição\" no pensamento computacional?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Quebrar um problema grande em partes menores",
+              "isCorrect": true
+            },
+            {
+              "text": "Apagar um programa que não funciona mais",
+              "isCorrect": false
+            },
+            {
+              "text": "Diminuir o tamanho da tela do computador",
+              "isCorrect": false
+            },
+            {
+              "text": "Escrever todo o código de uma vez, sem planejar nada",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Perceber que \"toda vez que preciso trocar uma lâmpada, sigo os mesmos passos: desligar a energia, tirar a lâmpada queimada, colocar a nova e ligar a energia de novo\" é um exemplo de:",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "identificar um padrão que se repete",
+              "isCorrect": true
+            },
+            {
+              "text": "abstração dos detalhes menos importantes",
+              "isCorrect": false
+            },
+            {
+              "text": "um erro de lógica no meio do processo",
+              "isCorrect": false
+            },
+            {
+              "text": "um algoritmo que não pode ser repetido",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Ana quer organizar a festa de aniversário do filho. Em vez de tentar pensar em tudo de uma vez, ela separa a tarefa em: escolher a data e o local, montar a lista de convidados, comprar comida e decorar a casa. O que Ana está aplicando?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "decomposição: dividiu a festa em partes menores",
+              "isCorrect": true
+            },
+            {
+              "text": "abstração: ignorou detalhes importantes da festa",
+              "isCorrect": false
+            },
+            {
+              "text": "um algoritmo pronto, copiado de outra pessoa",
+              "isCorrect": false
+            },
+            {
+              "text": "um fluxograma, porque desenhou setas no papel",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Um desenvolvedor está criando o mapa de um aplicativo de trânsito. Ele representa cada rua como uma linha simples no mapa, e ignora de propósito detalhes como a cor das casas ou o tipo de árvore da calçada. Essa escolha de manter só o que é essencial para o problema é um exemplo de:",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "abstração",
+              "isCorrect": true
+            },
+            {
+              "text": "decomposição",
+              "isCorrect": false
+            },
+            {
+              "text": "sequência de passos",
+              "isCorrect": false
+            },
+            {
+              "text": "um erro no programa",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Sobre pensamento computacional, assinale a alternativa correta:",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "decomposição, padrões e abstração organizam o raciocínio antes mesmo de programar",
+              "isCorrect": true
+            },
+            {
+              "text": "pensamento computacional só existe depois de aprender uma linguagem de programação real",
+              "isCorrect": false
+            },
+            {
+              "text": "reconhecer padrões é copiar e colar o mesmo código sem entender o que ele faz",
+              "isCorrect": false
+            },
+            {
+              "text": "abstração significa incluir o máximo de detalhes possível no problema",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Entrada, processamento e saída",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Entrada, processamento e saída\n\nAgora que você já sabe o que é um algoritmo e como quebrar um problema em partes, vale conhecer um padrão que se repete na imensa maioria dos programas que existem: o modelo de entrada, processamento e saída.\n\nPense num liquidificador. Você coloca frutas e água (entrada), ele bate tudo (processamento), e sai um suco pronto (saída). Praticamente todo programa de computador segue essa mesma lógica: ele recebe alguma coisa, faz algum trabalho com essa coisa, e devolve um resultado."
+        },
+        {
+          "type": "text",
+          "value": "## Entrada: o que o programa recebe\n\nEntrada é qualquer informação que o programa recebe para poder trabalhar. Pode ser um número que o usuário digita no teclado, o texto de um formulário, um arquivo salvo no computador, ou até a leitura de um sensor de temperatura.\n\nSem entrada, a maioria dos programas não teria com o que trabalhar. Se você pede para alguém calcular a soma de dois números, primeiro você precisa dizer quais são os dois números: essa informação é a entrada."
+        },
+        {
+          "type": "text",
+          "value": "## Processamento: o que o programa faz com a entrada\n\nProcessamento é o trabalho que o programa realiza em cima da entrada: somar, comparar, organizar, filtrar, calcular. É a parte \"pensante\" do programa, onde a entrada é transformada em alguma coisa nova ou mais útil.\n\nNo exemplo da soma de dois números, o processamento é o próprio cálculo: pegar os dois valores recebidos e somá-los."
+        },
+        {
+          "type": "text",
+          "value": "## Saída: o resultado que o programa devolve\n\nSaída é o resultado que o programa entrega depois de processar a entrada. Pode ser um texto ou número mostrado na tela, um som, um arquivo salvo, ou uma mensagem enviada para outro programa.\n\nNos próximos módulos, a nossa principal forma de ver a saída de um programa vai ser o terminal, aquela \"telinha\" onde o Python mostra mensagens de texto. Você vai usar isso já na próxima aula."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Situação\",\"Entrada\",\"Processamento\",\"Saída\"],[\"Calculadora simples\",\"Os números digitados\",\"Somar, subtrair, multiplicar ou dividir os números\",\"O resultado mostrado no visor\"],[\"Caixa eletrônico\",\"O valor do saque digitado\",\"Verificar se há saldo suficiente na conta\",\"Dinheiro liberado ou mensagem de saldo insuficiente\"],[\"Site de busca\",\"O termo digitado na busca\",\"Procurar páginas relacionadas ao termo\",\"Lista de resultados mostrada na tela\"],[\"Aplicativo de previsão do tempo\",\"O nome da cidade digitado\",\"Consultar e calcular a previsão para a cidade\",\"A previsão do tempo mostrada na tela\"]]"
+        },
+        {
+          "type": "code",
+          "value": "# Um programa simples costuma seguir este ciclo: entrada, processamento e saída\n\n# Programa: calcular a média de duas notas\n\n# Entrada: nota1 e nota2 (os dois valores que o aluno digitou)\n# Processamento: somar nota1 com nota2 e dividir o resultado por 2\n# Saída: mostrar a média na tela\n\n# Nas próximas aulas você vai aprender a escrever isso em código de verdade"
+        },
+        {
+          "type": "quote",
+          "value": "Quase todo programa segue este ciclo: recebe alguma informação (entrada), faz algum trabalho com ela (processamento) e devolve um resultado (saída)."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "No modelo de entrada, processamento e saída, o que é a \"entrada\"?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "O que o programa recebe para usar, como um número digitado",
+              "isCorrect": true
+            },
+            {
+              "text": "O resultado final que aparece na tela, pronto para o usuário ver",
+              "isCorrect": false
+            },
+            {
+              "text": "O nome da pessoa que escreveu o programa originalmente",
+              "isCorrect": false
+            },
+            {
+              "text": "O tempo que o programa demora para terminar de rodar",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Uma calculadora recebe os números 4 e 6, soma os dois valores e mostra 10 na tela. Nesse exemplo, o que representa a saída?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "o número 10 exibido na tela",
+              "isCorrect": true
+            },
+            {
+              "text": "os números 4 e 6 digitados",
+              "isCorrect": false
+            },
+            {
+              "text": "a soma sendo calculada por dentro",
+              "isCorrect": false
+            },
+            {
+              "text": "o botão de ligar da calculadora",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Em um aplicativo de previsão do tempo, o usuário digita o nome da cidade, o aplicativo consulta os dados e calcula a previsão, e por fim mostra \"Amanhã: 28 graus e sol\" na tela. O que representa o processamento, nesse exemplo?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "o cálculo da previsão a partir dos dados da cidade",
+              "isCorrect": true
+            },
+            {
+              "text": "o nome da cidade que o usuário digitou no início",
+              "isCorrect": false
+            },
+            {
+              "text": "a frase final mostrada na tela com a previsão",
+              "isCorrect": false
+            },
+            {
+              "text": "o usuário abrindo o aplicativo no celular para consultar",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Sobre o modelo de entrada, processamento e saída, é correto afirmar que:",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "a entrada pode vir de um arquivo salvo, não só do teclado",
+              "isCorrect": true
+            },
+            {
+              "text": "todo programa precisa obrigatoriamente de uma entrada digitada no teclado",
+              "isCorrect": false
+            },
+            {
+              "text": "a saída de um programa sempre tem que ser um número na tela",
+              "isCorrect": false
+            },
+            {
+              "text": "o processamento é uma etapa opcional, que sempre dá para pular",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Um programa lê a temperatura de um sensor a cada minuto, calcula a média das últimas 10 leituras, e liga um alarme sonoro se essa média passar de 40 graus. Qual alternativa identifica corretamente as três partes do modelo, nesse cenário?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "entrada: leituras do sensor; processamento: média e comparação com 40; saída: alarme ligado",
+              "isCorrect": true
+            },
+            {
+              "text": "entrada: o alarme sonoro; processamento: as leituras do sensor; saída: o cálculo da média",
+              "isCorrect": false
+            },
+            {
+              "text": "entrada: o cálculo da média; processamento: o alarme sonoro; saída: as leituras do sensor",
+              "isCorrect": false
+            },
+            {
+              "text": "nesse caso não existe entrada nem saída, porque tudo acontece automaticamente sem intervenção",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Do pseudocódigo ao fluxograma",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Do pseudocódigo ao fluxograma\n\nAntes de sair escrevendo código de verdade, muitos programadores fazem um rascunho do algoritmo primeiro. É a mesma lógica de um arquiteto que faz uma planta antes de construir uma casa: pensar na estrutura antes de colocar tijolo em cima de tijolo economiza retrabalho.\n\nNesta aula você vai conhecer duas ferramentas para esse rascunho: o pseudocódigo e o fluxograma. Nenhuma das duas é uma linguagem de programação, mas as duas ajudam (e muito) a organizar o pensamento antes de programar."
+        },
+        {
+          "type": "text",
+          "value": "## O que é pseudocódigo\n\nPseudocódigo é uma forma de escrever os passos de um algoritmo em português (ou numa mistura de português com palavras-chave), de um jeito organizado, sem se preocupar com a sintaxe exata de uma linguagem de programação.\n\nA ideia é simples: primeiro você resolve o \"o quê\" (quais passos resolvem o problema, e em que ordem), e só depois se preocupa com o \"como\" (a sintaxe correta do Python, com seus parênteses, dois-pontos e indentação certinha)."
+        },
+        {
+          "type": "code",
+          "value": "INICIO\n  LER nota1\n  LER nota2\n  media = (nota1 + nota2) / 2\n  ESCREVER media\nFIM\n\n# Repare: isto não é Python de verdade, é pseudocódigo.\n# Ele descreve os passos de forma clara, sem seguir a sintaxe exata de nenhuma linguagem."
+        },
+        {
+          "type": "text",
+          "value": "## O que é um fluxograma\n\nFluxograma é uma forma de representar um algoritmo visualmente, usando caixinhas com formatos diferentes ligadas por setas. Cada formato de caixa tem um significado específico, e as setas mostram a ordem em que os passos acontecem, exatamente como a sequência que você estudou na aula 1.\n\nVocê não precisa desenhar um fluxograma para todo programinha pequeno, mas para problemas maiores, ver o algoritmo desenhado ajuda a enxergar o caminho todo de uma vez, incluindo os pontos onde o programa pode tomar caminhos diferentes (você vai estudar isso a fundo no módulo de condicionais)."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Elemento\",\"Formato\",\"O que significa\"],[\"Início ou fim\",\"Oval\",\"Marca onde o algoritmo começa ou termina\"],[\"Ação\",\"Retângulo\",\"Um passo que faz algo, como calcular ou mostrar um valor\"],[\"Decisão\",\"Losango\",\"Uma pergunta que leva a caminhos diferentes (você vai ver isso em breve)\"],[\"Seta\",\"Seta\",\"Indica a ordem, ligando um passo ao próximo\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Pseudocódigo, fluxograma e código: três formas do mesmo algoritmo\n\nRepare que pseudocódigo, fluxograma e código em Python podem descrever exatamente o mesmo algoritmo, mudando apenas a forma de representação: texto estruturado, desenho com caixas e setas, ou uma linguagem que o computador realmente entende e executa.\n\nNenhuma das três é \"mais certa\" que a outra. Pseudocódigo e fluxograma são ferramentas para você pensar e se organizar. O código é a etapa final, onde o algoritmo vira alguma coisa que roda de verdade. E é exatamente para isso que a próxima aula existe."
+        },
+        {
+          "type": "quote",
+          "value": "Pseudocódigo e fluxograma são rascunhos do seu algoritmo: ajudam a organizar as ideias antes de escrever a primeira linha de código de verdade."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que é pseudocódigo?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Uma forma de descrever os passos de um algoritmo em português",
+              "isCorrect": true
+            },
+            {
+              "text": "Uma mensagem de erro que aparece quando o programa falha ao rodar",
+              "isCorrect": false
+            },
+            {
+              "text": "O nome de uma linguagem de programação de verdade, como o Java",
+              "isCorrect": false
+            },
+            {
+              "text": "Um desenho feito só com caixas e setas, sem nenhuma palavra",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Em um fluxograma, qual formato geralmente representa o início ou o fim do algoritmo?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Um oval",
+              "isCorrect": true
+            },
+            {
+              "text": "Um losango",
+              "isCorrect": false
+            },
+            {
+              "text": "Uma seta",
+              "isCorrect": false
+            },
+            {
+              "text": "Um retângulo",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Antes de escrever o código de um programa que calcula o troco de uma compra, uma programadora escreve num papel: \"LER valor da compra, LER valor pago, troco = valor pago menos valor da compra, ESCREVER troco\". O que ela está fazendo?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Escrevendo um pseudocódigo para organizar o raciocínio",
+              "isCorrect": true
+            },
+            {
+              "text": "Escrevendo diretamente o código final em Python, sem rascunho",
+              "isCorrect": false
+            },
+            {
+              "text": "Desenhando um fluxograma com caixas e setas",
+              "isCorrect": false
+            },
+            {
+              "text": "Testando o programa pronto em busca de erros",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a principal diferença entre pseudocódigo e fluxograma?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Pseudocódigo usa texto estruturado; fluxograma usa desenhos com caixas e setas",
+              "isCorrect": true
+            },
+            {
+              "text": "Pseudocódigo é só para programadores avançados; fluxograma é só para iniciantes",
+              "isCorrect": false
+            },
+            {
+              "text": "Fluxograma é uma linguagem de programação de verdade; pseudocódigo não é",
+              "isCorrect": false
+            },
+            {
+              "text": "Não existe diferença real: são a mesma coisa, só com nomes diferentes",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Sobre pseudocódigo, fluxograma e código real (como Python), assinale a alternativa correta:",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Os três descrevem o mesmo algoritmo, mudando só a forma de representar",
+              "isCorrect": true
+            },
+            {
+              "text": "É obrigatório desenhar um fluxograma antes de escrever qualquer linha de código",
+              "isCorrect": false
+            },
+            {
+              "text": "O pseudocódigo precisa seguir exatamente a sintaxe do Python, com todos os detalhes",
+              "isCorrect": false
+            },
+            {
+              "text": "Depois do pseudocódigo pronto, o fluxograma nunca mais serve pra nada",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Seu primeiro código: print",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Seu primeiro código: print\n\nChegou a hora que você estava esperando: hoje você vai escrever e rodar de verdade a sua primeira linha de código em Python. Depois de entender o que é programar, o que é um algoritmo, como quebrar problemas em passos e como planejar com pseudocódigo, está na hora de ver tudo isso ganhar vida na tela.\n\nO comando que você vai aprender agora, o print, é provavelmente o mais usado por programadores no mundo inteiro, do primeiro dia de estudo até anos de experiência."
+        },
+        {
+          "type": "text",
+          "value": "## O que é o terminal\n\nO terminal (às vezes chamado de console) é o lugar onde o Python mostra mensagens de texto, números e resultados para quem está programando. Pense nele como uma tela simples, só de texto, separada da tela \"bonita\" que o usuário final normalmente vê.\n\nProgramadores usam o terminal o tempo todo para testar pequenos trechos de código, mostrar o valor de uma informação naquele momento, ou entender por que um programa não está se comportando como esperado. Você vai usar o terminal em praticamente todas as aulas daqui para frente."
+        },
+        {
+          "type": "code",
+          "value": "print(\"Olá, mundo!\")\n\n# saída no terminal:\n# Olá, mundo!"
+        },
+        {
+          "type": "text",
+          "value": "## Entendendo o print por partes\n\nVamos separar o comando print(\"Olá, mundo!\") em pedaços para entender cada um:\n\n- **print**: é a função que significa \"escreva isto na tela\". É ela que faz a mensagem aparecer.\n- **( )**: os parênteses guardam aquilo que você quer mostrar. Tudo o que vai ser exibido fica dentro deles.\n- **\"Olá, mundo!\"**: é o texto que será mostrado. Textos em Python sempre ficam entre aspas.\n- **fim da linha**: em Python, o próprio fim da linha já indica que o comando terminou ali. Diferente de outras linguagens, você não precisa colocar ponto e vírgula no final.\n\nNão se preocupe em decorar esses nomes agora. Com a prática, escrever print vai virar automático."
+        },
+        {
+          "type": "code",
+          "value": "print(\"Bem-vindo à lógica de programação!\")\nprint(2 + 3)\nprint(10 - 4)\n\n# saída:\n# Bem-vindo à lógica de programação!\n# 5\n# 6"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Erro comum\",\"O que acontece\",\"Como corrigir\"],[\"Esquecer as aspas no texto\",\"O Python acha que as palavras são nomes de variáveis e dá erro\",\"Sempre colocar textos entre aspas\"],[\"Esquecer de fechar o parêntese\",\"O código não roda e aparece um erro de sintaxe\",\"Conferir se cada ( tem um ) correspondente\"],[\"Escrever Print com P maiúsculo\",\"O Python diferencia maiúsculas de minúsculas e não reconhece o comando\",\"Escrever sempre print, tudo em letras minúsculas\"],[\"Abrir com aspas duplas e fechar com aspas simples\",\"O Python não encontra o fim do texto e aponta um erro\",\"Usar o mesmo tipo de aspas para abrir e fechar\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "Você acabou de dar sua primeira instrução para o computador executar, e viu o resultado na tela com os seus próprios olhos. Guarde essa sensação: é o primeiro passo de muitos que ainda vêm por aí."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual comando usamos em Python para mostrar uma mensagem na tela?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "print()",
+              "isCorrect": true
+            },
+            {
+              "text": "console.log()",
+              "isCorrect": false
+            },
+            {
+              "text": "printf()",
+              "isCorrect": false
+            },
+            {
+              "text": "print.log()",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída do código abaixo?\nprint(\"Olá, mundo!\")",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Olá, mundo!",
+              "isCorrect": true
+            },
+            {
+              "text": "print",
+              "isCorrect": false
+            },
+            {
+              "text": "\"Olá, mundo!\", com as aspas incluídas",
+              "isCorrect": false
+            },
+            {
+              "text": "Nenhuma saída aparece na tela",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a saída do código abaixo?\nprint(2 + 3)",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "5",
+              "isCorrect": true
+            },
+            {
+              "text": "2 + 3",
+              "isCorrect": false
+            },
+            {
+              "text": "\"2 + 3\"",
+              "isCorrect": false
+            },
+            {
+              "text": "Erro, porque números não podem ficar entre parênteses",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Uma iniciante escreveu o código abaixo e recebeu um erro:\nprint(Olá, mundo!)\nQual é o motivo mais provável do erro?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Faltou colocar aspas no texto, então o Python não reconhece as palavras",
+              "isCorrect": true
+            },
+            {
+              "text": "A palavra print foi escrita errada, com uma letra maiúscula a mais",
+              "isCorrect": false
+            },
+            {
+              "text": "Não é possível usar acentos nem o ponto de exclamação dentro do print",
+              "isCorrect": false
+            },
+            {
+              "text": "Faltou escrever a palavra imprimir logo antes de chamar o print",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Sobre o print e a saída no terminal, assinale a alternativa correta:",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "O print mostra textos e resultados na tela e ajuda a testar o código",
+              "isCorrect": true
+            },
+            {
+              "text": "O print só funciona se for o único comando do programa",
+              "isCorrect": false
+            },
+            {
+              "text": "Tudo o que o print mostra fica salvo automaticamente dentro de um arquivo do projeto",
+              "isCorrect": false
+            },
+            {
+              "text": "O print é o único comando que existe na linguagem Python",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

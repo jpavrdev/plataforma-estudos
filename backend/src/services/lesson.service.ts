@@ -15,12 +15,29 @@ import { ehAdmin } from "./usuario.service.ts";
 export async function estadoDaAula(
     userId: string,
     aula: typeof lessons.$inferSelect,
+    lang?: string,
 ): Promise<string> {
     // Só aulas publicadas entram na sequência (uma aula "em breve" não trava as próximas).
-    const irmas = await db
-        .select({ id: lessons.id, moduleId: lessons.moduleId, position: lessons.position })
+    const irmasBrutas = await db
+        .select({
+            id: lessons.id,
+            moduleId: lessons.moduleId,
+            position: lessons.position,
+            language: lessons.language,
+        })
         .from(lessons)
         .where(and(eq(lessons.trailId, aula.trailId), eq(lessons.published, true)));
+
+    // Trilha multi-linguagem: a sequência é só das aulas neutras + as da linguagem ativa,
+    // senão a aula da outra linguagem viraria "aula anterior" e travaria esta. Uma aula que
+    // já tem linguagem pertence ao próprio track; o hint `lang` só resolve as aulas neutras.
+    const langs = [...new Set(irmasBrutas.map((i) => i.language).filter(Boolean))].sort();
+    const ativa =
+        aula.language ?? (lang && langs.includes(lang) ? lang : (langs[0] ?? null));
+    const irmas =
+        langs.length > 0
+            ? irmasBrutas.filter((i) => i.language === null || i.language === ativa)
+            : irmasBrutas;
     const mods = await db
         .select({ id: modules.id, position: modules.position })
         .from(modules)
@@ -56,7 +73,7 @@ export async function estadoDaAula(
 }
 
 // Retorna a aula com conteúdo e questões SEM revelar a alternativa correta.
-export async function detalheDaAula(lessonId: string, userId: string) {
+export async function detalheDaAula(lessonId: string, userId: string, lang?: string) {
     const [aula] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
     if (!aula) {
         throw new AppError(404, "Aula não encontrada");
@@ -68,11 +85,9 @@ export async function detalheDaAula(lessonId: string, userId: string) {
         throw new AppError(404, "Aula não encontrada");
     }
 
-    // Admin não é travado pelo bloqueio sequencial (pode pré-visualizar qualquer aula).
-    const estado = await estadoDaAula(userId, aula);
-    if (estado === "locked" && !admin) {
-        throw new AppError(403, "Aula bloqueada. Conclua a aula anterior.");
-    }
+    // O estado (done/current/locked) é só um guia visual de progresso: nenhuma aula
+    // publicada trava o acesso, o aluno percorre a trilha na ordem que quiser.
+    const estado = await estadoDaAula(userId, aula, lang);
 
     const qs = await db
         .select()
@@ -145,6 +160,7 @@ export async function detalheDaAula(lessonId: string, userId: string) {
         trailId: aula.trailId,
         moduleId: aula.moduleId,
         title: aula.title,
+        language: aula.language,
         content: aula.content,
         contentBlocks: aula.contentBlocks ?? null,
         state: estado,

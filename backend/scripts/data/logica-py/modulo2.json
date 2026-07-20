@@ -1,0 +1,729 @@
+{
+  "aulas": [
+    {
+      "titulo": "Variáveis: guardando valores",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Variáveis: guardando valores\n\nImagine que você tem uma caixa. Nela você cola uma etiqueta escrita \"idade\" e guarda dentro o número 20. Sempre que precisar saber a idade, é só abrir a caixa com esse nome. É exatamente isso que uma **variável** faz em um programa: ela é um espaço com nome (a etiqueta) que guarda um valor (o conteúdo da caixa) para você usar mais tarde.\n\nSem variáveis, um programa não conseguiria guardar nada: nem o nome de um usuário, nem o resultado de uma conta. Em Python, criar uma variável é simples: você escreve o nome, um sinal de igual e o valor. Não precisa de nenhuma palavra especial antes."
+        },
+        {
+          "type": "code",
+          "value": "# Para criar uma variável, escreva o nome, um = e o valor\nnome = \"Ana\"\n\nprint(nome)\n# saída: Ana"
+        },
+        {
+          "type": "text",
+          "value": "## Trocando o valor de uma variável\n\nO valor guardado numa variável pode ser trocado depois. Quando você escreve `nome = \"outra coisa\"` de novo, você não está criando uma nova caixa: está apenas trocando o que tem dentro da caixa que já existe. É por isso que ela se chama **variável**: o valor pode variar ao longo do programa."
+        },
+        {
+          "type": "code",
+          "value": "idade = 20\nprint(idade)\n# saída: 20\n\nidade = 21\nprint(idade)\n# saída: 21"
+        },
+        {
+          "type": "text",
+          "value": "## Quando o valor não deve mudar: uma convenção\n\nÀs vezes você guarda um valor que não deveria mudar durante o programa, como o valor de um imposto fixo ou o número de dias da semana. Algumas linguagens têm uma trava para isso, mas o Python não: aqui a combinação é feita por **convenção**. Quando um valor é para ser constante, escrevemos o nome todo em MAIÚSCULAS, como `PI` ou `DIAS_DA_SEMANA`.\n\nIsso não impede a troca de verdade: o Python vai deixar você atribuir outro valor mesmo assim. As maiúsculas são um recado para quem lê o código: \"esse valor não é para ser alterado\". É uma boa prática respeitar esse combinado."
+        },
+        {
+          "type": "code",
+          "value": "PI = 3.14\nprint(PI)\n# saída: 3.14\n\n# O Python NÃO trava: a linha abaixo funcionaria, mas quebra a convenção\n# PI = 3.15\n\n# Nomes bons ajudam a entender o código:\nnome_do_aluno = \"Pedro\"   # bom: descreve o que guarda\nx = \"Pedro\"               # funciona, mas não diz nada sobre o valor"
+        },
+        {
+          "type": "quote",
+          "value": "Variável é uma caixa com nome: em Python, basta `nome = valor` para criar. Um nome em MAIÚSCULAS avisa que aquilo não é para mudar, mas é só uma convenção. Dê nomes claros e você mesmo vai entender o próprio código dias depois."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual das opções abaixo cria corretamente uma variável chamada idade guardando o valor 15?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "idade = 15",
+              "isCorrect": true
+            },
+            {
+              "text": "15 = idade",
+              "isCorrect": false
+            },
+            {
+              "text": "idade == 15",
+              "isCorrect": false
+            },
+            {
+              "text": "int idade = 15",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Depois de executar o código abaixo, o que aparece na tela?\ncidade = \"Recife\"\ncidade = \"Salvador\"\nprint(cidade)",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Recife",
+              "isCorrect": false
+            },
+            {
+              "text": "Salvador",
+              "isCorrect": true
+            },
+            {
+              "text": "cidade",
+              "isCorrect": false
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Em Python, o que garante que uma variável escrita em MAIÚSCULAS, como PI = 3.14, nunca seja alterada?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "A linguagem trava a variável e impede qualquer nova atribuição a ela",
+              "isCorrect": false
+            },
+            {
+              "text": "O interpretador apaga a variável se você tentar alterá-la",
+              "isCorrect": false
+            },
+            {
+              "text": "É preciso escrever const antes do nome para travar o valor",
+              "isCorrect": false
+            },
+            {
+              "text": "Nada; as maiúsculas são só uma convenção entre programadores",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual dos nomes abaixo é um nome de variável válido e no estilo recomendado em Python?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "1nome",
+              "isCorrect": false
+            },
+            {
+              "text": "nome de usuario",
+              "isCorrect": false
+            },
+            {
+              "text": "nome_de_usuario",
+              "isCorrect": true
+            },
+            {
+              "text": "nome-de-usuario",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que o código abaixo mostra na tela?\na = 5\nb = a\na = 10\nprint(b)",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "10, porque b passou a apontar direto para a variável a",
+              "isCorrect": false
+            },
+            {
+              "text": "5, pois b guardou o valor que a tinha na hora",
+              "isCorrect": true
+            },
+            {
+              "text": "None, já que a mudou de valor logo depois",
+              "isCorrect": false
+            },
+            {
+              "text": "Dá erro ao imprimir b, porque a foi alterada",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Tipos de dados: número, texto e booleano",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Todo valor tem um tipo\n\nNa aula passada você guardou valores dentro de variáveis, mas nem todo valor é do mesmo \"tipo\". Pense em um organizador de gavetas: uma parte guarda números, outra guarda papéis com texto, outra guarda só coisas que estão \"ligadas\" ou \"desligadas\". Em Python, os tipos mais básicos são:\n\n- **int**: números inteiros, sem casas decimais (como 25)\n- **float**: números com casas decimais (como 19.90)\n- **str**: texto, sempre escrito entre aspas\n- **bool**: apenas dois valores possíveis, `True` (verdadeiro) ou `False` (falso)\n\nO Python descobre o tipo sozinho, olhando para o valor. Para conferir o tipo de uma variável, existe a função `type()`."
+        },
+        {
+          "type": "code",
+          "value": "idade = 25          # int (número inteiro)\npreco = 19.90       # float (número com casas decimais)\nnome = \"Maria\"      # str (texto entre aspas)\nativo = True        # bool (verdadeiro ou falso)\n\nprint(type(idade))\n# saída: <class 'int'>\n\nprint(type(nome))\n# saída: <class 'str'>\n\nprint(type(ativo))\n# saída: <class 'bool'>"
+        },
+        {
+          "type": "text",
+          "value": "## Juntando textos: concatenação e f-string\n\nQuando os dois lados de um `+` são texto, o `+` não soma: ele **concatena**, ou seja, junta um texto no final do outro. É a forma mais antiga de montar uma frase com valores de variáveis dentro.\n\nExiste também uma forma mais moderna e mais fácil de ler: a **f-string**. Você escreve a letra `f` antes das aspas e coloca `{nome_da_variavel}` no meio do texto para inserir o valor daquela variável ali. Repare que, para juntar um número a um texto com `+`, é preciso convertê-lo antes com `str()`; com a f-string isso acontece sozinho."
+        },
+        {
+          "type": "code",
+          "value": "nome = \"Carlos\"\nidade = 30\n\n# Concatenando com + (o número precisa virar texto com str())\nprint(\"Nome: \" + nome + \", idade: \" + str(idade))\n# saída: Nome: Carlos, idade: 30\n\n# Com f-string (mais fácil de ler e escrever)\nprint(f\"Nome: {nome}, idade: {idade}\")\n# saída: Nome: Carlos, idade: 30"
+        },
+        {
+          "type": "text",
+          "value": "## Cuidado: \"10\" não é o mesmo que 10\n\nUma armadilha comum para quem está começando: `\"10\"` (com aspas) é uma str, um texto que por acaso parece um número. Já `10` (sem aspas) é um int de verdade. Eles até podem parecer iguais na tela, mas se comportam de formas diferentes.\n\nEm Python, misturar os dois no `+` não passa despercebido: `\"5\" + 3` **não** vira 8 nem \"53\", ele para o programa com um erro (TypeError), porque o Python não junta texto com número automaticamente. Curiosidade: já `\"5\" * 3` funciona e devolve `\"555\"`, porque o `*` entre texto e número repete o texto."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Expressão\", \"Resultado\", \"Tipo\"], [\"10 + 5\", \"15\", \"int\"], [\"\\\"10\\\" + \\\"5\\\"\", \"\\\"105\\\"\", \"str\"], [\"\\\"ab\\\" * 3\", \"\\\"ababab\\\"\", \"str\"], [\"\\\"5\\\" + 3\", \"erro (TypeError)\", \"—\"]]"
+        },
+        {
+          "type": "quote",
+          "value": "Todo valor tem um tipo: int e float para números, str para texto (sempre entre aspas) e bool para True ou False. E cuidado com o +: entre dois textos ele junta, mas entre texto e número ele reclama. Na dúvida, use f-string."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual tipo o Python associa ao valor 42?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "int",
+              "isCorrect": true
+            },
+            {
+              "text": "float",
+              "isCorrect": false
+            },
+            {
+              "text": "str",
+              "isCorrect": false
+            },
+            {
+              "text": "bool",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual das opções abaixo é um valor do tipo str?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "25",
+              "isCorrect": false
+            },
+            {
+              "text": "True",
+              "isCorrect": false
+            },
+            {
+              "text": "3.14",
+              "isCorrect": false
+            },
+            {
+              "text": "\"25\"",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "O que aparece na tela depois deste código?\ncidade = \"Belo Horizonte\"\npais = \"Brasil\"\nprint(f\"Cidade: {cidade}, país: {pais}\")",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Cidade: {cidade}, país: {pais}",
+              "isCorrect": false
+            },
+            {
+              "text": "Cidade: cidade, país: pais",
+              "isCorrect": false
+            },
+            {
+              "text": "Cidade: Belo Horizonte, país: Brasil",
+              "isCorrect": true
+            },
+            {
+              "text": "Dá erro, pois faltou juntar os textos com +",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Depois de ativo = False, qual tipo o Python associa à variável ativo?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "str",
+              "isCorrect": false
+            },
+            {
+              "text": "int",
+              "isCorrect": false
+            },
+            {
+              "text": "False",
+              "isCorrect": false
+            },
+            {
+              "text": "bool",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual é o resultado de print(\"5\" + 3)?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Erro (TypeError): str e int não se juntam",
+              "isCorrect": true
+            },
+            {
+              "text": "53, colando o número logo depois do texto",
+              "isCorrect": false
+            },
+            {
+              "text": "8, porque ele soma os dois valores normalmente",
+              "isCorrect": false
+            },
+            {
+              "text": "555, repetindo o texto três vezes seguidas",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Operadores aritméticos (e o resto com %)",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Python também é uma calculadora\n\nAlém de guardar valores, o Python sabe fazer contas. Os operadores aritméticos funcionam quase igual à matemática que você já conhece: soma, subtração, multiplicação e divisão. Um detalhe importante: a divisão com `/` **sempre** devolve um número com casas decimais (float), mesmo quando a conta é exata, então `10 / 2` dá `5.0`.\n\nO Python ainda traz três operadores que talvez sejam novos para você: `//` (divisão inteira, que descarta a parte quebrada), `%` (o resto de uma divisão) e `**` (potência). O `%` é um dos mais úteis no dia a dia de quem programa."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Operador\", \"Significado\", \"Exemplo\", \"Resultado\"], [\"+\", \"soma\", \"10 + 3\", \"13\"], [\"-\", \"subtração\", \"10 - 3\", \"7\"], [\"*\", \"multiplicação\", \"10 * 3\", \"30\"], [\"/\", \"divisão (dá float)\", \"9 / 2\", \"4.5\"], [\"//\", \"divisão inteira\", \"9 // 2\", \"4\"], [\"%\", \"resto da divisão\", \"10 % 3\", \"1\"], [\"**\", \"potência\", \"2 ** 3\", \"8\"]]"
+        },
+        {
+          "type": "code",
+          "value": "print(10 + 3)\n# saída: 13\n\nprint(10 - 3)\n# saída: 7\n\nprint(9 / 2)\n# saída: 4.5\n\nprint(9 // 2)\n# saída: 4  (divisão inteira: descarta o que sobra)"
+        },
+        {
+          "type": "text",
+          "value": "## O resto da divisão (%) e a ordem das contas\n\nO `%` devolve o que sobra quando uma divisão não é exata. É como dividir 10 balas entre 3 amigos: cada um fica com 3 balas, e sobra 1 na mão. Em código, `10 % 3` é exatamente esse resto: `1`.\n\nUma das aplicações mais comuns do `%` é descobrir se um número é par ou ímpar: todo número par dividido por 2 tem resto 0, e todo número ímpar tem resto 1.\n\nAssim como na matemática da escola, o Python calcula primeiro a potência (`**`), depois multiplicação, divisão e resto, e só então soma e subtração. Se quiser forçar outra ordem, use parênteses, exatamente como faria no papel."
+        },
+        {
+          "type": "code",
+          "value": "# Descobrindo se um número é par ou ímpar\nnumero = 7\nprint(numero % 2)\n# saída: 1 (sobrou 1, então numero é ímpar)\n\noutro_numero = 8\nprint(outro_numero % 2)\n# saída: 0 (não sobrou nada, então outro_numero é par)"
+        },
+        {
+          "type": "code",
+          "value": "print(2 + 3 * 4)\n# saída: 14 (multiplica 3 * 4 primeiro, depois soma o 2)\n\nprint((2 + 3) * 4)\n# saída: 20 (o parêntese força a soma a acontecer primeiro)\n\nprint(2 ** 3)\n# saída: 8 (2 elevado a 3)"
+        },
+        {
+          "type": "quote",
+          "value": "Os operadores aritméticos fazem contas como na matemática. O / sempre dá float, o // devolve só a parte inteira e o % mostra a sobra, ótimo para saber se um número é par ou ímpar. Na dúvida sobre a ordem, use parênteses."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é o resultado de print(10 % 3)?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "3",
+              "isCorrect": false
+            },
+            {
+              "text": "30",
+              "isCorrect": false
+            },
+            {
+              "text": "3.33",
+              "isCorrect": false
+            },
+            {
+              "text": "1",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual operador devolve o resto de uma divisão em Python?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "/",
+              "isCorrect": false
+            },
+            {
+              "text": "//",
+              "isCorrect": false
+            },
+            {
+              "text": "%",
+              "isCorrect": true
+            },
+            {
+              "text": "**",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é o resultado de print(2 + 3 * 4)?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "20",
+              "isCorrect": false
+            },
+            {
+              "text": "24",
+              "isCorrect": false
+            },
+            {
+              "text": "14",
+              "isCorrect": true
+            },
+            {
+              "text": "9",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "A variável idade guarda um número inteiro. Qual expressão resulta em 0 quando esse número é par?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "idade / 2",
+              "isCorrect": false
+            },
+            {
+              "text": "idade % 2",
+              "isCorrect": true
+            },
+            {
+              "text": "idade // 2",
+              "isCorrect": false
+            },
+            {
+              "text": "idade * 2",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é o resultado de print(10 - 4 % 3 + 2 * 2)?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "9",
+              "isCorrect": false
+            },
+            {
+              "text": "13",
+              "isCorrect": true
+            },
+            {
+              "text": "5",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Comparações: = x == e os sinais de comparação",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Fazendo perguntas com o código\n\nAté agora você fez contas que devolvem números. Mas também é possível fazer perguntas ao Python, do tipo \"esse valor é maior que aquele?\" ou \"esses dois valores são iguais?\". Essas perguntas são os **operadores de comparação**, e a resposta é sempre um bool: `True` ou `False`, exatamente como você viu na aula sobre tipos de dados."
+        },
+        {
+          "type": "code",
+          "value": "print(5 > 3)\n# saída: True\n\nprint(5 < 3)\n# saída: False\n\nprint(5 >= 5)\n# saída: True\n\nprint(5 <= 4)\n# saída: False\n\nprint(5 == 5)\n# saída: True\n\nprint(5 != 5)\n# saída: False"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Operador\", \"Significado\", \"Exemplo\", \"Resultado\"], [\"==\", \"igual a\", \"5 == 5\", \"True\"], [\"!=\", \"diferente de\", \"5 != 3\", \"True\"], [\">\", \"maior que\", \"5 > 3\", \"True\"], [\"<\", \"menor que\", \"5 < 3\", \"False\"], [\">=\", \"maior ou igual a\", \"5 >= 5\", \"True\"], [\"<=\", \"menor ou igual a\", \"5 <= 4\", \"False\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## O erro mais comum de quem está começando: = e ==\n\nEsse é o ponto em que quase todo iniciante tropeça uma vez: `=` e `==` parecem parecidos, mas fazem coisas completamente diferentes.\n\n- `=` é **atribuição**: guarda um valor dentro de uma variável. `idade = 18` significa \"coloque 18 dentro de idade\".\n- `==` é **comparação**: pergunta se dois valores são iguais e devolve `True` ou `False`. `idade == 18` significa \"idade é igual a 18?\".\n\nPara \"diferente de\", o Python usa `!=`. E, se você já viu `===` em outra linguagem como o JavaScript, pode esquecer: em Python isso não existe e causaria um erro. Aqui o `==` já compara o valor levando o tipo em conta, e o Python **não** converte os tipos escondido: por isso `\"10\" == 10` é `False`, um texto nunca é igual a um número."
+        },
+        {
+          "type": "code",
+          "value": "numero = 10\n# isto é atribuição: guarda 10 dentro de numero\n\nprint(numero == 10)\n# saída: True (isto é comparação: numero é igual a 10?)\n\nprint(\"10\" == 10)\n# saída: False (str nunca é igual a int; o Python não converte)\n\nprint(10 == 10.0)\n# saída: True (int e float com o mesmo valor são iguais)"
+        },
+        {
+          "type": "code",
+          "value": "idade_ana = 25\nidade_bruno = 30\n\nprint(idade_ana > idade_bruno)\n# saída: False\n\nprint(idade_ana != idade_bruno)\n# saída: True"
+        },
+        {
+          "type": "quote",
+          "value": "Um único sinal de igual (=) guarda um valor. Dois sinais (==) perguntam se dois valores são iguais, e != pergunta se são diferentes. Em Python não existe ===: o == já compara valor e tipo, sem conversões escondidas."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é o resultado de print(7 > 5)?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "5",
+              "isCorrect": false
+            },
+            {
+              "text": "7",
+              "isCorrect": false
+            },
+            {
+              "text": "False",
+              "isCorrect": false
+            },
+            {
+              "text": "True",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual símbolo usamos em Python para comparar se dois valores são iguais?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "=",
+              "isCorrect": false
+            },
+            {
+              "text": "===",
+              "isCorrect": false
+            },
+            {
+              "text": "==",
+              "isCorrect": true
+            },
+            {
+              "text": "eq",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é a diferença entre estas duas linhas?\nlinha 1: idade = 18\nlinha 2: idade == 18",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "As duas linhas fazem exatamente a mesma coisa",
+              "isCorrect": false
+            },
+            {
+              "text": "A linha 1 guarda 18 em idade; a linha 2 checa se é igual",
+              "isCorrect": true
+            },
+            {
+              "text": "A linha 1 compara os valores; a linha 2 guarda um booleano",
+              "isCorrect": false
+            },
+            {
+              "text": "As duas comparam idade com 18, de jeitos diferentes",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual das expressões abaixo resulta em False?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "10 >= 11",
+              "isCorrect": true
+            },
+            {
+              "text": "10 != 5",
+              "isCorrect": false
+            },
+            {
+              "text": "10 == 10",
+              "isCorrect": false
+            },
+            {
+              "text": "10 <= 10",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O que o código abaixo mostra na tela?\nprint(\"10\" == 10)\nprint(10 == 10.0)",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "True e depois True",
+              "isCorrect": false
+            },
+            {
+              "text": "False e depois False",
+              "isCorrect": false
+            },
+            {
+              "text": "False e depois True",
+              "isCorrect": true
+            },
+            {
+              "text": "True e depois False",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Operadores lógicos: e, ou, não",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "## Combinando perguntas\n\nÀs vezes uma única pergunta não basta. Pense em entrar numa festa: pode ser que você precise ter convite E estar na lista de convidados. Ou talvez baste ter convite OU ser amigo de quem está organizando. Em Python, esses \"e\" e \"ou\" são operadores lógicos, escritos como palavras, e existe também o \"não\", que inverte uma resposta. Os três são:\n\n- `and` (e): só é `True` se os dois lados forem `True`\n- `or` (ou): é `True` se pelo menos um dos lados for `True`\n- `not` (não): inverte o valor, transforma `True` em `False` e `False` em `True`"
+        },
+        {
+          "type": "code",
+          "value": "print(True and True)\n# saída: True\n\nprint(True and False)\n# saída: False\n\nprint(True or False)\n# saída: True\n\nprint(False or False)\n# saída: False\n\nprint(not True)\n# saída: False\n\nprint(not False)\n# saída: True"
+        },
+        {
+          "type": "table",
+          "value": "[[\"A\", \"B\", \"A and B\", \"A or B\"], [\"True\", \"True\", \"True\", \"True\"], [\"True\", \"False\", \"False\", \"True\"], [\"False\", \"True\", \"False\", \"True\"], [\"False\", \"False\", \"False\", \"False\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Combinando comparações de verdade\n\nO uso mais comum de `and` e `or` é juntar comparações, para criar regras mais completas. Por exemplo: \"a pessoa pode dirigir se tiver 18 anos ou mais E tiver carteira de motorista\". Isso vira uma comparação com `>=` combinada a uma variável do tipo bool, usando `and`.\n\nQuando misturar várias comparações numa mesma expressão, você pode usar parênteses para deixar bem claro o que deve ser calculado em cada parte, do mesmo jeito que fez com contas na aula sobre operadores aritméticos."
+        },
+        {
+          "type": "code",
+          "value": "idade = 20\ntem_carteira = True\n\nprint(idade >= 18 and tem_carteira)\n# saída: True (as duas condições são verdadeiras)\n\ntem_cupom = False\ntotal_compra = 150\n\nprint(total_compra > 100 or tem_cupom)\n# saída: True (basta uma condição verdadeira para o or)"
+        },
+        {
+          "type": "code",
+          "value": "chovendo = False\nprint(not chovendo)\n# saída: True (não está chovendo)\n\nidade_visitante = 15\nprint(not (idade_visitante >= 18))\n# saída: True (não é verdade que a idade é maior ou igual a 18)"
+        },
+        {
+          "type": "quote",
+          "value": "O and exige que os dois lados sejam verdadeiros, o or basta que um lado seja verdadeiro, e o not inverte o valor. Combine comparações com esses operadores para escrever regras mais completas."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é o resultado de print(True and False)?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "True",
+              "isCorrect": false
+            },
+            {
+              "text": "False",
+              "isCorrect": true
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            },
+            {
+              "text": "erro de execução",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é o resultado de print(not True)?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "True",
+              "isCorrect": false
+            },
+            {
+              "text": "not True",
+              "isCorrect": false
+            },
+            {
+              "text": "None",
+              "isCorrect": false
+            },
+            {
+              "text": "False",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Qual é o resultado de print(False or True)?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "True",
+              "isCorrect": true
+            },
+            {
+              "text": "False",
+              "isCorrect": false
+            },
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Uma loja só oferece frete grátis se o valor da compra for maior que 100 OU o cliente tiver um cupom. Sendo total o valor da compra e tem_cupom um booleano, qual expressão representa essa regra corretamente?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "total > 100 and tem_cupom",
+              "isCorrect": false
+            },
+            {
+              "text": "total > 100 or tem_cupom",
+              "isCorrect": true
+            },
+            {
+              "text": "total > 100 or not tem_cupom",
+              "isCorrect": false
+            },
+            {
+              "text": "total < 100 or tem_cupom",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual é o valor de print((5 > 2 and 3 > 10) or (7 == 7 and 4 < 10))?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "True",
+              "isCorrect": true
+            },
+            {
+              "text": "False",
+              "isCorrect": false
+            },
+            {
+              "text": "7",
+              "isCorrect": false
+            },
+            {
+              "text": "erro de execução",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

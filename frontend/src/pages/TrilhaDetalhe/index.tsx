@@ -14,7 +14,6 @@ import {
   Check,
   Play,
   Eye,
-  Lock,
   DocLines,
   ChevronDown,
   Grid4,
@@ -23,12 +22,22 @@ import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 import { obterTrilha, avaliarTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
+import { getTrailLang, setTrailLang } from '../../utils/trailLang';
 
 const NIVEL: Record<TrailDetail['trailLevel'], string> = {
   iniciante: 'Iniciante',
   intermediario: 'Intermediário',
   avancado: 'Avançado',
 };
+
+const LANG_LABEL: Record<string, string> = {
+  javascript: 'JavaScript',
+  python: 'Python',
+};
+
+function labelLinguagem(code: string): string {
+  return LANG_LABEL[code] ?? code.charAt(0).toUpperCase() + code.slice(1);
+}
 
 function glyphDoNome(name: string): string {
   const limpo = name.replace(/[^A-Za-zÀ-ú ]/g, '').trim();
@@ -44,12 +53,12 @@ function formatDur(min: number): string {
   return m ? `${h}h${String(m).padStart(2, '0')}` : `${h}h`;
 }
 
-type Disp = 'done' | 'current' | 'preview' | 'locked';
+type Disp = 'done' | 'current' | 'preview' | 'open';
 function dispDe(l: LessonRef): Disp {
   if (l.state === 'done') return 'done';
   if (l.state === 'current') return 'current';
   if (l.preview) return 'preview';
-  return 'locked';
+  return 'open';
 }
 
 const STAR_PATH = 'M12 2l3 6.5 7 .9-5 4.8 1.3 7L12 18l-6.3 3.2L7 14.2l-5-4.8 7-.9z';
@@ -91,11 +100,14 @@ export function TrilhaDetalhe() {
   const [stars, setStars] = useState(0);
   const [comment, setComment] = useState('');
   const [salvando, setSalvando] = useState(false);
+  const [lang, setLang] = useState<string | undefined>(() =>
+    trailId ? getTrailLang(trailId) : undefined,
+  );
 
   useEffect(() => {
     if (!trailId) return;
     setCarregando(true);
-    obterTrilha(trailId)
+    obterTrilha(trailId, lang)
       .then((t) => {
         setTrilha(t);
         setStars(t.myReview?.stars ?? 0);
@@ -105,7 +117,13 @@ export function TrilhaDetalhe() {
       })
       .catch(() => setErro('Não foi possível carregar a trilha.'))
       .finally(() => setCarregando(false));
-  }, [trailId]);
+  }, [trailId, lang]);
+
+  function escolherLinguagem(code: string) {
+    if (!trailId || code === trilha?.activeLanguage) return;
+    setTrailLang(trailId, code);
+    setLang(code);
+  }
 
   const stats = useMemo(() => {
     const aulas = trilha?.modules.flatMap((m) => m.lessons) ?? [];
@@ -118,8 +136,8 @@ export function TrilhaDetalhe() {
     return { total, feitas, minutos, alvo, previa, comecado: feitas > 0 };
   }, [trilha]);
 
-  function irParaAula(l: LessonRef, disp: Disp) {
-    if (!trilha || disp === 'locked') return;
+  function irParaAula(l: LessonRef) {
+    if (!trilha) return;
     navigate(`/trilhas/${trilha.id}/aula/${l.id}`);
   }
   function irPara(l?: LessonRef) {
@@ -253,6 +271,26 @@ export function TrilhaDetalhe() {
                       <Globe size={15} /> PT-BR
                     </span>
                   </div>
+
+                  {trilha.multiLanguage && (trilha.languages?.length ?? 0) > 1 && (
+                    <div className="td-langsel">
+                      <span className="td-langsel__label">Linguagem</span>
+                      <div className="td-langsel__opts">
+                        {trilha.languages!.map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            className={`td-langsel__opt${
+                              code === trilha.activeLanguage ? ' td-langsel__opt--on' : ''
+                            }`}
+                            onClick={() => escolherLinguagem(code)}
+                          >
+                            {labelLinguagem(code)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="td-card">
@@ -333,12 +371,11 @@ export function TrilhaDetalhe() {
                             <div className="td-mod__lessons">
                               {m.lessons.map((l) => {
                                 const disp = dispDe(l);
-                                const clicavel = disp !== 'locked';
                                 return (
                                   <div
                                     key={l.id}
-                                    className={`td-lesson${clicavel ? ' td-lesson--click' : ''}`}
-                                    onClick={() => irParaAula(l, disp)}
+                                    className="td-lesson td-lesson--click"
+                                    onClick={() => irParaAula(l)}
                                   >
                                     <span className={`td-lesson__icon td-lesson__icon--${disp}`}>
                                       {disp === 'done' ? (
@@ -348,14 +385,10 @@ export function TrilhaDetalhe() {
                                       ) : disp === 'preview' ? (
                                         <Eye size={15} />
                                       ) : (
-                                        <Lock size={13} />
+                                        <span className="td-lesson__dot" />
                                       )}
                                     </span>
-                                    <span
-                                      className={`td-lesson__name${disp === 'locked' ? ' td-lesson__name--locked' : ''}`}
-                                    >
-                                      {l.title}
-                                    </span>
+                                    <span className="td-lesson__name">{l.title}</span>
                                     {disp === 'preview' && <span className="td-lesson__preview">prévia</span>}
                                     {l.durationMin ? (
                                       <span className="td-lesson__dur">{l.durationMin} min</span>
