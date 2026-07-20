@@ -1,0 +1,725 @@
+{
+  "aulas": [
+    {
+      "titulo": "Como atacar um problema de programação",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Como atacar um problema de programação\n\nNos módulos anteriores você aprendeu, separadamente, a guardar valores em variáveis, tomar decisões com condicionais, repetir tarefas com laços, organizar a lógica em funções e guardar coleções de dados em listas e dicionários. Chegou a hora de juntar tudo isso para resolver problemas de verdade, do jeito que um programador faz no dia a dia.\n\nA boa notícia é que existe um roteiro simples que funciona para praticamente qualquer problema, por menor que ele seja."
+        },
+        {
+          "type": "text",
+          "value": "## Um roteiro de quatro passos\n\n- **Entenda o enunciado.** Leia com calma. O que exatamente o problema está pedindo como resposta? Que informações você já tem para começar?\n- **Quebre em passos pequenos.** Em vez de pensar no problema inteiro de uma vez, escreva (em português mesmo, ou pseudocódigo) a sequência de ações que leva do início ao resultado.\n- **Escolha as ferramentas.** Para cada passo, decida o que ele precisa: uma variável para guardar algo, um laço para repetir, uma condicional para decidir, uma lista para guardar vários valores.\n- **Escreva e teste aos poucos.** Não escreva o programa inteiro de uma vez. Escreva um pedaço, rode, confira o resultado com print e só então siga para o próximo pedaço."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Passo\", \"Pergunta que você se faz\", \"Resultado esperado\"], [\"Entender\", \"O que o problema pede como resposta final?\", \"Uma frase clara descrevendo a saída\"], [\"Quebrar em passos\", \"Quais ações, em ordem, chegam a essa resposta?\", \"Uma lista de passos em português\"], [\"Escolher ferramentas\", \"Cada passo precisa de variável, laço, condicional ou função?\", \"Um esboço de quais recursos usar\"], [\"Testar aos poucos\", \"Esse pedaço fez o que eu esperava?\", \"Um print confirmando (ou não) a expectativa\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Um exemplo resolvido do zero\n\nProblema: \"Você tem as idades das pessoas inscritas em uma oficina. Descubra quantas delas são maiores de idade (18 anos ou mais).\"\n\nVamos aplicar o roteiro antes de escrever qualquer código:\n\n1. **Entender**: a resposta é um número (a contagem de pessoas com 18 anos ou mais). Não preciso listar quem são, só contar.\n2. **Quebrar em passos**: preciso de uma lista de idades; preciso de um contador começando em 0; preciso percorrer a lista, uma idade de cada vez; para cada idade, se ela for maior ou igual a 18, somo 1 ao contador; no final, mostro o contador.\n3. **Escolher ferramentas**: uma lista para as idades, uma variável para o contador (um número), um for para percorrer, um if com >= para decidir.\n4. **Escrever aos poucos**: primeiro só o laço imprimindo cada idade, depois acrescento o if, depois o contador. Só no fim eu confio no resultado."
+        },
+        {
+          "type": "code",
+          "value": "idades = [15, 22, 17, 30, 18, 12, 45]\n\nmaiores_de_idade = 0\n\nfor idade in idades:\n    if idade >= 18:\n        maiores_de_idade = maiores_de_idade + 1\n\nprint(maiores_de_idade)\n# saída: 4"
+        },
+        {
+          "type": "quote",
+          "value": "Todo problema grande é uma coleção de problemas pequenos. Entenda antes de codar, quebre em passos, escolha as ferramentas certas para cada passo e teste sempre aos poucos, nunca o programa inteiro de uma vez."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Qual é o primeiro passo recomendado antes de começar a escrever o código de um problema novo?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Começar a escrever o código o mais rápido possível, sem planejar",
+              "isCorrect": false
+            },
+            {
+              "text": "Decidir o nome de todas as variáveis antes de mais nada",
+              "isCorrect": false
+            },
+            {
+              "text": "Entender bem o que o enunciado está pedindo como resposta",
+              "isCorrect": true
+            },
+            {
+              "text": "Procurar um código pronto parecido na internet",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Quebrar um problema grande em passos menores ajuda principalmente porque:",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "O código final fica mais longo, mas mais completo",
+              "isCorrect": false
+            },
+            {
+              "text": "Cada parte fica mais fácil de pensar e testar",
+              "isCorrect": true
+            },
+            {
+              "text": "Isso evita ter que usar variáveis",
+              "isCorrect": false
+            },
+            {
+              "text": "O programa passa a rodar mais rápido",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "No código que conta quantas idades são maiores ou iguais a 18, qual variável guarda o resultado final que é mostrado com print?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "maiores_de_idade",
+              "isCorrect": true
+            },
+            {
+              "text": "idades",
+              "isCorrect": false
+            },
+            {
+              "text": "idade",
+              "isCorrect": false
+            },
+            {
+              "text": "idade >= 18",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Testar o código aos poucos, em vez de escrever o programa inteiro de uma vez, ajuda principalmente porque:",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "O programa passa a ocupar bem menos memória para rodar",
+              "isCorrect": false
+            },
+            {
+              "text": "Evita completamente a necessidade de usar print",
+              "isCorrect": false
+            },
+            {
+              "text": "Fica mais fácil descobrir em qual parte está o erro",
+              "isCorrect": true
+            },
+            {
+              "text": "O código final fica automaticamente mais curto",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Observe:\n\nidades = [10, 18, 20, 16, 19]\ncontador = 0\nfor idade in idades:\n    if idade > 18:\n        contador = contador + 1\nprint(contador)\n\nO que este código imprime?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "3",
+              "isCorrect": false
+            },
+            {
+              "text": "2",
+              "isCorrect": true
+            },
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "5",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Algoritmos em listas: buscar, contar e achar o maior",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Algoritmos em listas: buscar, contar e achar o maior\n\nAgora que você sabe atacar um problema, vale conhecer algumas \"receitas prontas\" que aparecem o tempo todo quando o assunto é lista: procurar um item, contar quantos itens satisfazem uma condição e achar o maior ou o menor valor. Essas três receitas resolvem uma fatia enorme dos problemas que você vai encontrar."
+        },
+        {
+          "type": "text",
+          "value": "## Busca linear\n\nBuscar um item em uma lista, sem nenhum truque especial, é simplesmente percorrer os itens um a um comparando cada um com o que você procura. Isso se chama busca linear. Assim que encontra o item, o algoritmo pode parar (não precisa olhar o resto). Se chegar ao final sem encontrar, a resposta é que o item não está lá.\n\nO Python ainda oferece um atalho pronto para essa busca: o operador `in`, que já devolve True ou False dizendo se o item está na lista. Mesmo assim, entender a busca linear por trás dele é o que faz você resolver problemas parecidos por conta própria."
+        },
+        {
+          "type": "code",
+          "value": "frutas = [\"maçã\", \"banana\", \"uva\", \"pera\"]\n\ndef contem_fruta(lista, procurada):\n    for fruta in lista:\n        if fruta == procurada:\n            return True  # achou, não precisa continuar o laço\n    return False  # percorreu tudo e não achou\n\nprint(contem_fruta(frutas, \"uva\"))\n# saída: True\n\nprint(contem_fruta(frutas, \"manga\"))\n# saída: False\n\n# o Python já tem um atalho pronto para essa mesma busca: o operador in\nprint(\"uva\" in frutas)\n# saída: True"
+        },
+        {
+          "type": "table",
+          "value": "[[\"Índice\", \"Fruta\", \"É a que procuramos (\\\"uva\\\")?\", \"O que o código faz\"], [\"0\", \"maçã\", \"não\", \"continua para o próximo índice\"], [\"1\", \"banana\", \"não\", \"continua para o próximo índice\"], [\"2\", \"uva\", \"sim\", \"retorna True e para o laço\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Contar e achar o maior (ou o menor)\n\nContar quantos itens satisfazem uma condição usa o mesmo contador que você já viu com os laços: uma variável que começa em 0 e soma 1 toda vez que a condição é verdadeira dentro do laço.\n\nAchar o maior (ou o menor) valor segue outra receita: você \"aposta\" que o primeiro item da lista é o campeão e vai comparando com os demais. Sempre que encontra alguém maior (ou menor, se estiver procurando o mínimo), troca o campeão de lugar. O Python também traz as funções prontas max() e min() para isso, mas entender a comparação por trás vale muito."
+        },
+        {
+          "type": "code",
+          "value": "notas = [7, 3, 9, 5, 10, 4]\n\n# 1) contar quantos itens satisfazem uma condição\naprovados = 0\nfor nota in notas:\n    if nota >= 6:\n        aprovados = aprovados + 1\nprint(aprovados)\n# saída: 3\n\n# 2) achar o maior valor da lista\nmaior_nota = notas[0]  # começa \"apostando\" no primeiro item\nfor nota in notas:\n    if nota > maior_nota:\n        maior_nota = nota  # achou alguém maior, troca o campeão\nprint(maior_nota)\n# saída: 10\n\n# forma pronta do Python, com o mesmo resultado:\nprint(max(notas))\n# saída: 10"
+        },
+        {
+          "type": "quote",
+          "value": "Busca, contar e achar o maior são o mesmo movimento de fundo: percorrer a lista e comparar cada item. Domine esse movimento e você resolve boa parte dos problemas do dia a dia com listas."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "Na busca linear, o que o código faz assim que encontra o item procurado?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Pode parar e devolver o resultado na hora",
+              "isCorrect": true
+            },
+            {
+              "text": "Continua percorrendo a lista inteira mesmo assim",
+              "isCorrect": false
+            },
+            {
+              "text": "Reinicia o laço a partir do primeiro item",
+              "isCorrect": false
+            },
+            {
+              "text": "Remove o item encontrado da lista",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Para contar quantos itens de uma lista satisfazem uma condição, qual é o padrão mais comum?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Uma variável que começa em 1 e nunca muda de valor",
+              "isCorrect": false
+            },
+            {
+              "text": "Usar apenas o len() da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Somar o valor de todos os itens da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Uma variável contadora que começa em 0 e soma 1",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Observe:\n\nnumeros = [4, 8, 1, 9, 3]\nmaior = numeros[0]\nfor n in numeros:\n    if n > maior:\n        maior = n\nprint(maior)\n\nO que este código imprime?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "9",
+              "isCorrect": true
+            },
+            {
+              "text": "3",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Por que o código que acha o maior valor de uma lista começa com maior = numeros[0], em vez de começar com maior = 0?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Porque o primeiro item de uma lista em Python é sempre o maior",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque, se todos os números forem negativos, começar com 0 daria a resposta errada",
+              "isCorrect": true
+            },
+            {
+              "text": "Porque o número 0 não pode ser usado em comparações",
+              "isCorrect": false
+            },
+            {
+              "text": "Porque toda variável precisa obrigatoriamente ser iniciada com um valor tirado da lista",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "O código a seguir acha o maior valor de uma lista:\n\nmaior = numeros[0]\nfor n in numeros:\n    if n > maior:\n        maior = n\n\nQual mudança faria esse código achar o MENOR valor em vez do maior?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "Trocar numeros[0] por 0 na primeira linha",
+              "isCorrect": false
+            },
+            {
+              "text": "Trocar o operador > por < na condição do if",
+              "isCorrect": true
+            },
+            {
+              "text": "Trocar o for por um while",
+              "isCorrect": false
+            },
+            {
+              "text": "Trocar apenas o nome da variável maior para menor, sem mexer no operador",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Colocando em ordem: a ideia de ordenação",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Colocando em ordem: a ideia de ordenação\n\nMuita coisa fica mais fácil de entender quando está organizada: uma lista de tarefas por prioridade, um ranking de notas da maior para a menor, nomes em ordem alfabética. Ordenar é exatamente isso: reorganizar os itens de uma lista seguindo um critério.\n\nNesta aula você vai entender a ideia por trás da ordenação e conhecer as ferramentas prontas que o Python oferece para isso."
+        },
+        {
+          "type": "text",
+          "value": "## Ordenação por seleção: a ideia\n\nLembra do algoritmo que acha o menor valor de uma lista, da aula passada? A ordenação por seleção usa exatamente essa ideia, repetida várias vezes:\n\n1. Procure o menor valor do trecho da lista que ainda falta ordenar.\n2. Troque esse menor valor de lugar com o primeiro item desse trecho.\n3. Considere esse primeiro item já ordenado e repita o processo só com o restante.\n4. Continue até sobrar um único item.\n\nNo final, a lista inteira está em ordem crescente. É uma ideia simples, embora repita bastante trabalho; por isso, na prática, quase ninguém escreve essa lógica na mão."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Passo\", \"Lista antes do passo\", \"Menor do trecho restante\", \"Lista depois de trocar\"], [\"1\", \"[4, 1, 3, 2]\", \"1\", \"[1, 4, 3, 2]\"], [\"2\", \"[1, 4, 3, 2], falta ordenar a partir do índice 1\", \"2\", \"[1, 2, 3, 4]\"], [\"3\", \"[1, 2, 3, 4], falta ordenar a partir do índice 2\", \"3 (já está no lugar certo)\", \"[1, 2, 3, 4]\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Na prática: sorted() e .sort()\n\nEntender a ideia da ordenação por seleção ajuda a raciocinar, mas no dia a dia você não vai escrever esse algoritmo na mão toda vez. O Python já traz duas formas prontas de ordenar: a função `sorted(lista)`, que devolve uma lista nova já ordenada (sem mexer na original), e o método `lista.sort()`, que ordena a própria lista no lugar. Nos dois casos, use `reverse=True` quando quiser do maior para o menor."
+        },
+        {
+          "type": "code",
+          "value": "nomes = [\"Carlos\", \"Ana\", \"Bruno\"]\n\n# sorted() devolve uma lista nova, já ordenada\nprint(sorted(nomes))\n# saída: ['Ana', 'Bruno', 'Carlos']\n\n# .sort() ordena a própria lista, no lugar\nnomes.sort()\nprint(nomes)\n# saída: ['Ana', 'Bruno', 'Carlos']"
+        },
+        {
+          "type": "code",
+          "value": "numeros = [10, 1, 2]\n\n# por padrão, ordena do menor para o maior\nprint(sorted(numeros))\n# saída: [1, 2, 10]\n\n# para ordenar do maior para o menor, use reverse=True\nprint(sorted(numeros, reverse=True))\n# saída: [10, 2, 1]"
+        },
+        {
+          "type": "quote",
+          "value": "Ordenar é repetir, de forma organizada, algo que você já sabe fazer: comparar e escolher o menor (ou o maior). No dia a dia, confie no sorted() e no .sort() do Python, e use reverse=True quando quiser do maior para o menor."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que significa \"ordenar\" uma lista?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Remover os itens repetidos da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Contar quantos itens a lista tem",
+              "isCorrect": false
+            },
+            {
+              "text": "Reorganizar os itens da lista seguindo um critério",
+              "isCorrect": true
+            },
+            {
+              "text": "Transformar todos os números da lista em pedaços de texto",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual função pronta do Python devolve uma nova lista já ordenada, sem alterar a original?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "order()",
+              "isCorrect": false
+            },
+            {
+              "text": "arrange()",
+              "isCorrect": false
+            },
+            {
+              "text": "index()",
+              "isCorrect": false
+            },
+            {
+              "text": "sorted()",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Observe:\n\nnumeros = [3, 1, 2]\nprint(sorted(numeros))\n\nO que este código imprime?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "[3, 2, 1]",
+              "isCorrect": false
+            },
+            {
+              "text": "[1, 2, 3]",
+              "isCorrect": true
+            },
+            {
+              "text": "[3, 1, 2]",
+              "isCorrect": false
+            },
+            {
+              "text": "Dá erro, porque sorted() não funciona com listas de números",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Na ordenação por seleção, depois de achar o menor valor do trecho e colocá-lo na frente, o que o algoritmo faz a seguir?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Para, porque a lista já está pronta",
+              "isCorrect": false
+            },
+            {
+              "text": "Começa de novo do zero, considerando outra vez todos os itens da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Repete o processo no restante, ignorando o item já posicionado",
+              "isCorrect": true
+            },
+            {
+              "text": "Troca o maior valor de lugar com o menor",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Você quer uma nova lista com os valores de numeros = [10, 2, 33, 4] em ordem do menor para o maior, sem alterar a lista original. Qual código faz isso?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "numeros.sort()",
+              "isCorrect": false
+            },
+            {
+              "text": "sorted(numeros, reverse=True)",
+              "isCorrect": false
+            },
+            {
+              "text": "sorted(numeros)",
+              "isCorrect": true
+            },
+            {
+              "text": "numeros.reverse()",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Quando dá errado: depurando seu código",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Quando dá errado: depurando seu código\n\nSe o seu código não funcionar de primeira, parabéns: você é um programador normal. Errar faz parte do processo. O que separa quem programa bem de quem trava no primeiro erro é saber como investigar. Esse processo de encontrar e corrigir um problema no código se chama depuração (debugging).\n\nNesta aula você vai aprender um roteiro simples para descobrir o que deu errado."
+        },
+        {
+          "type": "text",
+          "value": "## Um roteiro para investigar\n\nQuando o código não funciona, seja porque ele quebrou com um erro, seja porque roda até o fim mas dá um resultado errado, siga esta ordem:\n\n- **Leia a mensagem de erro com calma.** No Python, ela vem no traceback, e a última linha quase sempre diz o tipo do problema (por exemplo, IndexError) e uma mensagem explicando; logo acima, ele aponta a linha onde o erro aconteceu.\n- **Isole o trecho.** Em vez de olhar o programa inteiro, teste só a parte suspeita, separada do resto.\n- **Use print para inspecionar valores.** Imprima as variáveis em pontos-chave do código para ver se elas têm o valor que você espera.\n- **Teste hipóteses, uma de cada vez.** Tem uma ideia do que pode estar errado? Mude só aquilo, rode de novo e veja se o resultado muda como você previu."
+        },
+        {
+          "type": "code",
+          "value": "nomes = [\"Ana\", \"Bruno\"]\n\nprint(nomes[5])\n\n# Traceback (most recent call last):\n#   File \"programa.py\", line 3, in <module>\n#     print(nomes[5])\n# IndexError: list index out of range\n#\n# a lista só tem os índices 0 e 1, então nomes[5] não existe.\n# leia o traceback de baixo para cima: a última linha diz o tipo do\n# erro (IndexError) e a mensagem (\"list index out of range\"), e logo\n# acima ela aponta a linha exata onde o erro aconteceu."
+        },
+        {
+          "type": "table",
+          "value": "[[\"Erro comum\", \"O que costuma acontecer\", \"Como perceber ou corrigir\"], [\"Indentação desalinhada (espaços a mais ou a menos)\", \"o Python nem roda e acusa IndentationError, apontando a linha\", \"alinhe as linhas de um mesmo bloco com a mesma quantidade de espaços\"], [\"Esquecer os dois-pontos (:) no fim do if, for ou def\", \"o Python para com SyntaxError antes de rodar\", \"confira se todo if, for, while e def termina com : e o bloco vem indentado\"], [\"Errar o nome de uma variável (ex.: idade e idadee)\", \"o Python para com NameError: name ... is not defined\", \"confira se o nome usado é exatamente igual ao que você criou\"], [\"Somar texto com número (ex.: \\\"3\\\" + 5)\", \"o Python para com TypeError\", \"confira os tipos: use int(...) para transformar texto em número antes de somar\"], [\"Buscar no dicionário uma chave que não existe\", \"o Python para com KeyError\", \"confira se a chave existe, ou use .get() para receber um valor padrão\"], [\"Esquecer o return na função\", \"a função roda, mas devolve None em vez do resultado\", \"confira se toda função que deveria devolver um valor tem um return\"]]"
+        },
+        {
+          "type": "text",
+          "value": "## Quando o código roda, mas o resultado está errado\n\nErros como IndentationError e SyntaxError são erros de sintaxe: o Python nem começa a rodar o programa. O caso mais chato, porém, é o erro de lógica: não aparece mensagem nenhuma, o programa roda até o fim, só que o resultado não é o esperado. Aqui o print é seu melhor amigo, imprima os valores no meio do caminho para ver em qual passo as coisas saem do previsto.\n\nVeja um exemplo: o código deveria somar as notas de um aluno, mas está devolvendo um valor menor do que deveria."
+        },
+        {
+          "type": "code",
+          "value": "notas = [7, 8, 6]\n\ndef somar_notas(lista):\n    soma = 0\n    for i in range(1, len(lista)):   # começa no índice 1 por engano\n        soma = soma + lista[i]\n    return soma\n\nprint(somar_notas(notas))\n# saída: 14  (o esperado era 21)\n\n# investigando com print dentro do laço:\ndef somar_notas_com_log(lista):\n    soma = 0\n    for i in range(1, len(lista)):\n        print(\"i =\", i, \"lista[i] =\", lista[i])\n        soma = soma + lista[i]\n    return soma\n\nsomar_notas_com_log(notas)\n# i = 1 lista[i] = 8\n# i = 2 lista[i] = 6\n# nunca aparece i = 0: o primeiro item (7) ficou de fora!\n# o certo é range(len(lista)), que começa no índice 0."
+        },
+        {
+          "type": "quote",
+          "value": "Um erro não é um fracasso: é uma pista. Leia o traceback com calma, isole o trecho, imprima os valores com print e teste uma hipótese de cada vez, até o comportamento bater com o que você esperava."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "O que você deve fazer primeiro ao ver uma mensagem de erro (um traceback) no Python?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Apagar todo o código e recomeçar do zero",
+              "isCorrect": false
+            },
+            {
+              "text": "Ler a mensagem com calma: ela geralmente indica o tipo do erro e a linha",
+              "isCorrect": true
+            },
+            {
+              "text": "Ignorar a mensagem e rodar o código de novo, torcendo para não acontecer outra vez",
+              "isCorrect": false
+            },
+            {
+              "text": "Comentar todas as linhas do arquivo até o erro sumir",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Qual ferramenta simples ajuda a inspecionar o valor de uma variável no meio da execução do código?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "return, dentro de uma função",
+              "isCorrect": false
+            },
+            {
+              "text": "if, junto de uma condição",
+              "isCorrect": false
+            },
+            {
+              "text": "print()",
+              "isCorrect": true
+            },
+            {
+              "text": "sorted(), para ordenar listas",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Uma função deveria devolver a soma de dois números. Ao rodar print(somar(2, 3)), aparece None no console, sem nenhum erro. O que é mais provável ter acontecido?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Os números 2 e 3 não existem em Python",
+              "isCorrect": false
+            },
+            {
+              "text": "A função esqueceu de usar return no final",
+              "isCorrect": true
+            },
+            {
+              "text": "O comando print foi escrito de forma errada",
+              "isCorrect": false
+            },
+            {
+              "text": "A função foi definida duas vezes no mesmo arquivo",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Observe:\n\nnumeros = [10, 20, 30]\nfor i in range(len(numeros) + 1):\n    print(numeros[i])\n\nO que acontece de errado nesse laço?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Ele pula o primeiro item da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Ele entra em um loop infinito",
+              "isCorrect": false
+            },
+            {
+              "text": "Ele tenta acessar numeros[3], que não existe (IndexError)",
+              "isCorrect": true
+            },
+            {
+              "text": "Ele imprime todos os itens da lista, só que em ordem invertida",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Observe:\n\ndef contem_numero(lista, procurado):\n    for n in lista:\n        if n == procurado:\n            return True\n        return False\n\nprint(contem_numero([5, 8, 2, 9], 2))\n\nA lista contém o número 2, mas esse código imprime False. Qual é a causa do bug?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "O operador == deveria ser trocado por is",
+              "isCorrect": false
+            },
+            {
+              "text": "A lista [5, 8, 2, 9] não é aceita como argumento em Python",
+              "isCorrect": false
+            },
+            {
+              "text": "O return False está dentro do laço, e não depois dele",
+              "isCorrect": true
+            },
+            {
+              "text": "A função não recebe os parâmetros na ordem correta",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Mini-projeto: uma lista de tarefas (e o próximo passo)",
+      "blocks": [
+        {
+          "type": "text",
+          "value": "# Mini-projeto: uma lista de tarefas\n\nChegou a hora de juntar tudo que você aprendeu nesta trilha: variáveis, condicionais, laços, funções e coleções (listas e dicionários). Vamos construir, aos poucos, um pequeno gerenciador de tarefas que roda inteiramente na memória do programa (quando o programa termina, a lista some, mas isso não é problema agora; o objetivo aqui é praticar a lógica).\n\nO projeto vai ter:\n- uma lista para guardar as tarefas (cada tarefa é um dicionário com título e status)\n- uma função para adicionar uma tarefa nova\n- uma função para listar as tarefas\n- uma função para marcar uma tarefa como concluída\n- uma função para contar quantas tarefas ainda estão pendentes\n\nNo fim, um pequeno menu vai ler suas escolhas com input() e chamar essas funções. Vamos construir peça por peça."
+        },
+        {
+          "type": "code",
+          "value": "tarefas = []\n\ndef adicionar_tarefa(titulo):\n    nova_tarefa = {\n        \"titulo\": titulo,\n        \"concluida\": False,\n    }\n    tarefas.append(nova_tarefa)\n\nadicionar_tarefa(\"Estudar laços\")\nadicionar_tarefa(\"Fazer o exercício de funções\")\nadicionar_tarefa(\"Revisar listas e dicionários\")\n\nprint(tarefas)\n# saída:\n# [\n#   {'titulo': 'Estudar laços', 'concluida': False},\n#   {'titulo': 'Fazer o exercício de funções', 'concluida': False},\n#   {'titulo': 'Revisar listas e dicionários', 'concluida': False}\n# ]"
+        },
+        {
+          "type": "text",
+          "value": "## Listando, concluindo e contando\n\nCada tarefa é um dicionário com duas chaves: titulo (texto) e concluida (um valor True/False que começa em False). Três funções vão trabalhar em cima dessa lista:\n\n- listar_tarefas() percorre a lista com for e mostra o título de cada tarefa, marcando de forma diferente as que já foram concluídas.\n- concluir_tarefa(titulo) faz uma busca linear, igual à da aula 2: procura pelo título e, quando encontra, muda concluida para True.\n- contar_pendentes() percorre a lista e conta quantas tarefas ainda têm concluida igual a False, o mesmo padrão de contador da aula 2."
+        },
+        {
+          "type": "code",
+          "value": "def listar_tarefas():\n    for tarefa in tarefas:\n        if tarefa[\"concluida\"]:\n            print(\"[x] \" + tarefa[\"titulo\"])\n        else:\n            print(\"[ ] \" + tarefa[\"titulo\"])\n\ndef concluir_tarefa(titulo):\n    for tarefa in tarefas:\n        if tarefa[\"titulo\"] == titulo:\n            tarefa[\"concluida\"] = True\n            return\n\nlistar_tarefas()\n# saída:\n# [ ] Estudar laços\n# [ ] Fazer o exercício de funções\n# [ ] Revisar listas e dicionários\n\nconcluir_tarefa(\"Estudar laços\")\nlistar_tarefas()\n# saída:\n# [x] Estudar laços\n# [ ] Fazer o exercício de funções\n# [ ] Revisar listas e dicionários"
+        },
+        {
+          "type": "code",
+          "value": "def contar_pendentes():\n    pendentes = 0\n    for tarefa in tarefas:\n        if tarefa[\"concluida\"] == False:\n            pendentes = pendentes + 1\n    return pendentes\n\nprint(contar_pendentes())\n# saída: 2\n\n# juntando tudo em um programa que conversa com o usuário:\nwhile True:\n    print()\n    print(\"1) Adicionar  2) Listar  3) Concluir  4) Pendentes  5) Sair\")\n    opcao = input(\"Escolha uma opção: \")\n\n    if opcao == \"1\":\n        titulo = input(\"Título da tarefa: \")\n        adicionar_tarefa(titulo)\n    elif opcao == \"2\":\n        listar_tarefas()\n    elif opcao == \"3\":\n        titulo = input(\"Qual tarefa concluir? \")\n        concluir_tarefa(titulo)\n    elif opcao == \"4\":\n        print(\"Tarefas pendentes:\", contar_pendentes())\n    elif opcao == \"5\":\n        print(\"Até a próxima!\")\n        break\n    else:\n        print(\"Opção inválida, tente de novo.\")"
+        },
+        {
+          "type": "text",
+          "value": "## Você chegou até aqui\n\nOlha o caminho que você percorreu nesta trilha: começou entendendo o que é um algoritmo (um passo a passo para resolver um problema), aprendeu a guardar informação em variáveis, a tomar decisões com condicionais, a repetir tarefas com laços, a organizar a lógica em funções e a guardar coleções de dados em listas e dicionários. Neste último módulo, você juntou tudo isso para atacar problemas de verdade, usar algoritmos simples sobre listas, organizar dados e, principalmente, saber o que fazer quando o código não funciona de primeira.\n\nEsse raciocínio sustenta qualquer linguagem ou framework que você for aprender depois, e agora você já o pratica em Python, uma das linguagens mais usadas do mundo. Continue praticando: pegue este mini-projeto e acrescente coisas (remover uma tarefa, contar as concluídas, guardar uma data de entrega). Cada pequena melhoria fixa o que você aprendeu.\n\nO próximo passo do roadmap de Back-end é a trilha **Protocolos da Web**: como o navegador conversa com um servidor, o que é uma requisição HTTP, o que são métodos como GET e POST, e como essas trocas de mensagens formam a base de toda aplicação que roda na internet. É a mesma lógica que você aprendeu aqui, agora aplicada à comunicação entre máquinas."
+        },
+        {
+          "type": "quote",
+          "value": "Você aprendeu a pensar em passos, guardar dados, tomar decisões, repetir tarefas, organizar código em funções e trabalhar com coleções. Isso é lógica de programação, a base de tudo que vem a seguir. A próxima parada é entender como a web conversa: Protocolos da Web."
+        }
+      ],
+      "questions": [
+        {
+          "statement": "No mini-projeto da lista de tarefas, cada tarefa é representada como:",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "Uma string com o título da tarefa",
+              "isCorrect": false
+            },
+            {
+              "text": "Um dicionário com as chaves titulo e concluida",
+              "isCorrect": true
+            },
+            {
+              "text": "Uma lista com duas posições",
+              "isCorrect": false
+            },
+            {
+              "text": "Um número inteiro que representa a posição da tarefa na lista",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Se você chamar adicionar_tarefa três vezes, cada vez passando um título diferente, quantos itens a lista tarefas passa a ter?",
+          "difficulty": "facil",
+          "options": [
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": true
+            },
+            {
+              "text": "Depende de quantas vezes listar_tarefas() foi chamada",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "Depois de adicionar 4 tarefas e concluir 1 delas com concluir_tarefa, o que a função contar_pendentes() deve retornar?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "4",
+              "isCorrect": false
+            },
+            {
+              "text": "3",
+              "isCorrect": true
+            },
+            {
+              "text": "1",
+              "isCorrect": false
+            },
+            {
+              "text": "0",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "statement": "A função concluir_tarefa(titulo) percorre a lista tarefas com um for. O que ela faz ao encontrar uma tarefa cujo titulo é igual ao parâmetro recebido?",
+          "difficulty": "medio",
+          "options": [
+            {
+              "text": "Remove essa tarefa da lista",
+              "isCorrect": false
+            },
+            {
+              "text": "Cria uma tarefa nova, repetindo esse mesmo título",
+              "isCorrect": false
+            },
+            {
+              "text": "Imprime todas as tarefas na tela",
+              "isCorrect": false
+            },
+            {
+              "text": "Muda a chave concluida dessa tarefa para True",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "statement": "Se você chamar concluir_tarefa(\"Tarefa que não existe\") com um título que não está em nenhuma tarefa da lista, o que acontece?",
+          "difficulty": "dificil",
+          "options": [
+            {
+              "text": "O programa quebra com um erro",
+              "isCorrect": false
+            },
+            {
+              "text": "Uma tarefa nova é criada automaticamente no fim da lista com esse título",
+              "isCorrect": false
+            },
+            {
+              "text": "O laço não acha correspondência e termina sem alterar nada",
+              "isCorrect": true
+            },
+            {
+              "text": "Todas as tarefas da lista são marcadas como concluídas",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
