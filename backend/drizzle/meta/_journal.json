@@ -225,6 +225,13 @@
       "when": 1783956666971,
       "tag": "0031_careless_fenris",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1784547603259,
+      "tag": "0032_regular_rick_jones",
+      "breakpoints": true
     }
   ]
 }

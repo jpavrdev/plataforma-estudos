@@ -21,6 +21,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { statusErro } from '../../utils/erro';
 import { BlocosConteudo, md } from '../../components/BlocosConteudo';
+import { getTrailLang } from '../../utils/trailLang';
 
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
@@ -41,7 +42,8 @@ export function Aula() {
       setCarregando(true);
       setErro('');
       try {
-        const [t, a] = await Promise.all([obterTrilha(trailId!), obterAula(lessonId!)]);
+        const lang = trailId ? getTrailLang(trailId) : undefined;
+        const [t, a] = await Promise.all([obterTrilha(trailId!, lang), obterAula(lessonId!, lang)]);
         if (!ativo) return;
         setTrilha(t);
         setAula(a);

@@ -22,6 +22,14 @@
 .td-instructor { display: flex; align-items: center; gap: 11px; margin-top: 20px; font-size: 13.5px; color: rgba(255,255,255,.85); }
 .td-instructor b { color: #fff; }
 
+.td-langsel { display: flex; align-items: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.td-langsel__label { font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,.8); }
+.td-langsel__opts { display: inline-flex; gap: 3px; padding: 3px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.18); border-radius: 10px; }
+.td-langsel__opt { border: none; background: transparent; color: rgba(255,255,255,.82); font-family: inherit; font-size: 13.5px; font-weight: 600; padding: 7px 16px; border-radius: 8px; cursor: pointer; transition: background .15s, color .15s; }
+.td-langsel__opt:hover { color: #fff; }
+.td-langsel__opt--on { background: #fff; color: var(--accent); }
+.td-langsel__opt--on:hover { color: var(--accent); }
+
 .td-card { background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 16px; padding: 8px; box-shadow: 0 18px 40px rgba(0,0,0,.28); }
 .td-card__preview { position: relative; height: 150px; border-radius: 12px; overflow: hidden; background: linear-gradient(150deg, var(--accent), color-mix(in srgb, var(--accent) 46%, #0A1430)); display: flex; align-items: center; justify-content: center; border: none; width: 100%; cursor: pointer; }
 .td-card__preview-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(255,255,255,.9); display: flex; align-items: center; justify-content: center; color: var(--accent); }

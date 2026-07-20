@@ -200,7 +200,7 @@ export async function trilhasDoUsuario(userId: string) {
 
 // Retorna a trilha com módulos e aulas, cada aula com estado para o usuário.
 // Estado sequencial na trilha toda: done | current | locked.
-export async function detalheDaTrilha(trailId: string, userId: string) {
+export async function detalheDaTrilha(trailId: string, userId: string, lang?: string) {
     const [trilha] = await db.select().from(trails).where(eq(trails.id, trailId));
     if (!trilha) {
         throw new AppError(404, "Trilha não encontrada");
@@ -214,12 +214,23 @@ export async function detalheDaTrilha(trailId: string, userId: string) {
         .where(eq(modules.trailId, trailId))
         .orderBy(asc(modules.position));
 
-    // Aluno vê só aulas publicadas; admin vê todas (para gerenciar).
-    const todasAulas = await db
+    const aulasBrutas = await db
         .select()
         .from(lessons)
         .where(eq(lessons.trailId, trailId))
         .orderBy(asc(lessons.position));
+
+    // language null = aula neutra (lógica pura), compartilhada por todas as linguagens.
+    const languages = [
+        ...new Set(aulasBrutas.map((a) => a.language).filter((l): l is string => !!l)),
+    ].sort();
+    const multi = languages.length > 0;
+    const langAtiva = multi ? (lang && languages.includes(lang) ? lang : languages[0]) : null;
+
+    const todasAulas = multi
+        ? aulasBrutas.filter((a) => a.language === null || a.language === langAtiva)
+        : aulasBrutas;
+
     const aulas = admin ? todasAulas : todasAulas.filter((a) => a.published);
 
     const concluidas = new Set(
@@ -326,6 +337,9 @@ export async function detalheDaTrilha(trailId: string, userId: string) {
         reviews,
         myReview,
         canReview,
+        multiLanguage: multi,
+        languages,
+        activeLanguage: langAtiva,
         modules: modulosComAulas,
     };
 }

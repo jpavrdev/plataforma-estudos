@@ -23,12 +23,22 @@ import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 import { obterTrilha, avaliarTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
+import { getTrailLang, setTrailLang } from '../../utils/trailLang';
 
 const NIVEL: Record<TrailDetail['trailLevel'], string> = {
   iniciante: 'Iniciante',
   intermediario: 'Intermediário',
   avancado: 'Avançado',
 };
+
+const LANG_LABEL: Record<string, string> = {
+  javascript: 'JavaScript',
+  python: 'Python',
+};
+
+function labelLinguagem(code: string): string {
+  return LANG_LABEL[code] ?? code.charAt(0).toUpperCase() + code.slice(1);
+}
 
 function glyphDoNome(name: string): string {
   const limpo = name.replace(/[^A-Za-zÀ-ú ]/g, '').trim();
@@ -91,11 +101,14 @@ export function TrilhaDetalhe() {
   const [stars, setStars] = useState(0);
   const [comment, setComment] = useState('');
   const [salvando, setSalvando] = useState(false);
+  const [lang, setLang] = useState<string | undefined>(() =>
+    trailId ? getTrailLang(trailId) : undefined,
+  );
 
   useEffect(() => {
     if (!trailId) return;
     setCarregando(true);
-    obterTrilha(trailId)
+    obterTrilha(trailId, lang)
       .then((t) => {
         setTrilha(t);
         setStars(t.myReview?.stars ?? 0);
@@ -105,7 +118,13 @@ export function TrilhaDetalhe() {
       })
       .catch(() => setErro('Não foi possível carregar a trilha.'))
       .finally(() => setCarregando(false));
-  }, [trailId]);
+  }, [trailId, lang]);
+
+  function escolherLinguagem(code: string) {
+    if (!trailId || code === trilha?.activeLanguage) return;
+    setTrailLang(trailId, code);
+    setLang(code);
+  }
 
   const stats = useMemo(() => {
     const aulas = trilha?.modules.flatMap((m) => m.lessons) ?? [];
@@ -253,6 +272,26 @@ export function TrilhaDetalhe() {
                       <Globe size={15} /> PT-BR
                     </span>
                   </div>
+
+                  {trilha.multiLanguage && (trilha.languages?.length ?? 0) > 1 && (
+                    <div className="td-langsel">
+                      <span className="td-langsel__label">Linguagem</span>
+                      <div className="td-langsel__opts">
+                        {trilha.languages!.map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            className={`td-langsel__opt${
+                              code === trilha.activeLanguage ? ' td-langsel__opt--on' : ''
+                            }`}
+                            onClick={() => escolherLinguagem(code)}
+                          >
+                            {labelLinguagem(code)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="td-card">
