@@ -4972,11 +4972,11 @@ const MODULOS: Modulo[] = [
                 ]
             },
             {
-                "titulo": "Recapitulando e o próximo passo: autenticação",
+                "titulo": "Recapitulando e o próximo passo",
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "# Recapitulando e o próximo passo: autenticação\n\nChegamos à última aula da trilha de Banco de Dados. Ao longo de sete módulos você saiu de \"por que guardar dados em tabelas\" até escrever uma migration e reconhecer um problema de performance escondido dentro de um ORM. Vale parar um instante e olhar o caminho inteiro antes de seguir para o próximo estágio do roadmap de back-end."
+                        "value": "# Recapitulando e o próximo passo\n\nChegamos à última aula da trilha de Banco de Dados. Ao longo de sete módulos você saiu de \"por que guardar dados em tabelas\" até escrever uma migration e reconhecer um problema de performance escondido dentro de um ORM. Vale parar um instante e olhar o caminho inteiro antes de seguir para a próxima trilha do seu roadmap."
                     },
                     {
                         "type": "table",
@@ -4988,7 +4988,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## O próximo estágio: autenticação\n\nO roadmap de back-end segue agora para **Autenticação**: como uma aplicação identifica quem está fazendo cada requisição, com login, senha e um token (como JWT) ou sessão para manter esse usuário \"logado\" nas próximas chamadas.\n\nEssa próxima trilha não começa do zero. Ela usa exatamente a tabela `usuarios` que você aprendeu a modelar e consultar aqui: um `email` único para localizar o usuário, um campo para a senha guardada como hash (nunca em texto puro, isso vem na própria trilha de autenticação) e uma chave primária `id` para identificar esse usuário em todas as outras tabelas relacionadas, como a `tarefas` que você já usou nos exemplos. O login, no fim, é mais uma consulta numa tabela que você já sabe modelar, indexar e consultar com segurança."
+                        "value": "## O próximo passo\n\nSeja qual for o seu roadmap, a próxima trilha vem logo depois desta e se apoia no que você construiu aqui. No caminho de back-end, por exemplo, a próxima é Autenticação: como uma aplicação identifica quem faz cada requisição, com login, senha e um token (como JWT) ou sessão. Ela não começa do zero, usa exatamente a tabela `usuarios` que você modelou aqui, com `email` único e senha guardada como hash. Em outros roadmaps, é a mesma base de modelagem e SQL que sustenta a etapa seguinte. Abra o seu roadmap e siga para a próxima trilha."
                     },
                     {
                         "type": "code",
@@ -4996,7 +4996,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "quote",
-                        "value": "Você chegou ao fim da trilha de Banco de Dados sabendo modelar dados em tabelas, consultá-los e modificá-los com SQL, criar relacionamentos e índices num PostgreSQL de verdade, conectar tudo isso a uma API com segurança, e usar um ORM sem perder de vista o que ele faz por baixo. Essa é a base que sustenta qualquer coisa que você construir daqui para frente no back-end, a começar pela próxima trilha, autenticação, aplicada exatamente sobre a tabela de usuários que agora é sua."
+                        "value": "Você chegou ao fim da trilha de Banco de Dados sabendo modelar dados em tabelas, consultá-los e modificá-los com SQL, criar relacionamentos e índices num PostgreSQL de verdade, conectar tudo isso a uma API com segurança, e usar um ORM sem perder de vista o que ele faz por baixo. Essa é a base que sustenta a próxima trilha do seu roadmap, seja ela qual for, aplicada exatamente sobre a modelagem que agora é sua."
                     }
                 ],
                 "questions": [
@@ -5023,23 +5023,23 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Segundo o fechamento da trilha, qual é o próximo estágio do roadmap de back-end depois de \"Banco de Dados\"?",
+                        "statement": "Segundo o fechamento, o que esta trilha de Banco de Dados deixa como base para as etapas seguintes do seu roadmap?",
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Deploy em nuvem, sem relação direta com o que foi estudado nesta trilha.",
+                                "text": "A capacidade de trocar de linguagem de programação sem reescrever nada",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Uma segunda linguagem de back-end, para substituir o Node.js.",
+                                "text": "O domínio de CSS e do design das telas do sistema",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Design de interface (UI/UX) para as telas do sistema.",
+                                "text": "A dispensa de qualquer modelagem, já que daqui pra frente o dado passa a se organizar sozinho",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Autenticação, que vai usar a tabela de usuários modelada nesta trilha",
+                                "text": "Saber modelar tabelas e consultá-las com SQL ou ORM",
                                 "isCorrect": true
                             }
                         ]
@@ -5089,7 +5089,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "A trilha de Autenticação, próximo estágio do roadmap, vai construir login sobre a tabela usuarios que você aprendeu a modelar e consultar. Qual conhecimento desta trilha de Banco de Dados é diretamente reaproveitado nesse próximo estágio?",
+                        "statement": "Uma trilha seguinte, como Autenticação no roadmap de back-end, pode construir um login sobre a tabela usuarios que você modelou aqui. Qual conhecimento desta trilha de Banco de Dados é reaproveitado nesse tipo de continuação?",
                         "difficulty": "dificil",
                         "options": [
                             {

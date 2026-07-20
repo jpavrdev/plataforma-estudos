@@ -4546,7 +4546,7 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "## merge: juntando por uma chave\n\nA função `pd.merge` combina duas tabelas usando uma coluna em comum, a chave, indicada pelo parâmetro `on`:\n\n`pd.merge(esquerda, direita, on=\"chave\", how=\"tipo\")`\n\nO `how` decide o que fazer com as linhas sem correspondência do outro lado, e tem quatro valores possíveis: `\"inner\"`, `\"left\"`, `\"right\"` e `\"outer\"`. Essa é a mesma lógica do `JOIN` em SQL, a próxima trilha do roadmap: `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN` e `FULL OUTER JOIN` fazem exatamente isso, e o `ON` do SQL é o mesmo `on` do `pd.merge`."
+                        "value": "## merge: juntando por uma chave\n\nA função `pd.merge` combina duas tabelas usando uma coluna em comum, a chave, indicada pelo parâmetro `on`:\n\n`pd.merge(esquerda, direita, on=\"chave\", how=\"tipo\")`\n\nO `how` decide o que fazer com as linhas sem correspondência do outro lado, e tem quatro valores possíveis: `\"inner\"`, `\"left\"`, `\"right\"` e `\"outer\"`. Essa é a mesma lógica do `JOIN` em SQL: `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN` e `FULL OUTER JOIN` fazem exatamente isso, e o `ON` do SQL é o mesmo `on` do `pd.merge`."
                     },
                     {
                         "type": "code",
@@ -4993,15 +4993,15 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Próximo passo: SQL e Banco de Dados\n\nNesta trilha, os dados sempre chegaram prontos, um CSV ou um dict pronto pra virar DataFrame. Na próxima trilha do roadmap, SQL e Banco de Dados, você aprende de onde esses dados realmente vêm: como ficam guardados em tabelas relacionais, como se escreve uma consulta com SELECT, WHERE, GROUP BY, e principalmente como se escreve o JOIN que você acabou de aprender aqui como merge. INNER JOIN, LEFT JOIN, RIGHT JOIN: os mesmos quatro tipos, a mesma lógica de linhas sem correspondência, só que direto no banco, antes mesmo do dado chegar num DataFrame."
+                        "value": "## Uma direção: SQL e bancos de dados\n\nNesta trilha, os dados sempre chegaram prontos, um CSV ou um dict pronto pra virar DataFrame. Uma direção natural a partir daqui é aprender SQL e bancos de dados: de onde esses dados realmente vêm, como ficam guardados em tabelas relacionais, como se escreve uma consulta com SELECT, WHERE, GROUP BY, e principalmente como se escreve o JOIN que você acabou de aprender aqui como merge. INNER JOIN, LEFT JOIN, RIGHT JOIN: os mesmos quatro tipos, a mesma lógica de linhas sem correspondência, só que direto no banco, antes mesmo do dado chegar num DataFrame."
                     },
                     {
                         "type": "text",
-                        "value": "## Próximo passo: Visualização de Dados\n\nCada groupby, cada merge, cada limpeza desta trilha produziu uma tabela de resultado, e você leu essa tabela com print ou olhando os números. Isso funciona, mas um gráfico comunica um padrão muito mais rápido do que uma tabela cheia de números. A trilha Visualização de Dados ensina a transformar esses mesmos DataFrames em gráficos com matplotlib e seaborn: o resumo da aula anterior, por exemplo, vira um gráfico de barras em uma linha de código."
+                        "value": "## Uma direção: visualização de dados\n\nCada groupby, cada merge, cada limpeza desta trilha produziu uma tabela de resultado, e você leu essa tabela com print ou olhando os números. Isso funciona, mas um gráfico comunica um padrão muito mais rápido do que uma tabela cheia de números. A visualização de dados transforma esses mesmos DataFrames em gráficos com matplotlib e seaborn: o resumo da aula anterior, por exemplo, vira um gráfico de barras em uma linha de código."
                     },
                     {
                         "type": "text",
-                        "value": "## O destino: Machine Learning\n\nNumPy, pandas, limpeza e junção de dados não são o fim da linha: são o que prepara o terreno pra Machine Learning, o próximo grande bloco do roadmap de Ciência de Dados. Todo modelo de aprendizado de máquina recebe como entrada uma tabela numérica e limpa, sem valores faltando: exatamente o que você aprendeu a produzir aqui. Quanto melhor o dado que chega no modelo, melhor o modelo, e é por isso que essa trilha inteira valeu a pena antes mesmo de você treinar o primeiro modelo."
+                        "value": "## Uma direção: machine learning\n\nNumPy, pandas, limpeza e junção de dados não são o fim da linha: são o que prepara o terreno para machine learning. Todo modelo de aprendizado de máquina recebe como entrada uma tabela numérica e limpa, sem valores faltando: exatamente o que você aprendeu a produzir aqui. Quanto melhor o dado que chega no modelo, melhor o modelo, e é por isso que essa trilha inteira valeu a pena antes mesmo de você treinar o primeiro modelo.\n\nQual dessas direções é a sua próxima trilha depende do seu roadmap. Abra o seu roadmap e siga por ele."
                     },
                     {
                         "type": "quote",
