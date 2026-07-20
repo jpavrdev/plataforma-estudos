@@ -188,26 +188,29 @@ describe("GET /lessons/:id (seguranca)", () => {
     });
 });
 
-describe("Quiz e bloqueio sequencial", () => {
-    test("aula seguinte fica bloqueada ate concluir a anterior", async () => {
+describe("Quiz e estado das aulas", () => {
+    test("aulas sao acessiveis fora de ordem, mas o estado reflete o progresso", async () => {
         const admin = await criarUsuarioLogado(true);
         const { trailId, lessonIds } = await montarTrilha(admin.token, 2);
         const aluno = await criarUsuarioLogado();
 
-        // Aula 2 comeca bloqueada
-        const bloqueada = await get(`/lessons/${lessonIds[1]}`, aluno.token);
-        assert.equal(bloqueada.status, 403);
+        // Sem trava sequencial: a aula 2 abre mesmo sem concluir a aula 1
+        const antes = await get(`/lessons/${lessonIds[1]}`, aluno.token);
+        assert.equal(antes.status, 200);
+
+        // Ainda assim o estado na trilha reflete o progresso: 1 current, 2 locked
+        const trilhaAntes = await get(`/trails/${trailId}`, aluno.token);
+        const estadosAntes = trilhaAntes.body.modules.flatMap((m: any) =>
+            m.lessons.map((l: any) => l.state),
+        );
+        assert.deepEqual(estadosAntes, ["current", "locked"]);
 
         // Conclui a aula 1 com 5 acertos
         const quiz = await responderQuiz(aluno.token, lessonIds[0], 5);
         assert.equal(quiz.body.passed, true);
         assert.equal(quiz.body.lessonCompleted, true);
 
-        // Aula 2 desbloqueia
-        const liberada = await get(`/lessons/${lessonIds[1]}`, aluno.token);
-        assert.equal(liberada.status, 200);
-
-        // Estados na trilha: 1 done, 1 current
+        // Estados na trilha: 1 done, 2 current
         const trilha = await get(`/trails/${trailId}`, aluno.token);
         const estados = trilha.body.modules.flatMap((m: any) => m.lessons.map((l: any) => l.state));
         assert.deepEqual(estados, ["done", "current"]);

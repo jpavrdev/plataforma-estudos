@@ -4965,7 +4965,7 @@ const MODULOS: Modulo[] = [
                 ]
             },
             {
-                "titulo": "Segurança, recap e o próximo passo (Arquitetura & escala)",
+                "titulo": "Segurança, recap e o próximo passo",
                 "blocks": [
                     {
                         "type": "text",
@@ -4989,7 +4989,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## O próximo passo: Arquitetura & escala\n\nAté aqui, o desenho assumido foi relativamente simples: uma aplicação, talvez com mais de uma réplica, e um banco de dados, rodando atrás de um load balancer. Isso resolve a imensa maioria dos casos, e é o ponto de partida certo.\n\nMas em algum momento, se o produto crescer, esse desenho esbarra num limite: um serviço monolítico só, não importa quantas réplicas, começa a ficar difícil de escalar e manter conforme times e funcionalidades crescem junto. É aí que a arquitetura evolui: filas pra processar coisa pesada de forma assíncrona, cache pra tirar carga do banco, réplicas de banco pra leitura, e responsabilidades separadas em serviços menores conversando entre si. A trilha de Cache, Filas e Performance já apresentou boa parte dessas peças; o próximo e último estágio do roadmap de Back-end, Arquitetura & escala, é onde elas se juntam num desenho pensado pra aguentar carga de verdade.\n\nE o CI/CD que você aprendeu aqui não fica pra trás nessa evolução, pelo contrário: quanto mais peças o sistema tiver, mais importa ter uma esteira automática e confiável, pra colocar mudança no ar em qualquer uma delas sem medo."
+                        "value": "## O próximo passo: operar em escala\n\nAté aqui, o desenho assumido foi relativamente simples: uma aplicação, talvez com mais de uma réplica, e um banco de dados, rodando atrás de um load balancer. Isso resolve a imensa maioria dos casos, e é o ponto de partida certo.\n\nMas em algum momento, se o produto crescer, esse desenho esbarra num limite: um serviço monolítico só, não importa quantas réplicas, começa a ficar difícil de escalar e manter conforme times e funcionalidades crescem junto. É aí que a arquitetura evolui: filas pra processar coisa pesada de forma assíncrona, cache pra tirar carga do banco, réplicas de banco pra leitura, e responsabilidades separadas em serviços menores conversando entre si. Esse é o tipo de tema que aparece mais adiante no seu roadmap.\n\nE o CI/CD que você aprendeu aqui não fica pra trás nessa evolução, pelo contrário: quanto mais peças o sistema tiver, mais importa ter uma esteira automática e confiável, pra colocar mudança no ar em qualquer uma delas sem medo."
                     },
                     {
                         "type": "quote",
@@ -5064,7 +5064,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual opção resume melhor a ponte entre esta trilha e o próximo estágio do roadmap, Arquitetura & escala?",
+                        "statement": "Qual opção resume melhor a diferença entre o que o CI/CD resolve e o que a escalabilidade da arquitetura resolve?",
                         "difficulty": "medio",
                         "options": [
                             {

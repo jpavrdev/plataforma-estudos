@@ -109,11 +109,16 @@ export interface TrailDetail {
   reviews?: TrailReview[];
   myReview?: MyReview | null;
   canReview?: boolean;
+  multiLanguage?: boolean;
+  languages?: string[];
+  activeLanguage?: string | null;
   modules: ModuleWithLessons[];
 }
 
-export async function obterTrilha(trailId: string) {
-  const { data } = await api.get<TrailDetail>(`/trails/${trailId}`);
+export async function obterTrilha(trailId: string, lang?: string) {
+  const { data } = await api.get<TrailDetail>(`/trails/${trailId}`, {
+    params: lang ? { lang } : undefined,
+  });
   return data;
 }
 
@@ -153,14 +158,17 @@ export interface LessonDetail {
   trailId: string;
   moduleId: string;
   title: string;
+  language: string | null;
   content: string | null;
   contentBlocks: Bloco[] | null;
   state: LessonState;
   questions: QuizQuestion[];
 }
 
-export async function obterAula(lessonId: string) {
-  const { data } = await api.get<LessonDetail>(`/lessons/${lessonId}`);
+export async function obterAula(lessonId: string, lang?: string) {
+  const { data } = await api.get<LessonDetail>(`/lessons/${lessonId}`, {
+    params: lang ? { lang } : undefined,
+  });
   return data;
 }
 
