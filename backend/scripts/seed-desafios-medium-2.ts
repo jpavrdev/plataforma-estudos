@@ -636,6 +636,617 @@ const DESAFIOS = [
                 "isPublic": false
             }
         ]
+    },
+    {
+        "title": "Elemento de Pico",
+        "topic": "Array · Busca Binária",
+        "entryPoint": "findPeakElement",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Um elemento de uma lista é chamado de **pico** quando é estritamente maior do que os seus vizinhos imediatos. Você recebe uma lista de inteiros `nums` na qual quaisquer dois elementos adjacentes são diferentes entre si. Para efeito de comparação nas extremidades, considere que existem valores imaginários `nums[-1]` e `nums[n]` iguais a `-∞`, de modo que o primeiro e o último elemento também podem ser um pico.\n\nImplemente o método `findPeakElement`, que recebe `nums` e retorna o **índice** de um elemento de pico."
+            },
+            {
+                "type": "text",
+                "value": "A lista pode conter mais de um pico. Para que a resposta seja única, é fixado que você deve retornar o pico de **menor índice**.\n\nPor exemplo, para `nums = [1, 2, 1, 3, 5, 6, 4]` existem picos nos índices `1` e `5`; o resultado é `1`, por ser o de menor índice."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 ≤ nums.length ≤ 1000`\n- `-2^31 ≤ nums[i] ≤ 2^31 - 1`\n- `nums[i] != nums[i + 1]` para todo `i` válido"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  findPeakElement(nums) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "from typing import List\n\n\nclass Solution:\n    def findPeakElement(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int findPeakElement(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[[1,2,3,1]]",
+                "expectedOutput": "2",
+                "isPublic": true
+            },
+            {
+                "input": "[[1,2,1,3,5,6,4]]",
+                "expectedOutput": "1",
+                "isPublic": true
+            },
+            {
+                "input": "[[1]]",
+                "expectedOutput": "0",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,2]]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[3,2,1]]",
+                "expectedOutput": "0",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,3,2,4,1]]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,2,3,4,5]]",
+                "expectedOutput": "4",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Koko Comendo Bananas",
+        "topic": "Busca Binária",
+        "entryPoint": "minEatingSpeed",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Koko adora bananas. Há `piles.length` pilhas de bananas, e a pilha de índice `i` tem `piles[i]` bananas. Os guardas voltarão em `h` horas.\n\nKoko escolhe uma velocidade de comer `k` (bananas por hora). A cada hora, ela escolhe **uma** pilha e come até `k` bananas dessa pilha. Se a pilha tiver menos do que `k` bananas, ela come todas as restantes e não passa para outra pilha naquela hora.\n\nImplemente o método `minEatingSpeed`, que recebe `piles` e `h` e retorna a **menor** velocidade inteira `k` com a qual Koko consegue comer todas as bananas em no máximo `h` horas."
+            },
+            {
+                "type": "text",
+                "value": "Por exemplo, para `piles = [3, 6, 7, 11]` e `h = 8`, o resultado é `4`: com `k = 4` o total de horas é `1 + 2 + 2 + 3 = 8`, e nenhuma velocidade menor cabe em `8` horas."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 ≤ piles.length ≤ 10^4`\n- `piles.length ≤ h ≤ 10^9`\n- `1 ≤ piles[i] ≤ 10^9`"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {number[]} piles\n   * @param {number} h\n   * @return {number}\n   */\n  minEatingSpeed(piles, h) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "from typing import List\n\n\nclass Solution:\n    def minEatingSpeed(self, piles: List[int], h: int) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int minEatingSpeed(int[] piles, int h) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[[3,6,7,11],8]",
+                "expectedOutput": "4",
+                "isPublic": true
+            },
+            {
+                "input": "[[30,11,23,4,20],5]",
+                "expectedOutput": "30",
+                "isPublic": true
+            },
+            {
+                "input": "[[30,11,23,4,20],6]",
+                "expectedOutput": "23",
+                "isPublic": false
+            },
+            {
+                "input": "[[1],1]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[1000000000],2]",
+                "expectedOutput": "500000000",
+                "isPublic": false
+            },
+            {
+                "input": "[[3,6,7,11],4]",
+                "expectedOutput": "11",
+                "isPublic": false
+            },
+            {
+                "input": "[[5,5,5,5],8]",
+                "expectedOutput": "3",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Maior Substring Palíndroma",
+        "topic": "String · Programação Dinâmica",
+        "entryPoint": "longestPalindrome",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Uma substring é palíndroma quando é lida da mesma forma da esquerda para a direita e da direita para a esquerda. Você recebe uma string `s`.\n\nImplemente o método `longestPalindrome`, que recebe `s` e retorna a **maior** substring de `s` que seja um palíndromo."
+            },
+            {
+                "type": "text",
+                "value": "Pode haver mais de uma substring palíndroma com o comprimento máximo. Para que a resposta seja única, é fixado que, em caso de empate no comprimento, você deve retornar a de **menor índice inicial**.\n\nPor exemplo, para `s = \"babad\"` as substrings `\"bab\"` e `\"aba\"` têm comprimento `3`; o resultado é `\"bab\"`, por começar antes."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 ≤ s.length ≤ 1000`\n- `s` contém apenas letras minúsculas do alfabeto inglês"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {string} s\n   * @return {string}\n   */\n  longestPalindrome(s) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "class Solution:\n    def longestPalindrome(self, s: str) -> str:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public String longestPalindrome(String s) {\n        // sua solução aqui\n        return \"\";\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[\"babad\"]",
+                "expectedOutput": "\"bab\"",
+                "isPublic": true
+            },
+            {
+                "input": "[\"cbbd\"]",
+                "expectedOutput": "\"bb\"",
+                "isPublic": true
+            },
+            {
+                "input": "[\"a\"]",
+                "expectedOutput": "\"a\"",
+                "isPublic": false
+            },
+            {
+                "input": "[\"ac\"]",
+                "expectedOutput": "\"a\"",
+                "isPublic": false
+            },
+            {
+                "input": "[\"forgeeksskeegfor\"]",
+                "expectedOutput": "\"geeksskeeg\"",
+                "isPublic": false
+            },
+            {
+                "input": "[\"abcba\"]",
+                "expectedOutput": "\"abcba\"",
+                "isPublic": false
+            },
+            {
+                "input": "[\"aaaa\"]",
+                "expectedOutput": "\"aaaa\"",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Subsequência Comum Mais Longa",
+        "topic": "Programação Dinâmica",
+        "entryPoint": "longestCommonSubsequence",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Uma **subsequência** de uma string é obtida removendo zero ou mais caracteres, sem alterar a ordem relativa dos caracteres restantes (por exemplo, `\"ace\"` é subsequência de `\"abcde\"`, mas `\"aec\"` não é). Uma subsequência comum a duas strings é uma subsequência de ambas.\n\nVocê recebe duas strings `text1` e `text2`. Implemente o método `longestCommonSubsequence`, que recebe `text1` e `text2` e retorna o **comprimento** da maior subsequência comum às duas. Se não houver nenhuma, retorne `0`."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 ≤ text1.length, text2.length ≤ 1000`\n- `text1` e `text2` contêm apenas letras minúsculas do alfabeto inglês"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {string} text1\n   * @param {string} text2\n   * @return {number}\n   */\n  longestCommonSubsequence(text1, text2) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "class Solution:\n    def longestCommonSubsequence(self, text1: str, text2: str) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[\"abcde\",\"ace\"]",
+                "expectedOutput": "3",
+                "isPublic": true
+            },
+            {
+                "input": "[\"abc\",\"abc\"]",
+                "expectedOutput": "3",
+                "isPublic": true
+            },
+            {
+                "input": "[\"abc\",\"def\"]",
+                "expectedOutput": "0",
+                "isPublic": false
+            },
+            {
+                "input": "[\"bl\",\"yby\"]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[\"abcba\",\"abcbcba\"]",
+                "expectedOutput": "5",
+                "isPublic": false
+            },
+            {
+                "input": "[\"ezupkr\",\"ubmrapg\"]",
+                "expectedOutput": "2",
+                "isPublic": false
+            },
+            {
+                "input": "[\"abcde\",\"aec\"]",
+                "expectedOutput": "2",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Casa do Ladrão II",
+        "topic": "Programação Dinâmica",
+        "entryPoint": "rob",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Um ladrão planeja roubar casas de uma rua. Cada casa guarda uma certa quantia de dinheiro, dada pela lista `nums`. As casas estão dispostas em **círculo**: a primeira e a última são vizinhas. Como o sistema de segurança dispara ao detectar duas casas vizinhas roubadas na mesma noite, o ladrão não pode roubar duas casas adjacentes.\n\nImplemente o método `rob`, que recebe `nums` e retorna a **maior** quantia que o ladrão consegue roubar sem alertar o sistema."
+            },
+            {
+                "type": "text",
+                "value": "Por exemplo, para `nums = [2, 3, 2]` o resultado é `3`: embora as casas das pontas guardem `2` cada, elas são vizinhas por causa do círculo, então não podem ser roubadas juntas; roubar apenas a casa do meio rende `3`."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 ≤ nums.length ≤ 100`\n- `0 ≤ nums[i] ≤ 1000`"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {number[]} nums\n   * @return {number}\n   */\n  rob(nums) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "from typing import List\n\n\nclass Solution:\n    def rob(self, nums: List[int]) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int rob(int[] nums) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[[2,3,2]]",
+                "expectedOutput": "3",
+                "isPublic": true
+            },
+            {
+                "input": "[[1,2,3,1]]",
+                "expectedOutput": "4",
+                "isPublic": true
+            },
+            {
+                "input": "[[1]]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,2,3]]",
+                "expectedOutput": "3",
+                "isPublic": false
+            },
+            {
+                "input": "[[200,3,140,20,10]]",
+                "expectedOutput": "340",
+                "isPublic": false
+            },
+            {
+                "input": "[[2,7,9,3,1]]",
+                "expectedOutput": "11",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,3,1,3,100]]",
+                "expectedOutput": "103",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Laranjas Apodrecendo",
+        "topic": "Busca em Largura · Matriz",
+        "entryPoint": "orangesRotting",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Você recebe uma grade `grid` de tamanho `m x n` em que cada célula pode ter um de três valores:\n\n- `0` representa uma célula vazia;\n- `1` representa uma laranja fresca;\n- `2` representa uma laranja podre.\n\nA cada minuto, qualquer laranja fresca que seja adjacente (nas 4 direções: cima, baixo, esquerda e direita) a uma laranja podre também apodrece.\n\nRetorne o número mínimo de minutos que devem passar até que nenhuma célula tenha uma laranja fresca. Se isso nunca for possível, retorne `-1`. Se não houver nenhuma laranja fresca no início, retorne `0`.\n\nImplemente o método `orangesRotting`, que recebe a grade `grid` e devolve o número de minutos necessário."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `m == grid.length`\n- `n == grid[i].length`\n- `1 <= m, n <= 10`\n- `grid[i][j]` é `0`, `1` ou `2`"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {number[][]} grid\n   * @return {number}\n   */\n  orangesRotting(grid) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "from typing import List\n\n\nclass Solution:\n    def orangesRotting(self, grid: List[List[int]]) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int orangesRotting(int[][] grid) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[[[2,1,1],[1,1,0],[0,1,1]]]",
+                "expectedOutput": "4",
+                "isPublic": true
+            },
+            {
+                "input": "[[[2,1,1],[0,1,1],[1,0,1]]]",
+                "expectedOutput": "-1",
+                "isPublic": true
+            },
+            {
+                "input": "[[[0,2]]]",
+                "expectedOutput": "0",
+                "isPublic": false
+            },
+            {
+                "input": "[[[0]]]",
+                "expectedOutput": "0",
+                "isPublic": false
+            },
+            {
+                "input": "[[[1]]]",
+                "expectedOutput": "-1",
+                "isPublic": false
+            },
+            {
+                "input": "[[[2,2],[1,1]]]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[[2,1,1],[1,1,1],[0,1,2]]]",
+                "expectedOutput": "2",
+                "isPublic": false
+            },
+            {
+                "input": "[[[2,0,1]]]",
+                "expectedOutput": "-1",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Número de Províncias",
+        "topic": "Grafos · Busca em Profundidade",
+        "entryPoint": "findCircleNum",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Há `n` cidades. Algumas delas estão conectadas e outras não. Se a cidade `a` está diretamente conectada à cidade `b`, e a cidade `b` está diretamente conectada à cidade `c`, então `a` e `c` estão conectadas indiretamente.\n\nUma província é um grupo de cidades conectadas direta ou indiretamente, sem nenhuma outra cidade fora do grupo.\n\nVocê recebe uma matriz `n x n` chamada `isConnected`, em que `isConnected[i][j] = 1` indica que a i-ésima e a j-ésima cidades estão diretamente conectadas, e `isConnected[i][j] = 0` indica que não estão.\n\nImplemente o método `findCircleNum`, que recebe a matriz de adjacência `isConnected` e devolve o número total de províncias."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 <= n <= 200`\n- `n == isConnected.length`\n- `n == isConnected[i].length`\n- `isConnected[i][j]` é `0` ou `1`\n- `isConnected[i][i] == 1`\n- `isConnected[i][j] == isConnected[j][i]`"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {number[][]} isConnected\n   * @return {number}\n   */\n  findCircleNum(isConnected) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "from typing import List\n\n\nclass Solution:\n    def findCircleNum(self, isConnected: List[List[int]]) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[[[1,1,0],[1,1,0],[0,0,1]]]",
+                "expectedOutput": "2",
+                "isPublic": true
+            },
+            {
+                "input": "[[[1,0,0],[0,1,0],[0,0,1]]]",
+                "expectedOutput": "3",
+                "isPublic": true
+            },
+            {
+                "input": "[[[1]]]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[[1,1,1],[1,1,1],[1,1,1]]]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[[[1,0,0,1],[0,1,1,0],[0,1,1,0],[1,0,0,1]]]",
+                "expectedOutput": "2",
+                "isPublic": false
+            },
+            {
+                "input": "[[[1,1,0,0,0],[1,1,0,0,0],[0,0,1,1,0],[0,0,1,1,0],[0,0,0,0,1]]]",
+                "expectedOutput": "3",
+                "isPublic": false
+            },
+            {
+                "input": "[[[1,0,0,1,0],[0,1,0,0,0],[0,0,1,0,0],[1,0,0,1,0],[0,0,0,0,1]]]",
+                "expectedOutput": "4",
+                "isPublic": false
+            },
+            {
+                "input": "[[[1,1,0,0],[1,1,1,0],[0,1,1,0],[0,0,0,1]]]",
+                "expectedOutput": "2",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Substituição de Caractere Repetido",
+        "topic": "Janela Deslizante",
+        "entryPoint": "characterReplacement",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Você recebe uma string `s` formada apenas por letras maiúsculas do alfabeto inglês e um inteiro `k`. Você pode escolher no máximo `k` posições da string e trocar cada uma delas por qualquer outra letra maiúscula.\n\nApós realizar no máximo `k` trocas, retorne o comprimento da maior substring contígua composta por uma única letra repetida que você consegue obter.\n\nImplemente o método `characterReplacement`, que recebe a string `s` e o inteiro `k` e devolve esse comprimento máximo."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 <= s.length <= 10^5`\n- `s` contém apenas letras maiúsculas do alfabeto inglês\n- `0 <= k <= s.length`"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {string} s\n   * @param {number} k\n   * @return {number}\n   */\n  characterReplacement(s, k) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "class Solution:\n    def characterReplacement(self, s: str, k: int) -> int:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int characterReplacement(String s, int k) {\n        // sua solução aqui\n        return 0;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[\"ABAB\",2]",
+                "expectedOutput": "4",
+                "isPublic": true
+            },
+            {
+                "input": "[\"AABABBA\",1]",
+                "expectedOutput": "4",
+                "isPublic": true
+            },
+            {
+                "input": "[\"AAAA\",0]",
+                "expectedOutput": "4",
+                "isPublic": false
+            },
+            {
+                "input": "[\"ABCDE\",1]",
+                "expectedOutput": "2",
+                "isPublic": false
+            },
+            {
+                "input": "[\"AAAB\",0]",
+                "expectedOutput": "3",
+                "isPublic": false
+            },
+            {
+                "input": "[\"ABBB\",2]",
+                "expectedOutput": "4",
+                "isPublic": false
+            },
+            {
+                "input": "[\"A\",0]",
+                "expectedOutput": "1",
+                "isPublic": false
+            },
+            {
+                "input": "[\"ABAA\",0]",
+                "expectedOutput": "2",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Permutação em String",
+        "topic": "Janela Deslizante · Tabela Hash",
+        "entryPoint": "checkInclusion",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Você recebe duas strings `s1` e `s2`. Retorne `true` se `s2` contém alguma permutação de `s1` como substring contígua, ou `false` caso contrário.\n\nEm outras palavras, retorne `true` se alguma reordenação dos caracteres de `s1` aparece como um trecho contíguo dentro de `s2`.\n\nImplemente o método `checkInclusion`, que recebe `s1` e `s2` e devolve o booleano correspondente."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 <= s1.length, s2.length <= 10^4`\n- `s1` e `s2` contêm apenas letras minúsculas do alfabeto inglês"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {string} s1\n   * @param {string} s2\n   * @return {boolean}\n   */\n  checkInclusion(s1, s2) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "class Solution:\n    def checkInclusion(self, s1: str, s2: str) -> bool:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public boolean checkInclusion(String s1, String s2) {\n        // sua solução aqui\n        return false;\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[\"ab\",\"eidbaooo\"]",
+                "expectedOutput": "true",
+                "isPublic": true
+            },
+            {
+                "input": "[\"ab\",\"eidboaoo\"]",
+                "expectedOutput": "false",
+                "isPublic": true
+            },
+            {
+                "input": "[\"abc\",\"abc\"]",
+                "expectedOutput": "true",
+                "isPublic": false
+            },
+            {
+                "input": "[\"abc\",\"ab\"]",
+                "expectedOutput": "false",
+                "isPublic": false
+            },
+            {
+                "input": "[\"a\",\"a\"]",
+                "expectedOutput": "true",
+                "isPublic": false
+            },
+            {
+                "input": "[\"adc\",\"dcda\"]",
+                "expectedOutput": "true",
+                "isPublic": false
+            },
+            {
+                "input": "[\"hello\",\"ooolleoooleh\"]",
+                "expectedOutput": "false",
+                "isPublic": false
+            },
+            {
+                "input": "[\"abcd\",\"dcba\"]",
+                "expectedOutput": "true",
+                "isPublic": false
+            }
+        ]
+    },
+    {
+        "title": "Top K Elementos Frequentes",
+        "topic": "Tabela Hash · Heap",
+        "entryPoint": "topKFrequent",
+        "statementBlocks": [
+            {
+                "type": "text",
+                "value": "Você recebe um array de inteiros `nums` e um inteiro `k`. Retorne os `k` elementos que aparecem com maior frequência no array.\n\nPara que a resposta seja única, a ordem é fixada: ordene o resultado pela frequência em ordem **decrescente**; em caso de empate na frequência, ordene esses elementos pelo próprio valor em ordem **crescente**.\n\nImplemente o método `topKFrequent`, que recebe o array `nums` e o inteiro `k` e devolve o array com os `k` elementos mais frequentes na ordem especificada."
+            },
+            {
+                "type": "text",
+                "value": "**Restrições**\n\n- `1 <= nums.length <= 10^5`\n- `-10^4 <= nums[i] <= 10^4`\n- `k` está no intervalo `[1, número de elementos distintos em nums]`"
+            }
+        ],
+        "starterCode": {
+            "javascript": "class Solution {\n  /**\n   * @param {number[]} nums\n   * @param {number} k\n   * @return {number[]}\n   */\n  topKFrequent(nums, k) {\n    // sua solução aqui\n  }\n}\n",
+            "python": "from typing import List\n\n\nclass Solution:\n    def topKFrequent(self, nums: List[int], k: int) -> List[int]:\n        # sua solução aqui\n        pass\n",
+            "java": "public class Solution {\n    public int[] topKFrequent(int[] nums, int k) {\n        // sua solução aqui\n        return new int[0];\n    }\n}\n"
+        },
+        "tests": [
+            {
+                "input": "[[1,1,1,2,2,3],2]",
+                "expectedOutput": "[1,2]",
+                "isPublic": true
+            },
+            {
+                "input": "[[1],1]",
+                "expectedOutput": "[1]",
+                "isPublic": true
+            },
+            {
+                "input": "[[4,4,4,5,5,6,6,6,6],2]",
+                "expectedOutput": "[6,4]",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,2,3,4],2]",
+                "expectedOutput": "[1,2]",
+                "isPublic": false
+            },
+            {
+                "input": "[[5,5,4,4,3,3],3]",
+                "expectedOutput": "[3,4,5]",
+                "isPublic": false
+            },
+            {
+                "input": "[[-1,-1,2,2,3],1]",
+                "expectedOutput": "[-1]",
+                "isPublic": false
+            },
+            {
+                "input": "[[7,7,7],1]",
+                "expectedOutput": "[7]",
+                "isPublic": false
+            },
+            {
+                "input": "[[1,1,2,2,3,3,4],2]",
+                "expectedOutput": "[1,2]",
+                "isPublic": false
+            }
+        ]
     }
 ];
 
