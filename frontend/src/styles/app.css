@@ -2192,6 +2192,8 @@
   font-weight: 600;
   line-height: 1.45;
   padding-top: 1px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 .quiz__options {
   display: flex;
@@ -2234,6 +2236,8 @@
   font-size: 15px;
   font-weight: 500;
   color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 .quiz-opt--selected {
   border-color: var(--accent);
