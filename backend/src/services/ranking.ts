@@ -84,6 +84,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
         db
             .select({ userId: lessonProgress.userId, n: count() })
             .from(lessonProgress)
+            .where(eq(lessonProgress.manual, false))
             .groupBy(lessonProgress.userId),
         db
             .select({ userId: questionAnswers.userId, n: count() })

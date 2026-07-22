@@ -160,6 +160,8 @@ export const lessonProgress = pgTable(
             .references(() => lessons.id)
             .notNull(),
         completedAt: timestamp("completed_at", { withTimezone: true }).defaultNow().notNull(),
+        // Conclusão manual (estágio de roadmap marcado como concluído): conta como progresso, mas não dá XP.
+        manual: boolean("manual").default(false).notNull(),
     },
     (table) => [unique().on(table.userId, table.lessonId)],
 );
@@ -511,4 +513,20 @@ export const comunicadoRespostas = pgTable(
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [unique().on(table.comunicadoId, table.userId)],
+);
+
+// Conclusão manual de estágio ("já sei isso"): conta como concluído, sem conceder XP.
+export const roadmapStageCompletions = pgTable(
+    "roadmap_stage_completions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        stageId: uuid("stage_id")
+            .references(() => roadmapStages.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.userId, table.stageId)],
 );

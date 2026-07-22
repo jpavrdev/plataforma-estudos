@@ -1,6 +1,6 @@
 import { db } from "../../db.ts";
 import { lessonProgress, lessons, userAchievements, achievements } from "../../schema.ts";
-import { eq, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 // Atividades recentes derivadas: aulas concluídas + conquistas desbloqueadas.
 export async function atividadeRecente(userId: string) {
@@ -8,7 +8,7 @@ export async function atividadeRecente(userId: string) {
         .select({ at: lessonProgress.completedAt, title: lessons.title })
         .from(lessonProgress)
         .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
-        .where(eq(lessonProgress.userId, userId))
+        .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.manual, false)))
         .orderBy(desc(lessonProgress.completedAt))
         .limit(15);
     const conquistas = await db
