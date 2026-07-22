@@ -232,6 +232,13 @@
       "when": 1784547603259,
       "tag": "0032_regular_rick_jones",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1784758734668,
+      "tag": "0033_unique_magneto",
+      "breakpoints": true
     }
   ]
 }
