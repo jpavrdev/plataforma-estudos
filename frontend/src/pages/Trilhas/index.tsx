@@ -18,6 +18,7 @@ import {
   listarTags,
   type Tag,
 } from '../../services/trails';
+import { getTrailLang } from '../../utils/trailLang';
 
 type TrailComId = Trail & { id: string };
 
@@ -65,7 +66,7 @@ export function Trilhas() {
   // Abre a trilha indo para a primeira aula disponivel (current, ou a primeira).
   async function abrirTrilha(trailId: string) {
     try {
-      const detalhe = await obterTrilha(trailId);
+      const detalhe = await obterTrilha(trailId, getTrailLang(trailId));
       const aulas = detalhe.modules.flatMap((m) => m.lessons);
       // nunca manda para uma aula bloqueada: prefere a atual, senao a primeira liberada.
       const alvo =

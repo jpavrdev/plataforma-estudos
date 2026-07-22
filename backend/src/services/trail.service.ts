@@ -15,7 +15,7 @@ import {
     trailReviews,
     users,
 } from "../../schema.ts";
-import { eq, asc, desc, count, countDistinct, inArray, and } from "drizzle-orm";
+import { eq, asc, desc, count, countDistinct, inArray, and, isNotNull } from "drizzle-orm";
 import type { z } from "zod";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -225,7 +225,29 @@ export async function detalheDaTrilha(trailId: string, userId: string, lang?: st
         ...new Set(aulasBrutas.map((a) => a.language).filter((l): l is string => !!l)),
     ].sort();
     const multi = languages.length > 0;
-    const langAtiva = multi ? (lang && languages.includes(lang) ? lang : languages[0]) : null;
+    let langAtiva: string | null = null;
+    if (multi) {
+        if (lang && languages.includes(lang)) {
+            langAtiva = lang;
+        } else {
+            // Sem lang explícito, o default é o track da última aula concluída, não o primeiro idioma.
+            const [ult] = await db
+                .select({ language: lessons.language })
+                .from(lessonProgress)
+                .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
+                .where(
+                    and(
+                        eq(lessonProgress.userId, userId),
+                        eq(lessons.trailId, trailId),
+                        isNotNull(lessons.language),
+                    ),
+                )
+                .orderBy(desc(lessonProgress.completedAt))
+                .limit(1);
+            langAtiva =
+                ult?.language && languages.includes(ult.language) ? ult.language : languages[0];
+        }
+    }
 
     const todasAulas = multi
         ? aulasBrutas.filter((a) => a.language === null || a.language === langAtiva)
