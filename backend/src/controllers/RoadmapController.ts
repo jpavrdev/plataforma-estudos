@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import {
+    concluirEstagio,
     listarRoadmaps,
     obterRoadmap,
     listarRoadmapsAdmin,
@@ -127,6 +128,14 @@ export const deleteStageRef = async (req: Request, res: Response, next: NextFunc
     try {
         await removerRef(String(req.params.id));
         res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const completeStage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await concluirEstagio(String(req.params.id), req.userId!));
     } catch (err) {
         next(err);
     }

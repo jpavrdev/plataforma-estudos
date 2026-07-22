@@ -1,0 +1,1 @@
+ALTER TABLE "lessons_progress" ADD COLUMN "manual" boolean DEFAULT false NOT NULL;

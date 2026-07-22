@@ -5,12 +5,13 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Check, Lock, ChevronRight, ChevronLeft, Play } from '../../components/Icons';
+import { Flame, Check, ChevronRight, ChevronLeft, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
-import { obterRoadmap, type RoadmapDetalhe, type RoadmapStage, type RoadmapRef, type RoadmapPhase } from '../../services/roadmaps';
+import { concluirEstagio, obterRoadmap, type RoadmapDetalhe, type RoadmapStage, type RoadmapRef, type RoadmapPhase } from '../../services/roadmaps';
 import { obterTrilha } from '../../services/trails';
+import { getTrailLang } from '../../utils/trailLang';
 
 const PHASE_LABEL: Record<RoadmapPhase, string> = {
   fundamentos: 'Fundamentos',
@@ -54,6 +55,8 @@ export function RoadmapDetalhe() {
   const initials = getInitials(displayName);
 
   const [rm, setRm] = useState<RoadmapDetalhe | null>(null);
+  const [confirmando, setConfirmando] = useState<RoadmapStage | null>(null);
+  const [concluindo, setConcluindo] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
@@ -75,7 +78,7 @@ export function RoadmapDetalhe() {
     if (ref.refType === 'challenge') return navigate(`/desafios/${ref.refId}`);
     if ((ref.refType === 'trail' || ref.refType === 'module') && ref.trailId) {
       try {
-        const detalhe = await obterTrilha(ref.trailId);
+        const detalhe = await obterTrilha(ref.trailId, getTrailLang(ref.trailId));
         const aulas = detalhe.modules.flatMap((m) => m.lessons);
         const alvo =
           aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked') ?? aulas[0];
@@ -83,6 +86,20 @@ export function RoadmapDetalhe() {
       } catch {
         return navigate('/trilhas');
       }
+    }
+  }
+
+  async function confirmarConclusao() {
+    if (!confirmando || !slug || concluindo) return;
+    setConcluindo(true);
+    try {
+      await concluirEstagio(confirmando.id);
+      setRm(await obterRoadmap(slug));
+      setConfirmando(null);
+    } catch (e) {
+      console.error('Falha ao concluir estágio:', e);
+    } finally {
+      setConcluindo(false);
     }
   }
 
@@ -152,13 +169,7 @@ export function RoadmapDetalhe() {
                     <div key={s.id} className={`rmd-stage rmd-stage--${estado}`}>
                       <div className="rmd-stage__rail">
                         <span className="rmd-stage__dot">
-                          {estado === 'done' ? (
-                            <Check size={16} />
-                          ) : estado === 'locked' ? (
-                            <Lock size={14} />
-                          ) : (
-                            i + 1
-                          )}
+                          {estado === 'done' ? <Check size={16} /> : i + 1}
                         </span>
                       </div>
                       <div className="rmd-stage__card">
@@ -169,7 +180,7 @@ export function RoadmapDetalhe() {
                             {estado === 'done'
                               ? 'Concluído'
                               : estado === 'locked'
-                                ? 'Bloqueado'
+                                ? 'A seguir'
                                 : estado === 'current'
                                   ? 'Em andamento'
                                   : 'Disponível'}
@@ -183,11 +194,19 @@ export function RoadmapDetalhe() {
                             </span>
                           ))}
                         </div>
-                        {estado !== 'locked' && estado !== 'done' && (
-                          <button className="rmd-stage__btn" onClick={() => irParaRef(s.refs[0])}>
-                            <Play size={13} />{' '}
-                            {estado === 'current' ? 'Continuar estágio' : 'Começar estágio'}
-                          </button>
+                        {estado !== 'done' && (
+                          <div className="rmd-stage__acoes">
+                            <button className="rmd-stage__btn" onClick={() => irParaRef(s.refs[0])}>
+                              <Play size={13} />{' '}
+                              {estado === 'current' ? 'Continuar estágio' : 'Começar estágio'}
+                            </button>
+                            <button
+                              className="rmd-stage__btn rmd-stage__btn--ghost"
+                              onClick={() => setConfirmando(s)}
+                            >
+                              <Check size={14} /> Concluído
+                            </button>
+                          </div>
                         )}
                         {estado === 'done' && s.refs[0] && (
                           <button
@@ -206,6 +225,27 @@ export function RoadmapDetalhe() {
           )}
         </div>
       </div>
+
+      {confirmando && (
+        <div className="cmn-overlay">
+          <div className="cmn-card">
+            <div className="cmn-card__kicker">Concluir estágio</div>
+            <h3 className="cmn-card__title">{confirmando.title}</h3>
+            <p className="cmn-card__msg">
+              O estágio e as trilhas dele ficam marcados como concluídos, mas você não ganha o XP
+              das aulas. Se fizer as aulas de verdade depois, o XP delas volta a contar.
+            </p>
+            <div className="cmn-card__row">
+              <button className="btn btn--ghost" onClick={() => setConfirmando(null)}>
+                Cancelar
+              </button>
+              <button className="btn btn--accent" onClick={confirmarConclusao} disabled={concluindo}>
+                {concluindo ? 'Concluindo...' : 'Concluir mesmo assim'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

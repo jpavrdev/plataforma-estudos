@@ -13,6 +13,7 @@ import {
     deleteStage,
     createStageRef,
     deleteStageRef,
+    completeStage,
 } from "../controllers/RoadmapController.ts";
 
 const router = Router();
@@ -30,6 +31,7 @@ router.delete("/roadmaps/:id", autenticar, exigirAdmin, deleteRoadmap);
 router.post("/roadmaps/:id/stages", autenticar, exigirAdmin, createStage);
 router.patch("/roadmap-stages/:id", autenticar, exigirAdmin, updateStage);
 router.delete("/roadmap-stages/:id", autenticar, exigirAdmin, deleteStage);
+router.post("/roadmap-stages/:id/concluir", autenticar, completeStage);
 router.post("/roadmap-stages/:id/refs", autenticar, exigirAdmin, createStageRef);
 router.delete("/roadmap-stage-refs/:id", autenticar, exigirAdmin, deleteStageRef);
 
