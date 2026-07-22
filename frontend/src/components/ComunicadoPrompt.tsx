@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -55,9 +55,10 @@ export function ComunicadoPrompt() {
     }
   }
 
+  let conteudo: ReactNode;
   if (comunicado.kind === 'aviso') {
-    return (
-      <div className="cmn-card">
+    conteudo = (
+      <>
         <div className="cmn-card__kicker">Aviso</div>
         <h3 className="cmn-card__title">{comunicado.title}</h3>
         <p className="cmn-card__msg">{comunicado.message}</p>
@@ -66,13 +67,11 @@ export function ComunicadoPrompt() {
             Entendi
           </button>
         </div>
-      </div>
+      </>
     );
-  }
-
-  if (etapa === 'convite') {
-    return (
-      <div className="cmn-card">
+  } else if (etapa === 'convite') {
+    conteudo = (
+      <>
         <div className="cmn-card__kicker">Sua opinião</div>
         <h3 className="cmn-card__title">Topa responder um questionário rápido?</h3>
         <p className="cmn-card__msg">
@@ -86,13 +85,11 @@ export function ComunicadoPrompt() {
             Responder
           </button>
         </div>
-      </div>
+      </>
     );
-  }
-
-  if (etapa === 'pesquisa') {
-    return (
-      <div className="cmn-card">
+  } else if (etapa === 'pesquisa') {
+    conteudo = (
+      <>
         <div className="cmn-card__kicker">Questionário</div>
         <h3 className="cmn-card__title">{comunicado.title}</h3>
         <p className="cmn-card__msg">{comunicado.message}</p>
@@ -124,20 +121,26 @@ export function ComunicadoPrompt() {
             {enviando ? 'Enviando...' : 'Enviar'}
           </button>
         </div>
-      </div>
+      </>
+    );
+  } else {
+    conteudo = (
+      <>
+        <div className="cmn-card__kicker">Valeu!</div>
+        <h3 className="cmn-card__title">Resposta enviada</h3>
+        <p className="cmn-card__msg">Obrigado por ajudar a melhorar o site.</p>
+        <div className="cmn-card__row">
+          <button className="btn btn--accent" onClick={() => setComunicado(null)}>
+            Fechar
+          </button>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="cmn-card">
-      <div className="cmn-card__kicker">Valeu!</div>
-      <h3 className="cmn-card__title">Resposta enviada</h3>
-      <p className="cmn-card__msg">Obrigado por ajudar a melhorar o site.</p>
-      <div className="cmn-card__row">
-        <button className="btn btn--accent" onClick={() => setComunicado(null)}>
-          Fechar
-        </button>
-      </div>
+    <div className="cmn-overlay">
+      <div className="cmn-card">{conteudo}</div>
     </div>
   );
 }
