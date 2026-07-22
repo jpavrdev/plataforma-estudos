@@ -66,6 +66,11 @@ export async function obterRoadmap(slug: string) {
 
 // ===================== ADMIN (estúdio) =====================
 
+export async function concluirEstagio(stageId: string) {
+  const { data } = await api.post(`/roadmap-stages/${stageId}/concluir`);
+  return data;
+}
+
 export type RefType = RoadmapRef['refType'];
 
 export interface RoadmapAdminItem {

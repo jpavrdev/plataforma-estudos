@@ -1,5 +1,6 @@
 import { db } from "../../db.ts";
 import {
+    roadmapStageCompletions,
     roadmaps,
     roadmapStages,
     roadmapStageRefs,
@@ -168,6 +169,15 @@ async function resolverRefs(refs: { refType: RefType; refId: string }[]) {
     return info;
 }
 
+
+async function estagiosConcluidosManualmente(userId: string) {
+    const rows = await db
+        .select({ stageId: roadmapStageCompletions.stageId })
+        .from(roadmapStageCompletions)
+        .where(eq(roadmapStageCompletions.userId, userId));
+    return new Set(rows.map((r) => r.stageId));
+}
+
 export async function listarRoadmaps(userId?: string) {
     const lista = await db
         .select()
@@ -188,9 +198,11 @@ export async function listarRoadmaps(userId?: string) {
         : [];
 
     let conclusao = SEM_CONCLUSAO;
+    let manuais = new Set<string>();
     let aulas = { porTrail: new Map<string, AulaContainer[]>(), porModule: new Map<string, AulaContainer[]>() };
     if (userId) {
         conclusao = await carregarConclusao(userId);
+        manuais = await estagiosConcluidosManualmente(userId);
         aulas = await carregarAulasPorContainer(
             refs.filter((r) => r.refType === "trail").map((r) => r.refId),
             refs.filter((r) => r.refType === "module").map((r) => r.refId),
@@ -204,6 +216,7 @@ export async function listarRoadmaps(userId?: string) {
         refsPorEtapa.set(r.stageId, arr);
     }
     const etapaConcluida = (stageId: string) => {
+        if (manuais.has(stageId)) return true;
         const rs = refsPorEtapa.get(stageId) ?? [];
         return rs.length > 0 && rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas));
     };
@@ -252,9 +265,11 @@ export async function obterRoadmap(slug: string, userId?: string) {
         : [];
 
     let conclusao = SEM_CONCLUSAO;
+    let manuais = new Set<string>();
     let aulas = { porTrail: new Map<string, AulaContainer[]>(), porModule: new Map<string, AulaContainer[]>() };
     if (userId) {
         conclusao = await carregarConclusao(userId);
+        manuais = await estagiosConcluidosManualmente(userId);
         aulas = await carregarAulasPorContainer(
             refs.filter((r) => r.refType === "trail").map((r) => r.refId),
             refs.filter((r) => r.refType === "module").map((r) => r.refId),
@@ -272,7 +287,8 @@ export async function obterRoadmap(slug: string, userId?: string) {
     const etapasSaida = etapas.map((e) => {
         const rs = refsPorEtapa.get(e.id) ?? [];
         const completed =
-            userId && rs.length > 0 && rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas));
+            (userId && manuais.has(e.id)) ||
+            (userId && rs.length > 0 && rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas)));
         return {
             id: e.id,
             phase: e.phase,
@@ -339,6 +355,47 @@ function gerarSlug(nome: string): string {
 }
 
 // Lista para o admin: todos os roadmaps (inclusive rascunhos), com contagem de estágios.
+export async function concluirEstagio(stageId: string, userId: string) {
+    const [etapa] = await db
+        .select({ id: roadmapStages.id })
+        .from(roadmapStages)
+        .where(eq(roadmapStages.id, stageId));
+    if (!etapa) throw new AppError(404, "Estágio não encontrado");
+    await db
+        .insert(roadmapStageCompletions)
+        .values({ stageId, userId })
+        .onConflictDoNothing();
+
+    // As trilhas e módulos do estágio também ficam concluídos: progresso manual, sem XP.
+    const refs = await db
+        .select()
+        .from(roadmapStageRefs)
+        .where(eq(roadmapStageRefs.stageId, stageId));
+    const trailIds = refs.filter((r) => r.refType === "trail").map((r) => r.refId);
+    const moduleIds = refs.filter((r) => r.refType === "module").map((r) => r.refId);
+    const aulasAlvo = [
+        ...(trailIds.length
+            ? await db
+                  .select({ id: lessons.id })
+                  .from(lessons)
+                  .where(and(inArray(lessons.trailId, trailIds), eq(lessons.published, true)))
+            : []),
+        ...(moduleIds.length
+            ? await db
+                  .select({ id: lessons.id })
+                  .from(lessons)
+                  .where(and(inArray(lessons.moduleId, moduleIds), eq(lessons.published, true)))
+            : []),
+    ];
+    if (aulasAlvo.length) {
+        await db
+            .insert(lessonProgress)
+            .values(aulasAlvo.map((a) => ({ userId, lessonId: a.id, manual: true })))
+            .onConflictDoNothing();
+    }
+    return { ok: true };
+}
+
 export async function listarRoadmapsAdmin() {
     const lista = await db.select().from(roadmaps).orderBy(asc(roadmaps.position));
     const contagens = await db

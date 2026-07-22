@@ -26,6 +26,8 @@ import { RoadmapEditor } from './pages/RoadmapsAdmin/Editor';
 import { Desafios } from './pages/Desafios';
 import { Desafio } from './pages/Desafios/Desafio';
 import { DesafiosAdmin } from './pages/DesafiosAdmin';
+import { ComunicadosAdmin } from './pages/ComunicadosAdmin';
+import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { RecuperarSenha } from './pages/RecuperarSenha';
@@ -64,6 +66,8 @@ function AppRoutes() {
   const { isAuthenticated } = useAuth();
 
   return (
+    <>
+    <ComunicadoPrompt />
     <Routes>
       <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
       <Route path="/cadastro" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
@@ -185,6 +189,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/estudio/comunicados"
+        element={
+          <AdminRoute>
+            <ComunicadosAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
         path="/estudio/desafios"
         element={
           <AdminRoute>
@@ -295,6 +307,7 @@ function AppRoutes() {
         }
       />
     </Routes>
+    </>
   );
 }
 

@@ -16,5 +16,6 @@ export const NAV_ESTUDIO = [
   { label: 'Usuários', to: '/estudio/usuarios' },
   { label: 'Simulados', to: '/estudio/simulados' },
   { label: 'Desafios', to: '/estudio/desafios' },
+  { label: 'Comunicados', to: '/estudio/comunicados' },
   { label: 'Voltar ao app', to: '/home' },
 ];

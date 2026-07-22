@@ -8,7 +8,7 @@ export async function calcularEstatisticas(userId: string) {
     const [aulas] = await db
         .select({ n: count() })
         .from(lessonProgress)
-        .where(eq(lessonProgress.userId, userId));
+        .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.manual, false)));
     const [acertos] = await db
         .select({ n: count() })
         .from(questionAnswers)

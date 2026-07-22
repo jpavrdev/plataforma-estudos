@@ -75,11 +75,16 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
     let aulaConcluida = false;
     if (passou) {
         const [existe] = await db
-            .select({ id: lessonProgress.id })
+            .select({ id: lessonProgress.id, manual: lessonProgress.manual })
             .from(lessonProgress)
             .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, lessonId)));
         if (!existe) {
             await db.insert(lessonProgress).values({ userId, lessonId });
+        } else if (existe.manual) {
+            await db
+                .update(lessonProgress)
+                .set({ manual: false, completedAt: new Date() })
+                .where(eq(lessonProgress.id, existe.id));
         }
         aulaConcluida = true;
     }

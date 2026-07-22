@@ -8,6 +8,7 @@ import simuladoRoutes from "./src/routes/simulado.routes.ts";
 import desafioRoutes from "./src/routes/desafio.routes.ts";
 import adminRoutes from "./src/routes/admin.routes.ts";
 import roadmapRoutes from "./src/routes/roadmap.routes.ts";
+import comunicadoRoutes from "./src/routes/comunicado.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
@@ -50,6 +51,7 @@ app.use(trailRoutes);
 app.use(simuladoRoutes);
 app.use(desafioRoutes);
 app.use(roadmapRoutes);
+app.use(comunicadoRoutes);
 app.use(adminRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));

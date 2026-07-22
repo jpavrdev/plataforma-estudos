@@ -160,6 +160,8 @@ export const lessonProgress = pgTable(
             .references(() => lessons.id)
             .notNull(),
         completedAt: timestamp("completed_at", { withTimezone: true }).defaultNow().notNull(),
+        // Conclusão manual (estágio de roadmap marcado como concluído): conta como progresso, mas não dá XP.
+        manual: boolean("manual").default(false).notNull(),
     },
     (table) => [unique().on(table.userId, table.lessonId)],
 );
@@ -478,3 +480,53 @@ export const roadmapStageRefs = pgTable("roadmap_stage_refs", {
     refId: uuid("ref_id").notNull(),
     position: integer("position").default(0).notNull(),
 });
+
+export const comunicadoKind = pgEnum("comunicado_kind", ["aviso", "pesquisa"]);
+export const comunicadoRespostaStatus = pgEnum("comunicado_resposta_status", [
+    "respondido",
+    "dispensado",
+]);
+
+// Comunicado lançado pelo admin: aviso (só mensagem) ou pesquisa (nota 1-5 + comentário opcional).
+export const comunicados = pgTable("comunicados", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    kind: comunicadoKind("kind").notNull(),
+    title: varchar("title", { length: 200 }).notNull(),
+    message: text("message").notNull(),
+    published: boolean("published").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const comunicadoRespostas = pgTable(
+    "comunicado_respostas",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        comunicadoId: uuid("comunicado_id")
+            .references(() => comunicados.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        status: comunicadoRespostaStatus("status").notNull(),
+        rating: integer("rating"),
+        comment: text("comment"),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.comunicadoId, table.userId)],
+);
+
+// Conclusão manual de estágio ("já sei isso"): conta como concluído, sem conceder XP.
+export const roadmapStageCompletions = pgTable(
+    "roadmap_stage_completions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        stageId: uuid("stage_id")
+            .references(() => roadmapStages.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.userId, table.stageId)],
+);
