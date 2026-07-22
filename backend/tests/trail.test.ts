@@ -216,6 +216,20 @@ describe("Quiz e estado das aulas", () => {
         assert.deepEqual(estados, ["done", "current"]);
     });
 
+    test("quiz pode ser concluido fora de ordem", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { trailId, lessonIds } = await montarTrilha(admin.token, 2);
+        const aluno = await criarUsuarioLogado();
+
+        const quiz = await responderQuiz(aluno.token, lessonIds[1], 5);
+        assert.equal(quiz.status, 200);
+        assert.equal(quiz.body.lessonCompleted, true);
+
+        const trilha = await get(`/trails/${trailId}`, aluno.token);
+        const estados = trilha.body.modules.flatMap((m: any) => m.lessons.map((l: any) => l.state));
+        assert.deepEqual(estados, ["current", "done"]);
+    });
+
     test("menos de 4 acertos nao conclui a aula", async () => {
         const admin = await criarUsuarioLogado(true);
         const { lessonIds } = await montarTrilha(admin.token, 1);
@@ -310,5 +324,44 @@ describe("Trilha multi-linguagem", () => {
 
         const js = await get(`/trails/${trailId}?lang=javascript`, aluno.token);
         assert.equal(js.body.activeLanguage, "javascript");
+    });
+
+    test("estagio de roadmap conclui com um unico track completo", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { trailId, lessonIds } = await montarTrilha(admin.token, 4);
+
+        const { db } = await import("../db.ts");
+        const { lessons } = await import("../schema.ts");
+        const { eq } = await import("drizzle-orm");
+        const definir = (id: string, language: string, position: number) =>
+            db.update(lessons).set({ language, position }).where(eq(lessons.id, id));
+        await definir(lessonIds[0], "javascript", 1);
+        await definir(lessonIds[1], "javascript", 2);
+        await definir(lessonIds[2], "python", 1);
+        await definir(lessonIds[3], "python", 2);
+
+        const rm = await post("/roadmaps", admin.token, {
+            name: "Backend",
+            description: "Do zero ao backend.",
+            level: "iniciante",
+            published: true,
+        });
+        const st = await post(`/roadmaps/${rm.body.id}/stages`, admin.token, {
+            phase: "fundamentos",
+            title: "Logica",
+            description: "Base de logica.",
+        });
+        await post(`/roadmap-stages/${st.body.id}/refs`, admin.token, {
+            refType: "trail",
+            refId: trailId,
+        });
+
+        const aluno = await criarUsuarioLogado();
+        await responderQuiz(aluno.token, lessonIds[2], 5);
+        await responderQuiz(aluno.token, lessonIds[3], 5);
+
+        const det = await get(`/roadmaps/${rm.body.slug}`, aluno.token);
+        assert.equal(det.status, 200);
+        assert.equal(det.body.stages[0].completed, true);
     });
 });

@@ -59,40 +59,53 @@ async function carregarConclusao(userId: string): Promise<Conclusao> {
     };
 }
 
+type AulaContainer = { id: string; language: string | null };
+
 // Aulas publicadas por trilha e por módulo referenciados (pra derivar conclusão de container).
 async function carregarAulasPorContainer(trailIds: string[], moduleIds: string[]) {
-    const porTrail = new Map<string, string[]>();
-    const porModule = new Map<string, string[]>();
+    const porTrail = new Map<string, AulaContainer[]>();
+    const porModule = new Map<string, AulaContainer[]>();
     if (trailIds.length) {
         const rows = await db
-            .select({ trailId: lessons.trailId, id: lessons.id })
+            .select({ trailId: lessons.trailId, id: lessons.id, language: lessons.language })
             .from(lessons)
             .where(and(inArray(lessons.trailId, trailIds), eq(lessons.published, true)));
         for (const r of rows) {
             const arr = porTrail.get(r.trailId) ?? [];
-            arr.push(r.id);
+            arr.push({ id: r.id, language: r.language });
             porTrail.set(r.trailId, arr);
         }
     }
     if (moduleIds.length) {
         const rows = await db
-            .select({ moduleId: lessons.moduleId, id: lessons.id })
+            .select({ moduleId: lessons.moduleId, id: lessons.id, language: lessons.language })
             .from(lessons)
             .where(and(inArray(lessons.moduleId, moduleIds), eq(lessons.published, true)));
         for (const r of rows) {
             const arr = porModule.get(r.moduleId) ?? [];
-            arr.push(r.id);
+            arr.push({ id: r.id, language: r.language });
             porModule.set(r.moduleId, arr);
         }
     }
     return { porTrail, porModule };
 }
 
+// Multi-linguagem: concluído = todas as neutras + todas as aulas de alguma linguagem.
+function containerConcluido(ls: AulaContainer[], c: Conclusao): boolean {
+    if (!ls.length) return false;
+    const linguagens = [...new Set(ls.map((l) => l.language).filter((x): x is string => !!x))];
+    if (!linguagens.length) return ls.every((l) => c.lessons.has(l.id));
+    if (!ls.filter((l) => l.language === null).every((l) => c.lessons.has(l.id))) return false;
+    return linguagens.some((lg) =>
+        ls.filter((l) => l.language === lg).every((l) => c.lessons.has(l.id)),
+    );
+}
+
 function refConcluido(
     refType: RefType,
     refId: string,
     c: Conclusao,
-    aulas: { porTrail: Map<string, string[]>; porModule: Map<string, string[]> },
+    aulas: { porTrail: Map<string, AulaContainer[]>; porModule: Map<string, AulaContainer[]> },
 ): boolean {
     switch (refType) {
         case "lesson":
@@ -101,14 +114,10 @@ function refConcluido(
             return c.simulados.has(refId);
         case "challenge":
             return c.desafios.has(refId);
-        case "trail": {
-            const ls = aulas.porTrail.get(refId) ?? [];
-            return ls.length > 0 && ls.every((id) => c.lessons.has(id));
-        }
-        case "module": {
-            const ls = aulas.porModule.get(refId) ?? [];
-            return ls.length > 0 && ls.every((id) => c.lessons.has(id));
-        }
+        case "trail":
+            return containerConcluido(aulas.porTrail.get(refId) ?? [], c);
+        case "module":
+            return containerConcluido(aulas.porModule.get(refId) ?? [], c);
     }
 }
 
@@ -179,7 +188,7 @@ export async function listarRoadmaps(userId?: string) {
         : [];
 
     let conclusao = SEM_CONCLUSAO;
-    let aulas = { porTrail: new Map<string, string[]>(), porModule: new Map<string, string[]>() };
+    let aulas = { porTrail: new Map<string, AulaContainer[]>(), porModule: new Map<string, AulaContainer[]>() };
     if (userId) {
         conclusao = await carregarConclusao(userId);
         aulas = await carregarAulasPorContainer(
@@ -243,7 +252,7 @@ export async function obterRoadmap(slug: string, userId?: string) {
         : [];
 
     let conclusao = SEM_CONCLUSAO;
-    let aulas = { porTrail: new Map<string, string[]>(), porModule: new Map<string, string[]>() };
+    let aulas = { porTrail: new Map<string, AulaContainer[]>(), porModule: new Map<string, AulaContainer[]>() };
     if (userId) {
         conclusao = await carregarConclusao(userId);
         aulas = await carregarAulasPorContainer(

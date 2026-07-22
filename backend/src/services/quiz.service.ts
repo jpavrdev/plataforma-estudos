@@ -10,7 +10,6 @@ import { eq, and, inArray } from "drizzle-orm";
 import type { z } from "zod";
 import type { submitQuizSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
-import { estadoDaAula } from "./lesson.service.ts";
 import { ehAdmin } from "./usuario.service.ts";
 import { verificarConquistas } from "./achievement.service.ts";
 
@@ -28,11 +27,6 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
 
     if (!aula.published) {
         throw new AppError(404, "Aula não encontrada");
-    }
-
-    const estado = await estadoDaAula(userId, aula);
-    if (estado === "locked") {
-        throw new AppError(403, "Aula bloqueada. Conclua a aula anterior.");
     }
 
     const qs = await db
@@ -109,11 +103,6 @@ export async function conferirResposta(
     }
     if (!aula.published && !(await ehAdmin(userId))) {
         throw new AppError(404, "Aula não encontrada");
-    }
-
-    const estado = await estadoDaAula(userId, aula);
-    if (estado === "locked") {
-        throw new AppError(403, "Aula bloqueada. Conclua a aula anterior.");
     }
 
     // A questão precisa pertencer a esta aula.
