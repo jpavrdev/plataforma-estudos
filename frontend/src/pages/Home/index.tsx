@@ -21,6 +21,7 @@ import {
   type RankingRow,
   type StreakInfo,
 } from '../../services/trails';
+import { getTrailLang } from '../../utils/trailLang';
 import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import type { Trail } from '../../data/trails';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
@@ -120,7 +121,7 @@ export function Home() {
   // Abre a trilha na primeira aula disponivel (a atual, ou a primeira).
   async function abrirTrilha(trailId: string) {
     try {
-      const detalhe = await obterTrilha(trailId);
+      const detalhe = await obterTrilha(trailId, getTrailLang(trailId));
       const aulas = detalhe.modules.flatMap((m) => m.lessons);
       const alvo =
         aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked');

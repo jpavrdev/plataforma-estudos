@@ -279,3 +279,36 @@ describe("Quiz e estado das aulas", () => {
         assert.deepEqual(estadosB, ["current", "locked"]);
     });
 });
+
+describe("Trilha multi-linguagem", () => {
+    test("sem lang explicito, continua no track da ultima aula concluida", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { trailId, lessonIds } = await montarTrilha(admin.token, 4);
+
+        const { db } = await import("../db.ts");
+        const { lessons } = await import("../schema.ts");
+        const { eq } = await import("drizzle-orm");
+        const definir = (id: string, language: string, position: number) =>
+            db.update(lessons).set({ language, position }).where(eq(lessons.id, id));
+        await definir(lessonIds[0], "javascript", 1);
+        await definir(lessonIds[1], "javascript", 2);
+        await definir(lessonIds[2], "python", 1);
+        await definir(lessonIds[3], "python", 2);
+
+        const aluno = await criarUsuarioLogado();
+
+        const antes = await get(`/trails/${trailId}`, aluno.token);
+        assert.equal(antes.body.activeLanguage, "javascript");
+
+        const quiz = await responderQuiz(aluno.token, lessonIds[2], 5);
+        assert.equal(quiz.body.lessonCompleted, true);
+
+        const depois = await get(`/trails/${trailId}`, aluno.token);
+        assert.equal(depois.body.activeLanguage, "python");
+        const aulas = depois.body.modules.flatMap((m: any) => m.lessons);
+        assert.equal(aulas.find((l: any) => l.state === "current")?.id, lessonIds[3]);
+
+        const js = await get(`/trails/${trailId}?lang=javascript`, aluno.token);
+        assert.equal(js.body.activeLanguage, "javascript");
+    });
+});

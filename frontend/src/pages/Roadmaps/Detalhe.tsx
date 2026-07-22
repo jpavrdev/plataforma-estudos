@@ -11,6 +11,7 @@ import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 import { obterRoadmap, type RoadmapDetalhe, type RoadmapStage, type RoadmapRef, type RoadmapPhase } from '../../services/roadmaps';
 import { obterTrilha } from '../../services/trails';
+import { getTrailLang } from '../../utils/trailLang';
 
 const PHASE_LABEL: Record<RoadmapPhase, string> = {
   fundamentos: 'Fundamentos',
@@ -75,7 +76,7 @@ export function RoadmapDetalhe() {
     if (ref.refType === 'challenge') return navigate(`/desafios/${ref.refId}`);
     if ((ref.refType === 'trail' || ref.refType === 'module') && ref.trailId) {
       try {
-        const detalhe = await obterTrilha(ref.trailId);
+        const detalhe = await obterTrilha(ref.trailId, getTrailLang(ref.trailId));
         const aulas = detalhe.modules.flatMap((m) => m.lessons);
         const alvo =
           aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked') ?? aulas[0];
