@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
+import { desafioRunLimiter } from "../middlewares/rateLimit.ts";
 import {
     getDesafioDoDia,
     getDesafios,
@@ -18,8 +19,8 @@ const router = Router();
 router.get("/desafios/hoje", autenticar, getDesafioDoDia);
 router.get("/desafios", autenticar, getDesafios);
 router.get("/desafios/:id", autenticar, getDesafio);
-router.post("/desafios/:id/run", autenticar, runExemplos);
-router.post("/desafios/:id/submit", autenticar, submitDesafio);
+router.post("/desafios/:id/run", desafioRunLimiter, autenticar, runExemplos);
+router.post("/desafios/:id/submit", desafioRunLimiter, autenticar, submitDesafio);
 
 // Admin: CRUD de desafios e casos de teste.
 router.get("/admin/desafios", autenticar, exigirAdmin, adminListDesafios);

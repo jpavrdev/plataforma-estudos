@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createTrailSchema = z.object({
-    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
+    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres").max(255),
     level: z.enum(["iniciante", "intermediario", "avancado"]),
     description: z.string().min(10, "A descrição deve ter ao menos 10 caracteres"),
     tagIds: z.array(z.uuid()).optional(),
@@ -9,7 +9,7 @@ export const createTrailSchema = z.object({
 });
 
 export const updateTrailSchema = z.object({
-    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres").optional(),
+    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres").max(255).optional(),
     level: z.enum(["iniciante", "intermediario", "avancado"]).optional(),
     description: z.string().min(10, "A descrição deve ter ao menos 10 caracteres").optional(),
     tagIds: z.array(z.uuid()).optional(),
@@ -59,13 +59,13 @@ export const glossaryTermSchema = z.object({
 });
 
 export const createLessonSchema = z.object({
-    title: z.string().min(3, "Título deve ter ao menos 3 caracteres"),
+    title: z.string().min(3, "Título deve ter ao menos 3 caracteres").max(255),
     content: z.string().optional(),
     position: z.int().positive("A posição deve ser um número positivo"),
 });
 
 export const createModuleSchema = z.object({
-    title: z.string().min(2, "Título deve ter ao menos 2 caracteres"),
+    title: z.string().min(2, "Título deve ter ao menos 2 caracteres").max(255),
     position: z.int().positive("A posição deve ser um número positivo"),
 });
 
@@ -94,7 +94,8 @@ export const submitQuizSchema = z.object({
                 optionId: z.uuid("ID de alternativa inválido"),
             }),
         )
-        .min(1, "Envie ao menos uma resposta"),
+        .min(1, "Envie ao menos uma resposta")
+        .max(50, "Quiz não tem tantas questões"),
 });
 
 export const checkAnswerSchema = z.object({
@@ -105,7 +106,7 @@ export const checkAnswerSchema = z.object({
 // Salvar a aula inteira pelo Estúdio. Lenient para rascunho; a validação forte
 // (exatamente 1 correta, minimo de questoes) acontece no controller ao publicar.
 export const saveLessonStudioSchema = z.object({
-    title: z.string().min(3, "Título deve ter ao menos 3 caracteres"),
+    title: z.string().min(3, "Título deve ter ao menos 3 caracteres").max(255),
     content: z.string().nullable().optional(),
     contentBlocks: z
         .array(
