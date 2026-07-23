@@ -141,12 +141,29 @@ export async function listarTrilhas(filtros: { level?: string; categoria?: strin
             name: trails.name,
             trailLevel: trails.trailLevel,
             description: trails.description,
-            totalLessons: count(lessons.id),
+            workloadHours: trails.workloadHours,
         })
         .from(trails)
-        .leftJoin(lessons, eq(lessons.trailId, trails.id))
-        .where(and(filtroNivel, filtroCategoria))
-        .groupBy(trails.id);
+        .where(and(filtroNivel, filtroCategoria));
+
+    // Total que um aluno de fato cursa: aulas publicadas, neutras + a maior linguagem.
+    const aulasPublicadas = await db
+        .select({ trailId: lessons.trailId, language: lessons.language })
+        .from(lessons)
+        .where(eq(lessons.published, true));
+    const contagem = new Map<string, { neutras: number; porLang: Map<string, number> }>();
+    for (const a of aulasPublicadas) {
+        const c = contagem.get(a.trailId) ?? { neutras: 0, porLang: new Map<string, number>() };
+        if (a.language === null) c.neutras++;
+        else c.porLang.set(a.language, (c.porLang.get(a.language) ?? 0) + 1);
+        contagem.set(a.trailId, c);
+    }
+    const totalDe = (trailId: string) => {
+        const c = contagem.get(trailId);
+        if (!c) return 0;
+        const maior = c.porLang.size > 0 ? Math.max(...c.porLang.values()) : 0;
+        return c.neutras + maior;
+    };
 
     const vinculos = await db
         .select({ trailId: trailTags.trailId, id: tags.id, name: tags.name })
@@ -158,7 +175,11 @@ export async function listarTrilhas(filtros: { level?: string; categoria?: strin
         arr.push({ id: v.id, name: v.name });
         tagsPorTrilha.set(v.trailId, arr);
     }
-    return lista.map((t) => ({ ...t, tags: tagsPorTrilha.get(t.id) ?? [] }));
+    return lista.map((t) => ({
+        ...t,
+        totalLessons: totalDe(t.id),
+        tags: tagsPorTrilha.get(t.id) ?? [],
+    }));
 }
 
 // Trilhas em que o usuário já tem progresso, com percentual de conclusão.
