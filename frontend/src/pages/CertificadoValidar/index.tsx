@@ -30,14 +30,14 @@ export function CertificadoValidar() {
   return (
     <div className="cert-page">
       <div className="cert-box">
-        <Logo variant="solid" size={22} />
+        <Logo variant="solid" size={22} word="Ensina Dev" />
         {estado === 'carregando' && <p className="cert-box__msg">Verificando certificado...</p>}
 
         {estado === 'invalido' && (
           <>
             <h1 className="cert-box__title cert-box__title--erro">Certificado não encontrado</h1>
             <p className="cert-box__msg">
-              O código informado não corresponde a nenhum certificado emitido pelo ensina.dev.
+              O código informado não corresponde a nenhum certificado emitido pelo Ensina Dev.
               Confira se digitou o código exatamente como aparece no documento.
             </p>
           </>

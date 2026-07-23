@@ -249,7 +249,7 @@ export async function pdfCertificado(code: string) {
     doc.lineWidth(0.7).strokeColor(CINZA).rect(30, 30, W - 60, H - 60).stroke();
 
     doc.font("Helvetica-Bold").fontSize(20).fillColor(ACENTO);
-    doc.text("ensina.dev", 0, 64, { width: W, align: "center" });
+    doc.text("Ensina Dev", 0, 64, { width: W, align: "center" });
     doc.font("Helvetica").fontSize(11).fillColor(CINZA);
     doc.text("CERTIFICADO DE CONCLUSÃO", 0, 92, {
         width: W,
