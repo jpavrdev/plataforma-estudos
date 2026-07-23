@@ -61,6 +61,10 @@ export const users = pgTable("users", {
     role: userRole("role").default("user").notNull(),
     failedLoginAttempts: integer("failed_login_attempts").default(0).notNull(),
     lockedUntil: timestamp("locked_until", { withTimezone: true }),
+    // Meta semanal escolhida pelo usuário: "aulas" (X aulas por dia) ou "dias"
+    // (streak de X dias). Nulo = meta padrão de 7 dias ativos na semana.
+    weeklyGoalKind: varchar("weekly_goal_kind", { length: 10 }),
+    weeklyGoalTarget: integer("weekly_goal_target"),
 });
 
 // Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de

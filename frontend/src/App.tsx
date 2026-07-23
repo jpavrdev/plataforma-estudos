@@ -35,6 +35,7 @@ import { RedefinirSenha } from './pages/RedefinirSenha';
 import { OAuthCallback } from './pages/OAuthCallback';
 import { CertificadoValidar } from './pages/CertificadoValidar';
 import { PerfilPublico } from './pages/PerfilPublico';
+import { Progresso } from './pages/Progresso';
 import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
 
@@ -316,10 +317,7 @@ function AppRoutes() {
         path="/progresso"
         element={
           <PrivateRoute>
-            <Placeholder
-              title="Meu progresso"
-              description="Em breve seu progresso por trilhas e conquistas aparecerá aqui."
-            />
+            <Progresso />
           </PrivateRoute>
         }
       />
