@@ -10,6 +10,9 @@ import {
     removerCover,
     listUsers,
     getPublicProfile,
+    getMyProgress,
+    setWeeklyGoal,
+    clearWeeklyGoal,
 } from "../controllers/UserController.ts";
 const router = Router();
 
@@ -20,6 +23,9 @@ router.post("/me/avatar", autenticar, uploadAvatar);
 router.post("/me/cover", autenticar, uploadCover);
 router.delete("/me/avatar", autenticar, removerAvatar);
 router.delete("/me/cover", autenticar, removerCover);
+router.get("/me/progresso", autenticar, getMyProgress);
+router.put("/me/meta-semanal", autenticar, setWeeklyGoal);
+router.delete("/me/meta-semanal", autenticar, clearWeeklyGoal);
 router.get("/users", autenticar, exigirAdmin, listUsers);
 
 // Perfil público compartilhável: qualquer pessoa vê, sem login.

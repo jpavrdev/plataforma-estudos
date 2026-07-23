@@ -260,6 +260,13 @@
       "when": 1784764588869,
       "tag": "0036_mean_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1784813493307,
+      "tag": "0037_lazy_thor_girl",
+      "breakpoints": true
     }
   ]
 }

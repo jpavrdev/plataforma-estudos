@@ -73,3 +73,12 @@ export const completarPerfilSchema = z.object({
     gender: z.string().min(1, "Selecione o gênero"),
     phone: z.string().trim().min(1, "Informe o telefone").max(20, "Telefone muito longo"),
 });
+
+export const metaSemanalSchema = z
+    .object({
+        kind: z.enum(["aulas", "dias"]),
+        target: z.number().int().min(1).max(60),
+    })
+    .refine((v) => (v.kind === "aulas" ? v.target <= 20 : v.target >= 2), {
+        message: "Meta fora do intervalo permitido",
+    });

@@ -514,3 +514,15 @@ export const Grid4 = ({ size = 17 }: IconProps) => (
     <rect x="14" y="14" width="7" height="7" rx="1" />
   </svg>
 );
+
+export const Zap = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M13 2L3 14h8l-1 8 10-12h-8z" />
+  </svg>
+);
