@@ -215,7 +215,7 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
   return (
     <div className="solve">
       <header className="solve-bar">
-        <Logo variant="solid" size={19} />
+        <Logo variant="solid" size={19} to="/home" />
         <button className="solve-bar__back" onClick={() => navigate('/desafios')}>
           <ChevronLeft size={16} /> {desafio.isToday ? 'Desafio do dia' : 'Desafios'}
         </button>

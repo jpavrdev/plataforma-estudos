@@ -10,6 +10,9 @@ export JWT_SECRET="test_secret_com_pelo_menos_32_caracteres_aqui_ok"
 export NODE_ENV="test"
 export FRONTEND_URL="http://localhost:5173"
 export DB_SSL="false"
+export CERT_RAZAO_SOCIAL="Ensina Dev Treinamentos"
+export CERT_CNPJ="00.000.000/0001-00"
+export CERT_RESPONSAVEL="Joao Paulo Avelino"
 
 cleanup() {
   docker rm -f "$CONTAINER" >/dev/null 2>&1 || true

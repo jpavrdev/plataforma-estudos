@@ -9,6 +9,7 @@ export interface Trail {
   done: number;
   desc: string;
   tags: string[];
+  workloadHours?: number | null;
 }
 
 export const trilhaFilters = [

@@ -5,10 +5,12 @@ import { writeFile, mkdir, unlink } from "node:fs/promises";
 import { db } from "../../db.ts";
 import { users, languages as languagesTable } from "../../schema.ts";
 import { eq } from "drizzle-orm";
-import { updateMeSchema, completarPerfilSchema } from "../schemas/auth.schema.ts";
+import { updateMeSchema, completarPerfilSchema, metaSemanalSchema } from "../schemas/auth.schema.ts";
 import { UPLOADS_DIR, AVATARS_DIR, COVERS_DIR } from "../config/paths.ts";
 import { streakDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
+import { perfilPublico } from "../services/perfil-publico.service.ts";
+import { progressoDoUsuario, definirMetaSemanal, limparMetaSemanal } from "../services/progresso.service.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -311,4 +313,41 @@ export const listUsers = async (_req: Request, res: Response) => {
     const allUsers = await db.select(publicUserColumns).from(users);
 
     res.json(allUsers);
+};
+
+export const getPublicProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await perfilPublico(String(req.params.username)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getMyProgress = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const bruto = String(req.query.periodo ?? "30");
+        const periodo = bruto === "7" ? 7 : bruto === "tudo" ? null : 30;
+        res.json(await progressoDoUsuario(req.userId!, periodo));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const setWeeklyGoal = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { kind, target } = metaSemanalSchema.parse(req.body);
+        await definirMetaSemanal(req.userId!, kind, target);
+        res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const clearWeeklyGoal = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await limparMetaSemanal(req.userId!);
+        res.json({ ok: true });
+    } catch (err) {
+        next(err);
+    }
 };

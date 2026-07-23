@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { Login } from './pages/Login';
@@ -33,6 +33,9 @@ import { VerifyEmail } from './pages/VerifyEmail';
 import { RecuperarSenha } from './pages/RecuperarSenha';
 import { RedefinirSenha } from './pages/RedefinirSenha';
 import { OAuthCallback } from './pages/OAuthCallback';
+import { CertificadoValidar } from './pages/CertificadoValidar';
+import { PerfilPublico } from './pages/PerfilPublico';
+import { Progresso } from './pages/Progresso';
 import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
 
@@ -62,6 +65,20 @@ function AdminRoute({ children }: { children: React.JSX.Element }) {
   return user?.role === 'admin' ? children : <Navigate to="/home" />;
 }
 
+// A URL canônica do perfil é /username: o dono vê a versão editável, os demais a pública.
+function PerfilPorUsername() {
+  const { user, isAuthenticated } = useAuth();
+  const { username } = useParams();
+  if (isAuthenticated && user?.username && user.username === username) return <Perfil />;
+  return <PerfilPublico />;
+}
+
+// /perfil segue funcionando (links antigos), mas redireciona para a URL canônica.
+function MeuPerfil() {
+  const { user } = useAuth();
+  return user?.username ? <Navigate to={`/${user.username}`} replace /> : <Perfil />;
+}
+
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
 
@@ -75,6 +92,7 @@ function AppRoutes() {
       <Route path="/recuperar-senha" element={<RecuperarSenha />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       <Route path="/auth/callback" element={<OAuthCallback />} />
+      <Route path="/certificados/:code" element={<CertificadoValidar />} />
       <Route
         path="/completar-perfil"
         element={
@@ -291,7 +309,7 @@ function AppRoutes() {
         path="/perfil"
         element={
           <PrivateRoute>
-            <Perfil />
+            <MeuPerfil />
           </PrivateRoute>
         }
       />
@@ -299,13 +317,12 @@ function AppRoutes() {
         path="/progresso"
         element={
           <PrivateRoute>
-            <Placeholder
-              title="Meu progresso"
-              description="Em breve seu progresso por trilhas e conquistas aparecerá aqui."
-            />
+            <Progresso />
           </PrivateRoute>
         }
       />
+      {/* Perfil compartilhável: /username. Fica por último; rotas fixas têm prioridade. */}
+      <Route path="/:username" element={<PerfilPorUsername />} />
     </Routes>
     </>
   );

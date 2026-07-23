@@ -30,6 +30,10 @@ const envSchema = z.object({
         .optional()
         .transform((v) => v === "true"),
     EMAIL_FROM: z.string().default("ensina.dev <nao-responda@ensinadev.com.br>"),
+    // Dados do emissor impressos no certificado. Sem os três, a emissão fica desligada.
+    CERT_RAZAO_SOCIAL: z.string().optional(),
+    CERT_CNPJ: z.string().optional(),
+    CERT_RESPONSAVEL: z.string().optional(),
 });
 
 // Valida os dados e lança erro se tiver algo errado.

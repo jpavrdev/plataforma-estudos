@@ -61,6 +61,10 @@ export const users = pgTable("users", {
     role: userRole("role").default("user").notNull(),
     failedLoginAttempts: integer("failed_login_attempts").default(0).notNull(),
     lockedUntil: timestamp("locked_until", { withTimezone: true }),
+    // Meta semanal escolhida pelo usuário: "aulas" (X aulas por dia) ou "dias"
+    // (streak de X dias). Nulo = meta padrão de 7 dias ativos na semana.
+    weeklyGoalKind: varchar("weekly_goal_kind", { length: 10 }),
+    weeklyGoalTarget: integer("weekly_goal_target"),
 });
 
 // Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de
@@ -97,6 +101,8 @@ export const trails = pgTable("trails", {
     description: text("description").notNull(),
     whatYouLearn: jsonb("what_you_learn").$type<string[]>(),
     prerequisites: jsonb("prerequisites").$type<string[]>(),
+    // Carga horária declarada no certificado. Sem ela a trilha não emite certificado.
+    workloadHours: integer("workload_hours"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -529,4 +535,29 @@ export const roadmapStageCompletions = pgTable(
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [unique().on(table.userId, table.stageId)],
+);
+
+// Certificado de conclusão de trilha. Os dados são congelados na emissão:
+// o documento não muda se a trilha ou o nome do usuário mudarem depois.
+export const certificates = pgTable(
+    "certificates",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        code: varchar("code", { length: 20 }).notNull().unique(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id)
+            .notNull(),
+        studentName: varchar("student_name", { length: 255 }).notNull(),
+        cpf: varchar("cpf", { length: 11 }).notNull(),
+        trailName: varchar("trail_name", { length: 255 }).notNull(),
+        workloadHours: integer("workload_hours").notNull(),
+        language: varchar("language", { length: 40 }),
+        startedAt: timestamp("started_at", { withTimezone: true }).notNull(),
+        completedAt: timestamp("completed_at", { withTimezone: true }).notNull(),
+        issuedAt: timestamp("issued_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.userId, table.trailId)],
 );

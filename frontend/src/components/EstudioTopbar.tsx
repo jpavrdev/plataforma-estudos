@@ -23,7 +23,7 @@ export function EstudioTopbar({ crumb, actions, badge = 'Estúdio', nav = true }
     <header className="topbar studio__bar">
       <MobileMenu items={NAV_ESTUDIO} />
       <div className="studio__brand">
-        <Logo variant="solid" size={19} />
+        <Logo variant="solid" size={19} to="/home" />
         <span className="studio__badge">{badge}</span>
       </div>
       {crumb && (

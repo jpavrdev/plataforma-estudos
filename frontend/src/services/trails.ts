@@ -10,6 +10,7 @@ interface TrailApi {
   totalLessons: number;
   completedLessons?: number;
   progress?: number;
+  workloadHours?: number | null;
   tags?: { id: string; name: string }[];
 }
 
@@ -44,6 +45,7 @@ function adaptar(t: TrailApi): Trail & { id: string } {
     done: t.completedLessons ?? 0,
     desc: t.description,
     tags: t.tags?.map((tg) => tg.name) ?? [],
+    workloadHours: t.workloadHours ?? null,
   };
 }
 
@@ -299,13 +301,20 @@ export async function criarTrilha(payload: {
   level: TrailLevelEnum;
   description: string;
   tagIds?: string[];
+  workloadHours?: number | null;
 }) {
   const { data } = await api.post<{ id: string }>('/trails', payload);
   return data;
 }
 export async function atualizarTrilha(
   id: string,
-  payload: { name?: string; level?: TrailLevelEnum; description?: string; tagIds?: string[] },
+  payload: {
+    name?: string;
+    level?: TrailLevelEnum;
+    description?: string;
+    tagIds?: string[];
+    workloadHours?: number | null;
+  },
 ) {
   const { data } = await api.patch(`/trails/${id}`, payload);
   return data;
