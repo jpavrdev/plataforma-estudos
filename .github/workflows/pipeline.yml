@@ -37,6 +37,9 @@ jobs:
       NODE_ENV: test
       FRONTEND_URL: http://localhost:5173
       DB_SSL: "false"
+      CERT_RAZAO_SOCIAL: Ensina Dev Treinamentos
+      CERT_CNPJ: 00.000.000/0001-00
+      CERT_RESPONSAVEL: Joao Paulo Avelino
     defaults:
       run:
         working-directory: backend
