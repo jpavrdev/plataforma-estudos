@@ -10,6 +10,7 @@ import adminRoutes from "./src/routes/admin.routes.ts";
 import roadmapRoutes from "./src/routes/roadmap.routes.ts";
 import comunicadoRoutes from "./src/routes/comunicado.routes.ts";
 import certificateRoutes from "./src/routes/certificate.routes.ts";
+import apoioRoutes from "./src/routes/apoio.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
@@ -25,8 +26,9 @@ app.use(cookieParser());
 // limite maior que o padrao. Aplicado so nessas rotas; o json global segue enxuto.
 app.use("/me/avatar", express.json({ limit: "6mb" }));
 app.use("/me/cover", express.json({ limit: "6mb" }));
+app.use("/me/fundo", express.json({ limit: "14mb" }));
 app.use(express.json());
-app.use(helmet());
+app.use(helmet({ frameguard: { action: "deny" } }));
 app.use(
     cors({
         origin: env.NODE_ENV === "production" ? env.FRONTEND_URL : true,
@@ -54,6 +56,7 @@ app.use(desafioRoutes);
 app.use(roadmapRoutes);
 app.use(comunicadoRoutes);
 app.use(certificateRoutes);
+app.use(apoioRoutes);
 app.use(adminRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));

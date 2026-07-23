@@ -5,3 +5,4 @@ import path from "node:path";
 export const UPLOADS_DIR = path.join(process.cwd(), "uploads");
 export const AVATARS_DIR = path.join(UPLOADS_DIR, "avatars");
 export const COVERS_DIR = path.join(UPLOADS_DIR, "covers");
+export const FUNDOS_DIR = path.join(UPLOADS_DIR, "fundos");

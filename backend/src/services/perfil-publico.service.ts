@@ -6,6 +6,7 @@ import { calcularEstatisticas } from "./stats.service.ts";
 import { streakDoUsuario } from "./streak.ts";
 import { conquistasDoUsuario } from "./achievement.service.ts";
 import { trilhasDoUsuario } from "./trail.service.ts";
+import { apoiadorAtivo } from "./apoiador.service.ts";
 
 // Só o que pode ser visto por qualquer pessoa: nada de email, telefone ou nascimento.
 export async function perfilPublico(username: string) {
@@ -14,11 +15,12 @@ export async function perfilPublico(username: string) {
         throw new AppError(404, "Perfil não encontrado");
     }
 
-    const [stats, streak, conquistas, trilhas, certs] = await Promise.all([
+    const [stats, streak, conquistas, trilhas, apoiador, certs] = await Promise.all([
         calcularEstatisticas(usuario.id),
         streakDoUsuario(usuario.id),
         conquistasDoUsuario(usuario.id),
         trilhasDoUsuario(usuario.id),
+        apoiadorAtivo(usuario.id),
         db
             .select({
                 code: certificates.code,
@@ -45,6 +47,7 @@ export async function perfilPublico(username: string) {
         avatarUrl: usuario.avatarUrl,
         coverUrl: usuario.coverUrl,
         memberSince: usuario.createdAt,
+        apoiador,
         xp: stats.xp,
         level: stats.level,
         lessonsCompleted: stats.lessonsCompleted,

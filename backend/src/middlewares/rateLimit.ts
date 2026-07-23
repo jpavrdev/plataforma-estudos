@@ -56,3 +56,13 @@ export const apiLimiter = rateLimit({
     legacyHeaders: false,
     skip: (req) => process.env.NODE_ENV === "test" || req.path === "/health",
 });
+
+export const desafioRunLimiter = criarLimiter(
+    60,
+    "Muitas execuções seguidas. Aguarde um instante e tente de novo.",
+);
+
+export const uploadLimiter = criarLimiter(
+    30,
+    "Muitos envios de imagem. Aguarde alguns minutos.",
+);

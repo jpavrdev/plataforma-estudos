@@ -160,7 +160,7 @@ export async function limparMetaSemanal(userId: string) {
         .where(eq(users.id, userId));
 }
 
-export async function progressoDoUsuario(userId: string, periodoDias: 7 | 30 | null) {
+export async function progressoDoUsuario(userId: string, periodoDias: number | null) {
     const [porDia, diasAtivos, stats, [meta], dominio] = await Promise.all([
         atividadePorDia(userId),
         diasAtivosDoUsuario(userId),

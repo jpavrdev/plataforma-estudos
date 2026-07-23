@@ -65,6 +65,12 @@ export const users = pgTable("users", {
     // (streak de X dias). Nulo = meta padrão de 7 dias ativos na semana.
     weeklyGoalKind: varchar("weekly_goal_kind", { length: 10 }),
     weeklyGoalTarget: integer("weekly_goal_target"),
+    // Cor de destaque escolhida (benefício de apoiador). Nulo = azul padrão.
+    accent: varchar("accent", { length: 7 }),
+    // Imagem de fundo do app (benefício de apoiador) e a intensidade do véu
+    // por cima dela (0-100; nulo = padrão de 60).
+    backgroundUrl: varchar("background_url", { length: 300 }),
+    backgroundDim: integer("background_dim"),
 });
 
 // Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de
@@ -561,3 +567,24 @@ export const certificates = pgTable(
     },
     (table) => [unique().on(table.userId, table.trailId)],
 );
+
+
+export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
+export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);
+
+// Apoio ao projeto. Cada pagamento vira uma linha; apoiador ativo = alguma
+// linha ativa com expires_at no futuro. O gateway confirma via webhook.
+export const subscriptions = pgTable("subscriptions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    plan: subscriptionPlan("plan").notNull(),
+    status: subscriptionStatus("status").default("pendente").notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    gateway: varchar("gateway", { length: 20 }).default("abacatepay").notNull(),
+    gatewayId: varchar("gateway_id", { length: 120 }),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});

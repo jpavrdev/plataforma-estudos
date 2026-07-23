@@ -1,6 +1,6 @@
 import api from './api';
 
-export type PeriodoProgresso = '7' | '30' | 'tudo';
+export type PeriodoProgresso = '7' | '30' | '90' | '365' | 'tudo';
 
 export type MetaSemana =
   | { tipo: 'padrao'; valor: number; alvo: number }

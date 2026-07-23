@@ -526,3 +526,15 @@ export const Zap = ({ size = 16 }: IconProps) => (
     <path d="M13 2L3 14h8l-1 8 10-12h-8z" />
   </svg>
 );
+
+export const Heart = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 21C7 16.5 3 13.2 3 9a5 5 0 0 1 9-3.2A5 5 0 0 1 21 9c0 4.2-4 7.5-9 12z" />
+  </svg>
+);

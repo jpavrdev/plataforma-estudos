@@ -6,6 +6,7 @@ interface Props {
   aspect: number; // 1 = quadrado (avatar), maior = panorâmico (capa)
   round?: boolean; // recorte redondo (avatar)
   maxWidth?: number; // largura máxima do resultado, para não gerar upload gigante
+  alvoKB?: number; // teto de peso: baixa a qualidade em degraus até caber
   titulo: string;
   onConfirm: (dataUrl: string) => void;
   onCancel: () => void;
@@ -21,7 +22,12 @@ function carregarImagem(src: string): Promise<HTMLImageElement> {
 }
 
 // Desenha a área recortada num canvas e devolve a data URL (JPEG).
-async function recortar(src: string, area: Area, maxWidth: number): Promise<string> {
+async function recortar(
+  src: string,
+  area: Area,
+  maxWidth: number,
+  alvoKB?: number,
+): Promise<string> {
   const img = await carregarImagem(src);
   const escala = area.width > maxWidth ? maxWidth / area.width : 1;
   const w = Math.round(area.width * escala);
@@ -32,7 +38,16 @@ async function recortar(src: string, area: Area, maxWidth: number): Promise<stri
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas indisponível');
   ctx.drawImage(img, area.x, area.y, area.width, area.height, 0, 0, w, h);
-  return canvas.toDataURL('image/jpeg', 0.9);
+
+  let resultado = canvas.toDataURL('image/jpeg', 0.9);
+  if (alvoKB) {
+    // Base64 pesa ~4/3 do binário; 0.75 é o piso antes de o olho notar.
+    for (const q of [0.85, 0.8, 0.75]) {
+      if ((resultado.length * 3) / 4 <= alvoKB * 1024) break;
+      resultado = canvas.toDataURL('image/jpeg', q);
+    }
+  }
+  return resultado;
 }
 
 export default function ImageCropper({
@@ -40,6 +55,7 @@ export default function ImageCropper({
   aspect,
   round,
   maxWidth = 1024,
+  alvoKB,
   titulo,
   onConfirm,
   onCancel,
@@ -55,7 +71,7 @@ export default function ImageCropper({
     if (!area || processando) return;
     setProcessando(true);
     try {
-      onConfirm(await recortar(image, area, maxWidth));
+      onConfirm(await recortar(image, area, maxWidth, alvoKB));
     } catch {
       setProcessando(false);
     }
