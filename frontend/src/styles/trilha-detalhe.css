@@ -134,3 +134,7 @@
 .td-cert-conf div { display: flex; flex-direction: column; gap: 2px; }
 .td-cert-conf span { font-size: 12px; color: var(--muted); }
 .td-cert-conf b { font-size: 14.5px; }
+
+.td-cert-share { display: flex; gap: 8px; margin-top: 8px; }
+.td-cert-share__btn { flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 10px; background: transparent; color: var(--text); font-size: 13px; font-weight: 600; text-decoration: none; }
+.td-cert-share__btn:hover { border-color: var(--accent); }

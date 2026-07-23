@@ -24,10 +24,9 @@ function mascararCpf(cpf: string) {
 // Sem 0/O/1/I/L para o código poder ser ditado por telefone sem ambiguidade.
 const ALFABETO_CODIGO = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
 function gerarCodigo() {
-    const bytes = crypto.randomBytes(12);
     let s = "";
     for (let i = 0; i < 12; i++) {
-        s += ALFABETO_CODIGO[bytes[i] % ALFABETO_CODIGO.length];
+        s += ALFABETO_CODIGO[crypto.randomInt(ALFABETO_CODIGO.length)];
     }
     return `ED-${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`;
 }

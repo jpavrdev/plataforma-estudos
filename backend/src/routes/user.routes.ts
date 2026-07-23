@@ -9,6 +9,7 @@ import {
     removerAvatar,
     removerCover,
     listUsers,
+    getPublicProfile,
 } from "../controllers/UserController.ts";
 const router = Router();
 
@@ -20,5 +21,8 @@ router.post("/me/cover", autenticar, uploadCover);
 router.delete("/me/avatar", autenticar, removerAvatar);
 router.delete("/me/cover", autenticar, removerCover);
 router.get("/users", autenticar, exigirAdmin, listUsers);
+
+// Perfil público compartilhável: qualquer pessoa vê, sem login.
+router.get("/perfis/:username", getPublicProfile);
 
 export default router;

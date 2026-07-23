@@ -205,6 +205,32 @@ export function TrilhaDetalhe() {
     }
   }
 
+  function urlValidacao(code: string) {
+    return `${window.location.origin}/certificados/${code}`;
+  }
+
+  function linkedinCertUrl(code: string, issuedAt: string) {
+    const d = new Date(issuedAt);
+    const q = new URLSearchParams({
+      startTask: 'CERTIFICATION_NAME',
+      name: trilha?.name ?? 'Trilha',
+      organizationName: 'Ensina Dev',
+      issueYear: String(d.getFullYear()),
+      issueMonth: String(d.getMonth() + 1),
+      certUrl: urlValidacao(code),
+      certId: code,
+    });
+    return `https://www.linkedin.com/profile/add?${q.toString()}`;
+  }
+
+  function xCertUrl(code: string) {
+    const q = new URLSearchParams({
+      text: `Concluí a trilha ${trilha?.name ?? ''} no Ensina Dev!`,
+      url: urlValidacao(code),
+    });
+    return `https://twitter.com/intent/tweet?${q.toString()}`;
+  }
+
   async function baixarCertificado(code: string) {
     try {
       const blob = await baixarPdfCertificado(code);
@@ -274,7 +300,7 @@ export function TrilhaDetalhe() {
       <div className="home">
         <header className="topbar">
           <MobileMenu />
-          <Logo variant="solid" size={20} />
+          <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
             {NAV.map((item) => (
               <Link
@@ -401,12 +427,32 @@ export function TrilhaDetalhe() {
                       {stats.comecado ? 'Continuar trilha' : 'Começar trilha'}
                     </button>
                     {cert?.emitido && (
-                      <button
-                        className="td-card__cert"
-                        onClick={() => baixarCertificado(cert.emitido!.code)}
-                      >
-                        Baixar certificado
-                      </button>
+                      <>
+                        <button
+                          className="td-card__cert"
+                          onClick={() => baixarCertificado(cert.emitido!.code)}
+                        >
+                          Baixar certificado
+                        </button>
+                        <div className="td-cert-share">
+                          <a
+                            className="td-cert-share__btn"
+                            href={linkedinCertUrl(cert.emitido.code, cert.emitido.issuedAt)}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                          >
+                            Adicionar ao LinkedIn
+                          </a>
+                          <a
+                            className="td-cert-share__btn"
+                            href={xCertUrl(cert.emitido.code)}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                          >
+                            Compartilhar no X
+                          </a>
+                        </div>
+                      </>
                     )}
                     {cert?.elegivel && (
                       <button className="td-card__cert" onClick={abrirModalCertificado}>
@@ -737,6 +783,24 @@ export function TrilhaDetalhe() {
                     Código {cert.emitido.code}. Você pode baixar o PDF de novo quando quiser, aqui
                     na página da trilha.
                   </p>
+                  <div className="td-cert-share" style={{ marginBottom: 12 }}>
+                    <a
+                      className="td-cert-share__btn"
+                      href={linkedinCertUrl(cert.emitido.code, cert.emitido.issuedAt)}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      Adicionar ao LinkedIn
+                    </a>
+                    <a
+                      className="td-cert-share__btn"
+                      href={xCertUrl(cert.emitido.code)}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      Compartilhar no X
+                    </a>
+                  </div>
                   <div className="cmn-card__row">
                     <button className="btn btn--ghost" onClick={() => setCertModal(false)}>
                       Fechar

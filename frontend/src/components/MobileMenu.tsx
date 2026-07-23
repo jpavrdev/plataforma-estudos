@@ -38,7 +38,7 @@ export function MobileMenu({ items = NAV }: { items?: { to: string; label: strin
           <div className="drawer-scrim" onClick={fechar} />
           <nav className="drawer">
             <div className="drawer__head">
-              <Logo variant="solid" size={18} />
+              <Logo variant="solid" size={18} to="/home" />
               <button className="drawer__close" aria-label="Fechar menu" onClick={fechar}>
                 <X size={20} />
               </button>
