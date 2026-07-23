@@ -272,7 +272,11 @@ export function Trilhas() {
             {trilhasFiltradas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
-              const t = { ...catalogo, done: progresso?.done ?? 0 };
+              const t = {
+                ...catalogo,
+                done: progresso?.done ?? 0,
+                lessons: progresso?.lessons ?? catalogo.lessons,
+              };
               const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
               const started = t.done > 0;
               const completed = t.done >= t.lessons;

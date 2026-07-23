@@ -18,7 +18,7 @@ type Erros = Record<string, string>;
 // não fornece (nascimento, gênero e telefone).
 export function CompletarPerfil() {
   const navigate = useNavigate();
-  const { atualizarUsuario } = useAuth();
+  const { atualizarUsuario, logout } = useAuth();
   const [username, setUsername] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
@@ -29,6 +29,12 @@ export function CompletarPerfil() {
 
   const limparErro = (campo: string) =>
     setErrors((prev) => (prev[campo] ? { ...prev, [campo]: '' } : prev));
+
+  // Sem esta saída o usuário fica preso: toda rota redireciona pra cá enquanto não há username.
+  async function sair() {
+    await logout();
+    navigate('/', { replace: true });
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -102,6 +108,13 @@ export function CompletarPerfil() {
           {submitting ? 'Salvando...' : 'Concluir'}
         </button>
       </form>
+
+      <p className="auth__foot">
+        Não quer continuar agora?{' '}
+        <button className="link link--btn" type="button" onClick={sair}>
+          Sair e voltar ao início
+        </button>
+      </p>
     </AuthShell>
   );
 }

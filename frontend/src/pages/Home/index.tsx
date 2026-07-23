@@ -85,10 +85,10 @@ export function Home() {
       try {
         const [todas, doUsuario] = await Promise.all([listarTrilhas(), listarMinhasTrilhas()]);
         if (!ativo) return;
-        const comProgresso = todas.map((c) => ({
-          ...c,
-          done: doUsuario.find((m) => m.id === c.id)?.done ?? 0,
-        }));
+        const comProgresso = todas.map((c) => {
+          const meu = doUsuario.find((m) => m.id === c.id);
+          return { ...c, done: meu?.done ?? 0, lessons: meu?.lessons ?? c.lessons };
+        });
         setEmAndamento(comProgresso.filter((t) => t.done > 0 && t.done < t.lessons));
         setDisponiveis(comProgresso);
       } catch {

@@ -31,6 +31,7 @@ export async function criarTrilha(dados: DadosCriarTrilha) {
             name: dados.name,
             trailLevel: dados.level,
             description: dados.description,
+            workloadHours: dados.workloadHours ?? null,
         })
         .returning();
     if (dados.tagIds?.length) {
@@ -48,10 +49,12 @@ export async function atualizarTrilha(trailId: string, dados: DadosAtualizarTril
         name?: string;
         trailLevel?: "iniciante" | "intermediario" | "avancado";
         description?: string;
+        workloadHours?: number | null;
     } = {};
     if (dados.name !== undefined) sets.name = dados.name;
     if (dados.level !== undefined) sets.trailLevel = dados.level;
     if (dados.description !== undefined) sets.description = dados.description;
+    if (dados.workloadHours !== undefined) sets.workloadHours = dados.workloadHours;
     if (Object.keys(sets).length === 0) {
         throw new AppError(400, "Nada para atualizar");
     }
@@ -61,6 +64,7 @@ export async function atualizarTrilha(trailId: string, dados: DadosAtualizarTril
         name: trails.name,
         trailLevel: trails.trailLevel,
         description: trails.description,
+        workloadHours: trails.workloadHours,
     });
     if (!trilha) {
         throw new AppError(404, "Trilha não encontrada");
@@ -137,12 +141,29 @@ export async function listarTrilhas(filtros: { level?: string; categoria?: strin
             name: trails.name,
             trailLevel: trails.trailLevel,
             description: trails.description,
-            totalLessons: count(lessons.id),
+            workloadHours: trails.workloadHours,
         })
         .from(trails)
-        .leftJoin(lessons, eq(lessons.trailId, trails.id))
-        .where(and(filtroNivel, filtroCategoria))
-        .groupBy(trails.id);
+        .where(and(filtroNivel, filtroCategoria));
+
+    // Total que um aluno de fato cursa: aulas publicadas, neutras + a maior linguagem.
+    const aulasPublicadas = await db
+        .select({ trailId: lessons.trailId, language: lessons.language })
+        .from(lessons)
+        .where(eq(lessons.published, true));
+    const contagem = new Map<string, { neutras: number; porLang: Map<string, number> }>();
+    for (const a of aulasPublicadas) {
+        const c = contagem.get(a.trailId) ?? { neutras: 0, porLang: new Map<string, number>() };
+        if (a.language === null) c.neutras++;
+        else c.porLang.set(a.language, (c.porLang.get(a.language) ?? 0) + 1);
+        contagem.set(a.trailId, c);
+    }
+    const totalDe = (trailId: string) => {
+        const c = contagem.get(trailId);
+        if (!c) return 0;
+        const maior = c.porLang.size > 0 ? Math.max(...c.porLang.values()) : 0;
+        return c.neutras + maior;
+    };
 
     const vinculos = await db
         .select({ trailId: trailTags.trailId, id: tags.id, name: tags.name })
@@ -154,48 +175,90 @@ export async function listarTrilhas(filtros: { level?: string; categoria?: strin
         arr.push({ id: v.id, name: v.name });
         tagsPorTrilha.set(v.trailId, arr);
     }
-    return lista.map((t) => ({ ...t, tags: tagsPorTrilha.get(t.id) ?? [] }));
+    return lista.map((t) => ({
+        ...t,
+        totalLessons: totalDe(t.id),
+        tags: tagsPorTrilha.get(t.id) ?? [],
+    }));
 }
 
 // Trilhas em que o usuário já tem progresso, com percentual de conclusão.
+// Em trilha multi-linguagem o percentual é do melhor track (neutras + uma linguagem),
+// a mesma régua da conclusão no roadmap e no certificado.
 export async function trilhasDoUsuario(userId: string) {
-    const totais = await db
-        .select({ trailId: lessons.trailId, total: count(lessons.id) })
+    const aulas = await db
+        .select({ id: lessons.id, trailId: lessons.trailId, language: lessons.language })
         .from(lessons)
-        .groupBy(lessons.trailId);
-    const totalPorTrilha = new Map(totais.map((t) => [t.trailId, Number(t.total)]));
+        .where(eq(lessons.published, true));
+    const feitas = new Set(
+        (
+            await db
+                .select({ lessonId: lessonProgress.lessonId })
+                .from(lessonProgress)
+                .where(eq(lessonProgress.userId, userId))
+        ).map((p) => p.lessonId),
+    );
 
-    const feitas = await db
-        .select({ trailId: lessons.trailId, feitas: count(lessonProgress.id) })
-        .from(lessonProgress)
-        .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
-        .where(eq(lessonProgress.userId, userId))
-        .groupBy(lessons.trailId);
-
-    if (feitas.length === 0) {
-        return [];
+    const porTrilha = new Map<string, { neutras: string[]; porLang: Map<string, string[]> }>();
+    for (const a of aulas) {
+        const grupo = porTrilha.get(a.trailId) ?? {
+            neutras: [] as string[],
+            porLang: new Map<string, string[]>(),
+        };
+        if (a.language === null) {
+            grupo.neutras.push(a.id);
+        } else {
+            const arr = grupo.porLang.get(a.language) ?? [];
+            arr.push(a.id);
+            grupo.porLang.set(a.language, arr);
+        }
+        porTrilha.set(a.trailId, grupo);
     }
 
     const todasTrilhas = await db.select().from(trails);
-    const trilhaPorId = new Map(todasTrilhas.map((t) => [t.id, t]));
+    const concluidasEm = (ids: string[]) => ids.filter((id) => feitas.has(id)).length;
 
-    return feitas
-        .filter((f) => trilhaPorId.has(f.trailId))
-        .map((f) => {
-            const trilha = trilhaPorId.get(f.trailId)!;
-            const total = totalPorTrilha.get(f.trailId) ?? 0;
-            const concluidas = Number(f.feitas);
-            const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0;
-            return {
-                id: trilha.id,
-                name: trilha.name,
-                trailLevel: trilha.trailLevel,
-                description: trilha.description,
-                totalLessons: total,
-                completedLessons: concluidas,
-                progress: pct,
-            };
+    const saida: {
+        id: string;
+        name: string;
+        trailLevel: "iniciante" | "intermediario" | "avancado";
+        description: string;
+        totalLessons: number;
+        completedLessons: number;
+        progress: number;
+    }[] = [];
+    for (const trilha of todasTrilhas) {
+        const grupo = porTrilha.get(trilha.id);
+        if (!grupo) continue;
+
+        let total = grupo.neutras.length;
+        let concluidas = concluidasEm(grupo.neutras);
+        if (grupo.porLang.size > 0) {
+            let melhor = { total: 0, concluidas: 0, pct: -1 };
+            for (const ids of grupo.porLang.values()) {
+                const t = grupo.neutras.length + ids.length;
+                const c = concluidasEm(grupo.neutras) + concluidasEm(ids);
+                const pct = t > 0 ? c / t : 0;
+                if (pct > melhor.pct || (pct === melhor.pct && c > melhor.concluidas)) {
+                    melhor = { total: t, concluidas: c, pct };
+                }
+            }
+            total = melhor.total;
+            concluidas = melhor.concluidas;
+        }
+        if (concluidas === 0) continue;
+
+        saida.push({
+            id: trilha.id,
+            name: trilha.name,
+            trailLevel: trilha.trailLevel,
+            description: trilha.description,
+            totalLessons: total,
+            completedLessons: concluidas,
+            progress: total > 0 ? Math.round((concluidas / total) * 100) : 0,
         });
+    }
+    return saida;
 }
 
 // Retorna a trilha com módulos e aulas, cada aula com estado para o usuário.
