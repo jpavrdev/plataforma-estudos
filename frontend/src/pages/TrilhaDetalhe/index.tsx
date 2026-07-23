@@ -176,6 +176,19 @@ export function TrilhaDetalhe() {
     return nome.length >= 5 && nome.length <= 255 && nome.split(' ').length >= 2;
   }
 
+  function continuarEmissao() {
+    if (!nomeCompletoValido(nomeCert)) {
+      setCertErro('Informe seu nome completo, com nome e sobrenome.');
+      return;
+    }
+    if (!cpfValido(cpf.replace(/\D/g, ''))) {
+      setCertErro('CPF inválido. Confira os 11 dígitos.');
+      return;
+    }
+    setCertErro('');
+    setCertEtapa('confirmar');
+  }
+
   async function emitir() {
     if (!trailId || emitindo) return;
     setEmitindo(true);
@@ -660,7 +673,10 @@ export function TrilhaDetalhe() {
                     value={nomeCert}
                     placeholder="Nome completo"
                     maxLength={255}
-                    onChange={(e) => setNomeCert(e.target.value)}
+                    onChange={(e) => {
+                      setNomeCert(e.target.value);
+                      setCertErro('');
+                    }}
                   />
                   <input
                     className="cmn-texto"
@@ -668,17 +684,17 @@ export function TrilhaDetalhe() {
                     value={cpf}
                     placeholder="000.000.000-00"
                     inputMode="numeric"
-                    onChange={(e) => setCpf(formatarCpf(e.target.value))}
+                    onChange={(e) => {
+                      setCpf(formatarCpf(e.target.value));
+                      setCertErro('');
+                    }}
                   />
+                  {certErro && <p className="td-cert-erro">{certErro}</p>}
                   <div className="cmn-card__row">
                     <button className="btn btn--ghost" onClick={() => setCertModal(false)}>
                       Cancelar
                     </button>
-                    <button
-                      className="btn btn--accent"
-                      onClick={() => setCertEtapa('confirmar')}
-                      disabled={!nomeCompletoValido(nomeCert) || !cpfValido(cpf.replace(/\D/g, ''))}
-                    >
+                    <button className="btn btn--accent" onClick={continuarEmissao}>
                       Continuar
                     </button>
                   </div>
