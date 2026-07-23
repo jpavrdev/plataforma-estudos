@@ -155,6 +155,25 @@ describe("Certificado de conclusão", () => {
         assert.equal(repetido.body.code, emitido.body.code);
     });
 
+    test("reemitir com outro CPF corrige o documento mantendo o código", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { trailId, lessonIds } = await montarTrilha(admin.token);
+        const aluno = await criarUsuarioLogado();
+        for (const id of lessonIds) await passarNoQuiz(aluno.token, id);
+
+        const primeiro = await post(`/trails/${trailId}/certificado`, aluno.token, {
+            cpf: CPF_VALIDO,
+        });
+        const corrigido = await post(`/trails/${trailId}/certificado`, aluno.token, {
+            cpf: "111.444.777-35",
+        });
+        assert.equal(corrigido.status, 200);
+        assert.equal(corrigido.body.code, primeiro.body.code);
+
+        const publico = await get(`/certificados/${primeiro.body.code}`);
+        assert.equal(publico.body.cpf, "***.444.777-**");
+    });
+
     test("sem concluir a trilha não emite; CPF inválido é rejeitado", async () => {
         const admin = await criarUsuarioLogado(true);
         const { trailId, lessonIds } = await montarTrilha(admin.token);

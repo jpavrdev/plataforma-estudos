@@ -140,11 +140,27 @@ export async function emitirCertificado(trailId: string, userId: string, cpf: st
         throw new AppError(409, "Esta trilha ainda não emite certificado.");
     }
 
+    const [usuarioAtual] = await db
+        .select({ name: users.name })
+        .from(users)
+        .where(eq(users.id, userId));
+
     const [existente] = await db
         .select()
         .from(certificates)
         .where(and(eq(certificates.userId, userId), eq(certificates.trailId, trailId)));
-    if (existente) return existente;
+    if (existente) {
+        if (existente.cpf === cpf && existente.studentName === usuarioAtual.name) {
+            return existente;
+        }
+        // Correção de CPF ou de nome: reemite mantendo o código, para o QR já impresso seguir válido.
+        const [corrigido] = await db
+            .update(certificates)
+            .set({ cpf, studentName: usuarioAtual.name, issuedAt: new Date() })
+            .where(eq(certificates.id, existente.id))
+            .returning();
+        return corrigido;
+    }
 
     const conclusao = await conclusaoReal(trailId, userId);
     if (!conclusao) {
@@ -157,11 +173,6 @@ export async function emitirCertificado(trailId: string, userId: string, cpf: st
         throw new AppError(409, "Conclua todas as aulas da trilha para emitir o certificado.");
     }
 
-    const [usuario] = await db
-        .select({ name: users.name })
-        .from(users)
-        .where(eq(users.id, userId));
-
     for (let tentativa = 0; tentativa < 5; tentativa++) {
         const [criado] = await db
             .insert(certificates)
@@ -169,7 +180,7 @@ export async function emitirCertificado(trailId: string, userId: string, cpf: st
                 code: gerarCodigo(),
                 userId,
                 trailId,
-                studentName: usuario.name,
+                studentName: usuarioAtual.name,
                 cpf,
                 trailName: trilha.name,
                 workloadHours: trilha.workloadHours,

@@ -359,14 +359,22 @@ export function TrilhaDetalhe() {
                       {stats.comecado ? 'Continuar trilha' : 'Começar trilha'}
                     </button>
                     {cert?.emitido && (
-                      <a
-                        className="td-card__cert"
-                        href={urlPdfCertificado(cert.emitido.code)}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Baixar certificado
-                      </a>
+                      <>
+                        <a
+                          className="td-card__cert"
+                          href={urlPdfCertificado(cert.emitido.code)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Baixar certificado
+                        </a>
+                        <p className="td-card__cert-hint">
+                          Dados errados no certificado?{' '}
+                          <button className="link link--btn" onClick={() => setCertModal(true)}>
+                            Corrigir
+                          </button>
+                        </p>
+                      </>
                     )}
                     {cert?.elegivel && (
                       <button className="td-card__cert" onClick={() => setCertModal(true)}>
@@ -618,11 +626,13 @@ export function TrilhaDetalhe() {
           <div className="cmn-overlay">
             <div className="cmn-card">
               <div className="cmn-card__kicker">Certificado</div>
-              <h3 className="cmn-card__title">Emitir certificado de conclusão</h3>
+              <h3 className="cmn-card__title">
+                {cert?.emitido ? 'Corrigir os dados do certificado' : 'Emitir certificado de conclusão'}
+              </h3>
               <p className="cmn-card__msg">
-                Informe seu CPF: ele sai impresso no certificado, como as faculdades exigem para
-                validar horas complementares. Confira também se o seu nome está correto no perfil,
-                pois é ele que vai no documento.
+                {cert?.emitido
+                  ? 'O certificado será reemitido com o CPF informado e o nome atual do seu perfil. O código e o link de validação continuam os mesmos; baixe o PDF de novo depois.'
+                  : 'Informe seu CPF: ele sai impresso no certificado, como as faculdades exigem para validar horas complementares. Confira também se o seu nome está correto no perfil, pois é ele que vai no documento.'}
               </p>
               <input
                 className="cmn-texto"
@@ -648,7 +658,7 @@ export function TrilhaDetalhe() {
                   onClick={emitir}
                   disabled={!cpfValido(cpf.replace(/\D/g, '')) || emitindo}
                 >
-                  {emitindo ? 'Emitindo...' : 'Emitir'}
+                  {emitindo ? 'Enviando...' : cert?.emitido ? 'Corrigir e reemitir' : 'Emitir'}
                 </button>
               </div>
             </div>
