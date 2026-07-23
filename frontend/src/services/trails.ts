@@ -484,6 +484,7 @@ export interface RankingRow {
   xp: number;
   level: number;
   streak: number;
+  apoiador?: boolean;
   delta: number;
   you: boolean;
 }

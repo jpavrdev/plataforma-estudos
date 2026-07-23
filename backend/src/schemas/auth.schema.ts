@@ -11,7 +11,7 @@ const senhaForte = z
     .refine((s) => /[^A-Za-z0-9]/.test(s), "A senha deve conter um caractere especial");
 
 export const registerSchema = z.object({
-    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
+    name: z.string().min(2, "Nome deve ter ao menos 2 caracteres").max(255),
     username: z
         .string()
         .trim()
@@ -21,7 +21,7 @@ export const registerSchema = z.object({
     email: z.email("Email inválido"),
     password: senhaForte,
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
-    gender: z.string(),
+    gender: z.string().max(50),
     phone: z.string().trim().max(20, "Telefone muito longo"),
 });
 
@@ -30,17 +30,17 @@ export const forgotPasswordSchema = z.object({
 });
 
 export const resetPasswordSchema = z.object({
-    token: z.string().min(1, "Token é obrigatório."),
+    token: z.string().min(1, "Token é obrigatório.").max(512),
     password: senhaForte,
 });
 
 export const loginSchema = z.object({
     email: z.email("Email inválido."),
-    password: z.string().min(1, "Senha é obrigatória."),
+    password: z.string().min(1, "Senha é obrigatória.").max(1024),
 });
 
 export const refreshSchema = z.object({
-    refreshToken: z.string().min(1, "Refresh Token é obrigatório."),
+    refreshToken: z.string().min(1, "Refresh Token é obrigatório.").max(512),
 });
 
 export const updateMeSchema = z.object({
@@ -70,7 +70,7 @@ export const completarPerfilSchema = z.object({
         .max(20, "Usuário deve ter no máximo 20 caracteres")
         .regex(/^[a-zA-Z0-9_]+$/, "Use apenas letras, números e underscore"),
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
-    gender: z.string().min(1, "Selecione o gênero"),
+    gender: z.string().min(1, "Selecione o gênero").max(50),
     phone: z.string().trim().min(1, "Informe o telefone").max(20, "Telefone muito longo"),
 });
 

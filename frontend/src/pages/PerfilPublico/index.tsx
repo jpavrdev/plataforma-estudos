@@ -13,6 +13,7 @@ import {
   Linkedin,
   XSocial,
   Check,
+  Heart,
   IconeConquista,
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
@@ -134,6 +135,11 @@ export function PerfilPublico() {
                   <div className="pf-id__row">
                     <span className="pf-id__name">{perfil.name}</span>
                     <span className="pf-id__level">Nível {perfil.level}</span>
+                    {perfil.apoiador && (
+                      <span className="selo-apoiador selo-apoiador--chip" title="Apoiador do Ensina Dev">
+                        <Heart size={12} /> Apoiador
+                      </span>
+                    )}
                   </div>
                   <div className="pf-id__user">@{perfil.username}</div>
                 </div>

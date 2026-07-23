@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import api from '../services/api';
+import { aplicarAccent, accentSalvo, aplicarFundo, fundoSalvo, aplicarVeu, veuSalvo } from '../utils/accent';
+import { urlImagem } from '../utils/urlImagem';
 
 interface User {
   id: string;
@@ -12,6 +14,10 @@ interface User {
   streak?: number;
   level?: number;
   avatarUrl?: string | null;
+  apoiador?: boolean;
+  accent?: string | null;
+  backgroundUrl?: string | null;
+  backgroundDim?: number | null;
 }
 
 interface AuthContextData {
@@ -43,6 +49,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       api.defaults.headers.Authorization = `Bearer ${StoragedToken}`;
       // Mostra o cache na hora (sem tela de loading) e revalida com /me em
       // segundo plano, trazendo streak/role/perfil atualizados.
+      aplicarAccent(accentSalvo());
+      aplicarFundo(fundoSalvo());
+      aplicarVeu(veuSalvo());
       if (storagedUser) {
         setUser(JSON.parse(storagedUser));
         setLoading(false);
@@ -52,6 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data } = await api.get('/me');
         setUser(data);
         localStorage.setItem('@App:user', JSON.stringify(data));
+        aplicarAccent(data.apoiador ? data.accent : null);
+        aplicarFundo(data.apoiador ? urlImagem(data.backgroundUrl) : null);
+        aplicarVeu(data.apoiador ? data.backgroundDim : null);
       } catch (e) {
         const status = (e as { response?: { status?: number } })?.response?.status;
         if (status === 401) {
@@ -76,6 +88,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const meResponse = await api.get('/me');
     setUser(meResponse.data);
     localStorage.setItem('@App:user', JSON.stringify(meResponse.data));
+    aplicarAccent(meResponse.data.apoiador ? meResponse.data.accent : null);
+    aplicarFundo(meResponse.data.apoiador ? urlImagem(meResponse.data.backgroundUrl) : null);
+    aplicarVeu(meResponse.data.apoiador ? meResponse.data.backgroundDim : null);
   }
 
   // Entra a partir de um access token já emitido (usado no callback do login social).
@@ -85,6 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data } = await api.get('/me');
     setUser(data);
     localStorage.setItem('@App:user', JSON.stringify(data));
+    aplicarAccent(data.apoiador ? data.accent : null);
+    aplicarFundo(data.apoiador ? urlImagem(data.backgroundUrl) : null);
+    aplicarVeu(data.apoiador ? data.backgroundDim : null);
   }
 
   async function logout() {
@@ -94,6 +112,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Mesmo se a chamada falhar, limpamos a sessão local no finally.
     } finally {
       localStorage.clear();
+      aplicarAccent(null);
+      aplicarFundo(null);
+      aplicarVeu(null);
       setUser(null);
     }
   }

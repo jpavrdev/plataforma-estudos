@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
@@ -12,6 +13,7 @@ import {
   ClockExam,
   ChevronUp,
   Plus,
+  Lock,
   IconeConquista,
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
@@ -26,9 +28,11 @@ import {
 } from '../../services/progresso';
 import { obterMinhasConquistas, type MinhaConquista } from '../../services/trails';
 
-const PERIODOS: { valor: PeriodoProgresso; label: string }[] = [
+const PERIODOS: { valor: PeriodoProgresso; label: string; apoiador?: boolean }[] = [
   { valor: '7', label: '7 dias' },
   { valor: '30', label: '30 dias' },
+  { valor: '90', label: '90 dias', apoiador: true },
+  { valor: '365', label: '12 meses', apoiador: true },
   { valor: 'tudo', label: 'Tudo' },
 ];
 
@@ -71,6 +75,7 @@ function deltaPercentual(atual: number, anterior: number | null): string | null 
 
 export function Progresso() {
   const { user: authUser } = useAuth();
+  const navigate = useNavigate();
   const [periodo, setPeriodo] = useState<PeriodoProgresso>('30');
   const [dados, setDados] = useState<ProgressoData | null>(null);
   const [conquistas, setConquistas] = useState<MinhaConquista[]>([]);
@@ -243,15 +248,19 @@ export function Progresso() {
               </p>
             </div>
             <div className="prg-periodos">
-              {PERIODOS.map((p) => (
-                <button
-                  key={p.valor}
-                  className={`prg-periodo${p.valor === periodo ? ' prg-periodo--on' : ''}`}
-                  onClick={() => setPeriodo(p.valor)}
-                >
-                  {p.label}
-                </button>
-              ))}
+              {PERIODOS.map((p) => {
+                const travado = p.apoiador && !authUser?.apoiador;
+                return (
+                  <button
+                    key={p.valor}
+                    className={`prg-periodo${p.valor === periodo ? ' prg-periodo--on' : ''}${travado ? ' prg-periodo--lock' : ''}`}
+                    title={travado ? 'Exclusivo para apoiadores' : undefined}
+                    onClick={() => (travado ? navigate('/apoie') : setPeriodo(p.valor))}
+                  >
+                    {travado && <Lock size={11} />} {p.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -277,7 +286,9 @@ export function Progresso() {
                   icon={<Check size={17} />}
                   valor={String(dados.periodo.atual.exercicios)}
                   label={
-                    dados.periodo.dias ? `Exercícios em ${dados.periodo.dias} dias` : 'Exercícios'
+                    dados.periodo.dias
+                      ? `Exercícios em ${dados.periodo.dias === 365 ? '12 meses' : `${dados.periodo.dias} dias`}`
+                      : 'Exercícios'
                   }
                   delta={
                     dados.periodo.anterior
@@ -293,7 +304,7 @@ export function Progresso() {
                   valor={formatHoras(dados.periodo.atual.minutos)}
                   label={
                     dados.periodo.dias
-                      ? `Estudo em ${dados.periodo.dias} dias`
+                      ? `Estudo em ${dados.periodo.dias === 365 ? '12 meses' : `${dados.periodo.dias} dias`}`
                       : 'Tempo de estudo'
                   }
                   delta={

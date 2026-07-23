@@ -29,6 +29,7 @@ import {
   Linkedin,
   XSocial,
   Trash,
+  Heart,
   IconeConquista,
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
@@ -68,6 +69,7 @@ interface PerfilData {
   streak: number;
   createdAt: string;
   role?: string;
+  apoiador?: boolean;
 }
 
 interface Editavel {
@@ -457,6 +459,11 @@ export function Perfil() {
                       <span className="pf-id__name">{perfil.name}</span>
                     )}
                     <span className="pf-id__level">Nível {nivel}</span>
+                    {perfil.apoiador && (
+                      <span className="selo-apoiador selo-apoiador--chip" title="Apoiador do Ensina Dev">
+                        <Heart size={12} /> Apoiador
+                      </span>
+                    )}
                   </div>
                   <div className="pf-id__user">
                     @{(editando ? draft.username : perfil.username) || 'sem_usuario'}

@@ -32,9 +32,6 @@ export function ThemeProvider({ children, defaultTheme = 'light' }: ThemeProvide
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem(THEME_KEY, theme);
-    // Remove qualquer accent inline legado que sobrescreva o token azul.
-    document.documentElement.style.removeProperty('--accent');
-    localStorage.removeItem('ensina:accent');
   }, [theme]);
 
   const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));

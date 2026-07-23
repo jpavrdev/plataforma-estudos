@@ -27,6 +27,7 @@ import { Desafios } from './pages/Desafios';
 import { Desafio } from './pages/Desafios/Desafio';
 import { DesafiosAdmin } from './pages/DesafiosAdmin';
 import { ComunicadosAdmin } from './pages/ComunicadosAdmin';
+import { AssinaturasAdmin } from './pages/AssinaturasAdmin';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
@@ -36,6 +37,7 @@ import { OAuthCallback } from './pages/OAuthCallback';
 import { CertificadoValidar } from './pages/CertificadoValidar';
 import { PerfilPublico } from './pages/PerfilPublico';
 import { Progresso } from './pages/Progresso';
+import { Apoie } from './pages/Apoie';
 import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
 
@@ -215,6 +217,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/estudio/assinaturas"
+        element={
+          <AdminRoute>
+            <AssinaturasAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
         path="/estudio/desafios"
         element={
           <AdminRoute>
@@ -318,6 +328,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <Progresso />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/apoie"
+        element={
+          <PrivateRoute>
+            <Apoie />
           </PrivateRoute>
         }
       />
