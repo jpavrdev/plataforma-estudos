@@ -278,12 +278,12 @@ export async function pdfCertificado(code: string) {
     );
 
     const yBase = H - 150;
-    doc.moveTo(120, yBase + 42).lineTo(340, yBase + 42).lineWidth(0.8).strokeColor(TINTA).stroke();
+    doc.moveTo(100, yBase + 42).lineTo(370, yBase + 42).lineWidth(0.8).strokeColor(TINTA).stroke();
     doc.font("Helvetica-Bold").fontSize(11).fillColor(TINTA);
-    doc.text(env.CERT_RESPONSAVEL ?? "", 120, yBase + 48, { width: 220, align: "center" });
-    doc.font("Helvetica").fontSize(9).fillColor(CINZA);
-    doc.text(env.CERT_RAZAO_SOCIAL ?? "", 120, yBase + 62, { width: 220, align: "center" });
-    doc.text(`CNPJ ${env.CERT_CNPJ ?? ""}`, 120, yBase + 74, { width: 220, align: "center" });
+    doc.text(env.CERT_RESPONSAVEL ?? "", 100, yBase + 48, { width: 270, align: "center" });
+    doc.font("Helvetica").fontSize(8.5).fillColor(CINZA);
+    doc.text(env.CERT_RAZAO_SOCIAL ?? "", 100, doc.y + 3, { width: 270, align: "center" });
+    doc.text(`CNPJ ${env.CERT_CNPJ ?? ""}`, 100, doc.y + 2, { width: 270, align: "center" });
 
     doc.image(qr, W - 210, yBase - 4, { width: 84 });
     doc.font("Helvetica-Bold").fontSize(9).fillColor(TINTA);
