@@ -131,31 +131,43 @@ describe("Certificado de conclusão", () => {
 
         const emitido = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: "529.982.247-25",
+            name: "Aluno Certificado da Silva",
         });
         assert.equal(emitido.status, 200);
         assert.match(emitido.body.code, /^ED(-[2-9A-HJKMNP-Z]{4}){3}$/);
 
         const publico = await get(`/certificados/${emitido.body.code}`);
         assert.equal(publico.status, 200);
-        assert.equal(publico.body.studentName, "Aluno Certificado");
+        assert.equal(publico.body.studentName, "Aluno Certificado da Silva");
         assert.equal(publico.body.trailName, "Logica");
         assert.equal(publico.body.workloadHours, 20);
         assert.equal(publico.body.cpf, "***.982.247-**");
 
-        const pdf = await fetch(`${server.base}/certificados/${emitido.body.code}/pdf`);
+        const pdf = await fetch(`${server.base}/certificados/${emitido.body.code}/pdf`, {
+            headers: auth(aluno.token),
+        });
         assert.equal(pdf.status, 200);
         assert.equal(pdf.headers.get("content-type"), "application/pdf");
         const corpo = Buffer.from(await pdf.arrayBuffer());
         assert.equal(corpo.subarray(0, 5).toString(), "%PDF-");
         assert.ok(corpo.length > 2000);
 
+        const anonimo = await fetch(`${server.base}/certificados/${emitido.body.code}/pdf`);
+        assert.equal(anonimo.status, 401);
+        const outro = await criarUsuarioLogado();
+        const alheio = await fetch(`${server.base}/certificados/${emitido.body.code}/pdf`, {
+            headers: auth(outro.token),
+        });
+        assert.equal(alheio.status, 403);
+
         const repetido = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: CPF_VALIDO,
+            name: "Aluno Certificado da Silva",
         });
         assert.equal(repetido.body.code, emitido.body.code);
     });
 
-    test("reemitir com outro CPF corrige o documento mantendo o código", async () => {
+    test("depois de emitido o CPF não muda, mesmo pedindo de novo com outro", async () => {
         const admin = await criarUsuarioLogado(true);
         const { trailId, lessonIds } = await montarTrilha(admin.token);
         const aluno = await criarUsuarioLogado();
@@ -163,15 +175,17 @@ describe("Certificado de conclusão", () => {
 
         const primeiro = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: CPF_VALIDO,
+            name: "Aluno Certificado da Silva",
         });
-        const corrigido = await post(`/trails/${trailId}/certificado`, aluno.token, {
+        const tentativa = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: "111.444.777-35",
+            name: "Outro Nome Qualquer",
         });
-        assert.equal(corrigido.status, 200);
-        assert.equal(corrigido.body.code, primeiro.body.code);
+        assert.equal(tentativa.status, 200);
+        assert.equal(tentativa.body.code, primeiro.body.code);
 
         const publico = await get(`/certificados/${primeiro.body.code}`);
-        assert.equal(publico.body.cpf, "***.444.777-**");
+        assert.equal(publico.body.cpf, "***.982.247-**");
     });
 
     test("sem concluir a trilha não emite; CPF inválido é rejeitado", async () => {
@@ -181,14 +195,22 @@ describe("Certificado de conclusão", () => {
 
         const cedo = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: CPF_VALIDO,
+            name: "Aluno Certificado da Silva",
         });
         assert.equal(cedo.status, 409);
 
         for (const id of lessonIds) await passarNoQuiz(aluno.token, id);
         const invalido = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: "111.111.111-11",
+            name: "Aluno Certificado da Silva",
         });
         assert.equal(invalido.status, 400);
+
+        const nomeCurto = await post(`/trails/${trailId}/certificado`, aluno.token, {
+            cpf: CPF_VALIDO,
+            name: "Fulano",
+        });
+        assert.equal(nomeCurto.status, 400);
     });
 
     test("conclusão manual pelo roadmap não emite certificado", async () => {
@@ -218,6 +240,7 @@ describe("Certificado de conclusão", () => {
 
         const tentativa = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: CPF_VALIDO,
+            name: "Aluno Certificado da Silva",
         });
         assert.equal(tentativa.status, 409);
     });
@@ -230,7 +253,10 @@ describe("Certificado de conclusão", () => {
 
         const status = await get(`/trails/${trailId}/certificado`, aluno.token);
         assert.equal(status.body.motivo, "carga_horaria");
-        const r = await post(`/trails/${trailId}/certificado`, aluno.token, { cpf: CPF_VALIDO });
+        const r = await post(`/trails/${trailId}/certificado`, aluno.token, {
+            cpf: CPF_VALIDO,
+            name: "Aluno Certificado da Silva",
+        });
         assert.equal(r.status, 409);
     });
 
@@ -262,6 +288,7 @@ describe("Certificado de conclusão", () => {
         assert.equal(status.body.elegivel, true);
         const emitido = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: CPF_VALIDO,
+            name: "Aluno Certificado da Silva",
         });
         assert.equal(emitido.status, 200);
         const publico = await get(`/certificados/${emitido.body.code}`);

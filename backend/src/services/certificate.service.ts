@@ -128,7 +128,7 @@ export async function statusCertificado(trailId: string, userId: string) {
     return { emitido: null, elegivel: true };
 }
 
-export async function emitirCertificado(trailId: string, userId: string, cpf: string) {
+export async function emitirCertificado(trailId: string, userId: string, cpf: string, name: string) {
     const [trilha] = await db.select().from(trails).where(eq(trails.id, trailId));
     if (!trilha) {
         throw new AppError(404, "Trilha não encontrada");
@@ -140,27 +140,12 @@ export async function emitirCertificado(trailId: string, userId: string, cpf: st
         throw new AppError(409, "Esta trilha ainda não emite certificado.");
     }
 
-    const [usuarioAtual] = await db
-        .select({ name: users.name })
-        .from(users)
-        .where(eq(users.id, userId));
-
+    // Depois de emitido o documento é imutável: nem CPF nem nome mudam, mesmo repetindo o pedido.
     const [existente] = await db
         .select()
         .from(certificates)
         .where(and(eq(certificates.userId, userId), eq(certificates.trailId, trailId)));
-    if (existente) {
-        if (existente.cpf === cpf && existente.studentName === usuarioAtual.name) {
-            return existente;
-        }
-        // Correção de CPF ou de nome: reemite mantendo o código, para o QR já impresso seguir válido.
-        const [corrigido] = await db
-            .update(certificates)
-            .set({ cpf, studentName: usuarioAtual.name, issuedAt: new Date() })
-            .where(eq(certificates.id, existente.id))
-            .returning();
-        return corrigido;
-    }
+    if (existente) return existente;
 
     const conclusao = await conclusaoReal(trailId, userId);
     if (!conclusao) {
@@ -180,7 +165,7 @@ export async function emitirCertificado(trailId: string, userId: string, cpf: st
                 code: gerarCodigo(),
                 userId,
                 trailId,
-                studentName: usuarioAtual.name,
+                studentName: name,
                 cpf,
                 trailName: trilha.name,
                 workloadHours: trilha.workloadHours,
@@ -229,10 +214,13 @@ const TINTA = "#1f2430";
 const ACENTO = "#4f46e5";
 const CINZA = "#6b7280";
 
-export async function pdfCertificado(code: string) {
+export async function pdfCertificado(code: string, userId: string) {
     const [cert] = await db.select().from(certificates).where(eq(certificates.code, code));
     if (!cert) {
         throw new AppError(404, "Certificado não encontrado");
+    }
+    if (cert.userId !== userId) {
+        throw new AppError(403, "Só o dono do certificado pode baixar o PDF.");
     }
 
     const mods = await db

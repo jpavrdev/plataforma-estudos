@@ -17,8 +17,8 @@ export const getCertificateStatus = async (req: Request, res: Response, next: Ne
 
 export const issueCertificate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { cpf } = emitirCertificadoSchema.parse(req.body);
-        const cert = await emitirCertificado(String(req.params.id), req.userId!, cpf);
+        const { cpf, name } = emitirCertificadoSchema.parse(req.body);
+        const cert = await emitirCertificado(String(req.params.id), req.userId!, cpf, name);
         res.json({ code: cert.code, issuedAt: cert.issuedAt });
     } catch (err) {
         next(err);
@@ -35,7 +35,7 @@ export const validateCertificate = async (req: Request, res: Response, next: Nex
 
 export const downloadCertificate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { doc, filename } = await pdfCertificado(String(req.params.code));
+        const { doc, filename } = await pdfCertificado(String(req.params.code), req.userId!);
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
         doc.pipe(res);

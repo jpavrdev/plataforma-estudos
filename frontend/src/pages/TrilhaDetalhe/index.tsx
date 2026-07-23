@@ -25,7 +25,7 @@ import { obterTrilha, avaliarTrilha, type TrailDetail, type LessonRef } from '..
 import {
   statusCertificado,
   emitirCertificado,
-  urlPdfCertificado,
+  baixarPdfCertificado,
   type CertificadoStatus,
 } from '../../services/certificados';
 import { getTrailLang, setTrailLang } from '../../utils/trailLang';
@@ -121,6 +121,8 @@ export function TrilhaDetalhe() {
   );
   const [cert, setCert] = useState<CertificadoStatus | null>(null);
   const [certModal, setCertModal] = useState(false);
+  const [certEtapa, setCertEtapa] = useState<'dados' | 'confirmar' | 'pronto'>('dados');
+  const [nomeCert, setNomeCert] = useState('');
   const [cpf, setCpf] = useState('');
   const [certErro, setCertErro] = useState('');
   const [emitindo, setEmitindo] = useState(false);
@@ -161,19 +163,46 @@ export function TrilhaDetalhe() {
       .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
   }
 
+  function abrirModalCertificado() {
+    setNomeCert(authUser?.name ?? '');
+    setCpf('');
+    setCertErro('');
+    setCertEtapa('dados');
+    setCertModal(true);
+  }
+
+  function nomeCompletoValido(v: string) {
+    const nome = v.trim().replace(/\s+/g, ' ');
+    return nome.length >= 5 && nome.length <= 255 && nome.split(' ').length >= 2;
+  }
+
   async function emitir() {
     if (!trailId || emitindo) return;
     setEmitindo(true);
     setCertErro('');
     try {
-      const r = await emitirCertificado(trailId, cpf.replace(/\D/g, ''));
+      const r = await emitirCertificado(trailId, cpf.replace(/\D/g, ''), nomeCert);
       setCert({ emitido: r, elegivel: false });
-      setCertModal(false);
+      setCertEtapa('pronto');
     } catch (e: unknown) {
       const axiosErro = e as { response?: { data?: { erro?: string } } };
       setCertErro(axiosErro.response?.data?.erro ?? 'Não foi possível emitir o certificado.');
     } finally {
       setEmitindo(false);
+    }
+  }
+
+  async function baixarCertificado(code: string) {
+    try {
+      const blob = await baixarPdfCertificado(code);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `certificado-${code}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Falha ao baixar o certificado:', e);
     }
   }
 
@@ -359,26 +388,16 @@ export function TrilhaDetalhe() {
                       {stats.comecado ? 'Continuar trilha' : 'Começar trilha'}
                     </button>
                     {cert?.emitido && (
-                      <>
-                        <a
-                          className="td-card__cert"
-                          href={urlPdfCertificado(cert.emitido.code)}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Baixar certificado
-                        </a>
-                        <p className="td-card__cert-hint">
-                          Dados errados no certificado?{' '}
-                          <button className="link link--btn" onClick={() => setCertModal(true)}>
-                            Corrigir
-                          </button>
-                        </p>
-                      </>
+                      <button
+                        className="td-card__cert"
+                        onClick={() => baixarCertificado(cert.emitido!.code)}
+                      >
+                        Baixar certificado
+                      </button>
                     )}
                     {cert?.elegivel && (
-                      <button className="td-card__cert" onClick={() => setCertModal(true)}>
-                        Emitir certificado
+                      <button className="td-card__cert" onClick={abrirModalCertificado}>
+                        Baixar certificado
                       </button>
                     )}
                     {cert?.motivo === 'manual' && (
@@ -626,41 +645,95 @@ export function TrilhaDetalhe() {
           <div className="cmn-overlay">
             <div className="cmn-card">
               <div className="cmn-card__kicker">Certificado</div>
-              <h3 className="cmn-card__title">
-                {cert?.emitido ? 'Corrigir os dados do certificado' : 'Emitir certificado de conclusão'}
-              </h3>
-              <p className="cmn-card__msg">
-                {cert?.emitido
-                  ? 'O certificado será reemitido com o CPF informado e o nome atual do seu perfil. O código e o link de validação continuam os mesmos; baixe o PDF de novo depois.'
-                  : 'Informe seu CPF: ele sai impresso no certificado, como as faculdades exigem para validar horas complementares. Confira também se o seu nome está correto no perfil, pois é ele que vai no documento.'}
-              </p>
-              <input
-                className="cmn-texto"
-                style={{ resize: 'none' }}
-                value={cpf}
-                placeholder="000.000.000-00"
-                inputMode="numeric"
-                onChange={(e) => setCpf(formatarCpf(e.target.value))}
-              />
-              {certErro && <p className="td-cert-erro">{certErro}</p>}
-              <div className="cmn-card__row">
-                <button
-                  className="btn btn--ghost"
-                  onClick={() => {
-                    setCertModal(false);
-                    setCertErro('');
-                  }}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className="btn btn--accent"
-                  onClick={emitir}
-                  disabled={!cpfValido(cpf.replace(/\D/g, '')) || emitindo}
-                >
-                  {emitindo ? 'Enviando...' : cert?.emitido ? 'Corrigir e reemitir' : 'Emitir'}
-                </button>
-              </div>
+
+              {certEtapa === 'dados' && (
+                <>
+                  <h3 className="cmn-card__title">Emitir certificado de conclusão</h3>
+                  <p className="cmn-card__msg">
+                    Informe seu nome completo e CPF como constam nos seus documentos: os dois saem
+                    impressos no certificado, como as faculdades exigem para as horas
+                    complementares.
+                  </p>
+                  <input
+                    className="cmn-texto"
+                    style={{ resize: 'none' }}
+                    value={nomeCert}
+                    placeholder="Nome completo"
+                    maxLength={255}
+                    onChange={(e) => setNomeCert(e.target.value)}
+                  />
+                  <input
+                    className="cmn-texto"
+                    style={{ resize: 'none' }}
+                    value={cpf}
+                    placeholder="000.000.000-00"
+                    inputMode="numeric"
+                    onChange={(e) => setCpf(formatarCpf(e.target.value))}
+                  />
+                  <div className="cmn-card__row">
+                    <button className="btn btn--ghost" onClick={() => setCertModal(false)}>
+                      Cancelar
+                    </button>
+                    <button
+                      className="btn btn--accent"
+                      onClick={() => setCertEtapa('confirmar')}
+                      disabled={!nomeCompletoValido(nomeCert) || !cpfValido(cpf.replace(/\D/g, ''))}
+                    >
+                      Continuar
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {certEtapa === 'confirmar' && (
+                <>
+                  <h3 className="cmn-card__title">Confira antes de emitir</h3>
+                  <div className="td-cert-conf">
+                    <div>
+                      <span>Nome no certificado</span>
+                      <b>{nomeCert.trim().replace(/\s+/g, ' ')}</b>
+                    </div>
+                    <div>
+                      <span>CPF</span>
+                      <b>{cpf}</b>
+                    </div>
+                  </div>
+                  <p className="cmn-card__msg">
+                    Depois de emitido, o nome e o CPF do certificado não poderão ser alterados.
+                    Confira com atenção antes de confirmar.
+                  </p>
+                  {certErro && <p className="td-cert-erro">{certErro}</p>}
+                  <div className="cmn-card__row">
+                    <button className="btn btn--ghost" onClick={() => setCertEtapa('dados')}>
+                      Voltar
+                    </button>
+                    <button className="btn btn--accent" onClick={emitir} disabled={emitindo}>
+                      {emitindo ? 'Emitindo...' : 'Confirmar e emitir'}
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {certEtapa === 'pronto' && cert?.emitido && (
+                <>
+                  <h3 className="cmn-card__title">Certificado emitido</h3>
+                  <p className="cmn-card__msg">
+                    Código {cert.emitido.code}. Você pode baixar o PDF de novo quando quiser, aqui
+                    na página da trilha.
+                  </p>
+                  <div className="cmn-card__row">
+                    <button className="btn btn--ghost" onClick={() => setCertModal(false)}>
+                      Fechar
+                    </button>
+                    <button
+                      className="btn btn--accent"
+                      onClick={() => baixarCertificado(cert.emitido!.code)}
+                    >
+                      Baixar PDF
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}

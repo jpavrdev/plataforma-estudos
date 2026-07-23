@@ -14,6 +14,7 @@ router.post("/trails/:id/certificado", autenticar, issueCertificate);
 
 // Validação pública: é o link do QR Code que a faculdade confere, sem login.
 router.get("/certificados/:code", validateCertificate);
-router.get("/certificados/:code/pdf", downloadCertificate);
+// O PDF tem o CPF completo, então só o dono baixa.
+router.get("/certificados/:code/pdf", autenticar, downloadCertificate);
 
 export default router;

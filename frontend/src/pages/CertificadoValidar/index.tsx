@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { Check } from '../../components/Icons';
-import {
-  validarCertificado,
-  urlPdfCertificado,
-  type CertificadoPublico,
-} from '../../services/certificados';
+import { validarCertificado, type CertificadoPublico } from '../../services/certificados';
 
 function dataBr(iso: string) {
   return new Date(iso).toLocaleDateString('pt-BR');
@@ -83,14 +79,10 @@ export function CertificadoValidar() {
                 <b>{cert.code}</b>
               </div>
             </div>
-            <a
-              className="btn btn--accent"
-              href={urlPdfCertificado(cert.code)}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Ver o certificado em PDF
-            </a>
+            <p className="cert-box__msg">
+              Confira se os dados acima batem com o documento apresentado. O PDF só pode ser
+              baixado pelo dono do certificado, na página da trilha.
+            </p>
           </>
         )}
       </div>

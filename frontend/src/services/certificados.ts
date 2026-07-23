@@ -23,10 +23,10 @@ export async function statusCertificado(trailId: string) {
   return data;
 }
 
-export async function emitirCertificado(trailId: string, cpf: string) {
+export async function emitirCertificado(trailId: string, cpf: string, name: string) {
   const { data } = await api.post<{ code: string; issuedAt: string }>(
     `/trails/${trailId}/certificado`,
-    { cpf },
+    { cpf, name },
   );
   return data;
 }
@@ -36,7 +36,7 @@ export async function validarCertificado(code: string) {
   return data;
 }
 
-export function urlPdfCertificado(code: string) {
-  const base = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-  return `${base}/certificados/${code}/pdf`;
+export async function baixarPdfCertificado(code: string) {
+  const { data } = await api.get<Blob>(`/certificados/${code}/pdf`, { responseType: 'blob' });
+  return data;
 }

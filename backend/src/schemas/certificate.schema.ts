@@ -14,6 +14,12 @@ function cpfValido(cpf: string) {
 }
 
 export const emitirCertificadoSchema = z.object({
+    name: z
+        .string()
+        .transform((v) => v.trim().replace(/\s+/g, " "))
+        .refine((v) => v.length >= 5 && v.length <= 255 && v.split(" ").length >= 2, {
+            message: "Informe o nome completo",
+        }),
     cpf: z
         .string()
         .transform((v) => v.replace(/\D/g, ""))
