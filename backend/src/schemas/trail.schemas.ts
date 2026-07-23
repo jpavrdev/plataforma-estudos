@@ -5,6 +5,7 @@ export const createTrailSchema = z.object({
     level: z.enum(["iniciante", "intermediario", "avancado"]),
     description: z.string().min(10, "A descrição deve ter ao menos 10 caracteres"),
     tagIds: z.array(z.uuid()).optional(),
+    workloadHours: z.number().int().min(1).max(999).nullable().optional(),
 });
 
 export const updateTrailSchema = z.object({
@@ -12,6 +13,7 @@ export const updateTrailSchema = z.object({
     level: z.enum(["iniciante", "intermediario", "avancado"]).optional(),
     description: z.string().min(10, "A descrição deve ter ao menos 10 caracteres").optional(),
     tagIds: z.array(z.uuid()).optional(),
+    workloadHours: z.number().int().min(1).max(999).nullable().optional(),
 });
 
 export const reviewTrailSchema = z.object({

@@ -33,6 +33,7 @@ import { VerifyEmail } from './pages/VerifyEmail';
 import { RecuperarSenha } from './pages/RecuperarSenha';
 import { RedefinirSenha } from './pages/RedefinirSenha';
 import { OAuthCallback } from './pages/OAuthCallback';
+import { CertificadoValidar } from './pages/CertificadoValidar';
 import { CompletarPerfil } from './pages/CompletarPerfil';
 import { Placeholder } from './pages/Placeholder';
 
@@ -75,6 +76,7 @@ function AppRoutes() {
       <Route path="/recuperar-senha" element={<RecuperarSenha />} />
       <Route path="/redefinir-senha" element={<RedefinirSenha />} />
       <Route path="/auth/callback" element={<OAuthCallback />} />
+      <Route path="/certificados/:code" element={<CertificadoValidar />} />
       <Route
         path="/completar-perfil"
         element={

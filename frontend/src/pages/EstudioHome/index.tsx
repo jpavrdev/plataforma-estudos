@@ -34,6 +34,7 @@ interface FormState {
   level: TrailLevelEnum;
   description: string;
   tagIds: string[];
+  workloadHours: string;
 }
 
 export function EstudioHome() {
@@ -55,7 +56,7 @@ export function EstudioHome() {
 
   function novaTrilha() {
     setErro('');
-    setForm({ name: '', level: 'iniciante', description: '', tagIds: [] });
+    setForm({ name: '', level: 'iniciante', description: '', tagIds: [], workloadHours: '' });
   }
   function editarTrilha(t: TrailComId) {
     setErro('');
@@ -66,6 +67,7 @@ export function EstudioHome() {
       level: LABEL_TO_ENUM[t.level] ?? 'iniciante',
       description: t.desc,
       tagIds,
+      workloadHours: t.workloadHours ? String(t.workloadHours) : '',
     });
   }
 
@@ -74,12 +76,14 @@ export function EstudioHome() {
     setSalvando(true);
     setErro('');
     try {
+      const workloadHours = form.workloadHours ? Number(form.workloadHours) : null;
       if (form.id) {
         await atualizarTrilha(form.id, {
           name: form.name,
           level: form.level,
           description: form.description,
           tagIds: form.tagIds,
+          workloadHours,
         });
       } else {
         await criarTrilha({
@@ -87,6 +91,7 @@ export function EstudioHome() {
           level: form.level,
           description: form.description,
           tagIds: form.tagIds,
+          workloadHours,
         });
       }
       setForm(null);
@@ -153,6 +158,16 @@ export function EstudioHome() {
                 </option>
               ))}
             </select>
+            <label className="studio__label">Carga horária (em horas, para o certificado)</label>
+            <input
+              className="estudio-form__input"
+              type="number"
+              min={1}
+              max={999}
+              value={form.workloadHours}
+              placeholder="Ex.: 20. Vazio = trilha sem certificado"
+              onChange={(e) => setForm({ ...form, workloadHours: e.target.value })}
+            />
             <label className="studio__label">Descrição</label>
             <textarea
               className="estudio-form__input estudio-form__textarea"

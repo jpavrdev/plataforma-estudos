@@ -253,6 +253,13 @@
       "when": 1784761401654,
       "tag": "0035_round_brother_voodoo",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1784764588869,
+      "tag": "0036_mean_paladin",
+      "breakpoints": true
     }
   ]
 }

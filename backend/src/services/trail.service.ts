@@ -31,6 +31,7 @@ export async function criarTrilha(dados: DadosCriarTrilha) {
             name: dados.name,
             trailLevel: dados.level,
             description: dados.description,
+            workloadHours: dados.workloadHours ?? null,
         })
         .returning();
     if (dados.tagIds?.length) {
@@ -48,10 +49,12 @@ export async function atualizarTrilha(trailId: string, dados: DadosAtualizarTril
         name?: string;
         trailLevel?: "iniciante" | "intermediario" | "avancado";
         description?: string;
+        workloadHours?: number | null;
     } = {};
     if (dados.name !== undefined) sets.name = dados.name;
     if (dados.level !== undefined) sets.trailLevel = dados.level;
     if (dados.description !== undefined) sets.description = dados.description;
+    if (dados.workloadHours !== undefined) sets.workloadHours = dados.workloadHours;
     if (Object.keys(sets).length === 0) {
         throw new AppError(400, "Nada para atualizar");
     }
@@ -61,6 +64,7 @@ export async function atualizarTrilha(trailId: string, dados: DadosAtualizarTril
         name: trails.name,
         trailLevel: trails.trailLevel,
         description: trails.description,
+        workloadHours: trails.workloadHours,
     });
     if (!trilha) {
         throw new AppError(404, "Trilha não encontrada");

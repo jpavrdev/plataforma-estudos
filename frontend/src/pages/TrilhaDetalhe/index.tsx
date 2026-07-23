@@ -22,6 +22,12 @@ import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 import { obterTrilha, avaliarTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
+import {
+  statusCertificado,
+  emitirCertificado,
+  urlPdfCertificado,
+  type CertificadoStatus,
+} from '../../services/certificados';
 import { getTrailLang, setTrailLang } from '../../utils/trailLang';
 
 const NIVEL: Record<TrailDetail['trailLevel'], string> = {
@@ -43,6 +49,16 @@ function glyphDoNome(name: string): string {
   const limpo = name.replace(/[^A-Za-zÀ-ú ]/g, '').trim();
   const partes = limpo.split(/\s+/).slice(0, 2);
   return partes.map((p) => p[0]?.toUpperCase() ?? '').join('') || '{}';
+}
+
+function cpfValido(cpf: string): boolean {
+  if (!/^\d{11}$/.test(cpf) || /^(\d)\1{10}$/.test(cpf)) return false;
+  for (const tamanho of [9, 10]) {
+    let soma = 0;
+    for (let i = 0; i < tamanho; i++) soma += Number(cpf[i]) * (tamanho + 1 - i);
+    if (((soma * 10) % 11) % 10 !== Number(cpf[tamanho])) return false;
+  }
+  return true;
 }
 
 function formatDur(min: number): string {
@@ -103,6 +119,11 @@ export function TrilhaDetalhe() {
   const [lang, setLang] = useState<string | undefined>(() =>
     trailId ? getTrailLang(trailId) : undefined,
   );
+  const [cert, setCert] = useState<CertificadoStatus | null>(null);
+  const [certModal, setCertModal] = useState(false);
+  const [cpf, setCpf] = useState('');
+  const [certErro, setCertErro] = useState('');
+  const [emitindo, setEmitindo] = useState(false);
 
   useEffect(() => {
     if (!trailId) return;
@@ -119,10 +140,41 @@ export function TrilhaDetalhe() {
       .finally(() => setCarregando(false));
   }, [trailId, lang]);
 
+  useEffect(() => {
+    if (!trailId) return;
+    statusCertificado(trailId)
+      .then(setCert)
+      .catch(() => setCert(null));
+  }, [trailId, trilha?.modules]);
+
   function escolherLinguagem(code: string) {
     if (!trailId || code === trilha?.activeLanguage) return;
     setTrailLang(trailId, code);
     setLang(code);
+  }
+
+  function formatarCpf(v: string) {
+    const d = v.replace(/\D/g, '').slice(0, 11);
+    return d
+      .replace(/^(\d{3})(\d)/, '$1.$2')
+      .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+      .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+  }
+
+  async function emitir() {
+    if (!trailId || emitindo) return;
+    setEmitindo(true);
+    setCertErro('');
+    try {
+      const r = await emitirCertificado(trailId, cpf.replace(/\D/g, ''));
+      setCert({ emitido: r, elegivel: false });
+      setCertModal(false);
+    } catch (e: unknown) {
+      const axiosErro = e as { response?: { data?: { erro?: string } } };
+      setCertErro(axiosErro.response?.data?.erro ?? 'Não foi possível emitir o certificado.');
+    } finally {
+      setEmitindo(false);
+    }
   }
 
   const stats = useMemo(() => {
@@ -306,6 +358,26 @@ export function TrilhaDetalhe() {
                     <button className="td-card__cta" onClick={() => irPara(stats.alvo)} disabled={!stats.alvo}>
                       {stats.comecado ? 'Continuar trilha' : 'Começar trilha'}
                     </button>
+                    {cert?.emitido && (
+                      <a
+                        className="td-card__cert"
+                        href={urlPdfCertificado(cert.emitido.code)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Baixar certificado
+                      </a>
+                    )}
+                    {cert?.elegivel && (
+                      <button className="td-card__cert" onClick={() => setCertModal(true)}>
+                        Emitir certificado
+                      </button>
+                    )}
+                    {cert?.motivo === 'manual' && (
+                      <p className="td-card__cert-hint">
+                        O certificado sai quando as aulas são concluídas com os quizzes.
+                      </p>
+                    )}
                     <hr className="rule" />
                     <div className="td-card__inc-title">Esta trilha inclui</div>
                     <div className="td-card__inc">
@@ -540,6 +612,47 @@ export function TrilhaDetalhe() {
               </div>
             </div>
           </>
+        )}
+
+        {certModal && (
+          <div className="cmn-overlay">
+            <div className="cmn-card">
+              <div className="cmn-card__kicker">Certificado</div>
+              <h3 className="cmn-card__title">Emitir certificado de conclusão</h3>
+              <p className="cmn-card__msg">
+                Informe seu CPF: ele sai impresso no certificado, como as faculdades exigem para
+                validar horas complementares. Confira também se o seu nome está correto no perfil,
+                pois é ele que vai no documento.
+              </p>
+              <input
+                className="cmn-texto"
+                style={{ resize: 'none' }}
+                value={cpf}
+                placeholder="000.000.000-00"
+                inputMode="numeric"
+                onChange={(e) => setCpf(formatarCpf(e.target.value))}
+              />
+              {certErro && <p className="td-cert-erro">{certErro}</p>}
+              <div className="cmn-card__row">
+                <button
+                  className="btn btn--ghost"
+                  onClick={() => {
+                    setCertModal(false);
+                    setCertErro('');
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn btn--accent"
+                  onClick={emitir}
+                  disabled={!cpfValido(cpf.replace(/\D/g, '')) || emitindo}
+                >
+                  {emitindo ? 'Emitindo...' : 'Emitir'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
