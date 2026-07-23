@@ -286,6 +286,10 @@ describe("Certificado de conclusão", () => {
 
         const status = await get(`/trails/${trailId}/certificado`, aluno.token);
         assert.equal(status.body.elegivel, true);
+
+        const minhas = await get("/me/trails", aluno.token);
+        assert.equal(minhas.body[0].progress, 100);
+
         const emitido = await post(`/trails/${trailId}/certificado`, aluno.token, {
             cpf: CPF_VALIDO,
             name: "Aluno Certificado da Silva",
