@@ -74,7 +74,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
             type="button"
             role="menuitem"
             className="user-menu__item"
-            onClick={() => go('/perfil')}
+            onClick={() => go(user?.username ? `/${user.username}` : '/perfil')}
           >
             Perfil
           </button>

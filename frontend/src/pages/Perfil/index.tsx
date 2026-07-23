@@ -7,7 +7,7 @@ import {
   type ChangeEvent,
   type ReactNode,
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
@@ -103,6 +103,7 @@ function lerArquivo(file: File): Promise<string> {
 
 export function Perfil() {
   const { user: authUser, atualizarUsuario } = useAuth();
+  const navigate = useNavigate();
   const [perfil, setPerfil] = useState<PerfilData | null>(null);
   const [xp, setXp] = useState({ xp: 0, level: 1, lessonsCompleted: 0, questionsCorrect: 0 });
   const [carregando, setCarregando] = useState(true);
@@ -127,6 +128,7 @@ export function Perfil() {
   const [erro, setErro] = useState('');
   const [enviandoFoto, setEnviandoFoto] = useState(false);
   const [enviandoCapa, setEnviandoCapa] = useState(false);
+  const [linkCopiado, setLinkCopiado] = useState(false);
   const [cropper, setCropper] = useState<{ image: string; tipo: 'avatar' | 'cover' } | null>(null);
   const inputFoto = useRef<HTMLInputElement>(null);
   const inputCapa = useRef<HTMLInputElement>(null);
@@ -162,6 +164,17 @@ export function Perfil() {
     };
   }, []);
 
+  async function copiarLinkPublico() {
+    if (!perfil?.username) return;
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/${perfil.username}`);
+      setLinkCopiado(true);
+      setTimeout(() => setLinkCopiado(false), 2000);
+    } catch (e) {
+      console.error('Falha ao copiar o link:', e);
+    }
+  }
+
   function editar() {
     if (!perfil) return;
     setErro('');
@@ -192,8 +205,10 @@ export function Perfil() {
       const { data } = await api.patch<PerfilData>('/me', draft);
       // Preserva campos derivados (streak) que o PATCH não retorna.
       setPerfil((prev) => (prev ? { ...prev, ...data } : data));
-      atualizarUsuario({ name: data.name });
+      atualizarUsuario({ name: data.name, username: data.username });
       setEditando(false);
+      // A URL canônica do perfil carrega o username; se ele mudou, acompanha.
+      if (data.username) navigate(`/${data.username}`, { replace: true });
     } catch (e) {
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
       setErro(msg ?? 'Não foi possível salvar as alterações.');
@@ -308,7 +323,7 @@ export function Perfil() {
       <div className="home">
         <header className="topbar">
           <MobileMenu />
-          <Logo variant="solid" size={20} />
+          <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
             {NAV.map((item) => (
               <Link key={item.to} to={item.to} className="nav__item">
@@ -449,6 +464,20 @@ export function Perfil() {
                 </div>
                 {!editando ? (
                   <div className="pf-actions">
+                    {perfil.username && (
+                      <button
+                        className="btn btn--ghost pf-actions__btn"
+                        onClick={copiarLinkPublico}
+                      >
+                        {linkCopiado ? (
+                          <>
+                            <Check size={14} /> Copiado!
+                          </>
+                        ) : (
+                          'Compartilhar'
+                        )}
+                      </button>
+                    )}
                     <button className="btn btn--accent pf-actions__btn" onClick={editar}>
                       <Pencil size={14} /> Editar perfil
                     </button>

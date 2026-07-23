@@ -9,6 +9,7 @@ import { updateMeSchema, completarPerfilSchema } from "../schemas/auth.schema.ts
 import { UPLOADS_DIR, AVATARS_DIR, COVERS_DIR } from "../config/paths.ts";
 import { streakDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
+import { perfilPublico } from "../services/perfil-publico.service.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -311,4 +312,12 @@ export const listUsers = async (_req: Request, res: Response) => {
     const allUsers = await db.select(publicUserColumns).from(users);
 
     res.json(allUsers);
+};
+
+export const getPublicProfile = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await perfilPublico(String(req.params.username)));
+    } catch (err) {
+        next(err);
+    }
 };

@@ -5033,3 +5033,30 @@
 .cert-box__grid b {
   font-size: 14.5px;
 }
+
+/* ===================== PERFIL PÚBLICO ===================== */
+.pf-certs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pf-cert {
+  display: block;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: var(--text);
+}
+.pf-cert:not(.pf-cert--flat):hover {
+  border-color: var(--accent);
+}
+.pf-cert__name {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+.pf-cert__meta {
+  margin-top: 3px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
