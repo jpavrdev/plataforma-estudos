@@ -115,7 +115,7 @@ export function RoadmapDetalhe() {
       <div className="home">
         <header className="topbar">
           <MobileMenu />
-          <Logo variant="solid" size={20} />
+          <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
             {NAV.map((item) => (
               <Link

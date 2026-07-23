@@ -26,7 +26,7 @@ export function CertificadoValidar() {
   return (
     <div className="cert-page">
       <div className="cert-box">
-        <Logo variant="solid" size={22} word="Ensina Dev" />
+        <Logo variant="solid" size={22} />
         {estado === 'carregando' && <p className="cert-box__msg">Verificando certificado...</p>}
 
         {estado === 'invalido' && (
