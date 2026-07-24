@@ -1,12 +1,10 @@
 import type { Request, Response, NextFunction } from "express";
-import { randomUUID } from "node:crypto";
-import path from "node:path";
-import { writeFile, mkdir, unlink } from "node:fs/promises";
 import { db } from "../../db.ts";
 import { users, languages as languagesTable } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 import { updateMeSchema, completarPerfilSchema, metaSemanalSchema } from "../schemas/auth.schema.ts";
-import { UPLOADS_DIR, AVATARS_DIR, COVERS_DIR, FUNDOS_DIR } from "../config/paths.ts";
+import { AVATARS_DIR, COVERS_DIR, FUNDOS_DIR } from "../config/paths.ts";
+import { salvarImagem, removerArquivoLocal } from "../services/imagens.ts";
 import { streakDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
 import { perfilPublico } from "../services/perfil-publico.service.ts";
@@ -193,49 +191,6 @@ export const completarPerfil = async (req: Request, res: Response, next: NextFun
         next(err);
     }
 };
-
-const MIME_EXT: Record<string, string> = {
-    "image/png": "png",
-    "image/jpeg": "jpg",
-    "image/jpg": "jpg",
-    "image/webp": "webp",
-};
-const MAX_IMG_BYTES = 4 * 1024 * 1024; // 4MB
-
-type ResultadoImagem = { ok: true; url: string } | { ok: false; erro: string };
-
-// Decodifica uma data URL (base64) e grava em disco com nome aleatorio. O nome
-// nunca vem do cliente, entao nao ha risco de path traversal nem sobrescrita.
-async function salvarImagem(
-    dataUrl: unknown,
-    destDir: string,
-    urlBase: string,
-    maxBytes = MAX_IMG_BYTES,
-): Promise<ResultadoImagem> {
-    if (typeof dataUrl !== "string") return { ok: false, erro: "Imagem ausente" };
-    const m = /^data:([^;]+);base64,(.+)$/s.exec(dataUrl);
-    if (!m) return { ok: false, erro: "Formato de imagem invalido" };
-    const ext = MIME_EXT[m[1].toLowerCase()];
-    if (!ext) return { ok: false, erro: "Use uma imagem PNG, JPG ou WEBP" };
-    const buffer = Buffer.from(m[2], "base64");
-    if (buffer.length === 0) return { ok: false, erro: "Imagem vazia" };
-    if (buffer.length > maxBytes)
-        return { ok: false, erro: `Imagem muito grande (maximo ${Math.round(maxBytes / 1024 / 1024)}MB)` };
-    await mkdir(destDir, { recursive: true });
-    const nome = `${randomUUID()}.${ext}`;
-    await writeFile(path.join(destDir, nome), buffer);
-    return { ok: true, url: `${urlBase}/${nome}` };
-}
-
-// Remove (best-effort) o arquivo local antigo ao trocar a imagem, evitando orfaos.
-async function removerArquivoLocal(url: string | null) {
-    if (!url || !url.startsWith("/uploads/")) return;
-    try {
-        await unlink(path.join(UPLOADS_DIR, url.slice("/uploads/".length)));
-    } catch {
-        // arquivo ja removido ou inexistente: ignora
-    }
-}
 
 export const uploadAvatar = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;

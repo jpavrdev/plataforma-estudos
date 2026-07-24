@@ -11,6 +11,7 @@ import roadmapRoutes from "./src/routes/roadmap.routes.ts";
 import comunicadoRoutes from "./src/routes/comunicado.routes.ts";
 import certificateRoutes from "./src/routes/certificate.routes.ts";
 import apoioRoutes from "./src/routes/apoio.routes.ts";
+import comunidadeRoutes from "./src/routes/comunidade.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use("/me/avatar", express.json({ limit: "6mb" }));
 app.use("/me/cover", express.json({ limit: "6mb" }));
 app.use("/me/fundo", express.json({ limit: "14mb" }));
+app.use("/comunidade/imagem", express.json({ limit: "6mb" }));
 app.use(express.json());
 app.use(helmet({ frameguard: { action: "deny" } }));
 app.use(
@@ -57,6 +59,7 @@ app.use(roadmapRoutes);
 app.use(comunicadoRoutes);
 app.use(certificateRoutes);
 app.use(apoioRoutes);
+app.use(comunidadeRoutes);
 app.use(adminRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));

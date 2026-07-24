@@ -37,9 +37,9 @@ import { OAuthCallback } from './pages/OAuthCallback';
 import { CertificadoValidar } from './pages/CertificadoValidar';
 import { PerfilPublico } from './pages/PerfilPublico';
 import { Progresso } from './pages/Progresso';
+import { Comunidade } from './pages/Comunidade';
 import { Apoie } from './pages/Apoie';
 import { CompletarPerfil } from './pages/CompletarPerfil';
-import { Placeholder } from './pages/Placeholder';
 
 function AuthRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth();
@@ -308,10 +308,7 @@ function AppRoutes() {
         path="/comunidade"
         element={
           <PrivateRoute>
-            <Placeholder
-              title="Comunidade"
-              description="Em breve a atividade da comunidade aparecerá aqui."
-            />
+            <Comunidade />
           </PrivateRoute>
         }
       />
