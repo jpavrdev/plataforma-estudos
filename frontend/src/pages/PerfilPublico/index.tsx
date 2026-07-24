@@ -2,6 +2,8 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
+import { MobileMenu } from '../../components/MobileMenu';
+import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import {
   Flame,
@@ -18,7 +20,9 @@ import {
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { urlImagem } from '../../utils/urlImagem';
+import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 import { obterPerfilPublico, type PerfilPublicoData } from '../../services/perfis';
+import { estadoSeguir, seguir, deixarDeSeguir } from '../../services/comunidade';
 
 const NIVEL: Record<string, string> = {
   iniciante: 'Iniciante',
@@ -42,10 +46,12 @@ function urlSocial(valor: string, prefixo: string): string {
 
 export function PerfilPublico() {
   const { username } = useParams();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [perfil, setPerfil] = useState<PerfilPublicoData | null>(null);
   const [estado, setEstado] = useState<'carregando' | 'ok' | 'nao_encontrado'>('carregando');
   const [copiado, setCopiado] = useState(false);
+  const [seguindo, setSeguindo] = useState<boolean | null>(null);
+  const [salvandoSeguir, setSalvandoSeguir] = useState(false);
 
   useEffect(() => {
     if (!username) return;
@@ -57,6 +63,29 @@ export function PerfilPublico() {
       })
       .catch(() => setEstado('nao_encontrado'));
   }, [username]);
+
+  useEffect(() => {
+    setSeguindo(null);
+    if (!username || !isAuthenticated) return;
+    estadoSeguir(username)
+      .then(setSeguindo)
+      .catch(() => setSeguindo(null));
+  }, [username, isAuthenticated]);
+
+  async function alternarSeguir() {
+    if (!username || salvandoSeguir || seguindo === null) return;
+    const antes = seguindo;
+    setSeguindo(!antes);
+    setSalvandoSeguir(true);
+    try {
+      if (antes) await deixarDeSeguir(username);
+      else await seguir(username);
+    } catch {
+      setSeguindo(antes);
+    } finally {
+      setSalvandoSeguir(false);
+    }
+  }
 
   async function copiarLink() {
     try {
@@ -74,14 +103,39 @@ export function PerfilPublico() {
   return (
     <div className="home-shell">
       <div className="home">
-        <header className="topbar">
-          <Logo variant="solid" size={20} to={isAuthenticated ? '/home' : '/'} />
-          <div className="topbar__spacer" />
-          <ThemeToggle inline />
-          <Link className="btn btn--ghost" to={isAuthenticated ? '/home' : '/'}>
-            {isAuthenticated ? 'Ir para o início' : 'Entrar'}
-          </Link>
-        </header>
+        {isAuthenticated ? (
+          <header className="topbar">
+            <MobileMenu />
+            <Logo variant="solid" size={20} to="/home" />
+            <nav className="nav">
+              {NAV.map((item) => (
+                <Link key={item.to} to={item.to} className="nav__item">
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+            <div className="topbar__spacer" />
+            <div className="streak-pill">
+              <Flame size={16} /> {user?.streak ?? 0}
+            </div>
+            <ThemeToggle inline />
+            <UserMenu
+              initials={getInitials(user?.name || 'A')}
+              level={user?.level ?? 1}
+              name={user?.name ?? ''}
+              email={user?.email}
+            />
+          </header>
+        ) : (
+          <header className="topbar">
+            <Logo variant="solid" size={20} to="/" />
+            <div className="topbar__spacer" />
+            <ThemeToggle inline />
+            <Link className="btn btn--ghost" to="/">
+              Entrar
+            </Link>
+          </header>
+        )}
 
         {estado === 'carregando' && (
           <p className="track__desc" style={{ padding: '40px 26px' }}>
@@ -144,6 +198,21 @@ export function PerfilPublico() {
                   <div className="pf-id__user">@{perfil.username}</div>
                 </div>
                 <div className="pf-actions">
+                  {isAuthenticated && seguindo !== null && (
+                    <button
+                      className={`btn ${seguindo ? 'btn--ghost' : 'btn--accent'} pf-actions__btn`}
+                      onClick={alternarSeguir}
+                      disabled={salvandoSeguir}
+                    >
+                      {seguindo ? (
+                        <>
+                          <Check size={14} /> Seguindo
+                        </>
+                      ) : (
+                        'Seguir'
+                      )}
+                    </button>
+                  )}
                   <button className="btn btn--ghost pf-actions__btn" onClick={copiarLink}>
                     {copiado ? (
                       <>

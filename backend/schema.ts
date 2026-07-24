@@ -588,3 +588,80 @@ export const subscriptions = pgTable("subscriptions", {
     expiresAt: timestamp("expires_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const communityPostKind = pgEnum("community_post_kind", [
+    "duvida",
+    "solucao",
+    "conquista",
+    "post",
+]);
+
+// Publicação na comunidade. code/codeLanguage e imageUrl são opcionais.
+export const communityPosts = pgTable("community_posts", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    kind: communityPostKind("kind").default("post").notNull(),
+    content: text("content").notNull(),
+    code: text("code"),
+    codeLanguage: varchar("code_language", { length: 30 }),
+    imageUrl: varchar("image_url", { length: 300 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Tags de um post (hashtags). Denormalizado para contar os tópicos populares.
+export const communityPostTags = pgTable(
+    "community_post_tags",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        postId: uuid("post_id")
+            .references(() => communityPosts.id)
+            .notNull(),
+        tag: varchar("tag", { length: 40 }).notNull(),
+    },
+    (table) => [unique().on(table.postId, table.tag)],
+);
+
+export const communityLikes = pgTable(
+    "community_likes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        postId: uuid("post_id")
+            .references(() => communityPosts.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.postId, table.userId)],
+);
+
+export const communityComments = pgTable("community_comments", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+        .references(() => communityPosts.id)
+        .notNull(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Quem segue quem. followerId segue followingId.
+export const userFollows = pgTable(
+    "user_follows",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        followerId: uuid("follower_id")
+            .references(() => users.id)
+            .notNull(),
+        followingId: uuid("following_id")
+            .references(() => users.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.followerId, table.followingId)],
+);

@@ -538,3 +538,55 @@ export const Heart = ({ size = 16 }: IconProps) => (
     <path d="M12 21C7 16.5 3 13.2 3 9a5 5 0 0 1 9-3.2A5 5 0 0 1 21 9c0 4.2-4 7.5-9 12z" />
   </svg>
 );
+
+export const House = ({ size = 18 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M4 11.5 12 4l8 7.5" />
+    <path d="M6 10.5V20h12v-9.5" />
+  </svg>
+);
+
+export const Code = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="8 8 4 12 8 16" />
+    <polyline points="16 8 20 12 16 16" />
+  </svg>
+);
+
+export const ChatBubble = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z" />
+  </svg>
+);
+
+export const Share = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 15V4" />
+    <path d="m8 8 4-4 4 4" />
+    <path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7" />
+  </svg>
+);
