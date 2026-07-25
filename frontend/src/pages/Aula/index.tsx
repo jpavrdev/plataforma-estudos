@@ -19,7 +19,9 @@ import {
 } from '../../services/trails';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { BlocosConteudo, md } from '../../components/BlocosConteudo';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import { BlocosConteudo, md, TextoMath } from '../../components/BlocosConteudo';
 import { getTrailLang } from '../../utils/trailLang';
 
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
@@ -204,7 +206,11 @@ function ConteudoAula({
         <BlocosConteudo blocks={aula.contentBlocks} />
       ) : aula.content ? (
         <div className="lesson__md">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={md}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={md}
+          >
             {aula.content}
           </ReactMarkdown>
         </div>
@@ -423,7 +429,9 @@ function Quiz({
       <div className="quiz__body">
         <div className="quiz__q">
           <span className="quiz__q-num">{qIndex + 1}</span>
-          <div className="quiz__q-text">{q.statement}</div>
+          <div className="quiz__q-text">
+            <TextoMath>{q.statement}</TextoMath>
+          </div>
         </div>
 
         <div className="quiz__options">
@@ -435,7 +443,9 @@ function Quiz({
               disabled={checked}
             >
               <span className="quiz-opt__badge">{badge(o.id, i)}</span>
-              <span className="quiz-opt__label">{o.text}</span>
+              <span className="quiz-opt__label">
+                <TextoMath>{o.text}</TextoMath>
+              </span>
             </button>
           ))}
         </div>
