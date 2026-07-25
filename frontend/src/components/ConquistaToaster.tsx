@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { obterConquistasNaoVistas, type ConquistaDesbloqueada } from '../services/trails';
 import { EVENTO_CONQUISTA } from '../utils/conquistas';
@@ -13,6 +13,7 @@ const DURACAO_MS = 6000;
 export function ConquistaToaster() {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [fila, setFila] = useState<ConquistaDesbloqueada[]>([]);
   const buscando = useRef(false);
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -76,8 +77,11 @@ export function ConquistaToaster() {
           key={c.id}
           type="button"
           className="conq-toast"
-          onClick={() => remover(c.id)}
-          title="Dispensar"
+          onClick={() => {
+            remover(c.id);
+            navigate('/conquistas');
+          }}
+          title="Ver conquistas"
         >
           <span className="conq-toast__badge">
             <IconeConquista chave={c.icon} size={24} />
