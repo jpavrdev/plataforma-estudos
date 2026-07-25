@@ -55,6 +55,15 @@ const STAGES: Stage[] = [
     },
     {
         phase: "fundamentos",
+        position: 2,
+        title: "Linux & linha de comando",
+        description:
+            "A base do trabalho de DevOps: o sistema e o kernel, o filesystem e o boot, a linha de comando, permissões, usuários e processos, as chamadas de sistema, scripting em Bash e o Linux em operação com systemd, logs e SSH.",
+        tags: ["Linux", "Shell", "Bash"],
+        refs: [{ type: "trail", ref: "Linux e Linha de Comando" }],
+    },
+    {
+        phase: "fundamentos",
         position: 4,
         title: "Redes & protocolos da web",
         description:
