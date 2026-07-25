@@ -67,9 +67,12 @@ const STAGES: Stage[] = [
         position: 4,
         title: "Redes & protocolos da web",
         description:
-            "Como os sistemas conversam: HTTP e seus métodos, códigos de status, o modelo cliente-servidor e as portas, a base para expor e conectar serviços em produção.",
-        tags: ["HTTP", "Redes", "Cliente-servidor"],
-        refs: [{ type: "trail", ref: "Protocolos da Web" }],
+            "Como os sistemas conversam pela rede: os modelos OSI e TCP/IP, IP e sub-redes, roteamento, portas, DNS, TLS e balanceamento de carga, e o HTTP e o modelo cliente-servidor no topo. A base para expor, conectar e proteger serviços.",
+        tags: ["Redes", "HTTP", "DNS"],
+        refs: [
+            { type: "trail", ref: "Redes" },
+            { type: "trail", ref: "Protocolos da Web" },
+        ],
     },
     {
         phase: "core",
