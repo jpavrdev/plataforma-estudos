@@ -252,6 +252,8 @@ export const achievementCriteria = pgEnum("achievement_criteria", [
     "challenges_facil",
     "challenges_medio",
     "challenges_dificil",
+    // Conclusão de uma trilha específica (a trilha vai em ref_id).
+    "trail_completed",
 ]);
 
 export const achievements = pgTable("achievements", {
@@ -261,6 +263,8 @@ export const achievements = pgTable("achievements", {
     icon: varchar("icon", { length: 30 }).notNull(),
     criteriaType: achievementCriteria("criteria_type").notNull(),
     threshold: integer("threshold").notNull(),
+    // Referência polimórfica sem FK: hoje aponta a trilha quando criteria = trail_completed.
+    refId: uuid("ref_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

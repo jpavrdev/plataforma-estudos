@@ -390,7 +390,8 @@ export type CriterioConquista =
   | 'streak_days'
   | 'challenges_facil'
   | 'challenges_medio'
-  | 'challenges_dificil';
+  | 'challenges_dificil'
+  | 'trail_completed';
 
 export interface Achievement {
   id: string;
@@ -399,6 +400,8 @@ export interface Achievement {
   icon: string;
   criteriaType: CriterioConquista;
   threshold: number;
+  // Preenchido só em trail_completed: a trilha a concluir.
+  refId?: string | null;
 }
 export interface MinhaConquista extends Achievement {
   earned: boolean;
@@ -410,6 +413,7 @@ export interface PayloadConquista {
   icon: string;
   criteriaType: CriterioConquista;
   threshold: number;
+  refId?: string | null;
 }
 
 export async function listarConquistas() {
