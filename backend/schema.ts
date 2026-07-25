@@ -246,6 +246,14 @@ export const achievementCriteria = pgEnum("achievement_criteria", [
     "lessons_completed",
     "questions_correct",
     "special",
+    // Dias corridos de estudo (usa o recorde do usuário, não o streak do momento).
+    "streak_days",
+    // Desafios de código resolvidos, contados por dificuldade.
+    "challenges_facil",
+    "challenges_medio",
+    "challenges_dificil",
+    // Conclusão de uma trilha específica (a trilha vai em ref_id).
+    "trail_completed",
 ]);
 
 export const achievements = pgTable("achievements", {
@@ -255,6 +263,8 @@ export const achievements = pgTable("achievements", {
     icon: varchar("icon", { length: 30 }).notNull(),
     criteriaType: achievementCriteria("criteria_type").notNull(),
     threshold: integer("threshold").notNull(),
+    // Referência polimórfica sem FK: hoje aponta a trilha quando criteria = trail_completed.
+    refId: uuid("ref_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -270,6 +280,8 @@ export const userAchievements = pgTable(
             .references(() => achievements.id)
             .notNull(),
         earnedAt: timestamp("earned_at", { withTimezone: true }).defaultNow().notNull(),
+        // false enquanto a notificação de desbloqueio ainda não foi mostrada ao usuário.
+        notified: boolean("notified").default(false).notNull(),
     },
     (table) => [unique().on(table.userId, table.achievementId)],
 );
@@ -567,7 +579,6 @@ export const certificates = pgTable(
     },
     (table) => [unique().on(table.userId, table.trailId)],
 );
-
 
 export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
 export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);

@@ -41,6 +41,7 @@ import {
     updateGlossaryTerm,
     deleteGlossaryTerm,
     getMyAchievements,
+    getUnseenAchievements,
     getMyActivity,
     getCommunityAchievements,
     getRanking,
@@ -100,6 +101,7 @@ router.delete("/lessons/:id", autenticar, exigirAdmin, deleteLesson);
 router.get("/me/trails", autenticar, getMyTrails);
 router.get("/me/xp", autenticar, getMyXp);
 router.get("/me/achievements", autenticar, getMyAchievements);
+router.get("/me/achievements/unseen", autenticar, getUnseenAchievements);
 router.get("/me/activity", autenticar, getMyActivity);
 router.get("/me/streak", autenticar, getMyStreak);
 router.get("/community/achievements", autenticar, getCommunityAchievements);

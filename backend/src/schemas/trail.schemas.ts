@@ -38,13 +38,30 @@ export const createAchievementSchema = z
         name: z.string().min(2, "Nome obrigatório").max(80, "Nome muito longo"),
         description: z.string().min(2, "Descrição obrigatória").max(200, "Descrição muito longa"),
         icon: z.enum(["trophy", "flame", "star", "check", "medal", "bookmark", "bug"]),
-        criteriaType: z.enum(["xp_total", "lessons_completed", "questions_correct", "special"]),
-        // "special" é concedida à mão pelo admin, então não exige valor.
+        criteriaType: z.enum([
+            "xp_total",
+            "lessons_completed",
+            "questions_correct",
+            "special",
+            "streak_days",
+            "challenges_facil",
+            "challenges_medio",
+            "challenges_dificil",
+            "trail_completed",
+        ]),
+        // "special" e "trail_completed" não usam valor: uma é manual, a outra casa pela trilha.
         threshold: z.int().min(0, "O valor não pode ser negativo").default(0),
+        // Preenchido só quando criteria = trail_completed: a trilha a concluir.
+        refId: z.uuid().nullish(),
     })
-    .refine((d) => d.criteriaType === "special" || d.threshold > 0, {
-        message: "Informe um valor maior que zero.",
-        path: ["threshold"],
+    .refine(
+        (d) =>
+            d.criteriaType === "special" || d.criteriaType === "trail_completed" || d.threshold > 0,
+        { message: "Informe um valor maior que zero.", path: ["threshold"] },
+    )
+    .refine((d) => d.criteriaType !== "trail_completed" || !!d.refId, {
+        message: "Selecione a trilha.",
+        path: ["refId"],
     });
 
 export const updateAchievementSchema = createAchievementSchema;

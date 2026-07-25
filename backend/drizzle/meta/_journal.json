@@ -295,6 +295,20 @@
       "when": 1784898127219,
       "tag": "0041_magical_nomad",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1785011357069,
+      "tag": "0042_lazy_trish_tilby",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1785013141615,
+      "tag": "0043_colossal_avengers",
+      "breakpoints": true
     }
   ]
 }

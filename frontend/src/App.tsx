@@ -30,6 +30,7 @@ import { ComunicadosAdmin } from './pages/ComunicadosAdmin';
 import { AssinaturasAdmin } from './pages/AssinaturasAdmin';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { BottomNav } from './components/BottomNav';
+import { ConquistaToaster } from './components/ConquistaToaster';
 import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { RecuperarSenha } from './pages/RecuperarSenha';
@@ -341,6 +342,7 @@ function AppRoutes() {
       <Route path="/:username" element={<PerfilPorUsername />} />
     </Routes>
     {isAuthenticated && <BottomNav />}
+    {isAuthenticated && <ConquistaToaster />}
     </>
   );
 }

@@ -8,6 +8,7 @@ import { hojeSaoPaulo } from "./streak.ts";
 import { executarNoRunner } from "./runner.client.ts";
 import { corrigirDesafio, saidaCorreta, retornoCorreto, indiceDoDia } from "../domain/desafio.ts";
 import { xpDoDesafio } from "../domain/xp.ts";
+import { verificarConquistas } from "./achievement.service.ts";
 
 type Execucao = z.infer<typeof executarDesafioSchema>;
 type DadosDesafio = z.infer<typeof criarDesafioSchema>;
@@ -306,6 +307,9 @@ export async function submeterDesafio(userId: string, id: string, dados: Execuca
         output,
         xpEarned,
     });
+
+    // Desafio aprovado pode desbloquear conquista (de desafios ou de streak).
+    if (correcao.aprovado) await verificarConquistas(userId);
 
     return {
         status,
