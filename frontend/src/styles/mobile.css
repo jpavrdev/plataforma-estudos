@@ -1,0 +1,102 @@
+/* ==========================================================================
+   Design mobile (telefone, <= 640px). Barra de navegação inferior e layouts
+   em coluna única. Acima de 640px nada aqui se aplica: o desktop continua igual.
+   ========================================================================== */
+
+/* Barra inferior: renderizada sempre (JS), mas só visível no telefone. */
+.botnav {
+  display: none;
+}
+
+/* Logo no topo do formulário de login/cadastro: só no telefone (no desktop
+   o logo já aparece no painel de marca). */
+.auth__logo-m {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  /* ----- Barra de navegação inferior ----- */
+  .botnav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    justify-content: space-around;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: saturate(1.2) blur(10px);
+    border-top: 1px solid var(--border);
+  }
+  .botnav__item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 0;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+  .botnav__item svg {
+    opacity: 0.85;
+  }
+  .botnav__item--on {
+    color: var(--accent);
+  }
+  .botnav__item--on svg {
+    opacity: 1;
+  }
+
+  /* A barra inferior é a navegação primária; o hambúrguer (na topbar) vira o
+     menu "mais" (Comunidade, Ranking, Roadmaps, Apoiar) e continua disponível. */
+
+  /* Fluxo focado (ex.: prova em andamento) esconde a topbar do app no telefone. */
+  .app-mobilehdr .topbar {
+    display: none;
+  }
+
+  /* Login/cadastro: o painel de marca ("Resolva um desafio todo dia") some no
+     telefone e o formulário ocupa a tela inteira, com o logo no topo. */
+  .auth__brand {
+    display: none;
+  }
+  .auth__panel {
+    padding: 40px 22px;
+  }
+  .auth__logo-m {
+    display: flex;
+    margin-bottom: 16px;
+  }
+
+  /* Reserva espaço para a barra inferior não cobrir o fim do conteúdo. */
+  .home {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ----- Início: coluna única ----- */
+  .home__body {
+    grid-template-columns: 1fr;
+    padding: 4px 16px 0;
+    gap: 20px;
+  }
+  .home__main {
+    gap: 20px;
+  }
+  .trilhas {
+    grid-template-columns: 1fr;
+  }
+  /* Desafio do dia: empilha e esconde o preview de código lateral. */
+  .challenge {
+    flex-direction: column;
+  }
+  .challenge__code {
+    display: none;
+  }
+}

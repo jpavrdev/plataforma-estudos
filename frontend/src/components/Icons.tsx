@@ -82,6 +82,33 @@ export const UserPlus = ({ size = 26 }: IconProps) => (
   </svg>
 );
 
+export const User = ({ size = 22 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="8" r="3.6" />
+    <path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6" />
+  </svg>
+);
+
+export const Lightbulb = ({ size = 22 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 18h6" />
+    <path d="M10 21h4" />
+    <path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z" />
+  </svg>
+);
+
 export const Plus = ({ size = 12 }: IconProps) => (
   <svg {...base(size)} stroke="currentColor" strokeWidth="3" strokeLinecap="round">
     <line x1="12" y1="6" x2="12" y2="18" />

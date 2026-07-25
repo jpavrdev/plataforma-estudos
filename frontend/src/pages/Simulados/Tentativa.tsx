@@ -12,8 +12,12 @@ export function TentativaSimulado() {
     [attemptId],
   );
 
+  // Só a prova em andamento é fluxo focado (esconde a topbar no telefone). No
+  // resultado a topbar volta, para o aluno navegar de volta (logo, hambúrguer).
+  const emProva = Boolean(dados && !dados.submitted);
+
   return (
-    <div className="home-shell">
+    <div className={`home-shell${emProva ? ' app-mobilehdr' : ''}`}>
       <div className="home">
         <SimTopbar />
         {carregando && (
