@@ -215,6 +215,10 @@ function CrudList({
 const CRITERIOS: { value: CriterioConquista; label: string }[] = [
   { value: 'lessons_completed', label: 'Aulas concluídas' },
   { value: 'questions_correct', label: 'Questões certas' },
+  { value: 'streak_days', label: 'Dias de streak' },
+  { value: 'challenges_facil', label: 'Desafios fáceis' },
+  { value: 'challenges_medio', label: 'Desafios médios' },
+  { value: 'challenges_dificil', label: 'Desafios difíceis' },
   { value: 'xp_total', label: 'XP total' },
   { value: 'special', label: 'Ocasião especial' },
 ];
@@ -724,7 +728,10 @@ export function Configuracoes() {
   const [aba, setAba] = useState<(typeof ABAS_CFG)[number]['key']>('tags');
   return (
     <div className="home">
-      <EstudioTopbar badge="Configurações" crumb={<b>Tags, linguagens, conquistas e glossário</b>} />
+      <EstudioTopbar
+        badge="Configurações"
+        crumb={<b>Tags, linguagens, conquistas e glossário</b>}
+      />
 
       <div className="estudio-home">
         <div className="cfg-tabs">

@@ -246,6 +246,12 @@ export const achievementCriteria = pgEnum("achievement_criteria", [
     "lessons_completed",
     "questions_correct",
     "special",
+    // Dias corridos de estudo (usa o recorde do usuário, não o streak do momento).
+    "streak_days",
+    // Desafios de código resolvidos, contados por dificuldade.
+    "challenges_facil",
+    "challenges_medio",
+    "challenges_dificil",
 ]);
 
 export const achievements = pgTable("achievements", {
@@ -270,6 +276,8 @@ export const userAchievements = pgTable(
             .references(() => achievements.id)
             .notNull(),
         earnedAt: timestamp("earned_at", { withTimezone: true }).defaultNow().notNull(),
+        // false enquanto a notificação de desbloqueio ainda não foi mostrada ao usuário.
+        notified: boolean("notified").default(false).notNull(),
     },
     (table) => [unique().on(table.userId, table.achievementId)],
 );
@@ -567,7 +575,6 @@ export const certificates = pgTable(
     },
     (table) => [unique().on(table.userId, table.trailId)],
 );
-
 
 export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
 export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);

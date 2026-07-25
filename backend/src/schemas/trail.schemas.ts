@@ -38,7 +38,16 @@ export const createAchievementSchema = z
         name: z.string().min(2, "Nome obrigatório").max(80, "Nome muito longo"),
         description: z.string().min(2, "Descrição obrigatória").max(200, "Descrição muito longa"),
         icon: z.enum(["trophy", "flame", "star", "check", "medal", "bookmark", "bug"]),
-        criteriaType: z.enum(["xp_total", "lessons_completed", "questions_correct", "special"]),
+        criteriaType: z.enum([
+            "xp_total",
+            "lessons_completed",
+            "questions_correct",
+            "special",
+            "streak_days",
+            "challenges_facil",
+            "challenges_medio",
+            "challenges_dificil",
+        ]),
         // "special" é concedida à mão pelo admin, então não exige valor.
         threshold: z.int().min(0, "O valor não pode ser negativo").default(0),
     })

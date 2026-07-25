@@ -1,10 +1,18 @@
 import { db } from "../../db.ts";
-import { achievements, userAchievements, users } from "../../schema.ts";
-import { eq, and, asc, desc } from "drizzle-orm";
+import {
+    achievements,
+    userAchievements,
+    users,
+    challenges,
+    challengeSubmissions,
+} from "../../schema.ts";
+import { eq, and, asc, desc, sql, inArray } from "drizzle-orm";
 import type { z } from "zod";
 import type { createAchievementSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
 import { calcularEstatisticas } from "./stats.service.ts";
+import { diasAtivosDoUsuario } from "./streak.ts";
+import { recordeStreak } from "../domain/streak.ts";
 
 type DadosConquista = z.infer<typeof createAchievementSchema>;
 
@@ -47,14 +55,41 @@ export async function excluirConquista(id: string) {
     });
 }
 
+// Desafios de código resolvidos (distintos), contados por dificuldade.
+async function desafiosPorDificuldade(userId: string) {
+    const linhas = await db
+        .select({
+            dificuldade: challenges.difficulty,
+            n: sql<number>`count(distinct ${challengeSubmissions.challengeId})`,
+        })
+        .from(challengeSubmissions)
+        .innerJoin(challenges, eq(challenges.id, challengeSubmissions.challengeId))
+        .where(
+            and(eq(challengeSubmissions.userId, userId), eq(challengeSubmissions.status, "passed")),
+        )
+        .groupBy(challenges.difficulty);
+    const por: Record<string, number> = { facil: 0, medio: 0, dificil: 0 };
+    for (const l of linhas) por[l.dificuldade] = Number(l.n);
+    return por;
+}
+
 // ===================== Premiação automática =====================
 // Desbloqueia (idempotente) as conquistas cujo critério o usuário já atingiu.
 export async function verificarConquistas(userId: string) {
-    const stats = await calcularEstatisticas(userId);
+    const [stats, dias, desafios] = await Promise.all([
+        calcularEstatisticas(userId),
+        diasAtivosDoUsuario(userId),
+        desafiosPorDificuldade(userId),
+    ]);
     const valor: Record<string, number> = {
         xp_total: stats.xp,
         lessons_completed: stats.lessonsCompleted,
         questions_correct: stats.questionsCorrect,
+        // Recorde de dias seguidos: quem já atingiu a marca não perde a conquista se o streak cair.
+        streak_days: recordeStreak(dias),
+        challenges_facil: desafios.facil,
+        challenges_medio: desafios.medio,
+        challenges_dificil: desafios.dificil,
     };
     const catalogo = await db.select().from(achievements);
     // "special" (ocasião especial) nunca é automática: só concedida à mão pelo admin.
@@ -66,6 +101,34 @@ export async function verificarConquistas(userId: string) {
         .insert(userAchievements)
         .values(merecidas.map((a) => ({ userId, achievementId: a.id })))
         .onConflictDoNothing();
+}
+
+// ===================== Notificação de desbloqueio (estilo Steam) =====================
+// Verifica pendências e devolve as conquistas ainda não notificadas, marcando-as como
+// vistas na mesma operação (UPDATE ... RETURNING) para o toast disparar uma única vez.
+export async function conquistasNaoVistas(userId: string) {
+    await verificarConquistas(userId);
+    const marcadas = await db
+        .update(userAchievements)
+        .set({ notified: true })
+        .where(and(eq(userAchievements.userId, userId), eq(userAchievements.notified, false)))
+        .returning({ achievementId: userAchievements.achievementId });
+    if (marcadas.length === 0) return [];
+    return db
+        .select({
+            id: achievements.id,
+            name: achievements.name,
+            description: achievements.description,
+            icon: achievements.icon,
+        })
+        .from(achievements)
+        .where(
+            inArray(
+                achievements.id,
+                marcadas.map((m) => m.achievementId),
+            ),
+        )
+        .orderBy(asc(achievements.threshold));
 }
 
 // ===================== Concessão manual (ocasião especial) =====================

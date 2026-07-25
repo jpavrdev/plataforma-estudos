@@ -1,4 +1,5 @@
 import api from './api';
+import { sinalizarConquista } from '../utils/conquistas';
 
 export type Linguagem = 'javascript' | 'python' | 'java';
 export type Dificuldade = 'facil' | 'medio' | 'dificil';
@@ -114,6 +115,7 @@ export async function submeterDesafio(
   code: string,
 ): Promise<SubmitResultado> {
   const { data } = await api.post<SubmitResultado>(`/desafios/${id}/submit`, { language, code });
+  if (data.passed) sinalizarConquista();
   return data;
 }
 
