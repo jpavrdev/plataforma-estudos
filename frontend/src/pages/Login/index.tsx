@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
+import { Logo } from '../../components/Logo';
 import { FormField } from '../../components/FormField';
 import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Flame, Trophy } from '../../components/Icons';
@@ -86,10 +87,11 @@ export function Login() {
 
   return (
     <AuthShell brand={brand}>
+      <div className="auth__logo-m">
+        <Logo variant="solid" size={22} />
+      </div>
       <h2 className="auth__title">Bem-vindo de volta</h2>
       <p className="auth__subtitle">Continue de onde você parou.</p>
-
-      <SocialAuth />
 
       {(error || erroOAuth) && <div className="auth__alert">{error || erroOAuth}</div>}
 
@@ -121,6 +123,8 @@ export function Login() {
           {submitting ? 'Entrando...' : 'Entrar'}
         </button>
       </form>
+
+      <SocialAuth />
 
       <p className="auth__foot">
         Não tem conta?{' '}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
@@ -15,6 +15,13 @@ const NIVEL_LABEL: Record<Nivel, string> = {
   iniciante: 'Iniciante',
   intermediario: 'Intermediário',
   avancado: 'Avançado',
+};
+
+// Cada nível tem sua cor, como nas trilhas, para dar variedade aos cards.
+const LEVEL_HUE: Record<Nivel, string> = {
+  iniciante: '#2D6BF5',
+  intermediario: '#2E9E6B',
+  avancado: '#D9536B',
 };
 
 const NIVEIS: { v: string; label: string }[] = [
@@ -171,13 +178,15 @@ export function Roadmaps() {
             </p>
           )}
 
-          <div className="track-grid">
+          <div className="track-grid rm-grid">
             {filtrados.map((r) => {
               const started = r.status !== 'nao_iniciado';
+              const hue = LEVEL_HUE[r.level];
               return (
                 <div
                   key={r.id}
-                  className={`track track--clickable${r.premium ? ' track--locked' : ''}`}
+                  className={`track track--clickable roadmap-card${r.premium ? ' track--locked' : ''}`}
+                  style={{ ['--rm-hue']: hue } as CSSProperties}
                   role="button"
                   tabIndex={0}
                   onClick={() => navigate(`/roadmaps/${r.slug}`)}
@@ -186,19 +195,13 @@ export function Roadmaps() {
                   }}
                 >
                   <div className="track__head">
-                    <span
-                      className="track__icon"
-                      style={{
-                        color: 'var(--accent)',
-                        background: 'color-mix(in srgb, var(--accent) 16%, transparent)',
-                      }}
-                    >
+                    <span className="track__icon roadmap-card__icon">
                       {r.premium ? <Lock size={20} /> : glyph(r.name)}
                     </span>
                     <div className="track__meta">
                       <div className="track__name">{r.name}</div>
                       <div className="track__row">
-                        <span className="track__level" style={{ color: 'var(--accent)' }}>
+                        <span className="track__level roadmap-card__level">
                           {NIVEL_LABEL[r.level]}
                         </span>
                         <span className="track__lessons">{r.stagesTotal} estágios</span>
@@ -212,7 +215,7 @@ export function Roadmaps() {
                         className="progress__fill"
                         style={{
                           width: `${r.percent}%`,
-                          background: started ? 'var(--accent)' : 'var(--surface-2)',
+                          background: started ? hue : 'var(--surface-2)',
                         }}
                       />
                     </div>
@@ -228,8 +231,8 @@ export function Roadmaps() {
                       ))}
                     </div>
                     <span
-                      className="track__cta"
-                      style={{ color: started ? 'var(--accent)' : 'var(--text)' }}
+                      className="track__cta roadmap-card__cta"
+                      style={started ? { color: hue } : undefined}
                     >
                       {r.premium ? 'Desbloquear' : CTA[r.status]} <ChevronRight size={15} />
                     </span>

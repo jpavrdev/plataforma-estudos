@@ -886,7 +886,7 @@
 }
 @media (max-width: 640px) {
   .com {
-    padding: 16px 14px 40px;
+    padding: 16px 14px 0;
   }
   .com-composer__kinds,
   .com-composer__code,
@@ -897,5 +897,95 @@
   .com-composer__atalhos {
     margin-left: 0;
     width: 100%;
+  }
+}
+
+/* ==========================================================================
+   Compor no telefone: o composer inline some e dá lugar a um botão "+"
+   flutuante (estilo Twitter) que abre o composer em um modal de tela cheia.
+   ========================================================================== */
+.com-fab {
+  display: none;
+}
+.com-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.com-modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100% - 64px);
+  overflow-y: auto;
+  margin: 32px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+}
+.com-modal__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.com-modal__x {
+  display: flex;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.com-modal__titulo {
+  font-size: 16px;
+  font-weight: 700;
+}
+/* O composer dentro do modal não repete a moldura de card. */
+.com-modal .com-composer {
+  border: none;
+  border-radius: 0;
+}
+
+@media (max-width: 640px) {
+  .com-composer-inline {
+    display: none;
+  }
+  .com-fab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 18px;
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    z-index: 55;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: var(--on-accent);
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 42%, transparent);
+    cursor: pointer;
+  }
+  /* No telefone o modal ocupa a tela inteira. */
+  .com-modal-scrim {
+    align-items: stretch;
+  }
+  .com-modal {
+    margin: 0;
+    max-width: none;
+    max-height: none;
+    min-height: 100%;
+    border: none;
+    border-radius: 0;
   }
 }

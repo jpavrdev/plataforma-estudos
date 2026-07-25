@@ -527,9 +527,31 @@
   top: 26px;
 }
 .exam-nav__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 14px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
   font-size: 14px;
   font-weight: 700;
-  margin-bottom: 14px;
+  text-align: left;
+  cursor: default;
+}
+.exam-nav__title > span:first-child {
+  flex: 1;
+}
+/* Resumo e seta só no telefone (onde o navegador é recolhível). */
+.exam-nav__resumo,
+.exam-nav__chev {
+  display: none;
+}
+.exam-nav__body {
+  display: block;
 }
 .exam-nav__grid {
   display: grid;
@@ -712,6 +734,38 @@
   font-size: 11.5px;
   color: rgba(255, 255, 255, 0.82);
   margin-top: 3px;
+}
+
+/* Resultado no telefone: herói empilhado e centralizado. Sem isso o bloco de
+   texto fica espremido entre o anel e as estatísticas e quebra palavra a palavra. */
+@media (max-width: 640px) {
+  .res-hero {
+    padding: 22px 20px;
+  }
+  .res-hero__inner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 16px;
+  }
+  .res-ring {
+    align-self: center;
+  }
+  .res-hero__meta {
+    width: 100%;
+  }
+  .res-hero__title {
+    font-size: 23px;
+    margin-top: 10px;
+  }
+  .res-stats {
+    width: 100%;
+  }
+  .res-stat {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 8px;
+  }
 }
 
 .res-sec__title {
@@ -1077,6 +1131,79 @@
   }
   .exam-nav__grid {
     grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Exame no telefone: header compacto e rodapé sem overflow horizontal. */
+@media (max-width: 640px) {
+  .exam-bar {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .exam-bar__id {
+    flex: 1;
+    min-width: 0;
+  }
+  .exam-bar__title {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .exam-bar__sub,
+  .exam-bar__prog {
+    display: none;
+  }
+  .exam-bar__timer {
+    flex: none;
+    height: 38px;
+    padding: 0 12px;
+  }
+  .exam-bar__timer span {
+    font-size: 16px;
+  }
+  .exam-bar__finish {
+    height: 38px;
+    padding: 0 14px;
+  }
+  .exam-q {
+    padding: 20px 16px;
+  }
+  .exam-q__foot {
+    gap: 10px;
+  }
+  /* O aviso "Resposta salva automaticamente" sai; Anterior e Próxima vão às pontas. */
+  .exam-q__saved {
+    display: none;
+  }
+
+  /* Navegador recolhível: 65 células não ocupam a tela toda por padrão. */
+  .exam-side {
+    position: static;
+  }
+  .exam-nav__title {
+    cursor: pointer;
+    margin-bottom: 0;
+  }
+  .exam-nav__resumo {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .exam-nav__chev {
+    display: inline-flex;
+    color: var(--muted);
+    transition: transform 0.18s ease;
+  }
+  .exam-nav__chev--open {
+    transform: rotate(180deg);
+  }
+  .exam-nav__body {
+    display: none;
+    margin-top: 14px;
+  }
+  .exam-nav__body--open {
+    display: block;
   }
 }
 

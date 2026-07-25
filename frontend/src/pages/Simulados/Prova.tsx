@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ClockExam, ChevronLeft, ChevronRight, Bookmark } from '../../components/Icons';
+import { ClockExam, ChevronLeft, ChevronRight, ChevronDown, Bookmark } from '../../components/Icons';
 import { salvarResposta, enviarTentativa, type TentativaEstado } from '../../services/simulados';
+import { ConfirmModal } from './ConfirmModal';
 
 const LETRAS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -22,6 +23,9 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
   const [flags, setFlags] = useState<Set<number>>(new Set());
   const [restante, setRestante] = useState(dados.remainingSeconds);
   const [enviando, setEnviando] = useState(false);
+  // Navegador recolhido por padrão no telefone (65 células ocupam a tela toda).
+  const [navAberto, setNavAberto] = useState(false);
+  const [confirmando, setConfirmando] = useState(false);
   const enviadoRef = useRef(false);
 
   const q = questions[current];
@@ -72,13 +76,10 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
     }
   }
 
+  const faltam = total - answeredCount;
+
   function confirmarEnvio() {
-    const faltam = total - answeredCount;
-    const msg =
-      faltam > 0
-        ? `Você deixou ${faltam} questão(ões) em branco. Enviar mesmo assim?`
-        : 'Enviar o simulado para correção?';
-    if (window.confirm(msg)) enviar();
+    setConfirmando(true);
   }
 
   // Contagem regressiva a partir do expiresAt (fonte de verdade); auto-envia ao zerar.
@@ -103,7 +104,7 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
         <span className="exam-bar__logo">
           <ClockExam size={18} />
         </span>
-        <div>
+        <div className="exam-bar__id">
           <div className="exam-bar__title">Simulado em andamento</div>
           <div className="exam-bar__sub">{total} questões</div>
         </div>
@@ -183,35 +184,49 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
 
         <div className="exam-side">
           <div className="card">
-            <div className="exam-nav__title">Navegador</div>
-            <div className="exam-nav__grid">
-              {questions.map((x, i) => {
-                const isCur = i === current;
-                const isAns = (respostas[x.id]?.length ?? 0) > 0;
-                const isFlag = flags.has(i);
-                let cls = 'exam-nav__cell';
-                if (isFlag) cls += ' exam-nav__cell--flag';
-                else if (isAns) cls += ' exam-nav__cell--ans';
-                if (isCur) cls += ' exam-nav__cell--cur';
-                return (
-                  <button key={x.id} className={cls} onClick={() => setCurrent(i)}>
-                    {i + 1}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="exam-nav__legend">
-              <div>
-                <span className="exam-nav__dot exam-nav__dot--ans" />
-                Respondida ({answeredCount})
+            <button
+              className="exam-nav__title"
+              onClick={() => setNavAberto((v) => !v)}
+              aria-expanded={navAberto}
+            >
+              <span>Navegador</span>
+              <span className="exam-nav__resumo">
+                {answeredCount}/{total}
+              </span>
+              <span className={`exam-nav__chev${navAberto ? ' exam-nav__chev--open' : ''}`}>
+                <ChevronDown size={16} />
+              </span>
+            </button>
+            <div className={`exam-nav__body${navAberto ? ' exam-nav__body--open' : ''}`}>
+              <div className="exam-nav__grid">
+                {questions.map((x, i) => {
+                  const isCur = i === current;
+                  const isAns = (respostas[x.id]?.length ?? 0) > 0;
+                  const isFlag = flags.has(i);
+                  let cls = 'exam-nav__cell';
+                  if (isFlag) cls += ' exam-nav__cell--flag';
+                  else if (isAns) cls += ' exam-nav__cell--ans';
+                  if (isCur) cls += ' exam-nav__cell--cur';
+                  return (
+                    <button key={x.id} className={cls} onClick={() => setCurrent(i)}>
+                      {i + 1}
+                    </button>
+                  );
+                })}
               </div>
-              <div>
-                <span className="exam-nav__dot exam-nav__dot--flag" />
-                Marcada ({flags.size})
-              </div>
-              <div>
-                <span className="exam-nav__dot exam-nav__dot--none" />
-                Em branco ({total - answeredCount})
+              <div className="exam-nav__legend">
+                <div>
+                  <span className="exam-nav__dot exam-nav__dot--ans" />
+                  Respondida ({answeredCount})
+                </div>
+                <div>
+                  <span className="exam-nav__dot exam-nav__dot--flag" />
+                  Marcada ({flags.size})
+                </div>
+                <div>
+                  <span className="exam-nav__dot exam-nav__dot--none" />
+                  Em branco ({total - answeredCount})
+                </div>
               </div>
             </div>
           </div>
@@ -220,6 +235,25 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
           </button>
         </div>
       </div>
+
+      {confirmando && (
+        <ConfirmModal
+          title="Enviar simulado?"
+          confirmLabel={enviando ? 'Enviando...' : 'Enviar para correção'}
+          loading={enviando}
+          onConfirm={enviar}
+          onCancel={() => setConfirmando(false)}
+        >
+          {faltam > 0 ? (
+            <>
+              Você deixou <b>{faltam}</b> {faltam === 1 ? 'questão' : 'questões'} em branco. Depois de
+              enviar não dá para voltar e corrigir.
+            </>
+          ) : (
+            'Respondeu todas as questões. Depois de enviar não dá para voltar e corrigir.'
+          )}
+        </ConfirmModal>
+      )}
     </>
   );
 }

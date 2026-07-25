@@ -29,6 +29,7 @@ import { DesafiosAdmin } from './pages/DesafiosAdmin';
 import { ComunicadosAdmin } from './pages/ComunicadosAdmin';
 import { AssinaturasAdmin } from './pages/AssinaturasAdmin';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
+import { BottomNav } from './components/BottomNav';
 import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { RecuperarSenha } from './pages/RecuperarSenha';
@@ -339,6 +340,7 @@ function AppRoutes() {
       {/* Perfil compartilhável: /username. Fica por último; rotas fixas têm prioridade. */}
       <Route path="/:username" element={<PerfilPorUsername />} />
     </Routes>
+    {isAuthenticated && <BottomNav />}
     </>
   );
 }

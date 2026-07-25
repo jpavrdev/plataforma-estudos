@@ -19,6 +19,7 @@ import {
   ChatBubble,
   Share,
   Zap,
+  Plus,
   X,
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
@@ -115,6 +116,7 @@ export function Comunidade() {
   const [busca, setBusca] = useState('');
   const [copiado, setCopiado] = useState<string | null>(null);
   const [seguindo, setSeguindo] = useState<Set<string>>(new Set());
+  const [comporAberto, setComporAberto] = useState(false);
 
   const displayName = user?.name ?? '';
   const initials = getInitials(displayName || 'A');
@@ -282,13 +284,16 @@ export function Comunidade() {
           </aside>
 
           <main className="com__feed">
-            <Composer
-              nome={displayName}
-              avatarUrl={user?.avatarUrl ?? null}
-              chave={user?.username ?? user?.email ?? displayName}
-              apoiador={Boolean(user?.apoiador)}
-              onPublicado={() => carregarFeed(filtro, tag)}
-            />
+            {/* Composer inline (desktop). No telefone some e dá lugar ao "+". */}
+            <div className="com-composer-inline">
+              <Composer
+                nome={displayName}
+                avatarUrl={user?.avatarUrl ?? null}
+                chave={user?.username ?? user?.email ?? displayName}
+                apoiador={Boolean(user?.apoiador)}
+                onPublicado={() => carregarFeed(filtro, tag)}
+              />
+            </div>
 
             {tag ? (
               <div className="com-tagbar">
@@ -401,6 +406,44 @@ export function Comunidade() {
             )}
           </aside>
         </div>
+
+        {/* Botão flutuante de compor (telefone), estilo Twitter. */}
+        <button
+          className="com-fab"
+          aria-label="Nova publicação"
+          onClick={() => setComporAberto(true)}
+        >
+          <Plus size={24} />
+        </button>
+
+        {comporAberto && (
+          <div className="com-modal-scrim" onClick={() => setComporAberto(false)}>
+            <div className="com-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="com-modal__head">
+                <button
+                  className="com-modal__x"
+                  aria-label="Fechar"
+                  onClick={() => setComporAberto(false)}
+                >
+                  <X size={20} />
+                </button>
+                <span className="com-modal__titulo">Nova publicação</span>
+              </div>
+              <Composer
+                nome={displayName}
+                avatarUrl={user?.avatarUrl ?? null}
+                chave={user?.username ?? user?.email ?? displayName}
+                apoiador={Boolean(user?.apoiador)}
+                iniciarAberto
+                onFechar={() => setComporAberto(false)}
+                onPublicado={() => {
+                  carregarFeed(filtro, tag);
+                  setComporAberto(false);
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -422,14 +465,18 @@ function Composer({
   chave,
   apoiador,
   onPublicado,
+  iniciarAberto = false,
+  onFechar,
 }: {
   nome: string;
   avatarUrl: string | null;
   chave: string;
   apoiador: boolean;
   onPublicado: () => void;
+  iniciarAberto?: boolean;
+  onFechar?: () => void;
 }) {
-  const [aberto, setAberto] = useState(false);
+  const [aberto, setAberto] = useState(iniciarAberto);
   const [kind, setKind] = useState<PostKind>('post');
   const [content, setContent] = useState('');
   const [comCodigo, setComCodigo] = useState(false);
@@ -601,7 +648,14 @@ function Composer({
               )}
             </div>
             <div className="com-composer__enviar">
-              <button className="com-composer__cancelar" onClick={reset} disabled={enviando}>
+              <button
+                className="com-composer__cancelar"
+                onClick={() => {
+                  reset();
+                  onFechar?.();
+                }}
+                disabled={enviando}
+              >
                 Cancelar
               </button>
               <button

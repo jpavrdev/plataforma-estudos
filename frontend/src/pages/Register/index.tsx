@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
+import { Logo } from '../../components/Logo';
 import { FormField } from '../../components/FormField';
 import {
   birthDateDisplayToIso,
@@ -138,10 +139,11 @@ export function Register() {
 
   return (
     <AuthShell brand={brand}>
+      <div className="auth__logo-m">
+        <Logo variant="solid" size={22} />
+      </div>
       <h2 className="auth__title">Crie sua conta</h2>
       <p className="auth__subtitle">Leva menos de um minuto.</p>
-
-      <SocialAuth />
 
       {error && <div className="auth__alert">{error}</div>}
 
@@ -208,6 +210,8 @@ export function Register() {
           {submitting ? 'Criando conta...' : 'Criar conta grátis'}
         </button>
       </form>
+
+      <SocialAuth />
 
       <p className="auth__terms">
         Ao criar a conta, você concorda com os{' '}
