@@ -5853,6 +5853,41 @@ a.logo {
   background-attachment: fixed;
 }
 
+/* Com wallpaper, o texto "solto" sobre a imagem troca de cor conforme --texto-fundo,
+   calculada em JS pela luminância do wallpaper + véu + tema (accent.ts): clara sobre
+   fundo escuro, escura sobre fundo claro. Texto dentro de card não entra aqui, então
+   segue com a cor do tema. A lista cobre só o texto solto de cada página; classes
+   compartilhadas com cards (ex.: .td-h3, .track__desc) ficam de fora ou escopadas. */
+.tem-fundo .section-title,
+.tem-fundo .section-meta,
+.tem-fundo .trilhas-page__title,
+.tem-fundo .trilhas-page__sub,
+.tem-fundo .metric__value,
+.tem-fundo .metric__label,
+.tem-fundo .filters__label,
+.tem-fundo .filters__count,
+.tem-fundo .td-modules-head .td-h3,
+.tem-fundo .td-modules-meta,
+.tem-fundo .rk-title,
+.tem-fundo .rk-sub,
+.tem-fundo .sim__title,
+.tem-fundo .sim__sub,
+.tem-fundo .sim__count,
+.tem-fundo .ch-title,
+.tem-fundo .ch-sub,
+.tem-fundo .conq__title,
+.tem-fundo .conq__sub,
+.tem-fundo .conq-sec__title,
+.tem-fundo .conq-sec__hint,
+.tem-fundo .conq-legend,
+.tem-fundo .prg-head__title,
+.tem-fundo .prg-head__sub,
+.tem-fundo .com-tab,
+.tem-fundo .com-vazio,
+.tem-fundo .sim-empty {
+  color: var(--texto-fundo, inherit);
+}
+
 .apoie__cor--livre {
   display: flex;
   align-items: center;
