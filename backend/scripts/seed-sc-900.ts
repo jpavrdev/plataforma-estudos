@@ -2223,7 +2223,327 @@ const QUESTOES: Questao[] = [
                 false
             ]
         ]
-    }
+    },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Um time de segurança organiza seus controles em torno de três objetivos fundamentais da segurança da informação, conhecidos como tríade CIA. Quais são esses três pilares?",
+        explanation: "A tríade CIA reúne confidencialidade (evitar acesso não autorizado), integridade (evitar alterações indevidas) e disponibilidade (garantir o acesso quando necessário).",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Confidencialidade, integridade e disponibilidade", true],
+            ["Confidencialidade, identidade e autorização", false],
+            ["Criptografia, integridade e autenticação", false],
+            ["Confidencialidade, disponibilidade e o não repúdio garantido por assinaturas digitais e trilhas de auditoria", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer proteger tanto os dados gravados nos discos dos servidores quanto os dados que trafegam entre o navegador do cliente e a aplicação. Como se classificam essas duas formas de proteção por criptografia?",
+        explanation: "Criptografia em repouso protege dados gravados em disco ou banco de dados; criptografia em trânsito protege os dados enquanto trafegam pela rede, por exemplo via TLS.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Criptografia simétrica para os discos e criptografia assimétrica para a rede", false],
+            ["Criptografia em repouso para o que está armazenado e criptografia em trânsito para o que trafega", true],
+            ["Hashing para os discos e criptografia em trânsito para a rede", false],
+            ["Criptografia em trânsito para os dados gravados nos discos e criptografia em repouso para os dados que circulam pela rede entre cliente e servidor", false],
+        ],
+    },
+    {
+        statement: "Uma varejista está lançando um aplicativo público de compras e quer que os clientes finais se cadastrem e façam login com contas próprias, como e-mail ou provedores sociais, sem se tornarem usuários internos do diretório corporativo. Qual recurso do Microsoft Entra atende a esse cenário?",
+        explanation: "O Azure AD B2C, parte do Microsoft Entra External ID, oferece cadastro e login para clientes finais com e-mail, contas locais ou provedores sociais, separado do diretório de funcionários.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Microsoft Entra B2B, para colaboração com parceiros de negócio externos", false],
+            ["Identidade híbrida, sincronizando as contas dos clientes a partir do Active Directory local para o Microsoft Entra ID", false],
+            ["Microsoft Entra External ID para consumidores (Azure AD B2C)", true],
+            ["Privileged Identity Management (PIM)", false],
+        ],
+    },
+    {
+        statement: "Ao planejar a autenticação multifator, um analista precisa combinar fatores de categorias diferentes para aumentar a segurança. Quais são as três categorias de fatores de autenticação?",
+        explanation: "Os fatores se dividem em algo que você sabe (senha ou PIN), algo que você tem (telefone ou token) e algo que você é (biometria); a MFA combina categorias diferentes.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Algo que você sabe, algo que você vê e algo que você assina", false],
+            ["Usuário, senha e código de verificação", false],
+            ["Uma senha memorizada, um token físico registrado previamente e uma pergunta de segurança respondida no primeiro acesso", false],
+            ["Algo que você sabe, algo que você tem e algo que você é", true],
+        ],
+    },
+    {
+        statement: "Ao assinar o Microsoft 365, uma organização recebe uma instância dedicada e isolada do Microsoft Entra ID, onde ficam seus usuários, grupos e aplicativos. Como se chama essa instância?",
+        explanation: "Cada organização possui seu próprio locatário (tenant) do Microsoft Entra ID, uma instância dedicada e isolada que hospeda suas identidades e o acesso aos recursos.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Assinatura (subscription)", false],
+            ["Locatário (tenant)", true],
+            ["Unidade organizacional (OU)", false],
+            ["Floresta do Active Directory Domain Services sincronizada com a nuvem pelo Microsoft Entra Connect", false],
+        ],
+    },
+    {
+        statement: "Uma pequena empresa sem licenças avançadas quer ativar rapidamente proteções básicas de identidade, como exigir MFA de todos os usuários e bloquear a autenticação legada, sem criar políticas individuais. Qual recurso do Microsoft Entra oferece esse conjunto pré-configurado?",
+        explanation: "Os padrões de segurança aplicam um conjunto básico e gratuito de proteções, como exigir MFA de todos e bloquear a autenticação legada, sem precisar criar políticas individuais.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Políticas de Acesso Condicional personalizadas, criadas uma a uma para cada grupo de usuários e aplicativo da organização", false],
+            ["Privileged Identity Management (PIM)", false],
+            ["Redefinição de senha self-service (SSPR)", false],
+            ["Padrões de segurança (security defaults)", true],
+        ],
+    },
+    {
+        statement: "Uma empresa quer que parceiros externos solicitem, por autoatendimento, um pacote de acessos (grupos, aplicativos e sites) com aprovação e prazo de expiração automáticos. Qual recurso do Microsoft Entra ID Governance atende a isso?",
+        explanation: "O gerenciamento de direitos usa pacotes de acesso para agrupar recursos e concedê-los com solicitação, aprovação e expiração automáticas, inclusive para usuários externos.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Gerenciamento de direitos (entitlement management), com pacotes de acesso", true],
+            ["Acesso Condicional", false],
+            ["Redefinição de senha self-service, com registro dos métodos de autenticação e notificação aos administradores a cada uso", false],
+            ["Proteção de senha (password protection)", false],
+        ],
+    },
+    {
+        statement: "Seguindo o privilégio mínimo, uma organização quer restringir ao menor número possível de pessoas a função que concede controle total sobre todos os recursos do Microsoft Entra ID e do Microsoft 365. Qual função é essa?",
+        explanation: "O Administrador global tem controle total sobre o locatário e deve ser dado a pouquíssimas pessoas; para o dia a dia, a recomendação é usar funções mais específicas.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["Leitor global (Global Reader)", false],
+            ["Administrador de suporte técnico (Helpdesk Administrator)", false],
+            ["Administrador global (Global Administrator)", true],
+            ["Administrador de autenticação, que redefine métodos de autenticação e senhas apenas de usuários sem privilégios administrativos", false],
+        ],
+    },
+    {
+        statement: "Uma organização com Active Directory local quer sincronizar contas e hashes de senha para o Microsoft Entra ID, permitindo login com as mesmas credenciais nos serviços de nuvem. Qual componente realiza essa sincronização?",
+        explanation: "O Microsoft Entra Connect sincroniza as identidades do Active Directory local com o Microsoft Entra ID, viabilizando a identidade híbrida e o uso das mesmas credenciais na nuvem.",
+        topic: "Conceitos de SCI e Microsoft Entra",
+        options: [
+            ["O Microsoft Defender for Identity, instalado nos controladores de domínio para monitorar e replicar as contas para a nuvem", false],
+            ["O Microsoft Entra Connect", true],
+            ["O Privileged Identity Management (PIM)", false],
+            ["O Acesso Condicional", false],
+        ],
+    },
+    {
+        statement: "Uma analista de SOC quer, de forma proativa, pesquisar sinais de ataque escrevendo consultas personalizadas sobre até 30 dias de dados brutos de e-mails, dispositivos e identidades no portal do Defender. Qual recurso ela deve usar?",
+        explanation: "A caça avançada permite consultar proativamente grandes volumes de dados brutos com a linguagem KQL, enquanto a análise de ameaças traz relatórios curados sobre campanhas conhecidas.",
+        topic: "Defender XDR e proteção contra ameaças",
+        options: [
+            ["Caça avançada (advanced hunting), com consultas na linguagem KQL", true],
+            ["Análise de ameaças (threat analytics), com relatórios prontos sobre campanhas conhecidas", false],
+            ["Secure score do ambiente", false],
+            ["A fila de incidentes, que apenas lista os alertas já correlacionados automaticamente pelo Defender para a triagem manual", false],
+        ],
+    },
+    {
+        statement: "Para reduzir a carga do time de segurança, uma empresa quer que o Defender XDR investigue automaticamente certos alertas, determine se há ameaça real e execute correções, como remover arquivos maliciosos, sem intervenção manual. Qual capacidade oferece isso?",
+        explanation: "A investigação e resposta automatizadas (AIR) examinam alertas sozinhas, decidem se há ameaça real e aplicam correções, reduzindo o trabalho manual do SOC.",
+        topic: "Defender XDR e proteção contra ameaças",
+        options: [
+            ["A caça avançada, em que analistas escrevem manualmente consultas KQL para localizar e depois remediar cada ameaça encontrada", false],
+            ["A análise de ameaças (threat analytics)", false],
+            ["A investigação e resposta automatizadas (AIR)", true],
+            ["O gerenciamento de vulnerabilidades", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer bloquear preventivamente comportamentos de risco nos dispositivos, como documentos do Office que iniciam processos filhos ou execução de conteúdo vindo de e-mail. Qual capacidade do Microsoft Defender for Endpoint atende a isso?",
+        explanation: "As regras de redução da superfície de ataque (ASR) do Defender for Endpoint bloqueiam preventivamente comportamentos explorados por malware, como o Office iniciando processos filhos.",
+        topic: "Defender XDR e proteção contra ameaças",
+        options: [
+            ["Isolamento do dispositivo da rede", false],
+            ["O Defender for Cloud Apps, que atua como CASB para descobrir e controlar o uso de aplicativos SaaS não aprovados pela empresa", false],
+            ["Análise de ameaças (threat analytics)", false],
+            ["Regras de redução da superfície de ataque (ASR)", true],
+        ],
+    },
+    {
+        statement: "No Microsoft Defender for Office 365, um administrador quer entender a diferença entre os recursos Anexos Seguros (Safe Attachments) e Links Seguros (Safe Links). Qual afirmação os distingue corretamente?",
+        explanation: "Anexos Seguros abre anexos em uma sandbox antes da entrega; Links Seguros reescreve e verifica as URLs no momento do clique para proteger contra links maliciosos.",
+        topic: "Defender XDR e proteção contra ameaças",
+        options: [
+            ["Ambos apenas colocam em quarentena qualquer e-mail vindo de remetentes externos à organização", false],
+            ["Anexos Seguros abre os anexos em uma sandbox para detonar ameaças; Links Seguros verifica as URLs no momento do clique", true],
+            ["Anexos Seguros verifica URLs no clique; Links Seguros procura contas comprometidas no Active Directory local", false],
+            ["Anexos Seguros e Links Seguros bloqueiam a movimentação lateral entre controladores de domínio usando técnicas como pass-the-hash e pass-the-ticket no ambiente local", false],
+        ],
+    },
+    {
+        statement: "Dois produtos têm nomes parecidos e são confundidos: um é um CASB que dá visibilidade e controle sobre aplicativos SaaS; o outro protege a postura e as cargas de trabalho em nuvem no Azure, AWS e Google Cloud. Qual associação está correta?",
+        explanation: "O Defender for Cloud Apps é o CASB que dá visibilidade e controle sobre apps SaaS; o Defender for Cloud avalia a postura e protege cargas de trabalho em Azure, AWS e GCP.",
+        topic: "Defender XDR e proteção contra ameaças",
+        options: [
+            ["Defender for Cloud Apps é o CASB; Defender for Cloud cuida da postura e das cargas de trabalho em nuvem", true],
+            ["Defender for Cloud é o CASB para aplicativos SaaS, e Defender for Cloud Apps protege as máquinas virtuais e os bancos de dados hospedados em Azure, AWS e Google Cloud", false],
+            ["Os dois são o mesmo produto, apenas com nomes diferentes conforme o portal usado", false],
+            ["Defender for Cloud Apps protege caixas de e-mail contra phishing; Defender for Cloud verifica anexos maliciosos", false],
+        ],
+    },
+    {
+        statement: "Para reduzir o sucesso de ataques de phishing, uma empresa quer enviar aos próprios funcionários e-mails simulados de phishing e, com base em quem cair, direcioná-los a treinamentos. Qual recurso do Microsoft Defender for Office 365 oferece isso?",
+        explanation: "O treinamento de simulação de ataque executa campanhas de phishing simuladas para medir a vulnerabilidade dos usuários e direcionar treinamentos a quem precisa.",
+        topic: "Defender XDR e proteção contra ameaças",
+        options: [
+            ["Anexos Seguros (Safe Attachments)", false],
+            ["A investigação e resposta automatizadas, que isolam o dispositivo do funcionário assim que ele clica em um link de phishing real", false],
+            ["O gerenciamento de vulnerabilidades e configurações", false],
+            ["O treinamento de simulação de ataque (attack simulation training)", true],
+        ],
+    },
+    {
+        statement: "Uma instituição financeira precisa demonstrar aderência a padrões como PCI DSS e ISO 27001 e visualizar, para os recursos no Azure, quais controles já estão atendidos e quais ainda exigem ação. Qual recurso atende a essa necessidade?",
+        explanation: "O painel de conformidade regulatória do Defender for Cloud mapeia a configuração dos recursos para padrões como PCI DSS e ISO 27001, mostrando os controles atendidos e as ações pendentes. O Secure Score mede a postura geral, não a aderência a uma norma específica.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["O Microsoft Sentinel, coletando e correlacionando logs de segurança de toda a organização para investigação de incidentes.", false],
+            ["O painel de conformidade regulatória do Microsoft Defender for Cloud.", true],
+            ["O Secure Score do Defender for Cloud, que resume a postura geral em uma única pontuação percentual.", false],
+            ["O Compliance Manager do Microsoft Purview, restrito a serviços do Microsoft 365 e sem visibilidade sobre os recursos do Azure.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe acabou de habilitar o Microsoft Sentinel e precisa começar a ingerir sinais de fontes como Microsoft Entra ID, Office 365, Azure Activity e firewalls de terceiros. Qual componente do Sentinel é usado para trazer esses dados para análise?",
+        explanation: "Os conectores de dados integram o Sentinel a fontes internas e externas, ingerindo logs e eventos para análise. Playbooks respondem a incidentes, workbooks visualizam dados e regras de análise geram alertas.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["Os conectores de dados (data connectors).", true],
+            ["Os playbooks, que executam ações automatizadas de resposta usando o Azure Logic Apps quando um incidente é disparado.", false],
+            ["As pastas de trabalho (workbooks), que criam painéis visuais e relatórios interativos sobre os dados já ingeridos.", false],
+            ["As regras de análise, que correlacionam eventos para gerar alertas e incidentes de segurança.", false],
+        ],
+    },
+    {
+        statement: "Ao apresentar o Microsoft Sentinel, um arquiteto quer diferenciar suas capacidades de SIEM e de SOAR. Qual afirmação faz essa distinção corretamente?",
+        explanation: "O SIEM (Security Information and Event Management) reúne e correlaciona sinais para detectar ameaças; o SOAR (Security Orchestration, Automation and Response) automatiza a resposta. O Sentinel combina as duas capacidades.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["O SIEM automatiza e orquestra as ações de resposta com playbooks, enquanto o SOAR apenas armazena logs para consulta futura.", false],
+            ["SIEM e SOAR são termos equivalentes; ambos se referem exclusivamente à coleta de logs de máquinas virtuais no Azure.", false],
+            ["O SIEM coleta e correlaciona dados para detectar ameaças, e o SOAR automatiza e orquestra a resposta a incidentes.", true],
+            ["O SIEM protege apenas cargas de trabalho locais, ao passo que o SOAR se limita a recursos hospedados exclusivamente na nuvem pública.", false],
+        ],
+    },
+    {
+        statement: "Depois de conectar suas fontes de dados ao Microsoft Sentinel, uma equipe de SOC quer que o sistema correlacione automaticamente os eventos ingeridos e gere incidentes sempre que identificar padrões que indiquem uma ameaça. O que a equipe deve configurar?",
+        explanation: "As regras de análise avaliam e correlacionam os dados ingeridos e geram alertas e incidentes quando detectam atividades suspeitas. Conectores apenas coletam dados e workbooks apenas os visualizam.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["Conectores de dados adicionais, que apenas trazem mais logs para o workspace, sem avaliar ou correlacionar o conteúdo.", false],
+            ["Pastas de trabalho (workbooks), voltadas à visualização e à criação de painéis, sem capacidade de disparar incidentes.", false],
+            ["Grupos de segurança de rede (NSG), que filtram o tráfego de entrada e saída no nível da sub-rede.", false],
+            ["Regras de análise (analytics rules).", true],
+        ],
+    },
+    {
+        statement: "Uma empresa quer centralizar suas chaves de criptografia e certificados em um serviço gerenciado do Azure que permita proteger chaves por hardware (HSM), controlar o acesso por meio do Microsoft Entra ID e registrar cada operação para auditoria. Qual serviço atende a esses requisitos?",
+        explanation: "O Azure Key Vault armazena e gerencia de forma centralizada segredos, chaves e certificados, com suporte a proteção por HSM, controle de acesso via Entra ID e registro de operações para auditoria.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["O Azure Bastion, que fornece conectividade RDP e SSH às máquinas virtuais pelo portal, sem expor portas à internet.", false],
+            ["O Azure Key Vault.", true],
+            ["Um grupo de segurança de rede (NSG), aplicado à sub-rede para permitir ou negar o tráfego que chega aos recursos.", false],
+            ["O Microsoft Defender for Cloud, que avalia a postura de segurança e emite recomendações para reduzir configurações incorretas.", false],
+        ],
+    },
+    {
+        statement: "Uma arquiteta precisa explicar a diferença entre o Web Application Firewall (WAF) e o Azure Firewall. Qual afirmação descreve corretamente essa diferença?",
+        explanation: "O WAF (em Application Gateway ou Front Door) atua na camada de aplicação, protegendo aplicações web contra explorações como SQL injection e XSS. O Azure Firewall é um firewall de rede gerenciado que controla o tráfego das redes virtuais.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["Ambos operam apenas na camada de rede (camadas 3 e 4) e são intercambiáveis para qualquer cenário de filtragem.", false],
+            ["O WAF filtra o tráfego geral de entrada e saída entre redes virtuais usando apenas regras de porta e protocolo, enquanto o Azure Firewall se dedica a inspecionar requisições HTTP em busca de injeção de SQL e scripts maliciosos.", false],
+            ["O WAF protege aplicações web contra ataques da camada de aplicação, como SQL injection e XSS; o Azure Firewall filtra o tráfego de rede das redes virtuais.", true],
+            ["O Azure Firewall é um recurso gratuito associado a interfaces de rede, ao passo que o WAF é um appliance físico instalado no datacenter do cliente.", false],
+        ],
+    },
+    {
+        statement: "Uma organização quer controlar, de forma centralizada, para quais nomes de domínio (FQDN) as máquinas virtuais de suas redes virtuais podem abrir conexões de saída, permitindo apenas destinos aprovados. Qual serviço permite criar essas regras de aplicação?",
+        explanation: "O Azure Firewall permite regras de aplicação que liberam ou bloqueiam o tráfego de saída com base em FQDNs, controlando de forma centralizada os destinos permitidos. O DDoS Protection e o Bastion tratam de outros problemas.",
+        topic: "Segurança de infraestrutura, Defender for Cloud e Sentinel",
+        options: [
+            ["O Azure Firewall, por meio de regras de aplicação baseadas em FQDN.", true],
+            ["O Azure DDoS Protection, que monitora o tráfego para mitigar ataques volumétricos de negação de serviço contra os recursos publicados.", false],
+            ["O Azure Key Vault, que armazena de forma segura as credenciais usadas pelas máquinas virtuais para autenticar nesses domínios.", false],
+            ["O Azure Bastion, que intermedia o acesso administrativo às máquinas virtuais sem a necessidade de IP público.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer identificar automaticamente documentos por categoria de conteúdo, como contratos, currículos e código-fonte, mesmo quando não há um padrão fixo como número de cartão ou CPF. Que recurso do Microsoft Purview reconhece esse tipo de conteúdo com base em aprendizado de máquina?",
+        explanation: "Os classificadores treináveis usam aprendizado de máquina para reconhecer categorias de conteúdo por exemplos, e não por padrões fixos. Tipos de informação sensível, ao contrário, detectam dados com formato conhecido, como números de cartão.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["Os tipos de informação sensível, que localizam dados por padrões predefinidos, como expressões regulares e somas de verificação.", false],
+            ["Os rótulos de retenção, que definem por quanto tempo o conteúdo é mantido antes de ser excluído automaticamente.", false],
+            ["A prevenção contra perda de dados (DLP), que bloqueia o compartilhamento externo de informações sensíveis por e-mail e outros canais.", false],
+            ["Os classificadores treináveis (trainable classifiers).", true],
+        ],
+    },
+    {
+        statement: "Além de bloquear e-mails com dados sensíveis, uma empresa quer impedir que usuários copiem arquivos confidenciais para pen drives USB ou os enviem a aplicativos de nuvem não aprovados diretamente nos computadores corporativos. Qual capacidade do Microsoft Purview atende a isso?",
+        explanation: "A DLP de ponto de extremidade estende as políticas de prevenção contra perda de dados aos dispositivos, controlando ações como cópia para USB, impressão e upload para serviços não aprovados.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["O gerenciamento de risco interno, que gera alertas sobre comportamentos potencialmente arriscados de usuários, mas não impõe controles de bloqueio nos dispositivos.", false],
+            ["A prevenção contra perda de dados de ponto de extremidade (Endpoint DLP).", true],
+            ["Os rótulos de confidencialidade, que aplicam criptografia e marca d'água a documentos e e-mails individuais conforme a classificação.", false],
+            ["O eDiscovery, usado para localizar e preservar conteúdo relevante a investigações e processos judiciais.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer detectar mensagens internas inadequadas, como assédio, linguagem ofensiva ou compartilhamento de informações confidenciais, trocadas por e-mail e no Microsoft Teams, para que as áreas de RH e conformidade possam revisá-las. Qual solução do Microsoft Purview é indicada?",
+        explanation: "A conformidade de comunicações analisa mensagens em canais como e-mail e Teams para identificar violações de políticas, como assédio ou vazamento de dados, encaminhando-as para revisão. A DLP foca em impedir a saída de dados sensíveis.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["A conformidade de comunicações (Communication Compliance).", true],
+            ["A prevenção contra perda de dados (DLP), voltada a impedir o vazamento de dados sensíveis por canais como e-mail, e não a avaliar o teor das conversas.", false],
+            ["O gerenciamento do ciclo de vida de dados, que define políticas de retenção e exclusão de conteúdo ao longo do tempo.", false],
+            ["As barreiras de informação, que impedem a comunicação entre determinados grupos de usuários.", false],
+        ],
+    },
+    {
+        statement: "Ao planejar a retenção no Microsoft Purview, uma equipe precisa entender a diferença entre uma política de retenção e um rótulo de retenção. Qual afirmação está correta?",
+        explanation: "Políticas de retenção atuam sobre locais inteiros, como Exchange, SharePoint e Teams; rótulos de retenção são atribuídos a itens individuais e podem ser aplicados manual ou automaticamente. Ambos podem reter e depois excluir o conteúdo.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["Rótulos de retenção criptografam o conteúdo, enquanto políticas de retenção aplicam marca d'água aos documentos afetados.", false],
+            ["Ambos só podem ser aplicados manualmente pelo usuário final e nunca de forma automática por regras da organização.", false],
+            ["A política de retenção é aplicada de forma ampla a locais, como caixas de correio e sites; o rótulo de retenção é aplicado a itens específicos, como um documento ou e-mail.", true],
+            ["A política de retenção serve apenas para excluir conteúdo imediatamente, ao passo que o rótulo de retenção serve unicamente para reter, jamais permitindo exclusão automática ao fim do período.", false],
+        ],
+    },
+    {
+        statement: "Uma corretora precisa impedir que os funcionários da mesa de operações troquem mensagens no Teams com os analistas de pesquisa, evitando conflitos de interesse exigidos pela regulação. Qual solução do Microsoft Purview permite restringir essa comunicação entre grupos?",
+        explanation: "As barreiras de informação restringem ou bloqueiam a comunicação e a colaboração entre grupos específicos de usuários, ajudando a evitar conflitos de interesse. A DLP foca no vazamento de dados, não na separação entre grupos internos.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["A prevenção contra perda de dados (DLP), que inspeciona o conteúdo das mensagens para impedir o vazamento de dados sensíveis para fora da organização.", false],
+            ["As barreiras de informação (information barriers).", true],
+            ["Os rótulos de confidencialidade, que classificam e protegem documentos e e-mails de acordo com o nível de sensibilidade do conteúdo.", false],
+            ["A auditoria, que registra as atividades dos usuários para investigação posterior, sem bloquear a comunicação em tempo real.", false],
+        ],
+    },
+    {
+        statement: "Para que uma política de DLP reconheça que um documento contém, por exemplo, um número de cartão de crédito válido, o Microsoft Purview precisa de um componente que detecte esse dado por padrões como formato, palavras-chave próximas e soma de verificação. Que componente é esse?",
+        explanation: "Os tipos de informação sensível identificam dados com formato reconhecível, como cartões de crédito, CPF ou passaportes, usando padrões, palavras-chave e somas de verificação, e servem de base para DLP e rotulagem automática. Classificadores treináveis, por outro lado, reconhecem categorias por aprendizado de máquina.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["Um rótulo de confidencialidade, que aplica criptografia e restrições de acesso ao documento depois que ele é classificado pelo usuário ou automaticamente.", false],
+            ["Um classificador treinável, que aprende a reconhecer categorias de conteúdo a partir de exemplos, e não a partir de um formato conhecido.", false],
+            ["Um rótulo de retenção, que determina o tempo de guarda do documento antes da exclusão.", false],
+            ["Um tipo de informação sensível (sensitive information type).", true],
+        ],
+    },
+    {
+        statement: "Uma organização quer agrupar, em uma única solução do Microsoft Purview, as políticas e os rótulos que controlam por quanto tempo o conteúdo é mantido e quando ele deve ser excluído automaticamente. Qual solução cumpre esse papel?",
+        explanation: "O gerenciamento do ciclo de vida de dados reúne as políticas e os rótulos de retenção que definem por quanto tempo manter o conteúdo e quando excluí-lo. eDiscovery e DLP resolvem problemas distintos.",
+        topic: "Conformidade com o Microsoft Purview",
+        options: [
+            ["O gerenciamento do ciclo de vida de dados (Data Lifecycle Management).", true],
+            ["O eDiscovery, que identifica, preserva e coleta conteúdo relevante para investigações internas e processos judiciais em andamento.", false],
+            ["A prevenção contra perda de dados (DLP), que detecta e impede o compartilhamento indevido de informações sensíveis.", false],
+            ["O gerenciamento de risco interno, que analisa sinais de atividade para identificar comportamentos potencialmente arriscados de usuários.", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -2256,13 +2576,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log("Simulado já tem " + n + " questões, nada a fazer.");
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -2281,7 +2611,7 @@ async function seed() {
             })),
         );
     }
-    console.log("Seed concluído: " + QUESTOES.length + " questões inseridas.");
+    console.log("Seed: " + inseridas + " questões novas inseridas (" + QUESTOES.length + " no banco).");
 }
 
 seed()

@@ -1408,6 +1408,216 @@ const QUESTOES: Questao[] = [
             ["O Power BI Desktop só funciona na nuvem e não pode ser instalado localmente", false],
         ],
     },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma empresa armazena mensagens de e-mail em que cada uma tem campos padronizados de cabeçalho, como remetente, data e assunto, além de um corpo de texto livre e anexos variados. Como esses dados são melhor classificados?",
+        explanation: "E-mails são um exemplo clássico de dados semiestruturados: os cabeçalhos seguem uma estrutura previsível, enquanto o corpo e os anexos são de formato livre. Eles não se encaixam em linhas e colunas rígidas nem são totalmente sem estrutura.",
+        topic: "Conceitos de dados",
+        options: [
+            ["Dados estruturados, pois possuem cabeçalhos padronizados", false],
+            ["Dados não estruturados, pois contêm anexos de formato livre", false],
+            ["Dados semiestruturados, pois combinam campos organizados com conteúdo de formato livre", true],
+            ["Dados relacionais, pois podem ser organizados em tabelas com linhas e colunas e consultados diretamente com SQL", false],
+        ],
+    },
+    {
+        statement: "Uma equipe classifica o banco de dados que atende ao sistema de pedidos de uma loja virtual como uma carga OLTP. Qual característica é típica desse tipo de carga de trabalho?",
+        explanation: "Sistemas OLTP lidam com muitas transações curtas e frequentes sobre dados operacionais atuais, priorizando escrita e leitura rápidas. Consultas analíticas complexas sobre grandes volumes históricos são características de cargas OLAP.",
+        topic: "Conceitos de dados",
+        options: [
+            ["Executa muitas transações curtas de inserção, atualização e leitura sobre dados atuais", true],
+            ["Armazena dados históricos organizados em um esquema estrela para relatórios", false],
+            ["É otimizado para poucas consultas complexas que agregam grandes volumes de dados históricos e alimentam relatórios gerenciais", false],
+            ["Prioriza a leitura de grandes lotes de dados em vez de escritas frequentes", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de dados compara os formatos CSV e Parquet para armazenar tabelas em um data lake analítico. Qual afirmação sobre o Parquet está correta?",
+        explanation: "O Parquet é um formato binário colunar: por armazenar os valores agrupados por coluna, comprime melhor e permite que consultas leiam apenas as colunas necessárias. O CSV, em contraste, é um formato de texto orientado a linhas.",
+        topic: "Conceitos de dados",
+        options: [
+            ["É um formato de texto legível por humanos, ideal para abrir, editar e inspecionar manualmente em qualquer editor de texto simples", false],
+            ["Guarda uma linha por registro com campos separados por vírgula", false],
+            ["Não aplica nenhuma compressão para manter a máxima simplicidade de leitura", false],
+            ["Armazena os dados organizados por coluna, o que melhora a compressão e permite ler apenas as colunas necessárias", true],
+        ],
+    },
+    {
+        statement: "Uma administradora quer disponibilizar aos analistas uma consulta sobre a tabela de funcionários que exiba apenas nome e cargo, ocultando o salário, sem duplicar fisicamente os dados. Qual objeto relacional oferece essa representação virtual e restrita?",
+        explanation: "Uma exibição (view) é uma consulta salva que se comporta como uma tabela virtual, podendo expor apenas um subconjunto de colunas sem armazenar os dados novamente. É útil para simplificar consultas e restringir o acesso a colunas sensíveis.",
+        topic: "Dados relacionais",
+        options: [
+            ["Uma exibição (view)", true],
+            ["Um índice", false],
+            ["Uma chave estrangeira", false],
+            ["Uma stored procedure que copia os dados filtrados para uma nova tabela a cada consulta", false],
+        ],
+    },
+    {
+        statement: "Em um banco com altíssimo volume de inserções e atualizações, um desenvolvedor propõe criar índices em quase todas as colunas para acelerar qualquer consulta. Qual é a principal desvantagem dessa abordagem?",
+        explanation: "Índices aceleram leituras, mas cada índice consome armazenamento e precisa ser atualizado sempre que os dados mudam. Em cargas com muitas escritas, um excesso de índices pode degradar o desempenho de inserções e atualizações.",
+        topic: "Dados relacionais",
+        options: [
+            ["Índices só podem ser criados em colunas do tipo numérico", false],
+            ["Cada índice ocupa espaço e precisa ser mantido a cada escrita, o que pode tornar inserções e atualizações mais lentas", true],
+            ["Índices impedem que a tabela utilize chaves estrangeiras para garantir a integridade referencial entre as tabelas relacionadas do modelo de dados", false],
+            ["Índices removem automaticamente as linhas duplicadas da tabela", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer que os dados armazenados no Azure Blob Storage sejam copiados automaticamente para uma segunda região geográfica, protegendo-os contra a indisponibilidade de uma região inteira do Azure. Qual opção de redundância atende a esse requisito?",
+        explanation: "A redundância geográfica (GRS) replica os dados para uma região secundária distante, oferecendo proteção contra falhas em nível regional. A redundância local (LRS) mantém as cópias apenas dentro de um único datacenter.",
+        topic: "Armazenamento não relacional",
+        options: [
+            ["Armazenamento com redundância local (LRS)", false],
+            ["Camada de acesso Cool", false],
+            ["Armazenamento com redundância geográfica (GRS)", true],
+            ["Uma conta de armazenamento com desempenho Premium e replicação apenas dentro do mesmo datacenter", false],
+        ],
+    },
+    {
+        statement: "Uma aplicação parceira externa precisa de acesso temporário e limitado a um único contêiner do Blob Storage, e a equipe não quer compartilhar a chave da conta de armazenamento. Qual recurso concede esse acesso delegado, com escopo e prazo definidos?",
+        explanation: "Uma assinatura de acesso compartilhado (SAS) concede acesso delegado, limitado por escopo, permissões e validade, sem expor a chave da conta. Compartilhar a chave da conta daria acesso total e irrestrito a todo o armazenamento.",
+        topic: "Armazenamento não relacional",
+        options: [
+            ["A chave de acesso da conta de armazenamento", false],
+            ["A camada de acesso Hot", false],
+            ["Uma regra de redundância que replica o contêiner para outra região a fim de liberar o acesso externo", false],
+            ["Uma assinatura de acesso compartilhado (SAS)", true],
+        ],
+    },
+    {
+        statement: "Usando o Azure Synapse Analytics, uma equipe quer consultar arquivos que já estão em um data lake sob demanda, pagando apenas pelos dados processados em cada consulta, sem precisar provisionar e manter um cluster dedicado. Qual recurso do Synapse atende a isso?",
+        explanation: "O pool de SQL sem servidor do Synapse permite consultar dados diretamente no data lake sob demanda, cobrando pelo volume processado, sem infraestrutura provisionada. O pool dedicado, por outro lado, reserva recursos de computação de forma contínua.",
+        topic: "Análise e data warehouse",
+        options: [
+            ["Pool de SQL dedicado", false],
+            ["Pool de SQL sem servidor (serverless)", true],
+            ["Pool do Apache Spark", false],
+            ["Um pipeline de integração que copia previamente todos os arquivos para um banco relacional antes da consulta", false],
+        ],
+    },
+    {
+        statement: "Ao projetar um data warehouse com esquema estrela para uma rede varejista, um analista precisa decidir o conteúdo das tabelas de dimensão. O que uma tabela de dimensão normalmente armazena?",
+        explanation: "As tabelas de dimensão guardam atributos descritivos (como produto, cliente, tempo e local) que dão contexto para filtrar e agrupar. As medidas numéricas do negócio ficam na tabela de fatos central.",
+        topic: "Análise e data warehouse",
+        options: [
+            ["As medidas numéricas e os valores agregados das transações do negócio", false],
+            ["Apenas os índices e as estatísticas de desempenho usados pela tabela de fatos central", false],
+            ["Atributos descritivos usados para filtrar e agrupar, como produto, cliente, tempo e local", true],
+            ["As chaves estrangeiras e os totais consolidados de cada transação processada ao longo do período", false],
+        ],
+    },
+    {
+        statement: "Em uma arquitetura de lakehouse, os dados costumam ser organizados em camadas sucessivas: brutos na primeira, limpos e enriquecidos na intermediária e agregados e prontos para consumo na final. Como essa organização em camadas é comumente chamada?",
+        explanation: "A arquitetura medalhão organiza o lakehouse em camadas bronze (dados brutos), prata (limpos e integrados) e ouro (agregados para consumo). Cada camada refina progressivamente os dados para análise.",
+        topic: "Análise e data warehouse",
+        options: [
+            ["Esquema estrela", false],
+            ["Terceira forma normal", false],
+            ["Modelo entidade-relacionamento aplicado sobre os arquivos brutos do data lake para reforçar a normalização", false],
+            ["Arquitetura medalhão, com camadas bronze, prata e ouro", true],
+        ],
+    },
+    {
+        statement: "Uma empresa mantém uma aplicação web em PHP que usa um banco de dados MySQL e quer movê-la para um serviço totalmente gerenciado no Azure, sem administrar servidores nem o sistema operacional. Qual serviço deve escolher?",
+        explanation: "O Azure Database for MySQL é o serviço PaaS totalmente gerenciado para bancos MySQL, ideal para migrar aplicações que já usam esse mecanismo. O Azure SQL Database é baseado no mecanismo do SQL Server, não no MySQL.",
+        topic: "Serviços relacionais no Azure",
+        options: [
+            ["Azure Database for MySQL", true],
+            ["Azure SQL Database", false],
+            ["Azure Database for PostgreSQL", false],
+            ["SQL Server instalado e configurado manualmente em uma máquina virtual do Azure", false],
+        ],
+    },
+    {
+        statement: "Para garantir continuidade de negócios, uma empresa quer manter uma cópia legível do seu Azure SQL Database em outra região do Azure, pronta para assumir a operação caso a região principal fique indisponível. Qual recurso atende a esse objetivo?",
+        explanation: "A replicação geográfica cria réplicas legíveis do banco em outra região, permitindo failover em caso de indisponibilidade regional. O pool elástico serve para compartilhar recursos entre vários bancos, não para recuperação de desastres.",
+        topic: "Serviços relacionais no Azure",
+        options: [
+            ["Pool elástico", false],
+            ["Replicação geográfica (geo-replicação)", true],
+            ["Camada de computação sem servidor", false],
+            ["Uma tarefa agendada que exporta o banco para um arquivo e o copia manualmente para outra região toda noite", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de arquitetura compara as opções de banco relacional no Azure segundo o nível de controle e de responsabilidade administrativa que cada uma exige. Qual sequência as ordena corretamente, do MAIOR controle para o MENOR?",
+        explanation: "Rodar SQL Server em uma VM (IaaS) dá o maior controle, mas exige gerenciar o sistema operacional e o mecanismo. O SQL Managed Instance fica no meio-termo, e o Azure SQL Database (PaaS) oferece o menor esforço administrativo.",
+        topic: "Serviços relacionais no Azure",
+        options: [
+            ["Azure SQL Database, depois SQL Managed Instance, depois SQL Server em uma máquina virtual", false],
+            ["SQL Managed Instance, depois Azure SQL Database, depois SQL Server em uma máquina virtual", false],
+            ["SQL Server em uma máquina virtual, depois SQL Managed Instance, depois Azure SQL Database", true],
+            ["Azure SQL Database, depois SQL Server em uma máquina virtual, depois SQL Managed Instance", false],
+        ],
+    },
+    {
+        statement: "Uma solução industrial precisa de comunicação bidirecional com milhões de dispositivos IoT: além de receber a telemetria enviada por eles, precisa enviar comandos e atualizações de configuração de volta a cada dispositivo. Qual serviço do Azure é o mais adequado?",
+        explanation: "O Azure IoT Hub oferece comunicação bidirecional segura com dispositivos, incluindo o envio de comandos e configurações de volta a eles. O Event Hubs é voltado à ingestão de eventos em alta escala, mas não à comunicação de volta com cada dispositivo.",
+        topic: "Tempo real e streaming",
+        options: [
+            ["Azure Event Hubs", false],
+            ["Azure Stream Analytics", false],
+            ["Azure Blob Storage configurado com gatilhos para responder a cada dispositivo individualmente", false],
+            ["Azure IoT Hub", true],
+        ],
+    },
+    {
+        statement: "Um trabalho do Azure Stream Analytics calcula métricas continuamente a partir de um fluxo de eventos e precisa exibir esses resultados em um painel que se atualiza em tempo quase real. Qual serviço é comumente configurado como saída para essa visualização?",
+        explanation: "O Power BI pode ser definido como saída de um trabalho do Stream Analytics, recebendo os resultados processados para alimentar painéis em tempo quase real. Event Hubs e IoT Hub costumam atuar como entradas de streaming, não como destino de visualização.",
+        topic: "Tempo real e streaming",
+        options: [
+            ["Power BI", true],
+            ["Azure Event Hubs", false],
+            ["Azure IoT Hub", false],
+            ["Azure Data Factory executando um pipeline de cópia agendado para atualizar os dados periodicamente", false],
+        ],
+    },
+    {
+        statement: "Ao revisar comandos SQL, uma DBA quer agrupar os que consultam e alteram os dados armazenados na categoria DML. Qual conjunto pertence à Linguagem de Manipulação de Dados (DML)?",
+        explanation: "A DML reúne os comandos que consultam e modificam dados: SELECT, INSERT, UPDATE e DELETE. CREATE, ALTER e DROP são DDL (estrutura) e GRANT e REVOKE são DCL (permissões).",
+        topic: "SQL e objetos de banco",
+        options: [
+            ["CREATE, ALTER e DROP", false],
+            ["SELECT, INSERT, UPDATE e DELETE", true],
+            ["GRANT, REVOKE e DENY", false],
+            ["COMMIT, ROLLBACK e SAVEPOINT usados para controlar transações", false],
+        ],
+    },
+    {
+        statement: "Um administrador precisa remover completamente uma tabela do banco de dados, eliminando tanto os dados quanto a própria estrutura e definição do objeto. Qual comando SQL ele deve usar?",
+        explanation: "O comando DROP TABLE remove a tabela por inteiro, incluindo estrutura e dados. DELETE e TRUNCATE apagam apenas as linhas, mas mantêm a definição da tabela.",
+        topic: "SQL e objetos de banco",
+        options: [
+            ["DELETE", false],
+            ["TRUNCATE TABLE", false],
+            ["DROP TABLE", true],
+            ["ALTER TABLE, ajustando a definição de cada coluna até esvaziar completamente o objeto", false],
+        ],
+    },
+    {
+        statement: "Um gerente quer visualizar qual é a participação percentual de cada categoria de produto no faturamento total, mostrando como cada parte contribui para um todo. Qual visualização do Power BI é a mais indicada?",
+        explanation: "Gráficos de pizza ou de rosca mostram a proporção de cada parte em relação ao todo, sendo adequados para participações percentuais entre poucas categorias. Gráficos de linhas são melhores para tendências ao longo do tempo.",
+        topic: "Power BI e visualização",
+        options: [
+            ["Gráfico de linhas", false],
+            ["Gráfico de dispersão", false],
+            ["Um mapa coroplético que colore cada região conforme o valor total de vendas registrado", false],
+            ["Gráfico de pizza (ou de rosca)", true],
+        ],
+    },
+    {
+        statement: "No fluxo de trabalho do Power BI Desktop, um analista precisa se conectar às fontes e limpar os dados antes de modelá-los, por exemplo removendo colunas, corrigindo tipos e filtrando linhas inválidas. Qual ferramenta é usada para essa preparação dos dados?",
+        explanation: "O Power Query é a ferramenta de conexão, limpeza e transformação de dados do Power BI, usada antes da modelagem. O DAX, por sua vez, serve para criar cálculos e medidas sobre o modelo já carregado.",
+        topic: "Power BI e visualização",
+        options: [
+            ["Power Query", true],
+            ["DAX", false],
+            ["O Power BI Service", false],
+            ["Um gráfico de dispersão configurado para destacar e descartar visualmente os valores inconsistentes", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -1441,13 +1651,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log(`Simulado já tem ${n} questões, nada a fazer.`);
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -1466,7 +1686,7 @@ async function seed() {
             })),
         );
     }
-    console.log(`Seed concluído: ${QUESTOES.length} questões inseridas.`);
+    console.log(`Seed: ${inseridas} questões novas inseridas (${QUESTOES.length} no banco).`);
 }
 
 seed()

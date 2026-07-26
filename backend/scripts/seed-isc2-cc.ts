@@ -2108,7 +2108,822 @@ const QUESTOES: Questao[] = [
                 false
             ]
         ]
-    }
+    },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Ao receber um e-mail supostamente enviado pelo diretor financeiro, o sistema verifica a assinatura digital anexada e confirma que a mensagem realmente partiu dele, e não de um impostor. Qual propriedade de segurança está sendo garantida nesse momento?",
+        explanation: "A autenticidade garante que a origem alegada de uma comunicação é genuína, o que a verificação da assinatura comprova. Confidencialidade trata do sigilo do conteúdo, disponibilidade do acesso e redundância de cópias, sem confirmar quem enviou a mensagem.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["A disponibilidade, que assegura que os sistemas de e-mail permaneçam acessíveis sempre que os usuários precisarem enviar mensagens.", false],
+            ["A confidencialidade, que impede que pessoas não autorizadas leiam o conteúdo da mensagem transmitida.", false],
+            ["A autenticidade, que confirma que a origem alegada da comunicação é genuína.", true],
+            ["A redundância, que mantém cópias adicionais da mensagem em servidores distintos para evitar perda de dados.", false],
+        ],
+    },
+    {
+        statement: "Ao acessar um sistema, João primeiro informa seu nome de usuário, depois digita a senha e, por fim, o sistema verifica que ele pode abrir apenas os relatórios do setor de vendas. Esses três momentos correspondem, respectivamente, a:",
+        explanation: "Informar o usuário é identificação, comprovar a identidade com a senha é autenticação e definir o que ele pode acessar é autorização. As demais opções trocam a ordem das etapas ou incluem auditoria, que é o registro posterior das ações.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Identificação, autenticação e autorização.", true],
+            ["Autenticação, identificação e auditoria.", false],
+            ["Autorização, autenticação e identificação.", false],
+            ["Identificação, autorização e responsabilização (accountability).", false],
+        ],
+    },
+    {
+        statement: "Um banco afirma ter implantado autenticação multifator ao exigir, no login, uma senha e também um PIN numérico memorizado pelo cliente. Um auditor aponta que isso não caracteriza MFA verdadeira. Qual é a justificativa correta?",
+        explanation: "MFA exige combinar fatores de categorias distintas (algo que se sabe, se tem ou se é); senha e PIN são ambos algo que o usuário sabe, então contam como um único fator. Não são necessários quatro fatores, nem a fraqueza relativa ou o meio de digitação é o motivo.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["MFA exige no mínimo quatro fatores diferentes combinados entre si.", false],
+            ["O PIN é considerado um fator mais fraco e por isso é desconsiderado na contagem.", false],
+            ["Como ambos são digitados pelo teclado, o sistema os trata como um único dado de entrada combinado.", false],
+            ["Senha e PIN pertencem ao mesmo fator, algo que o usuário sabe.", true],
+        ],
+    },
+    {
+        statement: "Durante a análise de risco de um data center, a equipe lista enchentes, um funcionário mal-intencionado e falhas de energia como possíveis causas de dano aos ativos. Como esses itens são classificados na gestão de risco?",
+        explanation: "Ameaça é qualquer evento ou agente com potencial de causar dano a um ativo. Vulnerabilidade é a fraqueza que a ameaça explora, risco residual é o que permanece após os controles e salvaguardas são os próprios controles de proteção.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Vulnerabilidades, pois representam fraquezas internas dos sistemas.", false],
+            ["Ameaças, pois são eventos ou agentes com potencial de causar dano.", true],
+            ["Riscos residuais que permanecem após a aplicação dos controles.", false],
+            ["Salvaguardas, pois indicam onde controles de proteção precisarão futuramente ser implementados.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa priorizar dois riscos: um com alta probabilidade de ocorrer, mas impacto financeiro pequeno, e outro com baixa probabilidade, porém impacto potencialmente catastrófico. Qual é a forma mais adequada de comparar a severidade dos dois?",
+        explanation: "A severidade de um risco resulta da combinação entre probabilidade e impacto, não de apenas um dos fatores isoladamente. Olhar só a probabilidade ou só o impacto distorce a priorização, e adiar a análise até a concretização anula o propósito da gestão de risco.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Considerar apenas a probabilidade, tratando primeiro o que tem mais chance de ocorrer.", false],
+            ["Considerar apenas o impacto, tratando primeiro o de maior perda potencial.", false],
+            ["Avaliar cada risco combinando sua probabilidade com o impacto esperado.", true],
+            ["Ignorar ambos até que um deles efetivamente se concretize e gere prejuízo mensurável à operação.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa avalia lançar um aplicativo que coletaria dados de saúde dos usuários, mas conclui que os riscos regulatórios e de vazamento superam qualquer benefício e decide cancelar o projeto por completo. Que tratamento de risco foi adotado?",
+        explanation: "Cancelar por completo a atividade que gera o risco caracteriza evitar o risco. Mitigar seria reduzir o risco com controles, transferir seria repassá-lo a terceiros e aceitar seria conviver com ele mantendo o projeto.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Evitar o risco.", true],
+            ["Mitigar o risco.", false],
+            ["Transferir o risco.", false],
+            ["Aceitar o risco como parte do custo de inovação da organização.", false],
+        ],
+    },
+    {
+        statement: "Preocupada com invasões, uma empresa mantém no ar o serviço online que precisa oferecer, mas instala firewall, sistema de detecção de intrusão e aplica atualizações de segurança para reduzir a chance de comprometimento. Esse tratamento de risco é chamado de:",
+        explanation: "Aplicar controles para reduzir a probabilidade ou o impacto, mantendo a atividade, é mitigar o risco. A empresa não deixou de oferecer o serviço (não evitou), não o repassou a terceiros (não transferiu) e não escolheu apenas conviver com ele (não aceitou).",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Aceitação do risco.", false],
+            ["Transferência do risco.", false],
+            ["Evitação do risco, já que a empresa deixa de expor o serviço à internet.", false],
+            ["Mitigação do risco.", true],
+        ],
+    },
+    {
+        statement: "Após avaliar o risco de um servidor interno de testes ficar indisponível por algumas horas, a direção conclui que o impacto é mínimo e que qualquer proteção adicional não se justifica, optando por não tomar nenhuma ação além de documentar a decisão. Esse tratamento é:",
+        explanation: "Reconhecer o risco, julgá-lo tolerável e conviver com ele de forma consciente e documentada é aceitar o risco. Não houve controle adicional (mitigar), repasse a terceiros (transferir) nem eliminação da atividade (evitar).",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Transferência do risco.", false],
+            ["Aceitação do risco.", true],
+            ["Mitigação do risco.", false],
+            ["Evitação do risco, com a desativação definitiva do servidor de testes envolvido.", false],
+        ],
+    },
+    {
+        statement: "Depois de implantar criptografia, controle de acesso e backups para proteger um banco de dados, a equipe reconhece que ainda permanece uma pequena chance de comprometimento. Como se chama o risco que permanece após a aplicação dos controles?",
+        explanation: "Risco residual é o que sobra após a aplicação dos controles. Risco inerente é o existente antes de qualquer controle e apetite de risco é quanto risco a organização se dispõe a assumir, nenhum deles correspondendo ao que remanesce.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Risco inerente.", false],
+            ["Apetite de risco.", false],
+            ["Risco residual.", true],
+            ["Risco total, que corresponde à soma de todas as ameaças mapeadas no ambiente.", false],
+        ],
+    },
+    {
+        statement: "Ao classificar seus controles de segurança, uma empresa precisa enquadrar a política de mesa limpa, o treinamento de conscientização e a verificação de antecedentes de candidatos. A que categoria de controle esses três exemplos pertencem?",
+        explanation: "Políticas, treinamentos e verificações de RH são controles administrativos, baseados em regras e processos definidos por pessoas. Controles físicos protegem o ambiente, técnicos atuam por meio de tecnologia e corretivo se refere à função, não à natureza do controle.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Controles administrativos.", true],
+            ["Controles físicos.", false],
+            ["Controles técnicos, também chamados de lógicos.", false],
+            ["Controles corretivos, aplicados somente após a ocorrência de um incidente de segurança.", false],
+        ],
+    },
+    {
+        statement: "Após um ataque de ransomware criptografar arquivos, a equipe restaura os dados a partir dos backups e reconstrói os servidores afetados para retornar à operação normal. Quanto à função, esse tipo de controle é classificado como:",
+        explanation: "Controles corretivos atuam após o incidente para restaurar a operação, como a restauração de backups. Preventivos buscam impedir o incidente, detectivos identificam sua ocorrência e dissuasórios desencorajam o atacante antes da ação.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Preventivo.", false],
+            ["Detectivo.", false],
+            ["Dissuasório, cujo objetivo é desencorajar o atacante antes de qualquer tentativa.", false],
+            ["Corretivo.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa instala placas visíveis avisando que o local é monitorado e mantém um carro de segurança estacionado à vista na entrada, com o objetivo principal de desencorajar invasores antes que tentem qualquer ação. Quanto à função, esses controles são classificados como:",
+        explanation: "Controles dissuasórios buscam desencorajar a ação antes que ela ocorra, como avisos e presença ostensiva de segurança. Detectivos identificam eventos, corretivos restauram após o fato e compensatórios substituem outro controle que não pôde ser implementado.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Corretivos.", false],
+            ["Dissuasórios.", true],
+            ["Detectivos.", false],
+            ["Compensatórios, adotados como alternativa quando o controle principal não pode ser implementado.", false],
+        ],
+    },
+    {
+        statement: "No conjunto de documentos de governança de uma empresa, um deles reúne recomendações e boas práticas sugeridas, que as equipes podem seguir com flexibilidade e sem caráter obrigatório. Esse tipo de documento é conhecido como:",
+        explanation: "Diretrizes são recomendações e boas práticas de caráter opcional. Políticas definem intenções de alto nível, normas estabelecem requisitos obrigatórios específicos e procedimentos detalham passos obrigatórios de execução.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Política (policy).", false],
+            ["Norma ou padrão (standard).", false],
+            ["Diretriz (guideline).", true],
+            ["Procedimento (procedure), que descreve o passo a passo obrigatório a ser executado.", false],
+        ],
+    },
+    {
+        statement: "A diretoria de uma empresa publica uma declaração de alto nível afirmando que todo dado de cliente deve ser protegido. Em seguida, a área técnica precisa criar um documento obrigatório determinando que todos os discos sejam criptografados com AES de 256 bits. Esse documento técnico e obrigatório é:",
+        explanation: "Normas (standards) estabelecem requisitos obrigatórios e específicos, como o algoritmo de criptografia a ser usado, dando concretude à política. Diretrizes são recomendações opcionais, a política é a declaração de alto nível e leis vêm de autoridades externas.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Uma norma (standard).", true],
+            ["Uma diretriz (guideline).", false],
+            ["Uma política (policy).", false],
+            ["Uma lei, imposta por um órgão externo de regulação do setor de tecnologia.", false],
+        ],
+    },
+    {
+        statement: "Um analista precisa distinguir duas proteções: cifrar um banco de dados para que apenas pessoas autorizadas leiam seu conteúdo e calcular um valor de hash para perceber se os registros foram alterados sem autorização. Essas duas medidas protegem, respectivamente:",
+        explanation: "Cifrar para impedir a leitura não autorizada protege a confidencialidade; verificar alterações por hash protege a integridade. Disponibilidade trata do acesso quando necessário e autenticidade da origem, que não são o foco dessas duas medidas.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["A integridade e a disponibilidade.", false],
+            ["A disponibilidade e a autenticidade.", false],
+            ["A confidencialidade e a disponibilidade, garantindo sigilo e acesso contínuo aos registros armazenados.", false],
+            ["A confidencialidade e a integridade.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa mantém constantemente uma equipe pesquisando novas ameaças, revisando fornecedores e verificando se seus controles continuam adequados ao longo do tempo. Essa conduta contínua de investigar e acompanhar para tomar decisões informadas é melhor descrita como:",
+        explanation: "Due diligence é o esforço contínuo de investigar, monitorar e reunir informações para agir de forma responsável. Due care é a aplicação prática das medidas de proteção no dia a dia; os demais termos tratam de acesso e de risco.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Due care (devido cuidado).", false],
+            ["Due diligence (devida diligência).", true],
+            ["Separação de funções.", false],
+            ["Aceitação de risco formalizada por meio de um termo assinado pela alta direção.", false],
+        ],
+    },
+    {
+        statement: "Em vez de confiar apenas na senha de login, a empresa protege um sistema crítico combinando senha, autenticação em duas etapas, criptografia dos dados, segmentação de rede e monitoramento de acessos, de modo que a falha de uma camada não comprometa todo o conjunto. Que princípio orienta essa abordagem?",
+        explanation: "Defesa em profundidade empilha múltiplas camadas de controle para que a falha de uma não exponha todo o sistema. Privilégio mínimo limita permissões, não repúdio impede negar autoria e segurança por obscuridade aposta em esconder detalhes, o que não é o caso.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Privilégio mínimo.", false],
+            ["Não repúdio.", false],
+            ["Defesa em profundidade.", true],
+            ["Segurança por obscuridade, que se baseia em manter secretos os detalhes de funcionamento do sistema.", false],
+        ],
+    },
+    {
+        statement: "Ao revisar quais dados exigem proteção reforçada de privacidade, uma equipe analisa uma lista de campos. Qual dos itens a seguir é uma informação pessoal identificável (PII) que merece esse tratamento?",
+        explanation: "O CPF identifica uma pessoa específica, sendo uma informação pessoal identificável (PII). Cotação do dólar, horário de funcionamento e versão de sistema operacional não identificam indivíduos e não são dados pessoais.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["O número de CPF de um cliente.", true],
+            ["A cotação atual do dólar comercial.", false],
+            ["O horário de funcionamento da loja divulgado ao público.", false],
+            ["A versão do sistema operacional instalada em um servidor de uso interno da empresa.", false],
+        ],
+    },
+    {
+        statement: "O Código de Ética da ISC2 organiza a conduta dos profissionais em quatro cânones ordenados por prioridade. Qual preocupação o primeiro cânone coloca acima das demais?",
+        explanation: "O primeiro cânone determina proteger a sociedade, o bem comum e a confiança pública, tendo precedência sobre os demais. Agir com honra, servir bem os contratantes e zelar pela profissão são os cânones seguintes, subordinados a esse.",
+        topic: "Princípios de Segurança",
+        options: [
+            ["Agir de forma honrada, honesta e legal com cada cliente.", false],
+            ["Prestar serviço diligente e competente aos contratantes.", false],
+            ["Promover e proteger a reputação e o avanço contínuo da própria profissão de segurança.", false],
+            ["Proteger a sociedade, o bem comum e a confiança pública.", true],
+        ],
+    },
+    {
+        statement: "A diretoria pergunta qual é a diferença essencial entre o plano de continuidade de negócios (BCP) e o plano de recuperação de desastres (DRP) da empresa. Qual resposta descreve corretamente essa distinção?",
+        explanation: "O BCP tem escopo amplo e visa manter o negócio funcionando durante a crise; o DRP é o componente técnico voltado a restaurar sistemas e TI após o desastre. Eles não são o mesmo documento nem se limitam a backups, RH ou comunicação.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["O BCP trata apenas de backups de dados, ao passo que o DRP cuida da comunicação com a imprensa e com os clientes durante a crise.", false],
+            ["O BCP mantém as funções essenciais do negócio operando durante a interrupção; o DRP foca em restaurar a TI depois do desastre.", true],
+            ["O DRP é mais amplo e engloba o BCP, que cuidaria somente da folha de pagamento e dos recursos humanos da organização afetada.", false],
+            ["Ambos são o mesmo documento, apenas com nomes diferentes conforme o setor.", false],
+        ],
+    },
+    {
+        statement: "O time de segurança nota atividades incomuns em um servidor, examina os logs para confirmar se realmente houve comprometimento, determina o escopo e classifica a gravidade da ocorrência. Nenhum sistema foi isolado ainda. A que fase da resposta a incidentes essa atuação corresponde?",
+        explanation: "Identificar sinais, examinar logs e classificar a gravidade da ocorrência é a fase de detecção e análise. A preparação ocorre antes do incidente, a contenção só começa depois (e nada foi isolado ainda) e o pós-incidente vem ao final.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["Preparação.", false],
+            ["Contenção, erradicação e recuperação.", false],
+            ["Atividade pós-incidente, quando são documentadas as lições aprendidas com o caso.", false],
+            ["Detecção e análise.", true],
+        ],
+    },
+    {
+        statement: "Encerrado um incidente e restabelecida a operação normal, a equipe se reúne para revisar o que funcionou, o que falhou e como atualizar os procedimentos para reduzir a chance de recorrência. Essa reunião faz parte de qual fase?",
+        explanation: "Revisar o incidente já encerrado para extrair lições e melhorar os processos é a atividade pós-incidente. Detecção, contenção e erradicação acontecem durante o tratamento, e a preparação antecede qualquer incidente.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["Atividade pós-incidente (lições aprendidas).", true],
+            ["Detecção e análise.", false],
+            ["Contenção e erradicação.", false],
+            ["Preparação, etapa em que a organização ainda está montando sua capacidade inicial de resposta.", false],
+        ],
+    },
+    {
+        statement: "Um analista precisa usar a terminologia correta para três casos: um login de rotina bem-sucedido; um acesso não autorizado que efetivamente expôs dados de clientes; e uma tentativa suspeita que infringiu a política de segurança. Como esses casos são melhor classificados, respectivamente?",
+        explanation: "Um login de rotina é apenas um evento (ocorrência observável); o acesso que expôs dados de clientes é uma violação (breach); a tentativa que infringiu a política é um incidente. Nem toda ocorrência é incidente, e nem todo incidente resulta em breach.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["Incidente, evento e violação de dados.", false],
+            ["Violação de dados, incidente e evento.", false],
+            ["Evento, violação de dados (breach) e incidente.", true],
+            ["Todos são incidentes, diferenciados apenas pela gravidade e pelo momento em que são detectados pela equipe.", false],
+        ],
+    },
+    {
+        statement: "Atacantes começam a explorar uma falha em um software para a qual o fabricante ainda não disponibilizou correção, pois desconhecia o problema. O código ou técnica usado para tirar proveito dessa falha também tem um nome específico. Como se chamam, respectivamente, a falha e a técnica de exploração?",
+        explanation: "Uma falha ainda desconhecida do fornecedor e sem correção é uma vulnerabilidade de dia zero (zero-day); o código ou técnica que a explora é o exploit. As demais opções invertem os termos ou citam conceitos não relacionados à pergunta.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["Exploit e vulnerabilidade de dia zero.", false],
+            ["Vulnerabilidade de dia zero (zero-day) e exploit.", true],
+            ["Incidente e violação de dados (breach).", false],
+            ["Ameaça persistente avançada e engenharia social aplicada em larga escala contra os usuários.", false],
+        ],
+    },
+    {
+        statement: "Um administrador quer uma estratégia de backup em que cada rotina diária copie somente os arquivos alterados desde o último backup completo, acumulando as mudanças até o próximo backup completo. Que tipo de backup atende a essa descrição?",
+        explanation: "O backup diferencial copia tudo o que mudou desde o último backup completo, acumulando as alterações. O incremental copia apenas o que mudou desde o último backup de qualquer tipo, e o completo copia todos os dados a cada execução.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["Backup incremental.", false],
+            ["Backup completo (full) diário.", false],
+            ["Backup incremental combinado com espelhamento contínuo dos dados em tempo real.", false],
+            ["Backup diferencial.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa quer um local alternativo capaz de assumir a operação quase imediatamente após um desastre, com hardware, software e dados já replicados e prontos para uso. Que tipo de site de recuperação atende a essa necessidade?",
+        explanation: "O hot site já possui hardware, software e dados replicados, permitindo retomar a operação quase imediatamente. O warm site tem infraestrutura parcial e exige configuração, o cold site oferece só o espaço básico, e backup offline demanda restauração demorada.",
+        topic: "Continuidade, DR e Resposta a Incidentes",
+        options: [
+            ["Site quente (hot site).", true],
+            ["Site morno (warm site).", false],
+            ["Site frio (cold site).", false],
+            ["Backup em nuvem armazenado offline, restaurado manualmente somente após a reconstrução completa do ambiente.", false],
+        ],
+    },
+    {
+        statement: "Uma analista percebe que os funcionarios conseguem acessar sites digitando nomes como intranet.empresa.com, mas o servico responsavel por traduzir esses nomes em enderecos IP parou de responder e ninguem mais consegue navegar por nome. Qual servico apresentou falha?",
+        explanation: "O DNS (Domain Name System), que opera tipicamente na porta 53, traduz nomes como intranet.empresa.com nos enderecos IP correspondentes; sem ele, a navegacao por nome falha.",
+        topic: "Segurança de Redes",
+        options: [
+            ["DHCP, que distribui automaticamente enderecos IP e outras configuracoes de rede para os dispositivos que se conectam ao segmento", false],
+            ["DNS, que resolve nomes de dominio para os enderecos IP correspondentes", true],
+            ["SMTP, responsavel pelo envio de mensagens de e-mail entre servidores", false],
+            ["ARP, que associa enderecos IP a enderecos fisicos MAC dentro da rede local", false],
+        ],
+    },
+    {
+        statement: "Ao conectar um notebook novo a rede cabeada do escritorio, ele recebe automaticamente um endereco IP, a mascara de sub-rede e o gateway padrao, sem que o usuario configure nada manualmente. Qual protocolo fornece essas informacoes de forma automatica?",
+        explanation: "O DHCP (Dynamic Host Configuration Protocol) atribui dinamicamente endereco IP, mascara, gateway e servidores DNS aos dispositivos, dispensando a configuracao manual.",
+        topic: "Segurança de Redes",
+        options: [
+            ["DNS, responsavel por converter nomes de dominio em enderecos IP na internet e tambem dentro da rede interna da empresa", false],
+            ["NAT, que traduz enderecos privados em publicos na saida para a internet", false],
+            ["DHCP, que atribui enderecos IP e parametros de rede automaticamente aos dispositivos", true],
+            ["SNMP, usado para monitorar e gerenciar equipamentos de rede remotamente", false],
+        ],
+    },
+    {
+        statement: "Uma empresa transfere diariamente arquivos com dados de clientes para um parceiro. A equipe de seguranca descobre que o protocolo em uso envia login, senha e conteudo em texto claro pela rede. Qual alternativa mantem a transferencia de arquivos, porem de forma cifrada?",
+        explanation: "O SFTP realiza a transferencia de arquivos sobre um canal criptografado (SSH), protegendo credenciais e conteudo; o FTP tradicional trafega tudo em texto claro, e restringir IP nao protege o dado em transito.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Continuar com FTP, mas restringindo o acesso apenas a determinados enderecos IP por meio de regras configuradas no firewall de borda", false],
+            ["Adotar HTTP para publicar os arquivos em um servidor web interno da empresa", false],
+            ["Usar Telnet para acessar o servidor remoto e copiar os arquivos manualmente", false],
+            ["Substituir por SFTP, que transfere os arquivos sobre um canal criptografado", true],
+        ],
+    },
+    {
+        statement: "Uma empresa vai implantar videoconferencia e chamadas de voz em tempo real. Os engenheiros preferem um protocolo de transporte que priorize velocidade e baixa latencia, tolerando a perda ocasional de alguns pacotes em vez de retransmiti-los. Qual protocolo atende melhor a esse requisito?",
+        explanation: "O UDP e sem conexao e nao retransmite pacotes perdidos, o que reduz a latencia e o torna adequado a voz e video em tempo real; o TCP prioriza a confiabilidade em detrimento da velocidade.",
+        topic: "Segurança de Redes",
+        options: [
+            ["TCP, porque estabelece conexao com handshake de tres vias e retransmite qualquer pacote perdido para garantir a entrega ordenada", false],
+            ["ICMP, porque e usado para diagnostico e mensagens de controle entre dispositivos de rede", false],
+            ["UDP, porque e sem conexao e prioriza a rapidez em vez de garantir a entrega", true],
+            ["HTTP, porque e o protocolo padrao para o trafego de aplicacoes web modernas", false],
+        ],
+    },
+    {
+        statement: "O administrador de e-mail investiga por que as mensagens enviadas pelos funcionarios nao estao saindo para destinatarios externos, embora o recebimento funcione. Ele suspeita de bloqueio no protocolo usado para enviar mensagens entre servidores de correio. Qual protocolo e responsavel por esse envio?",
+        explanation: "O SMTP (Simple Mail Transfer Protocol), tipicamente nas portas 25 ou 587, realiza o envio de mensagens entre servidores; IMAP e POP3 tratam do recebimento e da leitura.",
+        topic: "Segurança de Redes",
+        options: [
+            ["IMAP, que permite ao cliente ler e organizar as mensagens mantidas no servidor a partir de varios dispositivos diferentes", false],
+            ["POP3, que baixa as mensagens do servidor para o dispositivo local do usuario", false],
+            ["SNMP, usado para o gerenciamento e a coleta de metricas de equipamentos de rede", false],
+            ["SMTP, responsavel pelo envio de e-mails entre servidores de correio", true],
+        ],
+    },
+    {
+        statement: "Um analista revisa o modelo OSI e precisa identificar em qual camada operam o enderecamento logico IP e o roteamento de pacotes entre redes diferentes. Qual camada desempenha essa funcao?",
+        explanation: "A camada de rede (camada 3 do OSI) cuida do enderecamento logico IP e do roteamento de pacotes entre redes distintas; os roteadores operam nessa camada.",
+        topic: "Segurança de Redes",
+        options: [
+            ["A camada de rede (camada 3), responsavel pelo enderecamento IP e pelo roteamento entre redes", true],
+            ["A camada de enlace (camada 2), que organiza os bits em quadros e usa enderecos MAC dentro do mesmo segmento local", false],
+            ["A camada de transporte (camada 4), que segmenta os dados e controla a entrega fim a fim", false],
+            ["A camada fisica (camada 1), que trata da transmissao eletrica dos bits pelo meio", false],
+        ],
+    },
+    {
+        statement: "Em uma rede local, um dispositivo recebe quadros e os encaminha apenas para a porta onde esta conectado o destinatario, com base em uma tabela de enderecos fisicos que ele aprende. Que dispositivo desempenha esse papel dentro do segmento local?",
+        explanation: "O switch opera na camada de enlace e usa a tabela de enderecos MAC para encaminhar quadros somente a porta do destinatario, ao contrario do hub, que replica para todas as portas.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Um roteador, que interliga redes diferentes e decide o caminho dos pacotes com base no endereco IP de destino", false],
+            ["Um switch, que encaminha quadros na rede local com base em enderecos MAC", true],
+            ["Um repetidor, que apenas amplifica o sinal para estender o alcance fisico", false],
+            ["Um modem, que converte sinais entre a rede local e a operadora", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer que todo o acesso dos funcionarios a sites externos passe por um unico ponto capaz de aplicar filtros de conteudo, registrar os acessos e ocultar os enderecos internos das estacoes. Qual solucao atende diretamente a esse objetivo?",
+        explanation: "Um proxy de saida (forward proxy) intermedeia as requisicoes dos usuarios a internet, permitindo filtragem de conteudo, registro de acessos e ocultacao dos IPs internos.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Um servidor proxy de saida, que intermedeia as requisicoes web dos usuarios para a internet", true],
+            ["Um switch gerenciavel, que segmenta a rede em VLANs e separa os dominios de broadcast entre os diferentes setores", false],
+            ["Um servidor DHCP, que centraliza a distribuicao de enderecos IP para os dispositivos", false],
+            ["Um ponto de acesso sem fio, que conecta os dispositivos moveis a rede cabeada", false],
+        ],
+    },
+    {
+        statement: "Uma empresa tem escritorios em tres cidades diferentes e precisa interliga-los para que funcionem como uma unica rede corporativa, trocando dados por longas distancias. Que tipo de rede descreve essa interligacao entre sites geograficamente distantes?",
+        explanation: "Uma WAN (Wide Area Network) interliga redes em locais geograficamente distantes, como escritorios em cidades diferentes; a LAN se limita a uma area local.",
+        topic: "Segurança de Redes",
+        options: [
+            ["LAN, uma rede local que conecta dispositivos dentro de um mesmo predio ou area restrita usando cabeamento proprio", false],
+            ["VLAN, um agrupamento logico que separa o trafego de grupos de dispositivos em um mesmo switch", false],
+            ["PAN, uma rede pessoal de curtissimo alcance entre dispositivos de um unico usuario", false],
+            ["WAN, uma rede que interliga sites em areas geograficamente distantes", true],
+        ],
+    },
+    {
+        statement: "Duas filiais de uma empresa, em cidades diferentes, precisam trocar trafego interno como se estivessem na mesma rede, usando a internet publica, mas sem expor os dados. A equipe quer um tunel cifrado permanente entre os dois roteadores das filiais. Qual solucao atende?",
+        explanation: "Uma VPN site a site cria um tunel criptografado permanente entre os gateways das duas redes, permitindo que as filiais troquem trafego interno com seguranca pela internet publica.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Publicar os servicos internos de cada filial em uma DMZ acessivel pela internet, protegida por um firewall dedicado em cada ponta", false],
+            ["Uma conta de proxy reverso hospedada na nuvem para encaminhar as requisicoes entre as filiais", false],
+            ["Uma VPN site a site, que estabelece um tunel criptografado permanente entre as redes das filiais", true],
+            ["Um servidor FTP central para que cada filial deposite e retire os arquivos que precisa trocar", false],
+        ],
+    },
+    {
+        statement: "Durante a analise de um ataque, a equipe descobre que os pacotes maliciosos traziam um endereco IP de origem falsificado, fazendo-os parecer vindos de um servidor confiavel da propria rede. Que tecnica o atacante utilizou?",
+        explanation: "No spoofing, o atacante falsifica o endereco de origem (por exemplo, IP ou MAC) para se passar por uma entidade confiavel e enganar controles baseados na identidade de rede.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Sniffing, capturando passivamente o trafego que circula pela rede para extrair dados sensiveis que trafegam em texto claro", false],
+            ["Spoofing, forjando o endereco de origem para se passar por uma fonte confiavel", true],
+            ["Forca bruta, testando sistematicamente combinacoes de credenciais ate acertar", false],
+            ["Phishing, enviando mensagens fraudulentas para induzir a vitima a revelar informacoes", false],
+        ],
+    },
+    {
+        statement: "Em uma rede onde varios servicos ainda usam protocolos sem criptografia, um atacante com acesso ao segmento consegue capturar e ler senhas e mensagens que trafegam entre os dispositivos, sem alterar o trafego. Qual medida elimina de forma mais direta a exposicao desse conteudo?",
+        explanation: "O sniffing e a captura passiva de trafego; cifrar as comunicacoes com HTTPS, SSH ou TLS torna o conteudo interceptado ilegivel, neutralizando a leitura de senhas e mensagens.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Aumentar a frequencia de troca de senhas dos usuarios e exigir senhas mais longas em toda a organizacao", false],
+            ["Instalar um antivirus atualizado em cada estacao de trabalho da rede", false],
+            ["Cifrar as comunicacoes com protocolos como HTTPS e SSH", true],
+            ["Ativar um servidor DHCP redundante para evitar conflitos de endereco IP", false],
+        ],
+    },
+    {
+        statement: "Uma organizacao abandona a ideia de que tudo dentro do perimetro da rede e confiavel. Agora, cada tentativa de acesso a um recurso, mesmo partindo de dentro, precisa ser autenticada e autorizada de forma explicita. Que abordagem a empresa adotou?",
+        explanation: "O modelo zero trust ('nunca confie, sempre verifique') nao concede confianca implicita com base na localizacao na rede e exige autenticacao e autorizacao a cada acesso.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Defesa em profundidade, empilhando varias camadas independentes de controle para que a falha de uma seja compensada pelas demais", false],
+            ["Seguranca por obscuridade, baseando a protecao em manter os detalhes do sistema em segredo", false],
+            ["Rede plana, na qual todos os dispositivos compartilham o mesmo segmento sem divisoes", false],
+            ["Zero trust, que nao confia implicitamente em nenhuma origem e verifica cada acesso", true],
+        ],
+    },
+    {
+        statement: "Um data center virtualizado quer impedir que, se uma carga de trabalho for comprometida, o atacante consiga se mover lateralmente para as demais. A equipe decide aplicar politicas de isolamento no nivel de cada maquina virtual individual, e nao apenas por sub-rede. Que tecnica descreve essa abordagem?",
+        explanation: "A micro-segmentacao define politicas de isolamento granulares no nivel de cada carga de trabalho ou maquina virtual, limitando o movimento lateral mesmo dentro do mesmo segmento.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Micro-segmentacao, que aplica politicas de isolamento no nivel de cada carga de trabalho", true],
+            ["Balanceamento de carga, que distribui as requisicoes entre varios servidores para melhorar o desempenho e a disponibilidade do servico", false],
+            ["Traducao de enderecos NAT, que mapeia os enderecos internos para um endereco publico na saida", false],
+            ["Tunelamento VPN, que cifra o trafego entre um cliente remoto e a rede corporativa", false],
+        ],
+    },
+    {
+        statement: "Ao configurar a rede sem fio de um novo escritorio, a equipe quer o padrao de seguranca mais recente para redes Wi-Fi, com protecao mais forte contra ataques de adivinhacao de senha em comparacao as geracoes anteriores. Qual opcao escolher?",
+        explanation: "O WPA3 e a geracao mais atual de seguranca Wi-Fi e oferece protecao mais robusta contra ataques de dicionario e adivinhacao de senha do que o WPA2 e, principalmente, do que o obsoleto WEP.",
+        topic: "Segurança de Redes",
+        options: [
+            ["WEP, um dos primeiros esquemas de protecao sem fio, ainda encontrado em equipamentos legados de redes domesticas e corporativas", false],
+            ["WPA3, a geracao mais recente de seguranca para redes Wi-Fi", true],
+            ["Rede aberta com um portal de autenticacao exibido no navegador do usuario", false],
+            ["Ocultar o SSID para que a rede nao apareca na lista de redes disponiveis", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de desenvolvimento quer publicar suas aplicacoes sem se preocupar em instalar e manter sistema operacional, servidores de aplicacao ou runtime, apenas enviando o codigo para um ambiente pronto e gerenciado pelo provedor. Que modelo de nuvem atende a essa necessidade?",
+        explanation: "No modelo PaaS (Platform as a Service), o provedor gerencia a infraestrutura, o sistema operacional e o runtime, enquanto o cliente foca apenas em desenvolver e implantar suas aplicacoes.",
+        topic: "Segurança de Redes",
+        options: [
+            ["IaaS, no qual o provedor entrega maquinas virtuais e o cliente instala e mantem o sistema operacional e todo o software acima dele", false],
+            ["SaaS, no qual o cliente apenas consome um software pronto pela internet", false],
+            ["PaaS, que oferece uma plataforma pronta para desenvolver e executar aplicacoes", true],
+            ["Colocation, em que a empresa aloja seus proprios servidores fisicos em um data center de terceiros", false],
+        ],
+    },
+    {
+        statement: "Uma pequena empresa nao tem equipe propria de TI e contrata um terceiro para operar, monitorar e manter remotamente sua infraestrutura de rede e servidores, por meio de um contrato de servico continuo. Como se chama esse tipo de fornecedor?",
+        explanation: "Um MSP (Managed Service Provider) assume a gestao e a operacao continua da infraestrutura de TI do cliente, opcao util para organizacoes sem equipe interna dedicada.",
+        topic: "Segurança de Redes",
+        options: [
+            ["ISP, provedor que fornece apenas a conectividade de acesso a internet para a empresa", false],
+            ["MSP, provedor que gerencia e opera a infraestrutura de TI do cliente de forma continua", true],
+            ["CDN, rede de distribuicao que entrega conteudo web a partir de servidores geograficamente proximos do usuario final", false],
+            ["CASB, ferramenta que fica entre o usuario e os servicos de nuvem para aplicar politicas de seguranca e visibilidade", false],
+        ],
+    },
+    {
+        statement: "Uma fabrica instalou dezenas de sensores e cameras inteligentes conectados a rede. A equipe de seguranca se preocupa porque muitos vem com senhas padrao de fabrica e raramente recebem atualizacao. Qual conjunto de medidas reduz melhor esse risco?",
+        explanation: "Dispositivos IoT costumam ter credenciais padrao fracas e pouca atualizacao; trocar as senhas de fabrica e segmenta-los em uma rede isolada limita o impacto de um eventual comprometimento.",
+        topic: "Segurança de Redes",
+        options: [
+            ["Trocar as credenciais padrao e isolar os dispositivos em um segmento de rede separado", true],
+            ["Confiar na protecao do firewall de borda, ja que ele inspeciona todo o trafego que entra e sai da rede corporativa pela internet", false],
+            ["Conectar os dispositivos a mesma rede dos servidores para facilitar o gerenciamento centralizado", false],
+            ["Manter as senhas de fabrica, porem desativar os logs dos dispositivos para economizar armazenamento", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao web coleta dados de cartao de credito dos clientes. A equipe quer garantir que essas informacoes nao possam ser lidas por quem interceptar a comunicacao entre o navegador do cliente e o servidor. Qual medida protege os dados enquanto eles trafegam pela rede?",
+        explanation: "A criptografia em transito, tipicamente via TLS (HTTPS), protege os dados enquanto eles se movem pela rede; cifrar o banco protege os dados em repouso, mas nao durante a transmissao.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Cifrar o banco de dados em repouso no servidor, de modo que os arquivos em disco fiquem ilegiveis para quem obtiver acesso fisico ao armazenamento", false],
+            ["Aplicar hash com sal em todas as senhas dos usuarios armazenadas no cadastro", false],
+            ["Fazer backups periodicos e criptografados dos dados em uma localidade remota", false],
+            ["Criptografar a comunicacao com TLS, usando HTTPS entre o navegador e o servidor", true],
+        ],
+    },
+    {
+        statement: "Um funcionario tem o notebook corporativo furtado. A empresa quer garantir que, mesmo removendo o disco e conectando-o a outra maquina, o ladrao nao consiga ler os arquivos armazenados. Qual controle atende diretamente a esse objetivo?",
+        explanation: "A criptografia de disco completo protege os dados em repouso: sem a chave, o conteudo permanece ilegivel mesmo que o disco seja removido e lido em outro equipamento. Uma senha de login sozinha nao protege o disco retirado.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Exigir que o usuario use uma VPN com tunel criptografado sempre que acessar os sistemas internos pela internet a partir de redes externas", false],
+            ["Criptografia de disco completo no notebook, deixando os dados em repouso ilegiveis sem a chave", true],
+            ["Uma senha forte de login no sistema operacional, trocada periodicamente conforme a politica", false],
+            ["Um antivirus atualizado com verificacao automatica de todos os arquivos abertos", false],
+        ],
+    },
+    {
+        statement: "Depois de baixar um instalador do site de um fornecedor, um administrador quer confirmar que o arquivo nao foi corrompido nem adulterado durante o download. O fornecedor publica um valor de referencia ao lado do link. Que tecnica permite essa verificacao?",
+        explanation: "Uma funcao de hash gera um valor unico para o conteudo do arquivo; se o hash calculado localmente coincide com o publicado pelo fornecedor, o arquivo esta integro e nao foi alterado.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Cifrar o arquivo com uma chave simetrica compartilhada previamente com o fornecedor antes de executa-lo na maquina de destino", false],
+            ["Verificar se o arquivo foi transferido por uma conexao HTTPS valida com o site", false],
+            ["Comparar o hash calculado do arquivo baixado com o valor publicado pelo fornecedor", true],
+            ["Executar o instalador em uma conta de usuario sem privilegios administrativos", false],
+        ],
+    },
+    {
+        statement: "Ao projetar um sistema que precisa cifrar grandes volumes de dados com bom desempenho, mas tambem resolver o problema de distribuir a chave com seguranca entre partes que nunca se comunicaram, um arquiteto combina os dois tipos de criptografia. Como essa combinacao costuma funcionar?",
+        explanation: "Sistemas hibridos usam a criptografia assimetrica (mais lenta) apenas para trocar com seguranca uma chave simetrica, e depois a simetrica (mais rapida) para cifrar o grande volume de dados.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Usa criptografia assimetrica para proteger a troca da chave e simetrica para cifrar os dados em massa", true],
+            ["Usa exclusivamente criptografia assimetrica para tudo, por ser mais rapida do que a simetrica ao processar grandes quantidades de dados de forma continua", false],
+            ["Usa apenas funcoes de hash, que permitiriam recuperar o conteudo original a partir do resumo gerado", false],
+            ["Usa a mesma chave publica para cifrar e decifrar, compartilhando-a abertamente com todos", false],
+        ],
+    },
+    {
+        statement: "Apos uma alteracao nao documentada em um servidor de producao derrubar um sistema critico, a diretoria determina que toda mudanca passe por solicitacao formal, avaliacao de impacto, aprovacao e plano de reversao antes de ser aplicada. Que processo esta sendo implantado?",
+        explanation: "A gestao de mudanca (change management) exige que as alteracoes passem por solicitacao formal, avaliacao de impacto, aprovacao e plano de reversao, reduzindo interrupcoes causadas por mudancas descontroladas.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Gestao de incidentes, focada em detectar, responder e restaurar os servicos o mais rapido possivel apos uma interrupcao ja ocorrida", false],
+            ["Gestao de patches, restrita a aplicacao de correcoes de seguranca liberadas pelos fornecedores", false],
+            ["Analise de risco, que identifica e prioriza as ameacas aos ativos da organizacao", false],
+            ["Gestao de mudanca, que formaliza solicitacao, avaliacao, aprovacao e reversao das alteracoes", true],
+        ],
+    },
+    {
+        statement: "Uma equipe define uma configuracao segura padrao para todos os servidores e passa a comparar periodicamente cada maquina com esse padrao, para detectar desvios nao autorizados. Que pratica descreve o estabelecimento e a manutencao dessa referencia?",
+        explanation: "A gestao de configuracao estabelece uma baseline segura de referencia e monitora os sistemas em busca de desvios (drift), garantindo que permanecam em um estado conhecido e aprovado.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Gestao de configuracao, com uma baseline segura usada para detectar desvios", true],
+            ["Recuperacao de desastres, que planeja como restaurar as operacoes em um local alternativo depois de um evento que destrua o ambiente principal", false],
+            ["Teste de penetracao, em que especialistas simulam ataques para encontrar vulnerabilidades exploraveis", false],
+            ["Classificacao de dados, que rotula as informacoes conforme o seu grau de sensibilidade", false],
+        ],
+    },
+    {
+        statement: "Apos um incidente, os investigadores tiveram dificuldade porque cada servidor guardava seus registros apenas localmente e muitos ja haviam sido sobrescritos. A equipe quer garantir que os logs sejam reunidos em um repositorio central e preservados por um periodo definido. Que medida atende a esse objetivo?",
+        explanation: "Centralizar os logs em um repositorio dedicado, com politica de retencao definida, evita a perda por sobrescrita local e facilita a correlacao e a investigacao apos incidentes.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Aumentar o nivel de detalhe dos registros em cada servidor, mantendo-os apenas no disco local de cada maquina, para nao sobrecarregar a rede", false],
+            ["Encaminhar os logs para um servidor central e aplicar uma politica de retencao", true],
+            ["Desativar os registros dos sistemas menos criticos para liberar espaco em disco", false],
+            ["Permitir que cada administrador defina livremente quando apagar os proprios logs", false],
+        ],
+    },
+    {
+        statement: "Em um sistema de controle de acesso, uma analista de RH acessa um arquivo com a folha de pagamento armazenado em um servidor. Nessa interação, como são classificados a analista e o arquivo, respectivamente?",
+        explanation: "O sujeito e a entidade ativa que solicita acesso (a analista), e o objeto e o recurso passivo acessado (o arquivo). Processos e servidores tambem podem atuar como sujeitos, mas aqui quem inicia o acesso e a pessoa.",
+        topic: "Controle de Acesso",
+        options: [
+            ["A analista e o sujeito e o arquivo e o objeto.", true],
+            ["A analista e o objeto e o arquivo e o sujeito, pois o dado tem prioridade.", false],
+            ["Ambos sao objetos, ja que o servidor e o unico sujeito da operacao.", false],
+            ["A analista e o objeto porque e ela quem sofre a acao de autenticacao, enquanto o servidor que hospeda o arquivo assume o papel de sujeito ativo da transacao.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer que o acesso a cada documento seja decidido dinamicamente combinando varios atributos ao mesmo tempo: o departamento do usuario, a localizacao de onde ele se conecta, o horario e o tipo de dispositivo. Qual modelo de controle de acesso atende melhor a essa necessidade?",
+        explanation: "O ABAC (Attribute-Based Access Control) decide o acesso avaliando atributos do sujeito, do objeto e do ambiente, sendo ideal quando as regras dependem de multiplos fatores contextuais. O RBAC associa permissoes apenas a papeis fixos.",
+        topic: "Controle de Acesso",
+        options: [
+            ["RBAC, pois basta criar um papel para cada departamento.", false],
+            ["ABAC, que avalia atributos do usuario, do recurso e do contexto.", true],
+            ["MAC, ja que o sistema operacional impoe rotulos fixos aos arquivos.", false],
+            ["DAC, porque o proprietario de cada documento pode ajustar manualmente as permissoes conforme o departamento, o horario e o dispositivo de cada colega.", false],
+        ],
+    },
+    {
+        statement: "Uma analista possui liberacao de seguranca no nivel 'confidencial', o mesmo nivel de um relatorio de um projeto interno. Ainda assim, o sistema nega seu acesso porque ela nao faz parte da equipe daquele projeto. Qual principio justifica essa negacao?",
+        explanation: "O need-to-know (necessidade de conhecer) restringe o acesso apenas a quem precisa da informacao para executar suas tarefas, mesmo que a pessoa tenha o nivel de classificacao adequado. Ter a liberacao correta e necessario, mas nao suficiente.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Separacao de funcoes, que impede que uma unica pessoa concentre etapas conflitantes de um mesmo processo critico de negocio.", false],
+            ["Menor privilegio apenas, ja que o nivel de liberacao dela e suficiente.", false],
+            ["Need-to-know, pois ter o nivel de liberacao nao basta sem necessidade de conhecer.", true],
+            ["Nao repudio, que garante a autoria das acoes realizadas no sistema.", false],
+        ],
+    },
+    {
+        statement: "A porta de uma sala de servidores usa um leitor de iris para liberar a entrada. A equipe de seguranca esta preocupada com a taxa de falsa aceitacao (FAR) desse leitor. O que uma FAR alta significa na pratica?",
+        explanation: "A taxa de falsa aceitacao (FAR) mede com que frequencia o sistema biometrico aceita por engano uma pessoa nao autorizada, o que representa uma falha de seguranca. Ja a falsa rejeicao (FRR) recusa pessoas legitimas.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Pessoas nao autorizadas podem ser aceitas indevidamente pelo leitor.", true],
+            ["Pessoas autorizadas sao rejeitadas com frequencia ao tentar entrar.", false],
+            ["O leitor demora muito para cadastrar novos usuarios no sistema.", false],
+            ["O leitor passa a exigir um segundo fator de autenticacao sempre que a iluminacao do ambiente muda, tornando a entrada mais lenta para todos.", false],
+        ],
+    },
+    {
+        statement: "Um funcionario com acesso a varios sistemas criticos e desligado da empresa. Do ponto de vista de controle de acesso, qual e a acao mais importante a ser tomada imediatamente?",
+        explanation: "No desprovisionamento (offboarding), as contas de quem sai devem ser desativadas imediatamente para evitar acessos indevidos por parte de ex-funcionarios. Contas orfas ou ativas apos o desligamento sao um risco comum.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Trocar a senha do Wi-Fi corporativo para todos os funcionarios.", false],
+            ["Manter as contas ativas por 90 dias para o caso de o funcionario ser recontratado e precisar retomar suas atividades sem retrabalho.", false],
+            ["Desabilitar ou revogar todas as contas de acesso dele sem demora.", true],
+            ["Registrar o desligamento no sistema de RH e aguardar a revisao trimestral.", false],
+        ],
+    },
+    {
+        statement: "Para agilizar a criacao de contas de novos funcionarios, um administrador costuma copiar todas as permissoes de um colega antigo da mesma area. Qual e o principal risco dessa pratica de provisionamento?",
+        explanation: "Copiar (clonar) o perfil de outro usuario costuma conceder acessos alem do necessario, violando o menor privilegio e favorecendo o acumulo de permissoes (privilege creep). O provisionamento deve se basear no cargo e em aprovacao formal.",
+        topic: "Controle de Acesso",
+        options: [
+            ["A senha do colega antigo e revelada durante a copia das permissoes.", false],
+            ["O sistema de RH deixa de registrar a data de admissao do novo funcionario, o que impede o calculo correto do tempo de casa e dos beneficios.", false],
+            ["O colega antigo perde suas proprias permissoes ao servir de modelo.", false],
+            ["O novo usuario acumula permissoes desnecessarias ao seu cargo.", true],
+        ],
+    },
+    {
+        statement: "Um administrador de sistemas usa a mesma conta com privilegios de administrador para tarefas do dia a dia, como ler e-mails e navegar na internet. Qual recomendacao de seguranca para contas privilegiadas ele esta deixando de seguir?",
+        explanation: "Contas privilegiadas devem ser separadas das contas de uso cotidiano e utilizadas apenas para tarefas administrativas especificas, reduzindo a exposicao em caso de comprometimento. Navegar e ler e-mails com uma conta de administrador amplia o impacto de um ataque.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Compartilhar a conta de administrador com toda a equipe de TI para que qualquer um possa resolver incidentes fora do horario comercial sem depender de uma so pessoa.", false],
+            ["Usar uma conta comum no dia a dia e a privilegiada so quando necessario.", true],
+            ["Desabilitar completamente a conta de administrador e nunca mais utiliza-la.", false],
+            ["Compartilhar a senha privilegiada com o gestor para fins de auditoria.", false],
+        ],
+    },
+    {
+        statement: "Uma auditoria descobriu que varios funcionarios que mudaram de area ao longo dos anos ainda mantem acessos de suas funcoes anteriores. Qual pratica de controle de acesso teria evitado esse acumulo?",
+        explanation: "A revisao periodica de acessos (recertificacao) verifica se cada usuario ainda precisa das permissoes que possui, corrigindo o acumulo causado por transferencias (privilege creep). MFA e senhas fortes nao resolvem permissoes excessivas.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Exigir autenticacao multifator no login de todos os sistemas.", false],
+            ["Aumentar a complexidade exigida das senhas e reduzir o prazo de expiracao para que os usuarios troquem suas credenciais com mais frequencia.", false],
+            ["Revisar periodicamente os acessos de cada usuario e remover os indevidos.", true],
+            ["Criptografar os discos das estacoes de trabalho de todos os funcionarios.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa possui os seguintes controles: uma politica de uso aceitavel assinada pelos funcionarios, uma catraca na entrada do predio e uma regra de firewall que bloqueia portas. Como esses tres controles sao classificados, na ordem?",
+        explanation: "Politicas e procedimentos sao controles administrativos, barreiras como catracas e portas sao controles fisicos, e mecanismos como firewalls e senhas sao controles tecnicos (logicos). A mesma protecao pode combinar os tres tipos.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Administrativo, fisico e tecnico (logico).", true],
+            ["Fisico, administrativo e tecnico (logico).", false],
+            ["Tecnico (logico), fisico e administrativo.", false],
+            ["Todos sao considerados controles tecnicos, pois envolvem tecnologia e documentos que precisam ser gerenciados por sistemas informatizados da empresa.", false],
+        ],
+    },
+    {
+        statement: "Para liberar uma transferencia bancaria acima de um valor alto, um banco exige que dois funcionarios diferentes aprovem a operacao, cada um com sua propria credencial. Que mecanismo de controle de acesso esta sendo aplicado?",
+        explanation: "O controle dual (dual control ou regra das duas pessoas) exige que dois individuos autorizados atuem em conjunto para executar uma operacao sensivel, reduzindo fraude e erro. E uma forma de reforcar a segregacao de funcoes.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Menor privilegio, pois cada funcionario recebe apenas as permissoes estritamente necessarias para desempenhar as tarefas especificas do seu cargo no banco.", false],
+            ["Controle dual, que exige duas pessoas para concluir uma acao critica.", true],
+            ["Autenticacao multifator, que combina senha e token no login.", false],
+            ["Federacao de identidades entre diferentes sistemas do banco.", false],
+        ],
+    },
+    {
+        statement: "As portas eletronicas de uma empresa sao configuradas para destrancar automaticamente em caso de falta de energia, priorizando a saida rapida das pessoas em uma emergencia. Como esse comportamento de fechadura e chamado?",
+        explanation: "Uma fechadura fail-safe destranca na falta de energia para priorizar a vida (life safety), enquanto uma fail-secure permanece trancada para priorizar a protecao do ativo. A escolha depende do que se quer proteger em cada porta.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Fail-secure, pois a prioridade absoluta e impedir qualquer entrada nao autorizada mesmo durante uma emergencia com risco a vida das pessoas no predio.", false],
+            ["Fail-closed, garantindo que as portas permanecam trancadas.", false],
+            ["Fail-safe, que prioriza a seguranca das pessoas destrancando as portas.", true],
+            ["Tolerancia a falhas, que mantem o sistema de crachas sempre online.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa implementa uma solucao em que o funcionario se autentica uma unica vez pela manha e, a partir dai, acessa o e-mail, o ERP e a intranet sem digitar a senha novamente. Como se chama esse recurso?",
+        explanation: "O Single Sign-On (SSO) permite que o usuario se autentique uma vez e acesse varios sistemas sem novo login, melhorando a experiencia e a gestao de credenciais. Em contrapartida, exige protecao reforcada dessa credencial unica.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Autenticacao multifator (MFA).", false],
+            ["Logon unico (Single Sign-On, SSO).", true],
+            ["Federacao obrigatoria de crachas fisicos, que sincroniza a entrada no predio com o desbloqueio automatico de todos os aplicativos corporativos.", false],
+            ["Menor privilegio aplicado as credenciais.", false],
+        ],
+    },
+    {
+        statement: "Em um setor, varios operadores utilizam uma mesma conta generica chamada 'operador01' para acessar o sistema. Do ponto de vista de controle de acesso, qual e o maior problema dessa configuracao?",
+        explanation: "Contas compartilhadas eliminam a responsabilizacao individual (accountability), pois as acoes nao podem ser atribuidas a uma pessoa especifica, prejudicando auditoria e nao repudio. Cada usuario deve ter sua propria conta.",
+        topic: "Controle de Acesso",
+        options: [
+            ["As senhas compartilhadas expiram mais rapido do que as individuais, obrigando toda a equipe a redefinir a credencial simultaneamente varias vezes por mes.", false],
+            ["Contas genericas nao conseguem receber permissoes de leitura em arquivos.", false],
+            ["Nao e possivel saber qual pessoa realizou cada acao na conta.", true],
+            ["O sistema passa a exigir autenticacao multifator para todos os setores.", false],
+        ],
+    },
+    {
+        statement: "Para dificultar ataques de tentativa e erro de senha, um sistema e configurado para bloquear a conta apos cinco tentativas de login malsucedidas seguidas. Que tipo de controle de acesso e ameaca essa medida combate?",
+        explanation: "O bloqueio de conta apos varias tentativas e um controle tecnico (logico) que dificulta ataques de forca bruta, nos quais o atacante testa muitas senhas em sequencia. Ele previne o acesso, nao apenas o registra.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Um controle fisico contra o acesso de visitantes ao predio.", false],
+            ["Um controle administrativo que substitui a necessidade de qualquer politica de senha escrita, pois o proprio sistema passa a definir sozinho as regras de complexidade.", false],
+            ["Um controle de deteccao que apenas registra as tentativas sem impedi-las.", false],
+            ["Um controle logico contra ataques de forca bruta de senha.", true],
+        ],
+    },
+    {
+        statement: "Depois que um usuario comprova sua identidade com senha e token, o sistema verifica se ele tem permissao para excluir um registro especifico do banco de dados. Essa verificacao de permissao corresponde a qual etapa?",
+        explanation: "A autorizacao ocorre apos a autenticacao e determina quais recursos e acoes o usuario ja identificado tem permissao de acessar. Autenticacao prova quem e o usuario; autorizacao define o que ele pode fazer.",
+        topic: "Controle de Acesso",
+        options: [
+            ["Autenticacao, que confirma a identidade declarada pelo usuario.", false],
+            ["Identificacao, o momento inicial em que o usuario apenas declara quem e ao digitar o nome de usuario, antes de qualquer comprovacao de identidade.", false],
+            ["Autorizacao, que define o que o usuario pode fazer no sistema.", true],
+            ["Auditoria, que registra as acoes executadas para analise posterior.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao web precisa apenas ler registros de uma tabela de produtos, mas seu desenvolvedor configurou a conta de servico do banco de dados com permissoes de administrador. Qual principio foi violado e qual seria a correcao?",
+        explanation: "O menor privilegio tambem se aplica a contas de servico e de aplicacao, que devem ter apenas as permissoes estritamente necessarias para sua funcao. Uma conta de servico com direitos de administrador amplia muito o impacto de uma invasao.",
+        topic: "Controle de Acesso",
+        options: [
+            ["A segregacao de funcoes foi violada; a correcao e dividir a aplicacao em dois modulos operados por equipes diferentes para que ninguem controle todo o fluxo.", false],
+            ["O menor privilegio foi violado; conceda a conta apenas permissao de leitura.", true],
+            ["O nao repudio foi violado; a correcao e assinar digitalmente cada consulta.", false],
+            ["A defesa em profundidade foi violada; a correcao e adicionar um segundo firewall.", false],
+        ],
+    },
+    {
+        statement: "Depois de classificar suas informacoes em niveis como 'publico' e 'confidencial', uma empresa carimba cada documento e adiciona metadados indicando o nivel a que ele pertence. Qual e o principal objetivo dessa rotulagem?",
+        explanation: "A rotulagem (labeling) torna visivel a classificacao da informacao para que pessoas e sistemas apliquem as regras de manuseio, armazenamento e descarte adequadas. O rotulo orienta o tratamento, mas nao substitui os controles de acesso.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Sinalizar como cada informacao deve ser tratada e protegida.", true],
+            ["Criptografar automaticamente o conteudo de todos os documentos.", false],
+            ["Substituir a necessidade de controles de acesso, ja que o rotulo por si so impede tecnicamente que pessoas nao autorizadas abram o arquivo.", false],
+            ["Reduzir o tamanho dos arquivos armazenados no servidor da empresa.", false],
+        ],
+    },
+    {
+        statement: "O setor juridico informa que certos contratos precisam ser guardados por cinco anos por exigencia legal, e depois disso nao ha motivo para mante-los. Qual politica orienta por quanto tempo os dados devem ser conservados antes do descarte?",
+        explanation: "A politica de retencao de dados define por quanto tempo cada tipo de informacao deve ser mantida para atender a requisitos legais e de negocio, e quando deve ser descartada com seguranca. Guardar dados alem do necessario aumenta risco e custo.",
+        topic: "Operações de Segurança",
+        options: [
+            ["A politica de uso aceitavel, que descreve as formas permitidas e proibidas de utilizar os recursos e sistemas de informacao disponibilizados pela empresa.", false],
+            ["A politica de retencao de dados.", true],
+            ["A politica de senhas.", false],
+            ["A politica de mesa limpa.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa vai se desfazer de varios SSDs (unidades de estado solido) que armazenaram dados sensiveis. A equipe lembra que a desmagnetizacao (degaussing) funciona em HDs magneticos, mas nao em SSDs. Qual e a abordagem adequada para sanitizar esses SSDs?",
+        explanation: "SSDs nao sao afetados por desmagnetizacao e distribuem os dados internamente, entao a sanitizacao confiavel usa apagamento criptografico (crypto-erase) ou destruicao fisica. Apagar arquivos ou formatar rapidamente nao remove os dados de fato.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Desmagnetizar cada SSD com um degausser potente antes do descarte.", false],
+            ["Usar apagamento criptografico ou destruicao fisica da unidade.", true],
+            ["Apagar os arquivos e esvaziar a lixeira do sistema operacional.", false],
+            ["Formatar rapidamente a unidade varias vezes seguidas, o que sobrescreve todos os blocos de memoria flash de forma garantida por causa do gerenciamento interno do SSD.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa passa a exigir que os funcionarios guardem documentos em papel em gavetas trancadas e bloqueiem a tela ao se ausentar da mesa. Que politica de seguranca esta sendo implementada?",
+        explanation: "A politica de mesa limpa (clean desk) e tela bloqueada reduz o risco de pessoas nao autorizadas verem ou levarem informacoes sensiveis deixadas a vista. E especialmente util contra curiosos e visitantes no ambiente de trabalho.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Politica BYOD, que estabelece as condicoes sob as quais dispositivos pessoais dos funcionarios podem se conectar aos sistemas e a rede corporativa da empresa.", false],
+            ["Politica de retencao de dados.", false],
+            ["Politica de mesa limpa e tela bloqueada.", true],
+            ["Politica de classificacao de dados.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa envia lembretes rapidos, cartazes e e-mails para manter a seguranca na mente dos funcionarios no dia a dia, sem ensinar nenhuma habilidade tecnica especifica. Como se classifica melhor esse tipo de iniciativa?",
+        explanation: "A conscientizacao (awareness) usa lembretes e mensagens para reforcar comportamentos seguros, sem ensinar habilidades tecnicas. O treinamento desenvolve competencias praticas, e a educacao aprofunda o entendimento teorico.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Treinamento, que ensina habilidades praticas e especificas para que o funcionario saiba executar uma tarefa tecnica de seguranca, como configurar corretamente uma ferramenta.", false],
+            ["Educacao, que aprofunda conceitos teoricos em nivel avancado.", false],
+            ["Auditoria, que avalia a conformidade com as politicas internas.", false],
+            ["Conscientizacao (awareness), que mantem a seguranca presente no cotidiano.", true],
+        ],
+    },
+    {
+        statement: "Ao projetar a sala de servidores de uma nova instalacao, a equipe se preocupa em controlar temperatura e umidade e em instalar um sistema de supressao de incendio adequado a equipamentos eletronicos. Que categoria de controle de seguranca fisica ela esta tratando?",
+        explanation: "Temperatura, umidade, supressao de incendio e energia fazem parte dos controles ambientais da seguranca fisica, que protegem os equipamentos e a disponibilidade. Agua comum, por exemplo, nao e adequada para incendios em equipamentos eletricos.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Controle de acesso logico dos usuarios aos servidores.", false],
+            ["Controles ambientais da instalacao.", true],
+            ["Controles de segregacao de funcoes entre os administradores, garantindo que nenhum deles consiga concluir sozinho uma alteracao critica na configuracao dos servidores.", false],
+            ["Controles criptograficos dos dados em repouso nos discos.", false],
+        ],
+    },
+    {
+        statement: "Em uma empresa, surge a duvida sobre quem deve definir o nivel de classificacao de um conjunto de dados. Segundo as boas praticas de seguranca da informacao, essa responsabilidade e principalmente de quem?",
+        explanation: "A classificacao e responsabilidade do proprietario (data owner) da informacao, que conhece seu valor e sensibilidade para o negocio. O custodiante apenas protege os dados conforme a classificacao definida pelo proprietario.",
+        topic: "Operações de Segurança",
+        options: [
+            ["Do usuario final que consome os dados no dia a dia, pois e ele quem melhor conhece a rotina operacional e decide o nivel conforme a conveniencia de cada tarefa.", false],
+            ["Do administrador de rede que configura os firewalls da empresa.", false],
+            ["Do proprietario (owner) dos dados, responsavel por defini-los e classifica-los.", true],
+            ["Da equipe de limpeza que tem acesso fisico as instalacoes.", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -2140,13 +2955,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log("Simulado ja tem " + n + " questoes, nada a fazer.");
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -2165,7 +2990,7 @@ async function seed() {
             })),
         );
     }
-    console.log("Seed concluido: " + QUESTOES.length + " questoes inseridas.");
+    console.log("Seed: " + inseridas + " questoes novas inseridas (" + QUESTOES.length + " no banco).");
 }
 
 seed()

@@ -1647,6 +1647,678 @@ const QUESTOES: Questao[] = [
             ["O CloudFront so serve conteudo estatico e nunca conteudo dinamico", false],
         ],
     },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma funcao Lambda guarda uma chave de API de terceiros em uma variavel de ambiente. A equipe de seguranca exige que o valor fique cifrado em repouso e que apenas a funcao consiga decifra-lo em tempo de execucao. Qual abordagem atende a esse requisito?",
+        explanation: "As variaveis de ambiente ja ficam cifradas em repouso, mas para segredos usa-se uma CMK do KMS com os encryption helpers, que decifram o valor no codigo em tempo de execucao. Base64 nao e criptografia e enviar a chave em todo payload aumenta a exposicao.",
+        topic: "Lambda",
+        options: [
+            ["Habilitar a criptografia com uma chave do KMS gerenciada pelo cliente e usar os helpers de criptografia para decifrar o valor no codigo durante a inicializacao.", true],
+            ["Confiar apenas na criptografia padrao em repouso, que ja usa uma chave gerenciada pela AWS, pois isso impede que qualquer pessoa com acesso ao console leia o valor em texto claro.", false],
+            ["Ofuscar o valor em Base64 antes de salva-lo na variavel de ambiente, ja que o Lambda decodifica automaticamente as variaveis marcadas como sensiveis na inicializacao.", false],
+            ["Passar a chave de API no payload de cada invocacao, evitando armazena-la na configuracao da funcao e eliminando a necessidade de criptografia.", false],
+        ],
+    },
+    {
+        statement: "Uma funcao Lambda e invocada de forma assincrona pelo S3. A equipe quer que, quando o processamento falhar apos todas as retentativas, o evento seja enviado com o contexto do erro para uma fila SQS de analise. Qual recurso e o mais indicado?",
+        explanation: "Os Lambda destinations para invocacao assincrona enviam ao destino on-failure o evento junto com o contexto da resposta, incluindo detalhes do erro, mais informacao do que a DLQ, que so entrega o payload. Event source mapping nao se aplica a invocacao assincrona pelo S3.",
+        topic: "Lambda",
+        options: [
+            ["Configurar uma dead-letter queue (DLQ) na funcao, que encaminha o evento para o SQS, mas entrega apenas o payload original sem os detalhes da resposta nem o contexto da execucao que falhou.", false],
+            ["Aumentar o numero de retentativas assincronas para o maximo e ativar o X-Ray, de modo que o evento com erro fique registrado no trace e possa ser reprocessado manualmente a partir dele.", false],
+            ["Usar um event source mapping entre a funcao e a fila SQS, garantindo que qualquer invocacao com falha seja reenviada automaticamente para a mesma fila.", false],
+            ["Configurar um destino de invocacao para o caso de falha (on failure) apontando para a fila SQS, capturando o evento junto com o contexto da resposta.", true],
+        ],
+    },
+    {
+        statement: "Uma funcao Lambda baixa arquivos temporarios grandes durante o processamento e precisa de espaco em disco local. O que e correto sobre o armazenamento efemero disponivel para a funcao?",
+        explanation: "O Lambda oferece o diretorio /tmp como armazenamento efemero, com tamanho configuravel, reaproveitado enquanto o mesmo ambiente de execucao quente atende novas invocacoes. Para dados persistentes e compartilhados usa-se EFS ou S3.",
+        topic: "Lambda",
+        options: [
+            ["A funcao dispoe do diretorio /tmp, configuravel e reaproveitado enquanto o ambiente de execucao permanecer quente entre invocacoes.", true],
+            ["O unico armazenamento gravavel e a memoria RAM alocada a funcao, portanto arquivos temporarios precisam ser mantidos inteiramente em variaveis na memoria durante a execucao.", false],
+            ["A funcao deve montar um sistema de arquivos externo obrigatoriamente, pois o ambiente de execucao do Lambda e totalmente somente leitura e nao oferece nenhum diretorio gravavel.", false],
+            ["O diretorio /tmp existe, porem e apagado e recriado a cada invocacao, mesmo quando o mesmo ambiente de execucao e reutilizado para requisicoes seguintes.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela DynamoDB guarda sessoes de usuario que devem ser removidas automaticamente algum tempo apos expirarem, sem custo extra de escrita e sem que a aplicacao precise varrer e apagar itens. Qual recurso resolve isso?",
+        explanation: "O TTL do DynamoDB remove itens automaticamente apos o timestamp definido em um atributo, sem consumir capacidade de escrita. Varrer a tabela com Lambda gera custo e o modo on-demand nao apaga itens por conta propria.",
+        topic: "DynamoDB",
+        options: [
+            ["Criar uma regra do EventBridge que, a cada minuto, dispara uma funcao Lambda para escanear a tabela e executar DeleteItem em cada sessao cujo timestamp de expiracao ja tenha passado.", false],
+            ["Habilitar o DynamoDB Streams e processar cada item com uma Lambda que verifica a data de expiracao e remove os itens vencidos assim que eles sao gravados na tabela.", false],
+            ["Habilitar o TTL na tabela, indicando o atributo que contem o timestamp de expiracao para que o servico apague os itens vencidos automaticamente.", true],
+            ["Definir a capacidade da tabela como on-demand, pois nesse modo o DynamoDB descarta itens antigos sozinho quando o armazenamento cresce alem do previsto.", false],
+        ],
+    },
+    {
+        statement: "Dois processos podem atualizar o mesmo item de estoque ao mesmo tempo, e a equipe quer evitar que uma escrita sobrescreva a outra sem perceber (lost update). Qual tecnica do DynamoDB previne isso?",
+        explanation: "O bloqueio otimista usa um atributo de versao com uma condition expression: a escrita so ocorre se a versao nao mudou, caso contrario falha com erro condicional. Leitura consistente e GSI nao previnem lost updates.",
+        topic: "DynamoDB",
+        options: [
+            ["Ativar leituras fortemente consistentes em todas as operacoes, o que faz o DynamoDB serializar as escritas concorrentes e impede automaticamente que uma sobrescreva a outra.", false],
+            ["Configurar um GSI sobre o atributo de versao, pois assim o DynamoDB rejeita qualquer PutItem cujo numero de versao seja menor do que o ja indexado no indice secundario.", false],
+            ["Aumentar o visibility timeout no DynamoDB Streams para que a segunda escrita aguarde a primeira ser propagada antes de ser aplicada sobre o mesmo item.", false],
+            ["Manter um atributo de versao no item e usar uma condition expression que so aplica a escrita se a versao atual for a esperada.", true],
+        ],
+    },
+    {
+        statement: "Uma nova aplicacao tera trafego imprevisivel, com picos subitos e periodos de quase nenhuma atividade, e a equipe nao quer gerenciar capacidade nem arriscar throttling durante os picos. Qual modo de capacidade do DynamoDB e o mais adequado?",
+        explanation: "O modo on-demand escala instantaneamente com o trafego e cobra por requisicao, ideal para cargas imprevisiveis sem planejamento de capacidade. Auto scaling provisionado reage mais devagar e capacidade fixa ou reservada desperdica recurso nos periodos de baixa.",
+        topic: "DynamoDB",
+        options: [
+            ["Provisionado com auto scaling configurado com um alvo de utilizacao baixo e limites maximos altos, para que a tabela reaja aos picos ajustando as RCUs e WCUs conforme a demanda aumenta.", false],
+            ["On-demand, que escala automaticamente conforme o trafego e cobra por requisicao, sem exigir estimativa previa de capacidade.", true],
+            ["Provisionado com capacidade fixa dimensionada para o maior pico ja observado, garantindo margem de sobra e evitando qualquer throttling mesmo nos momentos de baixa atividade.", false],
+            ["Provisionado com capacidade reservada comprada por um ano, aproveitando o desconto e cobrindo os picos com a capacidade de burst acumulada nos periodos ociosos.", false],
+        ],
+    },
+    {
+        statement: "Um desenvolvedor executa uma operacao Query com uma FilterExpression e se surpreende porque o consumo de capacidade de leitura e alto mesmo retornando poucos itens. Qual explicacao esta correta?",
+        explanation: "A FilterExpression e aplicada depois que o DynamoDB le os itens que casam com a KeyConditionExpression, entao a capacidade e cobrada sobre os itens avaliados, nao sobre os poucos retornados. Reduzir o custo exige melhor modelagem de chaves ou um indice.",
+        topic: "DynamoDB",
+        options: [
+            ["A FilterExpression foi aplicada sobre a partition key, e filtrar pela partition key forca um Scan completo da tabela antes de qualquer filtragem dos resultados.", false],
+            ["O consumo e alto porque a FilterExpression exige leituras fortemente consistentes obrigatoriamente, o que dobra as RCUs de toda a operacao de Query.", false],
+            ["O filtro e aplicado depois que os itens sao lidos, entao a capacidade e consumida com base nos itens avaliados, nao nos itens retornados.", true],
+            ["So e possivel filtrar itens no DynamoDB usando um Scan, que percorre a tabela inteira, e por isso qualquer filtragem sempre custa a leitura de todos os itens existentes.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela DynamoDB precisa disparar uma Lambda a cada alteracao, e a funcao precisa comparar o estado anterior e o novo do item para auditar o que mudou. Como configurar o DynamoDB Streams?",
+        explanation: "O StreamViewType NEW_AND_OLD_IMAGES coloca no registro do stream a imagem do item antes e depois da alteracao, ideal para auditar diferencas. KEYS_ONLY e NEW_IMAGE nao trazem o estado anterior completo.",
+        topic: "DynamoDB Streams",
+        options: [
+            ["Habilitar o stream com a visao KEYS_ONLY e, dentro da Lambda, fazer um GetItem para buscar o estado anterior do item antes de ele ter sido alterado na tabela.", false],
+            ["Habilitar o stream com a visao NEW_AND_OLD_IMAGES, que entrega tanto o item antes quanto depois da alteracao em cada registro.", true],
+            ["Habilitar o stream com a visao NEW_IMAGE e reconstruir o estado anterior a partir dos registros passados mantidos no stream por ate 24 horas de retencao.", false],
+            ["Nao e possivel obter o estado anterior pelo stream, entao a auditoria precisa ser feita ativando o TTL e lendo os itens expirados que o DynamoDB arquiva automaticamente.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe vai expor uma API simples de proxy para funcoes Lambda e quer o menor custo e a menor latencia, abrindo mao de recursos como cache integrado, validacao de request e API keys com usage plans. Qual tipo de API do API Gateway escolher?",
+        explanation: "As HTTP APIs foram feitas para casos simples de proxy, com menor custo e latencia, abrindo mao de recursos das REST APIs, como cache e usage plans. WebSocket serve para comunicacao bidirecional, nao para request/response de baixa latencia.",
+        topic: "API Gateway",
+        options: [
+            ["REST API, porque e a unica que suporta integracao de proxy com Lambda e oferece a menor latencia entre todos os tipos disponiveis no API Gateway.", false],
+            ["WebSocket API, indicada para qualquer integracao com Lambda de baixo custo, mantendo uma conexao persistente que reduz a latencia de cada chamada individual.", false],
+            ["REST API com cache habilitado no stage, o que reduz o custo por chamada ao evitar que a maioria das requisicoes chegue de fato ate a funcao Lambda de backend.", false],
+            ["HTTP API, que tem custo menor e menor latencia, com um conjunto de recursos mais enxuto.", true],
+        ],
+    },
+    {
+        statement: "Um endpoint GET do API Gateway serve dados que mudam pouco e recebe muitas requisicoes repetidas, sobrecarregando o backend. A equipe quer reduzir as chamadas ao backend sem alterar o codigo. O que fazer?",
+        explanation: "O cache de stage do API Gateway guarda as respostas por um TTL configuravel e serve as requisicoes repetidas sem acionar o backend. Throttling apenas limita a taxa e usage plans com API keys controlam acesso, nao fazem cache.",
+        topic: "API Gateway",
+        options: [
+            ["Ativar o throttling no stage com um limite baixo de requisicoes por segundo, o que faz o API Gateway devolver respostas ja processadas anteriormente enquanto o limite nao e excedido.", false],
+            ["Configurar um usage plan com API keys para cada cliente, distribuindo as requisicoes entre varias chaves e assim diminuindo a quantidade total de chamadas que alcancam o backend.", false],
+            ["Habilitar o cache no stage e definir um TTL, para que respostas repetidas sejam servidas pelo cache sem chegar ao backend.", true],
+            ["Trocar a integracao para WebSocket, mantendo uma conexao aberta por cliente para que respostas anteriores sejam reaproveitadas sem novas chamadas ao backend.", false],
+        ],
+    },
+    {
+        statement: "Uma API publica e consumida por varios parceiros e a equipe precisa limitar quantas requisicoes cada parceiro pode fazer por mes e a que taxa, cobrando de forma diferente por nivel de servico. Qual recurso do API Gateway atende a isso?",
+        explanation: "Usage plans associados a API keys definem quota, por exemplo mensal, e throttling por cliente, ideais para diferentes niveis de parceiros. O throttling de conta e global e stage variables nao impoem limites de uso.",
+        topic: "API Gateway",
+        options: [
+            ["Associar API keys a usage plans, que definem quota e limites de throttling por cliente.", true],
+            ["Configurar o throttling no nivel da conta e da regiao, que ja aplica limites separados para cada API key emitida e permite cobrar por faixa de consumo.", false],
+            ["Criar um Lambda authorizer que conta as requisicoes de cada parceiro em uma tabela e rejeita as chamadas quando o parceiro ultrapassa a cota mensal contratada.", false],
+            ["Usar stage variables para armazenar o limite de cada parceiro e deixar o API Gateway bloquear automaticamente as chamadas que excederem o valor configurado na variavel.", false],
+        ],
+    },
+    {
+        statement: "Um app de chat precisa que o servidor envie mensagens aos clientes conectados no momento em que elas chegam, sem que o cliente fique fazendo polling. Qual tipo de API do API Gateway suporta esse padrao bidirecional?",
+        explanation: "A WebSocket API mantem uma conexao persistente e roteia mensagens por rotas como $connect, $disconnect e customizadas, permitindo ao servidor enviar dados ao cliente a qualquer momento. REST e HTTP APIs seguem o modelo request/response.",
+        topic: "API Gateway",
+        options: [
+            ["REST API com long polling habilitado no stage, mantendo cada requisicao do cliente aberta ate o servidor ter uma nova mensagem para responder e entao fecha-la.", false],
+            ["HTTP API com CORS configurado, que permite ao backend abrir conexoes de saida para o navegador do cliente e empurrar mensagens assim que elas ficam disponiveis.", false],
+            ["WebSocket API, que mantem uma conexao persistente e usa rotas como $connect, $disconnect e rotas customizadas para troca bidirecional.", true],
+            ["REST API integrada ao SNS, publicando cada mensagem em um topico ao qual os navegadores dos clientes se inscrevem diretamente para recebe-las em tempo real.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe vai orquestrar um fluxo de curtissima duracao invocado dezenas de milhares de vezes por segundo, priorizando alto volume e menor custo por execucao, e nao precisa do historico visual de cada execucao guardado por muito tempo. Qual tipo de workflow do Step Functions escolher?",
+        explanation: "Os workflows Express sao feitos para alto volume e curta duracao, com cobranca por quantidade e tempo de execucao, ao custo de menos historico. O modo Standard privilegia durabilidade e historico longo, com semantica exactly-once.",
+        topic: "Step Functions",
+        options: [
+            ["Standard, porque e o unico que garante a execucao exatamente uma vez e mantem o custo baixo mesmo em cenarios de altissimo volume de invocacoes por segundo.", false],
+            ["Express, otimizado para alto volume e curta duracao, com cobranca por numero e duracao das execucoes.", true],
+            ["Standard, pois workflows Express nao conseguem invocar funcoes Lambda nem integrar com outros servicos da AWS dentro dos estados do fluxo.", false],
+            ["Express com o historico completo de execucao habilitado no console, que retem cada transicao de estado por ate um ano para auditoria detalhada, como no modo Standard.", false],
+        ],
+    },
+    {
+        statement: "Em uma maquina de estados do Step Functions, um estado Task que chama uma Lambda as vezes falha por erros transitorios. A equipe quer repetir automaticamente algumas vezes com backoff e, se ainda assim falhar, desviar para um estado de tratamento. Como configurar isso?",
+        explanation: "Estados como Task suportam os campos Retry, com intervalo, backoff e numero maximo de tentativas, e Catch, que desvia para outro estado quando o erro persiste. Parallel e DLQ nao sao o mecanismo de tratamento de erro entre estados.",
+        topic: "Step Functions",
+        options: [
+            ["Envolver a chamada em um estado Parallel com dois ramos identicos, de modo que, se um ramo falhar, o outro assuma o resultado e a maquina de estados continue normalmente.", false],
+            ["Configurar uma DLQ diretamente no estado Task, para onde o Step Functions envia a execucao apos esgotar as tentativas, permitindo reprocessa-la a partir da fila mais tarde.", false],
+            ["Tratar todos os erros dentro do codigo da Lambda com try/catch e retornar sempre sucesso, ja que o Step Functions nao oferece mecanismo proprio de retentativa entre estados.", false],
+            ["Adicionar campos Retry, com backoff, e Catch no estado Task para repetir e depois desviar para um estado de tratamento de erro.", true],
+        ],
+    },
+    {
+        statement: "Um consumidor faz ReceiveMessage em uma fila SQS em loop e a equipe percebe muitas respostas vazias, elevando o custo de requisicoes quando a fila esta quase sempre sem mensagens. Qual ajuste reduz as respostas vazias?",
+        explanation: "O long polling, com WaitTimeSeconds maior que zero, faz o ReceiveMessage esperar por mensagens antes de retornar, reduzindo respostas vazias e o custo de requisicoes. Visibility timeout, FIFO e maxReceiveCount nao tem esse efeito.",
+        topic: "SQS",
+        options: [
+            ["Diminuir o visibility timeout da fila para zero, de modo que as mensagens fiquem imediatamente disponiveis e o consumidor nunca receba uma resposta vazia em suas chamadas.", false],
+            ["Habilitar o long polling definindo WaitTimeSeconds maior que zero, para a chamada aguardar mensagens chegarem antes de retornar.", true],
+            ["Trocar a fila Standard por uma fila FIFO, pois o modo FIFO agrupa as mensagens e responde somente quando ha um lote completo pronto para entrega ao consumidor.", false],
+            ["Aumentar o maxReceiveCount na redrive policy, o que mantem a chamada de recebimento aberta por mais tempo aguardando novas mensagens antes de considera-la vazia.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa executar uma funcao Lambda todos os dias as 2h da manha para gerar um relatorio, sem manter servidores ligados nem codigo de agendamento proprio. Qual recurso e o mais indicado?",
+        explanation: "Uma regra agendada do EventBridge, com cron ou rate, dispara alvos como uma Lambda em horarios definidos, sem infraestrutura de agendamento propria. Padroes de evento reagem a eventos, e SQS ou TTL nao sao agendadores confiaveis.",
+        topic: "EventBridge",
+        options: [
+            ["Uma regra do EventBridge baseada em padrao de evento que casa com um evento de relogio publicado pela AWS no barramento padrao a cada hora cheia do dia.", false],
+            ["Um DynamoDB Streams com TTL configurado para expirar um item exatamente as 2h, acionando a Lambda associada ao stream no momento em que o item e removido da tabela.", false],
+            ["Uma fila SQS com delay de 24 horas por mensagem, garantindo que cada nova mensagem enfileirada invoque a Lambda pontualmente no mesmo horario do dia seguinte.", false],
+            ["Uma regra agendada do EventBridge com expressao cron, que dispara a Lambda no horario definido.", true],
+        ],
+    },
+    {
+        statement: "Varios servicos se inscrevem em um unico topico SNS, mas cada assinante so quer receber um subconjunto das mensagens conforme atributos como tipo de pedido, evitando processar o que nao lhe interessa. Como fazer isso sem criar um topico por assinante?",
+        explanation: "A filter policy definida na assinatura faz o SNS avaliar os atributos da mensagem e entregar apenas as que casam, sem logica extra nem um topico por assinante. Descartar no codigo ou usar um roteador intermediario desperdica processamento.",
+        topic: "SNS",
+        options: [
+            ["Publicar cada mensagem para todos os assinantes e deixar cada um descartar no proprio codigo as mensagens cujos atributos nao correspondem ao que ele deveria processar.", false],
+            ["Definir uma filter policy em cada assinatura, para o SNS entregar apenas as mensagens cujos atributos casam com o filtro.", true],
+            ["Criar um assinante intermediario do tipo Lambda que le todas as mensagens do topico e as reencaminha para o assinante certo conforme o valor dos atributos de cada mensagem.", false],
+            ["Usar um topico SNS FIFO com message group ID por tipo de pedido, pois cada assinante recebe automaticamente somente o grupo de mensagens correspondente ao seu identificador.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao envia arquivos de varios gigabytes ao S3 em redes instaveis e a equipe quer paralelizar o envio e reenviar apenas a parte que falhar, sem recomecar o upload inteiro. Qual recurso do S3 atende a isso?",
+        explanation: "O multipart upload divide o objeto em partes que podem ser enviadas em paralelo e reenviadas individualmente quando falham, ideal para arquivos grandes em redes instaveis. Presigned URL, versionamento e Transfer Acceleration nao reenviam por parte.",
+        topic: "S3",
+        options: [
+            ["O upload com presigned URL unica, que divide o arquivo internamente e reenvia sozinho apenas os trechos corrompidos assim que detecta uma falha de rede durante a transferencia.", false],
+            ["O versionamento do bucket, que mantem cada tentativa de envio como uma versao e recompoe o objeto final juntando as partes bem-sucedidas de todas as versoes gravadas.", false],
+            ["O multipart upload, que divide o objeto em partes enviadas em paralelo e permite reenviar apenas as que falharem.", true],
+            ["A S3 Transfer Acceleration, que roteia o trafego por edge locations e, por isso, reinicia automaticamente do zero qualquer upload interrompido usando o caminho mais rapido.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa de um cache que tambem ofereca replicas para leitura, persistencia opcional e estruturas de dados como sorted sets para montar um placar de lideres. Qual motor do ElastiCache atende a esses requisitos?",
+        explanation: "O Redis oferece replicas, persistencia e estruturas como sorted sets, uteis para placares, recursos que o Memcached, focado em cache simples e multithread, nao possui. Os dois motores nao sao equivalentes em recursos.",
+        topic: "ElastiCache",
+        options: [
+            ["Redis, que suporta replicas, persistencia e estruturas de dados avancadas como sorted sets.", true],
+            ["Memcached, que oferece replicas de leitura, snapshots de persistencia e sorted sets nativos, alem de escalar horizontalmente adicionando nos ao cluster de forma simples.", false],
+            ["Memcached, porque e o unico motor do ElastiCache com suporte a estruturas de dados ricas e replicacao, enquanto o Redis se limita a pares chave-valor simples em memoria.", false],
+            ["Qualquer um dos dois, ja que Redis e Memcached expoem exatamente o mesmo conjunto de recursos no ElastiCache e diferem apenas no protocolo de rede usado pelos clientes.", false],
+        ],
+    },
+    {
+        statement: "Um app mobile precisa buscar, em uma unica requisicao, dados que vem de uma tabela DynamoDB e de uma funcao Lambda, deixando o cliente escolher exatamente quais campos quer, alem de receber atualizacoes em tempo real. Qual servico atende melhor a esse caso?",
+        explanation: "O AWS AppSync e um servico gerenciado de GraphQL que resolve multiplos data sources, como DynamoDB e Lambda, em uma requisicao, deixa o cliente escolher os campos e oferece subscriptions em tempo real. API Gateway e SNS nao fornecem GraphQL nativo.",
+        topic: "AppSync",
+        options: [
+            ["API Gateway com REST API, expondo um endpoint por recurso e deixando o app fazer varias chamadas e juntar no cliente os campos vindos do DynamoDB e da Lambda.", false],
+            ["Amazon SNS com fanout, entregando ao app as atualizacoes em tempo real e agregando na propria mensagem os campos do DynamoDB e o resultado da Lambda a cada evento.", false],
+            ["API Gateway com WebSocket API, que ja implementa o padrao GraphQL nativamente e permite ao cliente selecionar os campos desejados diretamente na string de conexao.", false],
+            ["AWS AppSync, um servico de GraphQL gerenciado que resolve varios data sources em uma requisicao e suporta subscriptions em tempo real.", true],
+        ],
+    },
+    {
+        statement: "Uma equipe quer que a permissao para excluir objetos de um bucket S3 so seja concedida quando o usuario tiver se autenticado com MFA na sessao atual. Como expressar isso em uma policy do IAM?",
+        explanation: "A chave de condicao aws:MultiFactorAuthPresent avalia se a sessao foi autenticada com MFA; combinada com Effect Allow, ela so libera a acao quando o valor e true. MFA Delete do S3 e um recurso a parte, ligado ao versionamento, e nao substitui essa condicao na policy do IAM.",
+        topic: "IAM",
+        options: [
+            ["Anexar uma permissions boundary que remova a acao s3:DeleteObject de todos os usuarios que nao pertencem ao grupo de administradores da conta.", false],
+            ["Definir a exclusao em uma policy separada e habilitar o versionamento do bucket, pois o MFA Delete passa a valer para qualquer chamada de API feita pela aplicacao.", false],
+            ["Incluir um bloco Condition com a chave aws:MultiFactorAuthPresent igual a true na declaracao que permite s3:DeleteObject.", true],
+            ["Usar o elemento Principal apontando para o ARN do usuario e ativar a federacao, garantindo que so sessoes temporarias do STS consigam apagar objetos.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa deixa que os desenvolvedores criem IAM roles para suas aplicacoes, mas quer garantir que nenhuma role criada por eles ultrapasse um conjunto maximo de permissoes, mesmo que a policy anexada conceda mais. Qual recurso atende a isso?",
+        explanation: "A permissions boundary e uma policy gerenciada que define o maximo de permissoes de uma identidade; as permissoes efetivas sao a intersecao entre a boundary e a policy de permissoes. SCPs atuam no nivel de contas de uma organizacao, nao em uma role individual.",
+        topic: "IAM",
+        options: [
+            ["Uma Service Control Policy (SCP) aplicada diretamente a role, que passa a limitar as permissoes efetivas daquela role especifica dentro da conta.", false],
+            ["Uma permissions boundary anexada as roles, que define o teto de permissoes efetivas independentemente do que a policy de permissoes conceda.", true],
+            ["Uma policy inline com muitas declaracoes Deny cobrindo cada servico que os desenvolvedores nao devem acessar em nenhuma hipotese.", false],
+            ["Uma role de sessao do STS com DurationSeconds reduzido, forcando a renovacao frequente das credenciais temporarias das aplicacoes.", false],
+        ],
+    },
+    {
+        statement: "Uma politica de conformidade exige que todo upload para um bucket S3 seja recusado caso o objeto nao venha com criptografia server-side. Como configurar isso no proprio bucket?",
+        explanation: "Uma bucket policy e uma policy baseada em recurso; com Effect Deny e uma Condition sobre o header de criptografia, ela recusa qualquer PutObject sem criptografia. A criptografia padrao apenas aplica a cifra automaticamente e nao bloqueia uploads.",
+        topic: "S3",
+        options: [
+            ["Habilitar a criptografia padrao do bucket, o que faz o S3 devolver um erro 403 Access Denied toda vez que um PutObject chegar sem o header de criptografia informado pelo cliente na requisicao.", false],
+            ["Anexar uma policy de identidade a cada usuario com um Deny para s3:PutObject, listando manualmente todas as contas que enviam arquivos ao bucket.", false],
+            ["Criar uma regra de ciclo de vida que criptografa os objetos ja existentes e move para outra classe os que estiverem sem criptografia apos 30 dias.", false],
+            ["Adicionar uma bucket policy que nega s3:PutObject com uma Condition quando o header s3:x-amz-server-side-encryption esta ausente.", true],
+        ],
+    },
+    {
+        statement: "Ao revisar os tipos de policy do IAM, uma desenvolvedora quer usar policies mantidas e atualizadas pela propria AWS conforme novos recursos surgem, sem ter que edita-las. Qual caracteristica descreve essas policies?",
+        explanation: "AWS managed policies sao criadas e administradas pela AWS, que cuida das atualizacoes quando novos servicos ou acoes surgem; voce as anexa mas nao altera seu conteudo. Customer managed e inline policies sao de sua responsabilidade editar.",
+        topic: "IAM",
+        options: [
+            ["Sao AWS managed policies, criadas e mantidas pela AWS, que voce anexa a varias identidades mas nao pode editar.", true],
+            ["Sao customer managed policies, que voce escreve e versiona, e que a AWS atualiza automaticamente sempre que um servico novo e lancado na regiao.", false],
+            ["Sao inline policies, embutidas diretamente em um unico usuario, grupo ou role, com relacao de um-para-um e replicacao automatica entre contas.", false],
+            ["Sao permissions boundaries, que a AWS aplica por padrao a toda identidade nova para garantir que ninguem exceda o conjunto de permissoes recomendado.", false],
+        ],
+    },
+    {
+        statement: "Em um Cognito User Pool, uma equipe quer que o app faca login sem enviar a senha do usuario pela rede, provando o conhecimento da senha por um desafio criptografico. Qual fluxo de autenticacao usar?",
+        explanation: "O fluxo USER_SRP_AUTH usa o protocolo Secure Remote Password para autenticar sem enviar a senha pela rede. Fluxos como ADMIN_USER_PASSWORD_AUTH transmitem a senha e exigem protecao adicional do canal.",
+        topic: "Cognito",
+        options: [
+            ["O fluxo ADMIN_USER_PASSWORD_AUTH, em que o backend envia usuario e senha para a API admin e o User Pool valida as credenciais diretamente.", false],
+            ["O fluxo de client credentials do OAuth, proprio para comunicacao maquina a maquina, que dispensa usuario e senha e emite apenas um access token.", false],
+            ["O fluxo SRP (Secure Remote Password), em que o cliente prova conhecer a senha sem transmiti-la.", true],
+            ["O fluxo de refresh token, em que o app troca o refresh token guardado por novos tokens de ID e de acesso quando os atuais expiram.", false],
+        ],
+    },
+    {
+        statement: "Um app protege uma API com Cognito e precisa decidir qual token o cliente deve enviar para autorizar o acesso a endpoints associados a escopos OAuth, e nao para identificar quem e o usuario. Qual token cumpre esse papel?",
+        explanation: "O access token do Cognito carrega os escopos OAuth 2.0 e serve para autorizar o acesso a recursos protegidos. O ID token traz claims de identidade e nao e o token indicado para decisoes de autorizacao por escopo.",
+        topic: "Cognito",
+        options: [
+            ["O ID token, que carrega as claims de identidade do usuario e e o indicado para autorizar chamadas com base nos escopos configurados no resource server.", false],
+            ["O access token, que carrega os escopos OAuth 2.0 e e usado para autorizar o acesso aos recursos protegidos.", true],
+            ["O refresh token, que e enviado a cada requisicao para que a API valide os escopos e, quando necessario, emita um novo par de tokens.", false],
+            ["A chave de API do usuario, gerada pelo User Pool no cadastro e apresentada no header Authorization em vez dos tokens JWT emitidos no login.", false],
+        ],
+    },
+    {
+        statement: "Um app de noticias quer que visitantes nao logados tambem obtenham credenciais AWS temporarias e limitadas para ler um bucket S3 de manchetes, antes mesmo de qualquer login. Qual recurso do Cognito permite isso?",
+        explanation: "O Identity Pool pode conceder acesso nao autenticado (guest), entregando credenciais temporarias associadas a uma unauthenticated role com permissoes restritas. User Pools autenticam usuarios e emitem tokens, mas nao fornecem credenciais AWS por si sos.",
+        topic: "Cognito",
+        options: [
+            ["Um Cognito User Pool com auto-registro habilitado, que cria um usuario anonimo temporario e emite um ID token de convidado a cada visita.", false],
+            ["Um grupo de convidados dentro do User Pool, mapeado para uma IAM role de leitura, cujos tokens sao trocados diretamente nas APIs da AWS.", false],
+            ["Um fluxo de federacao SAML que autentica o visitante em um provedor externo e devolve credenciais de curta duracao com escopo restrito ao bucket.", false],
+            ["Um Cognito Identity Pool com acesso nao autenticado (guest) habilitado, que entrega credenciais temporarias vinculadas a uma role de convidado.", true],
+        ],
+    },
+    {
+        statement: "Um administrador com a policy AdministratorAccess no IAM tenta usar uma CMK simetrica para criptografar dados e recebe AccessDenied, mesmo tendo permissoes amplas na conta. Qual e a causa mais provavel?",
+        explanation: "No KMS, a key policy e o controle de acesso primario de cada CMK; sem uma concessao nela (ou sem delegar ao IAM), nem um administrador consegue usar a chave. Permissoes amplas no IAM nao bastam se a key policy nao as reconhecer.",
+        topic: "KMS",
+        options: [
+            ["A key policy da CMK nao concede acesso a esse administrador, e toda CMK depende da sua key policy para autorizar o uso.", true],
+            ["A CMK esta com a rotacao automatica de material criptografico desabilitada, o que bloqueia as operacoes de Encrypt ate que a proxima rotacao anual seja concluida.", false],
+            ["A policy AdministratorAccess nao inclui a acao kms:Encrypt por padrao, sendo necessario anexar a policy gerenciada especifica de KMS ao usuario administrador.", false],
+            ["O administrador precisa primeiro exportar a chave simetrica em texto claro do KMS para a aplicacao e assinar a requisicao de Encrypt com esse material.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de seguranca precisa definir a propria key policy, controlar o agendamento da rotacao e conceder grants sobre a chave usada para criptografar dados de um servico. Que tipo de chave do KMS atende a esses requisitos?",
+        explanation: "A customer managed key e criada e administrada por voce, permitindo definir a key policy, criar grants e controlar a rotacao. AWS managed e AWS owned keys sao administradas pela AWS, sem esse nivel de controle.",
+        topic: "KMS",
+        options: [
+            ["Uma AWS managed key (aws/servico), pois ela permite editar a key policy e ajustar o intervalo de rotacao conforme a necessidade de cada aplicacao.", false],
+            ["Uma AWS owned key, compartilhada entre contas pela AWS, que a equipe administra pelo console definindo grants e politicas proprias de acesso.", false],
+            ["Uma customer managed key, que permite definir a key policy, criar grants e controlar a rotacao.", true],
+            ["Uma data key gerada por GenerateDataKey, armazenada no KMS com uma key policy dedicada que a equipe usa para controlar o acesso e a rotacao da chave.", false],
+        ],
+    },
+    {
+        statement: "Um sistema guarda dados criptografados por uma CMK antiga e precisa passar a protege-los com uma nova CMK, sem que o texto puro apareca na aplicacao durante a troca. Qual operacao do KMS faz isso?",
+        explanation: "A operacao ReEncrypt descriptografa o dado com a chave de origem e o recriptografa com a chave de destino inteiramente dentro do KMS, sem expor o texto puro. A rotacao automatica nao recriptografa dados ja existentes; ela so passa a usar o novo material em novas operacoes.",
+        topic: "KMS",
+        options: [
+            ["Chamar Decrypt com a chave antiga na aplicacao e, em seguida, Encrypt com a nova chave, mantendo o texto puro em memoria apenas pelo tempo minimo da troca.", false],
+            ["Chamar ReEncrypt, que descriptografa e recriptografa o dado inteiramente dentro do KMS, sem expor o texto puro.", true],
+            ["Habilitar a rotacao automatica da CMK antiga, que recriptografa em segundo plano todos os dados existentes com o novo material criptografico da chave.", false],
+            ["Criar um grant da chave nova para a chave antiga, o que autoriza o KMS a migrar automaticamente os dados de uma CMK para a outra sem intervencao.", false],
+        ],
+    },
+    {
+        statement: "Durante a rotacao automatica de um segredo no Secrets Manager, a funcao de rotacao cria o novo valor e precisa marca-lo antes de promove-lo, para que as aplicacoes continuem lendo o valor atual ate a troca ser concluida. Qual staging label identifica a versao em vigor?",
+        explanation: "O staging label AWSCURRENT aponta para a versao atual, que o GetSecretValue devolve quando nenhum VersionStage e informado. Durante a rotacao, o novo valor recebe AWSPENDING e so vira AWSCURRENT no passo final.",
+        topic: "Secrets Manager",
+        options: [
+            ["O label AWSPENDING marca a versao que as aplicacoes leem por padrao quando chamam GetSecretValue sem informar um VersionStage especifico.", false],
+            ["O label AWSPREVIOUS e aplicado a nova versao durante os passos createSecret e setSecret, sendo promovido a atual so no passo finishSecret.", false],
+            ["A rotacao nao usa labels; ela sobrescreve o valor no lugar e mantem apenas um historico numerico de versoes acessivel por VersionId.", false],
+            ["O label AWSCURRENT identifica a versao atual do segredo, retornada por padrao pelo GetSecretValue.", true],
+        ],
+    },
+    {
+        statement: "Uma aplicacao precisa guardar uma chave de API de terceiro de forma criptografada, sem necessidade de rotacao automatica, e o time quer a opcao de menor custo. Qual servico atende melhor?",
+        explanation: "O Parameter Store oferece o tipo SecureString, cifrado por KMS, sem cobranca por parametro no standard tier, sendo a opcao de menor custo quando a rotacao automatica nao e necessaria. O Secrets Manager cobra por segredo e se justifica quando a rotacao gerenciada e desejada.",
+        topic: "Parameter Store",
+        options: [
+            ["O SSM Parameter Store, com um parametro SecureString cifrado por KMS, que armazena o valor sem custo por segredo.", true],
+            ["O Secrets Manager, que tambem criptografa com KMS e e a escolha de menor custo por oferecer rotacao automatica nativa mesmo quando ela nao e usada.", false],
+            ["Uma variavel de ambiente criptografada da funcao Lambda, protegida por uma CMK, que dispensa qualquer chamada de API para recuperar o valor em runtime.", false],
+            ["O Parameter Store no advanced tier, necessario porque o standard tier nao oferece o tipo SecureString nem integracao com o KMS para criptografia.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa contrata um SaaS de terceiros que assume uma role na conta dela para coletar metricas. Para evitar o problema do confused deputy, que mecanismo deve ser exigido na hora do AssumeRole?",
+        explanation: "O ExternalId e um valor combinado entre voce e o terceiro e verificado por uma Condition (sts:ExternalId) na trust policy, mitigando o confused deputy. Ele garante que o SaaS so assuma a role em nome do cliente correto.",
+        topic: "STS",
+        options: [
+            ["Reduzir o DurationSeconds da sessao ao minimo, de modo que as credenciais temporarias do terceiro expirem antes que possam ser reutilizadas por outro cliente.", false],
+            ["Exigir MFA do terceiro em cada AssumeRole, adicionando a condicao aws:MultiFactorAuthPresent na trust policy da role assumida pelo SaaS.", false],
+            ["Exigir um ExternalId acordado entre as partes, validado por uma Condition na trust policy da role.", true],
+            ["Trocar a role por um IAM user dedicado ao terceiro, com chaves de acesso de longa duracao rotacionadas periodicamente e escopo restrito as metricas.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao assume uma role e recebe credenciais temporarias do STS. O que a equipe precisa considerar sobre a validade dessas credenciais?",
+        explanation: "As credenciais temporarias do STS tem duracao definida (DurationSeconds, dentro do maximo da role) e param de funcionar ao expirar; a aplicacao deve chamar AssumeRole de novo para renova-las. O STS nao faz a renovacao automaticamente.",
+        topic: "STS",
+        options: [
+            ["As credenciais temporarias valem indefinidamente enquanto a role existir, e so deixam de funcionar se a trust policy for removida ou a role for excluida.", false],
+            ["As credenciais expiram ao fim da duracao da sessao e, depois disso, a aplicacao precisa assumir a role de novo para obter credenciais validas.", true],
+            ["O STS renova as credenciais automaticamente em segundo plano antes de expirarem, sem que a aplicacao precise chamar AssumeRole novamente em nenhum momento.", false],
+            ["As credenciais so expiram quando a chave de acesso de longa duracao do IAM user que originou a chamada de AssumeRole for rotacionada manualmente pelo time.", false],
+        ],
+    },
+    {
+        statement: "Ao enviar uma requisicao para uma API da AWS, o SDK anexa uma assinatura calculada com as credenciais do chamador. Qual e o proposito dessa assinatura SigV4?",
+        explanation: "O SigV4 usa as credenciais para autenticar quem faz a chamada e garante a integridade da requisicao, detectando qualquer alteracao em transito. A assinatura nao substitui o TLS nem expoe a chave secreta na requisicao.",
+        topic: "SigV4",
+        options: [
+            ["Criptografar o corpo da requisicao de ponta a ponta, de modo que nem o servico da AWS consiga ler o conteudo sem a chave privada do chamador.", false],
+            ["Comprimir e assinar o payload para reduzir a latencia, substituindo o TLS no transporte entre o SDK e o endpoint regional do servico.", false],
+            ["Anexar as credenciais de longa duracao em texto claro no header Authorization, para que o servico as valide contra o banco de identidades do IAM.", false],
+            ["Autenticar o chamador e proteger a integridade da requisicao contra alteracoes em transito.", true],
+        ],
+    },
+    {
+        statement: "Um servico precisa chamar um dominio do Amazon OpenSearch protegido por IAM usando um cliente HTTP proprio, sem SDK da AWS. O que a aplicacao tem que fazer para as chamadas serem aceitas?",
+        explanation: "Sem o SDK, que assina automaticamente, a aplicacao precisa calcular e anexar a assinatura SigV4 em cada requisicao usando suas credenciais. Endpoints protegidos por IAM, como o OpenSearch, recusam chamadas sem assinatura valida.",
+        topic: "SigV4",
+        options: [
+            ["Assinar manualmente cada requisicao com SigV4, usando as credenciais da aplicacao.", true],
+            ["Enviar as chaves de acesso e a chave secreta em headers customizados, deixando que o dominio do OpenSearch as valide diretamente contra o IAM da conta.", false],
+            ["Anexar um API key gerado no console do OpenSearch ao header Authorization, dispensando qualquer assinatura porque o controle de acesso passa a ser por chave.", false],
+            ["Abrir o acesso ao dominio por uma policy baseada em IP e chamar por HTTP simples, ja que a assinatura so e exigida quando se usa o SDK oficial da AWS.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao gera uma presigned URL para que um cliente baixe um objeto privado do S3 por tempo limitado. O que determina as permissoes e a validade dessa URL?",
+        explanation: "A presigned URL carrega a assinatura das credenciais de quem a criou, entao herda as permissoes desse principal, e vale ate o tempo de expiracao definido na geracao. Enquanto valida, qualquer um que tenha a URL consegue acessar o objeto, sem precisar de credenciais proprias.",
+        topic: "S3",
+        options: [
+            ["A URL usa sempre as permissoes da role de execucao do S3 e vale por 7 dias fixos, independentemente de quem a gerou ou das credenciais utilizadas.", false],
+            ["Qualquer pessoa que receba a URL precisa autenticar-se no S3 com as proprias credenciais IAM, que sao checadas contra a bucket policy no momento do download.", false],
+            ["A URL herda as permissoes de quem a gerou e expira no prazo definido na criacao, funcionando ate la para quem a tiver.", true],
+            ["A URL so funciona se o objeto tiver ACL public-read, porque o S3 exige acesso publico para servir downloads sem passar pelas credenciais do gerador.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer uma trava que impeca buckets de ficarem publicos por engano, mesmo que alguem aplique uma ACL ou uma bucket policy que conceda acesso publico. Qual recurso oferece essa protecao?",
+        explanation: "O S3 Block Public Access atua como uma trava que se sobrepoe a ACLs e bucket policies, bloqueando o acesso publico mesmo que essas configuracoes o concedam. E aplicavel no nivel da conta ou de cada bucket.",
+        topic: "S3",
+        options: [
+            ["O IAM Access Analyzer, que reverte automaticamente qualquer bucket policy que conceda acesso publico assim que detecta a alteracao na conta.", false],
+            ["O S3 Block Public Access, que sobrepoe ACLs e bucket policies e bloqueia o acesso publico mesmo quando elas o concedem.", true],
+            ["A criptografia padrao do bucket, que ao ser habilitada passa a exigir credenciais assinadas em toda requisicao e assim elimina qualquer forma de acesso anonimo.", false],
+            ["Uma SCP na organizacao que remove a acao s3:PutBucketPolicy de todas as contas, impedindo que qualquer policy publica chegue a ser aplicada a um bucket.", false],
+        ],
+    },
+    {
+        statement: "Um requisito de seguranca determina que objetos de um bucket S3 so podem ser acessados por conexoes criptografadas (HTTPS), recusando qualquer chamada por HTTP. Como impor isso no bucket?",
+        explanation: "Uma bucket policy com Effect Deny condicionado a aws:SecureTransport igual a false recusa qualquer requisicao que nao use HTTPS. A criptografia padrao protege os dados em repouso e nao controla o protocolo de transporte.",
+        topic: "S3",
+        options: [
+            ["Habilitar a criptografia server-side padrao do bucket, que passa a rejeitar automaticamente toda requisicao que nao chegue por uma conexao TLS.", false],
+            ["Configurar um endpoint de acesso somente-HTTPS no CloudFront e apontar o bucket como origem, o que faz o S3 recusar o trafego HTTP direto na origem.", false],
+            ["Ativar o S3 Block Public Access, que alem de bloquear acesso publico forca todas as requisicoes restantes a usarem o protocolo HTTPS por padrao.", false],
+            ["Adicionar uma bucket policy com Deny quando a condicao aws:SecureTransport for false.", true],
+        ],
+    },
+    {
+        statement: "Uma funcao Lambda so precisa ler itens de uma tabela DynamoDB especifica e gravar seus logs. Seguindo o menor privilegio, como deve ser a execution role?",
+        explanation: "O menor privilegio concede so as acoes necessarias (leitura na tabela especifica e escrita de logs), reduzindo o impacto de credenciais comprometidas. Policies amplas como AmazonDynamoDBFullAccess ou dynamodb:* violam esse principio.",
+        topic: "Lambda",
+        options: [
+            ["Conceder apenas dynamodb:GetItem e dynamodb:Query na tabela especifica, alem das permissoes de escrita em logs do CloudWatch.", true],
+            ["Anexar a policy gerenciada AmazonDynamoDBFullAccess, que ja cobre a leitura necessaria e evita ajustes de permissao caso a funcao passe a escrever na tabela depois.", false],
+            ["Reaproveitar uma role administrativa existente, pois a funcao roda em ambiente isolado e as permissoes amplas nao representam risco dentro da propria conta.", false],
+            ["Conceder dynamodb:* na conta inteira e a policy AWSLambdaBasicExecutionRole, garantindo acesso a qualquer tabela que a funcao venha a usar no futuro.", false],
+        ],
+    },
+    {
+        statement: "Um template do CloudFormation precisa selecionar o ID da AMI correto conforme a regiao onde a stack e criada, ja que cada regiao tem um ID de AMI diferente. A equipe quer resolver isso dentro do proprio template, sem passar o ID como parametro. Qual recurso do template atende a essa necessidade?",
+        explanation: "A secao Mappings guarda pares chave-valor fixos, como regiao para ID de AMI, e Fn::FindInMap resolve o valor certo em tempo de criacao usando a pseudo-variavel AWS::Region.",
+        topic: "CloudFormation",
+        options: [
+            ["Uma secao Mappings com os IDs por regiao, consultada em runtime por Fn::FindInMap usando AWS::Region como chave.", true],
+            ["Uma secao Parameters do tipo AWS::EC2::Image::Id que obriga quem cria a stack a digitar manualmente o ID da AMI de cada regiao antes de cada deploy.", false],
+            ["Uma secao Outputs que exporta o ID da AMI para que outras stacks importem o valor correto por Fn::ImportValue.", false],
+            ["Uma Condition que compara a regiao atual e, para cada uma, cria um recurso EC2 separado com o ID de AMI fixo embutido.", false],
+        ],
+    },
+    {
+        statement: "Uma stack de rede cria uma VPC e exporta o ID de uma subnet. Uma segunda stack, gerenciada por outra equipe e implantada separadamente, precisa criar instancias nessa subnet referenciando o valor da primeira stack. As stacks nao tem relacao de aninhamento. Como a segunda stack obtem o ID da subnet?",
+        explanation: "Referencias entre stacks independentes usam Output com Export na stack de origem e Fn::ImportValue na stack consumidora; o aninhamento seria uma abordagem diferente, com stacks pai e filhas.",
+        topic: "CloudFormation",
+        options: [
+            ["Declarando a primeira stack como um recurso AWS::CloudFormation::Stack aninhado dentro da segunda e lendo a saida pela referencia ao recurso aninhado.", false],
+            ["Usando Fn::GetAtt diretamente sobre o nome logico do recurso de subnet, ja que o CloudFormation resolve referencias entre quaisquer stacks da conta automaticamente.", false],
+            ["Declarando um Output com Export na primeira stack e consumindo esse nome exportado com Fn::ImportValue na segunda.", true],
+            ["Copiando o ID da subnet para um parametro da segunda stack a cada deploy, pois o CloudFormation nao oferece mecanismo nativo para compartilhar valores entre stacks independentes.", false],
+        ],
+    },
+    {
+        statement: "Um template recebe a senha de um banco de dados como parametro. O time de seguranca exige que esse valor nao apareca em texto claro no console, nos eventos nem na descricao da stack. Qual configuracao do parametro atende a esse requisito?",
+        explanation: "NoEcho true faz o CloudFormation mascarar o valor do parametro como asteriscos no console, nos eventos e nas respostas de API. AllowedPattern e Metadata nao ocultam valores, e SecureString e um tipo do Parameter Store.",
+        topic: "CloudFormation",
+        options: [
+            ["Definir o parametro com AllowedPattern e MinLength, o que impede o CloudFormation de exibir o valor apos a validacao.", false],
+            ["Definir a propriedade NoEcho como true no parametro, mascarando o valor exibido como asteriscos.", true],
+            ["Colocar o parametro na secao Metadata, que o CloudFormation trata como conteudo interno e nunca exibe.", false],
+            ["Marcar o parametro com o tipo SecureString, fazendo o CloudFormation cifrar e ocultar o valor automaticamente com uma chave do KMS gerenciada pela stack.", false],
+        ],
+    },
+    {
+        statement: "Uma instancia EC2 criada por uma stack roda um script de bootstrap demorado que instala e configura a aplicacao. A equipe quer que o CloudFormation so considere o recurso como criado com sucesso depois que o script confirmar que a aplicacao esta pronta, evitando que a stack conclua antes da hora. Qual abordagem atende a isso?",
+        explanation: "Um CreationPolicy faz o CloudFormation aguardar um numero de sinais de sucesso enviados por cfn-signal antes de marcar o recurso como CREATE_COMPLETE, garantindo que a aplicacao esteja realmente pronta.",
+        topic: "CloudFormation",
+        options: [
+            ["Adicionar um DependsOn na instancia apontando para ela mesma, forcando o CloudFormation a esperar o termino do bootstrap.", false],
+            ["Aumentar o timeout global da stack nas configuracoes do console, o que faz o CloudFormation reavaliar o estado da aplicacao periodicamente.", false],
+            ["Definir uma DeletionPolicy de Retain na instancia para que, em caso de falha do bootstrap, o CloudFormation preserve o recurso e continue tentando executar o script ate obter sucesso.", false],
+            ["Adicionar um CreationPolicy a instancia e chamar cfn-signal ao final do script, sinalizando sucesso; o recurso so fica CREATE_COMPLETE apos o sinal.", true],
+        ],
+    },
+    {
+        statement: "Em um template do AWS SAM, a equipe quer que cada atualizacao de uma funcao Lambda desloque o trafego gradualmente, enviando 10% para a nova versao por 5 minutos e revertendo automaticamente se um alarme do CloudWatch disparar. Que combinacao de propriedades no AWS::Serverless::Function habilita isso?",
+        explanation: "No SAM, AutoPublishAlias cria e aponta um alias para cada nova versao, e DeploymentPreference define a estrategia de shift (Canary/Linear), integrando com CodeDeploy e alarmes para rollback automatico.",
+        topic: "SAM",
+        options: [
+            ["AutoPublishAlias para publicar versoes e um DeploymentPreference com Type Canary10Percent5Minutes e Alarms.", true],
+            ["Uma propriedade ProvisionedConcurrencyConfig combinada com um bloco RollbackConfiguration que monitora alarmes e desfaz a publicacao da versao se as metricas de erro ultrapassarem o limite definido.", false],
+            ["Um evento do tipo Schedule que reavalia as metricas a cada 5 minutos e ajusta os pesos do alias manualmente conforme o resultado.", false],
+            ["Definir VersionDescription e uma AutoPublishCodeSha256, deixando o proprio SAM escolher a estrategia canary padrao sem configuracao adicional.", false],
+        ],
+    },
+    {
+        statement: "Um template do SAM declara varias funcoes Lambda que compartilham o mesmo Runtime, Timeout e um conjunto de variaveis de ambiente. Para nao repetir essas configuracoes em cada funcao, onde a equipe pode declara-las uma unica vez e deixa-las valerem para todas as funcoes?",
+        explanation: "A secao Globals do SAM define propriedades padrao herdadas por todos os recursos de um tipo suportado (Function, Api, HttpApi, SimpleTable), evitando repeticao; cada recurso ainda pode sobrescrever um valor.",
+        topic: "SAM",
+        options: [
+            ["Na secao Mappings, criando uma chave por funcao e aplicando os valores com Fn::FindInMap em cada recurso.", false],
+            ["Na secao Outputs, exportando os valores para que cada AWS::Serverless::Function os importe automaticamente durante o build.", false],
+            ["Na secao Globals, que aplica propriedades padrao a todos os recursos de um tipo suportado, como funcoes.", true],
+            ["Em um arquivo samconfig.toml separado, que o SAM CLI le durante o sam deploy e injeta as mesmas propriedades em cada funcao antes de gerar o template do CloudFormation equivalente.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao em conteiner roda em um servico do Amazon ECS e a equipe faz deploy blue/green pelo CodeDeploy. Ela quer subir a nova versao da task em paralelo, valida-la por um listener de teste e so entao direcionar o trafego de producao. Como o CodeDeploy conduz esse deploy no ECS?",
+        explanation: "No blue/green do CodeDeploy com ECS, um novo conjunto de tasks sobe em um segundo target group; o trafego de producao e deslocado no listener do balanceador do target group original para o novo, permitindo validacao via listener de teste e rollback rapido.",
+        topic: "CodeDeploy",
+        options: [
+            ["Ele atualiza a task definition no mesmo target group e reinicia as tasks uma a uma, mantendo um unico listener durante toda a troca.", false],
+            ["Ele provisiona um novo replacement set de tasks em um segundo target group e desloca o trafego do listener de producao do target group antigo para o novo.", true],
+            ["Ele cria um cluster ECS totalmente separado com a nova versao, aguarda a drenagem completa das conexoes do cluster antigo e depois atualiza o registro DNS no Route 53 para apontar os usuarios ao novo cluster.", false],
+            ["Ele publica a nova task como uma revisao e usa pesos de roteamento no proprio servico ECS, sem envolver listeners nem target groups do balanceador.", false],
+        ],
+    },
+    {
+        statement: "Um CodePipeline implanta automaticamente em homologacao, mas a equipe exige que uma pessoa autorize explicitamente a promocao para producao antes que o estagio de deploy em prod execute. Como adicionar essa pausa para autorizacao humana no pipeline?",
+        explanation: "Uma acao de aprovacao manual (Manual approval) pausa o pipeline e aguarda um usuario com permissao aprovar ou rejeitar, opcionalmente notificando via SNS; so apos a aprovacao o pipeline avanca.",
+        topic: "CodePipeline",
+        options: [
+            ["Configurar um webhook no estagio de producao que bloqueia a transicao ate receber uma chamada externa de aprovacao de um sistema de terceiros.", false],
+            ["Habilitar o modo de execucao SUPERSEDED no pipeline, que retem cada execucao ate um administrador confirmar pelo console.", false],
+            ["Inserir um estagio de build adicional que roda testes de aceitacao e, se todos passarem, marca o artefato como aprovado e libera automaticamente o estagio seguinte sem intervencao de ninguem.", false],
+            ["Adicionar uma acao do tipo Manual approval antes do estagio de producao; o pipeline pausa ate alguem aprovar ou rejeitar.", true],
+        ],
+    },
+    {
+        statement: "Uma task do ECS no Fargate falha ao iniciar porque nao consegue baixar a imagem do Amazon ECR nem ler um segredo do Secrets Manager referenciado na task definition. Ja o codigo da aplicacao, quando roda, precisa gravar objetos em um bucket S3. Como distribuir corretamente essas permissoes?",
+        explanation: "O task execution role e usado pelo agente do ECS para puxar a imagem do ECR, buscar segredos e enviar logs; o task role concede permissoes ao codigo da aplicacao em runtime, como gravar no S3. No Fargate nao ha instance role do host.",
+        topic: "ECS",
+        options: [
+            ["Dar ao task execution role o acesso ao ECR e ao Secrets Manager, e ao task role a permissao de escrita no S3.", true],
+            ["Dar ao task role o acesso ao ECR e ao Secrets Manager, e ao task execution role a permissao de escrita no S3.", false],
+            ["Colocar todas as permissoes (ECR, Secrets Manager e S3) na instance role da EC2 do cluster, ja que no Fargate as tasks herdam as permissoes do host onde sao agendadas.", false],
+            ["Anexar ECR e Secrets Manager ao execution role e tambem mover a escrita no S3 para ele, deixando o task role sem nenhuma permissao.", false],
+        ],
+    },
+    {
+        statement: "Um repositorio do Amazon ECR acumula muitas imagens antigas e sem tag a cada build, e o custo de armazenamento cresce. A equipe quer remover automaticamente as imagens obsoletas segundo regras de idade ou quantidade, sem rodar scripts manuais. Qual recurso do ECR faz isso?",
+        explanation: "A lifecycle policy do ECR remove imagens automaticamente conforme regras baseadas em idade ou em contagem (e em tag ou sem tag), reduzindo o armazenamento sem automacao externa. Image scanning e imutabilidade de tags servem a outros propositos.",
+        topic: "ECR",
+        options: [
+            ["Habilitar image scanning on push, que identifica imagens vulneraveis e as expira do repositorio apos o relatorio de findings.", false],
+            ["Ativar a imutabilidade de tags no repositorio, o que impede novas imagens e libera espaco ao rejeitar pushes duplicados.", false],
+            ["Configurar uma lifecycle policy no repositorio com regras que expiram imagens por idade ou por contagem.", true],
+            ["Criar uma regra no EventBridge que dispara diariamente uma funcao Lambda encarregada de listar todas as imagens do repositorio, ordena-las e chamar a API de exclusao para as que excederem o limite definido.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe roda a aplicacao no Elastic Beanstalk e quer fazer blue/green: subir a nova versao em um ambiente separado, testa-la com sua propria URL e, quando aprovada, direcionar o trafego de producao para ela quase sem downtime, podendo reverter rapido. Qual recurso do Beanstalk faz essa troca?",
+        explanation: "O Swap Environment URLs troca os CNAMEs de dois ambientes do Beanstalk, movendo o trafego de producao para o ambiente novo quase sem downtime e permitindo reverter ao trocar de novo. As politicas Immutable e Rolling atuam dentro de um unico ambiente.",
+        topic: "Elastic Beanstalk",
+        options: [
+            ["A politica de deploy Immutable, que substitui as instancias do ambiente de producao por novas ja com a versao nova validada.", false],
+            ["O Swap Environment URLs, que troca os CNAMEs dos dois ambientes, redirecionando o trafego para o novo.", true],
+            ["A politica de deploy Rolling with additional batch, que adiciona um lote extra de instancias com a nova versao antes de remover as antigas.", false],
+            ["O recurso de Saved Configurations, que guarda as definicoes do ambiente antigo e as reaplica sobre o ambiente novo caso seja necessario reverter o trafego para a versao anterior.", false],
+        ],
+    },
+    {
+        statement: "Ao instrumentar uma aplicacao com o X-Ray, um desenvolvedor adiciona o customerId em cada segmento e depois quer filtrar e agrupar traces por esse valor diretamente na console do X-Ray. Como ele deve registrar o customerId para conseguir filtrar por ele?",
+        explanation: "Annotations sao pares chave-valor indexados pelo X-Ray e podem ser usados em filter expressions para buscar e agrupar traces; metadata guarda dados nao indexados, apenas para contexto adicional, sem suporte a filtro.",
+        topic: "X-Ray",
+        options: [
+            ["Como metadata, pois campos de metadata sao indexados pelo X-Ray e ficam disponiveis para filtro por expressao de busca.", false],
+            ["Como um subsegmento nomeado com o valor do customerId, ja que o X-Ray cria automaticamente um indice a partir dos nomes de subsegmentos para permitir consultas por qualquer um deles no service map.", false],
+            ["Em qualquer um dos dois, annotation ou metadata, porque o X-Ray indexa ambos e a diferenca e apenas o tamanho maximo permitido para o valor.", false],
+            ["Como annotation, pois annotations sao indexadas e podem ser usadas em filter expressions.", true],
+        ],
+    },
+    {
+        statement: "Uma equipe quer ver traces de uma funcao Lambda no X-Ray, incluindo o tempo gasto nas chamadas que ela faz ao DynamoDB. O que e necessario para que a funcao apareca no service map e as chamadas downstream sejam detalhadas?",
+        explanation: "Ativar o Active tracing na configuracao da funcao faz o Lambda emitir segmentos e gerenciar o daemon do X-Ray; instrumentar o SDK adiciona subsegmentos para chamadas downstream como o DynamoDB. Memoria e sampling isoladamente nao habilitam o tracing.",
+        topic: "X-Ray",
+        options: [
+            ["Habilitar o Active tracing na funcao e instrumentar o cliente AWS com o X-Ray SDK para gerar os subsegmentos downstream.", true],
+            ["Apenas aumentar a memoria da funcao, pois o X-Ray so captura traces de funcoes acima de um limite minimo de memoria alocada.", false],
+            ["Instalar e rodar o daemon do X-Ray como um processo dentro do pacote de implantacao da funcao, ja que no Lambda e responsabilidade do desenvolvedor manter o daemon ativo para receber e encaminhar os segmentos.", false],
+            ["Configurar uma sampling rule com taxa de 100% no console do X-Ray, o que por si so ativa a coleta de traces em todas as funcoes da conta.", false],
+        ],
+    },
+    {
+        statement: "Depois de um incidente, a equipe precisa vasculhar interativamente os logs de um grupo do CloudWatch Logs para contar quantas requisicoes tiveram latencia acima de 1 segundo e agrupa-las por endpoint, sem exportar os dados para outro servico. Qual recurso faz essa analise ad hoc sobre os logs?",
+        explanation: "O CloudWatch Logs Insights consulta interativamente grupos de logs com uma linguagem propria (filter, stats, sort), ideal para agregacoes ad hoc como contar e agrupar por campo. Metric filters geram metricas continuas, nao consultas exploratorias.",
+        topic: "CloudWatch Logs",
+        options: [
+            ["Um metric filter aplicado ao grupo de logs, que retorna a lista de eventos correspondentes ja agrupados por endpoint em uma tabela interativa.", false],
+            ["Uma subscription filter que envia continuamente os eventos para uma funcao Lambda, onde a equipe escreve o codigo de agregacao por endpoint e devolve o resultado consolidado para uma nova consulta no console.", false],
+            ["O CloudWatch Logs Insights, com uma query que filtra por latencia e usa stats count por endpoint.", true],
+            ["O Log group export para o S3, seguido de uma consulta com o Amazon Athena sobre os arquivos exportados.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao ja grava linhas contendo a palavra ERROR no CloudWatch Logs quando algo falha. A equipe quer disparar um alarme quando o numero dessas linhas ultrapassar um limite em 5 minutos, sem alterar o codigo da aplicacao para publicar metricas. Como transformar essas ocorrencias de log em algo alarmavel?",
+        explanation: "Um metric filter varre os eventos do grupo de logs, conta os que casam com o padrao (ERROR) e publica o resultado como uma metrica do CloudWatch, sobre a qual se cria o alarme, tudo sem tocar no codigo. O EMF exigiria instrumentar a aplicacao.",
+        topic: "CloudWatch",
+        options: [
+            ["Ativar o Contributor Insights no grupo de logs para que ele gere automaticamente uma metrica de contagem de erros e vincule um alarme a essa metrica assim que o padrao ERROR for detectado pela primeira vez.", false],
+            ["Criar um metric filter no grupo de logs que conta as linhas com ERROR e publica uma metrica, e entao criar um alarme sobre ela.", true],
+            ["Instrumentar a aplicacao com o Embedded Metric Format para emitir a contagem de erros como metrica estruturada a cada linha de log.", false],
+            ["Habilitar a alta resolucao no grupo de logs, o que faz o CloudWatch converter cada padrao de texto recorrente em uma metrica de um segundo.", false],
+        ],
+    },
+    {
+        statement: "Uma funcao Lambda que faz processamento intensivo de CPU esta lenta e a equipe cogita reduzir custo, mas as execucoes demoram muito. Sabe-se que a funcao esta limitada por CPU, nao por I/O. Qual ajuste tende a reduzir a duracao e pode ate diminuir o custo total?",
+        explanation: "No Lambda, a CPU (e a rede) e alocada proporcionalmente a memoria configurada; para cargas limitadas por CPU, aumentar a memoria reduz a duracao e, como a cobranca e por GB-segundo, uma execucao bem mais rapida pode sair mais barata. Provisioned concurrency reduz cold start, nao a duracao do processamento.",
+        topic: "Lambda - otimizacao",
+        options: [
+            ["Reduzir a memoria alocada ao minimo, ja que menos memoria libera mais ciclos de CPU para o processamento na Lambda.", false],
+            ["Manter a memoria baixa e habilitar concorrencia provisionada, pois o pre-aquecimento dos ambientes de execucao acelera cada invocacao ao dedicar mais nucleos de CPU exclusivamente as funcoes ja inicializadas.", false],
+            ["Aumentar a memoria alocada, porque a Lambda escala a CPU proporcionalmente a memoria, reduzindo a duracao.", true],
+            ["Dividir a funcao em duas e encadea-las de forma assincrona, o que soma a capacidade de CPU das duas alocacoes durante o processamento.", false],
+        ],
+    },
+    {
+        statement: "Uma funcao Lambda abre uma nova conexao com o banco de dados no inicio do handler a cada invocacao, e o tempo de execucao aumenta sob carga. A equipe quer aproveitar a reutilizacao do ambiente de execucao para reduzir esse custo por invocacao. Qual mudanca no codigo consegue isso?",
+        explanation: "Codigo no escopo de inicializacao (fora do handler) roda uma vez por ambiente de execucao e e reaproveitado enquanto o ambiente permanece quente; declarar a conexao ali evita recria-la a cada invocacao. Variaveis de ambiente guardam strings, nao conexoes abertas.",
+        topic: "Lambda - otimizacao",
+        options: [
+            ["Mover a abertura da conexao para dentro de um bloco try no final do handler, garantindo que ela seja recriada e fechada a cada chamada.", false],
+            ["Aumentar o timeout da funcao e envolver a criacao da conexao em um laco de retry, de modo que cada invocacao tente reaproveitar a conexao da invocacao anterior consultando uma variavel salva no servico de configuracao.", false],
+            ["Configurar a conexao como uma variavel de ambiente da funcao, pois variaveis de ambiente persistem entre invocacoes e mantem o socket aberto.", false],
+            ["Criar a conexao fora do handler, no escopo de inicializacao, para reaproveita-la enquanto o ambiente de execucao estiver quente.", true],
+        ],
+    },
+    {
+        statement: "Uma tabela DynamoDB sofre throttling concentrado em poucas particoes, enquanto a capacidade total provisionada parece suficiente. A investigacao mostra que a partition key e um campo de baixa cardinalidade, com poucos valores muito acessados. Qual mudanca de modelagem melhor distribui a carga?",
+        explanation: "O throttling por hot partition vem de uma partition key com poucos valores muito acessados; escolher uma chave de alta cardinalidade (ou adicionar sufixo com write sharding) distribui as requisicoes por mais particoes. Aumentar a capacidade total nao resolve a concentracao em uma particao.",
+        topic: "DynamoDB - performance",
+        options: [
+            ["Escolher uma partition key de alta cardinalidade, que espalhe as requisicoes por muitas particoes.", true],
+            ["Manter a mesma partition key, mas aumentar bastante a capacidade provisionada de leitura e escrita da tabela inteira, ja que o throttling desaparece quando a soma das RCUs e WCUs supera o pico agregado de todas as particoes juntas.", false],
+            ["Trocar a partition key pela sort key atual e promover o campo de baixa cardinalidade a sort key, invertendo os papeis das duas chaves.", false],
+            ["Adicionar um Local Secondary Index sobre o campo de baixa cardinalidade, o que replica os itens e divide automaticamente o acesso entre a tabela e o indice.", false],
+        ],
+    },
+    {
+        statement: "Sob picos de trafego, uma aplicacao recebe ocasionalmente ProvisionedThroughputExceededException do DynamoDB. A equipe quer tratar esses picos transitorios sem sobrecarregar ainda mais a tabela com novas tentativas. Qual e a abordagem recomendada?",
+        explanation: "Requisicoes limitadas (throttled) devem ser reenviadas com exponential backoff e jitter para espacar as tentativas; os SDKs da AWS ja fazem retries automaticos com backoff. Reenviar em laco apertado piora a sobrecarga.",
+        topic: "DynamoDB - performance",
+        options: [
+            ["Repetir a operacao imediatamente em um laco apertado ate obter sucesso, pois quanto antes a requisicao for reenviada, menor a chance de novo throttling.", false],
+            ["Capturar a excecao e ignora-la silenciosamente, seguindo o fluxo como se a operacao tivesse tido sucesso, ja que o DynamoDB persiste a escrita internamente e apenas atrasa a confirmacao para o cliente sob carga.", false],
+            ["Reexecutar com exponential backoff e jitter; o SDK ja aplica retries automaticos assim por padrao.", true],
+            ["Trocar todas as leituras para fortemente consistentes, o que faz o DynamoDB priorizar essas requisicoes e deixar de recusa-las por throttling.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe usa o ElastiCache na frente de um banco e quer que o cache seja populado somente quando um dado e solicitado e nao esta presente, buscando no banco e gravando no cache nesse momento. Que estrategia descreve esse comportamento, e qual e sua principal desvantagem?",
+        explanation: "No lazy loading (cache-aside), o cache so e preenchido quando ocorre um miss, carregando o dado do banco naquele momento; a desvantagem e que dados alterados no banco podem ficar defasados no cache ate expirarem. O write-through atualiza o cache a cada escrita.",
+        topic: "Estrategias de cache",
+        options: [
+            ["Write-through: o cache e atualizado a cada escrita no banco, o que garante dados sempre frescos, mas tem como desvantagem manter no cache muitos itens que talvez nunca sejam lidos, desperdicando memoria com dados frios.", false],
+            ["Lazy loading: o cache e preenchido no cache miss; a desvantagem e servir dado potencialmente desatualizado ate expirar.", true],
+            ["Write-behind: as escritas vao primeiro ao cache e sao persistidas no banco depois; a desvantagem e a perda de dados se o no do cache falhar antes da gravacao.", false],
+            ["TTL absoluto: cada item nasce com um tempo de vida fixo; a desvantagem e que itens muito acessados sao descartados no vencimento mesmo ainda sendo uteis.", false],
+        ],
+    },
+    {
+        statement: "Um servico que a aplicacao chama retorna, de forma intermitente, respostas HTTP 500 e 503, e em outras ocasioes um 400 consistente para a mesma requisicao malformada. Como a aplicacao deve tratar cada classe de resposta?",
+        explanation: "Respostas 5xx apontam problemas no servidor, normalmente transitorios, e sao candidatas a retry com exponential backoff; ja um 4xx como 400 indica erro do cliente (requisicao malformada) que se repetira igual ate a requisicao ser corrigida.",
+        topic: "Erros 4xx vs 5xx",
+        options: [
+            ["Os 5xx indicam falha do lado do servidor, em geral transitoria, e devem ser repetidos com exponential backoff; o 400 e erro do cliente e nao deve ser repetido sem corrigir a requisicao.", true],
+            ["Tanto os 5xx quanto o 400 devem ser repetidos imediatamente o mesmo numero de vezes, pois qualquer erro HTTP tende a se resolver sozinho em uma nova tentativa.", false],
+            ["Os 5xx sao erros do cliente e nao devem ser repetidos, enquanto o 400 vem do servidor e deve ser reenviado varias vezes com backoff crescente ate que a infraestrutura do servico se recupere e passe a aceitar a requisicao.", false],
+            ["Nenhuma das duas classes deve ser repetida pela aplicacao; convem apenas registrar o erro e devolver a falha ao usuario, deixando o balanceador de carga refazer a chamada.", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -1680,13 +2352,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log(`Simulado já tem ${n} questões, nada a fazer.`);
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -1705,7 +2387,7 @@ async function seed() {
             })),
         );
     }
-    console.log(`Seed concluído: ${QUESTOES.length} questões inseridas.`);
+    console.log(`Seed: ${inseridas} questões novas inseridas (${QUESTOES.length} no banco).`);
 }
 
 seed()

@@ -1195,6 +1195,667 @@ const QUESTOES: Questao[] = [
             ["Favorecer um esquema estrela, com dimensões mais desnormalizadas, reduzindo o número de joins exigidos pelas consultas de BI frente a um esquema normalizado.", true],
         ],
     },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma equipe processa arquivos que chegam ao longo do dia em um volume e quer, em um job agendado de hora em hora, consumir tudo o que estiver disponível e então encerrar o stream, respeitando o limite de maxFilesPerTrigger para não sobrecarregar o cluster. Qual trigger atende esse requisito?",
+        explanation: "Trigger.AvailableNow processa todo o backlog em vários micro-lotes respeitando os limites de vazão e depois para, sendo o sucessor recomendado do Trigger.Once para cargas agendadas.",
+        topic: "Structured Streaming - trigger AvailableNow",
+        options: [
+            ["Trigger.ProcessingTime de 1 hora, que dispara um micro-lote a cada hora mas mantém a consulta rodando indefinidamente sem encerrar.", false],
+            ["Trigger contínuo (continuous), que oferece baixa latência de ponta a ponta e é a forma recomendada de processar lotes agendados que precisam parar ao fim.", false],
+            ["Trigger.AvailableNow, que consome todos os dados disponíveis em vários micro-lotes respeitando limites como maxFilesPerTrigger e encerra a consulta sozinho ao terminar.", true],
+            ["Trigger.Once, que lê tudo o que estiver disponível em um único micro-lote, ignorando limites de vazão como maxFilesPerTrigger, o que pode sobrecarregar o cluster e estourar a memória quando há muitos arquivos acumulados de uma vez.", false],
+        ],
+    },
+    {
+        statement: "Uma consulta de streaming com agregação por chave roda há meses gravando em um checkpoint. A equipe quer alterar as colunas de agrupamento da agregação e reiniciar a consulta reaproveitando o mesmo diretório de checkpoint. O que é correto esperar?",
+        explanation: "Alterar o tipo ou as chaves de uma operação stateful é incompatível com o estado já persistido; nesses casos usa-se um novo checkpoint, ciente de que o estado anterior é perdido.",
+        topic: "Structured Streaming - checkpoint e mudança de query",
+        options: [
+            ["Mudar o tipo ou as chaves de uma operação com estado é incompatível com o estado já gravado no checkpoint; é preciso um novo diretório de checkpoint, reprocessando conforme a fonte permitir.", true],
+            ["O checkpoint guarda apenas offsets de origem, então qualquer alteração na consulta é aplicada sem problemas ao reiniciar.", false],
+            ["Basta incrementar manualmente o número de versão do checkpoint para que o novo formato de estado seja aceito.", false],
+            ["Ao reiniciar, o Spark converte automaticamente o estado antigo para o novo formato de agrupamento, remapeando as chaves de agregação sem qualquer intervenção e sem precisar reprocessar dados da fonte.", false],
+        ],
+    },
+    {
+        statement: "Uma agregação de streaming por janela de tempo grava no modo complete. Depois de dias rodando, o uso de memória do estado cresce sem parar, mesmo com um watermark definido na consulta. Qual explicação está correta?",
+        explanation: "O modo complete exige manter o estado de todas as janelas para reescrever o resultado completo a cada gatilho, de forma que a limpeza de estado por watermark só ocorre nos modos append e update.",
+        topic: "Structured Streaming - output mode complete",
+        options: [
+            ["O modo complete só funciona em conjunto com watermark e expira as janelas antigas automaticamente, então o crescimento indica um watermark mal configurado.", false],
+            ["Complete e append consomem estado da mesma forma; a única diferença entre eles é o formato aceito pelo sink de saída.", false],
+            ["No modo complete o Spark grava apenas as janelas alteradas no último micro-lote e usa o watermark para expirar o estado, sendo por isso a opção mais econômica em memória para agregações de longa duração e alta cardinalidade.", false],
+            ["No modo complete a tabela de resultado inteira é reescrita a cada micro-lote e o estado de todas as janelas é mantido, então o watermark não descarta estado antigo e ele cresce indefinidamente.", true],
+        ],
+    },
+    {
+        statement: "Uma consulta faz um left outer join entre a stream de impressões e a stream de cliques. A equipe percebe que as impressões sem clique correspondente nunca aparecem no resultado com o lado direito em NULL. Qual é a causa e a correção?",
+        explanation: "Outer joins stream-stream exigem watermark nos dois lados e uma restrição temporal no join, pois o engine só emite a linha com NULL quando tem certeza de que nenhuma correspondência ainda pode chegar.",
+        topic: "Structured Streaming - stream-stream outer join",
+        options: [
+            ["Joins outer entre duas streams não são suportados no Structured Streaming; é preciso materializar uma das streams como tabela e fazer um join estático.", false],
+            ["Em joins outer entre streams, as linhas sem correspondência só saem com NULL quando o watermark e a condição temporal garantem que nenhum match futuro é possível; sem isso o resultado nunca é finalizado.", true],
+            ["Basta trocar o output mode para complete para que as linhas sem correspondência sejam emitidas imediatamente pelo join.", false],
+            ["O join outer emite cada linha sem correspondência assim que ela chega, já preenchendo o outro lado com NULL, e depois corrige o resultado automaticamente caso um match apareça em micro-lotes seguintes, reescrevendo a saída anterior.", false],
+        ],
+    },
+    {
+        statement: "Uma consulta une eventos de duas streams com watermarks de atraso bem diferentes. A equipe nota que o estado só expira no ritmo da stream mais lenta e quer acelerar a limpeza. O que explica o comportamento padrão e o efeito de mudar a política?",
+        explanation: "A propriedade spark.sql.streaming.multipleWatermarkPolicy é min por padrão; mudar para max acelera a expiração do estado, ao custo de tratar como atrasados eventos ainda válidos pela stream mais lenta.",
+        topic: "Structured Streaming - watermark com múltiplas streams",
+        options: [
+            ["Por padrão o Spark adota o menor dos watermarks como watermark global, o mais conservador; definir a política como max acelera a expiração de estado, mas pode descartar como atrasados dados ainda válidos da stream mais lenta.", true],
+            ["Com múltiplas streams o Spark sempre usa o maior watermark e não há configuração que altere esse comportamento.", false],
+            ["Cada stream mantém um watermark totalmente independente e eles nunca são combinados em um valor global para a consulta.", false],
+            ["O Spark calcula a média aritmética dos watermarks de todas as streams envolvidas e aplica esse valor como limite global, equilibrando de forma automática a retenção de estado e a tolerância a dados atrasados de cada uma delas.", false],
+        ],
+    },
+    {
+        statement: "Um job de streaming com estado por chave e milhões de chaves distintas sofre pausas longas de coleta de lixo e estouros de memória nos executores, pois o estado padrão fica no heap da JVM. Qual mudança ataca a causa?",
+        explanation: "O provedor RocksDB armazena o estado nativamente fora do heap e em disco local, sendo a recomendação para consultas stateful com estado grande, onde o provedor padrão baseado no heap causa pressão de GC.",
+        topic: "Structured Streaming - state store RocksDB",
+        options: [
+            ["Aumentar o número de partições de shuffle, já que o estado é recalculado do zero a cada micro-lote e o problema é apenas de paralelismo.", false],
+            ["Trocar o output mode para complete, o que move todo o estado para o driver e alivia a memória dos executores.", false],
+            ["Configurar o provedor de estado RocksDB, que mantém o estado fora do heap da JVM e em disco local, reduzindo a pressão de memória e as pausas de GC em consultas com estado muito grande.", true],
+            ["Desabilitar o diretório de checkpoint, fazendo o estado ser mantido apenas em memória volátil e liberado ao fim de cada micro-lote, o que evita o crescimento acumulado que causa os estouros de memória nos executores.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa implementar uma lógica de sessão customizada que as janelas nativas não expressam: manter estado por usuário, atualizá-lo a cada evento e emitir a sessão quando não houver atividade por um intervalo. Qual abordagem é a adequada?",
+        explanation: "flatMapGroupsWithState é a API de processamento com estado arbitrário: expõe o GroupState por chave e suporta timeouts de tempo de evento ou processamento, ideal para sessionização customizada.",
+        topic: "Streaming - estado arbitrário (flatMapGroupsWithState)",
+        options: [
+            ["Usar dropDuplicatesWithinWatermark, que já implementa sessões customizadas por chave com controle de expiração.", false],
+            ["Usar flatMapGroupsWithState, que dá controle explícito do estado por chave via GroupState e permite emitir resultados e expirar sessões por timeout.", true],
+            ["Usar uma window() com slide adequado, que cobre qualquer lógica de sessão sem precisar de estado customizado.", false],
+            ["Usar foreachBatch e, dentro de cada micro-lote, consultar a tabela de destino para reconstruir manualmente o estado de sessão de cada usuário a partir de todo o histórico já gravado, decidindo a cada lote quais sessões encerrar.", false],
+        ],
+    },
+    {
+        statement: "Dentro de um foreachBatch, o DataFrame do micro-lote é gravado em duas saídas: uma tabela Delta e um tópico Kafka. A equipe observa que a fonte é lida duas vezes por micro-lote e o custo dobrou. Qual é a boa prática?",
+        explanation: "Cada ação de escrita dispara a reavaliação do DataFrame do micro-lote; persistir o DataFrame antes das múltiplas gravações e liberá-lo depois evita reler a fonte a cada saída.",
+        topic: "foreachBatch - reuso do DataFrame",
+        options: [
+            ["Nada precisa ser feito: o Spark materializa o DataFrame do micro-lote uma única vez e reaproveita o resultado para todas as escritas dentro do foreachBatch.", false],
+            ["Trocar foreachBatch por foreach, que envia cada linha individualmente e por isso elimina qualquer recomputação do DataFrame.", false],
+            ["Criar uma consulta de streaming separada para cada saída, ambas lendo da mesma fonte com um checkpoint compartilhado, o que garante que os dados sejam lidos uma só vez e distribuídos entre as duas escritas sem duplicação de custo.", false],
+            ["Chamar persist no DataFrame do micro-lote antes das duas escritas e unpersist ao final, pois cada ação de escrita, sem isso, recomputa o DataFrame e relê a fonte.", true],
+        ],
+    },
+    {
+        statement: "Um foreachBatch faz apenas append em uma tabela Delta. Após uma falha, o mesmo micro-lote pode ser reprocessado e reanexado, gerando linhas duplicadas. Qual é a forma mais direta, usando recursos nativos do Delta, de tornar esse append idempotente?",
+        explanation: "As opções txnAppId e txnVersion habilitam as escritas idempotentes nativas do Delta: uma transação com o mesmo par de identificadores é reconhecida e ignorada, evitando duplicatas em reprocessamentos.",
+        topic: "foreachBatch - escritas idempotentes",
+        options: [
+            ["Passar as opções txnAppId e txnVersion (com o batchId) na escrita Delta, para que a transação seja reconhecida e ignorada caso o mesmo micro-lote seja reprocessado após a falha.", true],
+            ["Usar apenas mode append, pois o Delta detecta e descarta linhas duplicadas automaticamente a cada escrita.", false],
+            ["Habilitar o Change Data Feed na tabela de destino, o que faz o Delta descartar micro-lotes repetidos na ingestão.", false],
+            ["Manter uma tabela de controle com o último batchId processado e, no início de cada micro-lote, lê-la e compará-la para abortar a escrita quando o identificador já constar como concluído, recriando essa verificação manualmente a cada execução.", false],
+        ],
+    },
+    {
+        statement: "Uma streaming table bronze usa Auto Loader com o modo de evolução de schema padrão (addNewColumns). Um novo campo passa a aparecer nos arquivos de entrada. Qual é o comportamento esperado?",
+        explanation: "No modo addNewColumns o stream para ao encontrar colunas novas, atualiza o local de schema e as incorpora no próximo início; nenhum dado é perdido, mas o job precisa reiniciar sozinho.",
+        topic: "Auto Loader - schema evolution (addNewColumns)",
+        options: [
+            ["A nova coluna é adicionada em tempo real, sem interromper o stream, e nenhum reinício da consulta é necessário.", false],
+            ["A nova coluna é silenciosamente ignorada e seus valores descartados até que o schema seja alterado manualmente pela equipe.", false],
+            ["O stream falha ao detectar a nova coluna, registra o schema atualizado e, ao ser reiniciado, passa a incluí-la; por isso o job deve estar configurado para reiniciar automaticamente.", true],
+            ["O stream é encerrado em definitivo e marca como corrompidos todos os arquivos que contêm a nova coluna, exigindo que a equipe apague o diretório de schema e reprocesse a ingestão desde o início para conseguir recuperá-los.", false],
+        ],
+    },
+    {
+        statement: "O Auto Loader infere como string uma coluna que deveria ser decimal e um campo que deveria ser timestamp, mas a equipe quer manter a inferência automática para todas as demais colunas. Qual é a solução recomendada?",
+        explanation: "cloudFiles.schemaHints permite sobrescrever o tipo de colunas específicas mantendo a inferência para as demais, sem precisar fixar o schema inteiro manualmente.",
+        topic: "Auto Loader - schemaHints",
+        options: [
+            ["Desligar a inferência com cloudFiles.inferColumnTypes igual a false, o que já converte cada coluna para o tipo adequado de forma automática.", false],
+            ["Definir cloudFiles.schemaHints apenas para as colunas específicas, informando os tipos corretos e deixando o Auto Loader inferir o restante do schema normalmente.", true],
+            ["Usar a coluna _rescued_data, que reescreve no schema da tabela os tipos que foram inferidos de forma incorreta.", false],
+            ["Recriar a streaming table a cada mudança com um schema totalmente fixo definido à mão, já que o Auto Loader não permite corrigir o tipo de colunas individuais sem abrir mão da inferência de todas as outras colunas do arquivo.", false],
+        ],
+    },
+    {
+        statement: "Um Auto Loader roda em modo file notification. A equipe sabe que, raramente, notificações de eventos da nuvem podem se perder, deixando alguns arquivos sem serem processados. Como garantir que esses arquivos eventualmente sejam ingeridos?",
+        explanation: "cloudFiles.backfillInterval agenda uma reconciliação por listagem de diretório assíncrona sobre a ingestão por notificação, garantindo o processamento eventual de arquivos cujas notificações foram perdidas.",
+        topic: "Auto Loader - backfillInterval",
+        options: [
+            ["Configurar cloudFiles.backfillInterval para que o Auto Loader faça, periodicamente, uma listagem de diretório assíncrona e capture arquivos cujas notificações eventualmente tenham se perdido.", true],
+            ["Aumentar maxFilesPerTrigger, o que faz o serviço de nuvem reenviar as notificações que haviam se perdido.", false],
+            ["Alternar de tempos em tempos para Trigger.Once, que força a releitura de todos os arquivos já notificados anteriormente.", false],
+            ["Desabilitar o file notification e voltar em definitivo ao directory listing, pois essa é a única forma de assegurar que nenhum arquivo se perca, ainda que ao custo de listar todo o diretório de forma síncrona em cada micro-lote.", false],
+        ],
+    },
+    {
+        statement: "Uma ingestão bronze lê de um bucket que acumulou milhões de arquivos, e a latência da listagem de diretório cresce a cada micro-lote. A equipe avalia migrar para o modo file notification. Qual afirmação é correta?",
+        explanation: "O modo file notification evita listar o diretório completo, escalando para volumes altos de arquivos, e o Auto Loader pode provisionar automaticamente a fila e a inscrição de eventos quando recebe as permissões de nuvem necessárias.",
+        topic: "Auto Loader - file notification x directory listing",
+        options: [
+            ["O file notification é sempre preferível, inclusive em diretórios pequenos, por ter menor custo fixo e nenhuma dependência de permissões extras na nuvem.", false],
+            ["Os modos directory listing e file notification não podem ser trocados sem recriar o checkpoint e reprocessar toda a ingestão desde o início.", false],
+            ["O file notification exige que a equipe crie e mantenha manualmente a fila de mensagens e as regras de evento em cada conta de armazenamento, pois o Auto Loader apenas consome a fila e nunca provisiona esses recursos por conta própria em nenhuma nuvem.", false],
+            ["O file notification escala melhor em diretórios com muitos arquivos por não listar o diretório inteiro; com as permissões adequadas, o Auto Loader cria automaticamente a fila e a assinatura de eventos.", true],
+        ],
+    },
+    {
+        statement: "Uma dimensão silver precisa refletir apenas o estado mais recente de cada cliente, sem manter histórico, e é alimentada por eventos de mudança que às vezes chegam fora de ordem. Como modelar isso com AUTO CDC?",
+        explanation: "No SCD Type 1 o AUTO CDC sobrescreve o registro, mantendo apenas o estado atual; a cláusula SEQUENCE BY continua sendo usada para ordenar os eventos e descartar os que chegam fora de ordem.",
+        topic: "AUTO CDC - SCD Type 1",
+        options: [
+            ["Usar SCD Type 1, que preserva todas as versões históricas de cada chave, apenas sem colunas de vigência explícitas.", false],
+            ["Usar AUTO CDC com STORED AS SCD TYPE 1 e SEQUENCE BY: mantém só a versão mais recente de cada chave, sobrescrevendo a anterior, e usa a coluna de sequência para ignorar eventos que chegam atrasados.", true],
+            ["Usar SCD Type 1 sem SEQUENCE BY, pois esse tipo não aceita coluna de sequência e por isso o último evento a chegar sempre vence.", false],
+            ["Usar SCD Type 1, que cria uma nova linha a cada alteração e marca a anterior com uma data de fim de vigência, permitindo consultar tanto o valor atual quanto o histórico completo de todas as mudanças de cada registro ao longo do tempo.", false],
+        ],
+    },
+    {
+        statement: "Uma dimensão de clientes é mantida como SCD Type 2 por AUTO CDC. Uma coluna de ultimo_acesso muda a todo instante e está gerando uma nova versão histórica do registro a cada evento, inflando a tabela. Como evitar isso?",
+        explanation: "A cláusula TRACK HISTORY ON (com EXCEPT para excluir colunas) define quais colunas disparam uma nova versão no SCD Type 2, evitando históricos gerados por campos que mudam com muita frequência.",
+        topic: "AUTO CDC - TRACK HISTORY",
+        options: [
+            ["Não há como evitar: em SCD Type 2 qualquer alteração em qualquer coluna sempre cria uma nova linha histórica do registro.", false],
+            ["Basta remover a coluna volátil do SEQUENCE BY para que ela deixe de disparar novas versões da dimensão.", false],
+            ["Usar TRACK HISTORY ON com uma lista EXCEPT para as colunas voláteis, de modo que apenas mudanças nas colunas rastreadas gerem uma nova versão SCD Type 2.", true],
+            ["Criar um job separado que, periodicamente, varre a dimensão e mescla versões consecutivas cujas únicas diferenças estejam nas colunas voláteis, colapsando manualmente o histórico redundante que é gerado a cada alteração desses campos.", false],
+        ],
+    },
+    {
+        statement: "Um engenheiro mantém uma streaming table alimentada por AUTO CDC INTO e quer, em paralelo, aplicar alguns MERGE manuais nessa mesma tabela a partir de outro job. Qual afirmação está correta?",
+        explanation: "O alvo do AUTO CDC é totalmente gerenciado pelo pipeline, que cuida da ordenação via SEQUENCE BY e da deduplicação; escritas externas nessa tabela entram em conflito com esse controle.",
+        topic: "AUTO CDC - alvo gerenciado",
+        options: [
+            ["A streaming table alvo do AUTO CDC é gerenciada inteiramente pelo pipeline; não se deve aplicar MERGE ou outras escritas externas nela, pois o AUTO CDC controla a ordenação e a aplicação das mudanças.", true],
+            ["É possível combinar livremente AUTO CDC e comandos MERGE manuais na mesma tabela, desde que sejam executados em horários diferentes.", false],
+            ["O AUTO CDC exige que a fonte já esteja deduplicada e ordenada, pois ele próprio não trata eventos repetidos nem que chegam fora de ordem.", false],
+            ["O alvo do AUTO CDC pode ser lido e escrito por qualquer outro job do workspace, e o pipeline apenas acrescenta as novas mudanças sem assumir o controle da ordenação, que passa a ser responsabilidade da aplicação que produz os eventos de origem.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe teme habilitar o Change Data Feed em uma tabela bronze que só recebe appends, achando que isso dobraria o armazenamento ao duplicar cada linha inserida. O que de fato acontece?",
+        explanation: "Para inserções puras o CDF deriva as mudanças dos próprios arquivos de dados, sem custo extra; apenas operações que alteram linhas existentes (update, delete, merge) gravam arquivos dedicados em _change_data.",
+        topic: "Change Data Feed - custo de armazenamento",
+        options: [
+            ["O CDF sempre duplica cada linha escrita em uma pasta _change_data, dobrando o armazenamento independentemente do tipo de operação realizada.", false],
+            ["O CDF registra apenas as inserções; updates e deletes precisam ser capturados por um mecanismo separado configurado à parte.", false],
+            ["O CDF materializa uma cópia completa da tabela a cada versão do log de transações, de forma que o custo de armazenamento cresce proporcionalmente ao número total de commits, mesmo quando todas as operações são apenas inserções de novas linhas.", false],
+            ["Em operações que só inserem linhas, o CDF não grava arquivos de mudança separados e lê as alterações direto dos próprios arquivos de dados; apenas updates, deletes e merges geram arquivos em _change_data.", true],
+        ],
+    },
+    {
+        statement: "Um job em lote lê o Change Data Feed de uma tabela Delta com a função table_changes, pedindo um intervalo de versões. Qual afirmação descreve corretamente o resultado?",
+        explanation: "table_changes expõe os quatro valores de _change_type (insert, update_preimage, update_postimage, delete) junto de _commit_version e _commit_timestamp, e lança erro ao abranger versões anteriores à ativação do CDF.",
+        topic: "Change Data Feed - leitura com table_changes",
+        options: [
+            ["A função retorna apenas a versão mais recente de cada linha alterada, sem distinguir a imagem anterior da posterior em uma atualização.", false],
+            ["A função retorna as linhas com _change_type entre insert, update_preimage, update_postimage e delete, e falha se o intervalo pedido incluir versões anteriores à habilitação do CDF.", true],
+            ["O _change_type traz somente os valores insert e delete, e um update aparece como um delete seguido de um insert com o mesmo _commit_version.", false],
+            ["A função reconstrói o histórico completo mesmo para versões anteriores à habilitação do CDF, inferindo as mudanças a partir das versões antigas do log do Delta e preenchendo retroativamente a imagem anterior e a posterior de cada linha alterada.", false],
+        ],
+    },
+    {
+        statement: "Em um pipeline declarativo, a equipe quer que uma constraint crítica interrompa a atualização imediatamente ao encontrar qualquer linha inválida, e precisa entender como isso difere do comportamento padrão de uma expectation. Qual afirmação está correta?",
+        explanation: "O padrão de uma expectation sem ON VIOLATION é registrar a violação e manter a linha; DROP ROW descarta a linha e FAIL UPDATE falha a atualização, parando o pipeline.",
+        topic: "Expectations - ON VIOLATION",
+        options: [
+            ["O comportamento padrão de uma expectation é descartar a linha inválida, enquanto FAIL UPDATE apenas registra a violação nas métricas e segue processando.", false],
+            ["FAIL UPDATE descarta as linhas inválidas e continua o processamento, enquanto o comportamento padrão é interromper todo o pipeline.", false],
+            ["Com ON VIOLATION FAIL UPDATE a atualização falha e o pipeline para ao encontrar uma linha inválida; sem cláusula ON VIOLATION o padrão é apenas registrar a violação nas métricas e manter a linha.", true],
+            ["Sem cláusula ON VIOLATION a linha inválida é enviada automaticamente para uma tabela de quarentena separada, e FAIL UPDATE faz o mesmo, mas dispara também um alerta por e-mail enquanto mantém o pipeline rodando normalmente.", false],
+        ],
+    },
+    {
+        statement: "Em um pipeline declarativo em SQL, uma streaming table de destino precisa ler outra tabela do mesmo pipeline processando somente os registros novos acrescentados desde a última execução. Como referenciar a tabela de origem?",
+        explanation: "A palavra-chave STREAM (por exemplo STREAM(live.tabela)) faz o pipeline ler a origem como fonte de streaming, processando de forma incremental apenas os novos dados; sem ela a leitura é um snapshot completo.",
+        topic: "Declarative Pipelines - leitura incremental STREAM",
+        options: [
+            ["Referenciar a origem com STREAM, por exemplo FROM STREAM(live.upstream), o que faz a leitura ser incremental, processando apenas os novos registros acrescentados desde o último micro-lote.", true],
+            ["Qualquer SELECT dentro de um pipeline já é incremental por padrão; a função STREAM só muda o nome exibido no grafo do pipeline.", false],
+            ["Usar STREAM força a releitura completa da tabela de origem a cada execução, sendo indicado para agregações que precisam de todo o histórico.", false],
+            ["Para ler de forma incremental é obrigatório exportar antes a tabela de origem para um tópico Kafka e consumir de lá, pois uma streaming table de um pipeline não pode servir de fonte de streaming direta para outra tabela do mesmo pipeline.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela Delta muito ativa acumulou milhares de commits no diretorio _delta_log. Uma engenheira nota que abrir a tabela para leitura continua rapido e quer entender como o Delta reconstroi o estado atual sem reler todos os arquivos JSON de commit. Qual explicacao esta correta?",
+        explanation: "A cada certo numero de commits (10 por padrao) o Delta grava um checkpoint em Parquet com o estado consolidado; o leitor usa _last_checkpoint para achar o mais recente e so aplica os commits JSON seguintes.",
+        topic: "Delta Lake - Transaction Log",
+        options: [
+            ["Cada leitura reprocessa integralmente todos os arquivos JSON de commit desde a versao 0 para montar a lista de arquivos ativos, e a rapidez vem apenas do cache de disco do cluster.", false],
+            ["O Delta mantem a lista de arquivos ativos somente na memoria do driver que criou a tabela, e novos clusters precisam recalcular tudo a partir do primeiro commit.", false],
+            ["Periodicamente o Delta grava um checkpoint em Parquet que consolida o estado, e o leitor parte do ultimo checkpoint aplicando so os commits JSON posteriores.", true],
+            ["O arquivo _last_checkpoint guarda a lista completa e final de arquivos de dados da tabela, dispensando por completo a leitura dos commits JSON e dos checkpoints Parquet.", false],
+        ],
+    },
+    {
+        statement: "Dois jobs independentes gravam ao mesmo tempo na mesma tabela Delta nao particionada. Um deles falha com ConcurrentAppendException ao tentar commitar. A equipe quer entender a causa e como reduzir esses conflitos. Qual afirmacao esta correta?",
+        explanation: "O Delta faz controle de concorrencia otimista: cada transacao le um snapshot e valida os arquivos no commit; operacoes que tocam os mesmos arquivos conflitam, e isolar por particoes disjuntas evita a sobreposicao.",
+        topic: "Delta Lake - Controle de Concorrencia",
+        options: [
+            ["O Delta usa controle de concorrencia otimista e valida no commit; escritas que tocam arquivos sobrepostos conflitam, e restringir cada job a particoes disjuntas reduz o problema.", true],
+            ["O Delta nao suporta escritas concorrentes de forma alguma, entao a unica solucao e serializar os jobs com um agendador externo que garanta execucao de um por vez, esperando cada commit finalizar antes de iniciar o proximo job.", false],
+            ["O conflito ocorre porque o Delta usa bloqueio pessimista e o segundo job esperou alem do timeout de lock configurado no metastore do workspace.", false],
+            ["Basta habilitar deletion vectors para que ambas as escritas sejam aplicadas sem qualquer validacao de conflito no momento do commit da transacao.", false],
+        ],
+    },
+    {
+        statement: "Um pipeline de Structured Streaming grava continuamente em uma tabela Delta e gera muitos arquivos pequenos. A equipe nao quer manter um job separado agendado so para rodar OPTIMIZE. Qual abordagem resolve o problema de forma automatica dentro das proprias escritas?",
+        explanation: "optimizeWrite reorganiza os dados antes de gravar para produzir arquivos maiores, e autoCompact dispara uma compactacao de arquivos pequenos ao final da escrita, evitando um OPTIMIZE manual agendado.",
+        topic: "Auto Compaction",
+        options: [
+            ["Habilitar deletion vectors na tabela, que passam a mesclar fisicamente os arquivos pequenos a cada micro-batch sem necessidade de qualquer reescrita posterior.", false],
+            ["Aumentar spark.sql.shuffle.partitions para um valor bem alto, forcando o stream a produzir menos arquivos por micro-batch em cada gravacao feita na tabela.", false],
+            ["Reduzir a frequencia do trigger para Trigger.Once em producao, o que consolida automaticamente os arquivos ja existentes na tabela a cada nova execucao do stream.", false],
+            ["Ativar as propriedades delta.autoOptimize.optimizeWrite e autoCompact, que reorganizam a escrita e compactam pequenos arquivos automaticamente.", true],
+        ],
+    },
+    {
+        statement: "Uma tabela Delta de 80 GB foi particionada por uma coluna cliente_id de altissima cardinalidade. As consultas ficaram lentas e o diretorio tem milhoes de subpastas com arquivos minusculos. Qual e o diagnostico e a melhor correcao?",
+        explanation: "Particionar por coluna de alta cardinalidade gera muitas particoes minusculas e degrada a performance; tabelas desse porte se beneficiam de Liquid Clustering (ou Z-order) em vez de particionamento fisico.",
+        topic: "Particionamento",
+        options: [
+            ["O problema e falta de estatisticas; basta rodar ANALYZE TABLE para que o particionamento por cliente_id passe a acelerar as consultas filtradas por qualquer coluna.", false],
+            ["Houve over-partitioning por coluna de alta cardinalidade; o ideal e remover esse particionamento e usar Liquid Clustering ou Z-order pelas colunas mais filtradas.", true],
+            ["O particionamento esta correto e o problema e o Photon desabilitado; ativar Photon reorganiza fisicamente as particoes pequenas e elimina os arquivos minusculos gerados.", false],
+            ["Como a tabela e pequena demais para ter particoes, a solucao recomendada e aumentar ainda mais a granularidade, particionando tambem por uma segunda coluna de data para equilibrar os arquivos.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela usa OPTIMIZE ZORDER BY (regiao, produto) semanalmente, mas cada execucao reescreve muitos arquivos e fica cara conforme a tabela cresce. A equipe avalia migrar para Liquid Clustering. Qual e a principal vantagem do Liquid Clustering nesse caso?",
+        explanation: "Diferente do Z-order, que reordena com reescritas custosas, o Liquid Clustering clusteriza de forma incremental e adaptativa e permite mudar as chaves de clustering sem reescrever os dados ja existentes.",
+        topic: "Liquid Clustering x Z-order",
+        options: [
+            ["O Liquid Clustering dispensa qualquer execucao de OPTIMIZE, pois reordena todos os dados historicos automaticamente a cada leitura da tabela feita pelos usuarios de BI.", false],
+            ["O Z-order e o Liquid Clustering podem ser combinados na mesma tabela, somando os dois esquemas de organizacao para maximizar o data skipping em qualquer coluna filtrada.", false],
+            ["O Liquid Clustering agrupa os dados de forma incremental, sem reescrever tudo, e permite alterar as chaves de clustering sem reprocessar a tabela inteira.", true],
+            ["O Liquid Clustering elimina a necessidade de coletar estatisticas de min/max por arquivo, passando a fazer file pruning por hashing deterministico das chaves de clustering.", false],
+        ],
+    },
+    {
+        statement: "Para economizar armazenamento, um engenheiro quer rodar VACUUM com retencao de apenas 1 hora em uma tabela Delta usada por varias consultas longas e por time travel. Qual afirmacao descreve corretamente o risco?",
+        explanation: "O VACUUM remove arquivos de dados nao referenciados mais antigos que a retencao; o padrao de 7 dias protege leituras longas e time travel, e baixa-lo exige desligar retentionDurationCheck, arriscando corromper consultas concorrentes.",
+        topic: "VACUUM e Retencao",
+        options: [
+            ["Reduzir a retencao abaixo do padrao de 7 dias exige desabilitar uma trava de seguranca e pode remover arquivos ainda usados por leituras concorrentes e por time travel.", true],
+            ["Nao ha risco algum, pois o VACUUM so apaga arquivos de log de transacao antigos e nunca toca nos arquivos de dados Parquet referenciados pela tabela.", false],
+            ["O VACUUM com 1 hora e seguro porque o Delta mantem automaticamente uma copia oculta de todos os arquivos removidos por pelo menos 30 dias para permitir restauracao.", false],
+            ["O unico efeito colateral e que o proximo OPTIMIZE precisara recompactar a tabela do zero, sem qualquer impacto sobre as consultas em andamento ou sobre o time travel disponivel.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela Delta tem estatisticas de min/max coletadas normalmente, mas consultas filtrando por uma coluna id_transacao ainda leem quase todos os arquivos. Os dados foram inseridos em ordem aleatoria por id_transacao. Qual e a causa mais provavel?",
+        explanation: "O file pruning depende de os arquivos terem intervalos min/max estreitos; sem clustering ou ordenacao por id_transacao cada arquivo abrange quase todo o dominio e o skipping perde eficacia. Z-order ou Liquid Clustering resolveriam.",
+        topic: "Data Skipping e File Pruning",
+        options: [
+            ["As estatisticas de min/max nao sao usadas para file pruning em Delta; o skipping depende exclusivamente de um indice bloom criado manualmente sobre a coluna filtrada.", false],
+            ["O data skipping so funciona sobre colunas de particao, entao nenhuma coluna comum como id_transacao pode ser usada para pular arquivos durante a leitura da tabela.", false],
+            ["O problema e o numero de colunas indexadas; basta aumentar dataSkippingNumIndexedCols para centenas e o pruning por id_transacao passa a ocorrer mesmo sem reordenar os dados.", false],
+            ["Como os dados nao estao co-localizados por id_transacao, o intervalo min/max de cada arquivo cobre quase todo o dominio, e quase nada e pulado.", true],
+        ],
+    },
+    {
+        statement: "Um job com bug sobrescreveu dados corretos em uma tabela Delta ha duas versoes. A equipe quer reverter a tabela ao estado anterior ao erro de forma rastreavel, sem restaurar backups externos. Qual abordagem e a adequada?",
+        explanation: "O log de transacoes do Delta mantem versoes anteriores dentro da retencao, permitindo consultar com VERSION AS OF e reverter com RESTORE TABLE, sem depender de Change Data Feed nem de backups externos.",
+        topic: "Time Travel",
+        options: [
+            ["Nao e possivel reverter uma sobrescrita em Delta; a unica saida e recriar a tabela a partir das fontes originais e reprocessar todo o historico manualmente.", false],
+            ["Usar time travel para inspecionar a versao anterior e entao RESTORE TABLE ... TO VERSION AS OF para retornar a tabela aquele estado.", true],
+            ["Executar VACUUM com retencao zero para forcar o Delta a descartar a versao com bug e promover automaticamente a versao imediatamente anterior como atual.", false],
+            ["Reverter so e viavel se o Change Data Feed estiver habilitado, pois sem ele o Delta nao mantem as versoes anteriores necessarias para consultar o historico da tabela.", false],
+        ],
+    },
+    {
+        statement: "Um MERGE INTO diario atualiza uma tabela fato Delta particionada por data_evento, mas esta lento: o plano mostra varredura da tabela inteira. A condicao ON usa apenas chave_natural. Qual mudanca melhora mais a performance?",
+        explanation: "Incluir na condicao ON um filtro pela coluna de particao (data_evento) deixa o Delta podar arquivos e limitar a varredura do alvo as particoes relevantes, acelerando o merge.",
+        topic: "MERGE INTO - Performance",
+        options: [
+            ["Trocar o MERGE por um DELETE seguido de INSERT em duas transacoes separadas, o que evita a varredura da tabela alvo porque cada comando toca menos arquivos por vez.", false],
+            ["Aumentar spark.sql.autoBroadcastJoinThreshold para que a tabela fato inteira seja transmitida por broadcast aos executores durante a fase de casamento do merge.", false],
+            ["Adicionar a condicao ON um predicado sobre data_evento, permitindo ao Delta podar particoes e evitar varrer a tabela alvo inteira.", true],
+            ["Desabilitar o Adaptive Query Execution para o comando, forcando um numero fixo de particoes de shuffle e reduzindo o custo de reorganizacao durante o merge.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe quer clusterizar uma tabela Delta por dia sem manter manualmente uma coluna de data derivada de um timestamp de evento, e quer que consultas que filtram pelo timestamp aproveitem a poda de arquivos. Qual recurso atende a isso?",
+        explanation: "Generated columns sao calculadas e mantidas pelo proprio Delta; quando derivam de outra coluna, o otimizador gera filtros de particao automaticamente para consultas que filtram a coluna de origem.",
+        topic: "Generated Columns",
+        options: [
+            ["Uma generated column como dia GENERATED ALWAYS AS (CAST(ts AS DATE)), que o Delta preenche sozinho e usa para derivar filtros a partir de ts.", true],
+            ["Uma view SQL que calcula a coluna de data em tempo de consulta, o que garante a poda de arquivos porque a expressao e reavaliada em cada leitura sobre a tabela base.", false],
+            ["Uma UDF Python registrada que converte o timestamp em data e e chamada em cada INSERT, mantendo a coluna sincronizada e habilitando o data skipping por intervalo.", false],
+            ["Uma coluna comum preenchida por um trigger de banco de dados no momento da escrita, ja que o Delta nao oferece nenhum mecanismo nativo para colunas derivadas automaticamente.", false],
+        ],
+    },
+    {
+        statement: "Um engenheiro forca um broadcast join com o hint BROADCAST sobre a tabela do lado maior de um join, achando que sempre acelera. O job passa a falhar com erros de memoria no driver e nos executores. Qual afirmacao esta correta?",
+        explanation: "O broadcast join replica o lado pequeno para todos os executores evitando shuffle; forcar o broadcast de uma tabela grande materializa dados demais em memoria e causa OOM. O padrao so transmite tabelas abaixo de autoBroadcastJoinThreshold.",
+        topic: "Broadcast Join",
+        options: [
+            ["O hint BROADCAST nunca causa problemas de memoria, pois o Spark envia a tabela em pedacos sob demanda e nunca a materializa inteira em um unico no do cluster.", false],
+            ["Broadcast join so e possivel quando ambas as tabelas cabem juntas no limite spark.sql.autoBroadcastJoinThreshold, senao o hint e silenciosamente convertido em sort-merge join.", false],
+            ["O erro ocorre porque o hint desabilita o AQE; reabilitar o Adaptive Query Execution faria o broadcast da tabela grande caber automaticamente na memoria disponivel dos executores.", false],
+            ["Broadcast so compensa quando um lado e pequeno, pois ele e coletado no driver e replicado aos executores; transmitir uma tabela grande estoura a memoria.", true],
+        ],
+    },
+    {
+        statement: "Um job processa volumes de dados muito variaveis. Com spark.sql.shuffle.partitions fixo em 200, as vezes ha spill em disco (particoes grandes demais) e as vezes ha overhead de tarefas minusculas. Qual abordagem e a mais recomendada hoje no Databricks?",
+        explanation: "O Adaptive Query Execution coalesce as particoes de shuffle em tempo de execucao com base no tamanho real dos dados, evitando ajustar manualmente um valor fixo que raramente serve para todos os volumes.",
+        topic: "spark.sql.shuffle.partitions",
+        options: [
+            ["Fixar shuffle.partitions em 2000 permanentemente, pois um numero alto sempre elimina spill e o custo de agendar muitas tarefas pequenas e desprezivel em qualquer volume de dados.", false],
+            ["Manter o AQE habilitado, que coalesce dinamicamente as particoes de shuffle conforme o volume real de cada estagio em tempo de execucao.", true],
+            ["Definir shuffle.partitions igual ao numero de cores do cluster e desabilitar o AQE, garantindo exatamente uma tarefa de shuffle por nucleo em todos os estagios do job.", false],
+            ["Reduzir shuffle.partitions para 1, deixando todo o processamento em uma unica particao, o que remove o shuffle e resolve tanto o spill quanto o overhead de tarefas.", false],
+        ],
+    },
+    {
+        statement: "Um sort-merge join sofre com uma chave muito frequente: uma tarefa demora muito mais que as demais por uma particao de shuffle enorme. A equipe pergunta o que o Adaptive Query Execution pode fazer automaticamente nesse caso. Qual afirmacao esta correta?",
+        explanation: "Entre suas otimizacoes, o AQE detecta particoes de shuffle assimetricas e as quebra em pedacos menores (skew join optimization), distribuindo melhor a carga entre as tarefas.",
+        topic: "Adaptive Query Execution",
+        options: [
+            ["O AQE elimina o skew reparticionando toda a tabela por hash antes do join, garantindo particoes exatamente do mesmo tamanho independentemente da distribuicao das chaves.", false],
+            ["O AQE nao atua sobre skew; ele apenas escolhe a ordem das colunas no ORDER BY final e nao interfere na forma como as particoes de shuffle do join sao formadas.", false],
+            ["O AQE detecta particoes assimetricas em tempo de execucao e as divide em subparticoes menores, equilibrando o trabalho do join.", true],
+            ["O AQE resolve o skew convertendo o sort-merge join em broadcast join, transmitindo o lado maior aos executores mesmo quando ele excede em muito o limite de broadcast configurado.", false],
+        ],
+    },
+    {
+        statement: "Mesmo com AQE, um join continua desbalanceado porque poucas chaves concentram a grande maioria das linhas em uma tabela enorme. A equipe quer uma tecnica manual para distribuir melhor essas chaves quentes. Qual abordagem e apropriada?",
+        explanation: "O salting adiciona um sufixo aleatorio a chave concentrada para dividi-la em varias particoes, replicando as linhas correspondentes do lado menor; assim o trabalho da chave quente se espalha entre tarefas.",
+        topic: "Data Skew e Salting",
+        options: [
+            ["Aplicar salting: adicionar um componente aleatorio a chave quente para espalha-la por varias particoes e replicar as linhas correspondentes do lado menor.", true],
+            ["Aumentar o numero de executores do cluster, pois adicionar mais nos redistribui automaticamente as chaves quentes e desfaz qualquer concentracao de linhas em uma so particao.", false],
+            ["Ordenar globalmente a tabela maior pela chave de join antes do shuffle, o que agrupa as chaves quentes e naturalmente equilibra o tamanho de todas as particoes resultantes.", false],
+            ["Converter a coluna da chave para string e aplicar uma funcao de hash criptografico, ja que hashes distribuem uniformemente qualquer valor e removem completamente o skew do join.", false],
+        ],
+    },
+    {
+        statement: "Um job critico e dominado por uma UDF Python que faz calculos linha a linha, com pouco tempo em scans e agregacoes SQL. A equipe habilita Photon esperando grande ganho, mas quase nao ve diferenca. Qual e a explicacao correta?",
+        explanation: "O motor Photon acelera scans, joins, agregacoes e escritas vetorizadas, mas UDFs Python rodam fora dele; um job dominado por UDF Python ve pouco ganho porque o gargalo nao passa pelo Photon.",
+        topic: "Photon",
+        options: [
+            ["Photon exige que o cluster use apenas SQL warehouses serverless; em clusters classicos ele fica inativo e por isso a UDF Python nao recebeu nenhuma aceleracao.", false],
+            ["Photon foi aplicado normalmente a UDF, mas o ganho foi anulado porque UDFs Python ja rodam em codigo nativo compilado, sem espaco para otimizacao vetorizada adicional.", false],
+            ["O problema e a versao do runtime; Photon acelera UDFs Python apenas quando a tabela de origem esta em Delta com deletion vectors e Liquid Clustering habilitados.", false],
+            ["Photon acelera operacoes SQL e DataFrame vetorizadas, mas nao executa UDFs Python; a parte dominante do job recai fora do motor Photon.", true],
+        ],
+    },
+    {
+        statement: "A partir de uma tabela de leituras de sensor (sensor_id, ts, valor), a equipe precisa, para cada linha, trazer o valor da leitura imediatamente anterior do mesmo sensor, para calcular a variacao. Qual abordagem SQL e a adequada?",
+        explanation: "LAG devolve o valor de uma linha anterior dentro da particao ordenada, ideal para comparar cada leitura com a imediatamente anterior do mesmo sensor sem self join.",
+        topic: "Funcoes de Janela",
+        options: [
+            ["Um self join da tabela com ela mesma por sensor_id e uma subconsulta correlacionada que busca o MAX(ts) menor que o ts corrente, calculando a diferenca entre os dois valores encontrados.", false],
+            ["LAG(valor) OVER (PARTITION BY sensor_id ORDER BY ts) para acessar o valor da linha anterior de cada sensor.", true],
+            ["ROW_NUMBER() OVER (PARTITION BY sensor_id ORDER BY ts) e filtrar pela numeracao, pois a numeracao sequencial ja devolve o valor anterior na mesma linha automaticamente.", false],
+            ["Uma agregacao GROUP BY sensor_id com SUM(valor), ja que funcoes de janela nao conseguem acessar valores de outras linhas dentro da mesma particao ordenada.", false],
+        ],
+    },
+    {
+        statement: "Em uma arquitetura Medallion, uma equipe discute o que colocar na camada Silver e o que colocar na Gold. Qual divisao de responsabilidades esta correta?",
+        explanation: "Bronze retem o dado bruto; Silver entrega dados limpos, conformados e deduplicados numa visao corporativa; Gold expoe agregacoes e modelos dimensionais orientados a casos de negocio.",
+        topic: "Arquitetura Medallion",
+        options: [
+            ["Silver guarda os dados exatamente como chegam da origem, sem limpeza, e Gold apenas replica o Silver adicionando uma coluna de data de carga para fins de auditoria e reprocessamento.", false],
+            ["Silver contem agregacoes de negocio prontas para dashboards, e Gold mantem os dados brutos imutaveis servindo como fonte de reprocessamento para toda a plataforma de dados.", false],
+            ["Silver traz dados limpos, conformados e deduplicados numa visao integrada, e Gold entrega agregacoes e modelos dimensionais prontos para consumo de negocio.", true],
+            ["Silver e Gold sao intercambiaveis e diferem apenas no nome do schema; a escolha entre uma e outra depende so de qual time e dono da tabela dentro do catalogo do workspace.", false],
+        ],
+    },
+    {
+        statement: "Ao projetar uma tabela fato de vendas na camada Gold, um time debate por onde comecar o design. Qual principio de modelagem dimensional deve guiar a decisao?",
+        explanation: "Em modelagem dimensional, define-se primeiro o grao da fato (o que cada linha representa); as medidas devem ser aditivas e coerentes com esse grao, evitando misturar niveis de detalhe na mesma tabela.",
+        topic: "Modelagem Dimensional",
+        options: [
+            ["Declarar primeiro a granularidade (o que uma linha representa) e garantir que as medidas sejam consistentes e aditivas nesse nivel de detalhe.", true],
+            ["Comecar pela escolha das chaves naturais de cada dimensao e so depois decidir a granularidade, ja que a granularidade da fato e sempre inferida automaticamente pelas chaves.", false],
+            ["Definir primeiro os indices e as particoes fisicas da tabela fato, porque a granularidade dos fatos e uma consequencia direta do particionamento escolhido no armazenamento.", false],
+            ["Misturar diferentes granularidades na mesma fato para reduzir o numero de tabelas, deixando as medidas em niveis distintos de detalhe e somando tudo nas consultas de BI depois.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela dimensao Gold usa uma coluna sk GENERATED ALWAYS AS IDENTITY como chave substituta. Um analista assume que os valores serao consecutivos, sem lacunas, e quer usa-los para contar linhas. Qual afirmacao esta correta?",
+        explanation: "Colunas identity produzem valores unicos e monotonicamente crescentes, porem nao necessariamente contiguos (lacunas surgem de paralelismo e transacoes abortadas), entao nao servem para contar linhas nem para cravar ordem de insercao.",
+        topic: "Surrogate Keys",
+        options: [
+            ["Os valores de uma identity column sao sempre consecutivos e sem lacunas, entao usa-los para contar linhas ou inferir a ordem de insercao e seguro em qualquer situacao de carga.", false],
+            ["Com GENERATED ALWAYS AS IDENTITY e possivel inserir manualmente valores na coluna sk, o que permite controlar exatamente a sequencia e evitar quaisquer lacunas na numeracao.", false],
+            ["Identity columns nao servem como chave substituta porque repetem valores entre execucoes paralelas; o correto e usar a chave natural da origem como chave primaria da dimensao.", false],
+            ["Identity columns geram valores unicos e crescentes, mas nao garantem sequencia contigua; podem existir lacunas, e nao devem ser usadas para contagem.", true],
+        ],
+    },
+    {
+        statement: "Numa dimensao de clientes, o negocio precisa analisar vendas passadas segundo o endereco que o cliente tinha na data de cada compra, preservando o historico completo de mudancas de endereco. Qual estrategia de SCD atende ao requisito?",
+        explanation: "Analisar fatos segundo o valor vigente na data exige historico completo por versao, o que caracteriza SCD Tipo 2 (nova linha por mudanca com datas de vigencia e flag de atual); Tipo 1 e Tipo 3 nao preservam todo o historico.",
+        topic: "Slowly Changing Dimensions",
+        options: [
+            ["SCD Tipo 1, sobrescrevendo o endereco antigo pelo novo, pois manter apenas o valor mais recente e suficiente para reconstruir o endereco vigente em qualquer data passada.", false],
+            ["SCD Tipo 2, criando uma nova versao da linha a cada mudanca com vigencia e indicador de registro atual, preservando o historico.", true],
+            ["SCD Tipo 0, mantendo o endereco fixo do primeiro cadastro, ja que atributos de dimensao nunca devem mudar depois da carga inicial do cliente na tabela.", false],
+            ["SCD Tipo 3, guardando apenas o endereco anterior e o atual em duas colunas, o que cobre qualquer necessidade de historico independentemente de quantas vezes o endereco mudar ao longo do tempo.", false],
+        ],
+    },
+    {
+        statement: "Um analista recebeu o privilegio SELECT diretamente na tabela vendas.comercial.pedidos, mas ao executar SELECT * FROM vendas.comercial.pedidos recebe erro de permissao. Nenhum outro privilegio foi concedido a ele. O que falta para a consulta funcionar?",
+        explanation: "No Unity Catalog o acesso a um objeto exige privilegios de travessia em cada nivel pai: USE CATALOG no catalogo e USE SCHEMA no schema, alem do SELECT na tabela. Sem os privilegios de uso, o SELECT concedido na tabela nao basta.",
+        topic: "Unity Catalog - hierarquia de nomes",
+        options: [
+            ["Conceder USE CATALOG em vendas e USE SCHEMA em vendas.comercial, pois o acesso a uma tabela exige percorrer a hierarquia de tres niveis", true],
+            ["Conceder o privilegio MODIFY na tabela, pois SELECT sozinho so habilita leitura de metadados e nao das linhas", false],
+            ["Recriar a tabela como managed e mover o storage para o metastore raiz, ja que tabelas external nao aceitam SELECT concedido a usuarios individuais sem ownership explicito no schema", false],
+            ["Tornar o analista owner do schema vendas.comercial, unica forma de habilitar leitura em tabelas herdadas", false],
+        ],
+    },
+    {
+        statement: "Duas tabelas guardam os mesmos dados: bronze.eventos_m e managed e bronze.eventos_e e external, apontando para um caminho em um external location. Um engenheiro executa DROP TABLE nas duas. O que acontece com os arquivos de dados subjacentes?",
+        explanation: "Ao dropar uma managed table, o Unity Catalog remove tambem os dados (elegiveis para exclusao fisica), pois controla o storage dela. Ao dropar uma external table, apenas os metadados saem do metastore e os arquivos permanecem no storage.",
+        topic: "Unity Catalog - managed x external",
+        options: [
+            ["Ambos os conjuntos de arquivos sao removidos imediatamente, pois DROP TABLE sempre apaga os dados no Unity Catalog", false],
+            ["Os arquivos da managed sao removidos (elegiveis para exclusao fisica), enquanto os da external permanecem no storage, pois o UC so gerencia os metadados dela", true],
+            ["Os arquivos da external sao removidos e os da managed permanecem, ja que o UC controla o ciclo de vida do storage externo", false],
+            ["Ambos os conjuntos de arquivos sao preservados no storage por padrao, e so sao apagados apos o VACUUM subsequente rodar sobre o external location, respeitando o periodo de retencao configurado no metastore", false],
+        ],
+    },
+    {
+        statement: "Um administrador executa GRANT SELECT ON SCHEMA vendas.comercial TO grupo_analistas. Uma semana depois, um pipeline cria a nova tabela vendas.comercial.devolucoes. Sobre o acesso do grupo a essa tabela recem-criada, o que e correto?",
+        explanation: "Privilegios no Unity Catalog sao herdados de cima para baixo: um SELECT concedido no schema vale para todas as tabelas atuais e futuras dele, sem necessidade de novo grant a cada objeto criado.",
+        topic: "Unity Catalog - heranca de privilegios",
+        options: [
+            ["O grupo precisa do privilegio USE SCHEMA renovado a cada nova tabela para que a heranca do SELECT volte a valer", false],
+            ["O grupo so podera ler apos um novo GRANT SELECT ser executado especificamente na tabela devolucoes, pois a heranca vale apenas para as tabelas que existiam no momento do grant", false],
+            ["O grupo ja pode ler a nova tabela, pois o SELECT concedido no schema e herdado por todas as tabelas atuais e futuras dele", true],
+            ["O grupo nunca podera ler tabelas criadas por um pipeline, pois o SELECT herdado nao se aplica a objetos cujo owner difere de quem concedeu o privilegio", false],
+        ],
+    },
+    {
+        statement: "Uma tabela tem como owner o grupo eng_dados. Um membro desse grupo, que nao e administrador do metastore nem do catalogo, precisa aplicar um row filter na tabela e conceder SELECT a outro time. Ele consegue?",
+        explanation: "O owner de um objeto no Unity Catalog (usuario ou grupo) pode administra-lo por completo: alterar, conceder e revogar privilegios e aplicar funcoes de row filter e column mask, sem precisar ser administrador do metastore.",
+        topic: "Unity Catalog - poderes do owner",
+        options: [
+            ["Nao, aplicar row filter e conceder privilegios sao acoes reservadas exclusivamente ao administrador do metastore, e o owner de uma tabela so pode ler, gravar e alterar o schema dela, mas nunca delegar acesso a terceiros", false],
+            ["Ele consegue conceder SELECT, mas nao aplicar o row filter, pois filtros de linha so podem ser definidos por quem tem o privilegio MANAGE no catalogo inteiro", false],
+            ["Ele consegue aplicar o row filter, mas nao conceder SELECT, pois a concessao de privilegios exige ownership individual, nao de grupo", false],
+            ["Sim, como membro do grupo owner ele pode aplicar o row filter e conceder SELECT, pois o owner administra a tabela e seus privilegios", true],
+        ],
+    },
+    {
+        statement: "Uma equipe espera ver, no grafo de linhagem do Unity Catalog, o fluxo de uma tabela gold gerada por um job. O job rodou uma unica vez, ha treze meses, em um cluster sem Unity Catalog, e nunca mais executou. A linhagem nao aparece. Qual a explicacao mais provavel?",
+        explanation: "A captura de linhagem no Unity Catalog depende de a operacao ser executada em compute compativel com UC e e retida por uma janela limitada (cerca de um ano). Uma execucao unica e antiga em cluster sem UC nao gera linhagem visivel.",
+        topic: "Unity Catalog - linhagem",
+        options: [
+            ["A linhagem so e capturada quando a operacao roda em compute habilitado para Unity Catalog, e alem disso os dados de linhagem tem janela de retencao limitada", true],
+            ["A linhagem nunca e capturada para tabelas na camada gold, apenas para bronze e silver, por decisao de arquitetura do Unity Catalog", false],
+            ["A linhagem precisa ser habilitada manualmente por tabela com ALTER TABLE SET LINEAGE ON antes de qualquer execucao do job", false],
+            ["A linhagem exige que a tabela gold seja recriada como materialized view, pois apenas objetos gerenciados por Lakeflow Declarative Pipelines tem o grafo de dependencias registrado nas system tables de linhagem", false],
+        ],
+    },
+    {
+        statement: "Um engenheiro vai proteger a tabela financeiro.transacoes com um row filter que so exibe linhas cuja coluna unidade coincide com a unidade do usuario. O que caracteriza corretamente a implementacao de um row filter no Unity Catalog?",
+        explanation: "Um row filter e uma funcao SQL com retorno BOOLEAN, ligada a tabela via ALTER TABLE ... SET ROW FILTER e recebendo colunas como argumentos; cada tabela aceita apenas um row filter ativo. Linhas para as quais a funcao retorna falso ficam ocultas.",
+        topic: "Row filter - fundamentos",
+        options: [
+            ["Concede-se o privilegio ROW FILTER ao usuario e o Unity Catalog infere as linhas visiveis a partir do grupo dele, sem necessidade de funcao", false],
+            ["Cria-se uma funcao SQL que retorna BOOLEAN e associa-se a tabela com ALTER TABLE ... SET ROW FILTER, passando a coluna como argumento; a tabela aceita um filtro por vez", true],
+            ["Define-se uma coluna gerada do tipo BOOLEAN na propria tabela e marca-se com a propriedade delta.rowFilter, aplicada automaticamente a cada leitura", false],
+            ["Cria-se uma view materializada que reescreve fisicamente a tabela filtrando as linhas por usuario, e agenda-se um job de refresh para que cada usuario enxergue apenas a sua particao, substituindo o acesso direto a tabela base", false],
+        ],
+    },
+    {
+        statement: "Uma organizacao precisa mascarar automaticamente qualquer coluna que contenha CPF em centenas de tabelas, sem editar tabela por tabela. Usando o modelo ABAC (attribute-based access control) do Unity Catalog, qual abordagem atende melhor?",
+        explanation: "O ABAC do Unity Catalog permite criar policies de mascaramento ligadas a governed tags: ao marcar as colunas com a tag, a mascara passa a ser aplicada automaticamente em escala, sem alterar cada tabela individualmente.",
+        topic: "ABAC - mascara por governed tag",
+        options: [
+            ["Aplicar um unico row filter no catalogo raiz, que o Unity Catalog propaga como mascara para todas as colunas marcadas como sensiveis nos schemas filhos", false],
+            ["Escrever um job que percorre o information_schema, identifica colunas com nome parecido com cpf e executa dinamicamente um ALTER TABLE ... SET MASK em cada uma, reexecutando sempre que novas tabelas surgirem para manter a cobertura", false],
+            ["Definir uma policy de column mask associada a uma governed tag e marcar as colunas sensiveis com essa tag, de modo que a mascara passe a valer em escala", true],
+            ["Habilitar a redacao automatica de segredos, que substitui por [REDACTED] qualquer valor de coluna que se pareca com um CPF em tempo de consulta", false],
+        ],
+    },
+    {
+        statement: "Em um secret scope Databricks-backed, um lider tecnico criou os segredos e quer que um grupo de engenheiros possa le-los e usa-los em jobs, mas sem poder adicionar, remover segredos nem alterar as permissoes do scope. Qual permissao concede a eles?",
+        explanation: "As ACLs de secret scope tem tres niveis: READ (ler valores e listar chaves), WRITE (inclui criar e excluir segredos) e MANAGE (inclui alterar as ACLs). READ e suficiente para que jobs resolvam os segredos sem poder modifica-los.",
+        topic: "Secret scopes - ACLs e permissoes",
+        options: [
+            ["MANAGE na ACL do scope, pois e a permissao intermediaria que libera o uso dos segredos sem permitir criar ou excluir chaves", false],
+            ["Nenhuma permissao especifica, pois em scopes Databricks-backed qualquer usuario do workspace le os segredos por padrao", false],
+            ["WRITE na ACL do scope, unico nivel que permite resolver dbutils.secrets.get em jobs; READ isoladamente cobre apenas a listagem dos nomes das chaves e nunca a leitura dos valores em tempo de execucao", false],
+            ["READ na ACL do scope, que permite ler os valores dos segredos e listar os nomes, sem autorizar gravacao nem gestao de permissoes", true],
+        ],
+    },
+    {
+        statement: "Uma empresa quer usar suas proprias chaves (customer-managed keys) tanto para criptografar notebooks, resultados de consulta e segredos armazenados no control plane quanto os dados no storage do workspace. Como isso e configurado?",
+        explanation: "A Databricks separa customer-managed keys em duas categorias: managed services (criptografa notebooks, resultados de consulta e segredos no control plane) e workspace storage (dados no seu bucket). Sao configuraveis de forma independente, com chaves iguais ou diferentes.",
+        topic: "Customer-managed keys - managed services x storage",
+        options: [
+            ["Sao duas configuracoes de chave distintas: uma para managed services (control plane) e outra para o workspace storage, que podem usar chaves diferentes", true],
+            ["Apenas o workspace storage aceita customer-managed keys; notebooks e segredos no control plane usam obrigatoriamente a chave gerenciada pela Databricks, sem alternativa", false],
+            ["A criptografia com chave propria e definida por tabela, via propriedade delta.encryptionKey, e nao existe no nivel de workspace", false],
+            ["Uma unica customer-managed key cobre simultaneamente o control plane e o storage, e precisa ser rotacionada manualmente a cada consulta para que os resultados intermediarios permanecam criptografados de ponta a ponta", false],
+        ],
+    },
+    {
+        statement: "Um provedor compartilha uma tabela Delta via Delta Sharing D2D. O recipiente quer consumir a tabela como fonte de Structured Streaming e usar time travel. Ao criar o share, o que o provedor precisa garantir?",
+        explanation: "Para o recipiente ler a tabela em streaming, via CDF ou com time travel, o provedor deve compartilha-la com o historico (WITH HISTORY) ao adiciona-la ao share. Sem o historico, so e possivel ler o snapshot atual em lote.",
+        topic: "Delta Sharing - compartilhar historico",
+        options: [
+            ["Conceder ao recipiente o privilegio MODIFY na tabela de origem, unico que libera leitura incremental via streaming do outro lado", false],
+            ["Adicionar a tabela ao share com o historico habilitado (WITH HISTORY), pois leituras em streaming, CDF e time travel no lado do recipiente dependem do historico compartilhado", true],
+            ["Habilitar deletion vectors na tabela, requisito tecnico para que o recipiente consiga fazer time travel atraves de um share", false],
+            ["Converter a tabela em materialized view antes de adiciona-la ao share, ja que o Delta Sharing so transmite snapshots estaticos e o recipiente reconstroi o historico localmente ao configurar um checkpoint apontando para o share", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de FinOps ja consulta system.billing.usage e ve a quantidade de DBUs por job, mas o gestor pediu o custo estimado em dolares, nao apenas em DBUs. Como obter o valor monetario?",
+        explanation: "system.billing.list_prices traz o preco por SKU ao longo do tempo; ao fazer join com system.billing.usage pelo SKU e pela janela de vigencia do preco, multiplica-se os DBUs consumidos pelo preco unitario para estimar o custo em dolares.",
+        topic: "System Tables - custo em dinheiro (list_prices)",
+        options: [
+            ["Basta ativar a coluna oculta usd_cost em system.billing.usage com um ALTER, que passa a preencher o custo em dolares retroativamente", false],
+            ["O valor em dolares so esta disponivel na conta de cobranca do provedor de nuvem, pois as system tables registram exclusivamente unidades de consumo e nunca expoem qualquer informacao de preco, mesmo aproximada, dentro do Databricks", false],
+            ["Fazer join de system.billing.usage com system.billing.list_prices pelo SKU e periodo de vigencia do preco, multiplicando os DBUs pelo preco unitario", true],
+            ["Consultar system.access.audit, que registra o custo monetario de cada operacao faturavel junto ao evento de auditoria correspondente", false],
+        ],
+    },
+    {
+        statement: "Um administrador abre o catalogo system e percebe que o schema access (auditoria) aparece, mas sem dados, enquanto billing ja traz registros. Ele tambem tenta, sem sucesso, inserir uma linha em uma system table para corrigir um valor. O que explica esse comportamento?",
+        explanation: "Varios schemas do catalogo system (como access) exigem habilitacao explicita por um administrador antes de passarem a registrar dados, e todas as system tables sao somente leitura, o que impede insercoes ou correcoes manuais.",
+        topic: "System Tables - habilitacao de schemas",
+        options: [
+            ["O schema access esta corrompido e precisa ser recriado com CREATE SCHEMA system.access, o que tambem reabilita a escrita nas tabelas", false],
+            ["A ausencia de dados indica que o workspace nao tem Unity Catalog, e a insercao falhou por falta do privilegio USE CATALOG em system", false],
+            ["O schema access so recebe dados em workspaces com Delta Sharing ativo, e a insercao falhou porque exige que o administrador assuma o ownership do catalogo system e o marque como gravavel por meio de um GRANT MODIFY sobre todo o metastore", false],
+            ["Alguns schemas do catalogo system precisam ser habilitados explicitamente por um administrador antes de comecar a coletar dados, e as system tables sao somente leitura", true],
+        ],
+    },
+    {
+        statement: "Em uma pipeline Lakeflow Spark Declarative Pipelines, uma equipe quer acompanhar ao longo do tempo quantos registros violaram as expectations de cada tabela, consultando o event log com SQL. Onde estao essas metricas?",
+        explanation: "No event log, os eventos flow_progress carregam no campo details (JSON) as metricas de qualidade de dados, incluindo quantos registros passaram e falharam em cada expectation, permitindo acompanhar a evolucao por consulta SQL.",
+        topic: "Event log - metricas de qualidade (expectations)",
+        options: [
+            ["Nos eventos do tipo flow_progress, cujo campo details traz, em JSON, as metricas de data quality com contagens de registros que passaram e falharam por expectation", true],
+            ["Nos eventos do tipo user_action, que registram cada linha descartada individualmente junto com o usuario que disparou a atualizacao da pipeline", false],
+            ["Em uma coluna expectations_failed adicionada automaticamente a cada tabela da pipeline, consultavel com um SELECT direto na tabela de destino", false],
+            ["As metricas de expectations nao ficam no event log; e preciso habilitar uma system table especifica de data quality e cruza-la com a linhagem de colunas para reconstruir, por inferencia, quantos registros teriam violado cada constraint em cada execucao", false],
+        ],
+    },
+    {
+        statement: "Um estagio de agregacao esta lento. Na Spark UI, o engenheiro nota, nas metricas do estagio, valores altos de Spill (Memory) e Spill (Disk) em varias tarefas, embora nao haja falha. O que isso indica e qual a mitigacao mais direta?",
+        explanation: "Spill (Memory) e Spill (Disk) na Spark UI indicam que os dados nao couberam na memoria de execucao e foram derramados para disco, sinal de pressao de memoria no shuffle. Aumentar a memoria por tarefa ou aumentar o paralelismo (mais particoes) costuma reduzir o spill.",
+        topic: "Spark UI - spill de memoria",
+        options: [
+            ["O spill e sempre benefico e sinaliza uso eficiente do disk cache; nenhuma acao e necessaria, pois nao houve falha de tarefa", false],
+            ["Ha pressao de memoria durante o shuffle, forcando gravacao em disco; aumentar a memoria por tarefa ou reduzir o volume por particao (mais particoes) tende a reduzir o spill", true],
+            ["O spill ocorre porque o Photon esta desabilitado; basta ativar o Photon para que o shuffle passe a rodar inteiramente em memoria, sem qualquer escrita em disco", false],
+            ["O spill indica que os arquivos de origem estao corrompidos e sendo relidos do disco repetidamente; a correcao e rodar OPTIMIZE com ZORDER na tabela de entrada para que o Spark deixe de materializar particoes intermediarias em disco durante a agregacao", false],
+        ],
+    },
+    {
+        statement: "No Query Profiler, uma consulta que filtra por WHERE data = '2026-07-01' em uma tabela particionada por data esta lenta. O no de scan mostra 'files pruned: 0' e 'files read' igual ao total de arquivos da tabela. O que isso revela?",
+        explanation: "files pruned igual a zero com leitura de todos os arquivos indica ausencia de partition pruning: a consulta varre a tabela inteira. Isso costuma acontecer quando o predicado nao bate diretamente com a coluna de particao, por diferenca de tipo ou por aplicar uma funcao sobre ela.",
+        topic: "Query Profiler - partition pruning",
+        options: [
+            ["O valor 'files pruned: 0' e apenas informativo e nao afeta o desempenho, pois o disk cache ja servia todos os arquivos a partir da memoria local", false],
+            ["A tabela perdeu suas estatisticas e precisa de um ANALYZE TABLE COMPUTE STATISTICS antes de qualquer filtro funcionar; enquanto isso nao for feito, o Delta ignora todos os predicados de particao e sempre reporta zero arquivos podados", false],
+            ["O pruning de particao nao ocorreu e a consulta esta lendo a tabela inteira; provavelmente o predicado nao casa com a coluna de particionamento (tipo divergente ou funcao aplicada sobre a coluna)", true],
+            ["O scan esta correto e o gargalo esta no shuffle seguinte; o numero de arquivos lidos nunca reflete o pruning de particao no Query Profiler", false],
+        ],
+    },
+    {
+        statement: "Uma equipe promove um Automation Bundle para o target prod. A politica interna exige que os jobs em producao nao rodem sob a identidade pessoal de quem faz o deploy, e sim sob uma conta de servico. Como o bundle atende a isso?",
+        explanation: "Em Automation Bundles, o campo run_as define a identidade de execucao dos recursos; aponta-lo para um service principal no target prod garante que os jobs rodem sob a conta de servico, e nao sob o usuario que executou o deploy.",
+        topic: "Automation Bundles - run_as em producao",
+        options: [
+            ["Definindo mode: development no target prod, que automaticamente troca o executor para o service principal padrao do workspace", false],
+            ["Marcando cada job com a tag production, o que faz o Databricks substituir o executor pela conta de servico da conta de faturamento", false],
+            ["Isso nao e configuravel no bundle: o job sempre roda sob a identidade de quem executou databricks bundle deploy, entao a equipe precisa compartilhar as credenciais de um usuario tecnico e usa-las manualmente a cada promocao para producao", false],
+            ["Configurando run_as com um service principal no target prod, para que os recursos implantados executem sob essa identidade em vez da do usuario que fez o deploy", true],
+        ],
+    },
+    {
+        statement: "Uma engenheira precisa alternar, na mesma maquina, entre um workspace de desenvolvimento e um de producao ao usar a Databricks CLI. Qual e a forma idiomatica de gerenciar essas duas conexoes?",
+        explanation: "A Databricks CLI guarda multiplos perfis nomeados no arquivo .databrickscfg, cada um com seu host e credenciais; a flag --profile (ou o perfil DEFAULT) seleciona qual conexao usar, permitindo alternar entre dev e prod na mesma maquina.",
+        topic: "Databricks CLI - perfis de autenticacao",
+        options: [
+            ["Configurar perfis nomeados no arquivo .databrickscfg (cada um com host e credenciais) e escolher com a flag --profile em cada comando", true],
+            ["Passar host e token como argumentos posicionais em todo comando, ja que a CLI nao persiste configuracoes de autenticacao entre execucoes", false],
+            ["Usar databricks bundle validate para trocar de workspace, pois a CLI deriva o host automaticamente do target do bundle e ignora qualquer perfil", false],
+            ["Manter dois clones separados do repositorio, um por workspace, e editar as variaveis de ambiente do sistema antes de cada comando para reapontar o host, pois a CLI so reconhece uma configuracao global por vez e nao suporta multiplas conexoes", false],
+        ],
+    },
+    {
+        statement: "Uma funcao aplica regras de negocio complexas, mas hoje ela le a tabela bronze com spark.read.table, transforma e grava a silver com saveAsTable, tudo junto. A equipe quer cobri-la com testes unitarios rapidos e deterministicos. Qual refatoracao melhor viabiliza isso?",
+        explanation: "Separar a transformacao (funcao pura DataFrame para DataFrame) da leitura e escrita torna a logica testavel com pequenos DataFrames criados na memoria, sem depender de tabelas reais, resultando em testes unitarios rapidos e deterministicos.",
+        topic: "Teste unitario - funcao pura de transformacao",
+        options: [
+            ["Substituir o teste unitario por uma expectation da pipeline, pois regras de negocio so podem ser validadas com dados reais em producao", false],
+            ["Isolar a logica em uma funcao pura que recebe um DataFrame e devolve outro, deixando leitura e escrita fora dela, para testar a transformacao com DataFrames montados na memoria", true],
+            ["Envolver a funcao em um job agendado que roda a cada commit e falha se a contagem de linhas da silver mudar em relacao a execucao anterior", false],
+            ["Manter a leitura e a escrita dentro da funcao e, no teste, apontar spark.read.table para a tabela de producao em horario de baixo movimento, comparando o resultado gravado com uma copia de referencia gerada pelo pipeline oficial do dia anterior", false],
+        ],
+    },
+    {
+        statement: "Uma tabela e compartilhada por Delta Sharing aberto (open sharing) com um parceiro externo, que acessa via token do recipiente. A seguranca pede que o acesso expire periodicamente e possa ser cortado imediatamente se o token vazar. O que e correto sobre o token de recipiente no open sharing?",
+        explanation: "No open sharing, o token do recipiente tem tempo de expiracao configuravel e pode ser rotacionado a qualquer momento; a rotacao invalida o token antigo, permitindo cortar o acesso caso ele vaze, sem afetar outros recipientes.",
+        topic: "Delta Sharing D2O - rotacao de token do recipiente",
+        options: [
+            ["A seguranca do open sharing depende exclusivamente de allowlist de IP; o token e permanente e serve apenas para identificar o recipiente nos logs", false],
+            ["O token de recipiente do open sharing nunca expira por design e nao pode ser revogado individualmente; para cortar o acesso e necessario excluir o share inteiro, o que tambem derruba todos os demais recipientes ligados a ele", false],
+            ["O token tem expiracao configuravel e pode ser rotacionado; rotaciona-lo invalida o token anterior, cortando o acesso de quem o possuia", true],
+            ["Rotacionar o token exige recriar a tabela de origem, pois o token e derivado do identificador fisico dos arquivos Delta compartilhados", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa governar arquivos nao tabulares (PDFs, imagens de modelo, arquivos de configuracao) no Unity Catalog, com controle de acesso, e conceder a um grupo apenas leitura desses arquivos. O que e adequado?",
+        explanation: "Volumes do Unity Catalog governam dados nao tabulares (arquivos e diretorios) dentro de um schema, com os privilegios READ VOLUME e WRITE VOLUME; conceder READ VOLUME ao grupo da acesso somente de leitura aos arquivos.",
+        topic: "Unity Catalog - volumes",
+        options: [
+            ["Guardar os arquivos no DBFS root e controlar o acesso por ACL de secret scope, unico mecanismo de permissao para conteudo binario", false],
+            ["Conceder MODIFY no schema inteiro ao grupo, pois nao existe privilegio especifico de leitura para arquivos, apenas para tabelas", false],
+            ["Usar um volume (managed ou external) dentro de um schema e conceder READ VOLUME ao grupo, pois volumes governam dados nao tabulares com privilegios proprios", true],
+            ["Registrar cada arquivo como uma external table apontando para o caminho do objeto no storage e conceder SELECT, ja que o Unity Catalog so aplica controle de acesso sobre objetos tabulares e trata qualquer arquivo como uma tabela de uma coluna", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -1226,10 +1887,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) { console.log(`Simulado ja tem ${n} questoes, nada a fazer.`); return; }
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
+        console.log(`Simulado ja tem ${n} questoes, nada a fazer.`);
+        return;
+    }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({ simuladoId: simulado.id, statement: q.statement, explanation: q.explanation, topic: q.topic })
@@ -1238,7 +1912,7 @@ async function seed() {
             q.options.map(([text, isCorrect], idx) => ({ questionId: questao.id, text, isCorrect, position: idx + 1 })),
         );
     }
-    console.log(`Seed concluido: ${QUESTOES.length} questoes inseridas.`);
+    console.log(`Seed: ${inseridas} questoes novas inseridas (${QUESTOES.length} no banco).`);
 }
 
 seed().then(() => process.exit(0)).catch((e) => { console.error("Falha no seed:", e); process.exit(1); });
