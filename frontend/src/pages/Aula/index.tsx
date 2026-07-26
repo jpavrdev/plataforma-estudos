@@ -307,19 +307,21 @@ function Quiz({
       setExplicacao(r.explanation ?? null);
       setVerSolucao(false);
       setChecked(true);
-      // Na última questão o resultado sai sozinho; só damos um tempo para ver o feedback.
-      if (isLast) {
-        const answers = aula.questions.map((qq) => ({
-          questionId: qq.id,
-          optionId: qq.id === q.id ? selected : respostas[qq.id],
-        }));
-        setTimeout(() => submeterQuiz(answers), 1200);
-      }
     } catch {
       setErro('Não foi possível verificar a resposta. Tente novamente.');
     } finally {
       setVerificando(false);
     }
+  }
+
+  // Na última questão não enviamos sozinho: assim a pessoa lê a resolução com calma
+  // antes de ir para o resultado. As respostas já estão em `respostas` (uma por questão).
+  function verResultado() {
+    const answers = aula.questions.map((qq) => ({
+      questionId: qq.id,
+      optionId: respostas[qq.id],
+    }));
+    submeterQuiz(answers);
   }
 
   function avancar() {
@@ -496,7 +498,7 @@ function Quiz({
             {!checked
               ? 'Selecione uma alternativa e verifique.'
               : isLast
-                ? 'Calculando seu resultado...'
+                ? 'Confira a resolução e veja seu resultado.'
                 : 'Siga para a próxima questão.'}
           </span>
           <div className="topbar__spacer" />
@@ -510,8 +512,8 @@ function Quiz({
               {verificando ? 'Verificando...' : 'Verificar resposta'}
             </button>
           ) : isLast ? (
-            <button className="btn btn--accent" disabled>
-              Calculando resultado...
+            <button className="btn btn--accent" disabled={enviando} onClick={verResultado}>
+              {enviando ? 'Enviando...' : 'Ver resultado'}
             </button>
           ) : (
             <button className="btn btn--accent" onClick={avancar}>
