@@ -142,6 +142,7 @@ export interface QuizAnswerState {
   selectedOptionId: string;
   isCorrect: boolean;
   correctOptionId: string | null;
+  explanation?: string | null;
 }
 export interface QuizQuestion {
   id: string;
@@ -194,6 +195,7 @@ export async function enviarQuiz(
 export interface CheckResult {
   correct: boolean;
   correctOptionId: string;
+  explanation?: string | null;
 }
 
 // Verifica uma unica resposta (feedback imediato do quiz em carrossel). O gabarito

@@ -258,6 +258,8 @@ function Quiz({
   const [checked, setChecked] = useState(false);
   const [wasCorrect, setWasCorrect] = useState(false);
   const [correctOptionId, setCorrectOptionId] = useState<string | null>(null);
+  const [explicacao, setExplicacao] = useState<string | null>(null);
+  const [verSolucao, setVerSolucao] = useState(false);
   const [respostas, setRespostas] = useState<Record<string, string>>({});
   const [verificando, setVerificando] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -302,20 +304,24 @@ function Quiz({
       setWasCorrect(r.correct);
       setCorrectOptionId(r.correctOptionId);
       setRespostas((prev) => ({ ...prev, [q.id]: selected }));
+      setExplicacao(r.explanation ?? null);
+      setVerSolucao(false);
       setChecked(true);
-      // Na última questão o resultado sai sozinho; só damos um tempo para ver o feedback.
-      if (isLast) {
-        const answers = aula.questions.map((qq) => ({
-          questionId: qq.id,
-          optionId: qq.id === q.id ? selected : respostas[qq.id],
-        }));
-        setTimeout(() => submeterQuiz(answers), 1200);
-      }
     } catch {
       setErro('Não foi possível verificar a resposta. Tente novamente.');
     } finally {
       setVerificando(false);
     }
+  }
+
+  // Na última questão não enviamos sozinho: assim a pessoa lê a resolução com calma
+  // antes de ir para o resultado. As respostas já estão em `respostas` (uma por questão).
+  function verResultado() {
+    const answers = aula.questions.map((qq) => ({
+      questionId: qq.id,
+      optionId: respostas[qq.id],
+    }));
+    submeterQuiz(answers);
   }
 
   function avancar() {
@@ -324,6 +330,8 @@ function Quiz({
     setChecked(false);
     setWasCorrect(false);
     setCorrectOptionId(null);
+    setExplicacao(null);
+    setVerSolucao(false);
   }
 
   function refazer() {
@@ -332,6 +340,8 @@ function Quiz({
     setChecked(false);
     setWasCorrect(false);
     setCorrectOptionId(null);
+    setExplicacao(null);
+    setVerSolucao(false);
     setRespostas({});
     setResultado(null);
     setErro('');
@@ -458,6 +468,29 @@ function Quiz({
           </div>
         )}
 
+        {checked && explicacao && (
+          <div className="quiz__solucao">
+            <button
+              type="button"
+              className="quiz__solucao-toggle"
+              onClick={() => setVerSolucao((v) => !v)}
+            >
+              {verSolucao ? 'Ocultar resolução' : 'Ver resolução passo a passo'}
+            </button>
+            {verSolucao && (
+              <div className="quiz__solucao-corpo lesson__md">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={md}
+                >
+                  {explicacao}
+                </ReactMarkdown>
+              </div>
+            )}
+          </div>
+        )}
+
         {erro && <div className="auth__alert">{erro}</div>}
 
         <div className="quiz__foot">
@@ -465,7 +498,7 @@ function Quiz({
             {!checked
               ? 'Selecione uma alternativa e verifique.'
               : isLast
-                ? 'Calculando seu resultado...'
+                ? 'Confira a resolução e veja seu resultado.'
                 : 'Siga para a próxima questão.'}
           </span>
           <div className="topbar__spacer" />
@@ -479,8 +512,8 @@ function Quiz({
               {verificando ? 'Verificando...' : 'Verificar resposta'}
             </button>
           ) : isLast ? (
-            <button className="btn btn--accent" disabled>
-              Calculando resultado...
+            <button className="btn btn--accent" disabled={enviando} onClick={verResultado}>
+              {enviando ? 'Enviando...' : 'Ver resultado'}
             </button>
           ) : (
             <button className="btn btn--accent" onClick={avancar}>
