@@ -2407,7 +2407,239 @@ const QUESTOES: Questao[] = [
                 false
             ]
         ]
-    }
+    },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma equipe cria um assistente de reservas que precisa entender frases como 'quero uma mesa para quatro na sexta' e transformá-las em uma ação, identificando a data e o número de pessoas. Qual capacidade de linguagem faz esse reconhecimento de intenção e de entidades?",
+        explanation: "O Conversational Language Understanding interpreta enunciados, classifica a intenção e extrai entidades como data e quantidade. Detecção de idioma, TTS e OCR resolvem outros problemas.",
+        topic: "Texto, fala, visão e extração no Foundry",
+        options: [
+            ["O reconhecimento de intenções e entidades, oferecido pelo Conversational Language Understanding", true],
+            ["A detecção de idioma, que apenas identifica em que língua a frase foi escrita", false],
+            ["O text to speech, que converte em áudio falado a frase que o usuário digitou", false],
+            ["O OCR, que lê o texto impresso apenas quando a frase chega ao sistema como uma imagem digitalizada", false],
+        ],
+    },
+    {
+        statement: "Uma empresa já tem um manual e uma lista de perguntas frequentes em texto e quer um bot que responda às dúvidas dos clientes com base nesse conteúdo, sem treinar um modelo generativo do zero. Qual recurso do Azure AI Language se encaixa?",
+        explanation: "A resposta a perguntas personalizada (custom question answering) transforma FAQs e documentos em uma base de conhecimento consultável. Os outros recursos tratam de sentimento, termos-chave e tradução.",
+        topic: "Texto, fala, visão e extração no Foundry",
+        options: [
+            ["A análise de sentimento, que examina cada mensagem recebida e a classifica como positiva, negativa ou neutra para priorização", false],
+            ["A extração de frases-chave, que apenas lista os termos mais relevantes de cada pergunta", false],
+            ["A resposta a perguntas personalizada, que cria uma base de conhecimento a partir das FAQs e retorna a melhor resposta", true],
+            ["A tradução de texto, que converte as perguntas para outro idioma", false],
+        ],
+    },
+    {
+        statement: "Um sistema de controle de acesso precisa localizar e contar rostos em fotos da portaria e, por privacidade, borrar cada rosto encontrado antes de arquivar a imagem. Qual capacidade de visão computacional atende a esse requisito?",
+        explanation: "A detecção de rostos do Azure AI Vision encontra e delimita as faces presentes na imagem, permitindo contar e ocultar cada uma. Geração de imagem, frases-chave e fala tratam de outras tarefas.",
+        topic: "Texto, fala, visão e extração no Foundry",
+        options: [
+            ["A geração de imagem, que cria rostos sintéticos a partir de uma descrição em texto", false],
+            ["A extração de frases-chave, que resume em palavras os termos centrais de um texto", false],
+            ["O reconhecimento de fala, que transcreve em texto o áudio que seria captado pelos microfones das câmeras da portaria", false],
+            ["A detecção de rostos, que localiza as faces na imagem e retorna a posição de cada uma", true],
+        ],
+    },
+    {
+        statement: "Uma equipe transcreve reuniões e, além do texto, precisa saber quem falou cada trecho, separando e rotulando os diferentes participantes ao longo da gravação. Qual recurso do Azure AI Speech resolve isso?",
+        explanation: "A diarização identifica e rotula os diferentes locutores, indicando quem falou cada parte da transcrição. Síntese, tradução de fala e detecção de idioma cobrem outras necessidades.",
+        topic: "Texto, fala, visão e extração no Foundry",
+        options: [
+            ["A síntese de fala, que gera uma voz natural para ler a ata da reunião em voz alta", false],
+            ["A separação de locutores (diarização), que atribui cada trecho transcrito ao participante que o falou", true],
+            ["A tradução de fala, que converte o áudio falado da reunião para outro idioma quase em tempo real durante a chamada", false],
+            ["A detecção de idioma, que identifica em qual língua cada participante está falando na sala", false],
+        ],
+    },
+    {
+        statement: "Uma seguradora recebe todo mês o mesmo formulário próprio de sinistro, com um layout que os modelos prontos não reconhecem bem, e quer treinar um extrator usando alguns exemplos rotulados desse formulário. Qual abordagem do Document Intelligence é indicada?",
+        explanation: "Quando os modelos prontos não cobrem um layout específico, o Document Intelligence permite treinar um modelo personalizado com poucos exemplos rotulados. Os demais recursos não extraem campos de formulários próprios.",
+        topic: "Texto, fala, visão e extração no Foundry",
+        options: [
+            ["Usar o modelo pronto de fatura, que já vem preparado para notas fiscais e recibos comerciais", false],
+            ["Aplicar a detecção de idioma para descobrir em que língua o formulário foi preenchido", false],
+            ["Treinar um modelo personalizado do Document Intelligence com exemplos rotulados do próprio formulário", true],
+            ["Enviar o formulário para a síntese de fala, que lê em voz alta cada um dos campos preenchidos pelo segurado no documento", false],
+        ],
+    },
+    {
+        statement: "Um cartório digitaliza fichas antigas que misturam texto datilografado e anotações feitas à mão e precisa converter tudo em texto editável. Qual capacidade de visão computacional lê tanto o texto impresso quanto o manuscrito nessas imagens?",
+        explanation: "O OCR (recurso Read do Azure AI Vision) reconhece texto impresso e manuscrito em imagens e documentos digitalizados, gerando texto editável. Sentimento, geração de imagem e tradução resolvem outros problemas.",
+        topic: "Texto, fala, visão e extração no Foundry",
+        options: [
+            ["A análise de sentimento, que avalia se o conteúdo das fichas é positivo ou negativo", false],
+            ["A geração de imagem, que produz novas fichas ilustradas a partir de uma descrição textual", false],
+            ["A tradução de texto, que converte para outro idioma o conteúdo textual que já estava presente nas fichas escaneadas", false],
+            ["O reconhecimento óptico de caracteres (OCR), que extrai texto impresso e manuscrito das imagens", true],
+        ],
+    },
+    {
+        statement: "Um banco quer que seu assistente generativo responda perguntas de clientes usando os documentos internos de políticas, em vez de depender só do conhecimento geral do modelo. Qual abordagem no Foundry atende a isso?",
+        explanation: "O RAG (geração aumentada por recuperação) busca trechos relevantes dos seus documentos em um índice e os fornece ao modelo, que responde com base neles. Ajustar temperature, max_tokens ou a voz não traz o conteúdo interno.",
+        topic: "IA generativa e agentes no Foundry",
+        options: [
+            ["Aumentar a temperature do modelo para que ele invente respostas mais variadas sobre as políticas", false],
+            ["Usar RAG, conectando o modelo a um índice com os documentos internos para fundamentar as respostas", true],
+            ["Reduzir o max_tokens para que as respostas do assistente fiquem sempre bem curtas", false],
+            ["Trocar a voz de saída no text to speech para que o assistente soe mais natural ao ler as políticas", false],
+        ],
+    },
+    {
+        statement: "Depois de fundamentar (grounding) o modelo com trechos recuperados dos documentos da empresa, a equipe observa menos respostas inventadas. Qual afirmação explica melhor por que o grounding ajuda?",
+        explanation: "Fundamentar o modelo com dados recuperados confiáveis faz a resposta se apoiar em fatos concretos, reduzindo alucinações. O grounding não altera limite de tokens, tamanho do modelo nem a mensagem de sistema.",
+        topic: "IA generativa e agentes no Foundry",
+        options: [
+            ["Ao receber trechos reais e relevantes com a pergunta, o modelo se baseia neles e tende a alucinar menos", true],
+            ["O grounding aumenta o limite de tokens da resposta, permitindo ao modelo escrever textos consideravelmente mais longos que o normal", false],
+            ["O grounding substitui o modelo por um de menor tamanho, o que reduz o custo por token processado", false],
+            ["O grounding desativa a mensagem de sistema, deixando o modelo responder sem instrução prévia", false],
+        ],
+    },
+    {
+        statement: "Uma equipe quer montar visualmente um fluxo que encadeia a busca de dados, a montagem do prompt e a chamada ao modelo, e ainda avaliar a qualidade das respostas antes de publicar. Qual recurso do Foundry é indicado?",
+        explanation: "O prompt flow permite construir, testar e avaliar fluxos que encadeiam recuperação de dados, prompts e chamadas ao modelo antes de implantar. TTS, detecção de idioma e OCR não orquestram esse fluxo.",
+        topic: "IA generativa e agentes no Foundry",
+        options: [
+            ["O text to speech, que transforma cada resposta gerada em áudio com uma voz natural para ser ouvida pelo usuário", false],
+            ["A detecção de idioma, que descobre em que língua a pergunta do usuário foi escrita", false],
+            ["O prompt flow, que orquestra as etapas do fluxo generativo e permite avaliá-lo antes da implantação", true],
+            ["O OCR, que extrai o texto presente em imagens e documentos digitalizados enviados ao fluxo", false],
+        ],
+    },
+    {
+        statement: "Ao criar um agente no Azure AI Agent Service, a equipe quer que ele consulte um conjunto de arquivos internos para responder com base neles, além de seguir as instruções de comportamento. O que precisa ser adicionado ao agente?",
+        explanation: "Agentes ganham acesso a dados e ações por meio de ferramentas; uma ferramenta de busca em arquivos deixa o agente recuperar conteúdo interno para fundamentar respostas. Temperature, voz e threads extras não cumprem esse papel.",
+        topic: "IA generativa e agentes no Foundry",
+        options: [
+            ["Um valor de temperature igual a zero, o que por si só faz o agente ler os arquivos internos", false],
+            ["Uma voz de text to speech, para que o agente leia os arquivos internos em áudio ao usuário", false],
+            ["Um segundo thread de conversa, criado a cada nova mensagem do usuário, para que o agente acesse os arquivos automaticamente", false],
+            ["Uma ferramenta de conhecimento, como busca em arquivos, para o agente recuperar e citar o conteúdo interno", true],
+        ],
+    },
+    {
+        statement: "Uma empresa precisa que o modelo adote de forma consistente um estilo de redação muito específico e um formato fixo de saída, e tem milhares de exemplos rotulados desse padrão. Qual abordagem de personalização ajusta o próprio modelo a partir desses exemplos?",
+        explanation: "O ajuste fino re-treina o modelo com exemplos rotulados, fazendo-o incorporar um estilo e formato específicos de forma consistente. Geração de imagem, detecção de idioma e reconhecimento de fala não personalizam o texto gerado.",
+        topic: "IA generativa e agentes no Foundry",
+        options: [
+            ["O ajuste fino (fine-tuning), que treina o modelo com os exemplos rotulados para incorporar o padrão desejado", true],
+            ["A geração de imagem, que cria ilustrações originais e inéditas a partir das descrições textuais enviadas pela equipe da empresa", false],
+            ["A detecção de idioma, que identifica em que língua cada exemplo rotulado foi escrito", false],
+            ["O reconhecimento de fala, que transcreve em texto os áudios gravados pela equipe de redação", false],
+        ],
+    },
+    {
+        statement: "Sem treinar nada, um desenvolvedor quer orientar o formato da resposta incluindo no próprio prompt dois ou três exemplos de pergunta e resposta antes da pergunta real. Como se chama essa técnica?",
+        explanation: "No few-shot, exemplos são incluídos no próprio prompt para mostrar ao modelo o padrão esperado, sem re-treinar nada. Ajuste fino, implantação e Content Safety são conceitos diferentes.",
+        topic: "IA generativa e agentes no Foundry",
+        options: [
+            ["Ajuste fino, que re-treina os pesos do modelo usando um grande conjunto de dados rotulados", false],
+            ["Fornecer exemplos no prompt (few-shot), guiando o modelo pelo padrão dos exemplos incluídos", true],
+            ["Implantação (deployment), que disponibiliza o modelo escolhido em um endpoint para ser chamado", false],
+            ["Content Safety, que analisa o prompt em busca de conteúdo nocivo antes de enviá-lo ao modelo", false],
+        ],
+    },
+    {
+        statement: "Uma rede social precisa analisar automaticamente textos e imagens enviados pelos usuários para detectar conteúdo de ódio, violência, sexual ou de automutilação e bloqueá-lo. Qual serviço do Azure é voltado a isso?",
+        explanation: "O Azure AI Content Safety identifica e classifica conteúdo nocivo (ódio, violência, sexual e automutilação) em texto e imagens, com níveis de severidade. Speech, Document Intelligence e detecção de idioma têm outras finalidades.",
+        topic: "IA responsável e modelos",
+        options: [
+            ["O Azure AI Speech, que converte em texto o áudio das publicações enviadas pelos usuários da rede", false],
+            ["O Document Intelligence, que extrai campos estruturados como fornecedor, data e valor total de documentos e formulários digitalizados", false],
+            ["O Azure AI Content Safety, que detecta conteúdo nocivo em texto e imagem por categoria e severidade", true],
+            ["A detecção de idioma, que apenas informa em que língua cada publicação foi escrita pelo usuário", false],
+        ],
+    },
+    {
+        statement: "Ao implantar um modelo generativo no Foundry, a equipe percebe que já existe, por padrão, um sistema que examina os prompts e as respostas e pode bloquear conteúdo nocivo por categoria e nível de severidade. Como se chama esse mecanismo?",
+        explanation: "Cada implantação no Foundry aplica filtros de conteúdo que analisam entradas e saídas e bloqueiam conteúdo nocivo conforme a severidade. Temperature, prompt flow e tokenizador não fazem essa moderação.",
+        topic: "IA responsável e modelos",
+        options: [
+            ["O parâmetro temperature, que controla o quanto as respostas do modelo ficam aleatórias, variadas e criativas a cada chamada", false],
+            ["O prompt flow, que encadeia visualmente as etapas de recuperação, prompt e chamada ao modelo", false],
+            ["O tokenizador, que quebra o texto de entrada em unidades menores antes de o modelo processá-lo", false],
+            ["Os filtros de conteúdo do deployment, que avaliam prompts e respostas e bloqueiam conteúdo nocivo pela severidade", true],
+        ],
+    },
+    {
+        statement: "Antes de colocar um assistente em produção, a equipe quer medir de forma sistemática se as respostas do modelo são fundamentadas nos dados fornecidos, relevantes e coerentes, comparando configurações. Que atividade do Foundry apoia essa decisão?",
+        explanation: "A avaliação de modelos no Foundry aplica métricas como fundamentação, relevância, coerência e fluência para comparar e validar respostas antes da produção. Síntese de fala, detecção de idioma e temperature não avaliam qualidade.",
+        topic: "IA responsável e modelos",
+        options: [
+            ["A síntese de fala, que lê as respostas do assistente em voz alta, com entonação natural, para toda a equipe ouvir", false],
+            ["A avaliação de modelos, que mede as respostas por métricas como fundamentação, relevância e coerência", true],
+            ["A detecção de idioma, que informa em que língua cada resposta do assistente foi redigida", false],
+            ["O aumento da temperature, que aleatoriza as respostas para que fiquem sempre diferentes entre si", false],
+        ],
+    },
+    {
+        statement: "Uma equipe navega pelo catálogo de modelos do Foundry para escolher um modelo generativo. Qual conjunto de critérios é mais adequado para orientar essa escolha?",
+        explanation: "A escolha de um modelo deve considerar a tarefa e a modalidade, os benchmarks de desempenho, o custo e o tamanho de contexto necessários. Critérios como cor do ícone ou ordem na lista são irrelevantes.",
+        topic: "IA responsável e modelos",
+        options: [
+            ["O tipo de tarefa, a modalidade suportada, os benchmarks de desempenho, o custo e o tamanho do contexto", true],
+            ["A cor do ícone do modelo no catálogo e a ordem alfabética em que ele aparece na lista de resultados", false],
+            ["Apenas o nome do fornecedor, escolhendo sempre o primeiro modelo que aparecer logo na página inicial do catálogo de modelos", false],
+            ["Somente a data de publicação, adotando invariavelmente o modelo mais recente sem avaliar mais nada", false],
+        ],
+    },
+    {
+        statement: "A Microsoft organiza sua abordagem de IA responsável em torno de um conjunto de princípios. Qual das opções a seguir NÃO é um desses princípios?",
+        explanation: "Os princípios de IA responsável da Microsoft incluem imparcialidade, confiabilidade e segurança, privacidade e segurança, inclusão, transparência e responsabilização. Priorizar o lucro acima de tudo não é um deles.",
+        topic: "IA responsável e modelos",
+        options: [
+            ["Tratar as pessoas de forma justa, sem discriminar grupos por características como gênero ou etnia", false],
+            ["Priorizar o lucro acima de tudo", true],
+            ["Operar de maneira confiável e segura, inclusive diante de situações inesperadas", false],
+            ["Proteger a privacidade e a segurança dos dados usados pelo sistema de IA", false],
+        ],
+    },
+    {
+        statement: "Uma rede de lojas quer prever, em reais, o faturamento do próximo mês de cada filial a partir de dados históricos de vendas. Que tipo de tarefa de machine learning corresponde a prever um valor numérico contínuo?",
+        explanation: "A regressão prevê um valor numérico contínuo, como faturamento ou temperatura, a partir de variáveis de entrada. Classificação atribui categorias, e os demais tratam de imagem e fala.",
+        topic: "Cargas e capacidades de IA",
+        options: [
+            ["Classificação, que atribui a cada exemplo um rótulo entre categorias previamente definidas", false],
+            ["Geração de imagem, que cria figuras originais a partir de uma descrição escrita em texto", false],
+            ["Regressão, que estima um valor numérico contínuo a partir dos dados de entrada", true],
+            ["Reconhecimento de fala, que transcreve em texto o áudio das ligações de vendas das filiais", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de marketing tem uma base de clientes sem rótulos e quer descobrir automaticamente grupos de perfis parecidos, sem definir as categorias de antemão. Que tipo de tarefa de machine learning faz esse agrupamento?",
+        explanation: "O agrupamento (clustering) é uma tarefa não supervisionada que forma grupos de itens semelhantes sem rótulos predefinidos. Regressão, TTS e OCR resolvem outros tipos de problema.",
+        topic: "Cargas e capacidades de IA",
+        options: [
+            ["Agrupamento (clustering), que reúne exemplos semelhantes sem depender de rótulos definidos antes", true],
+            ["Regressão, que prevê um valor numérico contínuo a partir das variáveis de entrada disponíveis", false],
+            ["Text to speech, que converte em áudio falado o texto dos perfis cadastrados dos clientes", false],
+            ["OCR, que lê o texto impresso presente em imagens e documentos digitalizados enviados pela equipe", false],
+        ],
+    },
+    {
+        statement: "Um sistema financeiro monitora transações em tempo real e precisa apontar automaticamente as que fogem muito do padrão normal, para sinalizar possível fraude. Que tipo de capacidade de IA se aplica a identificar esses pontos fora do padrão?",
+        explanation: "A detecção de anomalias identifica pontos que destoam do comportamento normal dos dados, útil para fraude e falhas. Geração de texto, síntese de fala e tradução têm outros objetivos.",
+        topic: "Cargas e capacidades de IA",
+        options: [
+            ["A geração de texto, que redige descrições originais para cada transação processada pelo sistema", false],
+            ["A síntese de fala, que anuncia em voz alta o valor de cada transação aprovada pelo sistema", false],
+            ["A tradução automática, que converte a descrição de cada transação para o idioma do analista responsável", false],
+            ["A detecção de anomalias, que sinaliza registros que se desviam de forma incomum do padrão esperado", true],
+        ],
+    },
+    {
+        statement: "Uma empresa tem milhões de documentos, e-mails e PDFs dispersos e quer torná-los pesquisáveis, extraindo e indexando informações para que as pessoas encontrem respostas rapidamente. Que tipo de carga de IA descreve isso?",
+        explanation: "A mineração de conhecimento (knowledge mining) extrai, enriquece e indexa informações de grandes volumes de conteúdo, tornando-o pesquisável. Geração de imagem, reconhecimento e síntese de fala não cumprem esse papel.",
+        topic: "Cargas e capacidades de IA",
+        options: [
+            ["Mineração de conhecimento, que enriquece e indexa grandes volumes de conteúdo para torná-lo pesquisável", true],
+            ["Geração de imagem, que produz ilustrações originais a partir de descrições escritas pelos usuários", false],
+            ["Reconhecimento de fala, que transcreve em texto o áudio de reuniões e de ligações telefônicas gravadas pela empresa", false],
+            ["Síntese de fala, que lê em voz alta, com voz natural, o conteúdo dos documentos armazenados", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -2440,13 +2672,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log("Simulado já tem " + n + " questões, nada a fazer.");
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -2465,7 +2707,7 @@ async function seed() {
             })),
         );
     }
-    console.log("Seed concluído: " + QUESTOES.length + " questões inseridas.");
+    console.log("Seed: " + inseridas + " questões novas inseridas (" + QUESTOES.length + " no banco).");
 }
 
 seed()

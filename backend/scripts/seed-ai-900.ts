@@ -1453,6 +1453,216 @@ const QUESTOES: Questao[] = [
             ["Desativar toda a moderação para acelerar as respostas", false],
         ],
     },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma equipe quer que seu assistente de IA sempre responda em tom formal, assuma o papel de um especialista em jardinagem e recuse assuntos fora desse tema. Onde essa orientação de comportamento e escopo costuma ser definida?",
+        explanation: "A mensagem de sistema (system message) estabelece papel, tom e limites do assistente no início da interação, orientando como ele deve se comportar.",
+        topic: "IA generativa",
+        options: [
+            ["Em uma lista de exemplos de perguntas e respostas anexada ao final de cada solicitação para ilustrar o formato desejado da saída.", false],
+            ["No conjunto de dados de treinamento original usado para criar o modelo base.", false],
+            ["Na mensagem de sistema, que define papel, tom e limites do assistente antes da conversa.", true],
+            ["No número máximo de tokens configurado para a resposta.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa jurídica quer adaptar um modelo de linguagem base para usar o vocabulário e o estilo dos seus próprios pareceres, fornecendo muitos exemplos rotulados de perguntas e respostas do domínio. Qual técnica atende a esse objetivo?",
+        explanation: "O ajuste fino (fine-tuning) reaproveita um modelo base e o treina com exemplos próprios rotulados, especializando-o no vocabulário e no estilo de um domínio.",
+        topic: "IA generativa",
+        options: [
+            ["Ajuste fino (fine-tuning), que treina o modelo com exemplos próprios para especializá-lo.", true],
+            ["Aumentar o valor da temperatura nas chamadas para que o modelo produza respostas mais criativas e variadas a cada solicitação.", false],
+            ["Reduzir o número de tokens de entrada para diminuir o custo das chamadas.", false],
+            ["Converter os documentos em embeddings apenas para exibi-los ao usuário.", false],
+        ],
+    },
+    {
+        statement: "Ao chamar um modelo do Azure OpenAI Service, uma desenvolvedora quer que as respostas fiquem mais previsíveis e repetíveis, reduzindo a aleatoriedade. Qual parâmetro ela deve diminuir?",
+        explanation: "A temperatura ajusta a aleatoriedade da geração: valores mais baixos deixam as respostas mais determinísticas e repetíveis, enquanto valores altos as tornam mais variadas.",
+        topic: "IA generativa",
+        options: [
+            ["O número de tokens cobrados por cada requisição enviada.", false],
+            ["A quantidade de exemplos incluídos na mensagem de sistema para demonstrar o formato de saída esperado pelo usuário final.", false],
+            ["A versão da API utilizada na integração com o serviço.", false],
+            ["A temperatura, que controla o grau de aleatoriedade das respostas geradas.", true],
+        ],
+    },
+    {
+        statement: "Um aplicativo precisa enviar, na mesma solicitação, uma foto de um prato de comida junto com a pergunta 'quais ingredientes você identifica?' e receber uma resposta em texto. Que tipo de modelo generativo suporta esse cenário?",
+        explanation: "Modelos multimodais aceitam mais de um tipo de entrada, como imagem e texto ao mesmo tempo, e conseguem gerar uma resposta textual analisando ambos.",
+        topic: "IA generativa",
+        options: [
+            ["Um modelo exclusivamente de conversão de fala em texto, que transcreve áudio falado em diferentes idiomas para documentos escritos.", false],
+            ["Um modelo multimodal, capaz de receber imagem e texto como entrada e gerar texto.", true],
+            ["Um modelo de regressão que prevê um único valor numérico contínuo.", false],
+            ["Um modelo que só aceita texto como entrada e recusa qualquer imagem.", false],
+        ],
+    },
+    {
+        statement: "Uma operadora de telefonia já possui um documento de perguntas frequentes e quer disponibilizar um bot que responda os clientes com base nesse material, sem programar cada resposta. Qual recurso do Azure AI Language atende melhor?",
+        explanation: "O recurso Question Answering do Azure AI Language monta uma base de conhecimento a partir de pares de pergunta e resposta, ideal para bots baseados em FAQs.",
+        topic: "Processamento de linguagem natural",
+        options: [
+            ["Análise de sentimento, que classifica cada mensagem recebida como positiva, negativa ou neutra e atribui uma pontuação de confiança.", false],
+            ["Detecção de idioma, que identifica em qual língua cada mensagem foi escrita.", false],
+            ["Extração de frases-chave, que lista os principais termos de um texto.", false],
+            ["Question Answering, que cria uma base de conhecimento a partir de perguntas e respostas existentes.", true],
+        ],
+    },
+    {
+        statement: "Um aplicativo de viagens quer converter nomes de ruas escritos em japonês para o alfabeto latino, preservando a pronúncia, sem mudar o idioma do conteúdo. Qual recurso do Azure AI Translator faz isso?",
+        explanation: "A transliteração converte o texto de um sistema de escrita para outro, por exemplo de caracteres japoneses para o alfabeto latino, mantendo a pronúncia, sem traduzir o significado.",
+        topic: "Processamento de linguagem natural",
+        options: [
+            ["A síntese de fala, que transforma o texto escrito em áudio falado com uma voz natural em diversos idiomas disponíveis.", false],
+            ["A tradução, que reescreve o conteúdo original em outro idioma.", false],
+            ["A transliteração, que converte o texto de um sistema de escrita para outro.", true],
+            ["A detecção de idioma, que apenas informa qual é a língua do texto.", false],
+        ],
+    },
+    {
+        statement: "Uma marca quer que seu assistente por voz fale com um timbre exclusivo e reconhecível, diferente das vozes prontas oferecidas pelo serviço. Qual recurso do Azure AI Speech permite criar essa voz personalizada?",
+        explanation: "O Custom Neural Voice permite treinar uma voz sintética exclusiva a partir de amostras, indo além das vozes neurais prontas usadas na síntese de fala.",
+        topic: "Processamento de linguagem natural",
+        options: [
+            ["A voz neural personalizada (Custom Neural Voice), que gera uma voz sintética sob medida.", true],
+            ["O reconhecimento de fala, que transcreve o áudio falado pelos usuários em texto para posterior análise e armazenamento.", false],
+            ["A tradução de fala, que converte o áudio de um idioma para outro.", false],
+            ["A detecção de idioma, que identifica a língua de um texto escrito.", false],
+        ],
+    },
+    {
+        statement: "Uma transportadora monta uma tabela para prever o tempo de entrega de cada pedido. As colunas distância, peso do pacote e nível de trânsito servem como entrada, e o tempo de entrega é o valor a prever. Como são chamadas as colunas de entrada?",
+        explanation: "As colunas de entrada usadas para prever o alvo são as características (features); o valor a prever, neste caso o tempo de entrega, é o rótulo (label).",
+        topic: "Machine learning",
+        options: [
+            ["Rótulos (labels), que representam o valor conhecido que o modelo deve aprender a prever durante o treinamento supervisionado.", false],
+            ["Características (features), as variáveis de entrada usadas para prever o alvo.", true],
+            ["Hiperparâmetros, que configuram o processo de treinamento do modelo.", false],
+            ["Previsões, que são os resultados devolvidos pelo modelo já treinado.", false],
+        ],
+    },
+    {
+        statement: "Depois de treinar e implantar um modelo, uma equipe passa a enviar novos dados para ele e receber previsões em produção. Como se chama essa fase de uso do modelo já pronto?",
+        explanation: "A inferência (inferencing) é a fase em que o modelo já treinado e implantado recebe novos dados e devolve previsões, diferente do treinamento, quando ele ainda está aprendendo.",
+        topic: "Machine learning",
+        options: [
+            ["Treinamento, a fase em que o algoritmo ajusta seus parâmetros repetidamente a partir de um conjunto de dados rotulado até aprender o padrão.", false],
+            ["Rotulagem, o processo de atribuir rótulos aos dados brutos.", false],
+            ["Validação, a etapa que mede o desempenho antes da implantação.", false],
+            ["Inferência (inferencing), quando o modelo treinado gera previsões para novos dados.", true],
+        ],
+    },
+    {
+        statement: "Uma distribuidora de energia quer estimar a demanda de eletricidade para cada um dos próximos sete dias, usando anos de histórico de consumo ordenado no tempo. No Azure Machine Learning, qual tipo de tarefa de Automated ML se aplica?",
+        explanation: "A previsão de séries temporais (forecasting) usa dados históricos ordenados no tempo para projetar valores futuros, sendo um dos tipos de tarefa do Automated ML, ao lado de classificação e regressão.",
+        topic: "Machine learning",
+        options: [
+            ["Clustering, que agrupa registros semelhantes sem rótulos conhecidos, separando os dados em conjuntos com características parecidas.", false],
+            ["Classificação, que atribui cada registro a uma categoria discreta.", false],
+            ["Previsão de séries temporais (forecasting), que projeta valores futuros a partir do histórico.", true],
+            ["Detecção de objetos, que localiza itens dentro de imagens.", false],
+        ],
+    },
+    {
+        statement: "Uma agência de publicidade quer identificar automaticamente quando logotipos de marcas conhecidas aparecem nas fotos que os usuários publicam nas redes sociais. Qual recurso do Azure AI Vision atende diretamente a isso?",
+        explanation: "A detecção de marcas do Azure AI Vision reconhece logotipos de empresas conhecidas dentro das imagens, útil para monitorar aparições de marca.",
+        topic: "Visão computacional",
+        options: [
+            ["A detecção de marcas, que reconhece logotipos de empresas conhecidas nas imagens.", true],
+            ["O reconhecimento óptico de caracteres (OCR), que localiza e extrai texto impresso ou manuscrito presente em imagens e documentos digitalizados.", false],
+            ["A segmentação semântica, que classifica cada pixel da imagem em uma categoria.", false],
+            ["A síntese de imagens, que cria figuras inéditas a partir de descrições.", false],
+        ],
+    },
+    {
+        statement: "Uma plataforma de classificados quer sinalizar automaticamente fotos enviadas por usuários que contenham conteúdo adulto, sugestivo ou violento antes de publicá-las. Qual capacidade do Azure AI Vision ajuda nessa triagem?",
+        explanation: "O Azure AI Vision pode sinalizar imagens com conteúdo adulto, sugestivo (racy) ou violento (gory), apoiando fluxos de moderação antes da publicação.",
+        topic: "Visão computacional",
+        options: [
+            ["A leitura de texto (Read), que extrai palavras e linhas de texto impresso e manuscrito de imagens para transformá-las em conteúdo pesquisável.", false],
+            ["A verificação facial, que confirma se dois rostos pertencem à mesma pessoa.", false],
+            ["A geração de legendas, que descreve a cena da imagem em uma frase.", false],
+            ["A detecção de conteúdo adulto, sugestivo e violento nas imagens.", true],
+        ],
+    },
+    {
+        statement: "Um portal de notícias exibe listas de artigos com miniaturas pequenas e quer que o recorte automático mantenha o assunto principal da foto sempre visível e centralizado. Qual recurso do Azure AI Vision faz esse recorte inteligente?",
+        explanation: "O recurso de miniaturas (smart crop) do Azure AI Vision gera recortes que mantêm a região de interesse da imagem em foco, útil para thumbnails.",
+        topic: "Visão computacional",
+        options: [
+            ["A detecção de objetos, que localiza vários itens em uma imagem e desenha uma caixa delimitadora ao redor de cada um deles com seu rótulo.", false],
+            ["A geração de miniaturas com recorte inteligente, que preserva a região de interesse.", true],
+            ["A detecção de idioma, que identifica a língua de um texto.", false],
+            ["A análise de sentimento, que avalia a emoção expressa em um texto.", false],
+        ],
+    },
+    {
+        statement: "Uma rede de hotéis fotografa o documento de identidade de cada hóspede no check-in e quer extrair automaticamente nome, número do documento e data de validade em campos estruturados, e não apenas o texto solto. Qual carga de trabalho de IA se aplica?",
+        explanation: "A inteligência de documentos identifica e extrai pares de campo e valor estruturados de formulários e documentos, indo além do OCR, que apenas devolve o texto bruto.",
+        topic: "Cargas de trabalho de IA",
+        options: [
+            ["Mineração de conhecimento, que indexa grandes volumes de conteúdo variado para permitir buscas e descoberta de informações relacionadas entre si.", false],
+            ["IA generativa, que cria textos e imagens originais a partir de instruções.", false],
+            ["Inteligência de documentos (Document Intelligence), que extrai campos estruturados de documentos.", true],
+            ["Detecção de objetos, que localiza itens físicos dentro de uma cena.", false],
+        ],
+    },
+    {
+        statement: "Uma emissora acumulou décadas de documentos, imagens e transcrições e quer que os funcionários pesquisem em todo esse acervo e descubram conexões e informações relevantes espalhadas pelos arquivos. Qual carga de trabalho descreve melhor essa solução?",
+        explanation: "A mineração de conhecimento (knowledge mining) indexa grandes volumes de conteúdo heterogêneo para permitir buscas e revelar informações e relações antes ocultas nos arquivos.",
+        topic: "Cargas de trabalho de IA",
+        options: [
+            ["Mineração de conhecimento, que torna grandes acervos pesquisáveis e extrai informações.", true],
+            ["Inteligência de documentos, voltada a extrair campos e valores específicos e estruturados de formulários padronizados, como faturas, recibos e contratos.", false],
+            ["Visão computacional, focada em interpretar o conteúdo visual de imagens.", false],
+            ["Reconhecimento de fala, que converte áudio falado em texto escrito.", false],
+        ],
+    },
+    {
+        statement: "Um laboratório quer prever, a partir de valores numéricos de exames de sangue organizados em tabela, se um tumor é benigno ou maligno. Não há imagens envolvidas, apenas dados tabulares rotulados. Qual carga de trabalho de IA melhor descreve o problema?",
+        explanation: "Prever uma categoria (benigno ou maligno) a partir de dados tabulares rotulados é uma tarefa de classificação em aprendizado de máquina; como não há imagens, não se trata de visão computacional.",
+        topic: "Cargas de trabalho de IA",
+        options: [
+            ["Aprendizado de máquina, que prevê uma categoria a partir de dados tabulares rotulados.", true],
+            ["Visão computacional, que interpreta o conteúdo de imagens e vídeos, como identificar tumores diretamente em exames de imagem e radiografias.", false],
+            ["Processamento de linguagem natural, que interpreta e gera texto em linguagem humana.", false],
+            ["IA generativa, que produz conteúdo original como texto e imagens.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa de dispositivos de casa inteligente coleta áudio e vídeo dos usuários e precisa garantir que esses dados sejam criptografados, protegidos contra acesso não autorizado e que o usuário controle seu uso. Qual princípio de IA responsável está em foco?",
+        explanation: "O princípio de privacidade e segurança trata de proteger os dados das pessoas, com criptografia, controle de acesso e respeito ao consentimento, diferente de confiabilidade e segurança, que trata da operação segura e consistente do sistema.",
+        topic: "IA responsável",
+        options: [
+            ["Inclusão, que garante que a solução atenda pessoas de diferentes capacidades.", false],
+            ["Confiabilidade e segurança, que exige que o sistema opere de forma consistente e segura mesmo diante de condições inesperadas, com testes rigorosos.", false],
+            ["Privacidade e segurança, que protege os dados das pessoas contra uso indevido.", true],
+            ["Transparência, que torna claro como o sistema funciona e suas limitações.", false],
+        ],
+    },
+    {
+        statement: "Ao projetar um assistente virtual, uma equipe quer garantir que o produto beneficie e alcance pessoas de diferentes capacidades físicas, idiomas e origens culturais, sem deixar nenhum grupo de fora. Qual princípio de IA responsável orienta essa preocupação?",
+        explanation: "A inclusão busca que a IA capacite e envolva pessoas de todas as capacidades e origens; a imparcialidade, por outro lado, foca em tratar grupos semelhantes de forma equitativa, sem viés.",
+        topic: "IA responsável",
+        options: [
+            ["Inclusão, que busca capacitar e envolver pessoas de todas as capacidades e origens.", true],
+            ["Imparcialidade, que exige que o sistema trate de forma equitativa pessoas em situações semelhantes, sem favorecer ou prejudicar grupos por vieses nos dados.", false],
+            ["Responsabilidade, que define quem responde pelos resultados do sistema.", false],
+            ["Confiabilidade e segurança, que garante operação segura e consistente.", false],
+        ],
+    },
+    {
+        statement: "Um banco define que pessoas específicas respondem pelas decisões do seu modelo de crédito, mantém registros para auditoria e assegura que o sistema cumpra as leis e normas do setor. Qual princípio de IA responsável está sendo aplicado?",
+        explanation: "O princípio da responsabilidade (accountability) determina que pessoas e organizações respondam pelo funcionamento dos sistemas de IA, incluindo governança, auditoria e conformidade legal.",
+        topic: "IA responsável",
+        options: [
+            ["Transparência, pela qual os usuários são informados de que interagem com uma IA e recebem explicações sobre como ela funciona e quais são as suas limitações.", false],
+            ["Inclusão, que garante que o sistema atenda pessoas de diferentes perfis.", false],
+            ["Privacidade e segurança, que protege os dados pessoais dos clientes.", false],
+            ["Responsabilidade (accountability), pela qual pessoas respondem pelo sistema e sua conformidade.", true],
+        ],
+    },
 ];
 
 async function seed() {
@@ -1486,13 +1696,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log(`Simulado já tem ${n} questões, nada a fazer.`);
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -1511,7 +1731,7 @@ async function seed() {
             })),
         );
     }
-    console.log(`Seed concluído: ${QUESTOES.length} questões inseridas.`);
+    console.log(`Seed: ${inseridas} questões novas inseridas (${QUESTOES.length} no banco).`);
 }
 
 seed()

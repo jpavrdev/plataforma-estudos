@@ -1441,6 +1441,634 @@ const QUESTOES: Questao[] = [
             ["Contratar um Savings Plan para o novo uso redimensionado", true],
         ],
     },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma empresa replica objetos de um bucket do Amazon S3 em us-east-1 para um bucket em eu-west-1 usando replicacao entre regioes, e todos os objetos usam SSE-KMS. A equipe quer que a aplicacao de cada regiao descriptografe os objetos localmente com a mesma identidade criptografica de chave, sem chamadas KMS entre regioes. Qual abordagem atende a esse requisito?",
+        explanation: "Chaves multi-regiao do KMS tem uma primaria e replicas que compartilham o mesmo ID e material criptografico, permitindo descriptografar em qualquer regiao sem chamadas entre regioes. Chaves KMS regionais comuns sao isoladas por regiao.",
+        topic: "AWS KMS - multi-region keys",
+        options: [
+            ["Criar uma chave KMS independente e sem relacao em cada regiao e configurar a regra de replicacao do S3 para descriptografar cada objeto na origem e recriptografa-lo com a chave de destino durante a transferencia.", false],
+            ["Habilitar a rotacao automatica anual da chave de us-east-1 para que o material criptografico seja copiado para uma chave equivalente em eu-west-1.", false],
+            ["Criar uma chave KMS multi-regiao primaria em us-east-1 e replica-la para eu-west-1, mantendo o mesmo ID e material de chave nas duas regioes.", true],
+            ["Manter uma unica chave em us-east-1 e permitir que a aplicacao de eu-west-1 chame a API Decrypt no endpoint regional de us-east-1.", false],
+        ],
+    },
+    {
+        statement: "Uma funcao AWS Lambda precisa de permissao temporaria para usar uma chave KMS gerenciada pelo cliente apenas durante uma janela de processamento em lote. A equipe de seguranca quer conceder esse acesso de forma granular e revogavel, sem editar a politica da chave a cada execucao. Qual mecanismo do KMS e mais adequado?",
+        explanation: "Grants do KMS concedem permissoes temporarias e granulares a um principal para usar uma chave e podem ser revogados sem alterar a politica da chave. Isso e ideal para acessos programaticos e de curta duracao.",
+        topic: "AWS KMS - grants",
+        options: [
+            ["Criar um grant do KMS para a role da funcao, autorizando as operacoes necessarias e permitindo revogar o acesso quando o lote terminar.", true],
+            ["Adicionar a role da funcao como principal em uma nova declaracao da politica da chave a cada execucao e remove-la ao final.", false],
+            ["Compartilhar a chave por meio de uma politica de bucket do S3 que referencia a role da funcao durante a janela de execucao.", false],
+            ["Habilitar a rotacao automatica de chave e criar um alias exclusivo apontando para a chave, concedendo a role da funcao acesso ao alias somente durante o periodo em que o processamento em lote esta previsto para rodar.", false],
+        ],
+    },
+    {
+        statement: "A conta A possui uma chave KMS gerenciada pelo cliente usada para criptografar objetos em um bucket do S3. A conta B precisa descriptografar esses objetos a partir de uma aplicacao em EC2. Como conceder a conta B o uso da chave seguindo as praticas recomendadas?",
+        explanation: "O acesso entre contas a uma chave KMS exige que a politica da chave na conta proprietaria permita a outra conta e que a conta destino delegue a permissao a role apropriada. Ambas as camadas sao necessarias.",
+        topic: "AWS KMS - politica de chave cross-account",
+        options: [
+            ["Exportar o material da chave da conta A e importa-lo em uma nova chave KMS criada na conta B, para que a aplicacao descriptografe os objetos localmente sem depender da conta A.", false],
+            ["Tornar a chave KMS publica para que qualquer principal autenticado da conta B possa chamar Decrypt sem configuracao adicional.", false],
+            ["Adicionar apenas uma politica de identidade na conta B permitindo kms:Decrypt, o que e suficiente para acesso entre contas.", false],
+            ["Na politica da chave na conta A, permitir o acesso ao principal da conta B e conceder kms:Decrypt a role da aplicacao na conta B.", true],
+        ],
+    },
+    {
+        statement: "Uma aplicacao web precisa permitir que usuarios autenticados facam download de arquivos privados no S3 por um curto periodo, sem tornar o bucket publico e sem distribuir credenciais da AWS aos clientes. Qual solucao atende a esse requisito?",
+        explanation: "URLs pre-assinadas concedem acesso temporario a objetos especificos usando as credenciais de quem as gera, sem expor o bucket publicamente nem compartilhar credenciais permanentes com os usuarios.",
+        topic: "Amazon S3 - Pre-signed URLs",
+        options: [
+            ["Anexar uma bucket policy que concede s3:GetObject a qualquer principal e usar uma condicao de intervalo de horarios para limitar o acesso apenas ao periodo em que os usuarios costumam baixar os arquivos.", false],
+            ["Gerar URLs pre-assinadas no backend com validade curta, usando as credenciais da aplicacao, e entrega-las aos usuarios para o download.", true],
+            ["Desabilitar o Block Public Access e conceder acesso de leitura anonimo somente aos objetos que precisam ser baixados.", false],
+            ["Distribuir aos clientes as chaves de acesso de um usuario do IAM com permissao de leitura restrita ao bucket.", false],
+        ],
+    },
+    {
+        statement: "Um unico bucket do S3 armazena dados compartilhados por dezenas de aplicacoes e equipes, cada uma exigindo permissoes de acesso diferentes. A bucket policy unica cresceu demais e ficou dificil de manter. Qual recurso simplifica a gestao desses acessos distintos?",
+        explanation: "S3 Access Points fornecem endpoints nomeados com politicas de acesso proprias sobre um bucket compartilhado, permitindo escalar e isolar permissoes por aplicacao sem inflar uma unica bucket policy.",
+        topic: "Amazon S3 - Access Points",
+        options: [
+            ["Dividir o bucket em dezenas de buckets menores, um por aplicacao, cada um com sua propria bucket policy.", false],
+            ["Criar uma role do IAM por aplicacao e consolidar todas as permissoes de acesso em uma politica gerenciada compartilhada anexada a um unico grupo do IAM que contem todas as equipes.", false],
+            ["Criar S3 Access Points, cada um com sua propria politica e nome de host dedicado, para atender aos diferentes padroes de acesso ao mesmo bucket.", true],
+            ["Habilitar o versionamento do bucket e usar prefixos de objeto distintos para separar o acesso de cada equipe.", false],
+        ],
+    },
+    {
+        statement: "Uma auditoria de seguranca exige que todo acesso a um bucket do S3 ocorra somente por conexoes criptografadas, bloqueando qualquer requisicao feita por HTTP simples. Qual medida atende a esse requisito?",
+        explanation: "Uma bucket policy com Deny condicionado a aws:SecureTransport igual a false bloqueia qualquer requisicao nao-HTTPS. Criptografia em repouso e Block Public Access nao controlam o protocolo de transporte.",
+        topic: "Amazon S3 - criptografia em transito (aws:SecureTransport)",
+        options: [
+            ["Adicionar uma bucket policy que negue as acoes quando a condicao aws:SecureTransport for falsa.", true],
+            ["Habilitar SSE-KMS no bucket, o que passa a rejeitar automaticamente requisicoes feitas por HTTP.", false],
+            ["Ativar o Block Public Access, que forca todas as conexoes ao bucket a usarem TLS.", false],
+            ["Configurar uma regra de ciclo de vida que remova objetos enviados por conexoes nao criptografadas e habilitar o versionamento para reter as versoes enviadas corretamente por HTTPS.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa precisa garantir que nenhum objeto seja gravado em um bucket do S3 sem criptografia do lado do servidor com SSE-KMS, rejeitando uploads que nao especifiquem esse tipo de criptografia. Qual abordagem atende ao requisito?",
+        explanation: "Uma bucket policy com Deny condicionado a ausencia do cabecalho de criptografia SSE-KMS rejeita uploads nao criptografados. A criptografia padrao apenas aplica a criptografia, mas nao rejeita a requisicao.",
+        topic: "Amazon S3 - politica de bucket para SSE obrigatorio",
+        options: [
+            ["Criar uma funcao do AWS Lambda acionada por eventos do S3 que verifica cada objeto recem-criado e, se ele nao estiver criptografado com SSE-KMS, exclui o objeto e notifica a equipe de seguranca por e-mail.", false],
+            ["Habilitar a criptografia padrao do bucket, o que faz o S3 recusar qualquer requisicao PUT sem cabecalho de criptografia.", false],
+            ["Ativar o Object Lock em modo compliance para impedir o upload de objetos nao criptografados.", false],
+            ["Aplicar uma bucket policy que negue s3:PutObject quando o cabecalho de criptografia SSE-KMS nao estiver presente na requisicao.", true],
+        ],
+    },
+    {
+        statement: "Um provedor de SaaS hospeda uma aplicacao atras de um Network Load Balancer em sua propria VPC e quer disponibiliza-la a VPCs de clientes de forma privada, sem expor a aplicacao a internet e sem peering de VPC nem sobreposicao de faixas de IP. Qual solucao atende a esse cenario?",
+        explanation: "O AWS PrivateLink permite publicar um servico via endpoint service sobre um NLB, e os consumidores acessam por interface endpoints privados, sem peering, sem exposicao a internet e sem conflito de faixas de IP.",
+        topic: "AWS PrivateLink",
+        options: [
+            ["Criar uma conexao de VPC peering entre a VPC do provedor e cada VPC de cliente e ajustar as tabelas de rotas e faixas de IP de todas as partes para evitar sobreposicao de enderecos.", false],
+            ["Publicar um VPC endpoint service (AWS PrivateLink) sobre o Network Load Balancer e permitir que os clientes criem interface endpoints para consumi-lo.", true],
+            ["Expor a aplicacao por um Application Load Balancer publico e restringir o acesso por security groups que referenciam os IPs dos clientes.", false],
+            ["Configurar um Transit Gateway compartilhado que conecta a VPC do provedor a todas as VPCs de clientes em uma malha unica.", false],
+        ],
+    },
+    {
+        statement: "Uma organizacao com varias contas AWS quer uma visao central e padronizada das descobertas do GuardDuty, do Inspector e do Macie, alem de verificar automaticamente a conformidade com padroes como o CIS AWS Foundations Benchmark. Qual servico atende a essa necessidade?",
+        explanation: "O AWS Security Hub consolida descobertas de GuardDuty, Inspector, Macie e outros servicos num formato padronizado e executa verificacoes contra frameworks como o CIS Benchmark. O Config avalia configuracao de recursos, mas nao agrega descobertas de ameacas.",
+        topic: "AWS Security Hub",
+        options: [
+            ["Amazon Detective, que agrega e prioriza as descobertas de todas as contas em um unico painel de conformidade.", false],
+            ["Amazon CloudWatch, criando um dashboard consolidado que coleta metricas e eventos de cada servico de seguranca em todas as contas e avalia continuamente os controles do CIS Benchmark.", false],
+            ["AWS Security Hub, que agrega descobertas de varios servicos de seguranca e executa verificacoes de conformidade automatizadas.", true],
+            ["AWS Config, que centraliza as descobertas dos servicos de seguranca e gera um score de conformidade unificado.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de conformidade precisa detectar continuamente recursos que violam regras internas, como volumes do EBS nao criptografados ou security groups com a porta 22 aberta para a internet, e registrar o historico de mudancas de configuracao de cada recurso. Qual servico atende a esse objetivo?",
+        explanation: "O AWS Config avalia continuamente a configuracao dos recursos contra regras gerenciadas ou personalizadas e registra o historico de mudancas. CloudTrail registra chamadas de API e GuardDuty detecta ameacas, nao conformidade de configuracao.",
+        topic: "AWS Config",
+        options: [
+            ["AWS Config, com regras gerenciadas que avaliam a conformidade dos recursos e mantem o historico de configuracoes.", true],
+            ["Amazon Inspector, que faz varredura continua de configuracoes de recursos e mantem uma linha do tempo de alteracoes.", false],
+            ["AWS CloudTrail, que avalia regras de conformidade sobre o estado atual de cada recurso da conta.", false],
+            ["Amazon GuardDuty, que analisa continuamente as configuracoes dos recursos, sinaliza os que estao fora de conformidade com as regras definidas e registra cada alteracao de configuracao ao longo do tempo.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa contrata um fornecedor SaaS de terceiros que precisa assumir uma role do IAM na conta da empresa para monitorar recursos. A equipe de seguranca quer proteger essa relacao de confianca contra o problema do confused deputy, garantindo que apenas o fornecedor correto assuma a role. Qual medida atende a esse requisito?",
+        explanation: "O External ID e o mecanismo recomendado para acesso entre contas com terceiros: a trust policy exige um sts:ExternalId combinado, evitando o problema do confused deputy sem depender de credenciais de longa duracao.",
+        topic: "IAM Roles - Cross-Account External ID",
+        options: [
+            ["Restringir a trust policy da role ao intervalo de enderecos IP publicos usados pelo fornecedor por meio da condicao aws:SourceIp.", false],
+            ["Criar um usuario do IAM dedicado ao fornecedor, gerar chaves de acesso de longa duracao, envia-las ao fornecedor por um canal seguro e rotaciona-las manualmente a cada noventa dias.", false],
+            ["Habilitar a autenticacao multifator na conta do fornecedor e exigir MFA na trust policy da role.", false],
+            ["Exigir um External ID acordado com o fornecedor na condicao sts:ExternalId da trust policy da role.", true],
+        ],
+    },
+    {
+        statement: "Uma equipe de seguranca quer identificar automaticamente quais buckets do S3, roles do IAM, filas do SQS e chaves do KMS estao acessiveis por entidades externas a organizacao, para revisar e reduzir acessos nao intencionais. Qual servico fornece essa analise?",
+        explanation: "O IAM Access Analyzer usa raciocinio automatizado sobre politicas para identificar recursos compartilhados com principais externos a zona de confianca da conta ou da organizacao. Macie classifica dados e Trusted Advisor nao faz essa analise de politicas.",
+        topic: "IAM Access Analyzer",
+        options: [
+            ["AWS Trusted Advisor, que analisa as politicas baseadas em recurso e alerta sobre qualquer acesso concedido a entidades externas.", false],
+            ["IAM Access Analyzer, que examina politicas baseadas em recurso e identifica acessos concedidos a principais fora da zona de confianca.", true],
+            ["Amazon Macie, que inspeciona as politicas dos recursos em busca de concessoes de acesso externo.", false],
+            ["AWS Config, que mantem regras avaliando cada recurso e gera descobertas sempre que uma politica concede acesso a uma conta que nao pertence a organizacao definida como zona de confianca.", false],
+        ],
+    },
+    {
+        statement: "Um pipeline de CI/CD executado em um provedor externo precisa implantar recursos na AWS. A equipe quer eliminar as chaves de acesso de longa duracao hoje armazenadas no sistema de CI e obter credenciais temporarias por meio de tokens OIDC emitidos pelo provedor. Qual abordagem atende a esse requisito?",
+        explanation: "Registrando o provedor OIDC como IAM identity provider, o pipeline troca seu token por credenciais temporarias com AssumeRoleWithWebIdentity, eliminando chaves de longa duracao. Instance profiles so se aplicam a recursos EC2 na AWS.",
+        topic: "IAM - Federacao OIDC (Web Identity)",
+        options: [
+            ["Armazenar as chaves de acesso no AWS Secrets Manager e fazer o pipeline recupera-las a cada execucao em vez de mante-las no sistema de CI.", false],
+            ["Criar um usuario do IAM exclusivo para o pipeline, anexar as politicas necessarias e configurar a rotacao automatica das suas chaves de acesso para reduzir o risco de exposicao das credenciais de longa duracao.", false],
+            ["Configurar o provedor OIDC como identity provider no IAM e permitir que o pipeline assuma uma role via AssumeRoleWithWebIdentity.", true],
+            ["Compartilhar as credenciais de uma role de EC2 exportando-as do instance profile para o pipeline externo.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa usa o AWS Organizations e quer impedir que administradores de qualquer conta membro desativem o AWS CloudTrail, o Amazon GuardDuty ou o AWS Config, mesmo que tenham permissoes de administrador nessas contas. Qual abordagem atende a esse objetivo?",
+        explanation: "Uma SCP funciona como teto de permissoes e nega as acoes de desativacao dos servicos de seguranca em todas as contas afetadas, sobrepondo-se ate a permissoes de administrador locais. Politicas de identidade por conta nao garantem esse controle de forma centralizada.",
+        topic: "AWS Organizations SCP - protecao de servicos de seguranca",
+        options: [
+            ["Aplicar uma SCP as unidades organizacionais que negue acoes como cloudtrail:StopLogging, guardduty:DeleteDetector e config:DeleteConfigurationRecorder.", true],
+            ["Editar a politica de identidade de cada administrador em todas as contas membro para remover as permissoes de desativar esses servicos e revisar periodicamente essas politicas para garantir que nenhuma nova permissao seja adicionada.", false],
+            ["Habilitar o Block Public Access na organizacao para impedir alteracoes nos servicos de seguranca pelas contas membro.", false],
+            ["Mover todas as contas para uma unica unidade organizacional e ativar a protecao contra exclusao no console do Organizations.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao web atras de um Application Load Balancer sofre tentativas de injecao de SQL e ataques que exploram vulnerabilidades comuns do OWASP Top 10. A equipe quer bloquear essas requisicoes maliciosas na camada de aplicacao com o minimo de esforco de manutencao. Qual solucao e a mais adequada?",
+        explanation: "Os grupos de regras gerenciadas da AWS para o WAF cobrem SQL injection e vulnerabilidades comuns do OWASP e sao mantidos pela AWS, exigindo pouco esforco. Shield Advanced foca em DDoS e security groups nao inspecionam conteudo HTTP.",
+        topic: "AWS WAF - regras gerenciadas",
+        options: [
+            ["Habilitar o AWS Shield Advanced no ALB para inspecionar o conteudo das requisicoes HTTP e bloquear payloads de injecao de SQL.", false],
+            ["Configurar security groups no ALB que bloqueiem requisicoes contendo padroes de injecao de SQL na camada de rede.", false],
+            ["Escrever e manter manualmente um conjunto de regras personalizadas do WAF que descrevam cada assinatura conhecida de injecao de SQL e de exploracao do OWASP, atualizando-as sempre que surgir uma nova tecnica de ataque.", false],
+            ["Associar ao ALB uma web ACL do AWS WAF com os grupos de regras gerenciadas para SQL injection e OWASP.", true],
+        ],
+    },
+    {
+        statement: "Durante um incidente, a equipe identifica um unico endereco IP publico de origem realizando atividade maliciosa contra instancias em uma subnet. Ela precisa bloquear explicitamente todo o trafego desse IP no nivel da subnet, algo que os security groups nao conseguem fazer. Qual recurso deve ser usado?",
+        explanation: "Security groups so permitem regras de allow e nao tem deny, entao bloquear um IP especifico exige uma regra Deny em uma Network ACL, que e stateless e avaliada no nivel da subnet. Tabelas de rotas nao filtram por origem.",
+        topic: "VPC - Network ACL",
+        options: [
+            ["Adicionar uma regra de saida no security group das instancias negando o trafego destinado ao IP malicioso.", false],
+            ["Adicionar uma regra de negacao (Deny) para o IP de origem em uma Network ACL associada a subnet.", true],
+            ["Criar uma regra de entrada no security group que negue explicitamente o trafego vindo do IP malicioso.", false],
+            ["Configurar uma rota na tabela de rotas da subnet apontando o IP de origem malicioso para uma interface de rede descartada, de modo que o trafego desse endereco nunca alcance as instancias.", false],
+        ],
+    },
+    {
+        statement: "Instancias EC2 em uma subnet privada acessam o S3 por um gateway endpoint. A equipe de seguranca quer garantir que, por esse endpoint, as instancias so consigam acessar um conjunto especifico de buckets corporativos, bloqueando qualquer outro bucket do S3. Qual medida atende a esse requisito?",
+        explanation: "A endpoint policy do gateway endpoint controla quais recursos do S3 podem ser acessados atraves dele, permitindo restringir a ARNs de buckets especificos. Security groups nao se aplicam a gateway endpoints e faixas de IP nao distinguem buckets.",
+        topic: "VPC Endpoints - endpoint policy",
+        options: [
+            ["Anexar uma bucket policy a cada bucket corporativo, o que impede o acesso a qualquer outro bucket a partir do gateway endpoint.", false],
+            ["Configurar security groups no endpoint restringindo o acesso apenas aos buckets corporativos permitidos.", false],
+            ["Definir uma endpoint policy no gateway endpoint que permita acesso somente aos ARNs dos buckets corporativos.", true],
+            ["Criar uma Network ACL na subnet privada com regras que permitam trafego apenas para as faixas de enderecos IP publicadas do servico S3 correspondentes aos buckets corporativos autorizados.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer permitir que qualquer conta dentro da sua AWS Organizations acesse um topico do Amazon SNS compartilhado, mas bloquear o acesso de qualquer conta externa. A empresa adiciona novas contas com frequencia e nao quer atualizar a politica a cada nova conta. Qual abordagem atende a esse requisito?",
+        explanation: "A chave de condicao global aws:PrincipalOrgID permite conceder acesso a todos os principais da organizacao em uma politica baseada em recurso, sem listar contas individualmente nem atualizar a politica quando novas contas entram. SCPs restringem permissoes, nao as concedem.",
+        topic: "AWS Organizations - aws:PrincipalOrgID",
+        options: [
+            ["Usar uma politica baseada em recurso no topico com a condicao aws:PrincipalOrgID igual ao ID da organizacao.", true],
+            ["Listar explicitamente o ID de cada conta membro na politica do topico e atualiza-la sempre que uma conta for adicionada.", false],
+            ["Aplicar uma SCP na organizacao concedendo a todas as contas membro permissao de publicar no topico SNS compartilhado.", false],
+            ["Criar uma role do IAM em cada conta membro com permissao de acesso ao topico e configurar uma automacao que, a cada nova conta criada, provisione essa role e atualize as relacoes de confianca correspondentes.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa precisa descobrir e classificar automaticamente dados sensiveis, como CPFs e numeros de cartao de credito, espalhados por centenas de buckets do S3, para atender a uma auditoria de privacidade. A solucao deve usar aprendizado de maquina e nao exigir a construcao de scanners proprios. Qual servico atende a esse objetivo?",
+        explanation: "O Amazon Macie usa aprendizado de maquina e correspondencia de padroes para descobrir e classificar dados sensiveis como PII em buckets do S3. Inspector foca em vulnerabilidades e GuardDuty em ameacas, nao em classificacao de dados.",
+        topic: "Amazon Macie",
+        options: [
+            ["Amazon Inspector, que varre os objetos dos buckets do S3 e classifica os dados sensiveis por tipo.", false],
+            ["AWS Glue com um crawler configurado para percorrer todos os buckets, inferir o esquema dos arquivos e marcar as colunas que aparentam conter dados pessoais para posterior revisao manual.", false],
+            ["Amazon GuardDuty, que analisa o conteudo dos objetos do S3 e identifica informacoes pessoais identificaveis.", false],
+            ["Amazon Macie, que usa aprendizado de maquina para descobrir e classificar dados sensiveis armazenados no S3.", true],
+        ],
+    },
+    {
+        statement: "Uma aplicacao de mensagens instantaneas atende usuarios na America do Norte e na Europa e usa o Amazon DynamoDB. A empresa precisa de leituras e gravacoes com baixa latencia nas duas regioes e que a aplicacao continue funcionando mesmo se uma regiao inteira ficar indisponivel. Qual solucao atende a esses requisitos?",
+        explanation: "O DynamoDB Global Tables mantem replicas multirregiao ativo-ativo com replicacao gerenciada, oferecendo leitura e escrita locais de baixa latencia e resiliencia a falha de regiao. O DAX apenas acelera leituras em uma regiao e nao replica dados entre regioes.",
+        topic: "DynamoDB Global Tables",
+        options: [
+            ["Criar uma tabela do DynamoDB em uma unica regiao e distribuir o conteudo globalmente com o Amazon CloudFront na frente da aplicacao.", false],
+            ["Habilitar o DynamoDB Accelerator (DAX) na regiao primaria para reduzir a latencia de leitura dos usuarios das duas regioes.", false],
+            ["Configurar o DynamoDB Global Tables com replicas nas regioes da America do Norte e da Europa para replicacao ativo-ativo.", true],
+            ["Criar uma tabela em cada regiao e escrever um processo proprio com o DynamoDB Streams e o AWS Lambda para copiar todas as alteracoes entre elas continuamente.", false],
+        ],
+    },
+    {
+        statement: "Um desenvolvedor executou por engano um script que corrompeu milhares de itens de uma tabela do Amazon DynamoDB em producao que tem o point-in-time recovery (PITR) habilitado. A equipe percebeu o problema poucas horas depois e quer voltar a tabela ao estado imediatamente anterior ao script, com o menor esforco operacional. O que deve ser feito?",
+        explanation: "O PITR mantem backups continuos e permite restaurar a tabela para qualquer segundo dos ultimos 35 dias, desde que ja estivesse habilitado antes do incidente. Ativa-lo apos a corrupcao nao recupera o estado anterior.",
+        topic: "DynamoDB Point-in-Time Recovery",
+        options: [
+            ["Usar o point-in-time recovery para restaurar a tabela a um instante imediatamente anterior a execucao do script.", true],
+            ["Reprocessar as gravacoes do script em ordem inversa a partir do DynamoDB Streams para desfazer cada alteracao item a item.", false],
+            ["Recriar a tabela a partir do ultimo snapshot manual e reaplicar apenas as gravacoes legitimas identificadas no AWS CloudTrail.", false],
+            ["Ativar agora o point-in-time recovery e usa-lo para reverter as alteracoes que o script ja fez nas ultimas horas.", false],
+        ],
+    },
+    {
+        statement: "Uma plataforma de negociacao financeira precisa distribuir milhoes de requisicoes por segundo com latencia ultrabaixa sobre TCP. Ela tambem exige um endereco IP estatico por zona de disponibilidade para constar na lista de permissoes (allowlist) dos parceiros e precisa preservar o IP de origem dos clientes. Qual balanceador atende a esses requisitos?",
+        explanation: "O Network Load Balancer atua na camada 4, escala para milhoes de requisicoes por segundo com latencia muito baixa e oferece um IP estatico por AZ, alem de preservar o IP de origem. O Application Load Balancer opera na camada 7 e nao fornece IP estatico.",
+        topic: "Network Load Balancer",
+        options: [
+            ["Application Load Balancer, pois opera na camada 7 e oferece o melhor desempenho para trafego TCP de altissimo volume com IP fixo.", false],
+            ["Network Load Balancer, que opera na camada 4, sustenta altissimo volume com baixa latencia e fornece IP estatico por zona.", true],
+            ["Gateway Load Balancer, que distribui trafego TCP em escala e expoe um IP estatico para os parceiros incluirem em allowlist.", false],
+            ["Classic Load Balancer, que suporta TCP e HTTP e permite associar um Elastic IP fixo a cada no para atender a exigencia dos parceiros.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer inserir appliances virtuais de firewall de um fornecedor terceiro no caminho do trafego de rede da sua VPC, para inspecionar todos os pacotes. Ela precisa distribuir o trafego entre uma frota desses appliances e escala-los de forma transparente, sem alterar as rotas dos aplicativos a cada mudanca. Qual servico e o mais indicado?",
+        explanation: "O Gateway Load Balancer foi feito para implantar, escalar e gerenciar appliances virtuais de terceiros como firewalls e IDS/IPS de forma transparente, encaminhando o trafego com o protocolo GENEVE. Os demais balanceadores nao inserem appliances de inspecao no caminho do trafego.",
+        topic: "Gateway Load Balancer",
+        options: [
+            ["Application Load Balancer com regras baseadas em host e caminho para encaminhar o trafego as instancias de firewall conforme a URL da requisicao.", false],
+            ["Network Load Balancer com verificacoes de integridade para enviar as conexoes TCP dos clientes diretamente a frota de appliances de firewall.", false],
+            ["Amazon Route 53 com roteamento ponderado para dividir o trafego de inspecao igualmente entre os varios appliances virtuais de firewall.", false],
+            ["Gateway Load Balancer, que implanta e escala appliances virtuais de terceiros de forma transparente usando o protocolo GENEVE.", true],
+        ],
+    },
+    {
+        statement: "Uma aplicacao de e-commerce foi dividida em microsservicos. As requisicoes para /api/pagamentos devem ir para um conjunto de instancias e as requisicoes para /api/catalogo para outro, tudo sob um unico nome de dominio HTTPS. A equipe tambem quer que instancias com falha sejam retiradas de rotacao automaticamente. Qual solucao atende a isso?",
+        explanation: "O Application Load Balancer roteia na camada 7 com regras baseadas em caminho e host e executa verificacoes de integridade por grupo de destino, retirando instancias nao saudaveis de rotacao. O NLB opera na camada 4 e nao enxerga o caminho da URL.",
+        topic: "Application Load Balancer",
+        options: [
+            ["Usar um Network Load Balancer com um listener TCP e grupos de destino distintos por microsservico, roteando pelo conteudo da URL de cada requisicao.", false],
+            ["Usar o Amazon Route 53 com roteamento baseado em latencia para direcionar cada caminho de URL ao grupo de instancias correspondente.", false],
+            ["Usar um Application Load Balancer com regras de roteamento baseadas em caminho e verificacoes de integridade por grupo de destino.", true],
+            ["Usar o Amazon CloudFront com multiplos comportamentos de cache por caminho apontando para instancias EC2 registradas manualmente como origens.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa implantou copias identicas da sua aplicacao web em regioes nos Estados Unidos, na Irlanda e em Singapura. Ela quer que cada usuario seja direcionado automaticamente para a regiao que oferecer o menor tempo de resposta de rede. Qual politica de roteamento do Amazon Route 53 atende a esse objetivo?",
+        explanation: "O roteamento baseado em latencia resolve o DNS para a regiao que oferece a menor latencia de rede para o usuario, ideal quando ha copias da aplicacao em varias regioes. A geolocalizacao escolhe pela localizacao geografica, que nem sempre corresponde a menor latencia.",
+        topic: "Route 53 - Latency-Based Routing",
+        options: [
+            ["Roteamento baseado em latencia, que envia o usuario para a regiao com a menor latencia de rede medida.", true],
+            ["Roteamento por geolocalizacao, que direciona o usuario para a regiao com base no continente ou pais de origem da consulta DNS.", false],
+            ["Roteamento ponderado, que distribui as requisicoes entre as regioes segundo pesos que a equipe define manualmente para cada endpoint.", false],
+            ["Roteamento de failover, que mantem todo o trafego na regiao primaria e so usa as demais quando a verificacao de integridade falha.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe quer lancar uma nova versao da aplicacao de forma gradual. No inicio, apenas 5% do trafego de producao deve ir para o novo conjunto de servidores e 95% deve continuar na versao atual, aumentando a proporcao aos poucos conforme a confianca na nova versao cresce. Qual politica de roteamento do Amazon Route 53 e a mais adequada?",
+        explanation: "O roteamento ponderado distribui o trafego entre endpoints conforme pesos definidos, permitindo liberar uma fracao controlada para a nova versao e aumenta-la aos poucos, o que suporta implantacoes canario. As demais politicas nao dividem o trafego por proporcao configuravel.",
+        topic: "Route 53 - Weighted Routing",
+        options: [
+            ["Roteamento baseado em latencia, associando o novo ambiente a regiao de menor latencia para receber uma fracao inicial pequena do trafego.", false],
+            ["Roteamento por geolocalizacao, liberando a nova versao primeiro para um pais especifico antes de expandir para os demais gradualmente.", false],
+            ["Roteamento de failover, mantendo a nova versao como destino secundario que so recebe trafego quando a versao atual apresenta falhas.", false],
+            ["Roteamento ponderado, atribuindo peso 5 ao novo ambiente e peso 95 ao atual e aumentando os pesos gradualmente.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa de streaming precisa, por questoes de licenciamento de conteudo, servir usuarios da Alemanha a partir de endpoints especificos e redirecionar o acesso de outros paises conforme os direitos de exibicao. As decisoes devem se basear no pais de origem do usuario. Qual politica de roteamento do Amazon Route 53 atende a esse requisito?",
+        explanation: "O roteamento por geolocalizacao escolhe o endpoint com base na localizacao geografica (pais ou continente) da consulta DNS, adequado para restricoes de licenciamento e conformidade regional. Latencia e pesos nao consideram o pais de origem.",
+        topic: "Route 53 - Geolocation Routing",
+        options: [
+            ["Roteamento baseado em latencia, que encaminha cada usuario ao endpoint de menor tempo de resposta e assim respeita as fronteiras de licenciamento.", false],
+            ["Roteamento por geolocalizacao, que direciona as respostas DNS conforme o pais ou continente de origem da consulta.", true],
+            ["Roteamento ponderado, que separa o trafego por pais ao atribuir pesos diferentes a cada endpoint regional de conteudo.", false],
+            ["Roteamento de multiplos valores, que devolve varios endpoints saudaveis e deixa o cliente escolher o mais proximo do seu pais.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao usa varios servidores web com IPs publicos distintos. A equipe quer que o Amazon Route 53 retorne multiplos enderecos saudaveis nas consultas DNS, associando verificacoes de integridade a cada registro, para obter uma distribuicao simples de carga com melhoria de disponibilidade, sem provisionar um balanceador de carga. Qual recurso atende a isso?",
+        explanation: "O roteamento de multiplos valores devolve ate oito registros saudaveis por consulta e verifica a integridade de cada um, oferecendo uma distribuicao simples e mais resiliente sem um balanceador de carga. O roteamento simples nao faz verificacao de integridade dos valores retornados.",
+        topic: "Route 53 - Multivalue Answer Routing",
+        options: [
+            ["Roteamento de failover com um registro primario e um secundario, retornando o secundario apenas quando o primario fica nao saudavel.", false],
+            ["Roteamento simples com varios enderecos IP em um unico registro, sem qualquer verificacao de integridade associada aos valores retornados.", false],
+            ["Roteamento de multiplos valores (multivalue answer) com verificacoes de integridade associadas a cada registro.", true],
+            ["Roteamento ponderado com pesos iguais em todos os registros e verificacoes de integridade para retirar endpoints nao saudaveis das respostas.", false],
+        ],
+    },
+    {
+        statement: "Um sistema bancario processa transacoes que precisam ser tratadas exatamente na ordem em que foram enviadas por cada cliente, e nenhuma mensagem pode ser processada em duplicidade. A equipe quer desacoplar o produtor do consumidor com uma fila gerenciada. Qual solucao atende a esses requisitos?",
+        explanation: "A fila SQS FIFO garante a ordem de entrega dentro de cada grupo de mensagens e o processamento exatamente uma vez, atendendo a requisitos de ordenacao estrita e ausencia de duplicatas. A fila padrao oferece apenas ordenacao de melhor esforco e entrega pelo menos uma vez.",
+        topic: "SQS FIFO",
+        options: [
+            ["Usar uma fila SQS FIFO, que preserva a ordem das mensagens e garante processamento exatamente uma vez.", true],
+            ["Usar uma fila SQS padrao e confiar na entrega ordenada de melhor esforco, adicionando um numero de sequencia em cada mensagem para o consumidor reordenar.", false],
+            ["Usar um topico do Amazon SNS padrao com uma assinatura de fila, aproveitando a ordenacao total garantida pela entrega fan-out do SNS.", false],
+            ["Usar uma fila SQS padrao com deduplicacao ativada e o atributo de grupo de mensagens para manter a ordem por cliente durante o consumo.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa quer construir uma arquitetura orientada a eventos em que mudancas de estado de varios servicos da AWS e eventos de aplicativos SaaS de parceiros sejam roteados para diferentes destinos, como funcoes Lambda, filas e Step Functions, com base em regras de correspondencia de conteudo. Qual servico e o mais adequado?",
+        explanation: "O Amazon EventBridge e um barramento de eventos serverless que recebe eventos de servicos da AWS, aplicativos proprios e parceiros SaaS e os roteia para varios destinos por meio de regras baseadas em conteudo. Ele elimina a necessidade de os produtores conhecerem os consumidores.",
+        topic: "Amazon EventBridge",
+        options: [
+            ["Amazon SQS, criando uma fila para cada destino e fazendo os produtores decidirem em qual fila publicar conforme o tipo de cada evento.", false],
+            ["Amazon Kinesis Data Streams, com consumidores que leem todos os eventos do stream e filtram no codigo apenas os que interessam a cada destino.", false],
+            ["AWS Step Functions, definindo uma maquina de estado central que recebe todos os eventos e ramifica o fluxo para cada destino conforme o conteudo.", false],
+            ["Amazon EventBridge, usando um barramento de eventos com regras que filtram por conteudo e roteiam para multiplos destinos.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa precisa de uma estrategia de disaster recovery para uma aplicacao critica com RTO de poucos minutos. A restricao e o custo: manter uma copia identica em escala total em outra regiao o tempo todo e caro demais. A empresa aceita manter uma versao reduzida, porem totalmente funcional, sempre em execucao na regiao secundaria, pronta para escalar. Qual estrategia descreve essa abordagem?",
+        explanation: "No warm standby, uma copia funcional em escala reduzida da aplicacao fica sempre em execucao na regiao secundaria e e ampliada durante o failover, equilibrando custo e RTO baixo. No pilot light, os servidores de aplicacao nao ficam ativos ate o desastre.",
+        topic: "Disaster Recovery - Warm Standby",
+        options: [
+            ["Backup e restauracao (backup and restore), em que os dados sao copiados para a outra regiao e toda a infraestrutura e provisionada somente durante o desastre.", false],
+            ["Warm standby, com uma versao reduzida e funcional da aplicacao sempre ativa na regiao secundaria, escalada no failover.", true],
+            ["Pilot light, em que apenas o banco de dados fica replicado e ativo e nenhum servidor de aplicacao permanece em execucao ate o failover ocorrer.", false],
+            ["Multi-site ativo-ativo, com a infraestrutura completa processando trafego de producao nas duas regioes simultaneamente o tempo todo.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao interna de baixa criticidade pode tolerar varias horas de indisponibilidade e a perda de algumas horas de dados em caso de desastre regional. A empresa quer a estrategia de disaster recovery de menor custo possivel. Qual abordagem atende a esse objetivo?",
+        explanation: "A estrategia de backup e restauracao tem o menor custo porque nenhuma infraestrutura de recuperacao fica em execucao ate o desastre, ao preco de um RTO e um RPO mais altos, aceitaveis para cargas de baixa criticidade. As demais mantem recursos ativos e custam mais.",
+        topic: "Disaster Recovery - Backup and Restore",
+        options: [
+            ["Warm standby, mantendo uma versao reduzida da aplicacao sempre em execucao na regiao secundaria para reduzir o tempo de recuperacao.", false],
+            ["Pilot light, deixando o banco de dados continuamente replicado e ativo na regiao secundaria, com os servidores desligados ate o failover.", false],
+            ["Backup e restauracao, copiando dados e imagens para outra regiao e provisionando a infraestrutura apenas durante o desastre.", true],
+            ["Multi-site ativo-ativo, distribuindo o trafego de producao entre duas regioes o tempo todo para eliminar qualquer tempo de recuperacao.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa esta migrando aplicacoes Windows legadas para a AWS. Essas aplicacoes precisam de um sistema de arquivos compartilhado que use o protocolo SMB, ofereca compatibilidade com NTFS e se integre ao Active Directory existente para controle de permissoes. Qual servico atende a esses requisitos?",
+        explanation: "O Amazon FSx for Windows File Server oferece compartilhamentos de arquivos SMB totalmente gerenciados, com compatibilidade NTFS e integracao nativa ao Active Directory, ideal para aplicacoes Windows. O EFS usa NFS e o FSx for Lustre e voltado a HPC.",
+        topic: "FSx for Windows File Server",
+        options: [
+            ["Amazon FSx for Windows File Server, que fornece compartilhamentos SMB totalmente gerenciados com integracao ao Active Directory.", true],
+            ["Amazon EFS, que oferece um sistema de arquivos elastico compartilhado por NFS e se integra ao Active Directory para permissoes NTFS.", false],
+            ["Amazon FSx for Lustre, que entrega um sistema de arquivos de alto desempenho via SMB otimizado para cargas de trabalho Windows corporativas.", false],
+            ["Amazon S3 montado como unidade de rede nas instancias Windows, usando SMB e as permissoes de grupos e usuarios do Active Directory.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa de um sistema de arquivos NFS compartilhado por instancias EC2 distribuidas em tres zonas de disponibilidade. O requisito principal e que os dados permanecam acessiveis mesmo que uma zona de disponibilidade inteira fique indisponivel. Qual configuracao do Amazon EFS atende a isso?",
+        explanation: "A classe de armazenamento EFS Standard e regional e armazena os dados de forma redundante em varias zonas de disponibilidade, mantendo o acesso mesmo com a falha de uma zona inteira. A classe One Zone guarda os dados em uma unica zona e nao sobrevive a perda dela.",
+        topic: "Amazon EFS - Storage Classes",
+        options: [
+            ["Uma classe de armazenamento EFS One Zone, que replica os dados dentro de uma unica zona e alcanca o menor custo mantendo alta disponibilidade regional.", false],
+            ["Um volume Amazon EBS Multi-Attach compartilhado simultaneamente pelas instancias EC2 das tres zonas de disponibilidade por meio do protocolo NFS.", false],
+            ["Varios sistemas EFS One Zone, um por zona, sincronizados entre si com uma tarefa do AWS DataSync executada a cada poucos minutos.", false],
+            ["Um sistema de arquivos EFS com classe de armazenamento Standard (regional), que armazena os dados de forma redundante em varias zonas.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa roda o Amazon RDS for PostgreSQL na regiao us-east-1. Ela quer melhorar a resiliencia a uma falha regional e, ao mesmo tempo, oferecer leituras de baixa latencia a usuarios na Europa. A solucao deve permitir a promocao do recurso na segunda regiao para banco principal em caso de desastre. O que a equipe deve implementar?",
+        explanation: "Uma replica de leitura entre regioes replica os dados de forma assincrona para a Europa, atende leituras locais com baixa latencia e pode ser promovida a banco principal em um desastre regional. O RDS Multi-AZ mantem o standby na mesma regiao, nao em outra.",
+        topic: "RDS Cross-Region Read Replica",
+        options: [
+            ["Uma instancia RDS Multi-AZ, que mantem um standby sincrono em outra regiao e o promove automaticamente durante uma falha regional.", false],
+            ["Snapshots automaticos copiados para a regiao europeia a cada 24 horas, restaurados como um novo banco de dados sempre que a regiao primaria falhar.", false],
+            ["Uma replica de leitura entre regioes (cross-region read replica) na Europa, que serve leituras locais e pode ser promovida a principal.", true],
+            ["O Amazon RDS Proxy configurado na regiao europeia para rotear as leituras dos usuarios locais diretamente ao banco de dados primario em us-east-1.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicacao usa um cluster Amazon Aurora e enfrenta picos imprevisiveis de trafego de leitura que as vezes sobrecarregam as replicas existentes, degradando o desempenho das consultas. A equipe quer que a capacidade de leitura acompanhe a demanda automaticamente, sem intervencao manual. O que deve ser configurado?",
+        explanation: "O Aurora Replica Auto Scaling adiciona ou remove replicas de leitura automaticamente com base em uma metrica de destino, como CPU ou numero de conexoes, acompanhando picos imprevisiveis de leitura. O Global Database serve disaster recovery entre regioes, nao escalonamento automatico local.",
+        topic: "Aurora Replica Auto Scaling",
+        options: [
+            ["Habilitar o Aurora Global Database para adicionar replicas de leitura em outra regiao sempre que o uso de CPU das replicas locais aumentar.", false],
+            ["Configurar o Aurora Replica Auto Scaling para adicionar e remover replicas conforme uma metrica de destino, como a utilizacao de CPU.", true],
+            ["Aumentar manualmente a classe de instancia do escritor do Aurora para uma maior, de modo que ele tambem absorva o trafego de leitura nos picos.", false],
+            ["Ativar o Amazon RDS Multi-AZ no cluster para que a instancia standby passe a atender parte das consultas de leitura durante os periodos de pico.", false],
+        ],
+    },
+    {
+        statement: "Um grupo do Amazon EC2 Auto Scaling esta atras de um Application Load Balancer. Algumas instancias continuam em execucao, e por isso passam na verificacao de status do EC2, mas o processo da aplicacao travou e elas nao respondem mais as requisicoes. A equipe quer que o Auto Scaling substitua automaticamente essas instancias. O que deve ser feito?",
+        explanation: "Ao ativar o tipo de verificacao de integridade do ELB, o Auto Scaling passa a considerar nao saudaveis as instancias reprovadas na verificacao do balanceador e as substitui, mesmo que a verificacao de status do EC2 esteja passando. A verificacao do EC2 sozinha nao detecta falhas no nivel da aplicacao.",
+        topic: "EC2 Auto Scaling - Health Checks",
+        options: [
+            ["Ativar as verificacoes de integridade do Elastic Load Balancing no grupo de Auto Scaling para que instancias reprovadas sejam substituidas.", true],
+            ["Reduzir o periodo de carencia (health check grace period) do grupo para zero, forcando o Auto Scaling a reavaliar e reiniciar as instancias com mais frequencia.", false],
+            ["Depender apenas das verificacoes de status do EC2, que ja detectam falhas do sistema operacional e do processo da aplicacao em cada instancia.", false],
+            ["Criar um alarme do Amazon CloudWatch de CPU alta e associa-lo a uma politica de scaling para trocar as instancias que nao respondem as requisicoes.", false],
+        ],
+    },
+    {
+        statement: "Uma plataforma publica todos os eventos de pedidos em um unico topico do Amazon SNS com varias assinaturas. Cada consumidor, porem, so deve receber um subconjunto dos eventos: um processa apenas pedidos acima de determinado valor e outro apenas pedidos de certas regioes. A equipe quer evitar que cada consumidor receba tudo e descarte o que nao interessa. Qual recurso resolve isso?",
+        explanation: "As politicas de filtro do Amazon SNS avaliam os atributos de cada mensagem por assinatura, entregando a cada consumidor apenas os eventos relevantes sem codigo adicional. Criar um topico por tipo aumenta o acoplamento e a complexidade no produtor.",
+        topic: "SNS Message Filtering",
+        options: [
+            ["Publicar os eventos em uma fila SQS FIFO com grupos de mensagens distintos e deixar cada consumidor ler somente o seu grupo de mensagens.", false],
+            ["Criar um topico do SNS separado para cada tipo de evento e fazer o produtor decidir em qual topico publicar conforme os atributos de cada pedido.", false],
+            ["Aplicar politicas de filtro (filter policies) nas assinaturas do SNS, baseadas nos atributos de mensagem de cada evento.", true],
+            ["Encaminhar todos os eventos para uma funcao AWS Lambda que inspeciona cada mensagem e a redireciona ao consumidor certo conforme o conteudo.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe armazena logs de clickstream comprimidos em um bucket do Amazon S3 e precisa executar consultas SQL ad hoc esporádicas sobre esses dados, sem provisionar nem gerenciar servidores e pagando apenas pelo que consultar. Qual solução atende melhor a esse requisito?",
+        explanation: "O Amazon Athena é serverless e consulta dados diretamente no S3 com SQL padrão, cobrando pelos dados lidos em cada consulta, ideal para análises ad hoc esporádicas sem infraestrutura para gerenciar.",
+        topic: "Amazon Athena",
+        options: [
+            ["Provisionar um cluster Amazon Redshift, carregar os logs com COPY a partir do S3 e manter o cluster ligado para atender às consultas ocasionais.", false],
+            ["Usar o Amazon Athena para consultar os arquivos diretamente no Amazon S3 com SQL, pagando apenas pelos dados lidos em cada consulta.", true],
+            ["Criar um cluster Amazon EMR com Hive e mantê-lo sempre em execução para responder às consultas quando surgirem.", false],
+            ["Importar os arquivos para um banco Amazon RDS for MySQL em uma instância grande e consultar por SQL.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe de operações quer centralizar logs de aplicações e servidores para fazer busca por texto completo, montar painéis e investigar incidentes com análise quase em tempo real. Qual solução atende melhor a essa necessidade?",
+        explanation: "O Amazon OpenSearch Service indexa logs para busca de texto completo e análise operacional quase em tempo real, com o OpenSearch Dashboards integrado, algo que datastores relacionais ou consultas ad hoc no S3 não entregam com a mesma latência interativa.",
+        topic: "Amazon OpenSearch Service",
+        options: [
+            ["Carregar continuamente os logs em um cluster Amazon Redshift dedicado e criar consultas SQL agendadas com visualizações no Amazon QuickSight para investigar cada incidente.", false],
+            ["Guardar os logs no Amazon S3 e usar o Amazon Athena para buscas por texto sempre que houver um incidente.", false],
+            ["Enviar os logs para um banco Amazon RDS e criar índices de texto para permitir a busca das equipes de operação.", false],
+            ["Ingerir os logs no Amazon OpenSearch Service e usar o OpenSearch Dashboards para busca de texto completo e análise quase em tempo real.", true],
+        ],
+    },
+    {
+        statement: "Uma aplicação tem uma carga de banco de dados relacional com demanda imprevisível e que varia bruscamente ao longo do dia. A equipe quer que a capacidade escale automaticamente e pagar pelo que for consumido, sem ficar redimensionando instâncias. O que recomendar?",
+        explanation: "O Aurora Serverless v2 ajusta a capacidade de forma fina e automática (em ACUs) acompanhando cargas imprevisíveis e variáveis, evitando pagar por uma instância dimensionada para o pico o tempo todo.",
+        topic: "Amazon Aurora Serverless v2",
+        options: [
+            ["Usar o Amazon Aurora Serverless v2, que ajusta a capacidade automaticamente conforme a carga e cobra pelo que é consumido.", true],
+            ["Provisionar uma instância Amazon Aurora dimensionada para o pico previsto e mantê-la ligada o tempo todo para suportar todas as variações de demanda.", false],
+            ["Usar o Amazon RDS for MySQL e alterar manualmente a classe da instância sempre que a demanda mudar ao longo do dia.", false],
+            ["Migrar a aplicação para o Amazon DynamoDB no modo sob demanda para acompanhar a variação de tráfego automaticamente.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicação de processamento precisa de uma camada de armazenamento local com a menor latência e o maior número de IOPS possível para dados temporários que podem ser recriados e não precisam sobreviver à parada da instância. Qual opção oferece o melhor desempenho para esse caso?",
+        explanation: "O instance store oferece armazenamento NVMe local com a menor latência e o maior IOPS, sem custo adicional de armazenamento, e é ideal para dados temporários que podem ser recriados, já que não persiste quando a instância para ou é encerrada.",
+        topic: "Amazon EC2 Instance Store",
+        options: [
+            ["Anexar um volume Amazon EBS io2 Block Express e habilitar o Multi-Attach para obter a menor latência possível para os dados temporários entre as instâncias.", false],
+            ["Usar o Amazon EFS montado nas instâncias para armazenar os dados temporários com alto desempenho compartilhado.", false],
+            ["Usar o armazenamento de instância (instance store) NVMe local das instâncias EC2 para os dados temporários que podem ser recriados.", true],
+            ["Anexar volumes Amazon EBS gp3 e aumentar os IOPS e o throughput provisionados para atender à necessidade de baixa latência.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicação envia objetos de vários gigabytes para o Amazon S3 por uma rede instável, e as transferências às vezes falham perto do fim e recomeçam do zero. A equipe quer uploads mais rápidos e resilientes desses arquivos grandes. Qual abordagem resolve isso?",
+        explanation: "O multipart upload divide o objeto em partes enviadas em paralelo e permite reenviar somente as partes que falharam, aumentando a velocidade e a resiliência dos uploads de arquivos grandes.",
+        topic: "Amazon S3 (multipart upload)",
+        options: [
+            ["Aumentar o tempo limite do cliente e reenviar o objeto inteiro em uma única operação PUT toda vez que a transferência for interrompida perto do fim.", false],
+            ["Usar o multipart upload do Amazon S3 para enviar o objeto em partes paralelas, reenviando apenas as partes que falharem.", true],
+            ["Habilitar o S3 Transfer Acceleration para que o objeto seja enviado por uma única conexão otimizada de longa distância.", false],
+            ["Solicitar um dispositivo AWS Snowball e transferir os arquivos grandes fisicamente para contornar as falhas de rede.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa está migrando aplicações Windows que dependem de um compartilhamento de arquivos SMB integrado ao Active Directory, com permissões NTFS. Ela quer um armazenamento de arquivos totalmente gerenciado e de alto desempenho. Qual serviço atende melhor?",
+        explanation: "O Amazon FSx for Windows File Server entrega compartilhamento de arquivos SMB totalmente gerenciado, com integração ao Active Directory e ACLs do Windows, ideal para aplicações Windows, enquanto o EFS atende cargas Linux via NFS.",
+        topic: "Amazon FSx for Windows File Server",
+        options: [
+            ["Provisionar um Amazon EFS e montá-lo nas instâncias Windows para fornecer o compartilhamento de arquivos via NFS.", false],
+            ["Armazenar os arquivos no Amazon S3 e acessá-los como um compartilhamento de rede a partir das aplicações Windows.", false],
+            ["Configurar um servidor de arquivos Windows autogerenciado em instâncias EC2, com replicação entre zonas e uma rotina de backups própria.", false],
+            ["Usar o Amazon FSx for Windows File Server, que oferece armazenamento SMB gerenciado integrado ao Active Directory.", true],
+        ],
+    },
+    {
+        statement: "Uma aplicação ingere um fluxo de eventos em alto volume que precisa ser consumido simultaneamente por várias aplicações independentes, com possibilidade de reprocessar os dados dentro de um período de retenção e realizar processamento personalizado em tempo real. Qual serviço atende melhor?",
+        explanation: "O Kinesis Data Streams mantém os registros por um período de retenção e permite que vários consumidores independentes leiam e reprocessem os mesmos dados com processamento personalizado, enquanto o Firehose apenas entrega os dados a destinos, sem releitura por múltiplos consumidores.",
+        topic: "Amazon Kinesis (Data Streams x Firehose)",
+        options: [
+            ["Usar o Amazon Kinesis Data Firehose para entregar os eventos automaticamente a um bucket do Amazon S3 e reprocessá-los de lá quando for necessário.", false],
+            ["Usar uma fila do Amazon SQS para distribuir os eventos, permitindo que várias aplicações os consumam e reprocessem quando quiserem.", false],
+            ["Usar o Amazon Kinesis Data Streams, que permite múltiplos consumidores independentes e a releitura dos dados dentro do período de retenção.", true],
+            ["Usar o Amazon Kinesis Data Firehose com transformação por Lambda para que cada aplicação leia o stream de forma independente e em tempo real.", false],
+        ],
+    },
+    {
+        statement: "Uma aplicação usa um cache em memória para dados de sessão e exige alta disponibilidade, com replicação e failover automático entre zonas para que a falha de um nó não descarte todos os dados em cache. Qual opção atende a esses requisitos?",
+        explanation: "Para alta disponibilidade com replicação e failover automático entre zonas, o ElastiCache for Redis é a escolha; o Memcached não oferece replicação nem failover nativos e perde os dados quando um nó falha.",
+        topic: "Amazon ElastiCache (Redis x Memcached)",
+        options: [
+            ["Usar o Amazon ElastiCache for Redis, que oferece réplicas de leitura, failover automático entre zonas e alta disponibilidade dos dados em cache.", true],
+            ["Usar o Amazon ElastiCache for Memcached, que fornece replicação entre nós, failover automático e alta disponibilidade nativa para os dados em cache.", false],
+            ["Usar o Amazon ElastiCache for Memcached e distribuir os dados por vários nós, aceitando a perda das sessões quando um nó falhar.", false],
+            ["Instalar o Memcached em instâncias EC2 em zonas diferentes e implementar a replicação e o failover manualmente na aplicação.", false],
+        ],
+    },
+    {
+        statement: "Um sistema de arquivos Amazon EFS atende uma carga analítica crescente com muitos clientes EC2 em paralelo e sofre limitação de throughput nos picos, porque esgota os créditos do modo Bursting. A equipe quer throughput alto e consistente que acompanhe a demanda sem gerenciar capacidade. O que fazer?",
+        explanation: "O modo Elastic Throughput do Amazon EFS escala a taxa de transferência automaticamente para atender a picos imprevisíveis e cobra pelo uso, resolvendo o esgotamento de créditos do modo Bursting; o modo de desempenho Max I/O trata de IOPS e latência, não do limite de throughput.",
+        topic: "Amazon EFS (modos de throughput)",
+        options: [
+            ["Aumentar a quantidade de dados armazenados no sistema de arquivos para acumular mais créditos de burst e sustentar os picos de throughput ao longo do dia.", false],
+            ["Alterar o sistema de arquivos para o modo de throughput Elástico (Elastic Throughput), que escala automaticamente conforme a demanda.", true],
+            ["Mudar o modo de desempenho do sistema de arquivos para Max I/O a fim de remover o limite de throughput durante os picos.", false],
+            ["Migrar os dados para volumes Amazon EBS gp3 anexados a cada instância para eliminar o compartilhamento do sistema de arquivos.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe executa o treinamento de modelos de deep learning, fortemente dependente de cálculos matriciais paralelos, e quer reduzir o tempo de treinamento. Qual tipo de instância EC2 é o mais adequado?",
+        explanation: "O treinamento de deep learning depende de processamento paralelo massivo, no qual as GPUs das instâncias de computação acelerada (por exemplo, a família P) superam de longe as famílias baseadas apenas em CPU.",
+        topic: "Amazon EC2 (computação acelerada com GPU)",
+        options: [
+            ["Usar instâncias da família otimizada para computação (família C), que oferecem a maior proporção de vCPU por memória para acelerar o treinamento em paralelo.", false],
+            ["Usar instâncias da família otimizada para memória (família R) para manter todo o conjunto de dados em memória durante o treinamento.", false],
+            ["Usar instâncias de propósito geral (família M) e aumentar o número de instâncias no cluster para paralelizar o treinamento.", false],
+            ["Usar instâncias com GPU da família de computação acelerada (como a família P) para o treinamento de deep learning.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa vai assumir um compromisso de 3 anos com Savings Plans, mas planeja modernizar os workloads: migrar parte para o AWS Fargate e o AWS Lambda e trocar as famílias de instâncias EC2 ao longo do tempo. Ela quer que o desconto continue se aplicando automaticamente conforme o uso muda. Qual opção escolher?",
+        explanation: "O Compute Savings Plans oferece a maior flexibilidade: o desconto acompanha mudanças de família, tamanho, região, sistema operacional e locação de EC2 e ainda cobre o AWS Fargate e o AWS Lambda, ideal para quem vai modernizar os workloads.",
+        topic: "AWS Savings Plans",
+        options: [
+            ["Comprar EC2 Instance Savings Plans para a família de instâncias atual, aproveitando o maior desconto possível mesmo com as futuras mudanças de família e a adoção do Fargate.", false],
+            ["Comprar Standard Reserved Instances para as instâncias atuais e revendê-las no marketplace quando os workloads migrarem para contêineres e funções.", false],
+            ["Comprar Compute Savings Plans, cujo desconto se aplica automaticamente a EC2 de qualquer família e região e também ao Fargate e ao Lambda.", true],
+            ["Continuar em On-Demand até concluir toda a modernização e só então avaliar algum compromisso de longo prazo.", false],
+        ],
+    },
+    {
+        statement: "O time financeiro quer ser avisado automaticamente quando houver um aumento incomum e inesperado no gasto da AWS, por exemplo por uma configuração equivocada que dispare custos, usando detecção baseada em aprendizado de máquina em vez de acompanhar painéis manualmente. Qual serviço atende melhor?",
+        explanation: "O AWS Cost Anomaly Detection aplica aprendizado de máquina para identificar aumentos incomuns de gasto e alertar automaticamente, diferentemente do AWS Budgets, que dispara apenas quando um limite previamente definido é ultrapassado.",
+        topic: "AWS Cost Anomaly Detection",
+        options: [
+            ["Ativar o AWS Cost Anomaly Detection, que usa aprendizado de máquina para detectar gastos anômalos e enviar alertas automaticamente.", true],
+            ["Configurar o AWS Cost Explorer para revisar manualmente os relatórios de gasto todos os dias e identificar variações fora do padrão.", false],
+            ["Criar um AWS Budget com um limite fixo de gasto mensal e receber um alerta somente quando esse valor for ultrapassado.", false],
+            ["Consultar o AWS Trusted Advisor periodicamente em busca de recomendações de redução de custo nos recursos ociosos.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa com centenas de buckets do Amazon S3 distribuídos em várias contas de uma organização quer visibilidade do uso e das tendências de armazenamento em toda a organização, além de recomendações acionáveis para otimizar custos. Qual recurso atende melhor?",
+        explanation: "O S3 Storage Lens oferece um painel com métricas de uso e atividade e recomendações acionáveis de otimização de custo em todas as contas e buckets da organização, algo que o S3 Inventory ou métricas isoladas por bucket não entregam.",
+        topic: "Amazon S3 Storage Lens",
+        options: [
+            ["Habilitar o Amazon S3 Inventory em cada bucket para gerar listas de objetos e analisar manualmente onde é possível economizar.", false],
+            ["Usar o AWS Cost Explorer filtrando por Amazon S3 para ver o gasto total do serviço mês a mês em toda a organização.", false],
+            ["Ativar o Amazon S3 Storage Lens para obter visibilidade e recomendações de otimização do armazenamento em toda a organização.", true],
+            ["Criar métricas do Amazon CloudWatch por bucket e montar painéis individuais para acompanhar o uso de cada um separadamente.", false],
+        ],
+    },
+    {
+        statement: "Em uma conta de desenvolvimento, uma empresa quer não apenas ser alertada, mas executar automaticamente uma ação, como aplicar uma policy restritiva ou parar instâncias EC2, quando o gasto ultrapassar um limite definido, evitando estouros de custo. O que usar?",
+        explanation: "As ações do AWS Budgets (budget actions) executam automaticamente respostas como aplicar uma policy restritiva do IAM ou parar instâncias EC2 quando o gasto atinge o limite definido, evitando estouros sem intervenção manual.",
+        topic: "AWS Budgets",
+        options: [
+            ["Configurar o AWS Cost Anomaly Detection para detectar o excesso de gasto e depender da equipe para desligar os recursos manualmente depois do alerta.", false],
+            ["Usar o AWS Cost Explorer para acompanhar o gasto do ambiente de desenvolvimento e revisar os recursos ao final de cada mês.", false],
+            ["Habilitar o AWS Trusted Advisor para receber recomendações sobre instâncias ociosas na conta de desenvolvimento.", false],
+            ["Criar um AWS Budget com ações que apliquem automaticamente uma policy restritiva ou parem instâncias ao atingir o limite.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa arquiva imagens médicas acessadas muito raramente, talvez uma ou duas vezes por ano, mas que, quando solicitadas, precisam ser recuperadas em milissegundos. Ela quer o menor custo de armazenamento possível mantendo o acesso instantâneo. Qual classe do Amazon S3 usar?",
+        explanation: "O S3 Glacier Instant Retrieval tem custo de armazenamento bem menor que o Standard-IA para dados acessados apenas uma ou duas vezes ao ano, mantendo recuperação em milissegundos, enquanto o Deep Archive economizaria mais, mas leva horas para recuperar.",
+        topic: "Amazon S3 Glacier Instant Retrieval",
+        options: [
+            ["Usar a classe S3 Glacier Instant Retrieval, que tem custo de armazenamento baixo e ainda permite acesso em milissegundos.", true],
+            ["Usar a classe S3 Glacier Deep Archive, que oferece o menor custo de armazenamento, aceitando a recuperação em várias horas quando os dados forem necessários.", false],
+            ["Usar a classe S3 Standard-IA, que mantém o acesso imediato, ainda que o custo de armazenamento seja mais alto do que o necessário para dados tão raramente acessados.", false],
+            ["Usar a classe S3 Standard e criar uma regra de lifecycle para excluir os arquivos após um ano sem acesso.", false],
+        ],
+    },
+    {
+        statement: "Uma frota de volumes Amazon EBS gp2 entrega desempenho adequado, mas o time financeiro quer reduzir o custo de EBS sem perder desempenho. Qual é a forma mais direta de conseguir isso?",
+        explanation: "O gp3 custa cerca de 20% menos por GB que o gp2 e permite configurar IOPS e throughput de forma independente do tamanho, sendo a maneira direta de reduzir o custo de EBS sem perder desempenho.",
+        topic: "Amazon EBS gp3 (otimização de custo)",
+        options: [
+            ["Migrar os volumes para o tipo io2, pois os volumes SSD com IOPS provisionados são mais baratos que os de uso geral quando o objetivo é reduzir custos.", false],
+            ["Migrar os volumes gp2 para gp3, que custa cerca de 20% menos por GB e mantém o desempenho necessário.", true],
+            ["Migrar os volumes para o tipo st1 (HDD otimizado para throughput) para reduzir o custo por GB armazenado.", false],
+            ["Reduzir o tamanho de cada volume gp2 pela metade para diminuir o custo, ainda que isso limite a capacidade disponível.", false],
+        ],
+    },
+    {
+        statement: "Uma empresa executa uma grande frota de instâncias EC2 x86 para um workload cujos runtimes são compatíveis com ARM, como Java, Go e contêineres, e quer melhor relação preço-desempenho, reduzindo custos sem um grande redesenho. O que recomendar?",
+        explanation: "As instâncias baseadas em AWS Graviton (ARM) entregam melhor relação preço-desempenho que as equivalentes x86 para cargas compatíveis, reduzindo o custo sem sacrificar desempenho, muitas vezes com pouca ou nenhuma alteração na aplicação.",
+        topic: "AWS Graviton",
+        options: [
+            ["Migrar para instâncias x86 de última geração e maiores para melhorar o desempenho, ainda que o custo por hora aumente proporcionalmente à capacidade.", false],
+            ["Mover toda a frota para instâncias Spot x86 para reduzir o custo, aceitando que qualquer instância possa ser interrompida a qualquer momento.", false],
+            ["Migrar a frota para instâncias baseadas em AWS Graviton (ARM), que oferecem melhor relação preço-desempenho para cargas compatíveis.", true],
+            ["Adquirir Dedicated Hosts para a frota atual a fim de obter previsibilidade de custo por servidor físico dedicado.", false],
+        ],
+    },
+    {
+        statement: "Uma camada de processamento web sem estado e tolerante a falhas roda atrás de um grupo de Auto Scaling. A empresa quer reduzir bastante o custo mantendo uma base de capacidade confiável, mesmo que ocorram interrupções de capacidade. Qual abordagem é a mais adequada?",
+        explanation: "A política de instâncias mistas do EC2 Auto Scaling combina uma base garantida em On-Demand com instâncias Spot para a expansão, reduzindo o custo de forma expressiva sem arriscar toda a capacidade em uma interrupção de Spot.",
+        topic: "Amazon EC2 Auto Scaling (instâncias mistas com Spot)",
+        options: [
+            ["Executar todo o grupo com instâncias On-Demand para garantir capacidade e comprar Reserved Instances para cobrir a frota inteira durante todo o período.", false],
+            ["Executar todo o grupo exclusivamente com instâncias Spot para obter o menor custo, aceitando o risco de perder toda a capacidade em uma interrupção.", false],
+            ["Migrar a camada para Dedicated Hosts para reduzir o custo por meio do isolamento físico do hardware.", false],
+            ["Usar um grupo de Auto Scaling com política de instâncias mistas, combinando uma base On-Demand com Spot para a expansão.", true],
+        ],
+    },
+    {
+        statement: "Uma empresa serve downloads estáticos grandes, como instaladores e mídia, diretamente do Amazon S3 para um público global, e a conta mensal de transferência de dados de saída está alta. O time financeiro quer reduzir esse custo. Qual solução recomendar?",
+        explanation: "O Amazon CloudFront reduz o custo de transferência ao servir conteúdo em cache a partir das bordas, diminuindo as buscas na origem, e por ter preços de saída para a internet menores que os do S3; a transferência da origem AWS para o CloudFront não é cobrada.",
+        topic: "Amazon CloudFront (otimização de custo de transferência)",
+        options: [
+            ["Ativar o S3 Transfer Acceleration no bucket de origem para que os downloads dos usuários fiquem mais baratos e mais rápidos.", false],
+            ["Distribuir o conteúdo por meio do Amazon CloudFront, cujo cache nas bordas e preços de transferência reduzem o custo de saída de dados.", true],
+            ["Contratar o AWS Direct Connect para reduzir o custo de transferência dos downloads entregues aos usuários pela internet.", false],
+            ["Aumentar o tamanho das instâncias EC2 que servem os downloads e adicionar mais réplicas em outras zonas de disponibilidade para melhorar a entrega e diminuir o custo por download entregue aos usuários.", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -1473,13 +2101,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) {
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
         console.log(`Simulado ja tem ${n} questoes, nada a fazer.`);
         return;
     }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({
@@ -1498,7 +2136,7 @@ async function seed() {
             })),
         );
     }
-    console.log(`Seed concluido: ${QUESTOES.length} questoes inseridas.`);
+    console.log(`Seed: ${inseridas} questoes novas inseridas (${QUESTOES.length} no banco).`);
 }
 
 seed()

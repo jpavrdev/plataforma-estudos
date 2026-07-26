@@ -1195,6 +1195,282 @@ const QUESTOES: Questao[] = [
             ["SELECT regiao, mes, SUM(valor) OVER (PARTITION BY regiao ORDER BY mes) AS receita, pedido_id AS pedidos FROM silver", false],
         ],
     },
+    // ===== Questões adicionais (banco ampliado para variar as tentativas) =====
+    {
+        statement: "Uma engenheira quer entender como uma tabela Delta garante atomicidade quando dois jobs gravam quase ao mesmo tempo. Onde o Delta Lake registra cada operacao de escrita para oferecer transacoes ACID e time travel?",
+        explanation: "O log de transacoes (_delta_log) guarda commits JSON ordenados e checkpoints Parquet periodicos; e isso que da ACID, isolamento de snapshot e time travel, sem depender de bloqueio externo.",
+        topic: "Delta Lake - transaction log",
+        options: [
+            ["Todo o estado da tabela fica apenas no metastore do Hive, que controla os bloqueios de concorrencia entre os jobs que gravam.", false],
+            ["Dentro do rodape de cada arquivo Parquet de dados, que guarda a lista completa das versoes anteriores da tabela.", false],
+            ["Em um servico externo de bloqueio distribuido que precisa ser provisionado a parte para coordenar as gravacoes concorrentes.", false],
+            ["Em arquivos de commit JSON ordenados dentro da pasta _delta_log, que descrevem cada transacao da tabela.", true],
+        ],
+    },
+    {
+        statement: "Uma equipe tem um diretorio grande de arquivos Parquet ja particionados no object storage e quer passar a usar recursos do Delta Lake sem reescrever todos os dados. Qual abordagem atende a esse objetivo?",
+        explanation: "CONVERT TO DELTA cria o _delta_log a partir dos arquivos Parquet existentes, tornando o diretorio uma tabela Delta sem reescrever os dados.",
+        topic: "Delta Lake - CONVERT TO DELTA",
+        options: [
+            ["Rodar CONVERT TO DELTA sobre o diretorio Parquet, gerando o log de transacoes sem reescrever os arquivos de dados.", true],
+            ["Executar OPTIMIZE no diretorio Parquet, que reorganiza os arquivos e automaticamente os promove para o formato Delta.", false],
+            ["Ler todos os Parquet em um DataFrame e regravar em outro caminho com format('delta'), duplicando os dados no armazenamento.", false],
+            ["Criar uma tabela externa apontando para o Parquet, pois o Unity Catalog trata qualquer tabela externa como Delta por padrao.", false],
+        ],
+    },
+    {
+        statement: "Antes de um teste de carga arriscado, um engenheiro quer uma copia totalmente independente da tabela vendas_gold, para validar sem afetar a tabela original nem depender dos arquivos dela. Qual comando cria essa copia?",
+        explanation: "O DEEP CLONE copia os arquivos de dados e os metadados, resultando em uma tabela independente; o SHALLOW CLONE so copia metadados e continua apontando para os arquivos da origem.",
+        topic: "Delta Lake - DEEP CLONE",
+        options: [
+            ["CREATE TABLE ... SHALLOW CLONE, que copia apenas os metadados e continua referenciando os arquivos de dados da tabela de origem.", false],
+            ["CREATE TABLE ... AS SELECT, que gera uma view materializada sincronizada automaticamente com qualquer mudanca feita na origem.", false],
+            ["CREATE TABLE ... DEEP CLONE, que copia dados e metadados para uma tabela independente da origem.", true],
+            ["CREATE TABLE ... LIKE, que so replica o schema e as propriedades, sem copiar nenhum dado nem o historico da tabela de origem.", false],
+        ],
+    },
+    {
+        statement: "Um append em uma tabela Delta falha porque o DataFrame de origem passou a ter uma coluna nova que nao existe na tabela. A equipe quer que essa coluna seja adicionada automaticamente na gravacao. O que explica o erro e resolve o caso?",
+        explanation: "O schema enforcement bloqueia gravacoes com schema divergente por padrao; habilitar mergeSchema (ou o autoMerge) permite evoluir o schema adicionando a nova coluna no append.",
+        topic: "Delta Lake - schema enforcement e mergeSchema",
+        options: [
+            ["O Delta nunca aceita novas colunas; e preciso recriar a tabela do zero com CREATE OR REPLACE a cada mudanca de schema da origem.", false],
+            ["Por schema enforcement, o Delta rejeita schemas divergentes; usar a opcao mergeSchema como true no append adiciona a coluna.", true],
+            ["O erro vem do particionamento; basta reparticionar o DataFrame pela nova coluna para que a gravacao passe a aceita-la.", false],
+            ["O append no formato Delta ignora colunas extras silenciosamente, entao o erro so pode ter sido causado por um tipo de dado incompativel.", false],
+        ],
+    },
+    {
+        statement: "A camada gold precisa consumir, de forma incremental, apenas as linhas que foram inseridas, atualizadas ou removidas em uma tabela silver Delta, sabendo o tipo de cada mudanca. Qual recurso entrega isso?",
+        explanation: "O Change Data Feed registra as mudancas em nivel de linha com o tipo (_change_type: insert, update_preimage/postimage, delete); e habilitado por propriedade de tabela e lido com a opcao readChangeFeed ou table_changes().",
+        topic: "Delta Lake - Change Data Feed",
+        options: [
+            ["O time travel com VERSION AS OF, que retorna o conteudo completo de uma versao anterior, mas nao marca o tipo de cada mudanca linha a linha.", false],
+            ["O comando DESCRIBE HISTORY, que lista as operacoes feitas na tabela, mas nao devolve as linhas de dados que mudaram.", false],
+            ["O Change Data Feed, habilitado por delta.enableChangeDataFeed, lido com readChangeFeed e a coluna _change_type.", true],
+            ["O comando OPTIMIZE com ZORDER, que agrupa fisicamente as linhas alteradas para acelerar a leitura das mudancas recentes.", false],
+        ],
+    },
+    {
+        statement: "Um engenheiro quer criar a tabela clientes_ativos ja populada com o resultado de uma consulta que filtra clientes por status, sem declarar manualmente cada coluna e tipo. Qual comando faz isso?",
+        explanation: "O CTAS (CREATE TABLE AS SELECT) cria a tabela inferindo o schema a partir do SELECT e ja a popula com o resultado, sem precisar declarar colunas manualmente.",
+        topic: "Spark SQL - CREATE TABLE AS SELECT",
+        options: [
+            ["CREATE TABLE clientes_ativos AS SELECT ..., que deriva o schema do resultado da consulta e grava as linhas.", true],
+            ["CREATE TABLE clientes_ativos (col1 ..., col2 ...) e depois um COPY INTO separado para carregar as linhas vindas da consulta.", false],
+            ["CREATE OR REPLACE TEMP VIEW clientes_ativos AS SELECT ..., que persiste os dados fisicamente como uma nova tabela gerenciada.", false],
+            ["INSERT INTO clientes_ativos SELECT ..., que cria a tabela automaticamente caso ela ainda nao exista no schema atual da sessao.", false],
+        ],
+    },
+    {
+        statement: "Em um cluster compartilhado, uma view temporaria criada em um notebook precisa ser consultada por outro notebook anexado ao mesmo cluster. Qual objeto permite esse compartilhamento entre sessoes?",
+        explanation: "A global temp view fica no schema global_temp e e visivel por outras sessoes do mesmo cluster/aplicacao; a temp view comum e restrita a sessao que a criou.",
+        topic: "Spark SQL - TEMP VIEW x GLOBAL TEMP VIEW",
+        options: [
+            ["Uma TEMP VIEW comum, que fica disponivel para qualquer notebook enquanto o cluster estiver ligado, independentemente da sessao.", false],
+            ["Uma view criada com CREATE VIEW, que existe apenas na sessao que a definiu e e descartada ao desanexar o notebook do cluster.", false],
+            ["Um DataFrame em cache com persist(), que replica automaticamente a definicao da consulta para todas as sessoes conectadas ao cluster.", false],
+            ["Uma GLOBAL TEMP VIEW, acessivel por outras sessoes do mesmo cluster pelo schema global_temp.", true],
+        ],
+    },
+    {
+        statement: "Uma coluna payload de uma tabela bronze guarda uma string JSON como texto, e a equipe precisa extrair o campo cliente.id de dentro dela usando Spark SQL. Qual abordagem e adequada?",
+        explanation: "Quando o JSON esta guardado como string, a sintaxe de dois pontos (payload:cliente.id) extrai os campos; o ponto so funciona depois de converter em struct, por exemplo com from_json.",
+        topic: "Spark SQL - dados JSON aninhados",
+        options: [
+            ["Usar EXPLODE(payload), que transforma automaticamente cada chave do JSON em uma nova linha com o seu respectivo valor.", false],
+            ["Aplicar CAST(payload AS STRUCT) direto, pois o Spark converte qualquer string em struct sem precisar informar o schema dos campos.", false],
+            ["Navegar com a sintaxe de dois pontos, como payload:cliente.id, que le campos de um JSON armazenado como string.", true],
+            ["Referenciar payload.cliente.id com ponto, que e a forma de acessar chaves de uma string JSON ainda nao convertida em struct.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela tem uma coluna itens do tipo array, com varios produtos por pedido, e o time precisa de uma linha por produto para conseguir agregar as vendas item a item. Qual funcao resolve isso?",
+        explanation: "explode() cria uma linha por elemento do array (ou par chave-valor de um map), permitindo agregar item a item.",
+        topic: "Spark SQL - explode",
+        options: [
+            ["explode(itens), que gera uma linha para cada elemento do array em uma nova coluna.", true],
+            ["collect_list(itens), que junta os elementos de varias linhas em um unico array consolidado por pedido.", false],
+            ["array_contains(itens, valor), que verifica a presenca de um elemento e retorna um booleano por linha do pedido.", false],
+            ["size(itens), que devolve a quantidade de elementos do array, mas mantem tudo em uma unica linha por pedido.", false],
+        ],
+    },
+    {
+        statement: "Um job PySpark ficou lento depois que a equipe passou a limpar textos com uma UDF em Python. Um revisor sugere trocar a UDF por funcoes nativas do Spark sempre que possivel. Qual e a justificativa correta?",
+        explanation: "As funcoes nativas sao compreendidas e otimizadas pelo Catalyst e nao pagam o custo de serializacao entre a JVM e o Python que uma UDF impoe, por isso costumam ser mais rapidas.",
+        topic: "PySpark - UDF x funcoes nativas",
+        options: [
+            ["UDFs em Python nao conseguem acessar colunas do DataFrame, entao qualquer transformacao de texto obriga a coletar os dados no driver antes.", false],
+            ["Funcoes nativas rodam somente no driver, o que evita a rede e por isso sempre superam qualquer UDF distribuida pelos executores.", false],
+            ["Funcoes nativas sao otimizadas pelo Catalyst e evitam a serializacao extra que uma UDF Python impoe.", true],
+            ["UDFs em Python desabilitam completamente o particionamento do DataFrame, forcando todo o processamento a rodar em uma unica particao.", false],
+        ],
+    },
+    {
+        statement: "Um DataFrame precisa substituir completamente o conteudo atual da tabela destino a cada execucao do job, apagando as linhas antigas. Qual modo de escrita do DataFrameWriter deve ser usado?",
+        explanation: "O mode('overwrite') substitui o conteudo da tabela pelo do DataFrame; append acrescenta, ignore nao faz nada se ja houver dados e errorIfExists (padrao) falha se a tabela ja existir.",
+        topic: "PySpark - save modes",
+        options: [
+            ["mode('append'), que acrescenta as novas linhas as existentes e, por ser o padrao, dispensa qualquer configuracao adicional no writer.", false],
+            ["mode('ignore'), que sobrescreve os dados apenas quando o schema do DataFrame difere do schema atual da tabela de destino.", false],
+            ["mode('errorIfExists'), que atualiza somente as linhas que ja existem e insere as demais, funcionando como um upsert automatico.", false],
+            ["mode('overwrite'), que substitui os dados existentes na tabela pelo conteudo do DataFrame.", true],
+        ],
+    },
+    {
+        statement: "Depois de transformar dados com a API de DataFrame, uma engenheira quer consultar o resultado usando comandos SQL (spark.sql) no mesmo notebook, sem gravar nada em disco. O que ela deve fazer?",
+        explanation: "createOrReplaceTempView registra o DataFrame como uma view temporaria de sessao, permitindo consulta-lo com spark.sql sem persistir dados.",
+        topic: "PySpark - createOrReplaceTempView",
+        options: [
+            ["Salvar o DataFrame como tabela gerenciada com saveAsTable e remove-la ao final, ja que SQL so enxerga objetos persistidos no metastore.", false],
+            ["Registrar o DataFrame com createOrReplaceTempView e entao consulta-lo por nome via spark.sql.", true],
+            ["Converter o DataFrame para Pandas com toPandas e executar as consultas SQL diretamente sobre o objeto Pandas resultante da conversao.", false],
+            ["Exportar o DataFrame para um arquivo temporario Parquet e recarrega-lo com spark.read antes de executar qualquer consulta em SQL.", false],
+        ],
+    },
+    {
+        statement: "Ao final de um pipeline, um DataFrame com 200 particoes precisa ser reduzido para poucos arquivos de saida, evitando ao maximo o custo de embaralhar os dados pela rede. Qual operacao e a mais indicada?",
+        explanation: "coalesce reduz particoes sem shuffle completo; repartition faz shuffle completo (e pode aumentar ou reduzir), sendo mais custoso quando o objetivo e so diminuir a quantidade de arquivos.",
+        topic: "PySpark - repartition x coalesce",
+        options: [
+            ["repartition(4), que reduz o numero de particoes sem nunca provocar shuffle, por sempre apenas mesclar as particoes vizinhas.", false],
+            ["coalesce(4), que diminui o numero de particoes evitando um shuffle completo.", true],
+            ["repartition('coluna'), que garante o menor numero possivel de arquivos ao reparticionar pelos valores distintos da coluna escolhida.", false],
+            ["cache() seguido de count(), que consolida as particoes em memoria e grava tudo em um unico arquivo na acao seguinte do pipeline.", false],
+        ],
+    },
+    {
+        statement: "Ao ler um CSV com spark.read, uma equipe percebe que as colunas vieram nomeadas como _c0, _c1 e todas como string, apesar de o arquivo ter cabecalho e valores numericos. Quais opcoes corrigem isso?",
+        explanation: "header=true usa a primeira linha como nome das colunas e inferSchema=true faz o Spark deduzir os tipos (com uma passada extra pelos dados); sem elas, as colunas viram _c0, _c1 e ficam como string.",
+        topic: "PySpark - leitura de CSV",
+        options: [
+            ["Usar as opcoes mode como PERMISSIVE e badRecordsPath, que interpretam o cabecalho e ajustam os tipos numericos das colunas.", false],
+            ["Aplicar a opcao multiLine como true, que faz o leitor reconhecer a primeira linha como cabecalho e inferir os tipos automaticamente.", false],
+            ["Trocar o format para 'text' e depois dividir as colunas na mao, pois o leitor de CSV nao suporta cabecalho nem tipos numericos.", false],
+            ["Definir as opcoes header como true e inferSchema como true na leitura do CSV.", true],
+        ],
+    },
+    {
+        statement: "Uma consulta de Structured Streaming faz uma agregacao de contagem por categoria e precisa manter o resultado completo atualizado a cada micro-lote no destino. Qual output mode atende a esse caso?",
+        explanation: "O modo complete reescreve todo o resultado a cada micro-lote, adequado para agregacoes; append serve para linhas novas que nao mudam e update grava apenas as linhas alteradas. Nao existe output mode overwrite em streaming.",
+        topic: "Structured Streaming - output modes",
+        options: [
+            ["O modo append, que e o padrao e reescreve todas as linhas do resultado agregado a cada gatilho de processamento do stream.", false],
+            ["O modo complete, que reescreve todo o resultado da agregacao a cada micro-lote.", true],
+            ["O modo update com trigger('once'), unica forma de manter agregacoes sem exigir a definicao de uma coluna de watermark no stream.", false],
+            ["O modo overwrite, que trunca a tabela de destino e regrava o resultado inteiro da agregacao em cada execucao do stream.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe quer que um pipeline declarativo do Lakeflow processe os dados que ja chegaram e depois desligue a computacao, para reduzir custo, em vez de manter os clusters ligados o tempo todo. Qual modo de execucao escolher?",
+        explanation: "No modo triggered o pipeline processa os dados disponiveis e desliga a computacao, sendo mais economico; o modo continuous mantem tudo rodando para baixa latencia.",
+        topic: "Lakeflow Declarative Pipelines - triggered x continuous",
+        options: [
+            ["O modo continuous, pois ele processa o lote disponivel e encerra os recursos ate a proxima janela agendada pela equipe.", false],
+            ["O modo development, que alem de reduzir a latencia mantem o cluster sempre ativo para reprocessar os dados a cada alteracao de codigo.", false],
+            ["O modo continuous com trigger AvailableNow, combinacao que garante o desligamento automatico dos clusters apos cada atualizacao do pipeline.", false],
+            ["O modo triggered, que processa os dados disponiveis e entao encerra a computacao do pipeline.", true],
+        ],
+    },
+    {
+        statement: "Depois de corrigir uma regra de transformacao, uma engenheira precisa reprocessar todos os dados historicos de uma tabela do pipeline, e nao apenas os registros novos. Qual acao faz isso?",
+        explanation: "O full refresh limpa e recalcula as tabelas a partir da origem, aplicando as novas regras a todo o historico; a atualizacao normal so processa dados novos de forma incremental.",
+        topic: "Lakeflow Declarative Pipelines - full refresh",
+        options: [
+            ["Executar uma atualizacao com full refresh, que limpa as tabelas e as recalcula a partir da origem.", true],
+            ["Executar uma atualizacao normal, que ao detectar a mudanca de codigo ja reprocessa todo o historico das tabelas afetadas automaticamente.", false],
+            ["Rodar OPTIMIZE nas tabelas do pipeline, o que reescreve os arquivos aplicando as novas regras de transformacao a todo o historico.", false],
+            ["Alterar o pipeline para o modo continuous, que refaz o calculo de todas as tabelas desde a origem a cada micro-lote processado.", false],
+        ],
+    },
+    {
+        statement: "Em um pipeline declarativo do Lakeflow com uma tabela bronze, uma silver que le da bronze e uma gold que le da silver, a equipe quer saber como definir a ordem de execucao entre essas tabelas. O que e correto?",
+        explanation: "O Lakeflow Declarative Pipelines resolve o DAG automaticamente a partir das referencias entre os datasets, executando bronze, silver e gold na ordem correta sem configuracao manual de dependencias.",
+        topic: "Declarative Pipelines - dependencias entre datasets",
+        options: [
+            ["E preciso numerar cada dataset e informar essa ordem em uma configuracao a parte, senao o pipeline executa as tabelas em ordem aleatoria.", false],
+            ["A ordem precisa ser controlada por um Lakeflow Job externo, com uma task separada e dependencias explicitas para cada uma das tres tabelas.", false],
+            ["O pipeline monta o grafo de dependencias automaticamente a partir das referencias entre os datasets.", true],
+            ["Cada tabela deve ficar em um pipeline separado e encadeada por gatilhos de Table update, ja que um pipeline so executa um dataset por vez.", false],
+        ],
+    },
+    {
+        statement: "Uma organizacao com varios workspaces na mesma regiao quer um conteiner de metadados no topo do Unity Catalog, sob o qual ficam os catalogos, schemas e tabelas. Que componente e esse e como costuma ser provisionado?",
+        explanation: "O metastore e o conteiner de mais alto nivel do Unity Catalog (normalmente um por regiao) e e atribuido aos workspaces daquela regiao pelo admin da conta; abaixo dele vem catalogos, schemas e tabelas.",
+        topic: "Unity Catalog - metastore",
+        options: [
+            ["O catalogo, que e o objeto de nivel mais alto do Unity Catalog e existe obrigatoriamente um por workspace, criado pelo admin do workspace.", false],
+            ["O metastore, conteiner de topo do Unity Catalog, em geral um por regiao e associado aos workspaces daquela regiao.", true],
+            ["O schema, conteiner de topo que agrupa os catalogos e e criado automaticamente junto com o primeiro workspace da conta na regiao.", false],
+            ["O external location, objeto de nivel mais alto que reune os catalogos e as credenciais de acesso ao armazenamento em nuvem da conta.", false],
+        ],
+    },
+    {
+        statement: "Para governar o acesso a uma pasta especifica de object storage onde ficam tabelas externas, um admin precisa combinar a autenticacao na nuvem com o caminho de armazenamento dentro do Unity Catalog. Quais objetos ele usa?",
+        explanation: "A storage credential encapsula a autenticacao na nuvem (por exemplo uma role IAM) e a external location combina essa credencial com um caminho de armazenamento, permitindo ao Unity Catalog governar o acesso aquele local.",
+        topic: "Unity Catalog - external location",
+        options: [
+            ["Uma storage credential para a autenticacao na nuvem e uma external location que associa essa credencial a um caminho.", true],
+            ["Apenas um volume gerenciado, que ja embute as credenciais de nuvem e o caminho, dispensando qualquer objeto adicional de autenticacao.", false],
+            ["Somente uma service principal com permissao de leitura no bucket, pois o Unity Catalog acessa qualquer caminho de nuvem direto por ela.", false],
+            ["Um catalogo externo apontando para o bucket, que gera de forma transparente as credenciais e o mapeamento de caminho necessarios ao acesso.", false],
+        ],
+    },
+    {
+        statement: "Uma equipe precisa governar, dentro do Unity Catalog, o acesso a arquivos nao tabulares, como PDFs e imagens, organizados por catalogo e schema. Qual objeto atende a isso e qual a diferenca entre os dois tipos?",
+        explanation: "Volumes governam dados nao tabulares (arquivos) dentro do namespace do Unity Catalog; o volume gerenciado usa armazenamento gerido pelo proprio Unity Catalog e o volume externo aponta para um caminho de uma external location.",
+        topic: "Unity Catalog - volumes (managed x external)",
+        options: [
+            ["Uma tabela externa, pois volumes servem apenas para dados tabulares e nao conseguem enderecar arquivos binarios como PDFs, imagens ou documentos.", false],
+            ["Uma storage credential por arquivo, criada individualmente para cada PDF ou imagem que a equipe precisar disponibilizar aos usuarios.", false],
+            ["Um schema do tipo binario, que e um conteiner especial de arquivos nao tabulares provisionado a parte dos schemas comuns de tabelas.", false],
+            ["Um volume: o gerenciado usa armazenamento do Unity Catalog e o externo referencia um caminho de external location.", true],
+        ],
+    },
+    {
+        statement: "A area de FinOps quer analisar, com consultas SQL, o consumo de computacao e os eventos de auditoria de acesso de toda a conta Databricks, usando dados ja disponibilizados pela plataforma. Onde esses dados ficam?",
+        explanation: "As system tables, no catalogo system, expoem dados operacionais da conta como faturamento (system.billing.usage) e auditoria (system.access.audit), prontos para analise em SQL.",
+        topic: "Unity Catalog - system tables",
+        options: [
+            ["No event log de cada pipeline declarativo, que centraliza o consumo de todos os workspaces e os registros de auditoria de acesso da conta.", false],
+            ["Nas system tables (catalogo system), como system.billing.usage e system.access.audit, consultaveis por SQL.", true],
+            ["No INFORMATION_SCHEMA de cada catalogo, que alem dos metadados de objetos guarda o historico de faturamento e de acessos da conta inteira.", false],
+            ["Nos logs do driver de cada cluster, que precisam ser exportados e unificados na mao para reconstruir o consumo e a auditoria da conta.", false],
+        ],
+    },
+    {
+        statement: "Uma tabela foi criada por uma engenheira que saiu da equipe, e agora ninguem consegue conceder novos privilegios nem alterar o objeto. Qual conceito do Unity Catalog explica isso e como resolver?",
+        explanation: "No Unity Catalog o owner de um securavel pode conceder privilegios e executar operacoes como ALTER e DROP; por isso recomenda-se atribuir a ownership a um grupo, e a correcao aqui e transferir a propriedade para um grupo ativo.",
+        topic: "Unity Catalog - owner (ownership)",
+        options: [
+            ["Cada securavel tem um owner, que pode gerenciar privilegios e alterar o objeto; a solucao e transferir a ownership para um grupo ativo.", true],
+            ["O problema e a heranca de privilegios do catalogo, que precisa ser recriada do zero sempre que o usuario criador de uma tabela deixa a conta.", false],
+            ["Toda tabela pertence automaticamente ao metastore admin, entao basta pedir a ele um GRANT de SELECT para que qualquer um volte a administrar.", false],
+            ["Sem o usuario criador, a tabela fica permanentemente bloqueada e a unica saida e recria-la com CREATE OR REPLACE a partir de um backup dos dados.", false],
+        ],
+    },
+    {
+        statement: "A mesma logica de um notebook precisa rodar para regioes diferentes, recebendo o nome da regiao como parametro na hora em que um Lakeflow Job o executa, sem editar o codigo. Qual recurso permite isso?",
+        explanation: "Os widgets (dbutils.widgets) criam parametros de entrada do notebook, que podem ser preenchidos por um Lakeflow Job na execucao, permitindo reaproveitar o mesmo codigo com valores diferentes.",
+        topic: "dbutils.widgets",
+        options: [
+            ["O comando %run, que importa outro notebook e por isso injeta nele os valores de parametros definidos no job que disparou a execucao.", false],
+            ["A funcao spark.conf.get sobre uma chave fixa, unica forma de um notebook receber valores externos passados por um job agendado.", false],
+            ["O dbutils.secrets.get, que recupera valores de parametros gerais do job a partir de um escopo de segredos configurado para o workspace.", false],
+            ["Os widgets (dbutils.widgets), que criam parametros lidos no notebook e podem receber valores do job.", true],
+        ],
+    },
+    {
+        statement: "Um time de BI reclama que os paineis do Databricks SQL demoram para responder apos periodos ociosos, por causa do tempo de inicializacao da computacao. Qual tipo de SQL warehouse minimiza esse tempo de partida?",
+        explanation: "O SQL warehouse serverless usa computacao gerenciada pela Databricks e inicia quase instantaneamente, reduzindo a latencia apos periodos ociosos; classic e pro tem partida mais lenta.",
+        topic: "Databricks SQL - SQL Warehouse",
+        options: [
+            ["O SQL warehouse classic, que por rodar no plano de computacao do cliente inicia praticamente na hora e e o mais rapido para sair da ociosidade.", false],
+            ["Um cluster all-purpose anexado ao painel, que mantem a computacao sempre quente e por isso elimina qualquer tempo de inicializacao das consultas.", false],
+            ["O SQL warehouse serverless, que inicia quase instantaneamente por usar computacao gerenciada pela Databricks.", true],
+            ["O SQL warehouse pro com autoscaling no minimo em zero, configuracao que desliga a computacao sem impor tempo de partida nas proximas consultas.", false],
+        ],
+    },
 ];
 
 async function seed() {
@@ -1226,10 +1502,23 @@ async function seed() {
         .select({ n: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id));
-    if (Number(n) > 0) { console.log(`Simulado ja tem ${n} questoes, nada a fazer.`); return; }
+    const jaExistem = new Set(
+        (
+            await db
+                .select({ statement: simuladoQuestions.statement })
+                .from(simuladoQuestions)
+                .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        ).map((r) => r.statement),
+    );
+    const inseridas = QUESTOES.filter((q) => !jaExistem.has(q.statement)).length;
+    if (inseridas === 0) {
+        console.log(`Simulado ja tem ${n} questoes, nada a fazer.`);
+        return;
+    }
 
     for (let i = 0; i < QUESTOES.length; i++) {
         const q = QUESTOES[i];
+        if (jaExistem.has(q.statement)) continue;
         const [questao] = await db
             .insert(simuladoQuestions)
             .values({ simuladoId: simulado.id, statement: q.statement, explanation: q.explanation, topic: q.topic })
@@ -1238,7 +1527,7 @@ async function seed() {
             q.options.map(([text, isCorrect], idx) => ({ questionId: questao.id, text, isCorrect, position: idx + 1 })),
         );
     }
-    console.log(`Seed concluido: ${QUESTOES.length} questoes inseridas.`);
+    console.log(`Seed: ${inseridas} questoes novas inseridas (${QUESTOES.length} no banco).`);
 }
 
 seed().then(() => process.exit(0)).catch((e) => { console.error("Falha no seed:", e); process.exit(1); });
