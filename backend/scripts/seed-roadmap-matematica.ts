@@ -60,13 +60,40 @@ const STAGES: Stage[] = [
         refs: ["Álgebra Linear"],
     },
     {
-        phase: "avancado",
+        phase: "core",
         position: 4,
+        title: "Geometria Analítica",
+        description:
+            "A ponte entre a álgebra e a geometria, ao lado da Álgebra Linear: vetores no plano e no espaço, produto escalar, vetorial e misto, as equações da reta e do plano com suas posições relativas, distâncias e ângulos, e as cônicas.",
+        tags: ["Vetores", "Reta e plano", "Cônicas"],
+        refs: ["Geometria Analítica"],
+    },
+    {
+        phase: "avancado",
+        position: 5,
         title: "Cálculo 2",
         description:
             "A continuação do cálculo: técnicas de integração (por partes, substituição trigonométrica, frações parciais), integrais impróprias, aplicações da integral (volumes e comprimento de arco), sequências e séries (com séries de Taylor) e equações diferenciais de 1ª ordem.",
         tags: ["Integrais", "Séries", "EDOs"],
         refs: ["Cálculo 2"],
+    },
+    {
+        phase: "avancado",
+        position: 6,
+        title: "Cálculo 3",
+        description:
+            "Cálculo de várias variáveis: funções de duas ou mais variáveis, derivadas parciais e o gradiente, máximos e mínimos com multiplicadores de Lagrange, integrais duplas e triplas (polares, cilíndricas e esféricas) e uma introdução ao cálculo vetorial (teorema de Green).",
+        tags: ["Parciais", "Integrais múltiplas", "Campos"],
+        refs: ["Cálculo 3"],
+    },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Estatística Matemática",
+        description:
+            "Probabilidade e estatística com rigor: axiomas e combinatória, variáveis aleatórias e distribuições (binomial, Poisson, normal), teoremas limite (lei dos grandes números e TCL), estimação (máxima verossimilhança e intervalos de confiança) e testes de hipóteses.",
+        tags: ["Probabilidade", "Distribuições", "Inferência"],
+        refs: ["Estatística Matemática"],
     },
 ];
 
