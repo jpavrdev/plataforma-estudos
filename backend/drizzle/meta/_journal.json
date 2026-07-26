@@ -309,6 +309,13 @@
       "when": 1785013141615,
       "tag": "0043_colossal_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1785089587022,
+      "tag": "0044_overrated_gladiator",
+      "breakpoints": true
     }
   ]
 }

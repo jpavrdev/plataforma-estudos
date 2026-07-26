@@ -2296,6 +2296,40 @@
   background: color-mix(in srgb, var(--av-red) 14%, transparent);
   color: var(--av-red);
 }
+.quiz__solucao {
+  margin-top: 12px;
+}
+.quiz__solucao-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+.quiz__solucao-toggle:hover {
+  text-decoration: underline;
+}
+.quiz__solucao-corpo {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  overflow-x: auto;
+}
+.quiz__solucao-corpo > :first-child {
+  margin-top: 0;
+}
+.quiz__solucao-corpo > :last-child {
+  margin-bottom: 0;
+}
 .quiz__foot {
   display: flex;
   align-items: center;

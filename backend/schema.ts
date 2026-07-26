@@ -184,6 +184,7 @@ export const questions = pgTable("questions", {
         .references(() => lessons.id)
         .notNull(),
     statement: text("statement").notNull(),
+    explanation: text("explanation"),
     difficulty: questionDifficulty("difficulty").default("facil").notNull(),
     position: integer("position").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

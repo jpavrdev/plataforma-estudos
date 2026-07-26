@@ -6,6 +6,7 @@
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
+import { backfillExplicacoes, mesclarSolucoes } from "./backfill-explicacoes.ts";
 
 const NOME = "Pré-cálculo";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "iniciante";
@@ -15,6 +16,7 @@ const DESCRICAO =
 type Bloco = { type: "text" | "code" | "quote" | "table"; value: string };
 type Questao = {
     statement: string;
+    explanation?: string;
     difficulty: "facil" | "medio" | "dificil";
     options: { text: string; isCorrect: boolean }[];
 };
@@ -5353,6 +5355,7 @@ const MODULOS = [
 ] as unknown as Modulo[];
 
 async function seed() {
+    mesclarSolucoes(MODULOS, "precalculo");
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
     if (!trilha) {
         [trilha] = await db
@@ -5364,7 +5367,8 @@ async function seed() {
 
     const existentes = await db.select().from(lessons).where(eq(lessons.trailId, trilha.id));
     if (existentes.length > 0) {
-        console.log("Trilha " + NOME + " já tem " + existentes.length + " aulas. Nada a fazer.");
+        const n = await backfillExplicacoes(trilha.id, MODULOS);
+        console.log("Trilha " + NOME + " já existe; " + n + " explicações atualizadas.");
         return;
     }
 
@@ -5397,6 +5401,7 @@ async function seed() {
                     .values({
                         lessonId: lesson.id,
                         statement: q.statement,
+                        explanation: q.explanation ?? null,
                         difficulty: q.difficulty,
                         position: qi + 1,
                     })

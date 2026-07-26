@@ -258,6 +258,8 @@ function Quiz({
   const [checked, setChecked] = useState(false);
   const [wasCorrect, setWasCorrect] = useState(false);
   const [correctOptionId, setCorrectOptionId] = useState<string | null>(null);
+  const [explicacao, setExplicacao] = useState<string | null>(null);
+  const [verSolucao, setVerSolucao] = useState(false);
   const [respostas, setRespostas] = useState<Record<string, string>>({});
   const [verificando, setVerificando] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -302,6 +304,8 @@ function Quiz({
       setWasCorrect(r.correct);
       setCorrectOptionId(r.correctOptionId);
       setRespostas((prev) => ({ ...prev, [q.id]: selected }));
+      setExplicacao(r.explanation ?? null);
+      setVerSolucao(false);
       setChecked(true);
       // Na última questão o resultado sai sozinho; só damos um tempo para ver o feedback.
       if (isLast) {
@@ -324,6 +328,8 @@ function Quiz({
     setChecked(false);
     setWasCorrect(false);
     setCorrectOptionId(null);
+    setExplicacao(null);
+    setVerSolucao(false);
   }
 
   function refazer() {
@@ -332,6 +338,8 @@ function Quiz({
     setChecked(false);
     setWasCorrect(false);
     setCorrectOptionId(null);
+    setExplicacao(null);
+    setVerSolucao(false);
     setRespostas({});
     setResultado(null);
     setErro('');
@@ -455,6 +463,29 @@ function Quiz({
             {wasCorrect
               ? 'Correto! Mandou muito bem.'
               : `Quase! A resposta certa é a alternativa ${letraCorreta()}.`}
+          </div>
+        )}
+
+        {checked && explicacao && (
+          <div className="quiz__solucao">
+            <button
+              type="button"
+              className="quiz__solucao-toggle"
+              onClick={() => setVerSolucao((v) => !v)}
+            >
+              {verSolucao ? 'Ocultar resolução' : 'Ver resolução passo a passo'}
+            </button>
+            {verSolucao && (
+              <div className="quiz__solucao-corpo lesson__md">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={md}
+                >
+                  {explicacao}
+                </ReactMarkdown>
+              </div>
+            )}
           </div>
         )}
 
