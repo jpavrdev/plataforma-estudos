@@ -50,6 +50,24 @@ const STAGES: Stage[] = [
         tags: ["Limites", "Derivadas", "Integrais"],
         refs: ["Cálculo 1"],
     },
+    {
+        phase: "core",
+        position: 3,
+        title: "Álgebra Linear",
+        description:
+            "A linguagem de vetores e matrizes, companheira do cálculo: sistemas lineares e escalonamento, matrizes e determinantes, espaços vetoriais (base e dimensão), transformações lineares, autovalores e diagonalização, e produto interno com ortogonalidade.",
+        tags: ["Matrizes", "Vetores", "Autovalores"],
+        refs: ["Álgebra Linear"],
+    },
+    {
+        phase: "avancado",
+        position: 4,
+        title: "Cálculo 2",
+        description:
+            "A continuação do cálculo: técnicas de integração (por partes, substituição trigonométrica, frações parciais), integrais impróprias, aplicações da integral (volumes e comprimento de arco), sequências e séries (com séries de Taylor) e equações diferenciais de 1ª ordem.",
+        tags: ["Integrais", "Séries", "EDOs"],
+        refs: ["Cálculo 2"],
+    },
 ];
 
 async function resolverTrilha(nome: string): Promise<string | null> {
