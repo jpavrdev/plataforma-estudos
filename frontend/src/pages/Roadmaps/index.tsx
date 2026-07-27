@@ -5,7 +5,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Search, ChevronRight, Lock, Play } from '../../components/Icons';
+import { Flame, ChevronRight, Lock, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
@@ -90,10 +90,6 @@ export function Roadmaps() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="searchbar">
-            <Search size={16} />
-            <span>Buscar roadmap…</span>
-          </div>
           <div className="streak-pill">
             <Flame size={16} /> {authUser?.streak ?? 0}
           </div>

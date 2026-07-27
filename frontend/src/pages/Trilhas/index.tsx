@@ -6,7 +6,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Search, Play, ChevronRight } from '../../components/Icons';
+import { Flame, Play, ChevronRight } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
@@ -153,10 +153,6 @@ export function Trilhas() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="searchbar">
-            <Search size={16} />
-            <span>Buscar trilha…</span>
-          </div>
           <div className="streak-pill">
             <Flame size={16} /> {authUser?.streak ?? 0}
           </div>
