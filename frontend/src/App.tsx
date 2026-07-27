@@ -27,7 +27,10 @@ import { Desafios } from './pages/Desafios';
 import { Desafio } from './pages/Desafios/Desafio';
 import { DesafiosAdmin } from './pages/DesafiosAdmin';
 import { ComunicadosAdmin } from './pages/ComunicadosAdmin';
+import { AssinaturasAdmin } from './pages/AssinaturasAdmin';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
+import { BottomNav } from './components/BottomNav';
+import { ConquistaToaster } from './components/ConquistaToaster';
 import { DesafioEditor } from './pages/DesafiosAdmin/Editor';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { RecuperarSenha } from './pages/RecuperarSenha';
@@ -36,8 +39,9 @@ import { OAuthCallback } from './pages/OAuthCallback';
 import { CertificadoValidar } from './pages/CertificadoValidar';
 import { PerfilPublico } from './pages/PerfilPublico';
 import { Progresso } from './pages/Progresso';
+import { Comunidade } from './pages/Comunidade';
+import { Apoie } from './pages/Apoie';
 import { CompletarPerfil } from './pages/CompletarPerfil';
-import { Placeholder } from './pages/Placeholder';
 
 function AuthRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, loading } = useAuth();
@@ -215,6 +219,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/estudio/assinaturas"
+        element={
+          <AdminRoute>
+            <AssinaturasAdmin />
+          </AdminRoute>
+        }
+      />
+      <Route
         path="/estudio/desafios"
         element={
           <AdminRoute>
@@ -298,10 +310,7 @@ function AppRoutes() {
         path="/comunidade"
         element={
           <PrivateRoute>
-            <Placeholder
-              title="Comunidade"
-              description="Em breve a atividade da comunidade aparecerá aqui."
-            />
+            <Comunidade />
           </PrivateRoute>
         }
       />
@@ -321,9 +330,19 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/apoie"
+        element={
+          <PrivateRoute>
+            <Apoie />
+          </PrivateRoute>
+        }
+      />
       {/* Perfil compartilhável: /username. Fica por último; rotas fixas têm prioridade. */}
       <Route path="/:username" element={<PerfilPorUsername />} />
     </Routes>
+    {isAuthenticated && <BottomNav />}
+    {isAuthenticated && <ConquistaToaster />}
     </>
   );
 }

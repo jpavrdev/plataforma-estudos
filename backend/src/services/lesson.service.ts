@@ -149,6 +149,7 @@ export async function detalheDaAula(lessonId: string, userId: string, lang?: str
                           selectedOptionId: r.selectedOptionId,
                           isCorrect: r.isCorrect,
                           correctOptionId: corretaPorQuestao.get(q.id) ?? null,
+                          explanation: q.explanation ?? null,
                       }
                     : null,
             };

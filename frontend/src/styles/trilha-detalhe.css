@@ -56,7 +56,7 @@
 .td-modules-meta { font-size: 13.5px; color: var(--muted); }
 .td-modules { display: flex; flex-direction: column; gap: 10px; }
 .td-mod { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-.td-mod__head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 15px 18px; border: none; background: transparent; font-family: inherit; cursor: pointer; text-align: left; }
+.td-mod__head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 15px 18px; border: none; background: transparent; font-family: inherit; color: var(--text); cursor: pointer; text-align: left; }
 .td-mod__head--open { background: var(--surface-2); }
 .td-mod__chev { color: var(--muted); display: flex; transform: rotate(-90deg); transition: transform .15s; }
 .td-mod__chev--open { transform: rotate(0deg); }

@@ -1,0 +1,54 @@
+/* Página de Roadmaps: cartões de carreira com cor por nível, uma faixa de
+   destaque no topo e um grid de cards maiores que o das trilhas. */
+
+/* Cards de largura limitada e alinhados à esquerda: some ou muitos roadmaps,
+   nunca fica um card esticado sozinho ocupando a linha inteira. */
+.rm-grid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
+  justify-content: start;
+}
+
+.roadmap-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+.roadmap-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--rm-hue, var(--accent));
+}
+.roadmap-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--rm-hue, var(--accent)) 45%, var(--border));
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--rm-hue, var(--accent)) 15%, transparent);
+}
+
+.roadmap-card__icon {
+  color: var(--rm-hue, var(--accent));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--rm-hue, var(--accent)) 28%, transparent),
+    color-mix(in srgb, var(--rm-hue, var(--accent)) 10%, transparent)
+  );
+}
+.roadmap-card__level {
+  color: var(--rm-hue, var(--accent));
+}
+
+@media (max-width: 760px) {
+  .rm-grid {
+    grid-template-columns: 1fr;
+  }
+  .roadmap-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

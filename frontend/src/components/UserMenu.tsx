@@ -86,6 +86,25 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
           >
             Meu progresso
           </button>
+          <button
+            type="button"
+            role="menuitem"
+            className="user-menu__item"
+            onClick={() => go('/conquistas')}
+          >
+            Conquistas
+          </button>
+          {/* 'Apoiar o projeto' oculto temporariamente; quem já é apoiador ainda acessa a assinatura. */}
+          {user?.apoiador && (
+            <button
+              type="button"
+              role="menuitem"
+              className="user-menu__item"
+              onClick={() => go('/apoie')}
+            >
+              Minha assinatura
+            </button>
+          )}
           {user?.role === 'admin' && (
             <button
               type="button"

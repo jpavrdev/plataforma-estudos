@@ -1,6 +1,8 @@
 import { useMemo, useRef, type ReactNode } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { parseGrid } from '../utils/tabela';
 import { glossariar, criarMatcher } from './Glossario';
 import { useGlossario } from '../hooks/useGlossario';
@@ -134,12 +136,31 @@ export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
           return <TabelaBloco key={i} value={b.value} />;
         }
         return (
-          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={componentes}>
+          <ReactMarkdown
+            key={i}
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={componentes}
+          >
             {b.value}
           </ReactMarkdown>
         );
       })}
     </div>
+  );
+}
+
+// Texto curto com fórmulas ($...$ inline, $$...$$ em bloco), para enunciado e opções
+// de quiz. Sem <p> para não quebrar o layout inline dos rótulos.
+export function TextoMath({ children }: { children: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm, remarkMath]}
+      rehypePlugins={[rehypeKatex]}
+      components={{ p: ({ children }) => <>{children}</> }}
+    >
+      {children}
+    </ReactMarkdown>
   );
 }
 

@@ -267,6 +267,55 @@
       "when": 1784813493307,
       "tag": "0037_lazy_thor_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1784816927268,
+      "tag": "0038_supreme_adam_destine",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1784818084883,
+      "tag": "0039_worthless_phalanx",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1784818895484,
+      "tag": "0040_exotic_bloodstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1784898127219,
+      "tag": "0041_magical_nomad",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1785011357069,
+      "tag": "0042_lazy_trish_tilby",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1785013141615,
+      "tag": "0043_colossal_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1785089587022,
+      "tag": "0044_overrated_gladiator",
+      "breakpoints": true
     }
   ]
 }

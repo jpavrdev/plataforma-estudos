@@ -317,3 +317,129 @@
     gap: 10px;
   }
 }
+
+/* ==========================================================================
+   Notificação de desbloqueio (estilo Steam): card escuro que desliza no canto
+   inferior direito ao ganhar uma conquista. Fica escuro nos dois temas de
+   propósito, para manter a cara de "conquista desbloqueada".
+   ========================================================================== */
+.conq-toaster {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+.conq-toast {
+  pointer-events: auto;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 340px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 20px 14px 14px;
+  text-align: left;
+  border: 1px solid rgba(224, 168, 46, 0.38);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1b2130 0%, #11151d 100%);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: #eef2fa;
+  animation: conq-toast-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Brilho dourado que varre o card uma vez, como o popup da Steam. */
+.conq-toast::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgba(224, 168, 46, 0.16) 48%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  animation: conq-toast-shine 1.7s ease 0.35s;
+}
+.conq-toast__badge {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e0a82e;
+  background: radial-gradient(circle at 50% 38%, rgba(224, 168, 46, 0.3), rgba(224, 168, 46, 0.05));
+  border: 1px solid rgba(224, 168, 46, 0.42);
+  box-shadow: 0 0 18px rgba(224, 168, 46, 0.28);
+}
+.conq-toast__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.conq-toast__label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #e0a82e;
+}
+.conq-toast__name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.conq-toast__desc {
+  font-size: 12.5px;
+  color: #9aa6ba;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@keyframes conq-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes conq-toast-shine {
+  to {
+    transform: translateX(120%);
+  }
+}
+/* No telefone, sobe acima da barra de navegação inferior e ocupa a largura. */
+@media (max-width: 640px) {
+  .conq-toaster {
+    right: 12px;
+    left: 12px;
+    bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
+  .conq-toast {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .conq-toast {
+    animation: none;
+  }
+  .conq-toast::after {
+    display: none;
+  }
+}

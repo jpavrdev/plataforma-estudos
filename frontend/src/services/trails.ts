@@ -1,5 +1,6 @@
 import api from './api';
 import type { Trail, TrailLevel } from '../data/trails';
+import { sinalizarConquista } from '../utils/conquistas';
 
 // Formato cru vindo do backend.
 interface TrailApi {
@@ -141,6 +142,7 @@ export interface QuizAnswerState {
   selectedOptionId: string;
   isCorrect: boolean;
   correctOptionId: string | null;
+  explanation?: string | null;
 }
 export interface QuizQuestion {
   id: string;
@@ -186,12 +188,14 @@ export async function enviarQuiz(
   answers: { questionId: string; optionId: string }[],
 ) {
   const { data } = await api.post<QuizResult>(`/lessons/${lessonId}/quiz`, { answers });
+  sinalizarConquista();
   return data;
 }
 
 export interface CheckResult {
   correct: boolean;
   correctOptionId: string;
+  explanation?: string | null;
 }
 
 // Verifica uma unica resposta (feedback imediato do quiz em carrossel). O gabarito
@@ -380,7 +384,16 @@ export async function excluirLinguagem(id: string) {
 
 // ===== Conquistas =====
 
-export type CriterioConquista = 'xp_total' | 'lessons_completed' | 'questions_correct' | 'special';
+export type CriterioConquista =
+  | 'xp_total'
+  | 'lessons_completed'
+  | 'questions_correct'
+  | 'special'
+  | 'streak_days'
+  | 'challenges_facil'
+  | 'challenges_medio'
+  | 'challenges_dificil'
+  | 'trail_completed';
 
 export interface Achievement {
   id: string;
@@ -389,6 +402,8 @@ export interface Achievement {
   icon: string;
   criteriaType: CriterioConquista;
   threshold: number;
+  // Preenchido só em trail_completed: a trilha a concluir.
+  refId?: string | null;
 }
 export interface MinhaConquista extends Achievement {
   earned: boolean;
@@ -400,6 +415,7 @@ export interface PayloadConquista {
   icon: string;
   criteriaType: CriterioConquista;
   threshold: number;
+  refId?: string | null;
 }
 
 export async function listarConquistas() {
@@ -419,6 +435,19 @@ export async function excluirConquista(id: string) {
 }
 export async function obterMinhasConquistas() {
   const { data } = await api.get<MinhaConquista[]>('/me/achievements');
+  return data;
+}
+
+// Conquistas recém-desbloqueadas e ainda não notificadas. A leitura marca como vistas
+// no servidor, então o toast de desbloqueio dispara uma única vez (estilo Steam).
+export interface ConquistaDesbloqueada {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+}
+export async function obterConquistasNaoVistas() {
+  const { data } = await api.get<ConquistaDesbloqueada[]>('/me/achievements/unseen');
   return data;
 }
 
@@ -484,6 +513,7 @@ export interface RankingRow {
   xp: number;
   level: number;
   streak: number;
+  apoiador?: boolean;
   delta: number;
   you: boolean;
 }

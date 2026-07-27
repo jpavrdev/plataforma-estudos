@@ -6,7 +6,7 @@ import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
-import { Flame, Search, Play } from '../../components/Icons';
+import { Flame, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
 import { user, MEDALS } from '../../data/home';
@@ -153,10 +153,6 @@ export function Home() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="searchbar">
-            <Search size={16} />
-            <span>Buscar exercício…</span>
-          </div>
           <div className="streak-pill">
             <Flame size={16} /> {authUser?.streak ?? 0}
           </div>

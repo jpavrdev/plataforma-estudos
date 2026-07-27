@@ -38,6 +38,7 @@ import {
     revogarConquista,
     usuariosComConquista,
     conquistasDoUsuario,
+    conquistasNaoVistas,
     feedComunidade,
 } from "../services/achievement.service.ts";
 import {
@@ -352,7 +353,12 @@ export const submitTrailReview = async (req: Request, res: Response, next: NextF
     try {
         const dados = reviewTrailSchema.parse(req.body);
         res.json(
-            await avaliarTrilha(String(req.params.id), req.userId!, dados.stars, dados.comment ?? null),
+            await avaliarTrilha(
+                String(req.params.id),
+                req.userId!,
+                dados.stars,
+                dados.comment ?? null,
+            ),
         );
     } catch (err) {
         next(err);
@@ -393,6 +399,15 @@ export const getMyXp = async (req: Request, res: Response, next: NextFunction) =
 export const getMyAchievements = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await conquistasDoUsuario(req.userId!));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Conquistas recém-desbloqueadas ainda não notificadas (alimenta o toast estilo Steam).
+export const getUnseenAchievements = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await conquistasNaoVistas(req.userId!));
     } catch (err) {
         next(err);
     }

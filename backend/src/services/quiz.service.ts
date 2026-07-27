@@ -112,7 +112,7 @@ export async function conferirResposta(
 
     // A questão precisa pertencer a esta aula.
     const [questao] = await db
-        .select({ id: questions.id })
+        .select({ id: questions.id, explanation: questions.explanation })
         .from(questions)
         .where(and(eq(questions.id, questionId), eq(questions.lessonId, lessonId)));
     if (!questao) {
@@ -127,5 +127,9 @@ export async function conferirResposta(
         throw new AppError(500, "Questão sem gabarito");
     }
 
-    return { correct: correta.id === optionId, correctOptionId: correta.id };
+    return {
+        correct: correta.id === optionId,
+        correctOptionId: correta.id,
+        explanation: questao.explanation ?? null,
+    };
 }

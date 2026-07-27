@@ -8,6 +8,29 @@ export function diaAnterior(dia: string): string {
     return new Date(Date.parse(dia + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
 }
 
+// Dia seguinte a uma data YYYY-MM-DD, na aritmética UTC.
+export function diaSeguinte(dia: string): string {
+    return new Date(Date.parse(dia + "T00:00:00Z") + 86400000).toISOString().slice(0, 10);
+}
+
+// Maior sequência de dias consecutivos com atividade, em qualquer época (o recorde).
+// Diferente de calcularStreak, que só conta a sequência que termina hoje/ontem.
+export function recordeStreak(dias: Set<string>): number {
+    let recorde = 0;
+    for (const d of dias) {
+        // Só arranca de um início de sequência (dia sem o anterior ativo).
+        if (dias.has(diaAnterior(d))) continue;
+        let n = 0;
+        let cursor = d;
+        while (dias.has(cursor)) {
+            n++;
+            cursor = diaSeguinte(cursor);
+        }
+        recorde = Math.max(recorde, n);
+    }
+    return recorde;
+}
+
 // Dias consecutivos terminando em hoje (ou ontem, se ainda não houve atividade hoje).
 export function calcularStreak(dias: Set<string>, hoje: string): number {
     if (dias.size === 0) return 0;

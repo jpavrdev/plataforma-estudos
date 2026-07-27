@@ -15,6 +15,7 @@ import {
   criarConquista,
   atualizarConquista,
   excluirConquista,
+  listarTrilhas,
   listarUsuarios,
   concederConquista,
   revogarConquista,
@@ -215,9 +216,16 @@ function CrudList({
 const CRITERIOS: { value: CriterioConquista; label: string }[] = [
   { value: 'lessons_completed', label: 'Aulas concluídas' },
   { value: 'questions_correct', label: 'Questões certas' },
+  { value: 'streak_days', label: 'Dias de streak' },
+  { value: 'challenges_facil', label: 'Desafios fáceis' },
+  { value: 'challenges_medio', label: 'Desafios médios' },
+  { value: 'challenges_dificil', label: 'Desafios difíceis' },
+  { value: 'trail_completed', label: 'Conclusão de trilha' },
   { value: 'xp_total', label: 'XP total' },
   { value: 'special', label: 'Ocasião especial' },
 ];
+// Critérios que não usam valor numérico (o limiar fica escondido no form).
+const SEM_VALOR: CriterioConquista[] = ['special', 'trail_completed'];
 const rotuloCriterio = (c: CriterioConquista) => CRITERIOS.find((x) => x.value === c)?.label ?? c;
 
 const FORM_VAZIO = {
@@ -226,6 +234,7 @@ const FORM_VAZIO = {
   icon: 'trophy',
   criteriaType: 'lessons_completed' as CriterioConquista,
   threshold: 1,
+  refId: null as string | null,
 };
 
 // Painel de concessão manual para conquistas de ocasião especial: escolhe um
@@ -345,21 +354,36 @@ function ConcederEspecial({
 function ConquistasAdmin() {
   const { dados, carregando, erro: falhaCarga, recarregar } = useRequisicao(listarConquistas, []);
   const { dados: usuariosData } = useRequisicao(listarUsuarios, []);
+  const { dados: trilhasData } = useRequisicao(listarTrilhas, []);
   const usuarios = usuariosData ?? [];
+  const trilhas = trilhasData ?? [];
   const itens = dados ?? [];
   const [erro, setErro] = useState('');
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState(FORM_VAZIO);
   const [salvando, setSalvando] = useState(false);
+  const nomeTrilha = (id: string | null | undefined) =>
+    trilhas.find((t) => t.id === id)?.name ?? 'trilha';
 
   function resetar() {
     setEditId(null);
     setForm(FORM_VAZIO);
   }
 
+  // Troca de critério: limpa o ref da trilha quando não for conclusão de trilha.
+  function trocarCriterio(criteriaType: CriterioConquista) {
+    setForm((f) => ({
+      ...f,
+      criteriaType,
+      refId: criteriaType === 'trail_completed' ? f.refId : null,
+    }));
+  }
+
   async function salvar() {
-    const faltaValor = form.criteriaType !== 'special' && form.threshold < 1;
-    if (!form.name.trim() || !form.description.trim() || faltaValor || salvando) return;
+    const faltaValor = !SEM_VALOR.includes(form.criteriaType) && form.threshold < 1;
+    const faltaTrilha = form.criteriaType === 'trail_completed' && !form.refId;
+    if (!form.name.trim() || !form.description.trim() || faltaValor || faltaTrilha || salvando)
+      return;
     setSalvando(true);
     setErro('');
     try {
@@ -382,6 +406,7 @@ function ConquistasAdmin() {
       icon: a.icon,
       criteriaType: a.criteriaType,
       threshold: a.threshold,
+      refId: a.refId ?? null,
     });
   }
 
@@ -442,9 +467,7 @@ function ConquistasAdmin() {
             className="estudio-form__input"
             style={{ margin: 0 }}
             value={form.criteriaType}
-            onChange={(e) =>
-              setForm({ ...form, criteriaType: e.target.value as CriterioConquista })
-            }
+            onChange={(e) => trocarCriterio(e.target.value as CriterioConquista)}
           >
             {CRITERIOS.map((c) => (
               <option key={c.value} value={c.value}>
@@ -452,7 +475,22 @@ function ConquistasAdmin() {
               </option>
             ))}
           </select>
-          {form.criteriaType !== 'special' && (
+          {form.criteriaType === 'trail_completed' && (
+            <select
+              className="estudio-form__input"
+              style={{ margin: 0 }}
+              value={form.refId ?? ''}
+              onChange={(e) => setForm({ ...form, refId: e.target.value || null })}
+            >
+              <option value="">Escolha a trilha…</option>
+              {trilhas.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          )}
+          {!SEM_VALOR.includes(form.criteriaType) && (
             <input
               className="estudio-form__input"
               style={{ margin: 0, width: 110 }}
@@ -511,7 +549,9 @@ function ConquistasAdmin() {
                     {a.description} ·{' '}
                     {a.criteriaType === 'special'
                       ? 'Ocasião especial'
-                      : `${rotuloCriterio(a.criteriaType)} ≥ ${a.threshold}`}
+                      : a.criteriaType === 'trail_completed'
+                        ? `Conclusão: ${nomeTrilha(a.refId)}`
+                        : `${rotuloCriterio(a.criteriaType)} ≥ ${a.threshold}`}
                   </div>
                 </div>
               </div>
@@ -724,7 +764,10 @@ export function Configuracoes() {
   const [aba, setAba] = useState<(typeof ABAS_CFG)[number]['key']>('tags');
   return (
     <div className="home">
-      <EstudioTopbar badge="Configurações" crumb={<b>Tags, linguagens, conquistas e glossário</b>} />
+      <EstudioTopbar
+        badge="Configurações"
+        crumb={<b>Tags, linguagens, conquistas e glossário</b>}
+      />
 
       <div className="estudio-home">
         <div className="cfg-tabs">

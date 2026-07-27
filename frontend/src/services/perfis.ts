@@ -13,6 +13,7 @@ export interface PerfilPublicoData {
   avatarUrl: string | null;
   coverUrl: string | null;
   memberSince: string;
+  apoiador: boolean;
   xp: number;
   level: number;
   lessonsCompleted: number;

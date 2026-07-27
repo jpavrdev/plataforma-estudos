@@ -8,6 +8,7 @@ import {
     challengeSubmissions,
 } from "../../schema.ts";
 import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
+import { apoiadoresAtivos } from "./apoiador.service.ts";
 import { calcularXp, nivelPorXp } from "../domain/xp.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
@@ -79,6 +80,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
         acertosPer,
         desafiosPer,
         streaks,
+        apoiadores,
     ] = await Promise.all([
         db.select({ id: users.id, name: users.name, username: users.username }).from(users),
         db
@@ -125,6 +127,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
                   .groupBy(challengeSubmissions.userId)
             : Promise.resolve(null),
         streaksTodos(),
+        apoiadoresAtivos(),
     ]);
 
     // n vem como number (count) ou string (sum de xp); Number() normaliza os dois.
@@ -156,6 +159,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
             periodXp,
             level: nivelPorXp(totalXp),
             streak: streaks.get(u.id) ?? 0,
+            apoiador: apoiadores.has(u.id),
             you: u.id === currentUserId,
         };
     });
@@ -187,6 +191,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
         xp: u.periodXp,
         level: u.level,
         streak: u.streak,
+        apoiador: u.apoiador,
         delta: deltas.get(u.id) ?? 0,
         you: u.you,
     }));

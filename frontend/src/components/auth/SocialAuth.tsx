@@ -7,6 +7,10 @@ export function SocialAuth() {
 
   return (
     <>
+      <div className="divider">
+        <span>ou continue com</span>
+      </div>
+
       <div className="auth__social">
         <button type="button" className="btn btn--ghost" onClick={() => entrar('google')}>
           <span className="provider">G</span> Google
@@ -14,10 +18,6 @@ export function SocialAuth() {
         <button type="button" className="btn btn--ghost" onClick={() => entrar('github')}>
           <span className="provider provider--mono">&lt;&gt;</span> GitHub
         </button>
-      </div>
-
-      <div className="divider">
-        <span>ou com e-mail</span>
       </div>
     </>
   );

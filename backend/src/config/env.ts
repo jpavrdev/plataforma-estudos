@@ -30,6 +30,11 @@ const envSchema = z.object({
         .optional()
         .transform((v) => v === "true"),
     EMAIL_FROM: z.string().default("ensina.dev <nao-responda@ensinadev.com.br>"),
+    // Gateway de pagamento do apoio (AbacatePay). Sem a chave, a página existe mas não cobra.
+    ABACATEPAY_API_URL: z.string().url().default("https://api.abacatepay.com/v1"),
+    ABACATEPAY_API_KEY: z.string().optional(),
+    ABACATEPAY_WEBHOOK_SECRET: z.string().optional(),
+    ABACATEPAY_PRODUCT_PIX_AUTO: z.string().optional(),
     // Dados do emissor impressos no certificado. Sem os três, a emissão fica desligada.
     CERT_RAZAO_SOCIAL: z.string().optional(),
     CERT_CNPJ: z.string().optional(),

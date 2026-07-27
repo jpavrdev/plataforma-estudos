@@ -5,9 +5,9 @@ export const NAV_PRINCIPAL = [
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
   { label: 'Desafios', to: '/desafios' },
-  { label: 'Conquistas', to: '/conquistas' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
+  // 'Apoiar' oculto temporariamente; readicionar: { label: 'Apoiar', to: '/apoie' }
 ];
 
 export const NAV_ESTUDIO = [
@@ -17,5 +17,6 @@ export const NAV_ESTUDIO = [
   { label: 'Simulados', to: '/estudio/simulados' },
   { label: 'Desafios', to: '/estudio/desafios' },
   { label: 'Comunicados', to: '/estudio/comunicados' },
+  { label: 'Assinaturas', to: '/estudio/assinaturas' },
   { label: 'Voltar ao app', to: '/home' },
 ];

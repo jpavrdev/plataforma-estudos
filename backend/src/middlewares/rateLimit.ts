@@ -56,3 +56,20 @@ export const apiLimiter = rateLimit({
     legacyHeaders: false,
     skip: (req) => process.env.NODE_ENV === "test" || req.path === "/health",
 });
+
+export const desafioRunLimiter = criarLimiter(
+    60,
+    "Muitas execuções seguidas. Aguarde um instante e tente de novo.",
+);
+
+export const uploadLimiter = criarLimiter(
+    30,
+    "Muitos envios de imagem. Aguarde alguns minutos.",
+);
+
+// Publicar na comunidade (post ou comentário) é escrita de conteúdo; teto por
+// janela para conter spam/flood sem atrapalhar quem participa normalmente.
+export const comunidadeEscritaLimiter = criarLimiter(
+    40,
+    "Você está publicando rápido demais. Aguarde alguns minutos.",
+);

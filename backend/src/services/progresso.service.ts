@@ -2,7 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { trails, users } from "../../schema.ts";
 import { diasAtivosDoUsuario, hojeSaoPaulo } from "./streak.ts";
-import { calcularStreak, diaAnterior, semanaAtividade } from "../domain/streak.ts";
+import { calcularStreak, recordeStreak, semanaAtividade } from "../domain/streak.ts";
 import { calcularEstatisticas } from "./stats.service.ts";
 
 const TZ = "America/Sao_Paulo";
@@ -41,7 +41,13 @@ async function atividadePorDia(userId: string) {
     `);
     return new Map<string, DiaAtividade>(
         (
-            res.rows as { d: string; xp: number; exercicios: number; minutos: number; aulas: number }[]
+            res.rows as {
+                d: string;
+                xp: number;
+                exercicios: number;
+                minutos: number;
+                aulas: number;
+            }[]
         ).map((r) => [
             r.d,
             {
@@ -123,24 +129,6 @@ async function dominioPorTrilha(userId: string) {
     return saida.sort((a, b) => b.pct - a.pct);
 }
 
-// Maior sequência de dias consecutivos com atividade, em qualquer época.
-function recordeStreak(dias: Set<string>): number {
-    let recorde = 0;
-    for (const d of dias) {
-        if (dias.has(diaAnterior(d))) continue;
-        let n = 0;
-        let cursor = d;
-        while (dias.has(cursor)) {
-            n++;
-            cursor = new Date(Date.parse(cursor + "T00:00:00Z") + 86400000)
-                .toISOString()
-                .slice(0, 10);
-        }
-        recorde = Math.max(recorde, n);
-    }
-    return recorde;
-}
-
 export type MetaSemanal =
     | { tipo: "padrao"; valor: number; alvo: number }
     | { tipo: "aulas"; valor: number; alvo: number; alvoDiario: number }
@@ -160,7 +148,7 @@ export async function limparMetaSemanal(userId: string) {
         .where(eq(users.id, userId));
 }
 
-export async function progressoDoUsuario(userId: string, periodoDias: 7 | 30 | null) {
+export async function progressoDoUsuario(userId: string, periodoDias: number | null) {
     const [porDia, diasAtivos, stats, [meta], dominio] = await Promise.all([
         atividadePorDia(userId),
         diasAtivosDoUsuario(userId),

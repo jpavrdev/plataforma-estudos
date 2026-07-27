@@ -65,6 +65,12 @@ export const users = pgTable("users", {
     // (streak de X dias). Nulo = meta padrão de 7 dias ativos na semana.
     weeklyGoalKind: varchar("weekly_goal_kind", { length: 10 }),
     weeklyGoalTarget: integer("weekly_goal_target"),
+    // Cor de destaque escolhida (benefício de apoiador). Nulo = azul padrão.
+    accent: varchar("accent", { length: 7 }),
+    // Imagem de fundo do app (benefício de apoiador) e a intensidade do véu
+    // por cima dela (0-100; nulo = padrão de 60).
+    backgroundUrl: varchar("background_url", { length: 300 }),
+    backgroundDim: integer("background_dim"),
 });
 
 // Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de
@@ -178,6 +184,7 @@ export const questions = pgTable("questions", {
         .references(() => lessons.id)
         .notNull(),
     statement: text("statement").notNull(),
+    explanation: text("explanation"),
     difficulty: questionDifficulty("difficulty").default("facil").notNull(),
     position: integer("position").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
@@ -240,6 +247,14 @@ export const achievementCriteria = pgEnum("achievement_criteria", [
     "lessons_completed",
     "questions_correct",
     "special",
+    // Dias corridos de estudo (usa o recorde do usuário, não o streak do momento).
+    "streak_days",
+    // Desafios de código resolvidos, contados por dificuldade.
+    "challenges_facil",
+    "challenges_medio",
+    "challenges_dificil",
+    // Conclusão de uma trilha específica (a trilha vai em ref_id).
+    "trail_completed",
 ]);
 
 export const achievements = pgTable("achievements", {
@@ -249,6 +264,8 @@ export const achievements = pgTable("achievements", {
     icon: varchar("icon", { length: 30 }).notNull(),
     criteriaType: achievementCriteria("criteria_type").notNull(),
     threshold: integer("threshold").notNull(),
+    // Referência polimórfica sem FK: hoje aponta a trilha quando criteria = trail_completed.
+    refId: uuid("ref_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -264,6 +281,8 @@ export const userAchievements = pgTable(
             .references(() => achievements.id)
             .notNull(),
         earnedAt: timestamp("earned_at", { withTimezone: true }).defaultNow().notNull(),
+        // false enquanto a notificação de desbloqueio ainda não foi mostrada ao usuário.
+        notified: boolean("notified").default(false).notNull(),
     },
     (table) => [unique().on(table.userId, table.achievementId)],
 );
@@ -560,4 +579,101 @@ export const certificates = pgTable(
         issuedAt: timestamp("issued_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [unique().on(table.userId, table.trailId)],
+);
+
+export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
+export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);
+
+// Apoio ao projeto. Cada pagamento vira uma linha; apoiador ativo = alguma
+// linha ativa com expires_at no futuro. O gateway confirma via webhook.
+export const subscriptions = pgTable("subscriptions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    plan: subscriptionPlan("plan").notNull(),
+    status: subscriptionStatus("status").default("pendente").notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    gateway: varchar("gateway", { length: 20 }).default("abacatepay").notNull(),
+    gatewayId: varchar("gateway_id", { length: 120 }),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const communityPostKind = pgEnum("community_post_kind", [
+    "duvida",
+    "solucao",
+    "conquista",
+    "post",
+]);
+
+// Publicação na comunidade. code/codeLanguage e imageUrl são opcionais.
+export const communityPosts = pgTable("community_posts", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    kind: communityPostKind("kind").default("post").notNull(),
+    content: text("content").notNull(),
+    code: text("code"),
+    codeLanguage: varchar("code_language", { length: 30 }),
+    imageUrl: varchar("image_url", { length: 300 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Tags de um post (hashtags). Denormalizado para contar os tópicos populares.
+export const communityPostTags = pgTable(
+    "community_post_tags",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        postId: uuid("post_id")
+            .references(() => communityPosts.id)
+            .notNull(),
+        tag: varchar("tag", { length: 40 }).notNull(),
+    },
+    (table) => [unique().on(table.postId, table.tag)],
+);
+
+export const communityLikes = pgTable(
+    "community_likes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        postId: uuid("post_id")
+            .references(() => communityPosts.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.postId, table.userId)],
+);
+
+export const communityComments = pgTable("community_comments", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id")
+        .references(() => communityPosts.id)
+        .notNull(),
+    userId: uuid("user_id")
+        .references(() => users.id)
+        .notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Quem segue quem. followerId segue followingId.
+export const userFollows = pgTable(
+    "user_follows",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        followerId: uuid("follower_id")
+            .references(() => users.id)
+            .notNull(),
+        followingId: uuid("following_id")
+            .references(() => users.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [unique().on(table.followerId, table.followingId)],
 );

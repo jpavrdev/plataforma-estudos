@@ -82,6 +82,33 @@ export const UserPlus = ({ size = 26 }: IconProps) => (
   </svg>
 );
 
+export const User = ({ size = 22 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="8" r="3.6" />
+    <path d="M5 20c0-3.9 3.1-6 7-6s7 2.1 7 6" />
+  </svg>
+);
+
+export const Lightbulb = ({ size = 22 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 18h6" />
+    <path d="M10 21h4" />
+    <path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z" />
+  </svg>
+);
+
 export const Plus = ({ size = 12 }: IconProps) => (
   <svg {...base(size)} stroke="currentColor" strokeWidth="3" strokeLinecap="round">
     <line x1="12" y1="6" x2="12" y2="18" />
@@ -524,5 +551,69 @@ export const Zap = ({ size = 16 }: IconProps) => (
     strokeLinejoin="round"
   >
     <path d="M13 2L3 14h8l-1 8 10-12h-8z" />
+  </svg>
+);
+
+export const Heart = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 21C7 16.5 3 13.2 3 9a5 5 0 0 1 9-3.2A5 5 0 0 1 21 9c0 4.2-4 7.5-9 12z" />
+  </svg>
+);
+
+export const House = ({ size = 18 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M4 11.5 12 4l8 7.5" />
+    <path d="M6 10.5V20h12v-9.5" />
+  </svg>
+);
+
+export const Code = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="8 8 4 12 8 16" />
+    <polyline points="16 8 20 12 16 16" />
+  </svg>
+);
+
+export const ChatBubble = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z" />
+  </svg>
+);
+
+export const Share = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 15V4" />
+    <path d="m8 8 4-4 4 4" />
+    <path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7" />
   </svg>
 );
