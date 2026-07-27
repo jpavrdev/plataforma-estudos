@@ -7,7 +7,7 @@ export const NAV_PRINCIPAL = [
   { label: 'Desafios', to: '/desafios' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
-  { label: 'Apoiar', to: '/apoie' },
+  // 'Apoiar' oculto temporariamente; readicionar: { label: 'Apoiar', to: '/apoie' }
 ];
 
 export const NAV_ESTUDIO = [

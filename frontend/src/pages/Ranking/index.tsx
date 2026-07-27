@@ -7,7 +7,7 @@ import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Avatar } from '../../components/Avatar';
-import { Flame, Search, Trophy, Check, Lock, ChevronUp, ChevronDown , Heart } from '../../components/Icons';
+import { Flame, Trophy, Check, Lock, ChevronUp, ChevronDown , Heart } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as homeUser } from '../../data/home';
 import { obterRanking, type RankingResposta, type RankingPeriodo } from '../../services/trails';
@@ -90,10 +90,6 @@ export function Ranking() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="searchbar">
-            <Search size={16} />
-            <span>Buscar exercício…</span>
-          </div>
           <div className="streak-pill">
             <Flame size={16} /> {authUser?.streak ?? 0}
           </div>
