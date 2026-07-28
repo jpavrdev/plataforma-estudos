@@ -30,7 +30,12 @@ O `userns-remap` é configuração do daemon inteiro, não de um container. Liga
 daemon principal remapearia dono de arquivo em todos os volumes e mexeria com
 backend, banco e Caddy de uma vez. Por isso os labs usam um **segundo daemon**.
 
-1. Crie o usuário do remap e as faixas de UID/GID:
+> [!] Os dois daemons dividem o mesmo host, então tudo que é caminho ou nome
+> precisa ser diferente: pidfile, exec-root, socket, data-root, namespace do
+> containerd e bridge. Errar qualquer um deles derruba ou corrompe o daemon
+> principal.
+
+### 1. Usuário do remap e faixas de UID/GID
 
 ```bash
 adduser --system --group --no-create-home dockremap
@@ -38,51 +43,96 @@ echo 'dockremap:500000:65536' >> /etc/subuid
 echo 'dockremap:500000:65536' >> /etc/subgid
 ```
 
-2. Configure o daemon dos labs em `/etc/docker/daemon-labs.json`:
+### 2. Configuração em `/etc/docker/daemon-labs.json`
 
 ```json
 {
   "userns-remap": "dockremap",
   "data-root": "/var/lib/docker-labs",
+  "exec-root": "/var/run/docker-labs",
+  "pidfile": "/var/run/docker-labs.pid",
   "hosts": ["unix:///var/run/docker-labs.sock"],
+  "containerd": "/run/containerd/containerd.sock",
+  "containerd-namespace": "moby-labs",
+  "containerd-plugins-namespace": "plugins-moby-labs",
   "iptables": false,
-  "bridge": "none"
+  "ip6tables": false,
+  "bridge": "docker-labs0",
+  "fixed-cidr": "172.31.250.0/24",
+  "log-driver": "local",
+  "log-opts": { "max-size": "5m", "max-file": "2", "compress": "false" }
 }
 ```
 
-3. Suba como serviço próprio (`/etc/systemd/system/docker-labs.service`):
+Três armadilhas que essa configuração resolve, todas descobertas na prática:
+
+- **Nunca use `"bridge": "none"`.** O dockerd assume a gestão da bridge padrão e
+  **apaga a `docker0` do host**, que pertence ao daemon principal. O app não cai
+  na hora, porque o compose usa redes próprias, mas todo `docker build` passa a
+  falhar, e o deploy quebra. Use um nome próprio.
+- `pidfile`, `exec-root` e o namespace do containerd precisam ser próprios. Sem
+  eles o daemon nem sobe, reclamando do PID do daemon principal.
+- No driver `local`, `max-file: 1` é inválido junto com compressão. Deixe
+  `max-file: 2` e `compress: false`, senão todo container falha ao iniciar.
+
+### 3. Serviço em `/etc/systemd/system/docker-labs.service`
+
+O Docker exige que uma bridge de nome customizado exista **antes** de subir.
+Criar pelo `ExecStartPre` faz o daemon sobreviver a um reboot, o que um
+`ip link` manual não faria.
 
 ```ini
 [Unit]
-Description=Docker daemon dos laboratorios
-After=network.target
+Description=Docker daemon dos laboratorios de Linux
+After=network.target docker.service
 
 [Service]
+Type=notify
+ExecStartPre=-/usr/sbin/ip link add name docker-labs0 type bridge
+ExecStartPre=-/usr/sbin/ip addr add 172.31.250.1/24 dev docker-labs0
+ExecStartPre=-/usr/sbin/ip link set docker-labs0 up
 ExecStart=/usr/bin/dockerd --config-file /etc/docker/daemon-labs.json
+ExecReload=/bin/kill -s HUP $MAINPID
 Restart=always
+RestartSec=3
+LimitNOFILE=infinity
+LimitNPROC=infinity
+TasksMax=infinity
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-500
 
 [Install]
 WantedBy=multi-user.target
+UNIT
 ```
 
 ```bash
 systemctl daemon-reload && systemctl enable --now docker-labs
 ```
 
-4. Construa a imagem do lab **nesse** daemon:
+### 4. Imagem do lab
+
+O daemon dos labs não tem rede de propósito, então **não dá para construir nele**:
+o `apt` do Dockerfile não teria como baixar nada. Construa no daemon principal e
+transfira.
 
 ```bash
-LAB_DOCKER_HOST=unix:///var/run/docker-labs.sock bash labs/build-images.sh
+cd /opt/ensinadev/plataforma-estudos
+docker build -t lab-linux labs/image
+docker save lab-linux | DOCKER_HOST=unix:///var/run/docker-labs.sock docker load
 ```
 
-Confira que o remap pegou: o processo dentro do lab tem que aparecer com UID alto
-no host.
+### 5. Confirme que o remap pegou
+
+É o teste que prova a segurança toda. De dentro o aluno é root; do host, ninguém.
 
 ```bash
-DOCKER_HOST=unix:///var/run/docker-labs.sock docker run --rm lab-linux id
-# uid=1000(aluno) ... visto de dentro
-ps -eo user,cmd | grep bash
-# 500000 ... visto do host
+export DOCKER_HOST=unix:///var/run/docker-labs.sock
+docker run -d --rm --name t --network none lab-linux sleep 60
+docker exec t sudo id        # uid=0(root)
+ps -eo uid,cmd | grep 'sleep 60'   # 501000 no host
+docker rm -f t
 ```
 
 ## Ajustes
