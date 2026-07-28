@@ -1,13 +1,12 @@
 import argon2 from "argon2";
 import bcrypt from "bcrypt";
 
-// Argon2id é o algoritmo recomendado (OWASP) para hash de senha. Hashes antigos em
-// bcrypt continuam sendo verificados e são migrados para argon2 no login (rehash
-// transparente), então ninguém precisa redefinir a senha por causa da troca.
-const OPCOES = { type: argon2.argon2id };
-
+// Argon2id é o algoritmo recomendado (OWASP) para hash de senha, e é o default do
+// node-argon2 (com custo de memória/tempo já fortes). Hashes antigos em bcrypt
+// continuam sendo verificados e migram para argon2 no login (rehash transparente),
+// então ninguém precisa redefinir a senha por causa da troca.
 export async function hashSenha(senha: string): Promise<string> {
-    return argon2.hash(senha, OPCOES);
+    return argon2.hash(senha);
 }
 
 export async function verificarSenha(hash: string, senha: string): Promise<boolean> {
@@ -25,7 +24,7 @@ export async function verificarSenha(hash: string, senha: string): Promise<boole
 export function precisaRehash(hash: string): boolean {
     if (!hash.startsWith("$argon2")) return true;
     try {
-        return argon2.needsRehash(hash, OPCOES);
+        return argon2.needsRehash(hash);
     } catch {
         return true;
     }
