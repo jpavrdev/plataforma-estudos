@@ -5,8 +5,9 @@
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
+import { pathToFileURL } from "node:url";
 
-const NOME = "C++";
+export const NOME = "C++";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "iniciante";
 const DESCRICAO =
     "A linguagem C++ do zero ao avançado: sintaxe e tipos, controle de fluxo, funções e passagem por referência, ponteiros e gerenciamento de memória, classes e RAII, herança e funções virtuais, a STL com containers e templates, e o C++ moderno com smart pointers e lambdas. A linguagem de jogos, sistemas de alto desempenho e software de baixo nível.";
@@ -70,6 +71,26 @@ const MODULO_1: Modulo = {
                         { text: "Exclusivamente pequenos scripts de automação rápidos", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Historicamente, como o C++ surgiu?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Como uma extensão da linguagem C com orientação a objetos", isCorrect: true },
+                        { text: "Como uma linguagem totalmente nova, sem nenhuma relação com o C", isCorrect: false },
+                        { text: "Como uma versão interpretada da linguagem Java", isCorrect: false },
+                        { text: "Como um dialeto do Python voltado a jogos", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No build de um programa C++, o que o linker faz depois da compilação?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Traduz o código-fonte em código de máquina", isCorrect: false },
+                        { text: "Une o código já compilado às bibliotecas e forma o executável", isCorrect: true },
+                        { text: "Roda o executável e mostra a saída na tela", isCorrect: false },
+                        { text: "Confere os tipos de todas as variáveis do programa antes da compilação", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -123,6 +144,26 @@ const MODULO_1: Modulo = {
                         { text: "Encerrar o programa ao final da execução", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "No programa, o que a linha `return 0;` dentro do main indica?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Que o programa deve reiniciar do início", isCorrect: false },
+                        { text: "Que ocorreu um erro durante a execução", isCorrect: false },
+                        { text: "Que a saída ainda será impressa na tela", isCorrect: false },
+                        { text: "Que o programa terminou com sucesso", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Para ler um valor digitado pelo usuário, o que se usa?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "std::cin com o operador >>", isCorrect: true },
+                        { text: "std::cout com o operador <<", isCorrect: false },
+                        { text: "std::endl com o operador <<", isCorrect: false },
+                        { text: "std::read com o operador >>", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -170,6 +211,26 @@ const MODULO_1: Modulo = {
                         { text: "Impede o uso de qualquer nome da biblioteca padrão", isCorrect: false },
                         { text: "Cria um novo namespace chamado std", isCorrect: false },
                         { text: "Compila o programa em modo otimizado", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que muita gente evita `using namespace std;` em projetos grandes?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Porque isso impede o uso do std::cout no código", isCorrect: false },
+                        { text: "Porque trazer todo o namespace pode causar colisões de nomes", isCorrect: true },
+                        { text: "Porque deixa a compilação do programa muito mais lenta e pesada", isCorrect: false },
+                        { text: "Porque apaga os nomes da biblioteca padrão", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Como dois trechos de código podem ter, cada um, uma função `imprimir` sem conflito?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Se cada uma ficar em um namespace diferente", isCorrect: true },
+                        { text: "Se as duas forem marcadas como const", isCorrect: false },
+                        { text: "Se ambas estiverem escritas dentro da função main principal", isCorrect: false },
+                        { text: "Se nenhuma delas usar a biblioteca std", isCorrect: false },
                     ],
                 },
             ],
@@ -235,6 +296,26 @@ const MODULO_2: Modulo = {
                         { text: "bool", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual tipo é apropriado para guardar um único caractere, como a letra 'Z'?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "char", isCorrect: true },
+                        { text: "int", isCorrect: false },
+                        { text: "double", isCorrect: false },
+                        { text: "bool", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o C++ moderno prefere `std::string` aos arrays de caracteres herdados da linguagem C?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Porque ocupa sempre menos memória que eles", isCorrect: false },
+                        { text: "Porque dispensa incluir qualquer biblioteca", isCorrect: false },
+                        { text: "Porque é mais seguro e prático de usar", isCorrect: true },
+                        { text: "Porque guarda números além de texto", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -288,6 +369,26 @@ const MODULO_2: Modulo = {
                         { text: "convert(valor, int)", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual é o resultado de `static_cast<int>(19.99)`?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "20, pois o valor é arredondado para cima", isCorrect: false },
+                        { text: "19.99, pois o valor não muda em nada", isCorrect: false },
+                        { text: "19, pois a parte decimal é descartada", isCorrect: true },
+                        { text: "Um erro, pois um double não vira int", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece se você tentar alterar uma variável declarada com `const`?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A alteração é feita normalmente", isCorrect: false },
+                        { text: "Ocorre um erro de compilação", isCorrect: true },
+                        { text: "O valor volta a zero automaticamente", isCorrect: false },
+                        { text: "O programa trava apenas ao ser executado", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -339,6 +440,26 @@ const MODULO_2: Modulo = {
                         { text: "Como a palavra true por extenso", isCorrect: false },
                         { text: "Como um espaço em branco", isCorrect: false },
                         { text: "Como a letra T", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para que `7 / 2` resulte em `3.5` em vez de `3`, o que é necessário?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Que os dois operandos sejam do tipo inteiro (int)", isCorrect: false },
+                        { text: "Que se use o operador % no lugar da /", isCorrect: false },
+                        { text: "Que o resultado seja guardado em um bool", isCorrect: false },
+                        { text: "Que ao menos um dos operandos seja double", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Depois de `int total = 10; total += 5; total++;`, quanto vale total?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "15", isCorrect: false },
+                        { text: "16", isCorrect: true },
+                        { text: "11", isCorrect: false },
+                        { text: "17", isCorrect: false },
                     ],
                 },
             ],
@@ -396,6 +517,26 @@ const MODULO_3: Modulo = {
                         { text: "A e B, pois os dois blocos executam", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Que tipo de valor um `switch` compara com seus casos?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apenas valores do tipo double", isCorrect: false },
+                        { text: "Qualquer texto do tipo std::string", isCorrect: false },
+                        { text: "Um valor inteiro ou um caractere", isCorrect: true },
+                        { text: "Somente valores do tipo bool", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No `switch`, para que serve o caso `default`?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Repetir o primeiro case do switch", isCorrect: false },
+                        { text: "Tratar os valores que não caíram em nenhum case", isCorrect: true },
+                        { text: "Encerrar o programa imediatamente", isCorrect: false },
+                        { text: "Obrigar todos os case a terem um break ao final", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -449,6 +590,26 @@ const MODULO_3: Modulo = {
                         { text: "Repete a volta atual mais uma vez", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Quantas vezes o trecho a seguir imprime algo?\n```cpp\nint n = 10;\ndo {\n    std::cout << n;\n    n++;\n} while (n <= 3);\n```",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Nenhuma, pois 10 não é menor ou igual a 3", isCorrect: false },
+                        { text: "Uma vez, pois o do-while roda antes de testar", isCorrect: true },
+                        { text: "Três vezes, para n valendo 1, 2 e 3", isCorrect: false },
+                        { text: "Para sempre, pois n apenas aumenta a cada volta", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em um laço `while`, quando a condição é testada?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Depois de executar o bloco interno, a cada repetição feita", isCorrect: false },
+                        { text: "Apenas na última volta do laço", isCorrect: false },
+                        { text: "Somente quando o laço usa um break", isCorrect: false },
+                        { text: "Antes de cada repetição, e o bloco pode nem rodar", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -496,6 +657,26 @@ const MODULO_3: Modulo = {
                         { text: "Para copiar cada elemento e ganhar desempenho", isCorrect: false },
                         { text: "Porque auto não funciona em um range-based for", isCorrect: false },
                         { text: "Para converter cada elemento em uma string", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quais são as três partes que um `for` clássico reúne no cabeçalho?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Nome, tipo e valor da variável", isCorrect: false },
+                        { text: "Início, meio e fim do bloco", isCorrect: false },
+                        { text: "Entrada, processamento e saída de dados", isCorrect: false },
+                        { text: "Inicialização, condição e passo", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Quando o `for` clássico costuma ser a melhor escolha?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Quando você sabe quantas vezes repetir ou precisa do índice", isCorrect: true },
+                        { text: "Quando quer apenas percorrer todos os elementos", isCorrect: false },
+                        { text: "Quando o container não tem tamanho definido", isCorrect: false },
+                        { text: "Quando você quer percorrer todos os elementos de uma vez só", isCorrect: false },
                     ],
                 },
             ],
@@ -553,6 +734,26 @@ const MODULO_4: Modulo = {
                         { text: "Porque toda função precisa estar no arquivo main", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual tipo de retorno se usa em uma função que não devolve nenhum valor?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "int", isCorrect: false },
+                        { text: "null", isCorrect: false },
+                        { text: "void", isCorrect: true },
+                        { text: "empty", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que é um protótipo de função em C++?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Uma versão da função que roda logo antes de todas as outras no início", isCorrect: false },
+                        { text: "A assinatura da função, sem o corpo, declarada antes do uso", isCorrect: true },
+                        { text: "Uma função que chama a si mesma repetidamente", isCorrect: false },
+                        { text: "Uma função sem nenhum tipo de retorno", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -606,6 +807,26 @@ const MODULO_4: Modulo = {
                         { text: "Impedir que a função leia o objeto", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Após `int n = 5; dobrar(n);`, onde `dobrar(int& x)` faz `x = x * 2`, quanto vale n?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "5, pois a função recebe apenas uma cópia", isCorrect: false },
+                        { text: "Indefinido, pois n perde o valor logo após a chamada", isCorrect: false },
+                        { text: "10, pois a referência altera a própria variável", isCorrect: true },
+                        { text: "0, pois n é apagado após a chamada", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Segundo a tabela da aula, o que a passagem por valor (`int x`) faz?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Não copia, mas altera o original", isCorrect: false },
+                        { text: "Não copia e não altera o original", isCorrect: false },
+                        { text: "Copia o argumento e ainda altera o original de quem chamou", isCorrect: false },
+                        { text: "Copia o argumento, mas não altera o original", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -653,6 +874,26 @@ const MODULO_4: Modulo = {
                         { text: "Sempre no início, antes de todos os demais", isCorrect: false },
                         { text: "No meio, entre os parâmetros obrigatórios", isCorrect: false },
                         { text: "Em qualquer posição, sem nenhuma restrição", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em uma função sobrecarregada, como o compilador escolhe qual versão usar?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Pela ordem em que as versões foram escritas", isCorrect: false },
+                        { text: "Pelos argumentos passados na chamada", isCorrect: true },
+                        { text: "Pelo tipo de retorno de cada versão", isCorrect: false },
+                        { text: "Sempre pela primeira versão declarada", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Com `void cumprimentar(std::string nome, std::string saudacao = \"Olá\")`, o que `cumprimentar(\"Ana\")` imprime?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Olá, Ana", isCorrect: true },
+                        { text: "Ana, Olá", isCorrect: false },
+                        { text: "Oi, Ana", isCorrect: false },
+                        { text: "Apenas Ana, sem nenhuma saudação", isCorrect: false },
                     ],
                 },
             ],
@@ -714,6 +955,26 @@ const MODULO_5: Modulo = {
                         { text: "O valor undefined", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que o operador `&`, como em `&x`, devolve?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O valor guardado dentro de x", isCorrect: false },
+                        { text: "Uma cópia da variável x", isCorrect: false },
+                        { text: "O endereço da variável x", isCorrect: true },
+                        { text: "O tipo declarado da variável x", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece ao desreferenciar (`*p`) um ponteiro nulo ou não inicializado?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O ponteiro passa a apontar para o valor zero", isCorrect: false },
+                        { text: "É um erro grave que costuma travar o programa", isCorrect: true },
+                        { text: "O valor apontado vira nullptr de forma automática", isCorrect: false },
+                        { text: "Nada, o C++ simplesmente ignora a operação", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -761,6 +1022,26 @@ const MODULO_5: Modulo = {
                         { text: "Nada, pois a heap se limpa sozinha", isCorrect: false },
                         { text: "Chamar new novamente para fechar", isCorrect: false },
                         { text: "Converter o ponteiro em int", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o `new` devolve ao alocar memória na heap?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Uma cópia do valor recém-alocado", isCorrect: false },
+                        { text: "O tamanho exato da memória em bytes", isCorrect: false },
+                        { text: "O endereço do topo da stack naquele momento", isCorrect: false },
+                        { text: "Um ponteiro para a memória reservada", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Qual regra vale para memória alocada na heap com `new`?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O new já libera sozinho ao fim da função", isCorrect: false },
+                        { text: "A heap se limpa sozinha entre as chamadas", isCorrect: false },
+                        { text: "Para cada new deve haver um delete", isCorrect: true },
+                        { text: "Um único delete libera todos os new de uma vez", isCorrect: false },
                     ],
                 },
             ],
@@ -814,6 +1095,26 @@ const MODULO_5: Modulo = {
                         { text: "Nunca alocar memória em nenhum programa", isCorrect: false },
                         { text: "Alocar tudo com new e nunca liberar", isCorrect: false },
                         { text: "Evitar completamente o uso de ponteiros", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que ocorre ao desreferenciar um ponteiro pendente, após o `delete`?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O ponteiro volta a apontar para nullptr de forma automática", isCorrect: false },
+                        { text: "Comportamento indefinido, um dos bugs mais traiçoeiros", isCorrect: true },
+                        { text: "A memória é realocada na mesma hora", isCorrect: false },
+                        { text: "O valor antigo é sempre recuperado intacto", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o efeito de vazamentos de memória em um programa que roda por muito tempo?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Vão consumindo a memória até causar problemas", isCorrect: true },
+                        { text: "Deixam o programa mais rápido com o tempo", isCorrect: false },
+                        { text: "Liberam a memória usada por todos os outros programas", isCorrect: false },
+                        { text: "Não têm efeito algum sobre a execução", isCorrect: false },
                     ],
                 },
             ],
@@ -871,6 +1172,26 @@ const MODULO_6: Modulo = {
                         { text: "struct não pode ter métodos, só class", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que caracteriza um membro `protected` em uma classe?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "É acessível de qualquer parte do código do programa", isCorrect: false },
+                        { text: "Só pode ser lido, mas nunca alterado", isCorrect: false },
+                        { text: "É como private, mas também visível às subclasses", isCorrect: true },
+                        { text: "É retirado da classe no momento de compilar", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em uma classe, os dados que ela guarda e o comportamento que ela executa se chamam, respectivamente:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Métodos e atributos", isCorrect: false },
+                        { text: "Objetos e instâncias", isCorrect: false },
+                        { text: "Chaves e valores", isCorrect: false },
+                        { text: "Atributos e métodos", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -920,6 +1241,26 @@ const MODULO_6: Modulo = {
                         { text: "Impedir o acesso aos membros privados", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que caracteriza a assinatura de um construtor?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Tem o nome da classe com um til (~) escrito na frente", isCorrect: false },
+                        { text: "Tem o mesmo nome da classe e nenhum tipo de retorno", isCorrect: true },
+                        { text: "Tem um nome qualquer e retorna void", isCorrect: false },
+                        { text: "Tem um nome livre e retorna um int", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Como se escreve o nome do destrutor de uma classe chamada `Cachorro`?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "~Cachorro", isCorrect: true },
+                        { text: "Cachorro", isCorrect: false },
+                        { text: "!Cachorro", isCorrect: false },
+                        { text: "delete Cachorro", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -967,6 +1308,26 @@ const MODULO_6: Modulo = {
                         { text: "O programador precisa liberar tudo manualmente", isCorrect: false },
                         { text: "Os recursos nunca são liberados durante a execução", isCorrect: false },
                         { text: "A liberação só ocorre quando o programa inteiro termina", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em `double getSaldo() const`, o que o `const` após o nome do método promete?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Que o método é sempre privado à classe", isCorrect: false },
+                        { text: "Que o valor retornado nunca muda", isCorrect: false },
+                        { text: "Que o método não recebe parâmetros", isCorrect: false },
+                        { text: "Que o método não altera o objeto", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "No padrão RAII, qual é o papel do construtor e do destrutor?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O construtor adquire o recurso e o destrutor o libera", isCorrect: true },
+                        { text: "O construtor libera o recurso e o destrutor volta a adquiri-lo", isCorrect: false },
+                        { text: "Os dois adquirem o recurso ao mesmo tempo", isCorrect: false },
+                        { text: "Nenhum dos dois lida com o recurso adquirido", isCorrect: false },
                     ],
                 },
             ],
@@ -1024,6 +1385,26 @@ const MODULO_7: Modulo = {
                         { text: "Herança apenas entre classes de mesmo nome", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Que relação a herança entre `Gato` e `Animal` modela?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um animal é um tipo de gato", isCorrect: false },
+                        { text: "Um gato é um tipo de animal", isCorrect: true },
+                        { text: "Um gato tem um animal dentro de si", isCorrect: false },
+                        { text: "Um gato usa um animal por fora", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a herança múltipla do C++ exige cuidado?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Porque pode gerar ambiguidades entre as bases", isCorrect: true },
+                        { text: "Porque impede a classe de ter métodos próprios", isCorrect: false },
+                        { text: "Porque proíbe o uso de public na herança", isCorrect: false },
+                        { text: "Porque apaga os membros herdados da base", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1073,6 +1454,26 @@ const MODULO_7: Modulo = {
                         { text: "Tornar o método privado na classe derivada", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Sem `virtual`, qual versão do método um ponteiro da base chama?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A do objeto real, decidida em tempo de execução", isCorrect: false },
+                        { text: "As duas versões, uma após a outra", isCorrect: false },
+                        { text: "A da base, decidida em tempo de compilação", isCorrect: true },
+                        { text: "Nenhuma, pois isso vira erro de compilação", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o polimorfismo permite, na prática?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ter dois ou mais métodos de mesmo nome na mesma classe", isCorrect: false },
+                        { text: "Tratar objetos de tipos diferentes por uma base comum", isCorrect: true },
+                        { text: "Herdar de várias classes base ao mesmo tempo", isCorrect: false },
+                        { text: "Impedir que a classe base seja instanciada", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1120,6 +1521,26 @@ const MODULO_7: Modulo = {
                         { text: "Para acelerar bastante a destruição do objeto", isCorrect: false },
                         { text: "Para impedir a criação de classes derivadas", isCorrect: false },
                         { text: "Porque destrutores nunca podem ser chamados", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Como se declara um método virtual puro em C++?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Escrevendo a palavra `pure` antes do método", isCorrect: false },
+                        { text: "Marcando o método como `const`", isCorrect: false },
+                        { text: "Removendo a palavra `virtual` dele", isCorrect: false },
+                        { text: "Atribuindo `= 0` e sem dar corpo ao método", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Qual é o papel de uma classe abstrata em relação às suas derivadas?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Implementar no lugar delas todos os métodos virtuais puros existentes", isCorrect: false },
+                        { text: "Servir de contrato, obrigando-as a implementar o método puro", isCorrect: true },
+                        { text: "Impedir que elas tenham métodos próprios", isCorrect: false },
+                        { text: "Copiar os atributos delas ao ser criada", isCorrect: false },
                     ],
                 },
             ],
@@ -1177,6 +1598,26 @@ const MODULO_8: Modulo = {
                         { text: "Ele só funciona com valores do tipo string", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que é a STL (Standard Template Library) do C++?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A biblioteca padrão com estruturas de dados e algoritmos", isCorrect: true },
+                        { text: "Um compilador próprio que traduz o código-fonte da linguagem", isCorrect: false },
+                        { text: "Um tipo de ponteiro que gerencia a memória sozinho", isCorrect: false },
+                        { text: "Uma ferramenta que executa o programa já compilado", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o método `size()` de um `std::vector` retorna?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O elemento que está guardado na primeira posição", isCorrect: false },
+                        { text: "A quantidade de elementos que ele guarda", isCorrect: true },
+                        { text: "A capacidade máxima e fixa do vetor", isCorrect: false },
+                        { text: "O tipo dos elementos guardados nele", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1226,6 +1667,26 @@ const MODULO_8: Modulo = {
                         { text: "O tipo dos elementos que o container guarda", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "No uso de iteradores, o que `begin()` e `end()` indicam?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "begin() aponta o primeiro elemento e end() marca o fim", isCorrect: true },
+                        { text: "begin() conta todos os elementos e end() apaga cada um deles", isCorrect: false },
+                        { text: "Os dois apontam sempre para o mesmo elemento", isCorrect: false },
+                        { text: "begin() abre e end() fecha um arquivo", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No tipo `std::map<std::string, int>`, o que são a `std::string` e o `int`?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O tipo do valor e o tipo da chave, nessa ordem", isCorrect: false },
+                        { text: "Dois valores diferentes guardados juntos", isCorrect: false },
+                        { text: "O nome e o tamanho do map", isCorrect: false },
+                        { text: "O tipo da chave e o tipo do valor", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -1273,6 +1734,26 @@ const MODULO_8: Modulo = {
                         { text: "Os ponteiros", isCorrect: false },
                         { text: "Os destrutores", isCorrect: false },
                         { text: "As referências const", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Na função `template <typename T> T maximo(T a, T b)`, o que o `T` representa?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um valor inteiro fixo que é sempre passado como argumento à função", isCorrect: false },
+                        { text: "Um tipo qualquer, definido por quem chama a função", isCorrect: true },
+                        { text: "O nome da função que será gerada depois", isCorrect: false },
+                        { text: "Uma variável global do programa inteiro", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Além do desempenho, o que os templates preservam por serem resolvidos na compilação?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A capacidade de misturar vários tipos juntos", isCorrect: false },
+                        { text: "A liberação automática de toda a memória que foi usada", isCorrect: false },
+                        { text: "A execução do código mesmo sem compilar antes", isCorrect: false },
+                        { text: "A segurança de tipos, verificada antes de rodar", isCorrect: true },
                     ],
                 },
             ],
@@ -1330,6 +1811,26 @@ const MODULO_9: Modulo = {
                         { text: "Nunca, pois shared_ptr não libera memória", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Como se cria um `std::unique_ptr` no C++ moderno?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Com `new` seguido de `delete`", isCorrect: false },
+                        { text: "Com `std::make_unique`", isCorrect: true },
+                        { text: "Com `std::make_shared`", isCorrect: false },
+                        { text: "Com `malloc` da linguagem C", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Como o `std::shared_ptr` sabe a hora de liberar o recurso?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Por contagem de referências, quando a última some", isCorrect: true },
+                        { text: "Ao terminar a primeira função que o utiliza no código", isCorrect: false },
+                        { text: "Assim que qualquer cópia dele é criada em memória", isCorrect: false },
+                        { text: "Somente ao encerrar todo o programa", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1377,6 +1878,26 @@ const MODULO_9: Modulo = {
                         { text: "Mover um arquivo de uma pasta para outra no disco", isCorrect: false },
                         { text: "Reposicionar elementos na tela do programa", isCorrect: false },
                         { text: "Alterar o endereço físico de uma variável", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Nas listas de captura de uma lambda, qual é a diferença entre `[x]` e `[&x]`?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "`[x]` captura por referência e `[&x]` captura por cópia", isCorrect: false },
+                        { text: "`[x]` captura por cópia e `[&x]`, por referência", isCorrect: true },
+                        { text: "As duas capturam sempre por cópia", isCorrect: false },
+                        { text: "Nenhuma das duas captura variáveis", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Dada `auto dobro = [](int x) { return x * 2; };`, quanto vale `dobro(5)`?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "5", isCorrect: false },
+                        { text: "25", isCorrect: false },
+                        { text: "10", isCorrect: true },
+                        { text: "7", isCorrect: false },
                     ],
                 },
             ],
@@ -1428,12 +1949,32 @@ const MODULO_9: Modulo = {
                         { text: "Eles substituem a necessidade de escrever classes", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Segundo a revisão, qual padrão é descrito como o que define o C++?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A sobrecarga de funções", isCorrect: false },
+                        { text: "A passagem de argumentos por valor", isCorrect: false },
+                        { text: "O RAII", isCorrect: true },
+                        { text: "O range-based for dos laços", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Entre os caminhos sugeridos para continuar depois dos fundamentos, está:",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Dominar a semântica de movimento e as referências rvalue", isCorrect: true },
+                        { text: "Abandonar de vez qualquer uso de ponteiros", isCorrect: false },
+                        { text: "Passar a programar apenas sobre máquinas virtuais dedicadas", isCorrect: false },
+                        { text: "Trocar o C++ por uma linguagem interpretada", isCorrect: false },
+                    ],
+                },
             ],
         },
     ],
 };
 
-const MODULOS: Modulo[] = [
+export const MODULOS: Modulo[] = [
     MODULO_1,
     MODULO_2,
     MODULO_3,
@@ -1512,9 +2053,13 @@ async function seed() {
     );
 }
 
-seed()
-    .then(() => process.exit(0))
-    .catch((e) => {
-        console.error("Falha no seed:", e);
-        process.exit(1);
-    });
+// Só semeia quando executado direto. Se for importado (ex.: sincronizar-questoes-trilha),
+// expõe MODULOS/NOME sem rodar o seed nem chamar process.exit.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    seed()
+        .then(() => process.exit(0))
+        .catch((e) => {
+            console.error("Falha no seed:", e);
+            process.exit(1);
+        });
+}
