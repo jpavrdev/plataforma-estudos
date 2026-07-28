@@ -7,7 +7,8 @@ import { Logo } from '../../components/Logo';
 import { FormField } from '../../components/FormField';
 import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Flame, Trophy } from '../../components/Icons';
-import { mensagemErro } from '../../utils/erro';
+import api from '../../services/api';
+import { mensagemErro, statusErro } from '../../utils/erro';
 
 // Mensagens dos erros que o callback do OAuth manda via ?erro= ao voltar pro login.
 const ERROS_OAUTH: Record<string, string> = {
@@ -28,18 +29,40 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  // Login bloqueado por email não confirmado (403): oferece reenviar a verificação.
+  const [naoVerificado, setNaoVerificado] = useState(false);
+  const [reenviando, setReenviando] = useState(false);
+  const [reenvioMsg, setReenvioMsg] = useState('');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
+    setNaoVerificado(false);
+    setReenvioMsg('');
     setSubmitting(true);
     try {
       await login(email, password);
       navigate('/home');
     } catch (e: unknown) {
       setError(mensagemErro(e, 'Erro ao fazer login. Tente novamente.'));
+      setNaoVerificado(statusErro(e) === 403);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function reenviarVerificacao() {
+    if (reenviando || !email) return;
+    setReenviando(true);
+    try {
+      const { data } = await api.post('/resend-verification', { email });
+      setReenvioMsg(
+        data.mensagem ?? 'Se houver uma conta pendente, reenviamos o link de confirmação.',
+      );
+    } catch {
+      setReenvioMsg('Não foi possível reenviar agora. Tente de novo em instantes.');
+    } finally {
+      setReenviando(false);
     }
   }
 
@@ -94,6 +117,20 @@ export function Login() {
       <p className="auth__subtitle">Continue de onde você parou.</p>
 
       {(error || erroOAuth) && <div className="auth__alert">{error || erroOAuth}</div>}
+
+      {naoVerificado &&
+        (reenvioMsg ? (
+          <div className="auth__alert auth__alert--ok">{reenvioMsg}</div>
+        ) : (
+          <button
+            type="button"
+            className="btn btn--ghost btn--block"
+            onClick={reenviarVerificacao}
+            disabled={reenviando}
+          >
+            {reenviando ? 'Reenviando...' : 'Reenviar email de verificação'}
+          </button>
+        ))}
 
       <form className="form" onSubmit={handleSubmit} noValidate>
         <FormField
