@@ -151,13 +151,30 @@ export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
 }
 
 // Texto curto com fórmulas ($...$ inline, $$...$$ em bloco), para enunciado e opções
-// de quiz. Sem <p> para não quebrar o layout inline dos rótulos.
+// de quiz. Sem <p> para não quebrar o layout inline dos rótulos. Código em cerca
+// (```...```) vira bloco com indentação preservada; código inline (`x`) fica inline.
 export function TextoMath({ children }: { children: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
       rehypePlugins={[rehypeKatex]}
-      components={{ p: ({ children }) => <>{children}</> }}
+      components={{
+        p: ({ children }) => <>{children}</>,
+        pre: ({ children }) => (
+          <div className="codeblock" style={{ margin: '12px 0' }}>
+            <pre className="codeblock__code">{children}</pre>
+          </div>
+        ),
+        code: ({ children }) => {
+          const txt = Array.isArray(children) ? children.join('') : String(children ?? '');
+          // Multi-linha = bloco (dentro do <pre>, herda o estilo); senão, código inline.
+          return txt.includes('\n') ? (
+            <code>{children}</code>
+          ) : (
+            <code className="code-inline">{children}</code>
+          );
+        },
+      }}
     >
       {children}
     </ReactMarkdown>

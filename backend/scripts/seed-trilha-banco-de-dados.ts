@@ -3932,7 +3932,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Uma rota está assim:\n\napp.get('/tarefas', (req, res) => {\n  const resultado = client.query('SELECT * FROM tarefas');\n  res.json(resultado.rows);\n});\n\nAo testar, a rota devolve um objeto de Promise pendente em vez da lista de tarefas. Qual é o problema?",
+                        "statement": "Uma rota está assim:\n\n```\napp.get('/tarefas', (req, res) => {\n  const resultado = client.query('SELECT * FROM tarefas');\n  res.json(resultado.rows);\n});\n```\n\nAo testar, a rota devolve um objeto de Promise pendente em vez da lista de tarefas. Qual é o problema?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -4367,7 +4367,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Uma rota de atualizar tarefa está assim:\n\napp.put('/tarefas/:id', async (req, res) => {\n  const { id } = req.params;\n  const { titulo, concluida } = req.body;\n  const resultado = await pool.query(\n    'UPDATE tarefas SET titulo = $1, concluida = $2 WHERE id = $3 RETURNING *',\n    [titulo, concluida, id]\n  );\n  if (resultado.rows.length === 0) {\n    return res.status(404).json({ mensagem: 'Tarefa não encontrada' });\n  }\n  res.json(resultado.rows[0]);\n});\n\nPor que essa rota é considerada segura contra SQL injection e correta para um CRUD persistente?",
+                        "statement": "Uma rota de atualizar tarefa está assim:\n\n```\napp.put('/tarefas/:id', async (req, res) => {\n  const { id } = req.params;\n  const { titulo, concluida } = req.body;\n  const resultado = await pool.query(\n    'UPDATE tarefas SET titulo = $1, concluida = $2 WHERE id = $3 RETURNING *',\n    [titulo, concluida, id]\n  );\n  if (resultado.rows.length === 0) {\n    return res.status(404).json({ mensagem: 'Tarefa não encontrada' });\n  }\n  res.json(resultado.rows[0]);\n});\n```\n\nPor que essa rota é considerada segura contra SQL injection e correta para um CRUD persistente?",
                         "difficulty": "dificil",
                         "options": [
                             {

@@ -5498,7 +5498,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considere o código:\n\nlet nums = [1, 2, 3, 4];\nlet r = nums\n  .filter(function (n) { return n > 2; })\n  .map(function (n) { return n * 10; });\n\nQuanto vale `r`?",
+                        "statement": "Considere o código:\n\n```\nlet nums = [1, 2, 3, 4];\nlet r = nums\n  .filter(function (n) { return n > 2; })\n  .map(function (n) { return n * 10; });\n```\n\nQuanto vale `r`?",
                         "difficulty": "dificil",
                         "options": [
                             {
