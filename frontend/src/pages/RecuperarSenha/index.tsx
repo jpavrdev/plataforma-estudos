@@ -16,32 +16,50 @@ const brand = (
         <span className="auth__headline-main">Recupere seu acesso</span>
       </h1>
       <p className="auth__lede">
-        Informe seu email e enviamos um link para você criar uma nova senha em segundos.
+        Enviamos um código de 6 dígitos por email ou WhatsApp para você criar uma nova senha em
+        segundos.
       </p>
     </div>
   </AuthBrand>
 );
 
-export function RecuperarSenha() {
-  const [email, setEmail] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [enviado, setEnviado] = useState(false);
-  const [mensagem, setMensagem] = useState('');
-  const [error, setError] = useState('');
+type Canal = 'email' | 'whatsapp';
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+export function RecuperarSenha() {
+  const [etapa, setEtapa] = useState<'pedir' | 'codigo' | 'ok'>('pedir');
+  const [email, setEmail] = useState('');
+  const [canal, setCanal] = useState<Canal | null>(null);
+  const [otp, setOtp] = useState('');
+  const [password, setPassword] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [mensagem, setMensagem] = useState('');
+
+  async function pedirCodigo(c: Canal) {
+    if (submitting || !email) return;
+    setError('');
+    setCanal(c);
+    setSubmitting(true);
+    try {
+      await api.post('/forgot-password-otp', { email, canal: c });
+      setEtapa('codigo');
+    } catch (e: unknown) {
+      setError(mensagemErro(e, 'Não foi possível enviar o código. Tente novamente.'));
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function redefinir(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
     setSubmitting(true);
     try {
-      const { data } = await api.post('/forgot-password', { email });
-      setMensagem(
-        data.mensagem ??
-          'Se houver uma conta com esse email, enviamos um link para redefinir a senha.',
-      );
-      setEnviado(true);
+      const { data } = await api.post('/reset-password-otp', { email, otp, password });
+      setMensagem(data.mensagem ?? 'Senha redefinida com sucesso. Você já pode fazer login.');
+      setEtapa('ok');
     } catch (e: unknown) {
-      setError(mensagemErro(e, 'Não foi possível enviar o link. Tente novamente.'));
+      setError(mensagemErro(e, 'Não foi possível redefinir a senha. Confira o código e a senha.'));
     } finally {
       setSubmitting(false);
     }
@@ -50,9 +68,8 @@ export function RecuperarSenha() {
   return (
     <AuthShell brand={brand}>
       <h2 className="auth__title">Esqueceu a senha?</h2>
-      <p className="auth__subtitle">Enviamos um link de redefinição para o seu email.</p>
 
-      {enviado ? (
+      {etapa === 'ok' ? (
         <>
           <div className="auth__alert auth__alert--ok">{mensagem}</div>
           <p className="auth__foot">
@@ -61,10 +78,11 @@ export function RecuperarSenha() {
             </Link>
           </p>
         </>
-      ) : (
+      ) : etapa === 'pedir' ? (
         <>
+          <p className="auth__subtitle">Como você quer receber o código de 6 dígitos?</p>
           {error && <div className="auth__alert">{error}</div>}
-          <form className="form" onSubmit={handleSubmit} noValidate>
+          <div className="form">
             <FormField
               label="E-mail"
               type="email"
@@ -74,15 +92,72 @@ export function RecuperarSenha() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
-              {submitting ? 'Enviando...' : 'Enviar link'}
+            <button
+              className="btn btn--accent btn--block"
+              type="button"
+              disabled={submitting || !email}
+              onClick={() => pedirCodigo('whatsapp')}
+            >
+              {submitting && canal === 'whatsapp' ? 'Enviando...' : 'Receber no WhatsApp'}
             </button>
-          </form>
+            <button
+              className="btn btn--ghost btn--block"
+              type="button"
+              disabled={submitting || !email}
+              onClick={() => pedirCodigo('email')}
+            >
+              {submitting && canal === 'email' ? 'Enviando...' : 'Receber por email'}
+            </button>
+          </div>
           <p className="auth__foot">
             Lembrou a senha?{' '}
             <Link className="link" to="/">
               Voltar ao login
             </Link>
+          </p>
+        </>
+      ) : (
+        <>
+          <p className="auth__subtitle">
+            Digite o código que enviamos {canal === 'whatsapp' ? 'no WhatsApp' : 'por email'} e a
+            nova senha.
+          </p>
+          {error && <div className="auth__alert">{error}</div>}
+          <form className="form" onSubmit={redefinir} noValidate>
+            <FormField
+              label="Código (6 dígitos)"
+              type="text"
+              autoComplete="one-time-code"
+              placeholder="000000"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              required
+            />
+            <FormField
+              label="Nova senha"
+              type="password"
+              autoComplete="new-password"
+              placeholder="••••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
+              {submitting ? 'Redefinindo...' : 'Redefinir senha'}
+            </button>
+          </form>
+          <p className="auth__foot">
+            <button
+              type="button"
+              className="link link--btn"
+              onClick={() => {
+                setEtapa('pedir');
+                setOtp('');
+                setError('');
+              }}
+            >
+              Não recebeu? Escolher outro canal
+            </button>
           </p>
         </>
       )}

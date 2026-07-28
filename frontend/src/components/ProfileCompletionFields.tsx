@@ -72,6 +72,8 @@ export function validateProfileCompletionFields(
   }
   if (!values.phone.trim()) {
     errors.phone = 'Informe seu telefone';
+  } else if (values.phone.replace(/\D/g, '').length < 10) {
+    errors.phone = 'Telefone inválido';
   }
   return errors;
 }

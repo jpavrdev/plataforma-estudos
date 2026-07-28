@@ -22,7 +22,12 @@ export const registerSchema = z.object({
     password: senhaForte,
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
     gender: z.string().max(50),
-    phone: z.string().trim().max(20, "Telefone muito longo"),
+    phone: z
+        .string()
+        .trim()
+        .min(1, "Informe o telefone")
+        .max(20, "Telefone muito longo")
+        .refine((s) => s.replace(/\D/g, "").length >= 10, "Telefone inválido"),
 });
 
 export const forgotPasswordSchema = z.object({
@@ -31,6 +36,17 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z.object({
     token: z.string().min(1, "Token é obrigatório.").max(512),
+    password: senhaForte,
+});
+
+export const forgotPasswordOtpSchema = z.object({
+    email: z.email("Email inválido"),
+    canal: z.enum(["email", "whatsapp"]),
+});
+
+export const resetPasswordOtpSchema = z.object({
+    email: z.email("Email inválido"),
+    otp: z.string().trim().regex(/^\d{6}$/, "O código deve ter 6 dígitos"),
     password: senhaForte,
 });
 
