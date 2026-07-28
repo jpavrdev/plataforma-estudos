@@ -2,16 +2,15 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
-import { Login } from './pages/Login';
+import { Landing } from './pages/Landing';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { BottomNav } from './components/BottomNav';
 import { ConquistaToaster } from './components/ConquistaToaster';
 
-// Cada página vira um pedaço próprio do bundle, baixado só quando a rota abre.
-// Antes tudo vinha num arquivo só, então quem entrava baixava o app inteiro para
-// ver uma tela. O Login continua junto do pacote principal por ser a primeira
-// tela de quem chega deslogado. As páginas exportam por nome, e o lazy espera um
-// export default, daí a adaptação em cada linha.
+// Cada página é baixada só quando a rota abre. A Landing fica no pacote principal
+// por ser a primeira tela de quem chega. As páginas exportam por nome, e o lazy
+// espera um export default, daí a adaptação em cada linha.
+const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })));
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })));
 const Home = lazy(() => import('./pages/Home').then((m) => ({ default: m.Home })));
 const Trilhas = lazy(() => import('./pages/Trilhas').then((m) => ({ default: m.Trilhas })));
@@ -103,14 +102,14 @@ function AuthRoute({ children }: { children: React.JSX.Element }) {
 
   if (loading) return <div>Carregando...</div>;
 
-  return isAuthenticated ? children : <Navigate to="/" />;
+  return isAuthenticated ? children : <Navigate to="/entrar" />;
 }
 
 function PrivateRoute({ children }: { children: React.JSX.Element }) {
   const { isAuthenticated, user, loading } = useAuth();
 
   if (loading) return <div>Carregando...</div>;
-  if (!isAuthenticated) return <Navigate to="/" />;
+  if (!isAuthenticated) return <Navigate to="/entrar" />;
   if (!user?.username) return <Navigate to="/completar-perfil" replace />;
   return children;
 }
@@ -119,7 +118,7 @@ function AdminRoute({ children }: { children: React.JSX.Element }) {
   const { user, isAuthenticated, loading } = useAuth();
 
   if (loading) return <div>Carregando...</div>;
-  if (!isAuthenticated) return <Navigate to="/" />;
+  if (!isAuthenticated) return <Navigate to="/entrar" />;
   if (!user?.username) return <Navigate to="/completar-perfil" replace />;
   return user?.role === 'admin' ? children : <Navigate to="/home" />;
 }
@@ -146,7 +145,8 @@ function AppRoutes() {
       <ComunicadoPrompt />
       <Suspense fallback={<div className="lesson__loading">Carregando...</div>}>
         <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
+          <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Landing />} />
+          <Route path="/entrar" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
           <Route
             path="/cadastro"
             element={isAuthenticated ? <Navigate to="/home" /> : <Register />}
