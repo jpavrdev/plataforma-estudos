@@ -41,6 +41,12 @@ export const forgotPasswordLimiter = criarLimiter(
     "Muitos pedidos de redefinição. Tente novamente em alguns minutos.",
 );
 
+// Reenviar verificação também dispara email; mesmo teto baixo do forgot-password.
+export const resendVerificationLimiter = criarLimiter(
+    5,
+    "Muitos pedidos de verificação. Tente novamente em alguns minutos.",
+);
+
 export const resetPasswordLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",
