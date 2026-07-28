@@ -12,6 +12,7 @@ import comunicadoRoutes from "./src/routes/comunicado.routes.ts";
 import certificateRoutes from "./src/routes/certificate.routes.ts";
 import apoioRoutes from "./src/routes/apoio.routes.ts";
 import comunidadeRoutes from "./src/routes/comunidade.routes.ts";
+import labRoutes from "./src/routes/lab.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
@@ -60,6 +61,7 @@ app.use(comunicadoRoutes);
 app.use(certificateRoutes);
 app.use(apoioRoutes);
 app.use(comunidadeRoutes);
+app.use(labRoutes);
 app.use(adminRoutes);
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));

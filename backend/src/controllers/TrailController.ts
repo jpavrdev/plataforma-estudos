@@ -28,7 +28,7 @@ import {
     atualizarLinguagem,
     excluirLinguagem,
 } from "../services/language.service.ts";
-import { calcularEstatisticas } from "../services/stats.service.ts";
+import { calcularEstatisticas, estatisticasPublicas } from "../services/stats.service.ts";
 import {
     listarConquistas,
     criarConquista,
@@ -390,6 +390,15 @@ export const submitQuiz = async (req: Request, res: Response, next: NextFunction
 export const getMyXp = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await calcularEstatisticas(req.userId!));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Números da plataforma para a página inicial pública (sem login). Só agregados.
+export const getPublicStats = async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await estatisticasPublicas());
     } catch (err) {
         next(err);
     }

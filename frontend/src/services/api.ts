@@ -61,7 +61,7 @@ api.interceptors.response.use(
       // Refresh falhou (refresh inválido/expirado): desloga
       fila = [];
       localStorage.clear();
-      window.location.href = '/';
+      window.location.href = '/entrar';
       return Promise.reject(err);
     } finally {
       isRefreshing = false;

@@ -3,12 +3,12 @@ import jwt from "jsonwebtoken";
 import { db } from "../../db.ts";
 import { users } from "../../schema.ts";
 import { eq } from "drizzle-orm";
+import { env } from "../config/env.ts";
 
-const JWT_SECRET = String(process.env.JWT_SECRET);
-
-if (!JWT_SECRET) {
-    throw new Error("JWT_SECRET não definido");
-}
+// Vem do env já validado (exige 32 caracteres e derruba o boot se faltar). Ler
+// process.env aqui direto não protegia nada: String(undefined) vira "undefined",
+// que é truthy, então a checagem passava e o token seria assinado com essa string.
+const JWT_SECRET = env.JWT_SECRET;
 
 interface UserPayload {
     userId: string;

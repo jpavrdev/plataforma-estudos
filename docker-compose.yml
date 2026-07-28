@@ -36,6 +36,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+  # Laboratórios de Linux: um container com shell por sessão, ligado ao navegador
+  # por WebSocket. A imagem lab-linux precisa existir (rode labs/build-images.sh).
+  labs:
+    build:
+      context: ./labs
+    environment:
+      - MAX_SESSOES=5
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
   frontend:
     build:
       context: ./frontend

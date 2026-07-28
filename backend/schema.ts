@@ -8,6 +8,7 @@ import {
     integer,
     text,
     unique,
+    index,
     boolean,
     jsonb,
 } from "drizzle-orm/pg-core";
@@ -86,19 +87,26 @@ export const oauthAccounts = pgTable(
         providerId: varchar("provider_id", { length: 255 }).notNull(),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.provider, table.providerId)],
+    (table) => [
+        unique().on(table.provider, table.providerId),
+        index("oauth_accounts_user_id_idx").on(table.userId),
+    ],
 );
 
-export const tokens = pgTable("tokens", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-        .references(() => users.id)
-        .notNull(),
-    tokenHash: varchar("token_hash", { length: 64 }).notNull().unique(),
-    type: varchar("type", { length: 50 }).notNull().default("refresh"),
-    usedAt: timestamp("used_at", { withTimezone: true }),
-    expiredAt: timestamp("expired_at", { withTimezone: true }).notNull(),
-});
+export const tokens = pgTable(
+    "tokens",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        tokenHash: varchar("token_hash", { length: 64 }).notNull().unique(),
+        type: varchar("type", { length: 50 }).notNull().default("refresh"),
+        usedAt: timestamp("used_at", { withTimezone: true }),
+        expiredAt: timestamp("expired_at", { withTimezone: true }).notNull(),
+    },
+    (table) => [index("tokens_user_id_idx").on(table.userId)],
+);
 
 export const trails = pgTable("trails", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -128,38 +136,52 @@ export const trailReviews = pgTable(
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
         updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.userId, table.trailId)],
+    (table) => [
+        unique().on(table.userId, table.trailId),
+        index("trail_reviews_trail_id_idx").on(table.trailId),
+    ],
 );
 
-export const modules = pgTable("modules", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    trailId: uuid("trail_id")
-        .references(() => trails.id)
-        .notNull(),
-    title: varchar("title", { length: 255 }).notNull(),
-    position: integer("position").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const modules = pgTable(
+    "modules",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id)
+            .notNull(),
+        title: varchar("title", { length: 255 }).notNull(),
+        position: integer("position").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("modules_trail_id_idx").on(table.trailId)],
+);
 
-export const lessons = pgTable("lessons", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    trailId: uuid("trail_id")
-        .references(() => trails.id)
-        .notNull(),
-    moduleId: uuid("module_id")
-        .references(() => modules.id)
-        .notNull(),
-    title: varchar("title", { length: 255 }).notNull(),
-    content: text("content"),
-    contentBlocks: jsonb("content_blocks").$type<{ type: string; value: string }[]>(),
-    position: integer("position").notNull(),
-    published: boolean("published").default(false).notNull(),
-    durationMin: integer("duration_min"),
-    preview: boolean("preview").default(false).notNull(),
-    // null = aula neutra, compartilhada por todas as linguagens da trilha.
-    language: varchar("language", { length: 20 }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const lessons = pgTable(
+    "lessons",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id)
+            .notNull(),
+        moduleId: uuid("module_id")
+            .references(() => modules.id)
+            .notNull(),
+        title: varchar("title", { length: 255 }).notNull(),
+        content: text("content"),
+        contentBlocks: jsonb("content_blocks").$type<{ type: string; value: string }[]>(),
+        position: integer("position").notNull(),
+        published: boolean("published").default(false).notNull(),
+        durationMin: integer("duration_min"),
+        preview: boolean("preview").default(false).notNull(),
+        // null = aula neutra, compartilhada por todas as linguagens da trilha.
+        language: varchar("language", { length: 20 }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("lessons_trail_id_idx").on(table.trailId),
+        index("lessons_module_id_idx").on(table.moduleId),
+    ],
+);
 
 export const lessonProgress = pgTable(
     "lessons_progress",
@@ -175,30 +197,41 @@ export const lessonProgress = pgTable(
         // Conclusão manual (estágio de roadmap marcado como concluído): conta como progresso, mas não dá XP.
         manual: boolean("manual").default(false).notNull(),
     },
-    (table) => [unique().on(table.userId, table.lessonId)],
+    (table) => [
+        unique().on(table.userId, table.lessonId),
+        index("lessons_progress_lesson_id_idx").on(table.lessonId),
+    ],
 );
 
-export const questions = pgTable("questions", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    lessonId: uuid("lesson_id")
-        .references(() => lessons.id)
-        .notNull(),
-    statement: text("statement").notNull(),
-    explanation: text("explanation"),
-    difficulty: questionDifficulty("difficulty").default("facil").notNull(),
-    position: integer("position").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const questions = pgTable(
+    "questions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        lessonId: uuid("lesson_id")
+            .references(() => lessons.id)
+            .notNull(),
+        statement: text("statement").notNull(),
+        explanation: text("explanation"),
+        difficulty: questionDifficulty("difficulty").default("facil").notNull(),
+        position: integer("position").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("questions_lesson_id_idx").on(table.lessonId)],
+);
 
-export const questionOptions = pgTable("question_options", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    questionId: uuid("question_id")
-        .references(() => questions.id)
-        .notNull(),
-    text: text("text").notNull(),
-    isCorrect: boolean("is_correct").default(false).notNull(),
-    position: integer("position").notNull(),
-});
+export const questionOptions = pgTable(
+    "question_options",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        questionId: uuid("question_id")
+            .references(() => questions.id)
+            .notNull(),
+        text: text("text").notNull(),
+        isCorrect: boolean("is_correct").default(false).notNull(),
+        position: integer("position").notNull(),
+    },
+    (table) => [index("question_options_question_id_idx").on(table.questionId)],
+);
 
 export const questionAnswers = pgTable(
     "question_answers",
@@ -216,7 +249,11 @@ export const questionAnswers = pgTable(
         isCorrect: boolean("is_correct").notNull(),
         answeredAt: timestamp("answered_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.userId, table.questionId)],
+    (table) => [
+        unique().on(table.userId, table.questionId),
+        index("question_answers_question_id_idx").on(table.questionId),
+        index("question_answers_selected_option_id_idx").on(table.selectedOptionId),
+    ],
 );
 
 export const tags = pgTable("tags", {
@@ -284,7 +321,10 @@ export const userAchievements = pgTable(
         // false enquanto a notificação de desbloqueio ainda não foi mostrada ao usuário.
         notified: boolean("notified").default(false).notNull(),
     },
-    (table) => [unique().on(table.userId, table.achievementId)],
+    (table) => [
+        unique().on(table.userId, table.achievementId),
+        index("user_achievements_achievement_id_idx").on(table.achievementId),
+    ],
 );
 
 // Snapshot diário das posições do ranking (XP total), para calcular a movimentação.
@@ -313,7 +353,10 @@ export const trailTags = pgTable(
             .references(() => tags.id)
             .notNull(),
     },
-    (table) => [unique().on(table.trailId, table.tagId)],
+    (table) => [
+        unique().on(table.trailId, table.tagId),
+        index("trail_tags_tag_id_idx").on(table.tagId),
+    ],
 );
 
 // Prova cronometrada com banco de questões próprio, separado das aulas.
@@ -334,42 +377,57 @@ export const simulados = pgTable("simulados", {
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
-export const simuladoQuestions = pgTable("simulado_questions", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    simuladoId: uuid("simulado_id")
-        .references(() => simulados.id)
-        .notNull(),
-    statement: text("statement").notNull(),
-    explanation: text("explanation"),
-    topic: varchar("topic", { length: 60 }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const simuladoQuestions = pgTable(
+    "simulado_questions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        simuladoId: uuid("simulado_id")
+            .references(() => simulados.id)
+            .notNull(),
+        statement: text("statement").notNull(),
+        explanation: text("explanation"),
+        topic: varchar("topic", { length: 60 }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("simulado_questions_simulado_id_idx").on(table.simuladoId)],
+);
 
-export const simuladoOptions = pgTable("simulado_options", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    questionId: uuid("question_id")
-        .references(() => simuladoQuestions.id)
-        .notNull(),
-    text: text("text").notNull(),
-    isCorrect: boolean("is_correct").default(false).notNull(),
-    position: integer("position").notNull(),
-});
+export const simuladoOptions = pgTable(
+    "simulado_options",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        questionId: uuid("question_id")
+            .references(() => simuladoQuestions.id)
+            .notNull(),
+        text: text("text").notNull(),
+        isCorrect: boolean("is_correct").default(false).notNull(),
+        position: integer("position").notNull(),
+    },
+    (table) => [index("simulado_options_question_id_idx").on(table.questionId)],
+);
 
 // Uma execução do simulado por um usuário (sessão cronometrada).
-export const simuladoAttempts = pgTable("simulado_attempts", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-        .references(() => users.id)
-        .notNull(),
-    simuladoId: uuid("simulado_id")
-        .references(() => simulados.id)
-        .notNull(),
-    startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-    submittedAt: timestamp("submitted_at", { withTimezone: true }),
-    score: integer("score"),
-    passed: boolean("passed"),
-});
+export const simuladoAttempts = pgTable(
+    "simulado_attempts",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        simuladoId: uuid("simulado_id")
+            .references(() => simulados.id)
+            .notNull(),
+        startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
+        expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+        submittedAt: timestamp("submitted_at", { withTimezone: true }),
+        score: integer("score"),
+        passed: boolean("passed"),
+    },
+    (table) => [
+        index("simulado_attempts_user_id_idx").on(table.userId),
+        index("simulado_attempts_simulado_id_idx").on(table.simuladoId),
+    ],
+);
 
 // Snapshot das questões sorteadas para a tentativa (ordem fixa, sobrevive a
 // mudanças no banco de questões).
@@ -385,7 +443,10 @@ export const simuladoAttemptQuestions = pgTable(
             .notNull(),
         position: integer("position").notNull(),
     },
-    (table) => [unique().on(table.attemptId, table.questionId)],
+    (table) => [
+        unique().on(table.attemptId, table.questionId),
+        index("simulado_attempt_questions_question_id_idx").on(table.questionId),
+    ],
 );
 
 // Opções marcadas pelo usuário (uma linha por opção: é o que permite multi-seleção).
@@ -403,7 +464,11 @@ export const simuladoAttemptAnswers = pgTable(
             .references(() => simuladoOptions.id)
             .notNull(),
     },
-    (table) => [unique().on(table.attemptId, table.questionId, table.optionId)],
+    (table) => [
+        unique().on(table.attemptId, table.questionId, table.optionId),
+        index("simulado_attempt_answers_question_id_idx").on(table.questionId),
+        index("simulado_attempt_answers_option_id_idx").on(table.optionId),
+    ],
 );
 
 // Desafios de código. O enunciado usa os mesmos blocos das aulas; activeDate marca
@@ -428,36 +493,47 @@ export const challenges = pgTable("challenges", {
 });
 
 // Casos de teste: os públicos aparecem no enunciado; os ocultos só contam na correção.
-export const challengeTests = pgTable("challenge_tests", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    challengeId: uuid("challenge_id")
-        .references(() => challenges.id)
-        .notNull(),
-    input: text("input").notNull(),
-    expectedOutput: text("expected_output").notNull(),
-    isPublic: boolean("is_public").default(false).notNull(),
-    position: integer("position").notNull(),
-});
+export const challengeTests = pgTable(
+    "challenge_tests",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        challengeId: uuid("challenge_id")
+            .references(() => challenges.id)
+            .notNull(),
+        input: text("input").notNull(),
+        expectedOutput: text("expected_output").notNull(),
+        isPublic: boolean("is_public").default(false).notNull(),
+        position: integer("position").notNull(),
+    },
+    (table) => [index("challenge_tests_challenge_id_idx").on(table.challengeId)],
+);
 
-export const challengeSubmissions = pgTable("challenge_submissions", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-        .references(() => users.id)
-        .notNull(),
-    challengeId: uuid("challenge_id")
-        .references(() => challenges.id)
-        .notNull(),
-    language: challengeLanguage("language").notNull(),
-    code: text("code").notNull(),
-    status: challengeSubmissionStatus("status").default("queued").notNull(),
-    passedCount: integer("passed_count").default(0).notNull(),
-    totalCount: integer("total_count").default(0).notNull(),
-    // Saída de erro visível ao aluno (compilação ou caso público); nunca a de caso oculto.
-    output: text("output"),
-    // XP concedido nesta submissão (0 quando não gera XP; > 0 só na 1ª aprovação do desafio).
-    xpEarned: integer("xp_earned").default(0).notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const challengeSubmissions = pgTable(
+    "challenge_submissions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        challengeId: uuid("challenge_id")
+            .references(() => challenges.id)
+            .notNull(),
+        language: challengeLanguage("language").notNull(),
+        code: text("code").notNull(),
+        status: challengeSubmissionStatus("status").default("queued").notNull(),
+        passedCount: integer("passed_count").default(0).notNull(),
+        totalCount: integer("total_count").default(0).notNull(),
+        // Saída de erro visível ao aluno (compilação ou caso público); nunca a de caso oculto.
+        output: text("output"),
+        // XP concedido nesta submissão (0 quando não gera XP; > 0 só na 1ª aprovação do desafio).
+        xpEarned: integer("xp_earned").default(0).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("challenge_submissions_user_id_idx").on(table.userId),
+        index("challenge_submissions_challenge_id_idx").on(table.challengeId),
+    ],
+);
 
 // Roadmaps: orquestração sobre o conteúdo existente; progresso derivado dos sinais atuais.
 export const roadmapPhase = pgEnum("roadmap_phase", ["fundamentos", "core", "avancado", "deploy"]);
@@ -482,29 +558,37 @@ export const roadmaps = pgTable("roadmaps", {
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
-export const roadmapStages = pgTable("roadmap_stages", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    roadmapId: uuid("roadmap_id")
-        .references(() => roadmaps.id)
-        .notNull(),
-    phase: roadmapPhase("phase").notNull(),
-    title: varchar("title", { length: 200 }).notNull(),
-    description: text("description").notNull(),
-    tags: jsonb("tags").$type<string[]>(),
-    position: integer("position").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const roadmapStages = pgTable(
+    "roadmap_stages",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        roadmapId: uuid("roadmap_id")
+            .references(() => roadmaps.id)
+            .notNull(),
+        phase: roadmapPhase("phase").notNull(),
+        title: varchar("title", { length: 200 }).notNull(),
+        description: text("description").notNull(),
+        tags: jsonb("tags").$type<string[]>(),
+        position: integer("position").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("roadmap_stages_roadmap_id_idx").on(table.roadmapId)],
+);
 
 // refId polimórfico (sem FK): aponta pra trails/modules/lessons/simulados/challenges conforme refType.
-export const roadmapStageRefs = pgTable("roadmap_stage_refs", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    stageId: uuid("stage_id")
-        .references(() => roadmapStages.id)
-        .notNull(),
-    refType: roadmapRefType("ref_type").notNull(),
-    refId: uuid("ref_id").notNull(),
-    position: integer("position").default(0).notNull(),
-});
+export const roadmapStageRefs = pgTable(
+    "roadmap_stage_refs",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        stageId: uuid("stage_id")
+            .references(() => roadmapStages.id)
+            .notNull(),
+        refType: roadmapRefType("ref_type").notNull(),
+        refId: uuid("ref_id").notNull(),
+        position: integer("position").default(0).notNull(),
+    },
+    (table) => [index("roadmap_stage_refs_stage_id_idx").on(table.stageId)],
+);
 
 export const comunicadoKind = pgEnum("comunicado_kind", ["aviso", "pesquisa"]);
 export const comunicadoRespostaStatus = pgEnum("comunicado_resposta_status", [
@@ -537,7 +621,10 @@ export const comunicadoRespostas = pgTable(
         comment: text("comment"),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.comunicadoId, table.userId)],
+    (table) => [
+        unique().on(table.comunicadoId, table.userId),
+        index("comunicado_respostas_user_id_idx").on(table.userId),
+    ],
 );
 
 // Conclusão manual de estágio ("já sei isso"): conta como concluído, sem conceder XP.
@@ -553,7 +640,10 @@ export const roadmapStageCompletions = pgTable(
             .notNull(),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.userId, table.stageId)],
+    (table) => [
+        unique().on(table.userId, table.stageId),
+        index("roadmap_stage_completions_stage_id_idx").on(table.stageId),
+    ],
 );
 
 // Certificado de conclusão de trilha. Os dados são congelados na emissão:
@@ -578,7 +668,10 @@ export const certificates = pgTable(
         completedAt: timestamp("completed_at", { withTimezone: true }).notNull(),
         issuedAt: timestamp("issued_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.userId, table.trailId)],
+    (table) => [
+        unique().on(table.userId, table.trailId),
+        index("certificates_trail_id_idx").on(table.trailId),
+    ],
 );
 
 export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
@@ -586,20 +679,24 @@ export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "at
 
 // Apoio ao projeto. Cada pagamento vira uma linha; apoiador ativo = alguma
 // linha ativa com expires_at no futuro. O gateway confirma via webhook.
-export const subscriptions = pgTable("subscriptions", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-        .references(() => users.id)
-        .notNull(),
-    plan: subscriptionPlan("plan").notNull(),
-    status: subscriptionStatus("status").default("pendente").notNull(),
-    amountCents: integer("amount_cents").notNull(),
-    gateway: varchar("gateway", { length: 20 }).default("abacatepay").notNull(),
-    gatewayId: varchar("gateway_id", { length: 120 }),
-    paidAt: timestamp("paid_at", { withTimezone: true }),
-    expiresAt: timestamp("expires_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const subscriptions = pgTable(
+    "subscriptions",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        plan: subscriptionPlan("plan").notNull(),
+        status: subscriptionStatus("status").default("pendente").notNull(),
+        amountCents: integer("amount_cents").notNull(),
+        gateway: varchar("gateway", { length: 20 }).default("abacatepay").notNull(),
+        gatewayId: varchar("gateway_id", { length: 120 }),
+        paidAt: timestamp("paid_at", { withTimezone: true }),
+        expiresAt: timestamp("expires_at", { withTimezone: true }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("subscriptions_user_id_idx").on(table.userId)],
+);
 
 export const communityPostKind = pgEnum("community_post_kind", [
     "duvida",
@@ -609,18 +706,22 @@ export const communityPostKind = pgEnum("community_post_kind", [
 ]);
 
 // Publicação na comunidade. code/codeLanguage e imageUrl são opcionais.
-export const communityPosts = pgTable("community_posts", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    userId: uuid("user_id")
-        .references(() => users.id)
-        .notNull(),
-    kind: communityPostKind("kind").default("post").notNull(),
-    content: text("content").notNull(),
-    code: text("code"),
-    codeLanguage: varchar("code_language", { length: 30 }),
-    imageUrl: varchar("image_url", { length: 300 }),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const communityPosts = pgTable(
+    "community_posts",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        kind: communityPostKind("kind").default("post").notNull(),
+        content: text("content").notNull(),
+        code: text("code"),
+        codeLanguage: varchar("code_language", { length: 30 }),
+        imageUrl: varchar("image_url", { length: 300 }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("community_posts_user_id_idx").on(table.userId)],
+);
 
 // Tags de um post (hashtags). Denormalizado para contar os tópicos populares.
 export const communityPostTags = pgTable(
@@ -647,20 +748,30 @@ export const communityLikes = pgTable(
             .notNull(),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.postId, table.userId)],
+    (table) => [
+        unique().on(table.postId, table.userId),
+        index("community_likes_user_id_idx").on(table.userId),
+    ],
 );
 
-export const communityComments = pgTable("community_comments", {
-    id: uuid("id").primaryKey().defaultRandom(),
-    postId: uuid("post_id")
-        .references(() => communityPosts.id)
-        .notNull(),
-    userId: uuid("user_id")
-        .references(() => users.id)
-        .notNull(),
-    content: text("content").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-});
+export const communityComments = pgTable(
+    "community_comments",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        postId: uuid("post_id")
+            .references(() => communityPosts.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        content: text("content").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("community_comments_post_id_idx").on(table.postId),
+        index("community_comments_user_id_idx").on(table.userId),
+    ],
+);
 
 // Quem segue quem. followerId segue followingId.
 export const userFollows = pgTable(
@@ -675,5 +786,8 @@ export const userFollows = pgTable(
             .notNull(),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
-    (table) => [unique().on(table.followerId, table.followingId)],
+    (table) => [
+        unique().on(table.followerId, table.followingId),
+        index("user_follows_following_id_idx").on(table.followingId),
+    ],
 );
