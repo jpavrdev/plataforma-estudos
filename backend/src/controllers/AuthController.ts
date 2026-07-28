@@ -26,12 +26,6 @@ import { whatsappService } from "../services/whatsapp.service.ts";
 const MAX_TENTATIVAS = 5;
 const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutos
 
-const JWT_SECRET = String(env.JWT_SECRET);
-
-if (!JWT_SECRET) {
-    throw new Error("JWT_SECRET não definido");
-}
-
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Validação dos dados que chegam
