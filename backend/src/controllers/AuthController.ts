@@ -308,6 +308,32 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
+export const resendVerification = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = forgotPasswordSchema.parse(req.body);
+
+        // Resposta genérica, para não revelar se o email tem conta ou já foi verificado.
+        const resposta = {
+            mensagem: "Se houver uma conta pendente de confirmação com esse email, reenviamos o link.",
+        };
+
+        const [user] = await db
+            .select({ id: users.id, email: users.email, emailVerifiedAt: users.emailVerifiedAt })
+            .from(users)
+            .where(eq(users.email, email));
+
+        // Só reenvia quando a conta existe e ainda não foi verificada.
+        if (user && !user.emailVerifiedAt) {
+            const token = await authService.gerarTokenVerificacao(user.id);
+            await emailService.enviarVerificacao(user.email, token);
+        }
+
+        res.json(resposta);
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = forgotPasswordSchema.parse(req.body);

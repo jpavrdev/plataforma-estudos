@@ -7,6 +7,7 @@ import {
     verifyEmail,
     forgotPassword,
     resetPassword,
+    resendVerification,
 } from "../controllers/AuthController.ts";
 import { iniciarOAuth, callbackOAuth } from "../controllers/OAuthController.ts";
 import {
@@ -16,6 +17,7 @@ import {
     verifyEmailLimiter,
     forgotPasswordLimiter,
     resetPasswordLimiter,
+    resendVerificationLimiter,
 } from "../middlewares/rateLimit.ts";
 import { mesmaOrigem } from "../middlewares/origem.ts";
 
@@ -28,6 +30,7 @@ router.post("/logout", mesmaOrigem, refreshLimiter, logout);
 router.post("/verify-email", verifyEmailLimiter, verifyEmail);
 router.post("/forgot-password", forgotPasswordLimiter, forgotPassword);
 router.post("/reset-password", resetPasswordLimiter, resetPassword);
+router.post("/resend-verification", resendVerificationLimiter, resendVerification);
 
 // Login social (OAuth): inicia o fluxo e trata o retorno do provedor.
 router.get("/auth/:provider", iniciarOAuth);

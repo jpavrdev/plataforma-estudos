@@ -25,7 +25,7 @@ export const authService = {
             userId,
             tokenHash: createHash("sha256").update(verificationToken).digest("hex"),
             type: "email_verification",
-            expiredAt: new Date(Date.now() + 24 * 60 * 1000),
+            expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
         });
 
         return verificationToken;
