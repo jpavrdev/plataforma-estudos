@@ -46,9 +46,13 @@ import {
     getCommunityAchievements,
     getRanking,
     getMyStreak,
+    getPublicStats,
 } from "../controllers/TrailController.ts";
 
 const router = Router();
+
+// Números da plataforma para a página inicial, antes de qualquer login.
+router.get("/estatisticas-publicas", getPublicStats);
 
 // Catálogo (admin cria, qualquer logado lê)
 router.post("/trails", autenticar, exigirAdmin, createTrail);

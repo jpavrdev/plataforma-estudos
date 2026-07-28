@@ -37,7 +37,7 @@ export function OAuthCallback() {
             <div className="verify-icon verify-icon--erro">!</div>
             <h1 className="verify-title">Não foi possível entrar</h1>
             <p className="verify-text">Tente novamente pela tela de login.</p>
-            <Link className="btn btn--ghost btn--block" to="/">
+            <Link className="btn btn--ghost btn--block" to="/entrar">
               Voltar ao login
             </Link>
           </>

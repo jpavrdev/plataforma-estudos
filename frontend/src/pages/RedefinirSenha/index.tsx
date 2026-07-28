@@ -65,7 +65,7 @@ export function RedefinirSenha() {
         <>
           <h2 className="auth__title">Senha redefinida!</h2>
           <p className="auth__subtitle">Já pode entrar com a sua nova senha.</p>
-          <Link className="btn btn--accent btn--block" to="/">
+          <Link className="btn btn--accent btn--block" to="/entrar">
             Ir para o login
           </Link>
         </>
@@ -104,7 +104,7 @@ export function RedefinirSenha() {
             </button>
           </form>
           <p className="auth__foot">
-            <Link className="link" to="/">
+            <Link className="link" to="/entrar">
               Voltar ao login
             </Link>
           </p>

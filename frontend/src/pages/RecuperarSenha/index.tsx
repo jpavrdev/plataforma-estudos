@@ -73,7 +73,7 @@ export function RecuperarSenha() {
         <>
           <div className="auth__alert auth__alert--ok">{mensagem}</div>
           <p className="auth__foot">
-            <Link className="link" to="/">
+            <Link className="link" to="/entrar">
               Voltar ao login
             </Link>
           </p>
@@ -111,7 +111,7 @@ export function RecuperarSenha() {
           </div>
           <p className="auth__foot">
             Lembrou a senha?{' '}
-            <Link className="link" to="/">
+            <Link className="link" to="/entrar">
               Voltar ao login
             </Link>
           </p>

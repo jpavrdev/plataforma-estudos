@@ -131,7 +131,7 @@ export function PerfilPublico() {
             <Logo variant="solid" size={20} to="/" />
             <div className="topbar__spacer" />
             <ThemeToggle inline />
-            <Link className="btn btn--ghost" to="/">
+            <Link className="btn btn--ghost" to="/entrar">
               Entrar
             </Link>
           </header>

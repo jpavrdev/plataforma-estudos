@@ -87,7 +87,7 @@ export function Register() {
         gender,
         phone: phone.trim(),
       });
-      navigate('/');
+      navigate('/entrar');
     } catch (e: unknown) {
       // Mapeia os erros conhecidos do backend (409) para o campo certo.
       const msg = mensagemErro(e, 'Erro ao criar conta. Tente novamente.');
@@ -226,7 +226,7 @@ export function Register() {
       </p>
       <p className="auth__foot">
         Já tem conta?{' '}
-        <Link className="link" to="/">
+        <Link className="link" to="/entrar">
           Entrar
         </Link>
       </p>
