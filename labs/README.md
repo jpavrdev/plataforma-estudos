@@ -123,7 +123,34 @@ docker build -t lab-linux labs/image
 docker save lab-linux | DOCKER_HOST=unix:///var/run/docker-labs.sock docker load
 ```
 
-### 5. Confirme que o remap pegou
+### 5. Limite o disco dos labs
+
+Sem isso, um aluno enche o disco do servidor em cerca de um minuto e meio com um
+`dd`, e derruba o Postgres junto. Cota por container (`--storage-opt size=`) não
+resolve aqui: ela exige xfs com `pquota`, e a raiz é ext4. A saída é dar aos labs
+um disco próprio de tamanho fixo, num arquivo montado por loopback.
+
+```bash
+systemctl stop docker-labs
+fallocate -l 10G /var/lib/docker-labs.img
+mkfs.ext4 -q -F /var/lib/docker-labs.img
+mv /var/lib/docker-labs /var/lib/docker-labs.antigo
+mkdir -p /var/lib/docker-labs
+mount -o loop /var/lib/docker-labs.img /var/lib/docker-labs
+cp -a /var/lib/docker-labs.antigo/. /var/lib/docker-labs/ && rm -rf /var/lib/docker-labs.antigo
+echo '/var/lib/docker-labs.img /var/lib/docker-labs ext4 loop,defaults,nofail 0 0' >> /etc/fstab
+systemctl start docker-labs
+```
+
+Não use a opção `discard` na montagem: em arquivo de loopback ela perfura bloco a
+bloco e a escrita fica lenta a ponto de travar. O arquivo cresce até o teto de
+10 GB e para; para devolver ao host o que estiver livre, um `fstrim` periódico
+resolve (há um `fstrim-labs.timer` semanal no servidor).
+
+Confira que o teto pegou: dentro do lab, `df -h /` tem que mostrar o tamanho do
+loopback, não o disco do host.
+
+### 6. Confirme que o remap pegou
 
 É o teste que prova a segurança toda. De dentro o aluno é root; do host, ninguém.
 
@@ -139,13 +166,15 @@ docker rm -f t
 
 | variável | padrão | o que faz |
 |---|---|---|
-| `MAX_SESSOES` | 20 | sessões simultâneas antes de recusar novas |
+| `MAX_SESSOES` | 6 | sessões simultâneas antes de recusar novas (uma por aluno) |
 | `LAB_TTL_MINUTOS` | 45 | tempo de vida da sessão |
 | `LAB_MEMORIA` | 256m | memória por lab |
-| `LAB_CPUS` | 0.5 | CPU por lab |
+| `LAB_CPUS` | 0.25 | CPU por lab; o peso na disputa é baixo, então o app ganha do laboratório |
 | `LAB_DOCKER_HOST` | vazio | socket do daemon dos labs; vazio usa o padrão (só em dev) |
 
 Um shell parado custa de 10 a 20 MB, então o gargalo costuma ser CPU, não memória.
+O teto é conservador de propósito: a máquina tem 2 vCPUs e o Postgres roda nela.
+Melhor recusar a sétima sessão do que deixar o site lento para todo mundo.
 
 ## Limites conhecidos
 

@@ -21,7 +21,11 @@ export function ligarTerminalLabs(server: Server) {
         }
 
         wss.handleUpgrade(req, socket, head, (navegador) => {
-            const lab = new WebSocket(`${env.LABS_URL}/sessao`);
+            // De quem é a sessão vai por cabeçalho na conexão interna, para o
+            // serviço de labs poder limitar uma sessão por aluno.
+            const lab = new WebSocket(`${env.LABS_URL}/sessao`, {
+                headers: { "x-user-id": userId },
+            });
             // O que o aluno digita antes do lab responder o handshake não pode
             // sumir, senão a primeira tecla se perde.
             const pendentes: Array<Buffer | string> = [];
