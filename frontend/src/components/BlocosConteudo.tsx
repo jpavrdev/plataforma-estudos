@@ -1,4 +1,4 @@
-import { useMemo, useRef, type ReactNode } from 'react';
+import { useMemo, useRef, lazy, Suspense, type ReactNode } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -6,6 +6,9 @@ import rehypeKatex from 'rehype-katex';
 import { parseGrid } from '../utils/tabela';
 import { glossariar, criarMatcher } from './Glossario';
 import { useGlossario } from '../hooks/useGlossario';
+
+// O xterm pesa, e só as aulas com laboratório precisam dele.
+const TerminalLab = lazy(() => import('./TerminalLab').then((m) => ({ default: m.TerminalLab })));
 
 // Bloco genérico de conteúdo (aulas e desafios usam o mesmo formato).
 export interface Bloco {
@@ -128,6 +131,13 @@ export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
               />
             </div>
           ) : null;
+        }
+        if (b.type === 'terminal') {
+          return (
+            <Suspense key={i} fallback={<div className="lesson__loading">Carregando...</div>}>
+              <TerminalLab />
+            </Suspense>
+          );
         }
         if (b.type === 'quote') {
           return <blockquote key={i}>{citacaoInline(b.value)}</blockquote>;

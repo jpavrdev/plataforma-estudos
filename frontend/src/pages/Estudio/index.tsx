@@ -28,6 +28,7 @@ const BLOCO_TIPOS: { type: BlocoTipo; icon: string; label: string }[] = [
   { type: 'video', icon: '▷', label: 'Vídeo' },
   { type: 'quote', icon: '❝', label: 'Citação' },
   { type: 'table', icon: '▦', label: 'Tabela' },
+  { type: 'terminal', icon: '>_', label: 'Laboratório' },
 ];
 const BLOCO_LABEL: Record<BlocoTipo, string> = {
   text: 'Texto',
@@ -36,6 +37,7 @@ const BLOCO_LABEL: Record<BlocoTipo, string> = {
   video: 'Vídeo',
   quote: 'Citação',
   table: 'Tabela',
+  terminal: 'Laboratório',
 };
 const DIFFS: { value: QuestionDifficulty; label: string }[] = [
   { value: 'facil', label: 'Fácil' },
@@ -329,7 +331,10 @@ export function Estudio() {
               </span>
             )}
             {aula && (
-              <Link className="btn btn--ghost studio__btn" to={`/trilhas/${trailId}/aula/${aula.id}`}>
+              <Link
+                className="btn btn--ghost studio__btn"
+                to={`/trilhas/${trailId}/aula/${aula.id}`}
+              >
                 <Eye size={15} /> Pré-visualizar
               </Link>
             )}
@@ -475,7 +480,12 @@ export function Estudio() {
                         <Trash size={15} />
                       </button>
                     </div>
-                    {b.type === 'table' ? (
+                    {b.type === 'terminal' ? (
+                      <p className="studio__section-sub" style={{ margin: 0 }}>
+                        Terminal Linux para o aluno praticar. Não tem conteúdo a preencher: basta
+                        posicionar o bloco onde o laboratório deve aparecer na aula.
+                      </p>
+                    ) : b.type === 'table' ? (
                       <TabelaEditor value={b.value} onChange={(v) => setBloco(i, v)} />
                     ) : b.type === 'image' || b.type === 'video' ? (
                       <input

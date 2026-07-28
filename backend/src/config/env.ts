@@ -20,6 +20,8 @@ const envSchema = z.object({
     OAUTH_CALLBACK_BASE: z.string().url().default("http://localhost:3001"),
     // Serviço interno que executa o código dos desafios em containers isolados.
     RUNNER_URL: z.string().url().default("http://runner:8080"),
+    // Serviço interno dos laboratórios de Linux (terminal por WebSocket).
+    LABS_URL: z.string().default("ws://labs:8090"),
     // Envio de email por SMTP (opcional). Sem host/user/pass, o backend só loga o link.
     SMTP_HOST: z.string().optional(),
     SMTP_PORT: z.string().default("587"),

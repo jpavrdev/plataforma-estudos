@@ -1,0 +1,82 @@
+/* Laboratório de Linux dentro da aula. O terminal em si é desenhado pelo xterm;
+   aqui fica só a moldura, que acompanha o visual dos blocos de código. */
+.lab {
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  background: var(--surface);
+  overflow: hidden;
+  margin: 0 0 26px;
+}
+.lab__barra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.lab__titulo {
+  font-weight: 600;
+  font-size: 14px;
+}
+.lab__estado {
+  font-family: var(--font-code);
+  font-size: 11.5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--input);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.lab__estado--ligado {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+}
+.lab__estado--erro {
+  color: #d9536b;
+  border-color: color-mix(in srgb, #d9536b 45%, transparent);
+}
+.lab__botao {
+  margin-left: auto;
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  flex: none;
+}
+.lab__aviso {
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.lab__vazio {
+  padding: 26px 20px;
+}
+.lab__vazio p {
+  margin: 0;
+  max-width: 46em;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+.lab__vazio code {
+  margin: 0 4px;
+}
+.lab__tela {
+  height: 420px;
+  padding: 12px;
+  background: #1b1726;
+}
+[data-theme='dark'] .lab__tela {
+  background: #0d1320;
+}
+@media (max-width: 640px) {
+  .lab__tela {
+    height: 320px;
+    padding: 8px;
+  }
+  .lab__barra {
+    flex-wrap: wrap;
+  }
+}
