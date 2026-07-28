@@ -2600,7 +2600,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída do código abaixo?\n\nestoque = {\"caderno\": \"cheio\", \"lapis\": \"baixo\"}\nfor item in estoque:\n    print(item)",
+                        "statement": "Qual é a saída do código abaixo?\n\n```\nestoque = {\"caderno\": \"cheio\", \"lapis\": \"baixo\"}\nfor item in estoque:\n    print(item)\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2912,7 +2912,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída do código abaixo?\n\nprodutos = [\n    {\"nome\": \"Caneta\", \"preco\": 2.0},\n    {\"nome\": \"Caderno\", \"preco\": 15.0},\n    {\"nome\": \"Lapis\", \"preco\": 1.5},\n]\nbaratos = [produto[\"nome\"] for produto in produtos if produto[\"preco\"] < 5]\nprint(baratos)",
+                        "statement": "Qual é a saída do código abaixo?\n\n```\nprodutos = [\n    {\"nome\": \"Caneta\", \"preco\": 2.0},\n    {\"nome\": \"Caderno\", \"preco\": 15.0},\n    {\"nome\": \"Lapis\", \"preco\": 1.5},\n]\nbaratos = [produto[\"nome\"] for produto in produtos if produto[\"preco\"] < 5]\nprint(baratos)\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -2996,7 +2996,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime?\n\ndef triplo(n):\n    return n * 3\n\nprint(triplo(4))",
+                        "statement": "O que este código imprime?\n\n```\ndef triplo(n):\n    return n * 3\n\nprint(triplo(4))\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -3040,7 +3040,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Este código chama cumprimenta(\"Rio\") e depois faz print(resultado). O que a última linha imprime?\n\ndef cumprimenta(nome):\n    print(f\"Olá, {nome}\")\n\nresultado = cumprimenta(\"Rio\")\nprint(resultado)",
+                        "statement": "Este código chama cumprimenta(\"Rio\") e depois faz print(resultado). O que a última linha imprime?\n\n```\ndef cumprimenta(nome):\n    print(f\"Olá, {nome}\")\n\nresultado = cumprimenta(\"Rio\")\nprint(resultado)\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3062,7 +3062,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime?\n\ndef checar(n):\n    if n < 0:\n        return \"negativo\"\n    return \"positivo\"\n    print(\"depois do return\")\n\nprint(checar(-5))",
+                        "statement": "O que este código imprime?\n\n```\ndef checar(n):\n    if n < 0:\n        return \"negativo\"\n    return \"positivo\"\n    print(\"depois do return\")\n\nprint(checar(-5))\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3141,7 +3141,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime?\n\ndef apresentar(nome, cidade):\n    print(f\"{nome} mora em {cidade}\")\n\napresentar(cidade=\"Recife\", nome=\"Bia\")",
+                        "statement": "O que este código imprime?\n\n```\ndef apresentar(nome, cidade):\n    print(f\"{nome} mora em {cidade}\")\n\napresentar(cidade=\"Recife\", nome=\"Bia\")\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -3185,7 +3185,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime?\n\ndef multiplicar_tudo(*numeros):\n    resultado = 1\n    for n in numeros:\n        resultado *= n\n    return resultado\n\nprint(multiplicar_tudo(2, 3, 4))",
+                        "statement": "O que este código imprime?\n\n```\ndef multiplicar_tudo(*numeros):\n    resultado = 1\n    for n in numeros:\n        resultado *= n\n    return resultado\n\nprint(multiplicar_tudo(2, 3, 4))\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3207,7 +3207,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime?\n\ndef registrar(local, *valores):\n    print(local, valores)\n\nregistrar(\"SP\", 10, 20, 30)",
+                        "statement": "O que este código imprime?\n\n```\ndef registrar(local, *valores):\n    print(local, valores)\n\nregistrar(\"SP\", 10, 20, 30)\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3286,7 +3286,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime, na ordem?\n\nx = 10\n\ndef mostrar():\n    x = 20\n    print(x)\n\nmostrar()\nprint(x)",
+                        "statement": "O que este código imprime, na ordem?\n\n```\nx = 10\n\ndef mostrar():\n    x = 20\n    print(x)\n\nmostrar()\nprint(x)\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -3352,7 +3352,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime, na ordem?\n\ndef dobrar_lista(numeros):\n    novos = []\n    for n in numeros:\n        novos.append(n * 2)\n    return novos\n\nvalores = [1, 2, 3]\nresultado = dobrar_lista(valores)\nprint(valores)\nprint(resultado)",
+                        "statement": "O que este código imprime, na ordem?\n\n```\ndef dobrar_lista(numeros):\n    novos = []\n    for n in numeros:\n        novos.append(n * 2)\n    return novos\n\nvalores = [1, 2, 3]\nresultado = dobrar_lista(valores)\nprint(valores)\nprint(resultado)\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3497,7 +3497,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O que este código imprime?\n\nfrom math import sqrt\n\ndef sqrt(x):\n    return \"raiz de \" + str(x)\n\nprint(sqrt(9))",
+                        "statement": "O que este código imprime?\n\n```\nfrom math import sqrt\n\ndef sqrt(x):\n    return \"raiz de \" + str(x)\n\nprint(sqrt(9))\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3744,7 +3744,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considere o código:\n\nwith open(\"notas.txt\", \"w\") as arquivo:\n    arquivo.write(\"Ana\\n\")\n    arquivo.write(\"Bruno\\n\")\n\nwith open(\"notas.txt\", \"r\") as arquivo:\n    conteudo = arquivo.read()\n\nprint(conteudo)\n\nQual é a saída deste trecho?",
+                        "statement": "Considere o código:\n\n```\nwith open(\"notas.txt\", \"w\") as arquivo:\n    arquivo.write(\"Ana\\n\")\n    arquivo.write(\"Bruno\\n\")\n\nwith open(\"notas.txt\", \"r\") as arquivo:\n    conteudo = arquivo.read()\n\nprint(conteudo)\n```\n\nQual é a saída deste trecho?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3889,7 +3889,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considere o código:\n\nimport csv\n\nwith open(\"alunos.csv\", \"r\") as arquivo:\n    leitor = csv.reader(arquivo)\n    cabecalho = next(leitor)\n    for linha in leitor:\n        print(linha[0])\n\nO arquivo alunos.csv tem o cabeçalho nome,idade,cidade seguido pelas linhas de Ana, Bruno e Carla. Qual é a saída deste trecho?",
+                        "statement": "Considere o código:\n\n```\nimport csv\n\nwith open(\"alunos.csv\", \"r\") as arquivo:\n    leitor = csv.reader(arquivo)\n    cabecalho = next(leitor)\n    for linha in leitor:\n        print(linha[0])\n```\n\nO arquivo alunos.csv tem o cabeçalho nome,idade,cidade seguido pelas linhas de Ana, Bruno e Carla. Qual é a saída deste trecho?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -4034,7 +4034,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considere o código:\n\ntry:\n    numeros = [10, 20, 30]\n    print(numeros[5])\nexcept IndexError:\n    print(\"indice invalido\")\nexcept ValueError:\n    print(\"valor invalido\")\nelse:\n    print(\"tudo certo\")\nfinally:\n    print(\"fim da tentativa\")\n\nQual é a saída deste trecho?",
+                        "statement": "Considere o código:\n\n```\ntry:\n    numeros = [10, 20, 30]\n    print(numeros[5])\nexcept IndexError:\n    print(\"indice invalido\")\nexcept ValueError:\n    print(\"valor invalido\")\nelse:\n    print(\"tudo certo\")\nfinally:\n    print(\"fim da tentativa\")\n```\n\nQual é a saída deste trecho?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -4179,7 +4179,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considere o código:\n\nclass Produto:\n    def __init__(self, nome, preco):\n        self.nome = nome\n        self.preco = preco\n\np1 = Produto(\"Caderno\", 12.0)\np2 = Produto(\"Caneta\", 3.0)\np1.preco = 15.0\n\nprint(p1.preco, p2.preco)\n\nQual é a saída deste trecho?",
+                        "statement": "Considere o código:\n\n```\nclass Produto:\n    def __init__(self, nome, preco):\n        self.nome = nome\n        self.preco = preco\n\np1 = Produto(\"Caderno\", 12.0)\np2 = Produto(\"Caneta\", 3.0)\np1.preco = 15.0\n\nprint(p1.preco, p2.preco)\n```\n\nQual é a saída deste trecho?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -4324,7 +4324,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considere o código:\n\ntotal = 0\nvalidos = 0\nvalores = [\"10\", \"vinte\", \"30\"]\n\nfor texto in valores:\n    try:\n        numero = int(texto)\n    except ValueError:\n        print(\"ignorado\")\n    else:\n        total += numero\n        validos += 1\n\nprint(total, validos)\n\nQual é a saída deste trecho?",
+                        "statement": "Considere o código:\n\n```\ntotal = 0\nvalidos = 0\nvalores = [\"10\", \"vinte\", \"30\"]\n\nfor texto in valores:\n    try:\n        numero = int(texto)\n    except ValueError:\n        print(\"ignorado\")\n    else:\n        total += numero\n        validos += 1\n\nprint(total, validos)\n```\n\nQual é a saída deste trecho?",
                         "difficulty": "medio",
                         "options": [
                             {

@@ -5,8 +5,9 @@
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
+import { pathToFileURL } from "node:url";
 
-const NOME = "Go";
+export const NOME = "Go";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "iniciante";
 const DESCRICAO =
     "A linguagem Go (Golang) do zero ao avançado: sintaxe e tipos, controle de fluxo, funções com múltiplos retornos, slices e maps, structs e métodos, interfaces implícitas, tratamento de erros e ponteiros, e a concorrência com goroutines e channels. A linguagem por trás de Docker, Kubernetes e serviços de nuvem de grande escala.";
@@ -70,6 +71,26 @@ const MODULO_1: Modulo = {
                         { text: "Exclusivamente editores de imagem", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Por quem e em que ano a linguagem Go foi criada?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "No Google, lançada em 2009", isCorrect: true },
+                        { text: "Na Microsoft, lançada em 2001", isCorrect: false },
+                        { text: "Na Sun Microsystems, nos anos 90", isCorrect: false },
+                        { text: "Na Apple, lançada em 2014", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o papel da ferramenta gofmt no dia a dia?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Traduzir o código Go para a linguagem C", isCorrect: false },
+                        { text: "Detectar todos os bugs lógicos do programa", isCorrect: false },
+                        { text: "Padronizar a formatação do código automaticamente", isCorrect: true },
+                        { text: "Gerenciar as versões das bibliotecas externas do projeto", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -123,6 +144,26 @@ const MODULO_1: Modulo = {
                         { text: "Compilar o programa em um executável", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que o comando 'go build ola.go' faz?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Gera o executável, que você roda depois", isCorrect: true },
+                        { text: "Compila e já executa o programa na hora", isCorrect: false },
+                        { text: "Formata o arquivo de código automaticamente", isCorrect: false },
+                        { text: "Apaga o executável criado anteriormente", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Sobre o ponto e vírgula ao fim das linhas em Go, o que é correto?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "É obrigatório ao fim de toda e qualquer instrução", isCorrect: false },
+                        { text: "Não é necessário; a ferramenta cuida disso", isCorrect: true },
+                        { text: "Só é exigido dentro da função main", isCorrect: false },
+                        { text: "Serve para separar os imports entre si", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -174,6 +215,26 @@ const MODULO_1: Modulo = {
                         { text: "Porque toda função em Go começa com maiúscula", isCorrect: false },
                         { text: "Porque a maiúscula acelera a execução da função", isCorrect: false },
                         { text: "Porque Println é uma palavra reservada da linguagem", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Um pacote com nome diferente de main produz o quê?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Uma biblioteca, feita para ser importada", isCorrect: true },
+                        { text: "Um executável pronto para rodar sozinho no sistema", isCorrect: false },
+                        { text: "Um erro, pois todo pacote deve ser main", isCorrect: false },
+                        { text: "Um arquivo de configuração do projeto", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "A função validar do exemplo, com inicial minúscula, pode ser usada onde?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Por qualquer pacote que a importe", isCorrect: false },
+                        { text: "Apenas pelo pacote main do programa", isCorrect: false },
+                        { text: "Só dentro do próprio pacote onde vive", isCorrect: true },
+                        { text: "De qualquer lugar, como toda função em Go", isCorrect: false },
                     ],
                 },
             ],
@@ -235,6 +296,26 @@ const MODULO_2: Modulo = {
                         { text: "O compilador troca a variável por outra automaticamente", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual é o zero value de um slice, um map ou um ponteiro declarados sem valor?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "nil", isCorrect: true },
+                        { text: "0", isCorrect: false },
+                        { text: "Uma string vazia", isCorrect: false },
+                        { text: "false", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Além de variáveis não usadas, o que mais causa erro de compilação em Go?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Usar a forma := dentro de uma função", isCorrect: false },
+                        { text: "Declarar uma variável usando var", isCorrect: false },
+                        { text: "Um import declarado e não utilizado", isCorrect: true },
+                        { text: "Deixar uma variável receber o zero value", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -292,6 +373,26 @@ const MODULO_2: Modulo = {
                         { text: "int e float64 são exatamente o mesmo tipo em Go", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que o tipo rune representa em Go?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um caractere Unicode, apelido de int32", isCorrect: true },
+                        { text: "Um número decimal de altíssima precisão", isCorrect: false },
+                        { text: "Uma cadeia de vários caracteres de texto", isCorrect: false },
+                        { text: "Um valor booleano guardado em um só bit", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o resultado de int(3.9) em Go?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "4, pois arredonda para cima sempre", isCorrect: false },
+                        { text: "3, pois trunca a parte decimal", isCorrect: true },
+                        { text: "3.9, mantendo o valor original", isCorrect: false },
+                        { text: "Um erro de conversão inválida", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -343,6 +444,26 @@ const MODULO_2: Modulo = {
                         { text: "Println não existe no pacote fmt do Go", isCorrect: false },
                         { text: "Printf só imprime números, nunca textos", isCorrect: false },
                         { text: "Println exige uma string de formato obrigatória", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o operador % faz em Go, como em 'a % b'?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Devolve o resto da divisão", isCorrect: true },
+                        { text: "Calcula a porcentagem de a", isCorrect: false },
+                        { text: "Eleva a à potência de b", isCorrect: false },
+                        { text: "Divide a por b como decimal", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a expressão 'x := i++' é inválida em Go?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Porque o Go não tem operador de incremento", isCorrect: false },
+                        { text: "Porque só se pode incrementar dentro de um for", isCorrect: false },
+                        { text: "Porque i++ só funciona com números decimais", isCorrect: false },
+                        { text: "Porque i++ é uma instrução, não uma expressão", isCorrect: true },
                     ],
                 },
             ],
@@ -404,6 +525,26 @@ const MODULO_3: Modulo = {
                         { text: "Em nenhum lugar, pois a sintaxe é inválida", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "No switch do Go, o que a palavra fallthrough faz?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Encerra o switch naquele ponto de imediato", isCorrect: false },
+                        { text: "Faz a execução cair para o próximo case", isCorrect: true },
+                        { text: "Repete o case atual mais uma vez", isCorrect: false },
+                        { text: "Pula direto para o bloco default", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No switch, quando o bloco default é executado?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Sempre, antes de qualquer outro case", isCorrect: false },
+                        { text: "Sempre, logo depois do primeiro case", isCorrect: false },
+                        { text: "Nunca, pois é apenas decorativo", isCorrect: false },
+                        { text: "Quando nenhum outro caso combina", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -453,6 +594,26 @@ const MODULO_3: Modulo = {
                         { text: "Um laço que executa exatamente uma vez", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Na forma clássica 'for i := 0; i < 5; i++', quais são as três partes?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Início, meio e fim do laço", isCorrect: false },
+                        { text: "Inicialização, condição e passo", isCorrect: true },
+                        { text: "Tipo, nome e valor da variável", isCorrect: false },
+                        { text: "Condição, corpo e retorno do laço", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que interrompe um laço 'for { ... }' infinito?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A instrução while", isCorrect: false },
+                        { text: "A palavra loop", isCorrect: false },
+                        { text: "A instrução break", isCorrect: true },
+                        { text: "A instrução stop", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -500,6 +661,26 @@ const MODULO_3: Modulo = {
                         { text: "Porque o range não funciona sem o identificador _", isCorrect: false },
                         { text: "Porque o _ acelera a execução do laço", isCorrect: false },
                         { text: "Porque sem o _ o valor viria sempre vazio", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Sobre quais tipos o for...range pode iterar, segundo a aula?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apenas slices de inteiros", isCorrect: false },
+                        { text: "Somente maps com chave string", isCorrect: false },
+                        { text: "Apenas strings e nada além", isCorrect: false },
+                        { text: "Slice, array, string e map", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Para pegar só o valor de cada elemento com range, como se escreve?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "for v := range slice", isCorrect: false },
+                        { text: "for _, v := range slice", isCorrect: true },
+                        { text: "for v, _ := range slice", isCorrect: false },
+                        { text: "for range slice", isCorrect: false },
                     ],
                 },
             ],
@@ -557,6 +738,26 @@ const MODULO_4: Modulo = {
                         { text: "Do fall-through automático do switch", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Como escrever, de forma abreviada, dois parâmetros int seguidos?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "func somar(int a, int b)", isCorrect: false },
+                        { text: "func somar(a: int, b: int)", isCorrect: false },
+                        { text: "func somar(a, b int)", isCorrect: true },
+                        { text: "func somar(a int, b)", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No exemplo, o que a função 'dividir(a, b int) (int, int)' devolve?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apenas o quociente da divisão inteira", isCorrect: false },
+                        { text: "O quociente e o resto da divisão", isCorrect: true },
+                        { text: "Apenas o resto da divisão inteira", isCorrect: false },
+                        { text: "A soma e o produto entre a e b", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -606,6 +807,26 @@ const MODULO_4: Modulo = {
                         { text: "Encerra o programa inteiro imediatamente", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Por que o fmt.Println aceita quantos argumentos você quiser?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Porque converte tudo em uma só string antes", isCorrect: false },
+                        { text: "Porque só aceita um argumento por vez", isCorrect: false },
+                        { text: "Porque ignora todos os argumentos extras", isCorrect: false },
+                        { text: "Porque é uma função variádica", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Com retornos nomeados, o que os nomes na assinatura se tornam dentro da função?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Constantes que não podem mudar de valor", isCorrect: false },
+                        { text: "Variáveis já prontas para uso", isCorrect: true },
+                        { text: "Novos parâmetros de entrada da função", isCorrect: false },
+                        { text: "Apenas rótulos sem efeito no código", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -653,6 +874,26 @@ const MODULO_4: Modulo = {
                         { text: "Só podem ser declaradas dentro do pacote main", isCorrect: false },
                         { text: "Precisam sempre devolver vários valores de uma vez", isCorrect: false },
                         { text: "Não podem ter nenhum parâmetro de entrada", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Com vários defer em uma função, em que ordem eles são executados?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Na mesma ordem em que foram escritos", isCorrect: false },
+                        { text: "Na ordem inversa, o último primeiro", isCorrect: true },
+                        { text: "Todos de uma vez, ao mesmo tempo", isCorrect: false },
+                        { text: "Em ordem aleatória a cada execução", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que é uma função anônima em Go?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Uma função sem nenhum parâmetro", isCorrect: false },
+                        { text: "Uma função que não devolve valor algum", isCorrect: false },
+                        { text: "Uma função privada de um pacote", isCorrect: false },
+                        { text: "Uma função criada na hora, sem nome", isCorrect: true },
                     ],
                 },
             ],
@@ -714,6 +955,26 @@ const MODULO_5: Modulo = {
                         { text: "[30 40], pois conta a partir do fim", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que a função len faz com um slice?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Acrescenta um elemento a ele", isCorrect: false },
+                        { text: "Remove o último elemento dele", isCorrect: false },
+                        { text: "Devolve o seu tamanho", isCorrect: true },
+                        { text: "Ordena os elementos dele", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que escrevemos 'numeros = append(numeros, 40)', reatribuindo a numeros?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Porque sem a reatribuição o código não compilaria", isCorrect: false },
+                        { text: "Porque append devolve um novo slice pronto", isCorrect: true },
+                        { text: "Porque append apaga o slice antigo da memória", isCorrect: false },
+                        { text: "Porque append só funciona dentro de um for", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -763,6 +1024,26 @@ const MODULO_5: Modulo = {
                         { text: "Nada, pois toda atribuição já copia tudo", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que você informa ao criar um slice com make?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apenas o nome da variável", isCorrect: false },
+                        { text: "O tipo e o tamanho inicial", isCorrect: true },
+                        { text: "Somente os valores já prontos", isCorrect: false },
+                        { text: "A ordem de classificação dos dados", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No exemplo, após 'fatia := original[:2]' e 'fatia[0] = 99', o que ocorre com original?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Ele continua totalmente inalterado", isCorrect: false },
+                        { text: "Ele é apagado da memória por completo", isCorrect: false },
+                        { text: "Ele passa a ser uma cópia isolada", isCorrect: false },
+                        { text: "Seu primeiro elemento também vira 99", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -810,6 +1091,26 @@ const MODULO_5: Modulo = {
                         { text: "Comparar o valor com null diretamente", isCorrect: false },
                         { text: "Usar a função len sobre a chave", isCorrect: false },
                         { text: "Percorrer o map inteiro com um for a cada acesso", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual função remove uma chave de um map em Go?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "remove", isCorrect: false },
+                        { text: "pop", isCorrect: false },
+                        { text: "delete", isCorrect: true },
+                        { text: "clear", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No idioma comma-ok 'valor, existe := m[chave]', o que é 'existe'?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O total de chaves guardadas no map", isCorrect: false },
+                        { text: "Um bool que diz se a chave existia", isCorrect: true },
+                        { text: "A posição da chave dentro do map", isCorrect: false },
+                        { text: "Uma cópia do valor da chave anterior", isCorrect: false },
                     ],
                 },
             ],
@@ -867,6 +1168,26 @@ const MODULO_6: Modulo = {
                         { text: "É removido da struct automaticamente", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que o Go NÃO possui, o que leva ao uso de structs?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Funções com vários parâmetros de entrada", isCorrect: false },
+                        { text: "Classes e herança tradicionais", isCorrect: true },
+                        { text: "Tipos numéricos como o int", isCorrect: false },
+                        { text: "Laços de repetição como o for", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em uma struct, um campo cujo nome começa com letra minúscula é:",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Exportado e visível de qualquer pacote", isCorrect: false },
+                        { text: "Sempre ignorado quando se cria a struct", isCorrect: false },
+                        { text: "Convertido automaticamente em um método", isCorrect: false },
+                        { text: "Privado ao pacote onde a struct vive", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -920,6 +1241,26 @@ const MODULO_6: Modulo = {
                         { text: "Converte x para o tipo ponteiro texto", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que o operador * faz em '*p', quando p é um ponteiro?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cria um novo ponteiro para p", isCorrect: false },
+                        { text: "Acessa o valor apontado por p", isCorrect: true },
+                        { text: "Devolve o endereço de memória de p", isCorrect: false },
+                        { text: "Multiplica p por ele mesmo", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Com um receiver de valor, como '(p Pessoa)', o que ocorre ao alterar um campo no método?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O original é alterado junto com a cópia recebida", isCorrect: false },
+                        { text: "Ocorre um erro de compilação na hora", isCorrect: false },
+                        { text: "A mudança fica só na cópia local", isCorrect: true },
+                        { text: "O método passa a devolver um ponteiro", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -967,6 +1308,26 @@ const MODULO_6: Modulo = {
                         { text: "Herança profunda de muitas classes", isCorrect: false },
                         { text: "Ausência total de reúso de código", isCorrect: false },
                         { text: "Cópia manual de comportamento entre tipos", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que caracteriza o embedding em uma struct Go?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Copiar todos os campos de outra struct manualmente", isCorrect: false },
+                        { text: "Declarar um tipo dentro de outro sem nomeá-lo", isCorrect: true },
+                        { text: "Herdar de uma classe base com a palavra extends", isCorrect: false },
+                        { text: "Guardar várias structs dentro de um único slice", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que 'rex.Comer()' funciona, mesmo Comer sendo método de Animal?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Porque o embedding faz o método subir", isCorrect: true },
+                        { text: "Porque Comer foi reescrito dentro do Cachorro", isCorrect: false },
+                        { text: "Porque todo método em Go é global ao programa", isCorrect: false },
+                        { text: "Porque Cachorro herda de Animal usando extends", isCorrect: false },
                     ],
                 },
             ],
@@ -1024,6 +1385,26 @@ const MODULO_7: Modulo = {
                         { text: "Eliminam a necessidade de escrever métodos", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual palavra-chave o Go usa para declarar que um tipo implementa uma interface?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A palavra-chave implements, antes do tipo", isCorrect: false },
+                        { text: "A palavra-chave extends, como em Java", isCorrect: false },
+                        { text: "Nenhuma; a satisfação é implícita", isCorrect: true },
+                        { text: "A palavra-chave interface no tipo", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O acoplamento fraco das interfaces do Go permite que:",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Dois tipos jamais compartilhem um mesmo método", isCorrect: false },
+                        { text: "Um pacote use tipos de outro que a satisfaçam", isCorrect: true },
+                        { text: "Interfaces guardem campos de dados também", isCorrect: false },
+                        { text: "Um tipo troque de interface ao ser executado", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1073,6 +1454,26 @@ const MODULO_7: Modulo = {
                         { text: "Interfaces que só contêm campos de dados", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que um tipo controla ao implementar a interface Stringer, com String() string?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A ordem dos seus campos na memória", isCorrect: false },
+                        { text: "Como ele é impresso pelo pacote fmt", isCorrect: true },
+                        { text: "A velocidade de compilação do programa", isCorrect: false },
+                        { text: "Quais pacotes conseguem importá-lo", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Ao receber uma interface, a função chama o método:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apenas se souber o tipo concreto exato", isCorrect: false },
+                        { text: "Somente para valores do tipo string informado", isCorrect: false },
+                        { text: "Sem saber o tipo concreto por trás", isCorrect: true },
+                        { text: "Depois de converter tudo em um map", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1120,6 +1521,26 @@ const MODULO_7: Modulo = {
                         { text: "Para acelerar a conversão entre os tipos", isCorrect: false },
                         { text: "Porque a asserção não funciona sem duas variáveis", isCorrect: false },
                         { text: "Para transformar o valor em uma interface vazia", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No Go moderno, qual palavra é sinônimo de interface{}?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "object", isCorrect: false },
+                        { text: "any", isCorrect: true },
+                        { text: "void", isCorrect: false },
+                        { text: "var", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para tratar vários tipos possíveis de um valor em interface, o Go oferece:",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Um laço for sobre todos os tipos possíveis", isCorrect: false },
+                        { text: "A conversão automática entre os tipos", isCorrect: false },
+                        { text: "Um bloco try seguido de um catch", isCorrect: false },
+                        { text: "O type switch, que age pelo tipo dinâmico", isCorrect: true },
                     ],
                 },
             ],
@@ -1181,6 +1602,26 @@ const MODULO_8: Modulo = {
                         { text: "O Go não permite devolver um error", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O tipo error em Go é, na verdade:",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Uma struct com vários campos de texto", isCorrect: false },
+                        { text: "Uma interface com o método Error() string", isCorrect: true },
+                        { text: "Um tipo numérico que guarda um código", isCorrect: false },
+                        { text: "Uma palavra-chave reservada da linguagem Go", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Um valor de error diferente de nil indica que:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A operação foi um sucesso total", isCorrect: false },
+                        { text: "O programa ainda está compilando", isCorrect: false },
+                        { text: "Houve uma falha na operação", isCorrect: true },
+                        { text: "O resultado deve ser ignorado sempre", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1230,6 +1671,26 @@ const MODULO_8: Modulo = {
                         { text: "Converter o erro em uma string sem tipo definido", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Quando usar fmt.Errorf em vez de errors.New?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Quando o erro não tiver texto nenhum", isCorrect: false },
+                        { text: "Quando quiser montar a mensagem com valores", isCorrect: true },
+                        { text: "Quando quiser encerrar o programa na mesma hora", isCorrect: false },
+                        { text: "Quando não existir erro algum de fato", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que significa 'propagar' um erro em Go?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apagá-lo em silêncio e seguir em frente normalmente", isCorrect: false },
+                        { text: "Transformá-lo em um panic imediato", isCorrect: false },
+                        { text: "Guardá-lo em uma variável global", isCorrect: false },
+                        { text: "Devolvê-lo para cima, a quem chamou", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -1277,6 +1738,26 @@ const MODULO_8: Modulo = {
                         { text: "Panic para tudo, evitando retornar erros", isCorrect: false },
                         { text: "Erros e panic são intercambiáveis, tanto faz", isCorrect: false },
                         { text: "Nunca tratar erros, deixando o programa cair", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que um panic faz ao fluxo do programa?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Continua o fluxo como se nada tivesse ocorrido", isCorrect: false },
+                        { text: "Interrompe o fluxo normal e desmonta a pilha", isCorrect: true },
+                        { text: "Reinicia o programa a partir do main", isCorrect: false },
+                        { text: "Ignora a linha atual e segue adiante", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o efeito do recover ao capturar um panic?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Faz o panic acontecer mais uma vez", isCorrect: false },
+                        { text: "Converte o panic em um erro ainda pior", isCorrect: false },
+                        { text: "Impede que o panic derrube o programa", isCorrect: true },
+                        { text: "Encerra o programa de forma imediata", isCorrect: false },
                     ],
                 },
             ],
@@ -1338,6 +1819,26 @@ const MODULO_9: Modulo = {
                         { text: "O main nunca termina enquanto houver goroutines", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual é a distinção que o Go faz entre concorrência e paralelismo?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Paralelismo é sempre mais lento do que a concorrência em Go", isCorrect: false },
+                        { text: "Concorrência estrutura tarefas; paralelismo as executa", isCorrect: true },
+                        { text: "As duas palavras significam exatamente a mesma coisa", isCorrect: false },
+                        { text: "Concorrência exige vários núcleos de processador", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quem gerencia as goroutines em execução?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O sistema operacional sozinho", isCorrect: false },
+                        { text: "O programador, manualmente, linha a linha", isCorrect: false },
+                        { text: "O runtime do próprio Go", isCorrect: true },
+                        { text: "O compilador, antes de o programa rodar", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1385,6 +1886,26 @@ const MODULO_9: Modulo = {
                         { text: "Criar um novo channel com um buffer bem maior", isCorrect: false },
                         { text: "Fechar todos os channels do programa de uma vez só", isCorrect: false },
                         { text: "Converter um channel em um slice de valores", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual operador envia e recebe valores em um channel?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O sinal de igual =", isCorrect: false },
+                        { text: "A seta <-", isCorrect: true },
+                        { text: "Os dois pontos e igual :=", isCorrect: false },
+                        { text: "O operador de soma +", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em um channel sem buffer, o que acontece com quem tenta receber antes de haver envio?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Recebe o zero value do tipo naquele instante", isCorrect: false },
+                        { text: "Recebe um erro, e o programa para", isCorrect: false },
+                        { text: "Segue adiante sem receber nada", isCorrect: false },
+                        { text: "Fica bloqueado até que alguém envie", isCorrect: true },
                     ],
                 },
             ],
@@ -1436,12 +1957,32 @@ const MODULO_9: Modulo = {
                         { text: "Erros não têm relação com o fluxo do programa", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual pacote padrão a aula sugere para escrever testes em Go?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "assert", isCorrect: false },
+                        { text: "junit", isCorrect: false },
+                        { text: "testing", isCorrect: true },
+                        { text: "quicktest", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Segundo a aula, qual pacote padrão serve para construir uma API HTTP simples?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "web/server", isCorrect: false },
+                        { text: "net/http", isCorrect: true },
+                        { text: "http/router", isCorrect: false },
+                        { text: "fmt/web", isCorrect: false },
+                    ],
+                },
             ],
         },
     ],
 };
 
-const MODULOS: Modulo[] = [
+export const MODULOS: Modulo[] = [
     MODULO_1,
     MODULO_2,
     MODULO_3,
@@ -1520,9 +2061,13 @@ async function seed() {
     );
 }
 
-seed()
-    .then(() => process.exit(0))
-    .catch((e) => {
-        console.error("Falha no seed:", e);
-        process.exit(1);
-    });
+// Só semeia quando executado direto. Se for importado (ex.: sincronizar-questoes-trilha),
+// expõe MODULOS/NOME sem rodar o seed nem chamar process.exit.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    seed()
+        .then(() => process.exit(0))
+        .catch((e) => {
+            console.error("Falha no seed:", e);
+            process.exit(1);
+        });
+}

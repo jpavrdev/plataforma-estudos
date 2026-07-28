@@ -1520,7 +1520,7 @@ const MODULOS: Modulo[] = [
                 ],
                 "questions": [
                     {
-                        "statement": "Qual é a saída no console deste código?\n\nlet nota = 7;\n\nif (nota >= 6) {\n  console.log(\"Aprovado\");\n}\n\nconsole.log(\"Fim\");",
+                        "statement": "Qual é a saída no console deste código?\n\n```\nlet nota = 7;\n\nif (nota >= 6) {\n  console.log(\"Aprovado\");\n}\n\nconsole.log(\"Fim\");\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1542,7 +1542,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída no console deste código?\n\nlet idade = 12;\n\nif (idade >= 18) {\n  console.log(\"Maior de idade\");\n}\n\nconsole.log(\"Verificação concluída\");",
+                        "statement": "Qual é a saída no console deste código?\n\n```\nlet idade = 12;\n\nif (idade >= 18) {\n  console.log(\"Maior de idade\");\n}\n\nconsole.log(\"Verificação concluída\");\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1564,7 +1564,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código?\n\nlet x = 3;\n\nif (x > 5)\n  console.log(\"x é grande\");\n  console.log(\"sempre imprime\");",
+                        "statement": "Qual é a saída deste código?\n\n```\nlet x = 3;\n\nif (x > 5)\n  console.log(\"x é grande\");\n  console.log(\"sempre imprime\");\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1586,7 +1586,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código, e por quê?\n\nlet numero = 0;\n\nif (numero = 5) {\n  console.log(\"Entrou no if\");\n}",
+                        "statement": "Qual é a saída deste código, e por quê?\n\n```\nlet numero = 0;\n\nif (numero = 5) {\n  console.log(\"Entrou no if\");\n}\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -1665,7 +1665,7 @@ const MODULOS: Modulo[] = [
                 ],
                 "questions": [
                     {
-                        "statement": "Qual é a saída no console?\n\nlet idade = 20;\n\nif (idade >= 18) {\n  console.log(\"Maior de idade\");\n} else {\n  console.log(\"Menor de idade\");\n}",
+                        "statement": "Qual é a saída no console?\n\n```\nlet idade = 20;\n\nif (idade >= 18) {\n  console.log(\"Maior de idade\");\n} else {\n  console.log(\"Menor de idade\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1687,7 +1687,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída no console?\n\nlet numero = 10;\n\nif (numero % 2 === 0) {\n  console.log(\"par\");\n} else {\n  console.log(\"ímpar\");\n}",
+                        "statement": "Qual é a saída no console?\n\n```\nlet numero = 10;\n\nif (numero % 2 === 0) {\n  console.log(\"par\");\n} else {\n  console.log(\"ímpar\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1709,7 +1709,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída no console?\n\nlet a = 6;\nlet b = 6;\n\nif (a >= b) {\n  console.log(a + \" é o maior\");\n} else {\n  console.log(b + \" é o maior\");\n}",
+                        "statement": "Qual é a saída no console?\n\n```\nlet a = 6;\nlet b = 6;\n\nif (a >= b) {\n  console.log(a + \" é o maior\");\n} else {\n  console.log(b + \" é o maior\");\n}\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1753,7 +1753,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código, e por quê?\n\nlet ativo = false;\n\nif (ativo = true) {\n  console.log(\"Conta ativa\");\n} else {\n  console.log(\"Conta inativa\");\n}",
+                        "statement": "Qual é a saída deste código, e por quê?\n\n```\nlet ativo = false;\n\nif (ativo = true) {\n  console.log(\"Conta ativa\");\n} else {\n  console.log(\"Conta inativa\");\n}\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -1810,7 +1810,7 @@ const MODULOS: Modulo[] = [
                 ],
                 "questions": [
                     {
-                        "statement": "Qual é a saída?\n\nlet nota = 9;\n\nif (nota >= 9) {\n  console.log(\"Conceito A\");\n} else if (nota >= 7) {\n  console.log(\"Conceito B\");\n} else if (nota >= 5) {\n  console.log(\"Conceito C\");\n} else {\n  console.log(\"Conceito D\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet nota = 9;\n\nif (nota >= 9) {\n  console.log(\"Conceito A\");\n} else if (nota >= 7) {\n  console.log(\"Conceito B\");\n} else if (nota >= 5) {\n  console.log(\"Conceito C\");\n} else {\n  console.log(\"Conceito D\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1832,7 +1832,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet idade = 70;\n\nif (idade < 13) {\n  console.log(\"Criança\");\n} else if (idade < 18) {\n  console.log(\"Adolescente\");\n} else if (idade < 60) {\n  console.log(\"Adulto\");\n} else {\n  console.log(\"Idoso\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet idade = 70;\n\nif (idade < 13) {\n  console.log(\"Criança\");\n} else if (idade < 18) {\n  console.log(\"Adolescente\");\n} else if (idade < 60) {\n  console.log(\"Adulto\");\n} else {\n  console.log(\"Idoso\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1854,7 +1854,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet nota = 4;\n\nif (nota >= 9) {\n  console.log(\"Conceito A\");\n} else if (nota >= 7) {\n  console.log(\"Conceito B\");\n} else if (nota >= 5) {\n  console.log(\"Conceito C\");\n} else {\n  console.log(\"Conceito D\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet nota = 4;\n\nif (nota >= 9) {\n  console.log(\"Conceito A\");\n} else if (nota >= 7) {\n  console.log(\"Conceito B\");\n} else if (nota >= 5) {\n  console.log(\"Conceito C\");\n} else {\n  console.log(\"Conceito D\");\n}\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1876,7 +1876,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "No código abaixo, em que situação a mensagem \"Conceito A\" seria exibida?\n\nif (nota >= 5) {\n  console.log(\"Conceito C\");\n} else if (nota >= 7) {\n  console.log(\"Conceito B\");\n} else if (nota >= 9) {\n  console.log(\"Conceito A\");\n}",
+                        "statement": "No código abaixo, em que situação a mensagem \"Conceito A\" seria exibida?\n\n```\nif (nota >= 5) {\n  console.log(\"Conceito C\");\n} else if (nota >= 7) {\n  console.log(\"Conceito B\");\n} else if (nota >= 9) {\n  console.log(\"Conceito A\");\n}\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -1898,7 +1898,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Se a cadeia de categorias por idade fosse escrita nesta ordem:\n\nif (idade < 60) {\n  console.log(\"Adulto\");\n} else if (idade < 18) {\n  console.log(\"Adolescente\");\n} else if (idade < 13) {\n  console.log(\"Criança\");\n} else {\n  console.log(\"Idoso\");\n}\n\nQual seria a saída para idade = 10?",
+                        "statement": "Se a cadeia de categorias por idade fosse escrita nesta ordem:\n\n```\nif (idade < 60) {\n  console.log(\"Adulto\");\n} else if (idade < 18) {\n  console.log(\"Adolescente\");\n} else if (idade < 13) {\n  console.log(\"Criança\");\n} else {\n  console.log(\"Idoso\");\n}\n```\n\nQual seria a saída para idade = 10?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1955,7 +1955,7 @@ const MODULOS: Modulo[] = [
                 ],
                 "questions": [
                     {
-                        "statement": "Qual é a saída?\n\nlet a = 4;\nlet b = 4;\nlet c = 9;\n\nif (a >= b && a >= c) {\n  console.log(a + \" é o maior\");\n} else if (b >= a && b >= c) {\n  console.log(b + \" é o maior\");\n} else {\n  console.log(c + \" é o maior\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet a = 4;\nlet b = 4;\nlet c = 9;\n\nif (a >= b && a >= c) {\n  console.log(a + \" é o maior\");\n} else if (b >= a && b >= c) {\n  console.log(b + \" é o maior\");\n} else {\n  console.log(c + \" é o maior\");\n}\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1977,7 +1977,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet estudante = false;\nlet idoso = false;\n\nif (estudante || idoso) {\n  console.log(\"Tem direito a meia-entrada\");\n} else {\n  console.log(\"Paga o valor cheio\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet estudante = false;\nlet idoso = false;\n\nif (estudante || idoso) {\n  console.log(\"Tem direito a meia-entrada\");\n} else {\n  console.log(\"Paga o valor cheio\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -1999,7 +1999,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet bloqueado = true;\n\nif (!bloqueado) {\n  console.log(\"Acesso liberado\");\n} else {\n  console.log(\"Acesso negado\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet bloqueado = true;\n\nif (!bloqueado) {\n  console.log(\"Acesso liberado\");\n} else {\n  console.log(\"Acesso negado\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -2043,7 +2043,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet idade = 16;\nlet comResponsavel = true;\n\nif (idade >= 18 || (idade >= 12 && comResponsavel)) {\n  console.log(\"Pode assistir o filme\");\n} else {\n  console.log(\"Não pode assistir\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet idade = 16;\nlet comResponsavel = true;\n\nif (idade >= 18 || (idade >= 12 && comResponsavel)) {\n  console.log(\"Pode assistir o filme\");\n} else {\n  console.log(\"Não pode assistir\");\n}\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -2100,7 +2100,7 @@ const MODULOS: Modulo[] = [
                 ],
                 "questions": [
                     {
-                        "statement": "Qual é a saída?\n\nlet dia = 5;\n\nswitch (dia) {\n  case 1:\n    console.log(\"Domingo\");\n    break;\n  case 5:\n    console.log(\"Quinta-feira\");\n    break;\n  default:\n    console.log(\"Dia inválido\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet dia = 5;\n\nswitch (dia) {\n  case 1:\n    console.log(\"Domingo\");\n    break;\n  case 5:\n    console.log(\"Quinta-feira\");\n    break;\n  default:\n    console.log(\"Dia inválido\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -2122,7 +2122,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet opcao = 9;\n\nswitch (opcao) {\n  case 1:\n    console.log(\"Criar conta\");\n    break;\n  case 2:\n    console.log(\"Entrar\");\n    break;\n  default:\n    console.log(\"Opção inválida\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet opcao = 9;\n\nswitch (opcao) {\n  case 1:\n    console.log(\"Criar conta\");\n    break;\n  case 2:\n    console.log(\"Entrar\");\n    break;\n  default:\n    console.log(\"Opção inválida\");\n}\n```",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -2144,7 +2144,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet numero = 2;\n\nswitch (numero) {\n  case 1:\n    console.log(\"um\");\n  case 2:\n    console.log(\"dois\");\n  case 3:\n    console.log(\"três\");\n  default:\n    console.log(\"outro\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet numero = 2;\n\nswitch (numero) {\n  case 1:\n    console.log(\"um\");\n  case 2:\n    console.log(\"dois\");\n  case 3:\n    console.log(\"três\");\n  default:\n    console.log(\"outro\");\n}\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2188,7 +2188,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída?\n\nlet letra = \"a\";\n\nswitch (letra) {\n  case \"a\":\n    console.log(\"Primeira\");\n  case \"b\":\n    console.log(\"Segunda\");\n    break;\n  case \"c\":\n    console.log(\"Terceira\");\n    break;\n  default:\n    console.log(\"Outra\");\n}",
+                        "statement": "Qual é a saída?\n\n```\nlet letra = \"a\";\n\nswitch (letra) {\n  case \"a\":\n    console.log(\"Primeira\");\n  case \"b\":\n    console.log(\"Segunda\");\n    break;\n  case \"c\":\n    console.log(\"Terceira\");\n    break;\n  default:\n    console.log(\"Outra\");\n}\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -2316,7 +2316,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfor (let i = 1; i <= 100; i++) {\n  console.log(i);\n}\n\nQuantos números esse código mostra no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfor (let i = 1; i <= 100; i++) {\n  console.log(i);\n}\n```\n\nQuantos números esse código mostra no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2439,7 +2439,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nlet i = 0;\nwhile (i < 3) {\n  console.log('Oi');\n  i = i + 1;\n}\n\nQuantas vezes a palavra 'Oi' aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nlet i = 0;\nwhile (i < 3) {\n  console.log('Oi');\n  i = i + 1;\n}\n```\n\nQuantas vezes a palavra 'Oi' aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2461,7 +2461,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nlet n = 10;\nwhile (n > 0) {\n  console.log(n);\n}\n\nO que acontece quando esse código roda?",
+                        "statement": "Considerando o código abaixo:\n\n```\nlet n = 10;\nwhile (n > 0) {\n  console.log(n);\n}\n```\n\nO que acontece quando esse código roda?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2483,7 +2483,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nlet i = 1;\nwhile (i <= 4) {\n  i = i + 1;\n}\nconsole.log(i);\n\nQual valor aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nlet i = 1;\nwhile (i <= 4) {\n  i = i + 1;\n}\nconsole.log(i);\n```\n\nQual valor aparece no console?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -2584,7 +2584,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo, com n valendo 10:\n\nfor (let i = 0; i <= n; i++) {\n  console.log(i);\n}\n\nQuantas vezes esse laço executa?",
+                        "statement": "Considerando o código abaixo, com n valendo 10:\n\n```\nfor (let i = 0; i <= n; i++) {\n  console.log(i);\n}\n```\n\nQuantas vezes esse laço executa?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2606,7 +2606,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o for a seguir:\n\nfor (let i = 1; i <= 5; i++) {\n  console.log(i);\n}\n\nCom qual valor de i a condição i <= 5 deixa de ser verdadeira, fazendo o laço parar?",
+                        "statement": "Considerando o for a seguir:\n\n```\nfor (let i = 1; i <= 5; i++) {\n  console.log(i);\n}\n```\n\nCom qual valor de i a condição i <= 5 deixa de ser verdadeira, fazendo o laço parar?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2729,7 +2729,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nlet soma = 0;\nfor (let i = 1; i <= 4; i++) {\n  soma = soma + i;\n}\nconsole.log(soma);\n\nQual o valor de soma no final?",
+                        "statement": "Considerando o código abaixo:\n\n```\nlet soma = 0;\nfor (let i = 1; i <= 4; i++) {\n  soma = soma + i;\n}\nconsole.log(soma);\n```\n\nQual o valor de soma no final?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2751,7 +2751,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nlet quantidade = 0;\nfor (let i = 1; i <= 10; i++) {\n  if (i % 2 !== 0) {\n    quantidade = quantidade + 1;\n  }\n}\nconsole.log(quantidade);\n\nQual o valor de quantidade no final?",
+                        "statement": "Considerando o código abaixo:\n\n```\nlet quantidade = 0;\nfor (let i = 1; i <= 10; i++) {\n  if (i % 2 !== 0) {\n    quantidade = quantidade + 1;\n  }\n}\nconsole.log(quantidade);\n```\n\nQual o valor de quantidade no final?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2773,7 +2773,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "O código abaixo deveria somar os números de 1 até 5, mas tem um erro sutil na condição. Qual o valor de soma no final?\n\nlet soma = 0;\nfor (let i = 1; i < 5; i++) {\n  soma = soma + i;\n}\nconsole.log(soma);",
+                        "statement": "O código abaixo deveria somar os números de 1 até 5, mas tem um erro sutil na condição. Qual o valor de soma no final?\n\n```\nlet soma = 0;\nfor (let i = 1; i < 5; i++) {\n  soma = soma + i;\n}\nconsole.log(soma);\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -2874,7 +2874,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfor (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    break;\n  }\n  console.log(i);\n}\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfor (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    break;\n  }\n  console.log(i);\n}\n```\n\nO que aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2896,7 +2896,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfor (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    continue;\n  }\n  console.log(i);\n}\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfor (let i = 1; i <= 5; i++) {\n  if (i === 3) {\n    continue;\n  }\n  console.log(i);\n}\n```\n\nO que aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -2918,7 +2918,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfor (let a = 1; a <= 4; a++) {\n  for (let b = 1; b <= 3; b++) {\n    console.log(a, b);\n  }\n}\n\nQuantas vezes o console.log de dentro executa, ao todo?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfor (let a = 1; a <= 4; a++) {\n  for (let b = 1; b <= 3; b++) {\n    console.log(a, b);\n  }\n}\n```\n\nQuantas vezes o console.log de dentro executa, ao todo?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3020,7 +3020,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction mostrarLinha() {\n  console.log(\"---\");\n}\n\nmostrarLinha();\nmostrarLinha();\nconsole.log(\"fim\");\n\nQuantas vezes o texto \"---\" aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction mostrarLinha() {\n  console.log(\"---\");\n}\n\nmostrarLinha();\nmostrarLinha();\nconsole.log(\"fim\");\n```\n\nQuantas vezes o texto \"---\" aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3064,7 +3064,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction mostrarMensagem() {\n  console.log(\"Você me chamou!\");\n}\n\nconsole.log(\"Início do programa\");\n\nO que aparece no console quando esse código roda?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction mostrarMensagem() {\n  console.log(\"Você me chamou!\");\n}\n\nconsole.log(\"Início do programa\");\n```\n\nO que aparece no console quando esse código roda?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3165,7 +3165,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction subtrair(a, b) {\n  console.log(a - b);\n}\n\nsubtrair(10, 3);\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction subtrair(a, b) {\n  console.log(a - b);\n}\n\nsubtrair(10, 3);\n```\n\nO que aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3209,7 +3209,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction saudar(nome) {\n  console.log(\"Oi, \" + nome);\n}\n\nsaudar();\n\nO que aparece no console quando saudar() é chamada sem nenhum argumento?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction saudar(nome) {\n  console.log(\"Oi, \" + nome);\n}\n\nsaudar();\n```\n\nO que aparece no console quando saudar() é chamada sem nenhum argumento?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3288,7 +3288,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction dobro(n) {\n  return n * 2;\n}\n\nconst valor = dobro(5);\nconsole.log(valor);\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction dobro(n) {\n  return n * 2;\n}\n\nconst valor = dobro(5);\nconsole.log(valor);\n```\n\nO que aparece no console?",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -3310,7 +3310,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction triplo(n) {\n  console.log(n * 3);\n}\n\nconst valor = triplo(4);\nconsole.log(valor);\n\nO que aparece no console, na ordem?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction triplo(n) {\n  console.log(n * 3);\n}\n\nconst valor = triplo(4);\nconsole.log(valor);\n```\n\nO que aparece no console, na ordem?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3332,7 +3332,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction classificar(nota) {\n  if (nota >= 6) {\n    return \"aprovado\";\n  }\n  return \"reprovado\";\n}\n\nconsole.log(classificar(8));\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction classificar(nota) {\n  if (nota >= 6) {\n    return \"aprovado\";\n  }\n  return \"reprovado\";\n}\n\nconsole.log(classificar(8));\n```\n\nO que aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3354,7 +3354,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction verificar(numero) {\n  if (numero > 0) {\n    return \"positivo\";\n    console.log(\"chequei o número\");\n  }\n  return \"não positivo\";\n}\n\nconsole.log(verificar(5));\n\nAlém do resultado devolvido, o que mais aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction verificar(numero) {\n  if (numero > 0) {\n    return \"positivo\";\n    console.log(\"chequei o número\");\n  }\n  return \"não positivo\";\n}\n\nconsole.log(verificar(5));\n```\n\nAlém do resultado devolvido, o que mais aparece no console?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3433,7 +3433,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction calcular() {\n  const total = 100;\n  console.log(total);\n}\n\ncalcular();\nconsole.log(total);\n\nO que acontece quando esse código roda?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction calcular() {\n  const total = 100;\n  console.log(total);\n}\n\ncalcular();\nconsole.log(total);\n```\n\nO que acontece quando esse código roda?",
                         "difficulty": "facil",
                         "options": [
                             {
@@ -3455,7 +3455,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nconst cidade = \"Recife\";\n\nfunction mostrarCidade() {\n  console.log(\"Cidade: \" + cidade);\n}\n\nmostrarCidade();\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nconst cidade = \"Recife\";\n\nfunction mostrarCidade() {\n  console.log(\"Cidade: \" + cidade);\n}\n\nmostrarCidade();\n```\n\nO que aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3477,7 +3477,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction contarOvelhas() {\n  const total = 5;\n  return total;\n}\n\nfunction contarPatos() {\n  const total = 12;\n  return total;\n}\n\nconsole.log(contarOvelhas());\nconsole.log(contarPatos());\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction contarOvelhas() {\n  const total = 5;\n  return total;\n}\n\nfunction contarPatos() {\n  const total = 12;\n  return total;\n}\n\nconsole.log(contarOvelhas());\nconsole.log(contarPatos());\n```\n\nO que aparece no console?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3596,7 +3596,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando as funções abaixo:\n\nfunction maiorDeDois(a, b) {\n  if (a > b) {\n    return a;\n  }\n  return b;\n}\n\nfunction maiorDeTres(a, b, c) {\n  const maiorEntreAeB = maiorDeDois(a, b);\n  return maiorDeDois(maiorEntreAeB, c);\n}\n\nO que maiorDeTres(7, 3, 5) devolve?",
+                        "statement": "Considerando as funções abaixo:\n\n```\nfunction maiorDeDois(a, b) {\n  if (a > b) {\n    return a;\n  }\n  return b;\n}\n\nfunction maiorDeTres(a, b, c) {\n  const maiorEntreAeB = maiorDeDois(a, b);\n  return maiorDeDois(maiorEntreAeB, c);\n}\n```\n\nO que maiorDeTres(7, 3, 5) devolve?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3640,7 +3640,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Considerando o código abaixo:\n\nfunction dobro(n) {\n  return n * 2;\n}\n\nfunction quadruplo(n) {\n  return dobro(dobro(n));\n}\n\nconsole.log(quadruplo(3));\n\nO que aparece no console?",
+                        "statement": "Considerando o código abaixo:\n\n```\nfunction dobro(n) {\n  return n * 2;\n}\n\nfunction quadruplo(n) {\n  return dobro(dobro(n));\n}\n\nconsole.log(quadruplo(3));\n```\n\nO que aparece no console?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -4036,7 +4036,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código?\n\nlet numeros = [3, 6, 9];\nlet total = 0;\nfor (let n of numeros) {\n  total = total + n;\n}\nconsole.log(total);",
+                        "statement": "Qual é a saída deste código?\n\n```\nlet numeros = [3, 6, 9];\nlet total = 0;\nfor (let n of numeros) {\n  total = total + n;\n}\nconsole.log(total);\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -4080,7 +4080,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código?\n\nlet idades = [15, 22, 17, 30, 16];\nlet menores = 0;\nfor (let i = 0; i < idades.length; i++) {\n  if (idades[i] < 18) {\n    menores = menores + 1;\n  }\n}\nconsole.log(menores);",
+                        "statement": "Qual é a saída deste código?\n\n```\nlet idades = [15, 22, 17, 30, 16];\nlet menores = 0;\nfor (let i = 0; i < idades.length; i++) {\n  if (idades[i] < 18) {\n    menores = menores + 1;\n  }\n}\nconsole.log(menores);\n```",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -4326,7 +4326,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código?\n\nlet itens = [{ nome: \"caneta\", preco: 2 }, { nome: \"caderno\", preco: 15 }];\nlet total = 0;\nfor (let item of itens) {\n  total = total + item.preco;\n}\nconsole.log(total);",
+                        "statement": "Qual é a saída deste código?\n\n```\nlet itens = [{ nome: \"caneta\", preco: 2 }, { nome: \"caderno\", preco: 15 }];\nlet total = 0;\nfor (let item of itens) {\n  total = total + item.preco;\n}\nconsole.log(total);\n```",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -4370,7 +4370,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Qual é a saída deste código?\n\nlet produtos = [\n  { nome: \"mouse\", estoque: 5 },\n  { nome: \"teclado\", estoque: 0 },\n  { nome: \"monitor\", estoque: 3 }\n];\nlet semEstoque = 0;\nfor (let produto of produtos) {\n  if (produto.estoque === 0) {\n    semEstoque = semEstoque + 1;\n  }\n}\nconsole.log(semEstoque);",
+                        "statement": "Qual é a saída deste código?\n\n```\nlet produtos = [\n  { nome: \"mouse\", estoque: 5 },\n  { nome: \"teclado\", estoque: 0 },\n  { nome: \"monitor\", estoque: 3 }\n];\nlet semEstoque = 0;\nfor (let produto of produtos) {\n  if (produto.estoque === 0) {\n    semEstoque = semEstoque + 1;\n  }\n}\nconsole.log(semEstoque);\n```",
                         "difficulty": "dificil",
                         "options": [
                             {

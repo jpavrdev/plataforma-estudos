@@ -5,8 +5,9 @@
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
+import { pathToFileURL } from "node:url";
 
-const NOME = "Java";
+export const NOME = "Java";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "iniciante";
 const DESCRICAO =
     "A linguagem Java do zero ao avançado: sintaxe e tipos, controle de fluxo, arrays e strings, métodos, orientação a objetos (classes, herança, polimorfismo e interfaces), coleções e generics, tratamento de exceções e o Java moderno com lambdas e streams. A base para back-end, Android e sistemas de grande escala.";
@@ -74,6 +75,26 @@ const MODULO_1: Modulo = {
                         { text: "Nenhum componente, pois o Java já vem em todo processador", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que significa dizer que Java é uma linguagem fortemente tipada?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Que os tipos das variáveis mudam sozinhos durante a execução", isCorrect: false },
+                        { text: "Que cada variável tem um tipo declarado e conferido pelo compilador", isCorrect: true },
+                        { text: "Que não é preciso declarar o tipo de nenhuma variável", isCorrect: false },
+                        { text: "Que uma variável pode guardar qualquer tipo de valor a qualquer hora", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a relação entre JDK, JRE e JVM?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O JDK inclui o JRE, que por sua vez inclui a JVM", isCorrect: true },
+                        { text: "A JVM inclui o JDK, que por sua vez inclui o JRE", isCorrect: false },
+                        { text: "Os três são nomes diferentes para a mesma coisa", isCorrect: false },
+                        { text: "Cada um é instalado de forma totalmente separada", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -131,6 +152,26 @@ const MODULO_1: Modulo = {
                         { text: "Declara uma variável chamada Oi no programa", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Uma classe pública chamada Ola deve ser salva em um arquivo com qual nome?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "ola.class", isCorrect: false },
+                        { text: "main.java", isCorrect: false },
+                        { text: "Ola.txt", isCorrect: false },
+                        { text: "Ola.java", isCorrect: true },
+                    ],
+                },
+                {
+                    statement: "Qual é a diferença entre System.out.print e System.out.println?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O println imprime sem pular a linha, e o print pula", isCorrect: false },
+                        { text: "O print não pula a linha ao final, e o println pula", isCorrect: true },
+                        { text: "Os dois são idênticos e nunca pulam a linha", isCorrect: false },
+                        { text: "O print não existe em Java, só o println funciona", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -178,6 +219,26 @@ const MODULO_1: Modulo = {
                         { text: "Que o método devolve sempre um número inteiro", isCorrect: false },
                         { text: "Que o método é privado e invisível de fora", isCorrect: false },
                         { text: "Que o método não pode conter instruções dentro", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No método main, para que serve o parâmetro String[] args?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Definir o nome da classe do programa", isCorrect: false },
+                        { text: "Guardar o valor de retorno do método", isCorrect: false },
+                        { text: "Receber argumentos passados pela linha de comando", isCorrect: true },
+                        { text: "Informar qual versão do Java está sendo usada agora", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No cabeçalho do main, o que o modificador public indica?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Que o método pertence à classe, e não a um objeto", isCorrect: false },
+                        { text: "Que o método não devolve nenhum valor", isCorrect: false },
+                        { text: "Que o método só roda uma única vez no programa", isCorrect: false },
+                        { text: "Que o método pode ser chamado de fora da classe", isCorrect: true },
                     ],
                 },
             ],
@@ -243,6 +304,26 @@ const MODULO_2: Modulo = {
                         { text: "char", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O tipo char guarda o quê, e com qual delimitador?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um único caractere, entre aspas simples", isCorrect: true },
+                        { text: "Um texto qualquer, entre aspas duplas", isCorrect: false },
+                        { text: "Um número inteiro, sem nenhuma aspa", isCorrect: false },
+                        { text: "Vários caracteres seguidos, entre aspas simples", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Entre int, double, boolean e String, qual não é um tipo primitivo?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "int", isCorrect: false },
+                        { text: "String", isCorrect: true },
+                        { text: "boolean", isCorrect: false },
+                        { text: "double", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -300,6 +381,26 @@ const MODULO_2: Modulo = {
                         { text: "10, pois += não altera a variável original", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Como obter 3.5 ao dividir 7 por 2 em Java?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Usar ao menos um double, como em 7.0 / 2", isCorrect: true },
+                        { text: "Usar dois int, pois o Java arredonda sozinho", isCorrect: false },
+                        { text: "Trocar a divisão pelo operador de módulo %", isCorrect: false },
+                        { text: "Não é possível obter casas decimais em Java", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Depois de 'int n = 16; n++;', qual é o valor de n?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "15, pois o ++ subtrai 1 da variável", isCorrect: false },
+                        { text: "16, pois o ++ não altera o valor", isCorrect: false },
+                        { text: "17, pois o ++ soma 1 à variável", isCorrect: true },
+                        { text: "32, pois o ++ dobra o valor", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -353,6 +454,26 @@ const MODULO_2: Modulo = {
                         { text: "Um erro, pois != não existe em Java", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O operador || (OU) resulta em true quando:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ao menos um dos lados é verdadeiro", isCorrect: true },
+                        { text: "Os dois lados são verdadeiros ao mesmo tempo", isCorrect: false },
+                        { text: "Os dois lados são falsos ao mesmo tempo", isCorrect: false },
+                        { text: "Os dois lados têm o mesmo valor booleano", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a diferença entre = e == em Java?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Os dois comparam a igualdade entre dois valores dados", isCorrect: false },
+                        { text: "Os dois atribuem um valor a uma variável", isCorrect: false },
+                        { text: "O = compara valores, e o == atribui um valor", isCorrect: false },
+                        { text: "O = atribui um valor, e o == compara igualdade", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -404,6 +525,26 @@ const MODULO_2: Modulo = {
                         { text: "É proibido em Java, e gera sempre um erro de compilação", isCorrect: false },
                         { text: "Exige sempre um cast explícito escrito entre parênteses", isCorrect: false },
                         { text: "O int e o double são exatamente o mesmo tipo em Java", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece ao tentar reatribuir uma variável declarada com final?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ocorre um erro de compilação", isCorrect: true },
+                        { text: "O valor muda normalmente, sem aviso", isCorrect: false },
+                        { text: "O programa só falha ao ser executado", isCorrect: false },
+                        { text: "A variável volta ao seu valor inicial", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o Java exige um cast explícito ao converter de double para int?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Porque int e double são o mesmo tipo por dentro", isCorrect: false },
+                        { text: "Porque a conversão nunca perde nenhuma informação relevante", isCorrect: false },
+                        { text: "Porque o double ocupa menos espaço que o int", isCorrect: false },
+                        { text: "Porque pode haver perda de informação na conversão", isCorrect: true },
                     ],
                 },
             ],
@@ -465,6 +606,26 @@ const MODULO_3: Modulo = {
                         { text: "A e B, pois os dois blocos são executados", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Em qual ordem o Java avalia as condições de um if / else if / else?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "De cima para baixo, parando na primeira verdadeira", isCorrect: true },
+                        { text: "De baixo para cima, parando sempre na primeira condição falsa", isCorrect: false },
+                        { text: "Em ordem aleatória, sem seguir a escrita", isCorrect: false },
+                        { text: "Todas ao mesmo tempo, escolhendo a maior", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Um if isolado, sem else, cuja condição é falsa faz o quê?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Executa o bloco mesmo assim, uma única vez", isCorrect: false },
+                        { text: "Não executa o seu bloco e segue adiante", isCorrect: true },
+                        { text: "Provoca um erro de compilação no programa", isCorrect: false },
+                        { text: "Repete o teste até a condição ficar verdadeira", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -516,6 +677,26 @@ const MODULO_3: Modulo = {
                         { text: "Ao testar faixas de valores com maior e menor", isCorrect: false },
                         { text: "Ao combinar muitas condições com && e ||", isCorrect: false },
                         { text: "Ao repetir um bloco de código muitas vezes", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para que serve o break ao final de um case no switch clássico?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Encerrar o case e sair do switch", isCorrect: true },
+                        { text: "Iniciar o próximo case da lista", isCorrect: false },
+                        { text: "Repetir o switch desde o começo", isCorrect: false },
+                        { text: "Pular direto para o bloco default", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que a sintaxe moderna de switch com seta (->) traz de vantagem?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Permite comparar faixas de valores com > e <", isCorrect: false },
+                        { text: "Faz todos os cases rodarem em sequência", isCorrect: false },
+                        { text: "Substitui o switch por um laço de repetição", isCorrect: false },
+                        { text: "Evita o fall-through sem precisar de break", isCorrect: true },
                     ],
                 },
             ],
@@ -575,6 +756,26 @@ const MODULO_3: Modulo = {
                         { text: "Infinitas vezes, pois o laço nunca termina", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Em que situação o bloco de um while não executa nenhuma vez?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Quando a condição já é falsa na primeira checagem", isCorrect: true },
+                        { text: "Quando a condição já é verdadeira no início", isCorrect: false },
+                        { text: "Quando o laço contém um contador interno", isCorrect: false },
+                        { text: "Nunca, pois o while sempre roda ao menos uma única vez", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em 'int n = 10; do { imprime n; n++; } while (n <= 3);', quantas vezes n é impresso?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Nenhuma vez, pois 10 não é menor ou igual a 3", isCorrect: false },
+                        { text: "Uma vez, pois o do-while roda antes de testar", isCorrect: true },
+                        { text: "Três vezes, para os valores 10, 11 e 12", isCorrect: false },
+                        { text: "Infinitas vezes, pois n apenas aumenta", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -626,6 +827,26 @@ const MODULO_3: Modulo = {
                         { text: "Encerra o laço por completo de imediato", isCorrect: false },
                         { text: "Reinicia o laço desde a primeira repetição", isCorrect: false },
                         { text: "Repete a mesma repetição atual mais uma vez", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quais são as três partes escritas entre os parênteses de um for?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Inicialização, condição e passo", isCorrect: true },
+                        { text: "Início, meio e fim do laço", isCorrect: false },
+                        { text: "Nome, tipo e valor inicial da variável", isCorrect: false },
+                        { text: "Condição, corpo e retorno", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o comando break faz dentro de um laço?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Pula para a próxima repetição do laço", isCorrect: false },
+                        { text: "Reinicia o laço desde a sua primeira volta", isCorrect: false },
+                        { text: "Encerra o laço por completo de imediato", isCorrect: true },
+                        { text: "Repete a volta atual mais uma vez", isCorrect: false },
                     ],
                 },
             ],
@@ -687,6 +908,26 @@ const MODULO_4: Modulo = {
                         { text: "Aumenta o array automaticamente para caber", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que caracteriza o tamanho de um array em Java?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "É fixo: definido na criação e não muda depois", isCorrect: true },
+                        { text: "Cresce sozinho conforme você adiciona novos itens", isCorrect: false },
+                        { text: "Muda toda vez que um elemento é lido", isCorrect: false },
+                        { text: "É sempre igual a dez posições por padrão", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em um array de 5 posições, qual índice tem o último elemento?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "5, pois o array tem 5 posições", isCorrect: false },
+                        { text: "4, pois o último índice é length - 1", isCorrect: true },
+                        { text: "0, pois a contagem sempre começa do zero", isCorrect: false },
+                        { text: "6, pois soma-se 1 ao tamanho", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -744,6 +985,26 @@ const MODULO_4: Modulo = {
                         { text: "J, o primeiro caractere da string", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que 'nome.charAt(0)' retorna para a string \"Java\"?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "J, o caractere na posição 0", isCorrect: true },
+                        { text: "a, o segundo caractere da string", isCorrect: false },
+                        { text: "Java, a string inteira", isCorrect: false },
+                        { text: "4, o número de caracteres", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Ao comparar duas strings, o que o operador == verifica?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Se as duas têm exatamente o mesmo conteúdo", isCorrect: false },
+                        { text: "Se as duas têm o mesmo número de letras", isCorrect: false },
+                        { text: "Se as duas são o mesmo objeto na memória", isCorrect: true },
+                        { text: "Se a primeira vem antes da outra na ordem", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -795,6 +1056,26 @@ const MODULO_4: Modulo = {
                         { text: "length", isCorrect: false },
                         { text: "equals", isCorrect: false },
                         { text: "charAt", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual método do StringBuilder devolve a String final já pronta?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "toString", isCorrect: true },
+                        { text: "append", isCorrect: false },
+                        { text: "getString", isCorrect: false },
+                        { text: "concat", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a diferença central entre String e StringBuilder?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "String é mutável, e StringBuilder é imutável", isCorrect: false },
+                        { text: "String é imutável, e StringBuilder é mutável", isCorrect: true },
+                        { text: "Os dois são imutáveis e idênticos no uso", isCorrect: false },
+                        { text: "O StringBuilder não guarda texto, só números", isCorrect: false },
                     ],
                 },
             ],
@@ -852,6 +1133,26 @@ const MODULO_5: Modulo = {
                         { text: "Uma classe especial que não tem corpo próprio", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Por que um bom nome de método, como calcularMedia, ajuda quem lê o código?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Explica a intenção sem precisar ler o corpo", isCorrect: true },
+                        { text: "Faz o método rodar bem mais rápido dentro da JVM", isCorrect: false },
+                        { text: "Elimina a necessidade de parâmetros", isCorrect: false },
+                        { text: "Garante que o método não tenha erros", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Idealmente, um bom método deve:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Concentrar todas as tarefas do programa", isCorrect: false },
+                        { text: "Ter sempre o nome main, como padrão", isCorrect: false },
+                        { text: "Fazer uma coisa bem feita, com nome claro", isCorrect: true },
+                        { text: "Evitar qualquer nome que descreva a tarefa", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -901,6 +1202,26 @@ const MODULO_5: Modulo = {
                         { text: "Gera um erro de compilação obrigatório", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Na chamada 'saudar(\"Ana\")', o que é o valor \"Ana\"?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O argumento passado ao parâmetro do método", isCorrect: true },
+                        { text: "O tipo de retorno do método saudar", isCorrect: false },
+                        { text: "O nome do próprio método chamado", isCorrect: false },
+                        { text: "Uma variável local declarada dentro do método", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que 'int total = somar(3, 4);' guarda em total, se somar devolve a + b?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "34, os dois números escritos lado a lado", isCorrect: false },
+                        { text: "12, o produto dos dois argumentos", isCorrect: false },
+                        { text: "0, pois o retorno é sempre ignorado", isCorrect: false },
+                        { text: "7, o resultado da soma dos argumentos", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -948,6 +1269,26 @@ const MODULO_5: Modulo = {
                         { text: "Compilam normalmente como uma sobrecarga válida", isCorrect: false },
                         { text: "Fazem o método rodar duas vezes a cada chamada", isCorrect: false },
                         { text: "Transformam o método em um construtor da classe", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Com somar(int, int) e somar(double, double), como o compilador escolhe qual versão usar?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Pelos tipos dos argumentos passados na chamada", isCorrect: true },
+                        { text: "Pela ordem em que as duas foram declaradas no código", isCorrect: false },
+                        { text: "Pelo tipo de retorno de cada versão", isCorrect: false },
+                        { text: "Sempre pela versão com menos parâmetros", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Duas variáveis locais com o mesmo nome, cada uma em um método diferente:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Compartilham sempre exatamente o mesmo valor", isCorrect: false },
+                        { text: "São independentes entre si, sem conflito", isCorrect: true },
+                        { text: "Provocam um erro de nome duplicado na classe", isCorrect: false },
+                        { text: "Passam a existir no programa inteiro", isCorrect: false },
                     ],
                 },
             ],
@@ -1009,6 +1350,26 @@ const MODULO_6: Modulo = {
                         { text: "Os dados existem só na classe, não nos objetos", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Para que serve o ponto (.) em 'rex.latir()'?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Acessar um método ou dado do objeto rex", isCorrect: true },
+                        { text: "Criar um novo objeto chamado rex", isCorrect: false },
+                        { text: "Declarar a classe do objeto rex", isCorrect: false },
+                        { text: "Encerrar a instrução atual no lugar do ponto e vírgula", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que uma classe descreve sobre os objetos que ela modela?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Apenas a quantidade de objetos que existirão", isCorrect: false },
+                        { text: "Quais dados eles têm e o que sabem fazer", isCorrect: true },
+                        { text: "Somente o endereço deles na memória", isCorrect: false },
+                        { text: "Só o nome do arquivo onde ficam salvos", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1062,6 +1423,26 @@ const MODULO_6: Modulo = {
                         { text: "Nunca pode receber nenhum parâmetro de entrada", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Em uma classe, qual é o papel dos atributos?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Guardar o estado, os dados do objeto", isCorrect: true },
+                        { text: "Definir as ações que o objeto executa", isCorrect: false },
+                        { text: "Criar novos objetos a partir da classe", isCorrect: false },
+                        { text: "Inicializar o objeto ao ser criado", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece com o construtor padrão sem argumentos quando você declara o seu próprio?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Ele continua disponível junto do seu", isCorrect: false },
+                        { text: "Ele passa a exigir dois argumentos", isCorrect: false },
+                        { text: "Ele vira um método comum da classe", isCorrect: false },
+                        { text: "Ele deixa de existir automaticamente", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -1113,6 +1494,26 @@ const MODULO_6: Modulo = {
                         { text: "Copiar um objeto inteiro para criar outro igual", isCorrect: false },
                         { text: "Fazer uma classe herdar dados de outra classe", isCorrect: false },
                         { text: "Ter vários métodos com o mesmo nome na classe", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a diferença entre um getter e um setter?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O getter lê o atributo, e o setter o altera", isCorrect: true },
+                        { text: "O getter altera o atributo, e o setter o lê", isCorrect: false },
+                        { text: "Os dois apenas leem o valor do atributo", isCorrect: false },
+                        { text: "Os dois criam um novo objeto da classe", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Além de impor regras, encapsular bem permite que a classe:",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Rode sem precisar de um construtor", isCorrect: false },
+                        { text: "Dispense a declaração de seus atributos", isCorrect: false },
+                        { text: "Mude por dentro sem quebrar quem a usa", isCorrect: true },
+                        { text: "Seja usada sem criar objetos com new", isCorrect: false },
                     ],
                 },
             ],
@@ -1174,6 +1575,26 @@ const MODULO_7: Modulo = {
                         { text: "A subclasse deve ter o mesmo nome da superclasse", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Para que serve super(...) no construtor de uma subclasse?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Chamar o construtor da superclasse", isCorrect: true },
+                        { text: "Criar um objeto da própria subclasse", isCorrect: false },
+                        { text: "Apagar os atributos herdados", isCorrect: false },
+                        { text: "Impedir a herança da superclasse", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "De qual classe herda, mesmo sem escrever extends, toda classe em Java?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Main, a classe que inicia o programa", isCorrect: false },
+                        { text: "Object, a raiz de todas as classes", isCorrect: true },
+                        { text: "System, usada para imprimir no console", isCorrect: false },
+                        { text: "String, a classe de textos", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1227,6 +1648,26 @@ const MODULO_7: Modulo = {
                         { text: "Fazer o método rodar antes de todos os outros", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "O que é polimorfismo em Java?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Tratar subclasses diferentes por uma referência da superclasse", isCorrect: true },
+                        { text: "Ter dois ou mais métodos com o mesmo nome e parâmetros diferentes", isCorrect: false },
+                        { text: "Esconder os atributos com o modificador private", isCorrect: false },
+                        { text: "Criar uma classe que não pode ser instanciada", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No polimorfismo, quem decide qual versão de um método sobrescrito roda?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O tipo da referência, em tempo de compilação", isCorrect: false },
+                        { text: "A ordem dos métodos dentro do arquivo", isCorrect: false },
+                        { text: "Sempre a versão original da superclasse", isCorrect: false },
+                        { text: "O objeto real, em tempo de execução", isCorrect: true },
+                    ],
+                },
             ],
         },
         {
@@ -1278,6 +1719,26 @@ const MODULO_7: Modulo = {
                         { text: "Uma classe pode estender várias classes, mas só uma interface", isCorrect: false },
                         { text: "Interfaces não podem declarar nenhum método", isCorrect: false },
                         { text: "Interfaces só funcionam com tipos primitivos", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que é um método abstrato?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um método sem corpo, implementado na subclasse", isCorrect: true },
+                        { text: "Um método com corpo que nenhuma subclasse pode chamar", isCorrect: false },
+                        { text: "Um método que cria objetos da própria classe base", isCorrect: false },
+                        { text: "Um método que existe apenas na classe raiz Object", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Uma interface, na prática, define:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A cópia exata de outra classe já implementada", isCorrect: false },
+                        { text: "Um contrato de métodos que a classe fornece", isCorrect: true },
+                        { text: "Os dados privados de um único objeto criado", isCorrect: false },
+                        { text: "Um laço que percorre coleções de dados", isCorrect: false },
                     ],
                 },
             ],
@@ -1335,6 +1796,26 @@ const MODULO_8: Modulo = {
                         { text: "O último elemento adicionado à lista", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual método da ArrayList lê o elemento em uma posição?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "size", isCorrect: false },
+                        { text: "add", isCorrect: false },
+                        { text: "get", isCorrect: true },
+                        { text: "remove", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que se costuma declarar 'List<String> x = new ArrayList<>()' em vez de ArrayList dos dois lados?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Programar para a interface List deixa o código flexível", isCorrect: true },
+                        { text: "Porque a ArrayList não pode ser usada na hora da criação", isCorrect: false },
+                        { text: "Porque a List é mais rápida que a ArrayList", isCorrect: false },
+                        { text: "Porque só assim a lista aceita strings", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1386,6 +1867,26 @@ const MODULO_8: Modulo = {
                         { text: "O tipo da chave usada para buscar", isCorrect: false },
                         { text: "O número máximo de pares no mapa", isCorrect: false },
                         { text: "O índice de cada elemento do mapa", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em um Map, quais métodos inserem e recuperam um valor?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "put para inserir e get para recuperar", isCorrect: true },
+                        { text: "add para inserir e size para recuperar", isCorrect: false },
+                        { text: "set para inserir e find para recuperar", isCorrect: false },
+                        { text: "push para inserir e pop para recuperar", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Diferente de um Set, uma List permite:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Associar cada chave a um valor", isCorrect: false },
+                        { text: "Impedir qualquer repetição", isCorrect: false },
+                        { text: "Guardar apenas um elemento", isCorrect: false },
+                        { text: "Guardar elementos repetidos", isCorrect: true },
                     ],
                 },
             ],
@@ -1441,6 +1942,26 @@ const MODULO_8: Modulo = {
                         { text: "O programa só falha ao rodar, nunca ao compilar", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Sem generics, o que uma coleção guardaria, exigindo casts na leitura?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Object, ou seja, qualquer coisa", isCorrect: true },
+                        { text: "Apenas números inteiros do tipo int", isCorrect: false },
+                        { text: "Somente valores do tipo String", isCorrect: false },
+                        { text: "Nada, pois não compilaria", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Com List<String>, o que 'nomes.get(0)' devolve?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um Object que ainda precisa de um cast", isCorrect: false },
+                        { text: "Um número inteiro qualquer", isCorrect: false },
+                        { text: "Uma String, sem precisar de cast", isCorrect: true },
+                        { text: "Sempre o valor null", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1492,6 +2013,26 @@ const MODULO_8: Modulo = {
                         { text: "Apenas quando uma exceção é lançada", isCorrect: false },
                         { text: "Apenas quando nenhuma exceção é lançada", isCorrect: false },
                         { text: "Nunca, pois é um bloco apenas decorativo", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que 'int r = 10 / 0;' provoca em Java?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Lança uma ArithmeticException", isCorrect: true },
+                        { text: "Devolve o valor zero normalmente", isCorrect: false },
+                        { text: "Devolve o valor infinito", isCorrect: false },
+                        { text: "Gera um erro de compilação", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para que o bloco finally é especialmente indicado?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Lançar novas exceções de propósito no código", isCorrect: false },
+                        { text: "Liberar recursos, como fechar um arquivo", isCorrect: true },
+                        { text: "Conter o código que pode falhar", isCorrect: false },
+                        { text: "Ignorar a exceção capturada antes", isCorrect: false },
                     ],
                 },
             ],
@@ -1553,6 +2094,26 @@ const MODULO_9: Modulo = {
                         { text: "Impedir qualquer erro em tempo de execução", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Qual é a ideia central por trás das expressões lambda?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Tratar um comportamento como um valor", isCorrect: true },
+                        { text: "Guardar textos longos em memória", isCorrect: false },
+                        { text: "Criar tipos primitivos novos", isCorrect: false },
+                        { text: "Substituir todas as classes por interfaces", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Antes das lambdas, o que era preciso para passar um comportamento a um método?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Nada, pois já bastava usar a seta -> da lambda", isCorrect: false },
+                        { text: "Escrever uma classe inteira para envolver", isCorrect: true },
+                        { text: "Declarar o método como estático na classe", isCorrect: false },
+                        { text: "Usar um laço for tradicional para repetir", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1606,6 +2167,26 @@ const MODULO_9: Modulo = {
                         { text: "Associar chaves a valores como em um Map", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Como se cria uma stream a partir de uma coleção?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Chamando o método stream() sobre ela", isCorrect: true },
+                        { text: "Chamando o método size() sobre ela", isCorrect: false },
+                        { text: "Passando a coleção ao construtor de Stream", isCorrect: false },
+                        { text: "Declarando a coleção como final", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em uma stream, quando as operações realmente executam?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Assim que a stream é criada com o stream()", isCorrect: false },
+                        { text: "Só quando uma operação terminal é chamada", isCorrect: true },
+                        { text: "A cada operação intermediária encadeada", isCorrect: false },
+                        { text: "Somente ao fim do programa inteiro", isCorrect: false },
+                    ],
+                },
             ],
         },
         {
@@ -1655,12 +2236,32 @@ const MODULO_9: Modulo = {
                         { text: "Uma forma de declarar variáveis de tipos primitivos", isCorrect: false },
                     ],
                 },
+                {
+                    statement: "Entre os temas do curso, o encapsulamento se refere a:",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Deixar os atributos private e usar métodos", isCorrect: true },
+                        { text: "Uma classe herdar atributos de outra com extends", isCorrect: false },
+                        { text: "Processar coleções com as operações filter e map", isCorrect: false },
+                        { text: "Repetir um bloco de código com o laço for", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No resumo do curso, qual coleção garante elementos únicos, sem duplicatas?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A List", isCorrect: false },
+                        { text: "O array comum", isCorrect: false },
+                        { text: "O StringBuilder", isCorrect: false },
+                        { text: "O Set", isCorrect: true },
+                    ],
+                },
             ],
         },
     ],
 };
 
-const MODULOS: Modulo[] = [
+export const MODULOS: Modulo[] = [
     MODULO_1,
     MODULO_2,
     MODULO_3,
@@ -1739,9 +2340,13 @@ async function seed() {
     );
 }
 
-seed()
-    .then(() => process.exit(0))
-    .catch((e) => {
-        console.error("Falha no seed:", e);
-        process.exit(1);
-    });
+// Só semeia quando executado direto. Se for importado (ex.: sincronizar-questoes-trilha),
+// expõe MODULOS/NOME sem rodar o seed nem chamar process.exit.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    seed()
+        .then(() => process.exit(0))
+        .catch((e) => {
+            console.error("Falha no seed:", e);
+            process.exit(1);
+        });
+}
