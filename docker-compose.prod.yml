@@ -48,6 +48,10 @@ services:
     restart: unless-stopped
     environment:
       - MAX_CONCURRENT=2
+      # Camada extra de isolamento: com o gVisor (runsc) instalado no host, cada
+      # submissão roda sobre um kernel próprio, e não sobre o kernel do host.
+      # Vazio = runtime padrão do Docker, que é o comportamento de sempre.
+      - RUNNER_RUNTIME=${RUNNER_RUNTIME:-}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
