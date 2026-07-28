@@ -64,8 +64,12 @@ services:
       context: ./labs
     restart: unless-stopped
     environment:
-      - MAX_SESSOES=${LAB_MAX_SESSOES:-20}
+      # Teto conservador de propósito: a máquina tem 2 vCPUs e o Postgres roda
+      # nela. Melhor recusar a sétima sessão do que deixar o site lento para os
+      # outros mil e trezentos alunos.
+      - MAX_SESSOES=${LAB_MAX_SESSOES:-6}
       - LAB_TTL_MINUTOS=${LAB_TTL_MINUTOS:-45}
+      - LAB_CPUS=${LAB_CPUS:-0.25}
       - LAB_DOCKER_HOST=unix:///var/run/docker-labs.sock
     volumes:
       - /var/run/docker-labs.sock:/var/run/docker-labs.sock
