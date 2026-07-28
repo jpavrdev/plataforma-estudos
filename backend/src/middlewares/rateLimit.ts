@@ -69,6 +69,13 @@ export const apiLimiter = rateLimit({
     skip: (req) => process.env.NODE_ENV === "test" || req.path === "/health",
 });
 
+// Cada ticket vira um container de lab, então o teto segura quem fica abrindo
+// sessão sem usar. Folgado o bastante para reconectar depois de perder a rede.
+export const labTicketLimiter = criarLimiter(
+    30,
+    "Muitas aberturas de laboratório seguidas. Aguarde alguns minutos.",
+);
+
 export const desafioRunLimiter = criarLimiter(
     60,
     "Muitas execuções seguidas. Aguarde um instante e tente de novo.",

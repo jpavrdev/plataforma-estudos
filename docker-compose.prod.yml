@@ -55,6 +55,21 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  # Laboratórios de Linux: um container com shell por sessão de aluno.
+  # Fala com um daemon Docker SEPARADO, com userns-remap ligado, para que o root
+  # de dentro do lab seja um UID sem privilégio para o kernel do host. Ver
+  # labs/README.md para preparar esse daemon no servidor.
+  labs:
+    build:
+      context: ./labs
+    restart: unless-stopped
+    environment:
+      - MAX_SESSOES=${LAB_MAX_SESSOES:-20}
+      - LAB_TTL_MINUTOS=${LAB_TTL_MINUTOS:-45}
+      - LAB_DOCKER_HOST=unix:///var/run/docker-labs.sock
+    volumes:
+      - /var/run/docker-labs.sock:/var/run/docker-labs.sock
+
 volumes:
   pgdata:
   caddy_data:

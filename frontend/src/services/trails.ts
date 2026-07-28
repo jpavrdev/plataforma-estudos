@@ -151,7 +151,7 @@ export interface QuizQuestion {
   options: QuizOption[];
   answer?: QuizAnswerState | null;
 }
-export type BlocoTipo = 'text' | 'code' | 'image' | 'video' | 'quote' | 'table';
+export type BlocoTipo = 'text' | 'code' | 'image' | 'video' | 'quote' | 'table' | 'terminal';
 export interface Bloco {
   type: BlocoTipo;
   value: string;

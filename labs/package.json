@@ -1,0 +1,9 @@
+{
+  "name": "labs",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "node-pty": "^1.0.0",
+    "ws": "^8.18.0"
+  }
+}
