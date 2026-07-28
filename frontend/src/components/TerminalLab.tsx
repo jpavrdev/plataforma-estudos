@@ -33,8 +33,12 @@ export function TerminalLab() {
       const { data } = await api.post<{ ticket: string }>('/labs/ticket');
 
       const t = new Terminal({
-        fontFamily: 'var(--font-code), ui-monospace, monospace',
+        // Fonte literal, não a variável CSS: o xterm mede a fonte por conta
+        // própria para calcular o tamanho da célula, e var() não resolve ali.
+        // Com o valor inválido as linhas saíam sobrepostas.
+        fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
         fontSize: 13,
+        lineHeight: 1.35,
         cursorBlink: true,
         convertEol: true,
         theme:
