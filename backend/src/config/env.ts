@@ -30,6 +30,11 @@ const envSchema = z.object({
         .optional()
         .transform((v) => v === "true"),
     EMAIL_FROM: z.string().default("ensina.dev <nao-responda@ensinadev.com.br>"),
+
+    // Evolution API (gateway WhatsApp). Sem URL/KEY, o envio por WhatsApp vira no-op.
+    EVOLUTION_URL: z.string().url().optional(),
+    EVOLUTION_API_KEY: z.string().optional(),
+    EVOLUTION_INSTANCE: z.string().default("ensinadev"),
     // Gateway de pagamento do apoio (AbacatePay). Sem a chave, a página existe mas não cobra.
     ABACATEPAY_API_URL: z.string().url().default("https://api.abacatepay.com/v1"),
     ABACATEPAY_API_KEY: z.string().optional(),

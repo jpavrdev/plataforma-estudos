@@ -1,8 +1,9 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomInt } from "node:crypto";
 import { db } from "../../db.ts";
 import { env } from "../config/env.ts";
 import jwt from "jsonwebtoken";
 import { tokens } from "../../schema.ts";
+import { and, eq } from "drizzle-orm";
 
 export const authService = {
     async gerarEGravarTokens(userId: string, tx: Pick<typeof db, "insert"> = db) {
@@ -41,5 +42,21 @@ export const authService = {
         });
 
         return resetToken;
+    },
+    // OTP de 6 dígitos para redefinir a senha por WhatsApp. Guarda só o hash
+    // (com o userId no meio, para não colidir entre usuários com o mesmo código)
+    // e mantém um único OTP ativo por usuário.
+    async gerarOtpResetSenha(userId: string) {
+        const otp = String(randomInt(100000, 1000000));
+        await db
+            .delete(tokens)
+            .where(and(eq(tokens.userId, userId), eq(tokens.type, "password_reset_otp")));
+        await db.insert(tokens).values({
+            userId,
+            tokenHash: createHash("sha256").update(`${userId}:${otp}`).digest("hex"),
+            type: "password_reset_otp",
+            expiredAt: new Date(Date.now() + 10 * 60 * 1000),
+        });
+        return otp;
     },
 };

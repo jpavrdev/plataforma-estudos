@@ -3,8 +3,15 @@ import {
     registerSchema,
     forgotPasswordSchema,
     resetPasswordSchema,
+    forgotPasswordOtpSchema,
+    resetPasswordOtpSchema,
 } from "../schemas/auth.schema.ts";
-import bcrypt from "bcrypt";
+import {
+    hashSenha,
+    verificarSenha,
+    precisaRehash,
+    getDummyHash,
+} from "../services/password.service.ts";
 import { db } from "../../db.ts";
 import { users, tokens } from "../../schema.ts";
 import { eq, and, isNull } from "drizzle-orm";
@@ -13,8 +20,7 @@ import { env } from "../config/env.ts";
 import { authService } from "../services/auth.service.ts";
 import { createHash } from "node:crypto";
 import { emailService } from "../services/email.service.ts";
-
-const BCRYPT_COST = 10;
+import { whatsappService } from "../services/whatsapp.service.ts";
 
 // Lockout de conta: trava temporariamente após muitas senhas erradas.
 const MAX_TENTATIVAS = 5;
@@ -25,8 +31,6 @@ const JWT_SECRET = String(env.JWT_SECRET);
 if (!JWT_SECRET) {
     throw new Error("JWT_SECRET não definido");
 }
-
-const DUMMY_HASH = bcrypt.hashSync("uma_senha_qualquer_dummy", BCRYPT_COST);
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -53,7 +57,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         }
 
         // Criptografia da senha
-        const passwordHash = await bcrypt.hash(dados.password, BCRYPT_COST);
+        const passwordHash = await hashSenha(dados.password);
 
         // Transação atômica: Cria o usuário e gera os tokens iniciais
         const novoUsuario = await db.transaction(async (tx) => {
@@ -104,17 +108,17 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const encontrados = await db.select().from(users).where(eq(users.email, dados.email));
         const user = encontrados[0];
 
-        // Conta travada? Recusa antes de gastar bcrypt. Mensagem genérica (igual ao
+        // Conta travada? Recusa antes de gastar o hash. Mensagem genérica (igual ao
         // rate limit) para não distinguir "travada" de "muitas tentativas por IP".
         if (user?.lockedUntil && user.lockedUntil > new Date()) {
             return res.status(429).json({ erro: "Muitas tentativas. Tente novamente mais tarde." });
         }
 
         // Definimos qual hash será comparado. Usuário com senha usa a dele; sem usuário
-        // (ou conta só de login social, sem senha) cai no DUMMY_HASH e a comparação falha.
-        const hashParaComparar = user?.passwordHash ?? DUMMY_HASH;
+        // (ou conta só de login social, sem senha) cai num hash dummy e a comparação falha.
+        const hashParaComparar = user?.passwordHash ?? (await getDummyHash());
 
-        const senhaCorreta = await bcrypt.compare(dados.password, hashParaComparar);
+        const senhaCorreta = await verificarSenha(hashParaComparar, dados.password);
 
         if (!user || !senhaCorreta) {
             // Conta tentativas falhas só para usuário existente. Ao atingir o limite,
@@ -145,6 +149,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
                 .update(users)
                 .set({ failedLoginAttempts: 0, lockedUntil: null })
                 .where(eq(users.id, user.id));
+        }
+
+        // Migração transparente do hash: um bcrypt antigo vira argon2 no primeiro login.
+        if (user.passwordHash && precisaRehash(user.passwordHash)) {
+            const novoHash = await hashSenha(dados.password);
+            await db.update(users).set({ passwordHash: novoHash }).where(eq(users.id, user.id));
         }
 
         if (!user.emailVerifiedAt) {
@@ -379,12 +389,90 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
             return res.status(400).json({ erro: "Link inválido ou expirado. Peça um novo." });
         }
 
-        const passwordHash = await bcrypt.hash(password, BCRYPT_COST);
+        const passwordHash = await hashSenha(password);
 
         await db.transaction(async (tx) => {
             // Consome o token de reset.
             await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, registro.id));
             // Troca a senha.
+            await tx.update(users).set({ passwordHash }).where(eq(users.id, registro.userId));
+            // Revoga as sessões abertas (refresh tokens) por segurança.
+            await tx
+                .update(tokens)
+                .set({ usedAt: new Date() })
+                .where(
+                    and(
+                        eq(tokens.userId, registro.userId),
+                        eq(tokens.type, "refresh"),
+                        isNull(tokens.usedAt),
+                    ),
+                );
+        });
+
+        res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Recuperação por código (OTP): o usuário escolhe receber por email ou WhatsApp.
+export const forgotPasswordOtp = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, canal } = forgotPasswordOtpSchema.parse(req.body);
+
+        // Resposta genérica, para não revelar se o email tem conta.
+        const resposta = {
+            mensagem: "Se houver uma conta com esse email, enviamos um código para redefinir a senha.",
+        };
+
+        const [user] = await db
+            .select({ id: users.id, phone: users.phone, passwordHash: users.passwordHash })
+            .from(users)
+            .where(eq(users.email, email));
+
+        if (user && user.passwordHash) {
+            const otp = await authService.gerarOtpResetSenha(user.id);
+            // WhatsApp só se tiver telefone; senão cai no email para o código não se perder.
+            if (canal === "whatsapp" && user.phone) {
+                await whatsappService.enviarOtpReset(user.phone, otp);
+            } else {
+                await emailService.enviarOtpReset(email, otp);
+            }
+        }
+
+        res.json(resposta);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const resetPasswordOtp = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, otp, password } = resetPasswordOtpSchema.parse(req.body);
+        const generico = { erro: "Código inválido ou expirado. Peça um novo." };
+
+        const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+        if (!user) return res.status(400).json(generico);
+
+        const hashCalculado = createHash("sha256").update(`${user.id}:${otp}`).digest("hex");
+        const [registro] = await db
+            .select({
+                id: tokens.id,
+                userId: tokens.userId,
+                expiredAt: tokens.expiredAt,
+                usedAt: tokens.usedAt,
+            })
+            .from(tokens)
+            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "password_reset_otp")));
+
+        if (!registro || registro.expiredAt < new Date() || registro.usedAt !== null) {
+            return res.status(400).json(generico);
+        }
+
+        const passwordHash = await hashSenha(password);
+
+        await db.transaction(async (tx) => {
+            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, registro.id));
             await tx.update(users).set({ passwordHash }).where(eq(users.id, registro.userId));
             // Revoga as sessões abertas (refresh tokens) por segurança.
             await tx

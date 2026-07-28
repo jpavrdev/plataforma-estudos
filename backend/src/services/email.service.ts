@@ -69,4 +69,14 @@ export const emailService = {
         const text = `Redefina sua senha no ensina.dev (o link vale por 1 hora):\n${link}\n\nSe você não pediu isso, ignore este email.`;
         await enviar({ to: email, subject: "Redefinir sua senha · ensina.dev", html, text });
     },
+    async enviarOtpReset(email: string, otp: string) {
+        const html = layout(
+            "Seu código para redefinir a senha",
+            `<p style="font-size:15px;line-height:1.6;color:#555">Use o código abaixo para redefinir sua senha. Ele vale por 10 minutos.</p>
+  <div style="font-size:30px;font-weight:700;letter-spacing:6px;color:#2d6bf5;margin:18px 0">${otp}</div>
+  <p style="font-size:13px;color:#888;margin-top:24px">Se você não pediu isso, ignore este email: sua senha continua a mesma.</p>`,
+        );
+        const text = `Seu código para redefinir a senha no ensina.dev é ${otp}. Ele vale por 10 minutos.\n\nSe você não pediu isso, ignore este email.`;
+        await enviar({ to: email, subject: "Seu código de redefinição · ensina.dev", html, text });
+    },
 };

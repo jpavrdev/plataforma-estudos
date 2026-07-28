@@ -18,6 +18,7 @@
     "dependencies": {
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
+        "argon2": "^0.45.1",
         "bcrypt": "^6.0.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.6",

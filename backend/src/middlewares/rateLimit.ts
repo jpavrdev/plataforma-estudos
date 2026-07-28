@@ -47,6 +47,12 @@ export const resendVerificationLimiter = criarLimiter(
     "Muitos pedidos de verificação. Tente novamente em alguns minutos.",
 );
 
+// Enviar OTP (email ou WhatsApp) também dispara mensagem; teto baixo.
+export const forgotPasswordOtpLimiter = criarLimiter(
+    5,
+    "Muitos pedidos de código. Tente novamente em alguns minutos.",
+);
+
 export const resetPasswordLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",
