@@ -149,6 +149,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["APIs e Frameworks (uma app pra testar)"],
     },
+    "AZURE AZ-104": {
+        whatYouLearn: [
+            "A hierarquia do Azure e as ferramentas do administrador",
+            "Identidades no Entra ID, RBAC, Azure Policy, bloqueios e custos",
+            "Armazenamento, máquinas virtuais, contêineres e App Service",
+            "Rede virtual com NSG e peering, monitoramento, backup e Site Recovery",
+        ],
+        prerequisites: [
+            "AZURE AZ-900 ou noções de nuvem",
+            "Familiaridade com portal, Azure CLI ou PowerShell",
+        ],
+    },
     "ISTQB CTFL": {
         whatYouLearn: [
             "O vocabulário exato que a prova cobra e os sete princípios de teste",
