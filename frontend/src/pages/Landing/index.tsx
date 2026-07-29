@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { Logo } from '../../components/Logo';
 import { ThemeToggle } from '../../components/ThemeToggle';
+import telaDesafio from '../../assets/produto-desafio.webp';
+import telaTerminal from '../../assets/produto-terminal.webp';
+import telaProgresso from '../../assets/produto-progresso.webp';
 import {
   Zap,
   Flame,
@@ -149,7 +152,7 @@ export function Landing() {
 
       <main>
         <section className="lp-hero">
-          <div className="lp-container lp-hero__inner">
+          <div className="lp-container">
             <div className="lp-hero__texto">
               <span className="lp-badge">
                 <Flame size={13} /> Um novo desafio todo dia
@@ -182,33 +185,14 @@ export function Landing() {
               </p>
             </div>
 
-            <div className="lp-mock" aria-hidden="true">
-              <div className="lp-mock__barra">
-                <span className="lp-mock__ponto" style={{ background: '#ff5f57' }} />
-                <span className="lp-mock__ponto" style={{ background: '#febc2e' }} />
-                <span className="lp-mock__ponto" style={{ background: '#28c840' }} />
-                <span className="lp-mock__arquivo">desafio-do-dia</span>
-              </div>
-              <div className="lp-mock__corpo">
-                <div className="lp-mock__tags">
-                  <span className="lp-tag lp-tag--facil">Fácil</span>
-                  <span className="lp-tag">+50 XP</span>
-                  <span className="lp-tag lp-tag--streak">
-                    <Flame size={12} /> 12 dias
-                  </span>
-                </div>
-                <h3 className="lp-mock__titulo">Soma de dois números</h3>
-                <pre className="lp-mock__codigo">
-                  <code>{`function soma(nums, alvo) {
-  const mapa = {};
-  for (let i = 0; i < nums.length; i++) {
-    // resolva aqui
-  }
-}`}</code>
-                </pre>
-                <span className="btn btn--accent lp-mock__botao">Resolver agora</span>
-              </div>
-            </div>
+            <figure className="lp-tela lp-tela--hero">
+              <img
+                src={telaDesafio}
+                width={1400}
+                height={683}
+                alt="Tela de um desafio na ensina.dev: enunciado à esquerda, editor de código à direita e o resultado dos testes aprovado"
+              />
+            </figure>
           </div>
         </section>
 
@@ -254,6 +238,35 @@ export function Landing() {
           </div>
         </section>
 
+        <section className="lp-secao lp-secao--alt">
+          <div className="lp-container lp-destaque">
+            <div className="lp-destaque__texto">
+              <p className="lp-olho">Laboratório de verdade</p>
+              <h2 className="lp-destaque__titulo">
+                Um Linux inteiro dentro da aula, e ele é só seu.
+              </h2>
+              <p className="lp-destaque__lede">
+                Nas aulas de Linux você não lê sobre comando: você digita. Um Debian de verdade sobe
+                na hora, com <code className="code-inline">sudo</code> liberado, e some quando você
+                termina. Errar ali não quebra nada, porque a máquina é sua e é descartável.
+              </p>
+              <ul className="lp-lista">
+                <li>Sem instalar nada, sem máquina virtual, sem dual boot</li>
+                <li>Permissão negada de verdade, e o sudo resolvendo de verdade</li>
+                <li>Disponível em 20 aulas, da linha de comando ao bash</li>
+              </ul>
+            </div>
+            <figure className="lp-tela">
+              <img
+                src={telaTerminal}
+                width={1280}
+                height={544}
+                alt="Terminal Linux dentro de uma aula, mostrando Debian 12, uma permissão negada e o mesmo comando funcionando com sudo"
+              />
+            </figure>
+          </div>
+        </section>
+
         <section className="lp-secao" id="recursos">
           <div className="lp-container">
             <p className="lp-olho lp-olho--centro">Por que ensina.dev</p>
@@ -273,7 +286,34 @@ export function Landing() {
           </div>
         </section>
 
-        <section className="lp-secao lp-secao--alt" id="como-funciona">
+        <section className="lp-secao lp-secao--alt">
+          <div className="lp-container lp-destaque lp-destaque--invertido">
+            <div className="lp-destaque__texto">
+              <p className="lp-olho">Sua evolução</p>
+              <h2 className="lp-destaque__titulo">Constância que dá para ver, não para sentir.</h2>
+              <p className="lp-destaque__lede">
+                Cada dia de estudo vira um quadrado no mapa do ano. Some XP, mantenha o streak e
+                acompanhe o domínio de cada trilha. É o painel que mostra se você está mesmo
+                avançando ou só se sentindo produtivo.
+              </p>
+              <ul className="lp-lista">
+                <li>Mapa de atividade do ano inteiro</li>
+                <li>XP por trilha, conquistas e meta semanal</li>
+                <li>Ranking com ligas, de Bronze até Diamante</li>
+              </ul>
+            </div>
+            <figure className="lp-tela">
+              <img
+                src={telaProgresso}
+                width={1400}
+                height={683}
+                alt="Painel de progresso da ensina.dev com XP total, streak, meta semanal e o mapa de atividade do ano"
+              />
+            </figure>
+          </div>
+        </section>
+
+        <section className="lp-secao" id="como-funciona">
           <div className="lp-container">
             <p className="lp-olho lp-olho--centro">Como funciona</p>
             <h2 className="lp-h2">Comece em 3 passos</h2>
