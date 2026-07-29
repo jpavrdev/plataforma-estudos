@@ -1020,6 +1020,65 @@
   font-weight: 700;
 }
 
+/* Primeiro passo (home de quem ainda não começou nenhuma trilha) */
+.inicio {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xl);
+  padding: 22px;
+}
+.inicio__tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 99px;
+  padding: 4px 10px;
+}
+.inicio__title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 12px 0 0;
+}
+.inicio__desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 8px 0 0;
+  max-width: 62ch;
+}
+.inicio__desc b {
+  color: var(--text);
+  font-weight: 600;
+}
+.inicio__acoes {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.inicio__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border-radius: var(--r-md);
+  padding: 11px 18px;
+}
+.inicio__btn:hover {
+  filter: brightness(1.08);
+}
+
 /* Cards da sidebar */
 .card {
   background: var(--surface);

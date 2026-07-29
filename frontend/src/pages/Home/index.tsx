@@ -28,6 +28,10 @@ import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
 const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
 
+// Trilha sugerida para quem ainda não começou nada. Se ela não existir, a home cai
+// na primeira trilha de nível iniciante que encontrar.
+const TRILHA_DE_ENTRADA = 'Lógica de Programação';
+
 // Resumo em texto puro do enunciado (primeiro bloco de texto, sem marcação).
 function resumoEnunciado(blocks: { type: string; value: string }[]): string {
   const texto = blocks.find((b) => b.type === 'text')?.value ?? '';
@@ -134,6 +138,15 @@ export function Home() {
   const mostrandoEmAndamento = emAndamento.length > 0;
   const listaTrilhas = (mostrandoEmAndamento ? emAndamento : disponiveis).slice(0, 4);
 
+  // Quem chega sem nenhum progresso cai numa grade de dezenas de trilhas sem saber
+  // por onde começar, e dois em cada três cadastros nunca abrem uma aula. Para esses,
+  // a home abre com um destino único: a trilha de entrada, direto na primeira aula.
+  const semProgresso = !carregando && disponiveis.length > 0 && disponiveis.every((t) => !t.done);
+  const trilhaInicial =
+    disponiveis.find((t) => t.name === TRILHA_DE_ENTRADA) ??
+    disponiveis.find((t) => t.level === 'Iniciante') ??
+    null;
+
   return (
     <div className="home-shell">
       <div className="home">
@@ -168,6 +181,27 @@ export function Home() {
         {/* Corpo */}
         <div className="home__body">
           <main className="home__main">
+            {/* Primeiro passo de quem ainda não começou */}
+            {semProgresso && trilhaInicial && (
+              <section className="inicio">
+                <span className="inicio__tag">Primeiros passos</span>
+                <h2 className="inicio__title">Nunca programou? Comece por aqui.</h2>
+                <p className="inicio__desc">
+                  <b>{trilhaInicial.name}</b> é o ponto de partida da plataforma, sem pré-requisito
+                  nenhum. São {trilhaInicial.lessons} aulas curtas, cada uma com um quiz no fim para
+                  fixar o que você acabou de ler.
+                </p>
+                <div className="inicio__acoes">
+                  <button className="inicio__btn" onClick={() => abrirTrilha(trilhaInicial.id)}>
+                    <Play size={15} /> Começar a primeira aula
+                  </button>
+                  <Link className="link" to="/trilhas">
+                    Prefiro escolher outra trilha
+                  </Link>
+                </div>
+              </section>
+            )}
+
             {/* Desafio do dia */}
             {desafioHoje && (
               <section>
