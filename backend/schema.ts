@@ -387,6 +387,9 @@ export const simuladoQuestions = pgTable(
         statement: text("statement").notNull(),
         explanation: text("explanation"),
         topic: varchar("topic", { length: 60 }),
+        // Em alguns simulados o topic é o serviço testado, não o domínio da prova.
+        // O filtro de assuntos usa este domínio quando ele existe.
+        domain: varchar("domain", { length: 60 }),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [index("simulado_questions_simulado_id_idx").on(table.simuladoId)],
