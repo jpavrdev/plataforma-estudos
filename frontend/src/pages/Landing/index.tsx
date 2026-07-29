@@ -5,6 +5,8 @@ import { Logo } from '../../components/Logo';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import telaDesafio from '../../assets/produto-desafio.webp';
 import telaTerminal from '../../assets/produto-terminal.webp';
+import terminalWebm from '../../assets/produto-terminal.webm';
+import terminalMp4 from '../../assets/produto-terminal.mp4';
 import telaProgresso from '../../assets/produto-progresso.webp';
 import {
   Zap,
@@ -28,15 +30,17 @@ type Estatisticas = {
   questoes: number;
   estudantes: number;
   exerciciosResolvidos: number;
+  aulasConcluidas: number;
 };
 
 const numero = new Intl.NumberFormat('pt-BR');
 
-// Arredonda para baixo e marca com "+": 1293 vira "1.200+", 142 vira "100+". Continua
-// verdadeiro, e a vitrine não muda de número a cada aluno novo que entra.
+// Arredonda para baixo e marca com "+": 1293 vira "1.200+", 16138 vira "16.000+".
+// Continua verdadeiro, a vitrine não muda a cada aluno novo, e o passo cresce com
+// a grandeza, senão um "16.100+" ficaria preciso demais para uma frase de venda.
 function aproximado(n: number): string {
   if (n < 10) return numero.format(n);
-  const passo = n >= 100 ? 100 : 10;
+  const passo = n >= 10000 ? 1000 : n >= 100 ? 100 : 10;
   return `${numero.format(Math.floor(n / passo) * passo)}+`;
 }
 
@@ -104,11 +108,19 @@ const PASSOS = [
   },
 ];
 
+const LEGENDA_TERMINAL =
+  'Terminal Linux dentro de uma aula: o comando falha com permissão negada e depois funciona com sudo';
+
 // Tecnologias que têm trilha de verdade na plataforma.
 const TECNOLOGIAS = ['Python', 'JavaScript', 'Java', 'Go', 'Linux', 'Docker', 'Kubernetes', 'AWS'];
 
 export function Landing() {
   const [stats, setStats] = useState<Estatisticas>();
+  // Quem pediu menos movimento no sistema recebe o quadro final parado, com a
+  // mesma informação, em vez do vídeo em laço.
+  const [semAnimacao] = useState(
+    () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
+  );
 
   useEffect(() => {
     let ativo = true;
@@ -162,7 +174,7 @@ export function Landing() {
                 por dia.
               </h1>
               <p className="lp-lede">
-                A ensina.dev transforma o aprendizado de programação em hábito. Desafios diários,
+                O Ensina Dev transforma o aprendizado de programação em hábito. Desafios diários,
                 trilhas guiadas, simulados de certificação e um ranking para te manter no ritmo, do
                 zero à sua primeira vaga.
               </p>
@@ -177,7 +189,7 @@ export function Landing() {
               <p className="lp-hero__prova">
                 {stats ? (
                   <>
-                    <strong>{aproximado(stats.estudantes)} alunos</strong> já estudam na ensina.dev
+                    <strong>{aproximado(stats.estudantes)} alunos</strong> já estudam no Ensina Dev
                   </>
                 ) : (
                   <>Comece hoje, de graça</>
@@ -190,7 +202,7 @@ export function Landing() {
                 src={telaDesafio}
                 width={1400}
                 height={683}
-                alt="Tela de um desafio na ensina.dev: enunciado à esquerda, editor de código à direita e o resultado dos testes aprovado"
+                alt="Tela de um desafio no Ensina Dev: enunciado à esquerda, editor de código à direita e o resultado dos testes aprovado"
               />
             </figure>
           </div>
@@ -257,19 +269,30 @@ export function Landing() {
               </ul>
             </div>
             <figure className="lp-tela">
-              <img
-                src={telaTerminal}
-                width={1280}
-                height={544}
-                alt="Terminal Linux dentro de uma aula, mostrando Debian 12, uma permissão negada e o mesmo comando funcionando com sudo"
-              />
+              {semAnimacao ? (
+                <img src={telaTerminal} width={1240} height={500} alt={LEGENDA_TERMINAL} />
+              ) : (
+                <video
+                  poster={telaTerminal}
+                  width={1240}
+                  height={500}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  aria-label={LEGENDA_TERMINAL}
+                >
+                  <source src={terminalWebm} type="video/webm" />
+                  <source src={terminalMp4} type="video/mp4" />
+                </video>
+              )}
             </figure>
           </div>
         </section>
 
         <section className="lp-secao" id="recursos">
           <div className="lp-container">
-            <p className="lp-olho lp-olho--centro">Por que ensina.dev</p>
+            <p className="lp-olho lp-olho--centro">Por que Ensina Dev</p>
             <h2 className="lp-h2">Feito para criar o hábito de programar</h2>
             <p className="lp-sub">
               Tudo o que você precisa para sair da teoria e praticar de verdade, todos os dias.
@@ -305,9 +328,9 @@ export function Landing() {
             <figure className="lp-tela">
               <img
                 src={telaProgresso}
-                width={1400}
-                height={683}
-                alt="Painel de progresso da ensina.dev com XP total, streak, meta semanal e o mapa de atividade do ano"
+                width={1500}
+                height={787}
+                alt="Painel de progresso do Ensina Dev com XP total, meta semanal, mapa de atividade do ano, domínio por trilha e conquistas recentes"
               />
             </figure>
           </div>
@@ -328,6 +351,20 @@ export function Landing() {
             </div>
           </div>
         </section>
+
+        {/* Só aparece com os números na mão: a frase não faz sentido sem eles. */}
+        {stats && (
+          <section className="lp-movimento">
+            <div className="lp-container">
+              <p className="lp-olho lp-olho--centro">Quem já está aqui</p>
+              <p className="lp-movimento__frase">
+                Os alunos do Ensina Dev já resolveram{' '}
+                <strong>{aproximado(stats.exerciciosResolvidos)}</strong> exercícios e concluíram{' '}
+                <strong>{aproximado(stats.aulasConcluidas)}</strong> aulas.
+              </p>
+            </div>
+          </section>
+        )}
 
         <section className="lp-secao">
           <div className="lp-container">
@@ -374,7 +411,7 @@ export function Landing() {
           </nav>
         </div>
         <div className="lp-container lp-rodape__base">
-          <span>© {new Date().getFullYear()} ensina.dev. Todos os direitos reservados.</span>
+          <span>© {new Date().getFullYear()} Ensina Dev. Todos os direitos reservados.</span>
           <span className="lp-rodape__redes">
             <a
               href="https://github.com/jpavrdev"
