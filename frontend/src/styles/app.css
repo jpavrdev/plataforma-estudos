@@ -1027,6 +1027,32 @@
   border-radius: var(--r-xl);
   padding: 22px;
 }
+/* Véu que escurece o resto da home enquanto o bloco não recebe o primeiro clique. */
+.inicio__veu {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(0, 0, 0, 0.58);
+  animation: inicio-veu 0.25s ease;
+}
+@keyframes inicio-veu {
+  from {
+    opacity: 0;
+  }
+}
+.inicio--destaque {
+  position: relative;
+  z-index: 401;
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 28%, transparent),
+    0 22px 60px rgba(0, 0, 0, 0.4);
+}
+@media (prefers-reduced-motion: reduce) {
+  .inicio__veu {
+    animation: none;
+  }
+}
 .inicio__tag {
   display: inline-block;
   font-size: 11.5px;

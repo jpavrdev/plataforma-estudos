@@ -31,6 +31,7 @@ const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', di
 // Trilha sugerida para quem ainda não começou nada. Se ela não existir, a home cai
 // na primeira trilha de nível iniciante que encontrar.
 const TRILHA_DE_ENTRADA = 'Lógica de Programação';
+const CHAVE_DESTAQUE = '@App:primeiroPassoVisto';
 
 // Resumo em texto puro do enunciado (primeiro bloco de texto, sem marcação).
 function resumoEnunciado(blocks: { type: string; value: string }[]): string {
@@ -147,6 +148,25 @@ export function Home() {
     disponiveis.find((t) => t.level === 'Iniciante') ??
     null;
 
+  // O véu escurece o resto da home para a atenção cair no bloco. Some no primeiro
+  // clique (nele, fora dele ou no Esc) e não volta, para não virar obstáculo de quem
+  // só quer olhar a plataforma.
+  const [destaque, setDestaque] = useState(() => localStorage.getItem(CHAVE_DESTAQUE) !== '1');
+
+  function fecharDestaque() {
+    setDestaque(false);
+    localStorage.setItem(CHAVE_DESTAQUE, '1');
+  }
+
+  useEffect(() => {
+    if (!destaque) return;
+    function aoTeclar(e: KeyboardEvent) {
+      if (e.key === 'Escape') fecharDestaque();
+    }
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, [destaque]);
+
   return (
     <div className="home-shell">
       <div className="home">
@@ -183,23 +203,32 @@ export function Home() {
           <main className="home__main">
             {/* Primeiro passo de quem ainda não começou */}
             {semProgresso && trilhaInicial && (
-              <section className="inicio">
-                <span className="inicio__tag">Primeiros passos</span>
-                <h2 className="inicio__title">Nunca programou? Comece por aqui.</h2>
-                <p className="inicio__desc">
-                  <b>{trilhaInicial.name}</b> é o ponto de partida da plataforma, sem pré-requisito
-                  nenhum. São {trilhaInicial.lessons} aulas curtas, cada uma com um quiz no fim para
-                  fixar o que você acabou de ler.
-                </p>
-                <div className="inicio__acoes">
-                  <button className="inicio__btn" onClick={() => abrirTrilha(trilhaInicial.id)}>
-                    <Play size={15} /> Começar a primeira aula
-                  </button>
-                  <Link className="link" to="/trilhas">
-                    Prefiro escolher outra trilha
-                  </Link>
-                </div>
-              </section>
+              <>
+                {destaque && <div className="inicio__veu" onClick={fecharDestaque} />}
+                <section className={`inicio${destaque ? ' inicio--destaque' : ''}`}>
+                  <span className="inicio__tag">Primeiros passos</span>
+                  <h2 className="inicio__title">Nunca programou? Comece por aqui.</h2>
+                  <p className="inicio__desc">
+                    <b>{trilhaInicial.name}</b> é o ponto de partida da plataforma, sem
+                    pré-requisito nenhum. São {trilhaInicial.lessons} aulas curtas, cada uma com um
+                    quiz no fim para fixar o que você acabou de ler.
+                  </p>
+                  <div className="inicio__acoes">
+                    <button
+                      className="inicio__btn"
+                      onClick={() => {
+                        fecharDestaque();
+                        navigate(`/trilhas/${trilhaInicial.id}`);
+                      }}
+                    >
+                      Ver a trilha e começar
+                    </button>
+                    <Link className="link" to="/trilhas" onClick={fecharDestaque}>
+                      Prefiro escolher outra trilha
+                    </Link>
+                  </div>
+                </section>
+              </>
             )}
 
             {/* Desafio do dia */}
