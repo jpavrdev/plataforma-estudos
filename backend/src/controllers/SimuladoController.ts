@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import {
     salvarRespostaSchema,
+    iniciarTentativaSchema,
     createSimuladoSchema,
     updateSimuladoSchema,
     simuladoQuestionSchema,
@@ -9,6 +10,7 @@ import {
 import {
     listarSimulados,
     iniciarTentativa,
+    opcoesDoSimulado,
     estadoDaTentativa,
     salvarResposta,
     enviarTentativa,
@@ -34,7 +36,16 @@ export const listSimulados = async (_req: Request, res: Response, next: NextFunc
 
 export const startAttempt = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.status(201).json(await iniciarTentativa(req.userId!, String(req.params.slug)));
+        const opcoes = iniciarTentativaSchema.parse(req.body ?? {});
+        res.status(201).json(await iniciarTentativa(req.userId!, String(req.params.slug), opcoes));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getAttemptOptions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await opcoesDoSimulado(String(req.params.slug)));
     } catch (err) {
         next(err);
     }

@@ -42,8 +42,11 @@ export interface TentativaEstado {
   simulado?: string | null;
   passPercent?: number | null;
   submitted: boolean;
-  expiresAt: string;
-  remainingSeconds: number;
+  expiresAt: string | null;
+  remainingSeconds: number | null;
+  personalizado?: boolean;
+  topicos?: string[] | null;
+  retomada?: boolean;
   score?: number;
   passed?: boolean;
   elapsedSeconds?: number;
@@ -66,6 +69,29 @@ export interface TentativaHistorico {
   submittedAt: string | null;
   score: number | null;
   passed: boolean | null;
+  personalizado: boolean;
+  comTempo: boolean;
+  topicos: string[] | null;
+  questoes: number;
+}
+
+export interface TemaSimulado {
+  nome: string;
+  questoes: number;
+}
+
+export interface OpcoesSimulado {
+  oficial: { questionCount: number; durationMinutes: number };
+  minQuestoes: number;
+  maxQuestoes: number;
+  temas: TemaSimulado[];
+}
+
+export interface MontagemTentativa {
+  questionCount?: number;
+  comTempo?: boolean;
+  duracaoMinutos?: number;
+  topicos?: string[];
 }
 
 export async function listarSimulados() {
@@ -73,8 +99,13 @@ export async function listarSimulados() {
   return data;
 }
 
-export async function iniciarTentativa(slug: string) {
-  const { data } = await api.post<TentativaEstado>(`/simulados/${slug}/attempts`);
+export async function opcoesDoSimulado(slug: string) {
+  const { data } = await api.get<OpcoesSimulado>(`/simulados/${slug}/opcoes`);
+  return data;
+}
+
+export async function iniciarTentativa(slug: string, montagem?: MontagemTentativa) {
+  const { data } = await api.post<TentativaEstado>(`/simulados/${slug}/attempts`, montagem ?? {});
   return data;
 }
 

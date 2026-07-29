@@ -3,6 +3,7 @@ import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
 import {
     listSimulados,
     startAttempt,
+    getAttemptOptions,
     getAttempt,
     saveAnswer,
     submitAttempt,
@@ -22,6 +23,7 @@ const router = Router();
 
 router.get("/simulados", autenticar, listSimulados);
 router.get("/me/simulado-attempts", autenticar, getMyAttempts);
+router.get("/simulados/:slug/opcoes", autenticar, getAttemptOptions);
 router.post("/simulados/:slug/attempts", autenticar, startAttempt);
 router.get("/simulado-attempts/:id", autenticar, getAttempt);
 router.put("/simulado-attempts/:id/answers/:questionId", autenticar, saveAnswer);

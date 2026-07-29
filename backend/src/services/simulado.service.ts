@@ -59,7 +59,28 @@ async function cancelarTentativasEmAberto(userId: string, exceto: string | null)
         .where(and(...condicoes));
 }
 
-export async function iniciarTentativa(userId: string, slug: string) {
+export const MIN_QUESTOES = 5;
+// Sem cronômetro a tentativa não expira sozinha, e uma abandonada travaria o
+// simulado para sempre, porque o início sempre a retomaria.
+const VALIDADE_SEM_TEMPO_MS = 24 * 60 * 60 * 1000;
+
+export type OpcoesTentativa = {
+    questionCount?: number;
+    comTempo?: boolean;
+    duracaoMinutos?: number;
+    topicos?: string[];
+};
+
+function aindaVale(attempt: { expiresAt: Date | null; startedAt: Date }, agora: Date) {
+    if (attempt.expiresAt) return attempt.expiresAt > agora;
+    return agora.getTime() - attempt.startedAt.getTime() < VALIDADE_SEM_TEMPO_MS;
+}
+
+export async function iniciarTentativa(
+    userId: string,
+    slug: string,
+    opcoes: OpcoesTentativa = {},
+) {
     const [simulado] = await db
         .select()
         .from(simulados)
@@ -68,7 +89,7 @@ export async function iniciarTentativa(userId: string, slug: string) {
 
     const agora = new Date();
 
-    // Se já existe uma tentativa em aberto e dentro do prazo, retoma em vez de criar outra.
+    // Se já existe uma tentativa em aberto e ainda válida, retoma em vez de criar outra.
     const [emAberto] = await db
         .select()
         .from(simuladoAttempts)
@@ -81,28 +102,63 @@ export async function iniciarTentativa(userId: string, slug: string) {
         )
         .orderBy(desc(simuladoAttempts.startedAt))
         .limit(1);
-    if (emAberto && emAberto.expiresAt > agora) {
+    if (emAberto && aindaVale(emAberto, agora)) {
         // Retoma esta tentativa e cancela qualquer outra em aberto (de outros simulados).
+        // Retomada avisa o cliente de que a configuração pedida agora não valeu.
         await cancelarTentativasEmAberto(userId, emAberto.id);
-        return estadoDaTentativa(userId, emAberto.id);
+        return { ...(await estadoDaTentativa(userId, emAberto.id)), retomada: true };
     }
 
     // Vai criar uma nova: cancela todas as tentativas em aberto, parando o cronômetro delas.
     await cancelarTentativasEmAberto(userId, null);
 
+    const topicos = opcoes.topicos?.length ? [...new Set(opcoes.topicos)] : null;
+    const doSimulado = eq(simuladoQuestions.simuladoId, simulado.id);
+    const filtro = topicos
+        ? and(doSimulado, inArray(simuladoQuestions.topic, topicos))
+        : doSimulado;
+
+    const [disponiveis] = await db
+        .select({ n: count() })
+        .from(simuladoQuestions)
+        .where(filtro);
+    const total = Number(disponiveis?.n ?? 0);
+    if (total === 0) {
+        throw new AppError(
+            409,
+            topicos ? "Nenhuma questão nos temas escolhidos" : "Simulado ainda não tem questões",
+        );
+    }
+
+    // Aparado pelo que existe: pedir 60 num tema de 12 dá 12.
+    const pedido = opcoes.questionCount ?? simulado.questionCount;
+    const quantidade = Math.min(Math.max(pedido, MIN_QUESTOES), total);
+
     const sorteadas = await db
         .select({ id: simuladoQuestions.id })
         .from(simuladoQuestions)
-        .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        .where(filtro)
         .orderBy(sql`random()`)
-        .limit(simulado.questionCount);
-    if (sorteadas.length === 0) throw new AppError(409, "Simulado ainda não tem questões");
+        .limit(quantidade);
 
-    const expiresAt = new Date(agora.getTime() + simulado.durationMinutes * 60 * 1000);
+    // Sem duração escolhida, mantém o ritmo oficial: menos questões, menos minutos.
+    const comTempo = opcoes.comTempo ?? true;
+    const proporcional = Math.max(
+        1,
+        Math.round((simulado.durationMinutes * sorteadas.length) / simulado.questionCount),
+    );
+    const minutos = opcoes.duracaoMinutos ?? proporcional;
+    const expiresAt = comTempo ? new Date(agora.getTime() + minutos * 60 * 1000) : null;
+    const personalizado =
+        !comTempo ||
+        topicos !== null ||
+        sorteadas.length !== simulado.questionCount ||
+        (comTempo && minutos !== simulado.durationMinutes);
+
     const attemptId = await db.transaction(async (tx) => {
         const [attempt] = await tx
             .insert(simuladoAttempts)
-            .values({ userId, simuladoId: simulado.id, expiresAt })
+            .values({ userId, simuladoId: simulado.id, expiresAt, personalizado, topicos })
             .returning({ id: simuladoAttempts.id });
         await tx.insert(simuladoAttemptQuestions).values(
             sorteadas.map((q, i) => ({
@@ -115,6 +171,42 @@ export async function iniciarTentativa(userId: string, slug: string) {
     });
 
     return estadoDaTentativa(userId, attemptId);
+}
+
+// Em alguns simulados o topic é o serviço testado, não o domínio da prova, e
+// filtrar por ele daria uma lista de 163 itens com uma questão cada.
+const MIN_QUESTOES_POR_TEMA = 5;
+
+export async function opcoesDoSimulado(slug: string) {
+    const [simulado] = await db
+        .select()
+        .from(simulados)
+        .where(and(eq(simulados.slug, slug), eq(simulados.published, true)));
+    if (!simulado) throw new AppError(404, "Simulado não encontrado");
+
+    const temas = await db
+        .select({ nome: simuladoQuestions.topic, questoes: count() })
+        .from(simuladoQuestions)
+        .where(eq(simuladoQuestions.simuladoId, simulado.id))
+        .groupBy(simuladoQuestions.topic)
+        .orderBy(desc(count()));
+
+    const comNome = temas.filter((t): t is { nome: string; questoes: number } => !!t.nome);
+    const totalQuestoes = comNome.reduce((s, t) => s + Number(t.questoes), 0);
+    const media = comNome.length ? totalQuestoes / comNome.length : 0;
+
+    return {
+        oficial: {
+            questionCount: simulado.questionCount,
+            durationMinutes: simulado.durationMinutes,
+        },
+        minQuestoes: MIN_QUESTOES,
+        maxQuestoes: totalQuestoes,
+        temas:
+            media >= MIN_QUESTOES_POR_TEMA
+                ? comNome.map((t) => ({ nome: t.nome, questoes: Number(t.questoes) }))
+                : [],
+    };
 }
 
 // O gabarito (isCorrect e a justificativa) só é revelado depois de enviar.
@@ -193,7 +285,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         })
         .from(simulados)
         .where(eq(simulados.id, attempt.simuladoId));
-    const restanteMs = attempt.expiresAt.getTime() - Date.now();
+    const restanteMs = attempt.expiresAt ? attempt.expiresAt.getTime() - Date.now() : null;
     return {
         attemptId: attempt.id,
         slug: sim?.slug ?? null,
@@ -201,7 +293,10 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         passPercent: sim?.passPercent ?? null,
         submitted: enviado,
         expiresAt: attempt.expiresAt,
-        remainingSeconds: enviado ? 0 : Math.max(0, Math.floor(restanteMs / 1000)),
+        personalizado: attempt.personalizado,
+        topicos: attempt.topicos ?? null,
+        remainingSeconds:
+            restanteMs === null ? null : enviado ? 0 : Math.max(0, Math.floor(restanteMs / 1000)),
         ...(enviado
             ? {
                   score: attempt.score,
@@ -229,7 +324,8 @@ export async function salvarResposta(
         .where(and(eq(simuladoAttempts.id, attemptId), eq(simuladoAttempts.userId, userId)));
     if (!attempt) throw new AppError(404, "Tentativa não encontrada");
     if (attempt.submittedAt) throw new AppError(409, "Simulado já enviado");
-    if (attempt.expiresAt <= new Date()) throw new AppError(409, "Tempo esgotado");
+    if (attempt.expiresAt && attempt.expiresAt <= new Date())
+        throw new AppError(409, "Tempo esgotado");
 
     const [pertence] = await db
         .select({ id: simuladoAttemptQuestions.id })
@@ -333,6 +429,15 @@ export async function enviarTentativa(userId: string, attemptId: string) {
 }
 
 export async function historicoDoUsuario(userId: string) {
+    const questoesPorTentativa = db
+        .select({
+            attemptId: simuladoAttemptQuestions.attemptId,
+            total: count().as("total"),
+        })
+        .from(simuladoAttemptQuestions)
+        .groupBy(simuladoAttemptQuestions.attemptId)
+        .as("q");
+
     return db
         .select({
             attemptId: simuladoAttempts.id,
@@ -342,9 +447,14 @@ export async function historicoDoUsuario(userId: string) {
             submittedAt: simuladoAttempts.submittedAt,
             score: simuladoAttempts.score,
             passed: simuladoAttempts.passed,
+            personalizado: simuladoAttempts.personalizado,
+            comTempo: sql<boolean>`${simuladoAttempts.expiresAt} is not null`,
+            topicos: simuladoAttempts.topicos,
+            questoes: sql<number>`coalesce(${questoesPorTentativa.total}, 0)::int`,
         })
         .from(simuladoAttempts)
         .innerJoin(simulados, eq(simulados.id, simuladoAttempts.simuladoId))
+        .leftJoin(questoesPorTentativa, eq(questoesPorTentativa.attemptId, simuladoAttempts.id))
         .where(eq(simuladoAttempts.userId, userId))
         .orderBy(desc(simuladoAttempts.startedAt));
 }

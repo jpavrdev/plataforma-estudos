@@ -5,6 +5,14 @@ export const salvarRespostaSchema = z.object({
     optionIds: z.array(z.uuid()).max(10),
 });
 
+// Tudo opcional: sem corpo, a tentativa sai na configuração oficial da prova.
+export const iniciarTentativaSchema = z.object({
+    questionCount: z.int().min(5).max(200).optional(),
+    comTempo: z.boolean().optional(),
+    duracaoMinutos: z.int().min(1).max(300).optional(),
+    topicos: z.array(z.string().trim().min(1).max(60)).max(30).optional(),
+});
+
 export const createSimuladoSchema = z.object({
     slug: z
         .string()
