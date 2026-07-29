@@ -149,6 +149,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["APIs e Frameworks (uma app pra testar)"],
     },
+    "ISTQB CTFL": {
+        whatYouLearn: [
+            "O vocabulário exato que a prova cobra e os sete princípios de teste",
+            "Níveis, tipos, teste estático e revisões pelo syllabus v4.0",
+            "Técnicas de caixa-preta e de caixa-branca com exercícios de aplicação",
+            "Gestão do teste: risco, estimativa, métricas e ferramentas",
+        ],
+        prerequisites: ["Nenhum: a prova é de nível fundamental"],
+    },
     "Testes E2E com Cypress e Playwright": {
         whatYouLearn: [
             "Escolher entre Cypress e Playwright e escrever o primeiro teste",
