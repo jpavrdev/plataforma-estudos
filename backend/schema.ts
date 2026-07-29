@@ -418,10 +418,15 @@ export const simuladoAttempts = pgTable(
             .references(() => simulados.id)
             .notNull(),
         startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
-        expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+        // Nulo quando o aluno escolheu treinar sem cronômetro.
+        expiresAt: timestamp("expires_at", { withTimezone: true }),
         submittedAt: timestamp("submitted_at", { withTimezone: true }),
         score: integer("score"),
         passed: boolean("passed"),
+        // Marca o treino montado pelo aluno, para não se confundir com a prova
+        // completa no histórico.
+        personalizado: boolean("personalizado").default(false).notNull(),
+        topicos: jsonb("topicos").$type<string[]>(),
     },
     (table) => [
         index("simulado_attempts_user_id_idx").on(table.userId),

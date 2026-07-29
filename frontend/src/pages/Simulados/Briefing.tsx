@@ -7,10 +7,13 @@ import {
   listarSimulados,
   historicoSimulados,
   iniciarTentativa,
+  opcoesDoSimulado,
+  type MontagemTentativa,
   type TentativaHistorico,
 } from '../../services/simulados';
 import { provedorDe, nomeLimpo, nivelClasse } from './provedores';
 import { ConfirmModal } from './ConfirmModal';
+import { MontarModal } from './MontarModal';
 
 function formatData(iso: string) {
   return new Date(iso).toLocaleDateString('pt-BR', {
@@ -25,23 +28,26 @@ export function SimuladoBriefing() {
   const navigate = useNavigate();
   const { dados, carregando } = useRequisicao(
     () =>
-      Promise.all([listarSimulados(), historicoSimulados()]).then(([exams, historico]) => ({
-        exams,
-        historico,
-      })),
-    [],
+      Promise.all([listarSimulados(), historicoSimulados(), opcoesDoSimulado(slug!)]).then(
+        ([exams, historico, opcoes]) => ({ exams, historico, opcoes }),
+      ),
+    [slug],
   );
   const exam = dados?.exams.find((e) => e.slug === slug) ?? null;
+  const opcoes = dados?.opcoes ?? null;
   const tentativas = (dados?.historico ?? []).filter((t) => t.slug === slug);
+  const emAndamento = tentativas.find((t) => t.submittedAt == null) ?? null;
+
   const [iniciando, setIniciando] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
+  const [montando, setMontando] = useState(false);
   const [voltarPara, setVoltarPara] = useState<string | null>(null);
 
-  async function iniciar() {
+  async function iniciar(montagem?: MontagemTentativa) {
     if (!exam || iniciando) return;
     setIniciando(true);
     try {
-      const t = await iniciarTentativa(exam.slug);
+      const t = await iniciarTentativa(exam.slug, montagem);
       navigate(`/simulados/tentativa/${t.attemptId}`);
     } catch (e) {
       console.error('Falha ao iniciar simulado', e);
@@ -110,19 +116,50 @@ export function SimuladoBriefing() {
                       d="Veja o que errou, o assunto de cada questão e o que revisar."
                     />
                   </div>
-                  <div className="sim-warn">
-                    <span className="sim-warn__icon">
-                      <Alert size={18} />
-                    </span>
-                    <div>
-                      <b>Uma vez iniciado, o cronômetro não para.</b> Se o tempo acabar, o simulado
-                      é enviado automaticamente com as respostas marcadas até ali.
-                    </div>
-                  </div>
-                  <button className="sim-start" onClick={() => setConfirmando(true)}>
-                    <Play size={15} />{' '}
-                    {tentativas.length > 0 ? 'Refazer simulado' : 'Iniciar simulado'}
-                  </button>
+
+                  {emAndamento ? (
+                    <>
+                      <div className="sim-warn">
+                        <span className="sim-warn__icon">
+                          <Alert size={18} />
+                        </span>
+                        <div>
+                          <b>Você tem uma tentativa em andamento.</b> Termine ou envie ela antes de
+                          começar outra.
+                        </div>
+                      </div>
+                      <button
+                        className="sim-start"
+                        onClick={() => navigate(`/simulados/tentativa/${emAndamento.attemptId}`)}
+                      >
+                        <Play size={15} /> Voltar para a prova
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="sim-warn">
+                        <span className="sim-warn__icon">
+                          <Alert size={18} />
+                        </span>
+                        <div>
+                          <b>Uma vez iniciado, o cronômetro não para.</b> Se o tempo acabar, o
+                          simulado é enviado automaticamente com as respostas marcadas até ali.
+                        </div>
+                      </div>
+                      <div className="sim-start__par">
+                        <button className="sim-start" onClick={() => setConfirmando(true)}>
+                          <Play size={15} />{' '}
+                          {tentativas.length > 0 ? 'Refazer simulado' : 'Iniciar simulado'}
+                        </button>
+                        <button
+                          className="sim-start sim-start--alt"
+                          onClick={() => setMontando(true)}
+                        >
+                          Monte do seu jeito
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="card">
@@ -149,11 +186,20 @@ export function SimuladoBriefing() {
             </>
           )}
 
+          {montando && opcoes && (
+            <MontarModal
+              opcoes={opcoes}
+              loading={iniciando}
+              onCancel={() => setMontando(false)}
+              onIniciar={(montagem) => iniciar(montagem)}
+            />
+          )}
+
           {confirmando && exam && (
             <ConfirmModal
               title="Iniciar o simulado?"
               confirmLabel="Sim, iniciar"
-              onConfirm={iniciar}
+              onConfirm={() => iniciar()}
               onCancel={() => setConfirmando(false)}
               loading={iniciando}
             >
@@ -209,6 +255,13 @@ function ItemTentativa({ a, onClick }: { a: TentativaHistorico; onClick: () => v
       </span>
       <div className="sim-attempt__id">
         <div className="sim-attempt__exam">{formatData(a.startedAt)}</div>
+        {a.personalizado && (
+          <div className="sim-attempt__tag">
+            treino · {a.questoes} questões
+            {!a.comTempo && ' · sem tempo'}
+            {a.topicos && a.topicos.length > 0 && ` · ${a.topicos.length} assunto(s)`}
+          </div>
+        )}
       </div>
       <span className={`sim-attempt__verdict sim-attempt__verdict--${estado}`}>{rotulo}</span>
     </button>

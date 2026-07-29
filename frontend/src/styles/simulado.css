@@ -1683,3 +1683,128 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ===================== MONTAR A TENTATIVA ===================== */
+.sim-montar__corpo {
+  display: grid;
+  gap: 20px;
+  margin: 4px 0 20px;
+  text-align: left;
+}
+.sim-montar__campo {
+  display: grid;
+  gap: 8px;
+}
+.sim-montar__linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14.5px;
+}
+.sim-montar__linha input {
+  accent-color: var(--accent);
+}
+.sim-montar__rotulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.sim-montar__valor {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 15px;
+}
+.sim-montar__range {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.sim-montar__limites {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+}
+.sim-montar__temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sim-tema {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.sim-tema:hover {
+  border-color: var(--accent);
+}
+.sim-tema--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.sim-tema__n {
+  opacity: 0.6;
+  font-size: 11.5px;
+}
+.sim-attempt__tag {
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.sim-montar__num {
+  width: 84px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: center;
+}
+.sim-montar__num:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.sim-modal__card--form {
+  max-width: 560px;
+  text-align: left;
+}
+.sim-modal__card--form .sim-modal__title,
+.sim-modal__card--form .sim-modal__text {
+  text-align: left;
+}
+.sim-start__par {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+.sim-start__par .sim-start {
+  flex: 1;
+  margin-top: 0;
+}
+.sim-start--alt {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+@media (max-width: 640px) {
+  .sim-start__par {
+    flex-direction: column;
+  }
+}

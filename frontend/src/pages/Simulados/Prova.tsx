@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ClockExam, ChevronLeft, ChevronRight, ChevronDown, Bookmark } from '../../components/Icons';
+import {
+  ClockExam,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  Bookmark,
+} from '../../components/Icons';
 import { salvarResposta, enviarTentativa, type TentativaEstado } from '../../services/simulados';
 import { ConfirmModal } from './ConfirmModal';
 
@@ -83,8 +89,13 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
   }
 
   // Contagem regressiva a partir do expiresAt (fonte de verdade); auto-envia ao zerar.
-  const expiresMs = useMemo(() => new Date(dados.expiresAt).getTime(), [dados.expiresAt]);
+  // Sem expiresAt o aluno escolheu treinar sem cronômetro.
+  const expiresMs = useMemo(
+    () => (dados.expiresAt ? new Date(dados.expiresAt).getTime() : null),
+    [dados.expiresAt],
+  );
   useEffect(() => {
+    if (expiresMs === null) return;
     const tick = () => {
       const s = Math.max(0, Math.round((expiresMs - Date.now()) / 1000));
       setRestante(s);
@@ -96,7 +107,8 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expiresMs]);
 
-  const urgente = restante <= 60;
+  const semTempo = expiresMs === null;
+  const urgente = !semTempo && restante !== null && restante <= 60;
 
   return (
     <>
@@ -117,10 +129,12 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
             {answeredCount} / {total}
           </span>
         </div>
-        <div className={`exam-bar__timer${urgente ? ' exam-bar__timer--urgent' : ''}`}>
-          <ClockExam size={17} />
-          <span>{formatTempo(restante)}</span>
-        </div>
+        {!semTempo && (
+          <div className={`exam-bar__timer${urgente ? ' exam-bar__timer--urgent' : ''}`}>
+            <ClockExam size={17} />
+            <span>{formatTempo(restante ?? 0)}</span>
+          </div>
+        )}
         <button
           className="btn btn--ghost exam-bar__finish"
           onClick={confirmarEnvio}
@@ -246,8 +260,8 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
         >
           {faltam > 0 ? (
             <>
-              Você deixou <b>{faltam}</b> {faltam === 1 ? 'questão' : 'questões'} em branco. Depois de
-              enviar não dá para voltar e corrigir.
+              Você deixou <b>{faltam}</b> {faltam === 1 ? 'questão' : 'questões'} em branco. Depois
+              de enviar não dá para voltar e corrigir.
             </>
           ) : (
             'Respondeu todas as questões. Depois de enviar não dá para voltar e corrigir.'
