@@ -24,6 +24,7 @@ const MAPA: Record<string, string[]> = {
     "Fundamentos de QA": ["QA"],
     "Testes e Qualidade": ["QA"],
     "Testes E2E com Cypress e Playwright": ["QA", "Front-end"],
+    "ISTQB CTFL": ["QA"],
 };
 
 async function seed() {
