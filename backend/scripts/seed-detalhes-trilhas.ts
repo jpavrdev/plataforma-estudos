@@ -45,7 +45,10 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Limpar dados: faltantes, tipos, duplicatas e outliers",
             "Juntar tabelas com merge e um fluxo de análise completo",
         ],
-        prerequisites: ["Python (estruturas de dados, funções)", "Noções de estatística descritiva"],
+        prerequisites: [
+            "Python (estruturas de dados, funções)",
+            "Noções de estatística descritiva",
+        ],
     },
     "Visualização de Dados": {
         whatYouLearn: [
@@ -128,6 +131,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["APIs e Frameworks", "Banco de dados"],
     },
+    "Fundamentos de QA": {
+        whatYouLearn: [
+            "O papel de QA, os princípios e o processo de teste",
+            "Níveis e tipos: funcionais, não funcionais e regressão",
+            "Técnicas: partição, valor limite, tabela de decisão e exploratório",
+            "Casos, defeitos, critérios de aceitação e QA em times ágeis",
+        ],
+        prerequisites: ["Nenhum: é a porta de entrada da área"],
+    },
     "Testes e Qualidade": {
         whatYouLearn: [
             "Testes unitários e de integração com Vitest",
@@ -136,6 +148,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Qualidade além dos testes: lint, tipos e review",
         ],
         prerequisites: ["APIs e Frameworks (uma app pra testar)"],
+    },
+    "Testes E2E com Cypress e Playwright": {
+        whatYouLearn: [
+            "Escolher entre Cypress e Playwright e escrever o primeiro teste",
+            "Seletores que não quebram e espera por condição, sem pausa fixa",
+            "Interceptar e simular rede, autenticar e preparar dados por atalho",
+            "Organizar a suíte, rodar no pipeline e combater testes instáveis",
+        ],
+        prerequisites: [
+            "Testes e Qualidade (automação de unidade e integração)",
+            "JavaScript básico",
+        ],
     },
     "Docker e Containers": {
         whatYouLearn: [
@@ -297,7 +321,10 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Armazenamento, bancos de dados, mensageria e desacoplamento",
             "Alta disponibilidade e DR, para o Solutions Architect Associate",
         ],
-        prerequisites: ["Cloud Practitioner (CLF-C02) ou equivalente", "Noções de redes e sistemas ajudam"],
+        prerequisites: [
+            "Cloud Practitioner (CLF-C02) ou equivalente",
+            "Noções de redes e sistemas ajudam",
+        ],
     },
 };
 
