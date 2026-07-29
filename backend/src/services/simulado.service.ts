@@ -64,6 +64,11 @@ export const MIN_QUESTOES = 5;
 // simulado para sempre, porque o início sempre a retomaria.
 const VALIDADE_SEM_TEMPO_MS = 24 * 60 * 60 * 1000;
 
+// O que o aluno escolhe no filtro de assuntos. Em parte dos simulados o topic é o
+// serviço testado e o domínio da prova vem da coluna domain; nos outros o próprio
+// topic já é o domínio.
+const assunto = sql<string>`coalesce(${simuladoQuestions.domain}, ${simuladoQuestions.topic})`;
+
 export type OpcoesTentativa = {
     questionCount?: number;
     comTempo?: boolean;
@@ -114,9 +119,7 @@ export async function iniciarTentativa(
 
     const topicos = opcoes.topicos?.length ? [...new Set(opcoes.topicos)] : null;
     const doSimulado = eq(simuladoQuestions.simuladoId, simulado.id);
-    const filtro = topicos
-        ? and(doSimulado, inArray(simuladoQuestions.topic, topicos))
-        : doSimulado;
+    const filtro = topicos ? and(doSimulado, inArray(assunto, topicos)) : doSimulado;
 
     const [disponiveis] = await db
         .select({ n: count() })
@@ -173,8 +176,9 @@ export async function iniciarTentativa(
     return estadoDaTentativa(userId, attemptId);
 }
 
-// Em alguns simulados o topic é o serviço testado, não o domínio da prova, e
-// filtrar por ele daria uma lista de 163 itens com uma questão cada.
+// Simulado sem domínio classificado ainda cairia numa lista de centenas de itens de
+// uma questão cada, inútil como filtro. Nesse caso a lista sai vazia e a tela esconde
+// a escolha de assuntos.
 const MIN_QUESTOES_POR_TEMA = 5;
 
 export async function opcoesDoSimulado(slug: string) {
@@ -185,10 +189,10 @@ export async function opcoesDoSimulado(slug: string) {
     if (!simulado) throw new AppError(404, "Simulado não encontrado");
 
     const temas = await db
-        .select({ nome: simuladoQuestions.topic, questoes: count() })
+        .select({ nome: assunto, questoes: count() })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, simulado.id))
-        .groupBy(simuladoQuestions.topic)
+        .groupBy(assunto)
         .orderBy(desc(count()));
 
     const comNome = temas.filter((t): t is { nome: string; questoes: number } => !!t.nome);
