@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
@@ -25,7 +25,13 @@ export function Login() {
   const [searchParams] = useSearchParams();
   const erroOAuth = ERROS_OAUTH[searchParams.get('erro') ?? ''] ?? '';
 
-  const [email, setEmail] = useState('');
+  // Quem acabou de se cadastrar chega aqui com o aviso de confirmar o email e com o
+  // endereço já preenchido; sem isso a pessoa cai numa tela de login sem entender por
+  // que foi parar nela.
+  const vindoDoCadastro = useLocation().state as { aviso?: string; email?: string } | null;
+  const [avisoCadastro, setAvisoCadastro] = useState(vindoDoCadastro?.aviso ?? '');
+
+  const [email, setEmail] = useState(vindoDoCadastro?.email ?? '');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -37,6 +43,7 @@ export function Login() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
+    setAvisoCadastro('');
     setNaoVerificado(false);
     setReenvioMsg('');
     setSubmitting(true);
@@ -115,6 +122,8 @@ export function Login() {
       </div>
       <h2 className="auth__title">Bem-vindo de volta</h2>
       <p className="auth__subtitle">Continue de onde você parou.</p>
+
+      {avisoCadastro && <div className="auth__alert auth__alert--ok">{avisoCadastro}</div>}
 
       {(error || erroOAuth) && <div className="auth__alert">{error || erroOAuth}</div>}
 

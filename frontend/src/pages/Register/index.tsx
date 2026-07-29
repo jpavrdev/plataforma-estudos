@@ -78,7 +78,7 @@ export function Register() {
 
     setSubmitting(true);
     try {
-      await api.post('/register', {
+      const { data } = await api.post('/register', {
         name,
         username,
         email: email.trim(),
@@ -87,7 +87,14 @@ export function Register() {
         gender,
         phone: phone.trim(),
       });
-      navigate('/entrar');
+      // Leva o aviso de confirmar o email junto: o login recusa quem ainda não
+      // confirmou, e sem esse texto a pessoa não entende por que voltou para cá.
+      navigate('/entrar', {
+        state: {
+          aviso: data?.mensagem ?? 'Conta criada. Verifique seu email para ativar o acesso.',
+          email: email.trim(),
+        },
+      });
     } catch (e: unknown) {
       // Mapeia os erros conhecidos do backend (409) para o campo certo.
       const msg = mensagemErro(e, 'Erro ao criar conta. Tente novamente.');
