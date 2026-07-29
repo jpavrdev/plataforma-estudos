@@ -222,13 +222,15 @@
   box-shadow: var(--shadow);
   line-height: 0;
 }
-.lp-tela img {
+.lp-tela img,
+.lp-tela video {
   display: block;
   width: 100%;
   height: auto;
 }
 /* As capturas são do tema claro; no escuro um amortecimento evita o clarão. */
-[data-theme='dark'] .lp-tela img {
+[data-theme='dark'] .lp-tela img,
+[data-theme='dark'] .lp-tela video {
   filter: brightness(0.88) saturate(0.95);
 }
 .lp-tela--hero {
@@ -379,6 +381,27 @@
   letter-spacing: -0.03em;
   color: var(--border-strong);
   margin-bottom: 12px;
+}
+
+/* ===================== PROVA DE MOVIMENTO ===================== */
+/* Os números de cima são o acervo; estes são o que as pessoas fizeram aqui.
+   Frase em vez de mais uma fileira de cards, para não repetir o mesmo bloco. */
+.lp-movimento {
+  /* Sem folga embaixo: a chamada final vem logo depois e já traz a dela. */
+  padding: 24px 0 0;
+}
+.lp-movimento__frase {
+  margin: 16px auto 0;
+  max-width: 22em;
+  text-align: center;
+  font-size: 30px;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+.lp-movimento__frase strong {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 /* ===================== CHAMADA FINAL ===================== */
@@ -573,6 +596,9 @@
   }
   .lp-cta__titulo {
     font-size: 27px;
+  }
+  .lp-movimento__frase {
+    font-size: 22px;
   }
   .lp-secao {
     padding: 54px 0;
