@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { Logo } from '../../components/Logo';
 import { ThemeToggle } from '../../components/ThemeToggle';
+import telaDesafio from '../../assets/produto-desafio.webp';
+import telaTerminal from '../../assets/produto-terminal.webp';
+import terminalWebm from '../../assets/produto-terminal.webm';
+import terminalMp4 from '../../assets/produto-terminal.mp4';
+import telaProgresso from '../../assets/produto-progresso.webp';
 import {
   Zap,
   Flame,
@@ -25,15 +30,17 @@ type Estatisticas = {
   questoes: number;
   estudantes: number;
   exerciciosResolvidos: number;
+  aulasConcluidas: number;
 };
 
 const numero = new Intl.NumberFormat('pt-BR');
 
-// Arredonda para baixo e marca com "+": 1293 vira "1.200+", 142 vira "100+". Continua
-// verdadeiro, e a vitrine não muda de número a cada aluno novo que entra.
+// Arredonda para baixo e marca com "+": 1293 vira "1.200+", 16138 vira "16.000+".
+// Continua verdadeiro, a vitrine não muda a cada aluno novo, e o passo cresce com
+// a grandeza, senão um "16.100+" ficaria preciso demais para uma frase de venda.
 function aproximado(n: number): string {
   if (n < 10) return numero.format(n);
-  const passo = n >= 100 ? 100 : 10;
+  const passo = n >= 10000 ? 1000 : n >= 100 ? 100 : 10;
   return `${numero.format(Math.floor(n / passo) * passo)}+`;
 }
 
@@ -101,11 +108,19 @@ const PASSOS = [
   },
 ];
 
+const LEGENDA_TERMINAL =
+  'Terminal Linux dentro de uma aula: o comando falha com permissão negada e depois funciona com sudo';
+
 // Tecnologias que têm trilha de verdade na plataforma.
 const TECNOLOGIAS = ['Python', 'JavaScript', 'Java', 'Go', 'Linux', 'Docker', 'Kubernetes', 'AWS'];
 
 export function Landing() {
   const [stats, setStats] = useState<Estatisticas>();
+  // Quem pediu menos movimento no sistema recebe o quadro final parado, com a
+  // mesma informação, em vez do vídeo em laço.
+  const [semAnimacao] = useState(
+    () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
+  );
 
   useEffect(() => {
     let ativo = true;
@@ -149,7 +164,7 @@ export function Landing() {
 
       <main>
         <section className="lp-hero">
-          <div className="lp-container lp-hero__inner">
+          <div className="lp-container">
             <div className="lp-hero__texto">
               <span className="lp-badge">
                 <Flame size={13} /> Um novo desafio todo dia
@@ -159,7 +174,7 @@ export function Landing() {
                 por dia.
               </h1>
               <p className="lp-lede">
-                A ensina.dev transforma o aprendizado de programação em hábito. Desafios diários,
+                O Ensina Dev transforma o aprendizado de programação em hábito. Desafios diários,
                 trilhas guiadas, simulados de certificação e um ranking para te manter no ritmo, do
                 zero à sua primeira vaga.
               </p>
@@ -174,7 +189,7 @@ export function Landing() {
               <p className="lp-hero__prova">
                 {stats ? (
                   <>
-                    <strong>{aproximado(stats.estudantes)} alunos</strong> já estudam na ensina.dev
+                    <strong>{aproximado(stats.estudantes)} alunos</strong> já estudam no Ensina Dev
                   </>
                 ) : (
                   <>Comece hoje, de graça</>
@@ -182,33 +197,14 @@ export function Landing() {
               </p>
             </div>
 
-            <div className="lp-mock" aria-hidden="true">
-              <div className="lp-mock__barra">
-                <span className="lp-mock__ponto" style={{ background: '#ff5f57' }} />
-                <span className="lp-mock__ponto" style={{ background: '#febc2e' }} />
-                <span className="lp-mock__ponto" style={{ background: '#28c840' }} />
-                <span className="lp-mock__arquivo">desafio-do-dia</span>
-              </div>
-              <div className="lp-mock__corpo">
-                <div className="lp-mock__tags">
-                  <span className="lp-tag lp-tag--facil">Fácil</span>
-                  <span className="lp-tag">+50 XP</span>
-                  <span className="lp-tag lp-tag--streak">
-                    <Flame size={12} /> 12 dias
-                  </span>
-                </div>
-                <h3 className="lp-mock__titulo">Soma de dois números</h3>
-                <pre className="lp-mock__codigo">
-                  <code>{`function soma(nums, alvo) {
-  const mapa = {};
-  for (let i = 0; i < nums.length; i++) {
-    // resolva aqui
-  }
-}`}</code>
-                </pre>
-                <span className="btn btn--accent lp-mock__botao">Resolver agora</span>
-              </div>
-            </div>
+            <figure className="lp-tela lp-tela--hero">
+              <img
+                src={telaDesafio}
+                width={1400}
+                height={683}
+                alt="Tela de um desafio no Ensina Dev: enunciado à esquerda, editor de código à direita e o resultado dos testes aprovado"
+              />
+            </figure>
           </div>
         </section>
 
@@ -254,9 +250,49 @@ export function Landing() {
           </div>
         </section>
 
+        <section className="lp-secao lp-secao--alt">
+          <div className="lp-container lp-destaque">
+            <div className="lp-destaque__texto">
+              <p className="lp-olho">Laboratório de verdade</p>
+              <h2 className="lp-destaque__titulo">
+                Um Linux inteiro dentro da aula, e ele é só seu.
+              </h2>
+              <p className="lp-destaque__lede">
+                Nas aulas de Linux você não lê sobre comando: você digita. Um Debian de verdade sobe
+                na hora, com <code className="code-inline">sudo</code> liberado, e some quando você
+                termina. Errar ali não quebra nada, porque a máquina é sua e é descartável.
+              </p>
+              <ul className="lp-lista">
+                <li>Sem instalar nada, sem máquina virtual, sem dual boot</li>
+                <li>Permissão negada de verdade, e o sudo resolvendo de verdade</li>
+                <li>Disponível em 20 aulas, da linha de comando ao bash</li>
+              </ul>
+            </div>
+            <figure className="lp-tela">
+              {semAnimacao ? (
+                <img src={telaTerminal} width={1240} height={500} alt={LEGENDA_TERMINAL} />
+              ) : (
+                <video
+                  poster={telaTerminal}
+                  width={1240}
+                  height={500}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  aria-label={LEGENDA_TERMINAL}
+                >
+                  <source src={terminalWebm} type="video/webm" />
+                  <source src={terminalMp4} type="video/mp4" />
+                </video>
+              )}
+            </figure>
+          </div>
+        </section>
+
         <section className="lp-secao" id="recursos">
           <div className="lp-container">
-            <p className="lp-olho lp-olho--centro">Por que ensina.dev</p>
+            <p className="lp-olho lp-olho--centro">Por que Ensina Dev</p>
             <h2 className="lp-h2">Feito para criar o hábito de programar</h2>
             <p className="lp-sub">
               Tudo o que você precisa para sair da teoria e praticar de verdade, todos os dias.
@@ -273,7 +309,34 @@ export function Landing() {
           </div>
         </section>
 
-        <section className="lp-secao lp-secao--alt" id="como-funciona">
+        <section className="lp-secao lp-secao--alt">
+          <div className="lp-container lp-destaque lp-destaque--invertido">
+            <div className="lp-destaque__texto">
+              <p className="lp-olho">Sua evolução</p>
+              <h2 className="lp-destaque__titulo">Constância que dá para ver, não para sentir.</h2>
+              <p className="lp-destaque__lede">
+                Cada dia de estudo vira um quadrado no mapa do ano. Some XP, mantenha o streak e
+                acompanhe o domínio de cada trilha. É o painel que mostra se você está mesmo
+                avançando ou só se sentindo produtivo.
+              </p>
+              <ul className="lp-lista">
+                <li>Mapa de atividade do ano inteiro</li>
+                <li>XP por trilha, conquistas e meta semanal</li>
+                <li>Ranking com ligas, de Bronze até Diamante</li>
+              </ul>
+            </div>
+            <figure className="lp-tela">
+              <img
+                src={telaProgresso}
+                width={1500}
+                height={787}
+                alt="Painel de progresso do Ensina Dev com XP total, meta semanal, mapa de atividade do ano, domínio por trilha e conquistas recentes"
+              />
+            </figure>
+          </div>
+        </section>
+
+        <section className="lp-secao" id="como-funciona">
           <div className="lp-container">
             <p className="lp-olho lp-olho--centro">Como funciona</p>
             <h2 className="lp-h2">Comece em 3 passos</h2>
@@ -288,6 +351,20 @@ export function Landing() {
             </div>
           </div>
         </section>
+
+        {/* Só aparece com os números na mão: a frase não faz sentido sem eles. */}
+        {stats && (
+          <section className="lp-movimento">
+            <div className="lp-container">
+              <p className="lp-olho lp-olho--centro">Quem já está aqui</p>
+              <p className="lp-movimento__frase">
+                Os alunos do Ensina Dev já resolveram{' '}
+                <strong>{aproximado(stats.exerciciosResolvidos)}</strong> exercícios e concluíram{' '}
+                <strong>{aproximado(stats.aulasConcluidas)}</strong> aulas.
+              </p>
+            </div>
+          </section>
+        )}
 
         <section className="lp-secao">
           <div className="lp-container">
@@ -334,7 +411,7 @@ export function Landing() {
           </nav>
         </div>
         <div className="lp-container lp-rodape__base">
-          <span>© {new Date().getFullYear()} ensina.dev. Todos os direitos reservados.</span>
+          <span>© {new Date().getFullYear()} Ensina Dev. Todos os direitos reservados.</span>
           <span className="lp-rodape__redes">
             <a
               href="https://github.com/jpavrdev"

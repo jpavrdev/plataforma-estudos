@@ -52,6 +52,7 @@ export type EstatisticasPublicas = {
     questoes: number;
     estudantes: number;
     exerciciosResolvidos: number;
+    aulasConcluidas: number;
 };
 
 const CACHE_PUBLICO_MS = 5 * 60 * 1000;
@@ -59,7 +60,7 @@ let cachePublico: { dados: EstatisticasPublicas; expiraEm: number } | null = nul
 
 export async function estatisticasPublicas(): Promise<EstatisticasPublicas> {
     if (cachePublico && cachePublico.expiraEm > Date.now()) return cachePublico.dados;
-    const [trilhas, aulas, desafios, provas, questoesAula, estudantes, respostas] =
+    const [trilhas, aulas, desafios, provas, questoesAula, estudantes, respostas, concluidas] =
         await Promise.all([
             db.select({ n: count() }).from(trails),
             db.select({ n: count() }).from(lessons).where(eq(lessons.published, true)),
@@ -68,6 +69,7 @@ export async function estatisticasPublicas(): Promise<EstatisticasPublicas> {
             db.select({ n: count() }).from(questions),
             db.select({ n: count() }).from(users),
             db.select({ n: count() }).from(questionAnswers),
+            db.select({ n: count() }).from(lessonProgress),
         ]);
     const dados: EstatisticasPublicas = {
         trilhas: Number(trilhas[0]?.n ?? 0),
@@ -77,6 +79,7 @@ export async function estatisticasPublicas(): Promise<EstatisticasPublicas> {
         questoes: Number(questoesAula[0]?.n ?? 0),
         estudantes: Number(estudantes[0]?.n ?? 0),
         exerciciosResolvidos: Number(respostas[0]?.n ?? 0),
+        aulasConcluidas: Number(concluidas[0]?.n ?? 0),
     };
     cachePublico = { dados, expiraEm: Date.now() + CACHE_PUBLICO_MS };
     return dados;

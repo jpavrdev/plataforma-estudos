@@ -79,11 +79,10 @@
 .lp-hero {
   padding: 80px 0 92px;
 }
-.lp-hero__inner {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 72px;
-  align-items: center;
+.lp-hero__texto {
+  max-width: 40em;
+  margin: 0 auto;
+  text-align: center;
 }
 .lp-badge {
   display: inline-flex;
@@ -107,7 +106,7 @@
   color: var(--accent);
 }
 .lp-lede {
-  margin: 22px 0 0;
+  margin: 22px auto 0;
   max-width: 34em;
   color: var(--muted);
   font-size: 16.5px;
@@ -116,6 +115,7 @@
 .lp-hero__ctas {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 12px;
   margin-top: 30px;
 }
@@ -146,84 +146,6 @@
   color: var(--text);
 }
 
-/* Cartão ilustrativo do desafio do dia */
-.lp-mock {
-  border: 1px solid var(--border);
-  border-radius: var(--r-2xl);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-.lp-mock__barra {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 16px;
-  background: var(--surface-2);
-  border-bottom: 1px solid var(--border);
-}
-.lp-mock__ponto {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-.lp-mock__arquivo {
-  margin-left: 8px;
-  font-family: var(--font-code);
-  font-size: 12px;
-  color: var(--muted);
-}
-.lp-mock__corpo {
-  padding: 20px;
-}
-.lp-mock__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.lp-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-}
-.lp-tag--facil {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.lp-tag--streak {
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-.lp-mock__titulo {
-  margin: 14px 0 12px;
-  font-size: 19px;
-  letter-spacing: -0.02em;
-}
-.lp-mock__codigo {
-  margin: 0 0 16px;
-  padding: 16px;
-  border-radius: var(--r-lg);
-  background: var(--input);
-  border: 1px solid var(--border);
-  font-family: var(--font-code);
-  font-size: 12.5px;
-  line-height: 1.7;
-  color: var(--text);
-  overflow-x: auto;
-}
-.lp-mock__botao {
-  width: 100%;
-  height: 44px;
-  font-size: 14.5px;
-}
-
 /* ===================== TECNOLOGIAS ===================== */
 .lp-tecnologias {
   padding: 8px 0 48px;
@@ -238,11 +160,11 @@
   padding: 0;
 }
 .lp-tecnologias__lista li {
-  color: var(--muted);
+  color: var(--text);
   font-size: 21px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  opacity: 0.75;
+  opacity: 0.68;
 }
 .lp-tecnologias__nota {
   margin: 18px 0 0;
@@ -288,6 +210,86 @@
   color: var(--muted);
   font-size: 13.5px;
   text-align: center;
+}
+
+/* ===================== CAPTURAS DO PRODUTO ===================== */
+.lp-tela {
+  margin: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-2xl);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  line-height: 0;
+}
+.lp-tela img,
+.lp-tela video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* As capturas são do tema claro; no escuro um amortecimento evita o clarão. */
+[data-theme='dark'] .lp-tela img,
+[data-theme='dark'] .lp-tela video {
+  filter: brightness(0.88) saturate(0.95);
+}
+.lp-tela--hero {
+  margin-top: 56px;
+  box-shadow:
+    0 24px 60px color-mix(in srgb, var(--accent) 20%, transparent),
+    var(--shadow);
+}
+
+/* Texto de um lado, captura do outro: quebra a sequência de fileiras de cards. */
+.lp-destaque {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 64px;
+  align-items: center;
+}
+/* Invertido, a captura troca de lado, e a coluna larga vai junto com ela. */
+.lp-destaque--invertido {
+  grid-template-columns: 1.15fr 1fr;
+}
+.lp-destaque--invertido .lp-destaque__texto {
+  order: 2;
+}
+.lp-destaque__titulo {
+  margin: 14px 0 0;
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+.lp-destaque__lede {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+.lp-lista {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-lista li {
+  position: relative;
+  padding-left: 28px;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.lp-lista li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 5px;
+  width: 13px;
+  height: 7px;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
 }
 
 /* ===================== SEÇÕES ===================== */
@@ -379,6 +381,27 @@
   letter-spacing: -0.03em;
   color: var(--border-strong);
   margin-bottom: 12px;
+}
+
+/* ===================== PROVA DE MOVIMENTO ===================== */
+/* Os números de cima são o acervo; estes são o que as pessoas fizeram aqui.
+   Frase em vez de mais uma fileira de cards, para não repetir o mesmo bloco. */
+.lp-movimento {
+  /* Sem folga embaixo: a chamada final vem logo depois e já traz a dela. */
+  padding: 24px 0 0;
+}
+.lp-movimento__frase {
+  margin: 16px auto 0;
+  max-width: 22em;
+  text-align: center;
+  font-size: 30px;
+  line-height: 1.35;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+.lp-movimento__frase strong {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 /* ===================== CHAMADA FINAL ===================== */
@@ -503,9 +526,16 @@
   .lp-container {
     padding: 0 28px;
   }
-  .lp-hero__inner {
+  .lp-destaque {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
+  }
+  /* Empilhado, a captura vem sempre depois do texto que a explica. */
+  .lp-destaque--invertido .lp-destaque__texto {
+    order: 0;
+  }
+  .lp-destaque__titulo {
+    font-size: 28px;
   }
   .lp-h1 {
     font-size: 40px;
@@ -555,9 +585,6 @@
   .lp-lede {
     font-size: 15.5px;
   }
-  .lp-mock__codigo {
-    font-size: 11.5px;
-  }
   .lp-stat__num {
     font-size: 27px;
   }
@@ -569,6 +596,9 @@
   }
   .lp-cta__titulo {
     font-size: 27px;
+  }
+  .lp-movimento__frase {
+    font-size: 22px;
   }
   .lp-secao {
     padding: 54px 0;
