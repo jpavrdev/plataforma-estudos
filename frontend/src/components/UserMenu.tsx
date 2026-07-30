@@ -94,6 +94,16 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
           >
             Conquistas
           </button>
+          {user?.apoiador && (
+            <button
+              type="button"
+              role="menuitem"
+              className="user-menu__item"
+              onClick={() => go('/curriculo')}
+            >
+              Analisar currículo
+            </button>
+          )}
           <button
             type="button"
             role="menuitem"

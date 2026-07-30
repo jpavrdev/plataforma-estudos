@@ -38,6 +38,7 @@ const GRATIS = [
 ];
 
 const PREMIUM = [
+  'Analisador de currículo para as vagas que você quer',
   'Selo de apoiador no perfil e no ranking',
   'Estatísticas avançadas de progresso',
   'Cor e imagem de fundo personalizadas',

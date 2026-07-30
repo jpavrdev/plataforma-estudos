@@ -42,6 +42,18 @@ const envSchema = z.object({
     ABACATEPAY_API_KEY: z.string().optional(),
     ABACATEPAY_WEBHOOK_SECRET: z.string().optional(),
     ABACATEPAY_PRODUCT_PIX_AUTO: z.string().optional(),
+    // Analisador de currículo. Sem modo de IA roda só o motor determinístico;
+    // "cli" usa o Claude Code da máquina (local) e "api" usa a chave (produção).
+    ATS_IA_MODO: z.enum(["off", "cli", "api"]).default("off"),
+    ATS_API_KEY: z.string().optional(),
+    // O modo "api" fala o protocolo da Anthropic, e o DeepSeek expõe um endpoint
+    // nesse formato. Apagar a base URL manda as chamadas para a Anthropic.
+    ATS_API_BASE_URL: z.string().url().default("https://api.deepseek.com/anthropic"),
+    ATS_MODELO: z.string().default("deepseek-v4-pro"),
+    ATS_MODELO_CLI: z.string().default("opus"),
+    // O v4-pro passa de 100s em currículo grande, então a margem é generosa.
+    ATS_TIMEOUT_S: z.coerce.number().int().positive().default(180),
+    ATS_LIMITE_MENSAL: z.coerce.number().int().positive().default(30),
     // Dados do emissor impressos no certificado. Sem os três, a emissão fica desligada.
     CERT_RAZAO_SOCIAL: z.string().optional(),
     CERT_CNPJ: z.string().optional(),
