@@ -34,12 +34,14 @@ app.use("/comunidade/imagem", express.json({ limit: "6mb" }));
 app.use("/curriculo/analises", express.json({ limit: "8mb" }));
 app.use(express.json());
 app.use(helmet({ frameguard: { action: "deny" } }));
-app.use(
-    cors({
-        origin: env.NODE_ENV === "production" ? env.FRONTEND_URL : true,
-        credentials: true,
-    }),
-);
+// Refletir a origem que chega, junto com credentials, deixaria qualquer site
+// chamar a API autenticado como quem estivesse logado.
+const ORIGENS =
+    env.NODE_ENV === "production"
+        ? [env.FRONTEND_URL]
+        : [env.FRONTEND_URL, /^http:\/\/localhost:\d+$/, /^http:\/\/127\.0\.0\.1:\d+$/];
+
+app.use(cors({ origin: ORIGENS, credentials: true }));
 
 // Imagens enviadas pelos usuarios. Libera o carregamento cross-origin para o
 // front (em dev fica em outra origem que o backend).
