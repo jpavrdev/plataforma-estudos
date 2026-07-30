@@ -29,6 +29,33 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Lógica de programação (algoritmos, laços, condicionais)"],
     },
+    TypeScript: {
+        whatYouLearn: [
+            "Por que tipos existem e como o TypeScript checa antes de rodar",
+            "União e narrowing, interfaces, generics e restrições",
+            "Utility types, conditional e mapped types, e quando parar",
+            "Validação na fronteira, configuração do compilador e migração",
+        ],
+        prerequisites: ["JavaScript (funções, objetos, módulos e assíncrono)"],
+    },
+    React: {
+        whatYouLearn: [
+            "JSX, componentes, props e estado com useState e useReducer",
+            "Efeitos, e os quatro casos em que não se deve usar efeito",
+            "Composição, hooks próprios, context e as Actions do React 19",
+            "Desempenho com o React Compiler, testes e Server Components",
+        ],
+        prerequisites: ["JavaScript moderno (arrow functions, destructuring, módulos)"],
+    },
+    "Spring Boot": {
+        whatYouLearn: [
+            "Injeção de dependência, auto-configuração e starters",
+            "REST com validação, tratamento de erros e paginação",
+            "JPA com relacionamentos, transações, migrations e o N+1",
+            "Security com JWT, testes com Testcontainers e observabilidade",
+        ],
+        prerequisites: ["Java (orientação a objetos, coleções e exceções)", "Noções de HTTP e SQL"],
+    },
     PHP: {
         whatYouLearn: [
             "Sintaxe, tipos e strings do PHP 8.5",
