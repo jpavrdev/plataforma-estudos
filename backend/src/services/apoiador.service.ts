@@ -1,4 +1,5 @@
-import { and, count, desc, eq, gt, inArray, or } from "drizzle-orm";
+import { randomUUID } from "node:crypto";
+import { and, count, desc, eq, gt, inArray, isNotNull, isNull, or } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { subscriptions, users } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -7,6 +8,8 @@ import {
     gatewayConfigurado,
     criarPixTransparente,
     criarCheckoutAssinatura,
+    consultarPixQrCode,
+    PIX_TTL_SEGUNDOS,
 } from "./abacatepay.client.ts";
 
 export const PLANOS = {
@@ -47,7 +50,62 @@ export async function apoiadoresAtivos(): Promise<Set<string>> {
     return new Set(linhas.map((l) => l.userId));
 }
 
+// Marca o apoio como pago e calcula até quando vale. Renovação estende a partir
+// do vencimento atual; pagamento novo conta da data em que o dinheiro entrou.
+async function ativarAssinatura(
+    alvo: {
+        id: string;
+        plan: keyof typeof PLANOS;
+        paidAt: Date | null;
+        expiresAt: Date | null;
+    },
+    pagoEm: Date,
+    renovacao = false,
+) {
+    const base = renovacao && alvo.expiresAt && alvo.expiresAt > pagoEm ? alvo.expiresAt : pagoEm;
+    const expiresAt = new Date(base.getTime() + PLANOS[alvo.plan].dias * 86400000);
+    // Fora de renovação, exigir paid_at nulo torna a ativação idempotente: o
+    // webhook e a consulta ao gateway podem chegar juntos sem se atropelar.
+    const condicoes = [eq(subscriptions.id, alvo.id)];
+    if (!renovacao) condicoes.push(isNull(subscriptions.paidAt));
+    await db
+        .update(subscriptions)
+        .set({ status: "ativa", paidAt: alvo.paidAt ?? pagoEm, expiresAt })
+        .where(and(...condicoes));
+}
+
+// Pergunta ao gateway se as cobranças que ainda estão pendentes aqui já foram
+// pagas. O webhook é o caminho rápido, e este é o que garante que um webhook
+// perdido não deixe quem pagou sem o apoio. Só consulta cobrança que ainda pode
+// ser paga, para não bater no gateway a cada abertura da página.
+export async function confirmarPagamentosPendentes(userId: string) {
+    if (!gatewayConfigurado()) return;
+    const pendentes = await db
+        .select()
+        .from(subscriptions)
+        .where(
+            and(
+                eq(subscriptions.userId, userId),
+                eq(subscriptions.status, "pendente"),
+                isNull(subscriptions.paidAt),
+                isNotNull(subscriptions.gatewayId),
+                gt(subscriptions.createdAt, new Date(Date.now() - PIX_TTL_SEGUNDOS * 1000)),
+            ),
+        );
+    for (const pendente of pendentes) {
+        try {
+            const cobranca = await consultarPixQrCode(pendente.gatewayId!);
+            if (cobranca.pago) await ativarAssinatura(pendente, cobranca.pagoEm ?? new Date());
+        } catch (err) {
+            // Gateway fora do ar não pode derrubar a tela de apoio: a próxima
+            // consulta ou o webhook resolvem.
+            console.error("Falha ao confirmar cobrança no gateway:", pendente.gatewayId, err);
+        }
+    }
+}
+
 export async function statusApoio(userId: string) {
+    await confirmarPagamentosPendentes(userId);
     const [ativa] = await db
         .select({
             plan: subscriptions.plan,
@@ -82,6 +140,7 @@ export async function criarCobranca(userId: string, plan: "mensal" | "anual") {
             and(
                 eq(subscriptions.userId, userId),
                 eq(subscriptions.status, "pendente"),
+                isNotNull(subscriptions.gatewayId),
                 gt(subscriptions.createdAt, new Date(Date.now() - 3600000)),
             ),
         );
@@ -91,21 +150,24 @@ export async function criarCobranca(userId: string, plan: "mensal" | "anual") {
     if (!gatewayConfigurado()) {
         throw new AppError(503, "O apoio ainda não está disponível. Volte em breve!");
     }
-    const [pendente] = await db
-        .insert(subscriptions)
-        .values({ userId, plan, status: "pendente", amountCents: PLANOS[plan].valorCents })
-        .returning({ id: subscriptions.id });
-
+    // O id nasce aqui para viajar no metadata da cobrança, e a linha só é gravada
+    // depois que o gateway responde. Assim uma falha na criação do Pix não deixa
+    // pendência órfã, que além de sujar o histórico contaria contra o limite acima.
+    const id = randomUUID();
     const pix = await criarPixTransparente(PLANOS[plan].valorCents, PLANOS[plan].descricao, {
-        subscriptionId: pendente.id,
+        subscriptionId: id,
     });
-    await db
-        .update(subscriptions)
-        .set({ gatewayId: pix.gatewayId || null })
-        .where(eq(subscriptions.id, pendente.id));
+    await db.insert(subscriptions).values({
+        id,
+        userId,
+        plan,
+        status: "pendente",
+        amountCents: PLANOS[plan].valorCents,
+        gatewayId: pix.gatewayId || null,
+    });
 
     return {
-        subscriptionId: pendente.id,
+        subscriptionId: id,
         valorCents: PLANOS[plan].valorCents,
         brCode: pix.brCode,
         brCodeBase64: pix.brCodeBase64,
@@ -116,26 +178,21 @@ export async function criarAssinaturaRecorrente(userId: string) {
     if (!gatewayConfigurado() || !env.ABACATEPAY_PRODUCT_PIX_AUTO) {
         throw new AppError(503, "O Pix Automático ainda não está disponível. Use o plano mensal ou anual.");
     }
-    const [pendente] = await db
-        .insert(subscriptions)
-        .values({
-            userId,
-            plan: "pix_auto",
-            status: "pendente",
-            amountCents: PLANOS.pix_auto.valorCents,
-        })
-        .returning({ id: subscriptions.id });
-
+    const id = randomUUID();
     const checkout = await criarCheckoutAssinatura(
         env.ABACATEPAY_PRODUCT_PIX_AUTO,
         `${env.FRONTEND_URL}/apoie`,
         `${env.FRONTEND_URL}/apoie?pago=1`,
-        pendente.id,
+        id,
     );
-    await db
-        .update(subscriptions)
-        .set({ gatewayId: checkout.gatewayId || null })
-        .where(eq(subscriptions.id, pendente.id));
+    await db.insert(subscriptions).values({
+        id,
+        userId,
+        plan: "pix_auto",
+        status: "pendente",
+        amountCents: PLANOS.pix_auto.valorCents,
+        gatewayId: checkout.gatewayId || null,
+    });
 
     return { url: checkout.url };
 }
@@ -149,7 +206,15 @@ function extrairReferencias(payload: Record<string, unknown>): string[] {
         if (typeof o.subscriptionId === "string") refs.push(o.subscriptionId);
         if (typeof o.externalId === "string") refs.push(o.externalId);
         if (typeof o.id === "string") refs.push(o.id);
-        for (const chave of ["metadata", "data", "pixQrCode", "transparent", "checkout", "subscription", "billing"]) {
+        for (const chave of [
+            "metadata",
+            "data",
+            "pixQrCode",
+            "transparent",
+            "checkout",
+            "subscription",
+            "billing",
+        ]) {
             visitar(o[chave]);
         }
     };
@@ -187,22 +252,16 @@ export async function processarWebhook(payload: Record<string, unknown>) {
     }
 
     if (EVENTOS_PAGAMENTO.has(evento)) {
-        const agora = new Date();
-        if (alvo.paidAt && evento !== "subscription.renewed") {
+        const renovacao = evento === "subscription.renewed";
+        if (alvo.paidAt && !renovacao) {
             return { ok: true };
         }
-        // Renovação estende a partir do vencimento atual; pagamento novo começa agora.
-        const base =
-            alvo.expiresAt && alvo.expiresAt > agora && evento === "subscription.renewed"
-                ? alvo.expiresAt
-                : agora;
-        const expiresAt = new Date(base.getTime() + PLANOS[alvo.plan].dias * 86400000);
+        await ativarAssinatura(alvo, new Date(), renovacao);
+    } else if (evento === "subscription.cancelled") {
         await db
             .update(subscriptions)
-            .set({ status: "ativa", paidAt: alvo.paidAt ?? agora, expiresAt })
+            .set({ status: "cancelada" })
             .where(eq(subscriptions.id, alvo.id));
-    } else if (evento === "subscription.cancelled") {
-        await db.update(subscriptions).set({ status: "cancelada" }).where(eq(subscriptions.id, alvo.id));
     } else {
         console.warn("Webhook do gateway com evento não tratado:", evento);
     }
@@ -216,7 +275,6 @@ export async function definirAccent(userId: string, accent: string | null) {
     await db.update(users).set({ accent }).where(eq(users.id, userId));
     return { accent };
 }
-
 
 // Cancela o que estiver valendo: nada renova, e o período já pago segue até o fim.
 export async function cancelarApoio(userId: string) {
@@ -242,7 +300,6 @@ export async function cancelarApoio(userId: string) {
     return { ok: true, expiresAt: expiresAt ?? null, pixAuto };
 }
 
-
 export async function definirVeuFundo(userId: string, dim: number) {
     if (!(await apoiadorAtivo(userId))) {
         throw new AppError(403, "Imagem de fundo é um benefício de apoiador.");
@@ -250,7 +307,6 @@ export async function definirVeuFundo(userId: string, dim: number) {
     await db.update(users).set({ backgroundDim: dim }).where(eq(users.id, userId));
     return { backgroundDim: dim };
 }
-
 
 const TZ_SP = "America/Sao_Paulo";
 const diaSP = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: TZ_SP });
