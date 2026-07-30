@@ -124,12 +124,18 @@ async function viaApi(mensagem: string): Promise<string | null> {
     // dois: o DeepSeek só aceita `effort` em output_config e já vem com o próprio
     // modo de raciocínio ligado. Sem o schema a saída deixa de ser JSON garantido,
     // e é o parser tolerante (o mesmo do modo cli) que segura.
-    const soAnthropic = !env.ATS_API_BASE_URL.includes("api.anthropic.com")
-        ? {}
-        : {
+    let hostApiBaseUrl = "";
+    try {
+        hostApiBaseUrl = new URL(env.ATS_API_BASE_URL).hostname.toLowerCase();
+    } catch {
+        hostApiBaseUrl = "";
+    }
+    const soAnthropic = hostApiBaseUrl === "api.anthropic.com"
+        ? {
               thinking: { type: "adaptive" as const },
               output_config: { format: { type: "json_schema" as const, schema: ESQUEMA } },
-          };
+          }
+        : {};
 
     const resposta = await cliente.messages.create({
         model: env.ATS_MODELO,
