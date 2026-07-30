@@ -5949,6 +5949,16 @@ a.logo {
   .apoie__planos {
     grid-template-columns: 1fr;
   }
+  /* Com três ciclos a pílula não cabe na largura do celular: vira coluna. */
+  .apoie__ciclos {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    border-radius: 16px;
+  }
+  .apoie__ciclo {
+    justify-content: center;
+  }
 }
 
 .prg-periodo--lock {

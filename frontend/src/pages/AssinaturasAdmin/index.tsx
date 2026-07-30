@@ -61,6 +61,7 @@ function montarSerie(
 
 const PLANO: Record<string, string> = {
   mensal: 'Mensal',
+  trimestral: 'Trimestral',
   anual: 'Anual',
   pix_auto: 'Pix Automático',
 };

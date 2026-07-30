@@ -2,9 +2,12 @@ import api from './api';
 
 export const ACCENTS = ['#2D6BF5', '#7C3AED', '#DB2777', '#E0532F', '#1C8F5A', '#B7791F'];
 
+export type PlanoAvulso = 'mensal' | 'trimestral' | 'anual';
+export type Plano = PlanoAvulso | 'pix_auto';
+
 export interface StatusApoio {
   apoiador: boolean;
-  plano: 'mensal' | 'anual' | 'pix_auto' | null;
+  plano: Plano | null;
   expiresAt: string | null;
   cancelada: boolean;
   disponivel: boolean;
@@ -23,7 +26,7 @@ export async function obterStatusApoio() {
   return data;
 }
 
-export async function criarCobranca(plan: 'mensal' | 'anual') {
+export async function criarCobranca(plan: PlanoAvulso) {
   const { data } = await api.post<CobrancaPix>('/apoie/cobranca', { plan });
   return data;
 }
@@ -74,7 +77,7 @@ export interface AssinaturasAdminData {
   porDia: { d: string; cents: number }[];
   assinaturas: {
     id: string;
-    plan: 'mensal' | 'anual' | 'pix_auto';
+    plan: Plano;
     status: 'pendente' | 'ativa' | 'cancelada';
     amountCents: number;
     paidAt: string | null;

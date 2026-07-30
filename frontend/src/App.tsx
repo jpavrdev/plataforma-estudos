@@ -93,6 +93,7 @@ const Comunidade = lazy(() =>
   import('./pages/Comunidade').then((m) => ({ default: m.Comunidade })),
 );
 const Apoie = lazy(() => import('./pages/Apoie').then((m) => ({ default: m.Apoie })));
+const Curriculo = lazy(() => import('./pages/Curriculo').then((m) => ({ default: m.Curriculo })));
 const CompletarPerfil = lazy(() =>
   import('./pages/CompletarPerfil').then((m) => ({ default: m.CompletarPerfil })),
 );
@@ -394,6 +395,14 @@ function AppRoutes() {
             element={
               <PrivateRoute>
                 <Apoie />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/curriculo"
+            element={
+              <PrivateRoute>
+                <Curriculo />
               </PrivateRoute>
             }
           />

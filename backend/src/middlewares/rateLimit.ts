@@ -81,14 +81,18 @@ export const desafioRunLimiter = criarLimiter(
     "Muitas execuções seguidas. Aguarde um instante e tente de novo.",
 );
 
-export const uploadLimiter = criarLimiter(
-    30,
-    "Muitos envios de imagem. Aguarde alguns minutos.",
-);
+export const uploadLimiter = criarLimiter(30, "Muitos envios de imagem. Aguarde alguns minutos.");
 
 // Publicar na comunidade (post ou comentário) é escrita de conteúdo; teto por
 // janela para conter spam/flood sem atrapalhar quem participa normalmente.
 export const comunidadeEscritaLimiter = criarLimiter(
     40,
     "Você está publicando rápido demais. Aguarde alguns minutos.",
+);
+
+// Cada análise lê um PDF e pode chamar o modelo; o teto mensal por apoiador está
+// no service, e este é só a barreira de rajada.
+export const analiseCurriculoLimiter = criarLimiter(
+    10,
+    "Muitas análises seguidas. Aguarde alguns minutos.",
 );
