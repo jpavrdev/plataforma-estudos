@@ -5725,12 +5725,17 @@ a.logo {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  align-items: start;
 }
 .apoie__plano {
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   padding: 24px;
+}
+/* Absorve a sobra para os botões dos dois cartões fecharem na mesma linha. */
+.apoie__plano .apoie__lista {
+  flex: 1;
 }
 .apoie__plano--premium {
   border: 2px solid var(--accent);
@@ -5824,7 +5829,7 @@ a.logo {
 }
 .apoie__atual {
   width: 100%;
-  height: 46px;
+  height: 50px; /* igual a .btn--block */
   border: 1px solid var(--border-strong);
   border-radius: 12px;
   background: var(--surface-2);
@@ -5948,6 +5953,16 @@ a.logo {
 @media (max-width: 860px) {
   .apoie__planos {
     grid-template-columns: 1fr;
+  }
+  /* Com três ciclos a pílula não cabe na largura do celular: vira coluna. */
+  .apoie__ciclos {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    border-radius: 16px;
+  }
+  .apoie__ciclo {
+    justify-content: center;
   }
 }
 

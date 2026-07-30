@@ -682,7 +682,12 @@ export const certificates = pgTable(
     ],
 );
 
-export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
+export const subscriptionPlan = pgEnum("subscription_plan", [
+    "mensal",
+    "trimestral",
+    "anual",
+    "pix_auto",
+]);
 export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);
 
 // Apoio ao projeto. Cada pagamento vira uma linha; apoiador ativo = alguma
@@ -704,6 +709,33 @@ export const subscriptions = pgTable(
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [index("subscriptions_user_id_idx").on(table.userId)],
+);
+
+export const resumeAnalysisEngine = pgEnum("resume_analysis_engine", ["heuristica", "ia"]);
+
+// Análise de currículo contra uma vaga. Nem o PDF nem o texto extraído ficam
+// aqui: é dado pessoal que não precisamos depois que a análise sai.
+export const resumeAnalyses = pgTable(
+    "resume_analyses",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        jobTitle: varchar("job_title", { length: 160 }),
+        score: integer("score").notNull(),
+        verdict: varchar("verdict", { length: 80 }).notNull(),
+        description: text("description").notNull(),
+        engine: resumeAnalysisEngine("engine").notNull(),
+        summary: jsonb("summary").notNull(),
+        breakdown: jsonb("breakdown").notNull(),
+        keywordsFound: jsonb("keywords_found").notNull(),
+        keywordsPartial: jsonb("keywords_partial").notNull(),
+        keywordsMissing: jsonb("keywords_missing").notNull(),
+        suggestions: jsonb("suggestions").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("resume_analyses_user_id_idx").on(table.userId)],
 );
 
 export const communityPostKind = pgEnum("community_post_kind", [
