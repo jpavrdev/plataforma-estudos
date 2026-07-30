@@ -29,6 +29,42 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Lógica de programação (algoritmos, laços, condicionais)"],
     },
+    PHP: {
+        whatYouLearn: [
+            "Sintaxe, tipos e strings do PHP 8.5",
+            "Arrays, funções, controle de fluxo e o pipe operator",
+            "Orientação a objetos com enums, readonly e traits",
+            "PHP na web: formulários, sessões, PDO e autoload PSR-4",
+        ],
+        prerequisites: ["Lógica de programação (algoritmos, laços, condicionais)"],
+    },
+    Ruby: {
+        whatYouLearn: [
+            "A sintaxe do Ruby 4.0, onde tudo é objeto",
+            "Coleções, Enumerable, blocos e pattern matching",
+            "Classes, módulos, mixins e duck typing",
+            "Exceções, testes com Minitest e RSpec, e o Ruby moderno",
+        ],
+        prerequisites: ["Lógica de programação (algoritmos, laços, condicionais)"],
+    },
+    Laravel: {
+        whatYouLearn: [
+            "Rotas, controllers, validação e Blade com componentes",
+            "Eloquent: migrations, relacionamentos e como evitar o N+1",
+            "Autenticação com passkeys, gates, policies e APIs com Sanctum",
+            "Filas, cache, testes com Pest e as novidades do Laravel 13",
+        ],
+        prerequisites: ["PHP (orientação a objetos e composer)", "Noções de HTTP e SQL"],
+    },
+    "Ruby on Rails": {
+        whatYouLearn: [
+            "Rotas REST, controllers, views em ERB e o ciclo da requisição",
+            "Active Record: migrations, associações, escopos e validações",
+            "Hotwire com Turbo e Stimulus, sem virar dois projetos",
+            "Jobs e cache com a Solid Trifecta, testes e deploy com Kamal",
+        ],
+        prerequisites: ["Ruby (classes, blocos e gems)", "Noções de HTTP e SQL"],
+    },
     "Estatística e Probabilidade": {
         whatYouLearn: [
             "Estatística descritiva: média, mediana, desvio e distribuições",
