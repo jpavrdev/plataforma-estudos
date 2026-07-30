@@ -5,6 +5,10 @@ export function gatewayConfigurado() {
     return Boolean(env.ABACATEPAY_API_KEY);
 }
 
+// Validade do QRCode Pix. Passado esse prazo a cobrança não pode mais ser paga,
+// então nem vale consultar o gateway sobre ela.
+export const PIX_TTL_SEGUNDOS = 1800;
+
 async function chamar(caminho: string, body: unknown) {
     const resposta = await fetch(`${env.ABACATEPAY_API_URL}${caminho}`, {
         method: "POST",
@@ -22,6 +26,36 @@ async function chamar(caminho: string, body: unknown) {
     return dados as Record<string, unknown>;
 }
 
+// Estado de um QRCode Pix já criado (v1). É como sabemos que o dinheiro entrou
+// sem depender do webhook: PENDING enquanto ninguém paga, PAID depois.
+export async function consultarPixQrCode(id: string) {
+    const resposta = await fetch(
+        `${env.ABACATEPAY_API_URL}/pixQrCode/check?id=${encodeURIComponent(id)}`,
+        { headers: { Authorization: `Bearer ${env.ABACATEPAY_API_KEY}` } },
+    );
+    const dados = await resposta.json().catch(() => null);
+    if (!resposta.ok) {
+        console.error(
+            "AbacatePay respondeu erro ao consultar cobrança:",
+            id,
+            resposta.status,
+            JSON.stringify(dados),
+        );
+        throw new AppError(
+            502,
+            "O gateway de pagamento não respondeu. Tente de novo em instantes.",
+        );
+    }
+    const d = ((dados as Record<string, unknown>)?.data ?? dados) as Record<string, unknown>;
+    return {
+        pago: String(d.status ?? "") === "PAID",
+        amountCents: Number(d.amount ?? 0),
+        // updatedAt é quando a cobrança virou PAID. Vale mais que a hora da
+        // reconciliação: é o instante em que o aluno pagou de verdade.
+        pagoEm: d.updatedAt ? new Date(String(d.updatedAt)) : null,
+    };
+}
+
 // QRCode Pix direto (v1): devolve o QR (imagem base64) e o copia-e-cola.
 // Sem customer de propósito: no Pix quem paga já se identifica no banco.
 export async function criarPixTransparente(
@@ -32,7 +66,7 @@ export async function criarPixTransparente(
     const r = await chamar("/pixQrCode/create", {
         amount: amountCents,
         description,
-        expiresIn: 1800,
+        expiresIn: PIX_TTL_SEGUNDOS,
         metadata,
     });
     const dados = (r.data ?? r) as Record<string, unknown>;

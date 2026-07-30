@@ -12,4 +12,11 @@ ensinadev.com.br, www.ensinadev.com.br {
 	}
 
 	encode gzip
+
+	# Sem log de acesso não há como saber se um webhook de gateway chegou e foi
+	# recusado ou se nunca chegou. Vale o barulho no journal por isso.
+	log {
+		output stderr
+		format json
+	}
 }
