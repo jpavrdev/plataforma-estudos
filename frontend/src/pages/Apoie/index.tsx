@@ -21,6 +21,7 @@ import {
   definirVeuFundo,
   type StatusApoio,
   type CobrancaPix,
+  type PlanoAvulso,
 } from '../../services/apoio';
 import { aplicarFundo, aplicarVeu } from '../../utils/accent';
 import { urlImagem } from '../../utils/urlImagem';
@@ -43,6 +44,34 @@ const PREMIUM = [
   'Aquele carinho de manter o projeto vivo',
 ];
 
+// Quanto mais longo o compromisso, menor o valor por mês.
+const CICLOS: {
+  id: PlanoAvulso;
+  aba: string;
+  selo?: string;
+  preco: string;
+  periodo: string;
+  botao: string;
+}[] = [
+  { id: 'mensal', aba: 'Mensal', preco: 'R$ 5', periodo: '/mês', botao: 'Assinar por R$ 5/mês' },
+  {
+    id: 'trimestral',
+    aba: 'Trimestral',
+    selo: 'R$ 4,67/mês',
+    preco: 'R$ 14',
+    periodo: '/trimestre',
+    botao: 'Assinar por R$ 14/trimestre',
+  },
+  {
+    id: 'anual',
+    aba: 'Anual',
+    selo: '2 meses grátis',
+    preco: 'R$ 50',
+    periodo: '/ano',
+    botao: 'Assinar por R$ 50/ano',
+  },
+];
+
 const TIPOS_IMG = ['image/png', 'image/jpeg', 'image/webp'];
 // A original nunca sobe: o recorte comprime antes. Aqui só barra exagero.
 const MAX_IMG = 10 * 1024 * 1024;
@@ -58,7 +87,7 @@ function lerArquivo(file: File): Promise<string> {
 
 export function Apoie() {
   const { user: authUser, atualizarUsuario } = useAuth();
-  const [ciclo, setCiclo] = useState<'mensal' | 'anual'>('mensal');
+  const [ciclo, setCiclo] = useState<PlanoAvulso>('mensal');
   const [status, setStatus] = useState<StatusApoio | null>(null);
   const [cobranca, setCobranca] = useState<CobrancaPix | null>(null);
   const [gerando, setGerando] = useState(false);
@@ -76,6 +105,7 @@ export function Apoie() {
 
   const displayName = authUser?.name ?? '';
   const initials = getInitials(displayName || 'A');
+  const cicloAtual = CICLOS.find((c) => c.id === ciclo) ?? CICLOS[0];
 
   async function carregarStatus() {
     try {
@@ -297,18 +327,15 @@ export function Apoie() {
 
             {!apoiador && (
               <div className="apoie__ciclos">
-                <button
-                  className={`apoie__ciclo${ciclo === 'mensal' ? ' apoie__ciclo--on' : ''}`}
-                  onClick={() => setCiclo('mensal')}
-                >
-                  Mensal
-                </button>
-                <button
-                  className={`apoie__ciclo${ciclo === 'anual' ? ' apoie__ciclo--on' : ''}`}
-                  onClick={() => setCiclo('anual')}
-                >
-                  Anual <span className="apoie__gratis-tag">2 meses grátis</span>
-                </button>
+                {CICLOS.map((c) => (
+                  <button
+                    key={c.id}
+                    className={`apoie__ciclo${ciclo === c.id ? ' apoie__ciclo--on' : ''}`}
+                    onClick={() => setCiclo(c.id)}
+                  >
+                    {c.aba} {c.selo && <span className="apoie__gratis-tag">{c.selo}</span>}
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -445,8 +472,8 @@ export function Apoie() {
                   PREMIUM
                 </div>
                 <div className="apoie__preco-linha">
-                  <span className="apoie__preco">{ciclo === 'mensal' ? 'R$ 5' : 'R$ 50'}</span>
-                  <span className="apoie__preco-sub">{ciclo === 'mensal' ? '/mês' : '/ano'}</span>
+                  <span className="apoie__preco">{cicloAtual.preco}</span>
+                  <span className="apoie__preco-sub">{cicloAtual.periodo}</span>
                 </div>
                 <p className="apoie__plano-desc">Cancele quando quiser. Sem fidelidade.</p>
                 <hr className="rule" />
@@ -462,11 +489,7 @@ export function Apoie() {
                   ))}
                 </div>
                 <button className="btn btn--accent btn--block" onClick={assinar} disabled={gerando}>
-                  {gerando
-                    ? 'Gerando...'
-                    : ciclo === 'mensal'
-                      ? 'Assinar por R$ 5/mês'
-                      : 'Assinar por R$ 50/ano'}
+                  {gerando ? 'Gerando...' : cicloAtual.botao}
                 </button>
                 <p className="apoie__nota">Você continua com tudo de graça se não assinar.</p>
               </div>

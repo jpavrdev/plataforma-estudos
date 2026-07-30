@@ -682,7 +682,12 @@ export const certificates = pgTable(
     ],
 );
 
-export const subscriptionPlan = pgEnum("subscription_plan", ["mensal", "anual", "pix_auto"]);
+export const subscriptionPlan = pgEnum("subscription_plan", [
+    "mensal",
+    "trimestral",
+    "anual",
+    "pix_auto",
+]);
 export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);
 
 // Apoio ao projeto. Cada pagamento vira uma linha; apoiador ativo = alguma

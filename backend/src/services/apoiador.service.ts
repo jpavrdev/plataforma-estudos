@@ -14,9 +14,13 @@ import {
 
 export const PLANOS = {
     mensal: { valorCents: 500, dias: 30, descricao: "Apoio mensal ao Ensina Dev" },
+    trimestral: { valorCents: 1400, dias: 90, descricao: "Apoio trimestral ao Ensina Dev" },
     anual: { valorCents: 5000, dias: 365, descricao: "Apoio anual ao Ensina Dev" },
     pix_auto: { valorCents: 500, dias: 30, descricao: "Apoio mensal recorrente ao Ensina Dev" },
 } as const;
+
+// Planos que o usuário escolhe na tela; pix_auto nasce de outro fluxo.
+export type PlanoAvulso = "mensal" | "trimestral" | "anual";
 
 export const ACCENTS = ["#2D6BF5", "#7C3AED", "#DB2777", "#E0532F", "#1C8F5A", "#B7791F"];
 
@@ -132,7 +136,7 @@ export async function statusApoio(userId: string) {
     };
 }
 
-export async function criarCobranca(userId: string, plan: "mensal" | "anual") {
+export async function criarCobranca(userId: string, plan: PlanoAvulso) {
     const [pendentes] = await db
         .select({ n: count() })
         .from(subscriptions)

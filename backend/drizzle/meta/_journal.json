@@ -337,6 +337,13 @@
       "when": 1785334056771,
       "tag": "0047_stale_invisible_woman",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1785447776287,
+      "tag": "0048_plano_trimestral",
+      "breakpoints": true
     }
   ]
 }

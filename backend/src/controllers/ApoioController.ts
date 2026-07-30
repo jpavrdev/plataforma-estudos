@@ -13,7 +13,7 @@ import {
     assinaturasAdmin,
 } from "../services/apoiador.service.ts";
 
-const cobrancaSchema = z.object({ plan: z.enum(["mensal", "anual"]) });
+const cobrancaSchema = z.object({ plan: z.enum(["mensal", "trimestral", "anual"]) });
 const accentSchema = z.object({ accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/).nullable() });
 const veuSchema = z.object({ dim: z.number().int().min(0).max(100) });
 
