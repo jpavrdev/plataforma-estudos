@@ -439,6 +439,15 @@ export const simuladoAttempts = pgTable(
 
 // Snapshot das questões sorteadas para a tentativa (ordem fixa, sobrevive a
 // mudanças no banco de questões).
+// Revisão congelada no envio: a prova como o aluno viu, imune a atualizações
+// posteriores do banco de questões.
+export type SnapshotQuestaoRevisao = {
+    statement: string;
+    explanation: string | null;
+    topic: string | null;
+    options: { text: string; isCorrect: boolean; marked: boolean }[];
+};
+
 export const simuladoAttemptQuestions = pgTable(
     "simulado_attempt_questions",
     {
@@ -446,10 +455,11 @@ export const simuladoAttemptQuestions = pgTable(
         attemptId: uuid("attempt_id")
             .references(() => simuladoAttempts.id)
             .notNull(),
-        questionId: uuid("question_id")
-            .references(() => simuladoQuestions.id)
-            .notNull(),
+        // Nulo quando a questão foi removida do banco depois do envio; o snapshot
+        // preserva a revisão.
+        questionId: uuid("question_id").references(() => simuladoQuestions.id),
         position: integer("position").notNull(),
+        snapshot: jsonb("snapshot").$type<SnapshotQuestaoRevisao>(),
     },
     (table) => [
         unique().on(table.attemptId, table.questionId),

@@ -5,15 +5,16 @@
 // Remoção e alteração seguem o mesmo padrão do editor de simulados do admin
 // (sincronizarQuestoesSimulado): as respostas e o snapshot das tentativas
 // antigas que apontam para a questão saem junto. A nota e a aprovação de cada
-// tentativa ficam gravadas na própria tentativa e não mudam; a revisão daquela
-// tentativa deixa de exibir a questão removida.
+// tentativa ficam gravadas na própria tentativa e não mudam. Tentativas com
+// revisão congelada (snapshot) preservam a revisão intacta; nas demais, a
+// revisão deixa de exibir as questões alteradas ou removidas.
 //
 // Idempotente: rodar de novo sem mudanças no banco de questões não altera nada.
 //
 // Rodar em dev:  node --env-file=.env scripts/atualizar-dva-c02.ts
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend \
 //                  node --env-file=.env.prod scripts/atualizar-dva-c02.ts
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { db } from "../db.ts";
 import {
     simulados,
@@ -87,6 +88,15 @@ async function atualizar() {
             await tx
                 .delete(simuladoAttemptAnswers)
                 .where(inArray(simuladoAttemptAnswers.questionId, idsRemover));
+            await tx
+                .update(simuladoAttemptQuestions)
+                .set({ questionId: null })
+                .where(
+                    and(
+                        inArray(simuladoAttemptQuestions.questionId, idsRemover),
+                        isNotNull(simuladoAttemptQuestions.snapshot),
+                    ),
+                );
             await tx
                 .delete(simuladoAttemptQuestions)
                 .where(inArray(simuladoAttemptQuestions.questionId, idsRemover));
