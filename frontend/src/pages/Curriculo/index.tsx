@@ -322,8 +322,16 @@ export function Curriculo() {
                 className="btn btn--accent btn--block"
                 onClick={analisar}
                 disabled={analisando || !arquivo || vagaCurta}
+                aria-busy={analisando}
               >
-                {analisando ? ETAPAS[etapa] : 'Analisar currículo'}
+                {analisando ? (
+                  <>
+                    <span className="cur__girando" aria-hidden="true" />
+                    {ETAPAS[etapa]}
+                  </>
+                ) : (
+                  'Analisar currículo'
+                )}
               </button>
               {analisando && (
                 <p className="cur__espera">
