@@ -16,6 +16,13 @@ export interface ExemploTeste {
   expectedOutput: string;
 }
 
+export interface MinhaSolucao {
+  language: Linguagem;
+  code: string;
+  durationSeconds: number | null;
+  createdAt: string;
+}
+
 export interface DesafioDetalhe {
   id: string;
   number: number | null;
@@ -32,6 +39,7 @@ export interface DesafioDetalhe {
   exampleTests: ExemploTeste[];
   acceptance: number | null;
   solved: boolean;
+  minhaSolucao: MinhaSolucao | null;
 }
 
 export interface DesafioResumo {
@@ -113,10 +121,59 @@ export async function submeterDesafio(
   id: string,
   language: Linguagem,
   code: string,
+  durationSeconds?: number,
 ): Promise<SubmitResultado> {
-  const { data } = await api.post<SubmitResultado>(`/desafios/${id}/submit`, { language, code });
+  const { data } = await api.post<SubmitResultado>(`/desafios/${id}/submit`, {
+    language,
+    code,
+    durationSeconds,
+  });
   if (data.passed) sinalizarConquista();
   return data;
+}
+
+export interface AutorResumo {
+  name: string;
+  username: string | null;
+  avatarUrl: string | null;
+  level: number;
+}
+
+export interface SolucaoComunidade {
+  id: string;
+  language: Linguagem;
+  code: string;
+  durationSeconds: number | null;
+  createdAt: string;
+  minha: boolean;
+  autor: AutorResumo;
+}
+
+export interface ComentarioDesafio {
+  id: string;
+  content: string;
+  createdAt: string;
+  minha: boolean;
+  autor: AutorResumo;
+}
+
+export async function getSolucoesDesafio(id: string): Promise<SolucaoComunidade[]> {
+  const { data } = await api.get<SolucaoComunidade[]>(`/desafios/${id}/solucoes`);
+  return data;
+}
+
+export async function getComentariosDesafio(id: string): Promise<ComentarioDesafio[]> {
+  const { data } = await api.get<ComentarioDesafio[]>(`/desafios/${id}/comentarios`);
+  return data;
+}
+
+export async function comentarDesafio(id: string, content: string): Promise<{ id: string }> {
+  const { data } = await api.post<{ id: string }>(`/desafios/${id}/comentarios`, { content });
+  return data;
+}
+
+export async function excluirComentarioDesafio(commentId: string): Promise<void> {
+  await api.delete(`/desafios/comentarios/${commentId}`);
 }
 
 // ----- admin -----

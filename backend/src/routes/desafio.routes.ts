@@ -7,6 +7,10 @@ import {
     getDesafio,
     runExemplos,
     submitDesafio,
+    getSolucoes,
+    getComentarios,
+    postComentario,
+    deleteComentario,
     adminListDesafios,
     adminGetDesafio,
     createDesafio,
@@ -21,6 +25,10 @@ router.get("/desafios", autenticar, getDesafios);
 router.get("/desafios/:id", autenticar, getDesafio);
 router.post("/desafios/:id/run", desafioRunLimiter, autenticar, runExemplos);
 router.post("/desafios/:id/submit", desafioRunLimiter, autenticar, submitDesafio);
+router.get("/desafios/:id/solucoes", autenticar, getSolucoes);
+router.get("/desafios/:id/comentarios", autenticar, getComentarios);
+router.post("/desafios/:id/comentarios", autenticar, postComentario);
+router.delete("/desafios/comentarios/:commentId", autenticar, deleteComentario);
 
 // Admin: CRUD de desafios e casos de teste.
 router.get("/admin/desafios", autenticar, exigirAdmin, adminListDesafios);
