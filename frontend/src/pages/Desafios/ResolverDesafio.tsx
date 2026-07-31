@@ -33,7 +33,7 @@ const TABS = [
   { id: 'discussao', label: 'Discussão' },
 ] as const;
 
-const STARTER_PADRAO: Record<Linguagem, string> = {
+const STARTER_STDIN: Record<Linguagem, string> = {
   javascript: `const entrada = require('fs').readFileSync(0, 'utf8').trim();
 const linhas = entrada.split('\\n');
 
@@ -56,6 +56,30 @@ public class Solution {
 }
 `,
 };
+
+function starterPadrao(desafio: DesafioDetalhe, lang: Linguagem): string {
+  if (desafio.kind !== 'function') return STARTER_STDIN[lang];
+  const entry = desafio.entryPoint || 'solve';
+  if (lang === 'javascript')
+    return `class Solution {
+  // Receba os argumentos do caso como parâmetros
+  ${entry}() {
+    // sua solução aqui
+  }
+}
+`;
+  if (lang === 'python')
+    return `class Solution:
+    # Receba os argumentos do caso como parâmetros
+    def ${entry}(self):
+        # sua solução aqui
+        pass
+`;
+  return `public class Solution {
+    // Declare o método ${entry} com os parâmetros do caso e retorne o resultado
+}
+`;
+}
 
 // Ícones inline para casar com o mockup.
 const IconeCodigo = () => (
@@ -156,9 +180,9 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
   const [linguagem, setLinguagem] = useState<Linguagem>('javascript');
   const [langAberto, setLangAberto] = useState(false);
   const [codigos, setCodigos] = useState<Record<Linguagem, string>>({
-    javascript: desafio.starterCode.javascript || STARTER_PADRAO.javascript,
-    python: desafio.starterCode.python || STARTER_PADRAO.python,
-    java: desafio.starterCode.java || STARTER_PADRAO.java,
+    javascript: desafio.starterCode.javascript || starterPadrao(desafio, 'javascript'),
+    python: desafio.starterCode.python || starterPadrao(desafio, 'python'),
+    java: desafio.starterCode.java || starterPadrao(desafio, 'java'),
   });
   const [rodando, setRodando] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -172,7 +196,7 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
   const ocupado = rodando || enviando;
 
   function resetarCodigo() {
-    setCodigo(desafio.starterCode[linguagem] || STARTER_PADRAO[linguagem]);
+    setCodigo(desafio.starterCode[linguagem] || starterPadrao(desafio, linguagem));
   }
 
   async function aoRodar() {

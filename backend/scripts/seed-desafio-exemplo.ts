@@ -1,13 +1,13 @@
-// Seed de um desafio de exemplo no formato entrada/saída (stdin). Idempotente: se
-// já existir um desafio com este título, não faz nada. O desafio do dia é escolhido
-// automaticamente pelo sistema, então este não fixa data.
+// Seed de um desafio de exemplo no formato entrada/saída (stdin). Idempotente: se o
+// desafio já existir, só completa as linguagens que faltam no starter. O desafio do
+// dia é escolhido automaticamente pelo sistema, então este não fixa data.
 //
 // Rodar em dev:  node --env-file=.env scripts/seed-desafio-exemplo.ts
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend \
 //                  node scripts/seed-desafio-exemplo.ts
 import { db } from "../db.ts";
 import { challenges, challengeTests } from "../schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 const TITULO = "Soma de dois números";
 
@@ -36,6 +36,18 @@ const STARTER = {
 
 # Imprima a soma com print(...)
 `,
+    java: `import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+
+        // Imprima a soma com System.out.println(...)
+    }
+}
+`,
 };
 
 const TESTES = [
@@ -48,13 +60,28 @@ const TESTES = [
 async function main() {
     const [existe] = await db.select().from(challenges).where(eq(challenges.title, TITULO));
     if (existe) {
-        console.log(`Desafio de exemplo já existe (${existe.id}). Nada a fazer.`);
+        const atual = existe.starterCode ?? {};
+        const faltando = Object.keys(STARTER).filter((lang) => !atual[lang]);
+        if (faltando.length === 0) {
+            console.log(`Desafio de exemplo já existe (${existe.id}). Nada a fazer.`);
+            return;
+        }
+        const completo = { ...atual };
+        for (const lang of faltando) completo[lang] = STARTER[lang as keyof typeof STARTER];
+        await db
+            .update(challenges)
+            .set({ starterCode: completo })
+            .where(eq(challenges.id, existe.id));
+        console.log(`Desafio de exemplo já existia; starter de ${faltando.join(", ")} adicionado.`);
         return;
     }
+    const [{ max }] = await db
+        .select({ max: sql<number>`coalesce(max(${challenges.number}), 0)` })
+        .from(challenges);
     const [d] = await db
         .insert(challenges)
         .values({
-            number: 1,
+            number: Number(max) + 1,
             title: TITULO,
             topic: "Array · Matemática",
             statementBlocks: BLOCOS,
