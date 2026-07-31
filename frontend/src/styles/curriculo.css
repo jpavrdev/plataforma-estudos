@@ -136,6 +136,25 @@
   border-color: var(--success);
   color: var(--success);
 }
+.cur__girando {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  border: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+  border-top-color: var(--on-accent);
+  border-radius: 50%;
+  animation: cur-girar 0.7s linear infinite;
+}
+@keyframes cur-girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cur__girando {
+    animation-duration: 2.4s;
+  }
+}
 .cur__espera {
   margin: -8px 0 0;
   text-align: center;
