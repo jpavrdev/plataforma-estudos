@@ -1,11 +1,19 @@
 import type { Request, Response, NextFunction } from "express";
-import { executarDesafioSchema, criarDesafioSchema } from "../schemas/desafio.schema.ts";
+import {
+    executarDesafioSchema,
+    criarDesafioSchema,
+    comentarioDesafioSchema,
+} from "../schemas/desafio.schema.ts";
 import {
     desafioDoDia,
     listarDesafios,
     detalheDesafio,
     rodarExemplos,
     submeterDesafio,
+    solucoesDoDesafio,
+    comentariosDoDesafio,
+    comentarDesafio,
+    excluirComentarioDesafio,
     listarDesafiosAdmin,
     detalheDesafioAdmin,
     criarDesafio,
@@ -50,6 +58,39 @@ export const submitDesafio = async (req: Request, res: Response, next: NextFunct
     try {
         const dados = executarDesafioSchema.parse(req.body);
         res.json(await submeterDesafio(req.userId!, String(req.params.id), dados));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getSolucoes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await solucoesDoDesafio(req.userId!, String(req.params.id)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getComentarios = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await comentariosDoDesafio(req.userId!, String(req.params.id)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const postComentario = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = comentarioDesafioSchema.parse(req.body);
+        res.status(201).json(await comentarDesafio(req.userId!, String(req.params.id), dados));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const deleteComentario = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await excluirComentarioDesafio(req.userId!, String(req.params.commentId)));
     } catch (err) {
         next(err);
     }

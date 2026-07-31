@@ -1,9 +1,10 @@
-// Seed do desafio "Two Sum" no formato função (estilo LeetCode). Idempotente por título.
+// Seed do desafio "Two Sum" no formato função (estilo LeetCode). Idempotente por título;
+// se o desafio já existir, só completa as linguagens que faltam no starter.
 //
 // Rodar em dev:  node --env-file=.env scripts/seed-desafio-twosum.ts
 import { db } from "../db.ts";
 import { challenges, challengeTests } from "../schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 const TITULO = "Two Sum";
 
@@ -42,6 +43,13 @@ class Solution:
   }
 }
 `,
+    java: `public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // sua solução aqui
+        return new int[0];
+    }
+}
+`,
 };
 
 // input = argumentos (JSON de [nums, target]); expectedOutput = retorno (JSON dos índices).
@@ -56,13 +64,30 @@ const TESTES = [
 async function main() {
     const [existe] = await db.select().from(challenges).where(eq(challenges.title, TITULO));
     if (existe) {
-        console.log(`Desafio "${TITULO}" já existe (${existe.id}). Nada a fazer.`);
+        const atual = existe.starterCode ?? {};
+        const faltando = Object.keys(STARTER).filter((lang) => !atual[lang]);
+        if (faltando.length === 0) {
+            console.log(`Desafio "${TITULO}" já existe (${existe.id}). Nada a fazer.`);
+            return;
+        }
+        const completo = { ...atual };
+        for (const lang of faltando) completo[lang] = STARTER[lang as keyof typeof STARTER];
+        await db
+            .update(challenges)
+            .set({ starterCode: completo })
+            .where(eq(challenges.id, existe.id));
+        console.log(
+            `Desafio "${TITULO}" já existia; starter de ${faltando.join(", ")} adicionado.`,
+        );
         return;
     }
+    const [{ max }] = await db
+        .select({ max: sql<number>`coalesce(max(${challenges.number}), 0)` })
+        .from(challenges);
     const [d] = await db
         .insert(challenges)
         .values({
-            number: 2,
+            number: Number(max) + 1,
             title: TITULO,
             topic: "Array · Hash Table",
             kind: "function",

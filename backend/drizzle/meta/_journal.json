@@ -351,6 +351,13 @@
       "when": 1785448530740,
       "tag": "0049_analise_curriculo",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1785504074267,
+      "tag": "0050_desafio_solucao_discussao",
+      "breakpoints": true
     }
   ]
 }

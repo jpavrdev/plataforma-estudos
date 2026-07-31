@@ -535,11 +535,33 @@ export const challengeSubmissions = pgTable(
         output: text("output"),
         // XP concedido nesta submissão (0 quando não gera XP; > 0 só na 1ª aprovação do desafio).
         xpEarned: integer("xp_earned").default(0).notNull(),
+        // Tempo que o aluno levou até enviar, em segundos (informado pelo cliente).
+        durationSeconds: integer("duration_seconds"),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [
         index("challenge_submissions_user_id_idx").on(table.userId),
         index("challenge_submissions_challenge_id_idx").on(table.challengeId),
+    ],
+);
+
+// Discussão por desafio: thread simples de comentários.
+export const challengeComments = pgTable(
+    "challenge_comments",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        challengeId: uuid("challenge_id")
+            .references(() => challenges.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        content: text("content").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("challenge_comments_challenge_id_idx").on(table.challengeId),
+        index("challenge_comments_user_id_idx").on(table.userId),
     ],
 );
 
