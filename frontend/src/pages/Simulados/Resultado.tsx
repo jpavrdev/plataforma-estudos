@@ -47,9 +47,15 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
   const gap = Math.max(0, passPercent - score);
   const questions = dados.questions;
   const total = questions.length;
-  const acertos = questions.filter(acertou).length;
+  const acertosVisiveis = questions.filter(acertou).length;
+  // Banco atualizado após a tentativa descarta respostas; a folga de 2 absorve o arredondamento.
+  const acertosPelaNota = Math.round((score / 100) * total);
+  const revisaoParcial = acertosPelaNota - acertosVisiveis >= 2;
+  const acertos = revisaoParcial ? acertosPelaNota : acertosVisiveis;
   const erros = total - acertos;
-  const erradas = questions.filter((q) => !acertou(q));
+  const erradas = questions.filter(
+    (q) => !acertou(q) && (!revisaoParcial || (q.selected ?? []).length > 0),
+  );
   const tempo = dados.elapsedSeconds != null ? formatarTempo(dados.elapsedSeconds) : null;
 
   const porTema = new Map<string, { acertos: number; total: number }>();
@@ -142,46 +148,61 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
         </div>
       </div>
 
+      {revisaoParcial && (
+        <div className="res-stale">
+          <span className="res-stale__icon">
+            <Info size={17} />
+          </span>
+          <div>
+            <b>Este simulado foi atualizado depois desta tentativa.</b> As questões que mudaram não
+            guardam mais a resposta que você marcou, então a revisão abaixo está incompleta. Sua
+            nota de {score}% foi calculada no envio e continua valendo.
+          </div>
+        </div>
+      )}
+
       <div className="res-grid">
         <div className="sim__col">
-          <div className="card">
-            <div className="res-sec__title">Desempenho por domínio</div>
-            <div className="res-sec__sub">Veja onde você mandou bem e onde precisa reforçar.</div>
-            <div className="res-domains">
-              {dominios.map((d) => {
-                const c = faixa(d.pct);
-                return (
-                  <div key={d.name}>
-                    <div className="res-domain__row">
-                      <span className="res-domain__name">{d.name}</span>
-                      <span
-                        className="res-domain__tag"
-                        style={{
-                          color: c.fg,
-                          background: `color-mix(in srgb, ${c.fg} 12%, transparent)`,
-                        }}
-                      >
-                        {c.label}
-                      </span>
-                      <span className="res-domain__pct" style={{ color: c.fg }}>
-                        {d.pct}%
-                      </span>
+          {!revisaoParcial && (
+            <div className="card">
+              <div className="res-sec__title">Desempenho por domínio</div>
+              <div className="res-sec__sub">Veja onde você mandou bem e onde precisa reforçar.</div>
+              <div className="res-domains">
+                {dominios.map((d) => {
+                  const c = faixa(d.pct);
+                  return (
+                    <div key={d.name}>
+                      <div className="res-domain__row">
+                        <span className="res-domain__name">{d.name}</span>
+                        <span
+                          className="res-domain__tag"
+                          style={{
+                            color: c.fg,
+                            background: `color-mix(in srgb, ${c.fg} 12%, transparent)`,
+                          }}
+                        >
+                          {c.label}
+                        </span>
+                        <span className="res-domain__pct" style={{ color: c.fg }}>
+                          {d.pct}%
+                        </span>
+                      </div>
+                      <div className="res-domain__track">
+                        <span style={{ width: `${d.pct}%`, background: c.fg }} />
+                      </div>
                     </div>
-                    <div className="res-domain__track">
-                      <span style={{ width: `${d.pct}%`, background: c.fg }} />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {erradas.length > 0 && (
             <div className="card">
               <div className="res-review__head">
                 <div className="res-sec__title">Onde você errou</div>
                 <div className="topbar__spacer" />
-                <span className="res-review__count">{erros} questões erradas</span>
+                <span className="res-review__count">{erradas.length} questões erradas</span>
               </div>
               <div className="res-sec__sub">
                 Estude estes tópicos com atenção: foram os que mais pesaram na sua nota.
@@ -237,7 +258,7 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
               </div>
               {erradas.length > VISIVEIS && (
                 <button className="res-more" onClick={() => setTodas((v) => !v)}>
-                  {todas ? 'Mostrar menos' : `Ver todas as ${erros} questões erradas`}
+                  {todas ? 'Mostrar menos' : `Ver todas as ${erradas.length} questões erradas`}
                 </button>
               )}
             </div>
@@ -253,7 +274,7 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
                 : 'Faltou pouco. Foque nestes tópicos e tente de novo em alguns dias.'}
             </div>
             <div className="res-plan">
-              {maisFragil && (
+              {!revisaoParcial && maisFragil && (
                 <div className="res-plan-item">
                   <span className="res-plan-item__icon">
                     <BookOpen size={16} />

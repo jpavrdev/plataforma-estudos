@@ -1638,6 +1638,23 @@
 }
 
 /* ============ RESULTADO: grid próprio e botões novos ============ */
+.res-stale {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--gold) 10%, transparent);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.res-stale__icon {
+  color: var(--gold);
+  flex-shrink: 0;
+  display: flex;
+  margin-top: 2px;
+}
 .res-grid {
   display: grid;
   grid-template-columns: 1fr 340px;
