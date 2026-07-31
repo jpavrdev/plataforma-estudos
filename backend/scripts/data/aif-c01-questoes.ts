@@ -1,9 +1,10 @@
 // Banco de questões do simulado AWS Certified AI Practitioner (AIF-C01).
 // Compartilhado pelo seed (instalação nova) e pelo script de atualização
 // (instalação que já tem o simulado). Regras do banco: enunciado de cenário,
-// distratores da mesma categoria da resposta e a correta nunca é a única
-// opção mais longa. Questões de múltipla escolha terminam com
-// "(Selecione DUAS opções.)" e têm cinco opções com duas corretas.
+// distratores da mesma categoria da resposta e a correta não pode ser a única
+// opção mais longa, nem a única mais curta por folga visível. Questões de
+// múltipla escolha terminam com "(Selecione DUAS opções.)" e têm cinco opções
+// com duas corretas.
 
 export type Questao = {
     statement: string;
@@ -50,7 +51,7 @@ export const QUESTOES: Questao[] = [
                 true,
             ],
             [
-                "Aprendizado não supervisionado, porque o modelo descobriria os grupos de transações sem usar rótulo",
+                "Aprendizado não supervisionado, porque o modelo agruparia as transações sem usar rótulo",
                 false,
             ],
             [
@@ -371,7 +372,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Ordenar os artigos pela data de publicação e mostrar primeiro os conteúdos mais recentes",
+                "Ordenar os artigos pela data de publicação, mostrando primeiro os mais recentes",
                 false,
             ],
         ],
@@ -644,7 +645,7 @@ export const QUESTOES: Questao[] = [
             "Fornecer alguns exemplos dentro do prompt é few-shot (aprendizado em contexto). Fine-tuning e pré-treinamento alteram os pesos do modelo; destilação cria um modelo menor a partir de outro.",
         topic: "Prompt engineering",
         options: [
-            ["Prompt few-shot, que fornece alguns exemplos no próprio prompt", true],
+            ["Prompt few-shot, que fornece alguns exemplos resolvidos no próprio prompt", true],
             ["Fine-tuning, que reajusta os pesos do modelo com um novo conjunto de dados", false],
             ["Pré-treinamento, que ensina o modelo do zero em grandes volumes de dados", false],
             ["Destilação, que transfere conhecimento de um modelo grande para um menor", false],
@@ -984,10 +985,7 @@ export const QUESTOES: Questao[] = [
                 "Amazon SageMaker Model Monitor, voltado a acompanhar desvios do modelo em produção",
                 false,
             ],
-            [
-                "Amazon SageMaker Ground Truth, voltado à rotulagem de dados para o treinamento",
-                false,
-            ],
+            ["Amazon SageMaker Ground Truth, voltado à rotulagem de dados de treino", false],
             [
                 "Amazon SageMaker Feature Store, voltado a armazenar e servir features aos modelos",
                 false,
@@ -1129,10 +1127,7 @@ export const QUESTOES: Questao[] = [
                 "Registro de modelos (model registry), que versiona e aprova os artefatos de implantação",
                 false,
             ],
-            [
-                "Dicionário de dados do catálogo, que descreve tabelas e colunas das bases da empresa",
-                false,
-            ],
+            ["Dicionário de dados, que descreve tabelas e colunas das bases da empresa", false],
         ],
     },
     {
@@ -1308,10 +1303,7 @@ export const QUESTOES: Questao[] = [
         topic: "Segurança e governança",
         options: [
             ["AWS Artifact, o portal de relatórios de conformidade e certificações da AWS", true],
-            [
-                "AWS Audit Manager, que coleta evidências para as auditorias internas da empresa",
-                false,
-            ],
+            ["AWS Audit Manager, que coleta evidências das auditorias internas", false],
             [
                 "AWS Config, que avalia continuamente a conformidade das configurações dos recursos",
                 false,
@@ -1346,11 +1338,11 @@ export const QUESTOES: Questao[] = [
         topic: "Fundamentos de IA e ML",
         options: [
             [
-                "Aprendizado supervisionado, treinando o modelo com um grande conjunto de exemplos previamente rotulados com a ação correta",
+                "Aprendizado supervisionado, treinando com exemplos rotulados com a ação correta",
                 false,
             ],
             ["Aprendizado não supervisionado", false],
-            ["Aprendizado por reforço", true],
+            ["Aprendizado por reforço, guiado por recompensas e punições", true],
             ["Aprendizado semissupervisionado", false],
         ],
     },
@@ -1386,7 +1378,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             ["Redução de dimensionalidade dos textos recebidos", false],
-            ["Classificação em categorias predefinidas", true],
+            ["Classificação, atribuindo cada e-mail a uma das categorias predefinidas", true],
         ],
     },
     {
@@ -1426,7 +1418,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             ["Vazamento de dados entre os conjuntos de treino e teste", false],
-            ["Underfitting (subajuste)", true],
+            ["Underfitting (subajuste), modelo simples demais para o padrão dos dados", true],
             ["Desbalanceamento entre as classes do problema", false],
         ],
     },
@@ -1498,7 +1490,7 @@ export const QUESTOES: Questao[] = [
         options: [
             ["Recall (sensibilidade) do classificador", false],
             ["MAE, o erro absoluto médio das previsões", false],
-            ["Precisão (precision)", true],
+            ["Precisão (precision), a fração dos alertas que eram spam de fato", true],
             ["O tempo médio de inferência para processar cada mensagem recebida", false],
         ],
     },
@@ -1510,7 +1502,7 @@ export const QUESTOES: Questao[] = [
         topic: "Fundamentos de IA e ML",
         options: [
             ["Acurácia, a proporção total de acertos do modelo", false],
-            ["F1-score", true],
+            ["F1-score, a média harmônica entre a precisão e o recall", true],
             ["RMSE, a raiz do erro quadrático médio", false],
             ["Coeficiente de determinação (R2) das previsões do modelo", false],
         ],
@@ -1525,7 +1517,7 @@ export const QUESTOES: Questao[] = [
             ["Curva ROC do classificador", false],
             ["Histograma dos resíduos das previsões", false],
             ["Matriz de correlação entre as variáveis de entrada", false],
-            ["Matriz de confusão", true],
+            ["Matriz de confusão do classificador avaliado", true],
         ],
     },
     {
@@ -1553,7 +1545,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Porque recall e precisão da classe majoritária são as únicas métricas confiáveis nesse caso",
+                "Porque recall e precisão da classe majoritária seriam as únicas métricas confiáveis",
                 false,
             ],
             [
@@ -1621,7 +1613,7 @@ export const QUESTOES: Questao[] = [
         options: [
             ["Amazon SageMaker Canvas, para criar modelos em interface no-code", false],
             ["Amazon Macie, para descoberta de dados sensíveis", false],
-            ["Amazon SageMaker JumpStart", true],
+            ["Amazon SageMaker JumpStart, hub de modelos e soluções prontas", true],
             ["Amazon SageMaker Ground Truth, para rotulagem de dados de treino", false],
         ],
     },
@@ -1684,7 +1676,10 @@ export const QUESTOES: Questao[] = [
                 "Recorrência, que processa a sequência token a token mantendo um estado oculto repassado adiante",
                 false,
             ],
-            ["Mecanismo de atenção (attention)", true],
+            [
+                "Mecanismo de atenção (attention), que pondera a relevância de cada token em relação aos demais",
+                true,
+            ],
             [
                 "Agrupamento (pooling), que reduz a dimensionalidade combinando valores vizinhos em um resumo",
                 false,
@@ -1707,7 +1702,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Ambos apenas classificam dados, diferindo somente na quantidade de camadas da rede neural que utilizam",
+                "Ambos apenas classificam dados, diferindo só na quantidade de camadas da rede neural",
                 false,
             ],
             [
@@ -1735,7 +1730,10 @@ export const QUESTOES: Questao[] = [
                 "Usar exclusivamente modelos de difusão, a única categoria capaz de interpretar imagens de entrada",
                 false,
             ],
-            ["Ser multimodal, processando mais de um tipo de entrada como texto e imagem", true],
+            [
+                "Ser multimodal, processando na mesma chamada mais de um tipo de entrada, como o par imagem e texto",
+                true,
+            ],
         ],
     },
     {
@@ -1769,7 +1767,10 @@ export const QUESTOES: Questao[] = [
             "O Amazon Q Developer é o assistente de IA generativa voltado a desenvolvedores, com sugestão e explicação de código e apoio à depuração. Q Business foca em dados corporativos, Comprehend em NLP e Polly em síntese de voz.",
         topic: "IA generativa",
         options: [
-            ["Amazon Q Developer", true],
+            [
+                "Amazon Q Developer, o assistente para tarefas de código no ciclo de desenvolvimento",
+                true,
+            ],
             [
                 "Amazon Q Business, voltado a responder perguntas sobre documentos e dados corporativos internos",
                 false,
@@ -1825,7 +1826,10 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             ["SageMaker Clarify, que analisa viés e explica as previsões dos modelos", false],
-            ["SageMaker JumpStart", true],
+            [
+                "SageMaker JumpStart, o hub de foundation models e soluções prontas para implantar",
+                true,
+            ],
         ],
     },
     {
@@ -1892,10 +1896,7 @@ export const QUESTOES: Questao[] = [
                 "O modelo aumenta a criatividade ao sortear livremente entre todos os tokens do vocabulário sem qualquer corte",
                 false,
             ],
-            [
-                "O modelo reduz o tempo de treinamento necessário para aprender novos idiomas a partir de dados adicionais",
-                false,
-            ],
+            ["O modelo reduz o tempo de treinamento necessário para aprender novos idiomas", false],
             [
                 "O modelo considera menos candidatos a próximo token, tornando a saída mais restrita e previsível",
                 true,
@@ -1922,7 +1923,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "O modelo maior reduz a latência porque precisa de menos cálculos para gerar cada token da resposta",
+                "O modelo maior reduz a latência porque precisa de menos cálculos para cada token",
                 false,
             ],
         ],
@@ -1988,10 +1989,7 @@ export const QUESTOES: Questao[] = [
                 "Em uma taxa mensal fixa que dá direito a chamadas ilimitadas a qualquer modelo disponível no serviço",
                 false,
             ],
-            [
-                "No número de servidores de GPU que o cliente precisa provisionar e manter ligados o tempo todo",
-                false,
-            ],
+            ["No número de servidores de GPU que o cliente provisiona e mantém ligados", false],
             [
                 "Na quantidade de usuários cadastrados na conta, independentemente de quantas requisições cada um faz",
                 false,
@@ -2010,7 +2008,10 @@ export const QUESTOES: Questao[] = [
                 "Classificação de sentimentos do texto para medir a satisfação do desenvolvedor com a linguagem escolhida",
                 false,
             ],
-            ["Geração de código a partir de linguagem natural", true],
+            [
+                "Geração de código a partir de linguagem natural, com implementação pronta para revisar e testar",
+                true,
+            ],
             [
                 "Detecção de anomalias em métricas de infraestrutura para prever falhas antes que elas aconteçam",
                 false,
@@ -2036,7 +2037,10 @@ export const QUESTOES: Questao[] = [
                 "Conversão dos contratos em áudio narrado para que a equipe possa ouvir durante os deslocamentos",
                 false,
             ],
-            ["Sumarização de textos longos", true],
+            [
+                "Sumarização de textos longos, que condensa os contratos em versões curtas com os pontos principais",
+                true,
+            ],
             [
                 "Criptografia do conteúdo dos contratos para impedir acesso não autorizado aos dados sensíveis",
                 false,
@@ -2086,7 +2090,10 @@ export const QUESTOES: Questao[] = [
                 "Traduzem cada palavra do prompt em um pixel fixo segundo uma tabela pré-definida de cores",
                 false,
             ],
-            ["Partem de ruído aleatório e o refinam passo a passo até formar a imagem", true],
+            [
+                "Partem de ruído aleatório e o refinam em passos sucessivos, guiados pelo prompt, até formar a imagem",
+                true,
+            ],
         ],
     },
     {
@@ -2100,7 +2107,10 @@ export const QUESTOES: Questao[] = [
                 "Sequências de caracteres idênticas, já que textos parecidos precisam usar exatamente as mesmas palavras",
                 false,
             ],
-            ["Vetores próximos no espaço, refletindo a semelhança de significado", true],
+            [
+                "Vetores próximos no espaço vetorial, refletindo a semelhança de significado entre os textos",
+                true,
+            ],
             [
                 "Valores numéricos totalmente aleatórios, sem qualquer relação com o conteúdo original dos textos",
                 false,
@@ -2130,7 +2140,10 @@ export const QUESTOES: Questao[] = [
                 "A quantidade de parâmetros do modelo, que diminui conforme mais texto é enviado em uma única chamada",
                 false,
             ],
-            ["A janela de contexto, que limita quantos tokens o modelo processa de uma vez", true],
+            [
+                "A janela de contexto, o limite de tokens de entrada e saída que o modelo processa em uma única chamada",
+                true,
+            ],
         ],
     },
     {
@@ -2173,7 +2186,10 @@ export const QUESTOES: Questao[] = [
                 "Amazon Textract, que extrai texto, formulários e tabelas de documentos digitalizados",
                 false,
             ],
-            ["Amazon Titan Embeddings", true],
+            [
+                "Amazon Titan Embeddings, o modelo da própria Amazon que converte texto em vetores",
+                true,
+            ],
             [
                 "Amazon Rekognition, que analisa imagens e vídeos para identificar objetos e rostos",
                 false,
@@ -2237,7 +2253,7 @@ export const QUESTOES: Questao[] = [
                 true,
             ],
             [
-                "Para converter automaticamente todos os documentos em um único vetor de alta dimensão que representa a base inteira e dispensa a busca por similaridade",
+                "Para converter os documentos em um único vetor que representa a base inteira e dispensa a busca",
                 false,
             ],
             [
@@ -2628,10 +2644,10 @@ export const QUESTOES: Questao[] = [
         topic: "Aplicações de foundation models",
         options: [
             [
-                "Escolher o modelo com a maior janela de contexto disponível, pois isso é o que determina a capacidade de interpretar imagens enviadas pelo usuário",
+                "Escolher o modelo com a maior janela de contexto, pois seria isso que determina a capacidade de interpretar imagens",
                 false,
             ],
-            ["Escolher qualquer modelo de texto, já que todos aceitam imagens como entrada", false],
+            ["Escolher qualquer modelo de texto, pois todos aceitariam imagens", false],
             ["Escolher um modelo multimodal, capaz de receber imagens como entrada", true],
             [
                 "Escolher o modelo mais barato por token, independentemente das modalidades que ele suporta",
@@ -2945,7 +2961,7 @@ export const QUESTOES: Questao[] = [
         topic: "IA responsável",
         options: [
             [
-                "Escolher sempre o maior modelo disponível, independentemente da tarefa, para garantir a melhor qualidade em qualquer caso",
+                "Escolher sempre o maior modelo disponível, garantindo a melhor qualidade em qualquer caso",
                 false,
             ],
             [
@@ -3050,7 +3066,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Um conjunto (ensemble) de centenas de modelos combinados, cuja lógica final é difícil de acompanhar manualmente",
+                "Um conjunto (ensemble) de centenas de modelos, com lógica final difícil de acompanhar",
                 false,
             ],
         ],
@@ -3063,7 +3079,7 @@ export const QUESTOES: Questao[] = [
         topic: "IA responsável",
         options: [
             [
-                "A configuração de uma chave gerenciada pelo cliente no AWS KMS para criptografar os documentos de origem em repouso",
+                "A configuração de uma chave do AWS KMS para criptografar os documentos de origem em repouso",
                 false,
             ],
             [
@@ -3088,7 +3104,7 @@ export const QUESTOES: Questao[] = [
         topic: "IA responsável",
         options: [
             [
-                "Remover completamente o relatório de viés para que a auditoria não registre o problema encontrado no modelo",
+                "Remover o relatório de viés para que a auditoria não registre o problema encontrado",
                 false,
             ],
             [
@@ -3117,7 +3133,7 @@ export const QUESTOES: Questao[] = [
                 true,
             ],
             [
-                "Compartilhar uma única chave de acesso raiz da conta com todos os times para simplificar o uso dos modelos",
+                "Compartilhar uma única chave de acesso raiz com todos os times para simplificar o uso",
                 false,
             ],
             [
@@ -3208,7 +3224,7 @@ export const QUESTOES: Questao[] = [
         topic: "Segurança e governança",
         options: [
             [
-                "Confiar que a AWS move automaticamente os dados para a região mais barata disponível em cada momento do dia",
+                "Confiar que a AWS move os dados automaticamente para a região mais barata a cada momento",
                 false,
             ],
             [
@@ -3241,7 +3257,7 @@ export const QUESTOES: Questao[] = [
                 true,
             ],
             [
-                "O aumento do parâmetro de temperatura, que torna as previsões mais variadas e portanto mais fáceis de reproduzir",
+                "O aumento da temperatura, que torna as previsões mais variadas e fáceis de reproduzir",
                 false,
             ],
             [
@@ -3283,7 +3299,7 @@ export const QUESTOES: Questao[] = [
         topic: "Segurança e governança",
         options: [
             [
-                "Manter a segurança física e a manutenção do hardware nos data centers onde o serviço é executado",
+                "Manter a segurança física e a manutenção do hardware nos data centers do serviço",
                 false,
             ],
             [
@@ -3379,7 +3395,7 @@ export const QUESTOES: Questao[] = [
         topic: "Segurança e governança",
         options: [
             [
-                "Incorporar uma chave de acesso permanente do usuário raiz diretamente no script de treinamento do modelo",
+                "Incorporar uma chave de acesso permanente do usuário raiz no script de treinamento",
                 false,
             ],
             [
@@ -3404,7 +3420,7 @@ export const QUESTOES: Questao[] = [
         topic: "Segurança e governança",
         options: [
             [
-                "O aumento do parâmetro de temperatura na inferência, que introduz variação e assim sinaliza modelos aprovados",
+                "O aumento da temperatura na inferência, que introduz variação e assim sinalizaria modelos aprovados",
                 false,
             ],
             [
