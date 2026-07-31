@@ -1,17 +1,29 @@
 import { db } from "../../db.ts";
-import { challenges, challengeTests, challengeSubmissions } from "../../schema.ts";
+import {
+    challenges,
+    challengeTests,
+    challengeSubmissions,
+    challengeComments,
+    users,
+} from "../../schema.ts";
 import { eq, and, desc, asc, inArray, gt, count, sql } from "drizzle-orm";
 import type { z } from "zod";
-import type { executarDesafioSchema, criarDesafioSchema } from "../schemas/desafio.schema.ts";
+import type {
+    executarDesafioSchema,
+    criarDesafioSchema,
+    comentarioDesafioSchema,
+} from "../schemas/desafio.schema.ts";
 import { AppError } from "../errors/AppError.ts";
 import { hojeSaoPaulo } from "./streak.ts";
 import { executarNoRunner } from "./runner.client.ts";
 import { corrigirDesafio, saidaCorreta, retornoCorreto, indiceDoDia } from "../domain/desafio.ts";
 import { xpDoDesafio } from "../domain/xp.ts";
 import { verificarConquistas } from "./achievement.service.ts";
+import { niveisDeUsuarios } from "./comunidade.service.ts";
 
 type Execucao = z.infer<typeof executarDesafioSchema>;
 type DadosDesafio = z.infer<typeof criarDesafioSchema>;
+type Comentario = z.infer<typeof comentarioDesafioSchema>;
 
 async function buscarPublicado(id: string) {
     const [d] = await db.select().from(challenges).where(eq(challenges.id, id));
@@ -48,6 +60,28 @@ async function aceitacao(challengeId: string): Promise<number | null> {
     return Math.round((Number(r?.passed ?? 0) / total) * 100);
 }
 
+// Última solução aceita do usuário, para reabrir o desafio com o código dele.
+async function ultimaSolucaoAceita(userId: string, challengeId: string) {
+    const [s] = await db
+        .select({
+            language: challengeSubmissions.language,
+            code: challengeSubmissions.code,
+            durationSeconds: challengeSubmissions.durationSeconds,
+            createdAt: challengeSubmissions.createdAt,
+        })
+        .from(challengeSubmissions)
+        .where(
+            and(
+                eq(challengeSubmissions.userId, userId),
+                eq(challengeSubmissions.challengeId, challengeId),
+                eq(challengeSubmissions.status, "passed"),
+            ),
+        )
+        .orderBy(desc(challengeSubmissions.createdAt))
+        .limit(1);
+    return s ?? null;
+}
+
 async function montarView(
     d: typeof challenges.$inferSelect,
     userId: string,
@@ -74,6 +108,7 @@ async function montarView(
         exampleTests: publicos,
         acceptance: await aceitacao(d.id),
         solved: await jaResolveu(userId, d.id),
+        minhaSolucao: await ultimaSolucaoAceita(userId, d.id),
     };
 }
 
@@ -306,6 +341,7 @@ export async function submeterDesafio(userId: string, id: string, dados: Execuca
         totalCount: correcao.total,
         output,
         xpEarned,
+        durationSeconds: dados.durationSeconds ?? null,
     });
 
     // Desafio aprovado pode desbloquear conquista (de desafios ou de streak).
@@ -320,6 +356,117 @@ export async function submeterDesafio(userId: string, id: string, dados: Execuca
         output,
         timeMs,
     };
+}
+
+// Soluções da comunidade: a última submissão aceita de cada aluno por linguagem.
+// Só quem já resolveu o desafio pode ver (senão viraria gabarito grátis).
+export async function solucoesDoDesafio(userId: string, id: string) {
+    await buscarPublicado(id);
+    if (!(await jaResolveu(userId, id))) {
+        throw new AppError(403, "Resolva o desafio para ver as soluções da comunidade");
+    }
+    const linhas = await db
+        .selectDistinctOn([challengeSubmissions.userId, challengeSubmissions.language], {
+            id: challengeSubmissions.id,
+            userId: challengeSubmissions.userId,
+            language: challengeSubmissions.language,
+            code: challengeSubmissions.code,
+            durationSeconds: challengeSubmissions.durationSeconds,
+            createdAt: challengeSubmissions.createdAt,
+            autorNome: users.name,
+            autorUsername: users.username,
+            autorAvatar: users.avatarUrl,
+        })
+        .from(challengeSubmissions)
+        .innerJoin(users, eq(users.id, challengeSubmissions.userId))
+        .where(
+            and(
+                eq(challengeSubmissions.challengeId, id),
+                eq(challengeSubmissions.status, "passed"),
+            ),
+        )
+        .orderBy(
+            asc(challengeSubmissions.userId),
+            asc(challengeSubmissions.language),
+            desc(challengeSubmissions.createdAt),
+        );
+    const niveis = await niveisDeUsuarios([...new Set(linhas.map((l) => l.userId))]);
+    const ordenadas = [...linhas].sort((a, b) => {
+        const aMinha = a.userId === userId ? 0 : 1;
+        const bMinha = b.userId === userId ? 0 : 1;
+        if (aMinha !== bMinha) return aMinha - bMinha;
+        return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+    return ordenadas.slice(0, 30).map((l) => ({
+        id: l.id,
+        language: l.language,
+        code: l.code,
+        durationSeconds: l.durationSeconds,
+        createdAt: l.createdAt,
+        minha: l.userId === userId,
+        autor: {
+            name: l.autorNome,
+            username: l.autorUsername,
+            avatarUrl: l.autorAvatar,
+            level: niveis.get(l.userId) ?? 1,
+        },
+    }));
+}
+
+export async function comentariosDoDesafio(userId: string, id: string) {
+    await buscarPublicado(id);
+    const linhas = await db
+        .select({
+            id: challengeComments.id,
+            userId: challengeComments.userId,
+            content: challengeComments.content,
+            createdAt: challengeComments.createdAt,
+            autorNome: users.name,
+            autorUsername: users.username,
+            autorAvatar: users.avatarUrl,
+        })
+        .from(challengeComments)
+        .innerJoin(users, eq(users.id, challengeComments.userId))
+        .where(eq(challengeComments.challengeId, id))
+        .orderBy(asc(challengeComments.createdAt));
+    const niveis = await niveisDeUsuarios([...new Set(linhas.map((l) => l.userId))]);
+    return linhas.map((l) => ({
+        id: l.id,
+        content: l.content,
+        createdAt: l.createdAt,
+        minha: l.userId === userId,
+        autor: {
+            name: l.autorNome,
+            username: l.autorUsername,
+            avatarUrl: l.autorAvatar,
+            level: niveis.get(l.userId) ?? 1,
+        },
+    }));
+}
+
+export async function comentarDesafio(userId: string, id: string, dados: Comentario) {
+    await buscarPublicado(id);
+    const [c] = await db
+        .insert(challengeComments)
+        .values({ challengeId: id, userId, content: dados.content })
+        .returning({ id: challengeComments.id });
+    return { id: c.id };
+}
+
+export async function excluirComentarioDesafio(userId: string, commentId: string) {
+    const [c] = await db
+        .select({ id: challengeComments.id, userId: challengeComments.userId })
+        .from(challengeComments)
+        .where(eq(challengeComments.id, commentId));
+    if (!c) throw new AppError(404, "Comentário não encontrado");
+    if (c.userId !== userId) {
+        const [u] = await db.select({ role: users.role }).from(users).where(eq(users.id, userId));
+        if (u?.role !== "admin") {
+            throw new AppError(403, "Você só pode excluir os próprios comentários");
+        }
+    }
+    await db.delete(challengeComments).where(eq(challengeComments.id, commentId));
+    return { ok: true };
 }
 
 // ===================== ADMIN =====================
@@ -445,6 +592,7 @@ export async function atualizarDesafio(id: string, dados: DadosDesafio) {
 
 export async function excluirDesafio(id: string) {
     await db.transaction(async (tx) => {
+        await tx.delete(challengeComments).where(eq(challengeComments.challengeId, id));
         await tx.delete(challengeSubmissions).where(eq(challengeSubmissions.challengeId, id));
         await tx.delete(challengeTests).where(eq(challengeTests.challengeId, id));
         await tx.delete(challenges).where(eq(challenges.id, id));

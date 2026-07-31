@@ -4,9 +4,21 @@ import { z } from "zod";
 const LINGUAGENS = ["javascript", "python", "java"] as const;
 
 // Rodar exemplos ou submeter: o código é limitado para não estourar o runner.
+// durationSeconds só importa na submissão (cronômetro do aluno, informativo).
 export const executarDesafioSchema = z.object({
     language: z.enum(LINGUAGENS),
     code: z.string().min(1, "Envie algum código").max(50_000, "Código muito longo"),
+    durationSeconds: z.number().int().min(0).max(86_400).nullable().optional(),
+});
+
+export const comentarioDesafioSchema = z.object({
+    content: z
+        .string()
+        .transform((v) => v.trim())
+        .refine(
+            (v) => v.length >= 1 && v.length <= 1000,
+            "O comentário deve ter entre 1 e 1000 caracteres.",
+        ),
 });
 
 const blocoSchema = z.object({

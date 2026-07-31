@@ -20,7 +20,7 @@ import type { criarPostSchema, comentarSchema } from "../schemas/comunidade.sche
 type DadosPost = z.infer<typeof criarPostSchema>;
 
 // Nível de cada usuário da lista, em 3 queries agrupadas (não uma por autor).
-async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, number>> {
+export async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, number>> {
     const niveis = new Map<string, number>();
     if (userIds.length === 0) return niveis;
     const [aulas, acertos, desafios] = await Promise.all([
@@ -32,21 +32,33 @@ async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, number>>
         db
             .select({ userId: questionAnswers.userId, n: count() })
             .from(questionAnswers)
-            .where(and(inArray(questionAnswers.userId, userIds), eq(questionAnswers.isCorrect, true)))
+            .where(
+                and(inArray(questionAnswers.userId, userIds), eq(questionAnswers.isCorrect, true)),
+            )
             .groupBy(questionAnswers.userId),
         db
             .select({ userId: challengeSubmissions.userId, xp: sum(challengeSubmissions.xpEarned) })
             .from(challengeSubmissions)
-            .where(and(inArray(challengeSubmissions.userId, userIds), gt(challengeSubmissions.xpEarned, 0)))
+            .where(
+                and(
+                    inArray(challengeSubmissions.userId, userIds),
+                    gt(challengeSubmissions.xpEarned, 0),
+                ),
+            )
             .groupBy(challengeSubmissions.userId),
     ]);
-    const paraMapa = (arr: { userId: string; n?: number | string; xp?: number | string | null }[]) =>
-        new Map(arr.map((a) => [a.userId, Number(a.n ?? a.xp ?? 0)]));
+    const paraMapa = (
+        arr: { userId: string; n?: number | string; xp?: number | string | null }[],
+    ) => new Map(arr.map((a) => [a.userId, Number(a.n ?? a.xp ?? 0)]));
     const a = paraMapa(aulas);
     const q = paraMapa(acertos);
     const d = paraMapa(desafios);
     for (const id of userIds) {
-        const xp = calcularXp({ aulas: a.get(id) ?? 0, questoes: q.get(id) ?? 0, desafiosXp: d.get(id) ?? 0 });
+        const xp = calcularXp({
+            aulas: a.get(id) ?? 0,
+            questoes: q.get(id) ?? 0,
+            desafiosXp: d.get(id) ?? 0,
+        });
         niveis.set(id, nivelPorXp(xp));
     }
     return niveis;
@@ -68,7 +80,8 @@ type LinhaPost = {
 
 // Contagem de curtidas e comentários por post, em duas queries agrupadas.
 async function contagens(ids: string[]) {
-    if (ids.length === 0) return { likes: new Map<string, number>(), comentarios: new Map<string, number>() };
+    if (ids.length === 0)
+        return { likes: new Map<string, number>(), comentarios: new Map<string, number>() };
     const [likes, comentarios] = await Promise.all([
         db
             .select({ postId: communityLikes.postId, n: count() })
@@ -173,7 +186,9 @@ export async function feed(userId: string, filtro: FiltroFeed, tag: string | nul
             .from(userFollows)
             .where(eq(userFollows.followerId, userId));
         const idsSeguidos = seguidos.map((s) => s.id);
-        cond.push(idsSeguidos.length > 0 ? inArray(communityPosts.userId, idsSeguidos) : sql`false`);
+        cond.push(
+            idsSeguidos.length > 0 ? inArray(communityPosts.userId, idsSeguidos) : sql`false`,
+        );
     }
     if (filtro === "em-alta") {
         cond.push(gt(communityPosts.createdAt, new Date(Date.now() - 14 * 86400000)));
@@ -221,7 +236,9 @@ export async function criarPost(userId: string, dados: DadosPost) {
         throw new AppError(403, "Enviar imagens na comunidade é um benefício de apoiador.");
     }
     const tagsLimpa = [
-        ...new Set((dados.tags ?? []).map((t) => t.trim().toLowerCase()).filter((t) => TAG_RE.test(t))),
+        ...new Set(
+            (dados.tags ?? []).map((t) => t.trim().toLowerCase()).filter((t) => TAG_RE.test(t)),
+        ),
     ].slice(0, 5);
 
     const [post] = await db
@@ -306,7 +323,11 @@ export async function detalhePost(userId: string, postId: string) {
     };
 }
 
-export async function comentar(userId: string, postId: string, dados: z.infer<typeof comentarSchema>) {
+export async function comentar(
+    userId: string,
+    postId: string,
+    dados: z.infer<typeof comentarSchema>,
+) {
     const [post] = await db
         .select({ id: communityPosts.id })
         .from(communityPosts)
@@ -321,9 +342,7 @@ export async function comentar(userId: string, postId: string, dados: z.infer<ty
 
 // Dúvidas em aberto: posts do tipo dúvida que ainda não têm nenhum comentário.
 export async function duvidasAbertas(): Promise<number> {
-    const semResposta = db
-        .select({ postId: communityComments.postId })
-        .from(communityComments);
+    const semResposta = db.select({ postId: communityComments.postId }).from(communityComments);
     const [linha] = await db
         .select({ n: count() })
         .from(communityPosts)
@@ -413,8 +432,14 @@ export async function sugestoesParaSeguir(userId: string) {
         .slice(0, 3);
 }
 
-export async function estadoSeguir(followerId: string, username: string): Promise<{ seguindo: boolean }> {
-    const [alvo] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+export async function estadoSeguir(
+    followerId: string,
+    username: string,
+): Promise<{ seguindo: boolean }> {
+    const [alvo] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.username, username));
     if (!alvo) throw new AppError(404, "Usuário não encontrado");
     if (alvo.id === followerId) return { seguindo: false };
     const [rel] = await db
@@ -425,7 +450,10 @@ export async function estadoSeguir(followerId: string, username: string): Promis
 }
 
 export async function seguir(followerId: string, username: string) {
-    const [alvo] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+    const [alvo] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.username, username));
     if (!alvo) throw new AppError(404, "Usuário não encontrado");
     if (alvo.id === followerId) throw new AppError(400, "Você não pode seguir a si mesmo.");
     await db.insert(userFollows).values({ followerId, followingId: alvo.id }).onConflictDoNothing();
@@ -433,7 +461,10 @@ export async function seguir(followerId: string, username: string) {
 }
 
 export async function deixarDeSeguir(followerId: string, username: string) {
-    const [alvo] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+    const [alvo] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.username, username));
     if (!alvo) throw new AppError(404, "Usuário não encontrado");
     await db
         .delete(userFollows)

@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Logo } from '../../components/Logo';
 import { UserMenu } from '../../components/UserMenu';
@@ -13,10 +13,16 @@ import { BlocosConteudo } from '../../components/BlocosConteudo';
 import {
   rodarExemplos,
   submeterDesafio,
+  getSolucoesDesafio,
+  getComentariosDesafio,
+  comentarDesafio,
+  excluirComentarioDesafio,
   type DesafioDetalhe,
   type Linguagem,
   type RunResultado,
   type SubmitResultado,
+  type SolucaoComunidade,
+  type ComentarioDesafio,
 } from '../../services/desafios';
 
 const EditorCodigo = lazy(() => import('../../components/EditorCodigo'));
@@ -167,7 +173,20 @@ function useCronometro() {
   }, []);
   const mm = String(Math.floor(secs / 60)).padStart(2, '0');
   const ss = String(secs % 60).padStart(2, '0');
-  return `${mm}:${ss}`;
+  return { secs, fmt: `${mm}:${ss}` };
+}
+
+function fmtDuracao(s: number | null | undefined): string | null {
+  if (s == null) return null;
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = s % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2, '0')}min`;
+  return `${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+}
+
+function fmtData(iso: string): string {
+  return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
 }
 
 export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
@@ -177,12 +196,19 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
   const tempo = useCronometro();
 
   const [aba, setAba] = useState<'enunciado' | 'solucoes' | 'discussao'>('enunciado');
-  const [linguagem, setLinguagem] = useState<Linguagem>('javascript');
+  const [linguagem, setLinguagem] = useState<Linguagem>(
+    desafio.minhaSolucao?.language ?? 'javascript',
+  );
   const [langAberto, setLangAberto] = useState(false);
-  const [codigos, setCodigos] = useState<Record<Linguagem, string>>({
-    javascript: desafio.starterCode.javascript || starterPadrao(desafio, 'javascript'),
-    python: desafio.starterCode.python || starterPadrao(desafio, 'python'),
-    java: desafio.starterCode.java || starterPadrao(desafio, 'java'),
+  // Quem já resolveu reabre com a própria solução; os demais, com o código inicial.
+  const [codigos, setCodigos] = useState<Record<Linguagem, string>>(() => {
+    const base = {
+      javascript: desafio.starterCode.javascript || starterPadrao(desafio, 'javascript'),
+      python: desafio.starterCode.python || starterPadrao(desafio, 'python'),
+      java: desafio.starterCode.java || starterPadrao(desafio, 'java'),
+    };
+    if (desafio.minhaSolucao) base[desafio.minhaSolucao.language] = desafio.minhaSolucao.code;
+    return base;
   });
   const [rodando, setRodando] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -216,7 +242,7 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
     setEnviando(true);
     setRun(null);
     try {
-      const r = await submeterDesafio(desafio.id, linguagem, codigo);
+      const r = await submeterDesafio(desafio.id, linguagem, codigo, tempo.secs);
       setSubmit(r);
       if (r.passed) {
         setResolvido(true);
@@ -246,10 +272,17 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
         <span className={`solve-pill solve-pill--${desafio.difficulty}`}>
           {DIF_LABEL[desafio.difficulty]}
         </span>
-        {resolvido && <span className="solve-pill solve-pill--solved">Resolvido</span>}
+        {resolvido && (
+          <span className="solve-pill solve-pill--solved">
+            Resolvido
+            {fmtDuracao(desafio.minhaSolucao?.durationSeconds)
+              ? ` em ${fmtDuracao(desafio.minhaSolucao?.durationSeconds)}`
+              : ''}
+          </span>
+        )}
         <div className="topbar__spacer" />
         <span className="solve-bar__timer">
-          <ClockExam size={15} /> {tempo}
+          <ClockExam size={15} /> {tempo.fmt}
         </span>
         <div className="streak-pill">
           <Flame size={16} /> {authUser?.streak ?? 0}
@@ -327,8 +360,10 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
                 </div>
               )}
             </div>
+          ) : aba === 'solucoes' ? (
+            <AbaSolucoes desafioId={desafio.id} resolvido={resolvido} />
           ) : (
-            <div className="solve-soon">Em breve.</div>
+            <AbaDiscussao desafioId={desafio.id} />
           )}
         </section>
 
@@ -500,6 +535,186 @@ function ResultadoSubmit({ submit }: { submit: SubmitResultado }) {
         {submit.xpEarned > 0 && <span className="solve-out__xp">+{submit.xpEarned} XP</span>}
       </div>
       {submit.output && <pre className="solve-io solve-io--err">{submit.output}</pre>}
+    </div>
+  );
+}
+
+function CabecalhoAutor({
+  autor,
+  quando,
+  destaque,
+}: {
+  autor: SolucaoComunidade['autor'];
+  quando: string;
+  destaque?: string;
+}) {
+  return (
+    <div className="solve-autor">
+      {autor.avatarUrl ? (
+        <img className="solve-autor__ava" src={autor.avatarUrl} alt="" />
+      ) : (
+        <span className="solve-autor__ava solve-autor__ava--ini">{getInitials(autor.name)}</span>
+      )}
+      <span className="solve-autor__nome">{destaque ?? autor.name}</span>
+      <span className="solve-autor__nivel">Lv{autor.level}</span>
+      <span className="solve-autor__data">{fmtData(quando)}</span>
+    </div>
+  );
+}
+
+function AbaSolucoes({ desafioId, resolvido }: { desafioId: string; resolvido: boolean }) {
+  const [solucoes, setSolucoes] = useState<SolucaoComunidade[] | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!resolvido) return;
+    let ativo = true;
+    getSolucoesDesafio(desafioId)
+      .then((s) => ativo && setSolucoes(s))
+      .catch((e) => ativo && setErro(mensagemErro(e, 'Não foi possível carregar as soluções.')));
+    return () => {
+      ativo = false;
+    };
+  }, [desafioId, resolvido]);
+
+  if (!resolvido) {
+    return (
+      <div className="solve-lock">
+        <span className="solve-lock__icone">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="4" y="11" width="16" height="10" rx="2" />
+            <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+          </svg>
+        </span>
+        Resolva o desafio para desbloquear as soluções da comunidade.
+      </div>
+    );
+  }
+  if (erro) return <div className="solve-soon">{erro}</div>;
+  if (!solucoes) return <div className="solve-soon">Carregando...</div>;
+  if (solucoes.length === 0) {
+    return <div className="solve-soon">Ainda não há soluções por aqui.</div>;
+  }
+  return (
+    <div className="solve-sols">
+      {solucoes.map((s) => (
+        <article className={`solve-sol${s.minha ? ' solve-sol--minha' : ''}`} key={s.id}>
+          <header className="solve-sol__head">
+            <CabecalhoAutor
+              autor={s.autor}
+              quando={s.createdAt}
+              destaque={s.minha ? 'Sua solução' : undefined}
+            />
+            <span className="solve-sol__lang">
+              {LINGUAGENS.find((l) => l.id === s.language)?.label ?? s.language}
+            </span>
+            {fmtDuracao(s.durationSeconds) && (
+              <span className="solve-sol__tempo">
+                <ClockExam size={13} /> {fmtDuracao(s.durationSeconds)}
+              </span>
+            )}
+          </header>
+          <pre className="solve-sol__code">
+            <code>{s.code}</code>
+          </pre>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function AbaDiscussao({ desafioId }: { desafioId: string }) {
+  const { mostrar } = useToast();
+  const [comentarios, setComentarios] = useState<ComentarioDesafio[] | null>(null);
+  const [texto, setTexto] = useState('');
+  const [enviando, setEnviando] = useState(false);
+
+  const carregar = useCallback(async () => {
+    try {
+      setComentarios(await getComentariosDesafio(desafioId));
+    } catch (e) {
+      console.error('Falha ao carregar comentários do desafio', e);
+      setComentarios([]);
+    }
+  }, [desafioId]);
+
+  useEffect(() => {
+    carregar();
+  }, [carregar]);
+
+  async function aoComentar() {
+    const conteudo = texto.trim();
+    if (!conteudo || enviando) return;
+    setEnviando(true);
+    try {
+      await comentarDesafio(desafioId, conteudo);
+      setTexto('');
+      await carregar();
+    } catch (e) {
+      mostrar(mensagemErro(e, 'Não foi possível comentar.'), 'erro');
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  async function aoExcluir(id: string) {
+    try {
+      await excluirComentarioDesafio(id);
+      await carregar();
+    } catch (e) {
+      mostrar(mensagemErro(e, 'Não foi possível excluir o comentário.'), 'erro');
+    }
+  }
+
+  return (
+    <div className="solve-disc">
+      <div className="solve-disc__form">
+        <textarea
+          className="solve-disc__input"
+          placeholder="Compartilhe uma dica ou dúvida sobre este desafio (sem colar a solução)."
+          value={texto}
+          maxLength={1000}
+          rows={3}
+          onChange={(e) => setTexto(e.target.value)}
+        />
+        <button className="solve-send" onClick={aoComentar} disabled={enviando || !texto.trim()}>
+          {enviando ? 'Enviando...' : 'Comentar'}
+        </button>
+      </div>
+      {!comentarios ? (
+        <div className="solve-soon">Carregando...</div>
+      ) : comentarios.length === 0 ? (
+        <div className="solve-soon">Seja a primeira pessoa a comentar.</div>
+      ) : (
+        <div className="solve-disc__lista">
+          {comentarios.map((c) => (
+            <div className="solve-disc__item" key={c.id}>
+              <div className="solve-disc__topo">
+                <CabecalhoAutor autor={c.autor} quando={c.createdAt} />
+                {c.minha && (
+                  <button
+                    className="solve-disc__excluir"
+                    onClick={() => aoExcluir(c.id)}
+                    title="Excluir comentário"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+              <p className="solve-disc__texto">{c.content}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
