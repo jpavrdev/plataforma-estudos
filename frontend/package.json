@@ -25,7 +25,7 @@
     "react-dom": "^19.2.8",
     "react-easy-crop": "^6.2.3",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^7.18.2",
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0"
