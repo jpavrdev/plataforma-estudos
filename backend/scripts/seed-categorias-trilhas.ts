@@ -18,6 +18,7 @@ const MAPA: Record<string, string[]> = {
     "AWS AI Practitioner": ["Nuvem", "IA"],
     "Fundamentos de LLMs": ["IA"],
     "Aplicações com LLMs": ["IA"],
+    "RAG na Prática": ["IA"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],

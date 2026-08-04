@@ -443,6 +443,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Python e noções de HTTP e APIs",
         ],
     },
+    "RAG na Prática": {
+        whatYouLearn: [
+            "Quando usar RAG (e quando contexto longo ou fine-tuning)",
+            "Ingestão, chunking por estrutura e embeddings com pgvector",
+            "Busca híbrida, reranking, filtros com permissão e reescrita",
+            "Prompt aumentado com citações, não sei honesto e avaliação",
+        ],
+        prerequisites: [
+            "Aplicações com LLMs (chamadas, prompts, memória)",
+            "SQL básico ajuda (o banco vetorial é o Postgres)",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
