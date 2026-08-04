@@ -64,6 +64,16 @@ export async function obterRoadmap(slug: string) {
   return data;
 }
 
+export interface ProximaTrilhaRoadmap {
+  roadmap: { slug: string; name: string } | null;
+  proximaTrilha: { id: string; name: string; level: Nivel } | null;
+}
+
+export async function proximaTrilhaRoadmap(trailId: string) {
+  const { data } = await api.get<ProximaTrilhaRoadmap>(`/roadmaps/proxima-trilha/${trailId}`);
+  return data;
+}
+
 // ===================== ADMIN (estúdio) =====================
 
 export async function concluirEstagio(stageId: string) {

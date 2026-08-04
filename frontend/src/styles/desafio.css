@@ -1280,3 +1280,12 @@
 .solve-next__ir:hover {
   filter: brightness(1.05);
 }
+.solve-next__nivel {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 2px 9px;
+  border-radius: 999px;
+}
