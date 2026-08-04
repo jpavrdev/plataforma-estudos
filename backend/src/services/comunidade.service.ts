@@ -5,6 +5,7 @@ import {
     communityPostTags,
     communityLikes,
     communityComments,
+    communityCommentLikes,
     userFollows,
     users,
     lessonProgress,
@@ -295,6 +296,7 @@ export async function detalhePost(userId: string, postId: string) {
         .select({
             id: communityComments.id,
             userId: communityComments.userId,
+            parentId: communityComments.parentId,
             content: communityComments.content,
             createdAt: communityComments.createdAt,
             authorName: users.name,
@@ -305,14 +307,41 @@ export async function detalhePost(userId: string, postId: string) {
         .innerJoin(users, eq(users.id, communityComments.userId))
         .where(eq(communityComments.postId, postId))
         .orderBy(communityComments.createdAt);
-    const niveis = await niveisDeUsuarios([...new Set(comentariosBrutos.map((c) => c.userId))]);
+
+    const idsComentarios = comentariosBrutos.map((c) => c.id);
+    const [niveis, likesComentarios, curtidosPorMim] = await Promise.all([
+        niveisDeUsuarios([...new Set(comentariosBrutos.map((c) => c.userId))]),
+        idsComentarios.length
+            ? db
+                  .select({ commentId: communityCommentLikes.commentId, n: count() })
+                  .from(communityCommentLikes)
+                  .where(inArray(communityCommentLikes.commentId, idsComentarios))
+                  .groupBy(communityCommentLikes.commentId)
+            : [],
+        idsComentarios.length
+            ? db
+                  .select({ commentId: communityCommentLikes.commentId })
+                  .from(communityCommentLikes)
+                  .where(
+                      and(
+                          eq(communityCommentLikes.userId, userId),
+                          inArray(communityCommentLikes.commentId, idsComentarios),
+                      ),
+                  )
+            : [],
+    ]);
+    const likesPorComentario = new Map(likesComentarios.map((l) => [l.commentId, Number(l.n)]));
+    const curtidosSet = new Set(curtidosPorMim.map((c) => c.commentId));
 
     return {
         ...post,
         comentariosLista: comentariosBrutos.map((c) => ({
             id: c.id,
+            parentId: c.parentId,
             content: c.content,
             createdAt: c.createdAt,
+            likes: likesPorComentario.get(c.id) ?? 0,
+            curtido: curtidosSet.has(c.id),
             autor: {
                 name: c.authorName,
                 username: c.authorUsername,
@@ -333,11 +362,54 @@ export async function comentar(
         .from(communityPosts)
         .where(eq(communityPosts.id, postId));
     if (!post) throw new AppError(404, "Publicação não encontrada");
+
+    // Resposta a comentário: a thread tem um nível só, então responder a uma
+    // resposta pendura no comentário de primeiro nível dela.
+    let parentId: string | null = null;
+    if (dados.parentId) {
+        const [pai] = await db
+            .select({
+                id: communityComments.id,
+                postId: communityComments.postId,
+                parentId: communityComments.parentId,
+            })
+            .from(communityComments)
+            .where(eq(communityComments.id, dados.parentId));
+        if (!pai || pai.postId !== postId) throw new AppError(404, "Comentário não encontrado");
+        parentId = pai.parentId ?? pai.id;
+    }
+
     const [c] = await db
         .insert(communityComments)
-        .values({ postId, userId, content: dados.content.trim() })
+        .values({ postId, userId, parentId, content: dados.content.trim() })
         .returning({ id: communityComments.id });
     return { id: c.id };
+}
+
+export async function alternarCurtidaComentario(userId: string, commentId: string) {
+    const [comentario] = await db
+        .select({ id: communityComments.id })
+        .from(communityComments)
+        .where(eq(communityComments.id, commentId));
+    if (!comentario) throw new AppError(404, "Comentário não encontrado");
+
+    const removidas = await db
+        .delete(communityCommentLikes)
+        .where(
+            and(
+                eq(communityCommentLikes.commentId, commentId),
+                eq(communityCommentLikes.userId, userId),
+            ),
+        )
+        .returning({ id: communityCommentLikes.id });
+    if (removidas.length === 0) {
+        await db.insert(communityCommentLikes).values({ commentId, userId }).onConflictDoNothing();
+    }
+    const [{ n }] = await db
+        .select({ n: count() })
+        .from(communityCommentLikes)
+        .where(eq(communityCommentLikes.commentId, commentId));
+    return { curtido: removidas.length === 0, likes: Number(n) };
 }
 
 // Dúvidas em aberto: posts do tipo dúvida que ainda não têm nenhum comentário.
