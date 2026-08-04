@@ -14,12 +14,14 @@ import {
     createStageRef,
     deleteStageRef,
     completeStage,
+    getProximaTrilha,
 } from "../controllers/RoadmapController.ts";
 
 const router = Router();
 
 // Leitura (qualquer logado)
 router.get("/roadmaps", autenticar, listRoadmaps);
+router.get("/roadmaps/proxima-trilha/:trailId", autenticar, getProximaTrilha);
 
 // Gestão pelo estúdio (admin). Vem antes de "/roadmaps/:slug" e usa o prefixo
 // "/studio" para não colidir com a rota de detalhe do aluno.

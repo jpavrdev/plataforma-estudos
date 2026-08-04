@@ -23,6 +23,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { BlocosConteudo, md, TextoMath } from '../../components/BlocosConteudo';
 import { getTrailLang } from '../../utils/trailLang';
+import { proximaTrilhaRoadmap, type ProximaTrilhaRoadmap } from '../../services/roadmaps';
 
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
@@ -36,6 +37,29 @@ export function Aula() {
   const [aula, setAula] = useState<LessonDetail | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
+  const [proximaRoadmap, setProximaRoadmap] = useState<ProximaTrilhaRoadmap | null>(null);
+  const [perguntaTrilha, setPerguntaTrilha] = useState(false);
+  const [buscandoProxima, setBuscandoProxima] = useState(false);
+
+  // Ao concluir a trilha, pergunta se a pessoa quer emendar a próxima do
+  // roadmap; trilha fora de roadmap (ou roadmap no fim) segue para a lista.
+  async function aoConcluirTrilha() {
+    if (buscandoProxima) return;
+    setBuscandoProxima(true);
+    try {
+      const r = proximaRoadmap ?? (await proximaTrilhaRoadmap(trailId!));
+      setProximaRoadmap(r);
+      if (r.roadmap && r.proximaTrilha) {
+        setPerguntaTrilha(true);
+        return;
+      }
+    } catch (err) {
+      console.error('Falha ao buscar a próxima trilha do roadmap.', err);
+    } finally {
+      setBuscandoProxima(false);
+    }
+    navigate('/trilhas');
+  }
 
   useEffect(() => {
     let ativo = true;
@@ -105,13 +129,61 @@ export function Aula() {
         {!carregando && !erro && trilha && aula && (
           <div className="lesson">
             <SidebarTrilha trilha={trilha} aulaAtualId={aula.id} />
-            <ConteudoAula trilha={trilha} aula={aula} onConcluir={() => navigate('/trilhas')} />
+            <ConteudoAula trilha={trilha} aula={aula} onConcluir={aoConcluirTrilha} />
+          </div>
+        )}
+
+        {perguntaTrilha && proximaRoadmap?.roadmap && proximaRoadmap.proximaTrilha && (
+          <div className="solve-next-scrim" onClick={() => setPerguntaTrilha(false)}>
+            <div
+              className="solve-next"
+              role="dialog"
+              aria-label="Próxima trilha do roadmap"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className="solve-next__check">
+                <Check size={22} />
+              </span>
+              <h3 className="solve-next__titulo">Trilha concluída!</h3>
+              <p className="solve-next__sub">
+                Quer seguir para a próxima trilha do roadmap {proximaRoadmap.roadmap.name}?
+              </p>
+              <div className="solve-next__alvo">
+                <span className="solve-next__nome">{proximaRoadmap.proximaTrilha.name}</span>
+                <span className="solve-next__nivel">
+                  {NIVEL_LABEL[proximaRoadmap.proximaTrilha.level]}
+                </span>
+              </div>
+              <div className="solve-next__acoes">
+                <button
+                  className="solve-next__ficar"
+                  onClick={() => {
+                    setPerguntaTrilha(false);
+                    navigate('/trilhas');
+                  }}
+                >
+                  Agora não
+                </button>
+                <button
+                  className="solve-next__ir"
+                  onClick={() => navigate(`/trilhas/${proximaRoadmap.proximaTrilha!.id}`)}
+                >
+                  Ir para a próxima
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+const NIVEL_LABEL: Record<string, string> = {
+  iniciante: 'Iniciante',
+  intermediario: 'Intermediário',
+  avancado: 'Avançado',
+};
 
 function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtualId: string }) {
   const [aberto, setAberto] = useState(false);
