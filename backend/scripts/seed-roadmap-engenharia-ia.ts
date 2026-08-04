@@ -87,6 +87,15 @@ const STAGES: Stage[] = [
         tags: ["APIs", "Prompts", "Function calling"],
         refs: [{ type: "trail", ref: "Aplicações com LLMs" }],
     },
+    {
+        phase: "core",
+        position: 6,
+        title: "RAG de ponta a ponta",
+        description:
+            "Respostas fundamentadas nos seus documentos: ingestão e chunking, embeddings com pgvector, retrieval com busca híbrida, reranking e permissões, o prompt aumentado com citações e o não sei honesto, tudo medido com conjunto de avaliação.",
+        tags: ["RAG", "pgvector", "Retrieval"],
+        refs: [{ type: "trail", ref: "RAG na Prática" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
