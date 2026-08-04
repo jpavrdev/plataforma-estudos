@@ -358,6 +358,13 @@
       "when": 1785504074267,
       "tag": "0050_desafio_solucao_discussao",
       "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1785538732148,
+      "tag": "0051_revisao_congelada",
+      "breakpoints": true
     }
   ]
 }
