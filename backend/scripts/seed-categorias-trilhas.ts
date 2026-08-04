@@ -15,6 +15,8 @@ const MAPA: Record<string, string[]> = {
     "AZURE AI-901": ["Nuvem", "IA"],
     "AZURE SC-900": ["Nuvem", "Cibersegurança"],
     "AZURE AZ-104": ["Nuvem"],
+    "AWS AI Practitioner": ["Nuvem", "IA"],
+    "Fundamentos de LLMs": ["IA"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],
