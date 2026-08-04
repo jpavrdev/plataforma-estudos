@@ -422,6 +422,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Nenhuma experiência com ML é exigida",
         ],
     },
+    "Fundamentos de LLMs": {
+        whatYouLearn: [
+            "Como um LLM funciona: previsão de tokens, atenção e treinamento",
+            "Tokens, custos, embeddings e a janela de contexto",
+            "Parâmetros de geração e o ecossistema de modelos de 2026",
+            "Os limites: alucinação, viés, prompt injection e segurança",
+        ],
+        prerequisites: ["Lógica de programação e Python básico", "Noções de HTTP e APIs ajudam"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,

@@ -1177,3 +1177,106 @@
   color: var(--muted);
   cursor: pointer;
 }
+
+/* ---------- Pergunta de próximo desafio (após solução aceita) ---------- */
+.solve-next-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.solve-next {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 26px 24px 22px;
+  text-align: center;
+}
+.solve-next__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--av-green) 16%, transparent);
+  color: var(--av-green);
+  margin-bottom: 10px;
+}
+.solve-next__titulo {
+  margin: 0 0 4px;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+}
+.solve-next__sub {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.solve-next__alvo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  margin-bottom: 18px;
+}
+.solve-next__num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.solve-next__nome {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.solve-next__acoes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.solve-next__ficar {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.solve-next__ficar:hover {
+  background: var(--surface-2);
+}
+.solve-next__ir {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 10px;
+  background: var(--av-green);
+  border: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.solve-next__ir:hover {
+  filter: brightness(1.05);
+}
