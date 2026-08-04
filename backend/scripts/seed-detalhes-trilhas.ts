@@ -410,6 +410,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Noções de redes e sistemas ajudam",
         ],
     },
+    "AWS AI Practitioner": {
+        whatYouLearn: [
+            "Fundamentos de IA, machine learning e deep learning",
+            "IA generativa, foundation models e o Amazon Bedrock",
+            "Prompt engineering, RAG e customização de modelos",
+            "IA responsável, segurança e governança, para o AIF-C01",
+        ],
+        prerequisites: [
+            "Cloud Practitioner (CLF-C02) ou equivalente",
+            "Nenhuma experiência com ML é exigida",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
