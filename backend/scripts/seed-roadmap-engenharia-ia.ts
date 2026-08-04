@@ -105,6 +105,15 @@ const STAGES: Stage[] = [
         tags: ["Agentes", "LangGraph", "MCP"],
         refs: [{ type: "trail", ref: "Agentes de IA" }],
     },
+    {
+        phase: "deploy",
+        position: 8,
+        title: "LLMs em produção",
+        description:
+            "O que separa o demo do produto: avaliação com golden set e LLM como juiz, observabilidade com tracing, custo e latência com cache e roteamento, segurança com guardrails e LGPD, filas, fallback e canário, fine-tuning e o checklist final de produção.",
+        tags: ["Evals", "Observabilidade", "Deploy"],
+        refs: [{ type: "trail", ref: "LLMs em Produção" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {

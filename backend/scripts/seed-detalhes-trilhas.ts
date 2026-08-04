@@ -467,6 +467,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "RAG na Prática ajuda no projeto final",
         ],
     },
+    "LLMs em Produção": {
+        whatYouLearn: [
+            "Avaliar com golden set, métricas objetivas e LLM como juiz",
+            "Observabilidade com tracing, dashboards, alertas e feedback",
+            "Custo e latência: cache, roteamento de modelos, batch e filas",
+            "Guardrails, LGPD, resiliência, canário, fine-tuning e runbook",
+        ],
+        prerequisites: [
+            "RAG na Prática e Agentes de IA (o projeto integra os dois)",
+            "Noções de operação de backend ajudam",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
