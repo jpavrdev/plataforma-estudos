@@ -96,6 +96,15 @@ const STAGES: Stage[] = [
         tags: ["RAG", "pgvector", "Retrieval"],
         refs: [{ type: "trail", ref: "RAG na Prática" }],
     },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Agentes de IA",
+        description:
+            "Do chat que responde ao agente que executa: o loop pensar-agir-observar, ferramentas com sandbox e guarda-corpos, LangChain e LangGraph com estado durável, engenharia de contexto, o padrão MCP e sistemas multiagente com aprovação humana nas ações críticas.",
+        tags: ["Agentes", "LangGraph", "MCP"],
+        refs: [{ type: "trail", ref: "Agentes de IA" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {

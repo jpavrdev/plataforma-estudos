@@ -19,6 +19,7 @@ const MAPA: Record<string, string[]> = {
     "Fundamentos de LLMs": ["IA"],
     "Aplicações com LLMs": ["IA"],
     "RAG na Prática": ["IA"],
+    "Agentes de IA": ["IA"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],
