@@ -3,6 +3,7 @@ import {
     concluirEstagio,
     listarRoadmaps,
     obterRoadmap,
+    proximaTrilhaAposConcluir,
     listarRoadmapsAdmin,
     obterRoadmapStudio,
     criarRoadmap,
@@ -37,6 +38,14 @@ export const getRoadmap = async (req: Request, res: Response, next: NextFunction
         const roadmap = await obterRoadmap(slug, req.userId);
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
         res.json(roadmap);
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getProximaTrilha = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await proximaTrilhaAposConcluir(req.userId!, String(req.params.trailId)));
     } catch (err) {
         next(err);
     }

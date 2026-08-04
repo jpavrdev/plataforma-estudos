@@ -114,7 +114,21 @@ async function montarRoadmap(adminToken: string) {
         });
         stageIds.push(st.body.id as string);
     }
-    return { slug: rm.body.slug as string, stageIds, lessonIds };
+    return {
+        slug: rm.body.slug as string,
+        stageIds,
+        lessonIds,
+        trailIds: [trilha.body.id as string, trilha2.body.id as string],
+    };
+}
+
+async function concluirAulaPeloQuiz(lessonId: string, token: string) {
+    const aula = await get(`/lessons/${lessonId}`, token);
+    const answers = aula.body.questions.map((q: any) => ({
+        questionId: q.id,
+        optionId: q.options.find((o: any) => o.text === "certa").id,
+    }));
+    await post(`/lessons/${lessonId}/quiz`, token, { answers });
 }
 
 before(async () => {
@@ -186,5 +200,49 @@ describe("Roadmap: conclusão manual de estágio", () => {
             aluno.token,
         );
         assert.equal(r.status, 404);
+    });
+});
+
+describe("Roadmap: próxima trilha após concluir", () => {
+    test("aponta a próxima trilha do roadmap; no fim, devolve nula", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { lessonIds, trailIds } = await montarRoadmap(admin.token);
+        const aluno = await criarUsuarioLogado();
+
+        // Antes de concluir a primeira trilha, a etapa seguinte está travada:
+        // nada a oferecer.
+        const travado = await get(`/roadmaps/proxima-trilha/${trailIds[0]}`, aluno.token);
+        assert.equal(travado.status, 200);
+        assert.equal(travado.body.roadmap.name, "Backend");
+        assert.equal(travado.body.proximaTrilha, null);
+
+        for (const lessonId of lessonIds) {
+            await concluirAulaPeloQuiz(lessonId, aluno.token);
+        }
+
+        const r = await get(`/roadmaps/proxima-trilha/${trailIds[0]}`, aluno.token);
+        assert.equal(r.status, 200);
+        assert.equal(r.body.roadmap.name, "Backend");
+        assert.equal(r.body.proximaTrilha.name, "Logica 2");
+        assert.equal(r.body.proximaTrilha.id, trailIds[1]);
+
+        // A última trilha do roadmap não tem próxima.
+        const fim = await get(`/roadmaps/proxima-trilha/${trailIds[1]}`, aluno.token);
+        assert.equal(fim.body.roadmap.name, "Backend");
+        assert.equal(fim.body.proximaTrilha, null);
+    });
+
+    test("trilha fora de qualquer roadmap devolve roadmap nulo", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const avulsa = await post("/trails", admin.token, {
+            name: "Avulsa",
+            level: "iniciante",
+            description: "Trilha sem roadmap nenhum.",
+        });
+        const aluno = await criarUsuarioLogado();
+        const r = await get(`/roadmaps/proxima-trilha/${avulsa.body.id}`, aluno.token);
+        assert.equal(r.status, 200);
+        assert.equal(r.body.roadmap, null);
+        assert.equal(r.body.proximaTrilha, null);
     });
 });

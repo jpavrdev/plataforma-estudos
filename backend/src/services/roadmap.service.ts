@@ -43,7 +43,10 @@ const SEM_CONCLUSAO: Conclusao = {
 // com status "passed" (não xpEarned, que é específico do desafio do dia).
 async function carregarConclusao(userId: string): Promise<Conclusao> {
     const [aulas, sims, des] = await Promise.all([
-        db.select({ id: lessonProgress.lessonId }).from(lessonProgress).where(eq(lessonProgress.userId, userId)),
+        db
+            .select({ id: lessonProgress.lessonId })
+            .from(lessonProgress)
+            .where(eq(lessonProgress.userId, userId)),
         db
             .select({ id: simuladoAttempts.simuladoId })
             .from(simuladoAttempts)
@@ -51,7 +54,12 @@ async function carregarConclusao(userId: string): Promise<Conclusao> {
         db
             .select({ id: challengeSubmissions.challengeId })
             .from(challengeSubmissions)
-            .where(and(eq(challengeSubmissions.userId, userId), eq(challengeSubmissions.status, "passed"))),
+            .where(
+                and(
+                    eq(challengeSubmissions.userId, userId),
+                    eq(challengeSubmissions.status, "passed"),
+                ),
+            ),
     ]);
     return {
         lessons: new Set(aulas.map((r) => r.id)),
@@ -130,10 +138,15 @@ function statusPorProgresso(feitos: number, total: number): StatusRoadmap {
 
 // Resolve cada ref para dados de exibição (título + o que o front precisa pra rotear).
 async function resolverRefs(refs: { refType: RefType; refId: string }[]) {
-    const idsDe = (t: RefType) => [...new Set(refs.filter((r) => r.refType === t).map((r) => r.refId))];
+    const idsDe = (t: RefType) => [
+        ...new Set(refs.filter((r) => r.refType === t).map((r) => r.refId)),
+    ];
     const [tr, md, ls, sm, ch] = await Promise.all([
         idsDe("trail").length
-            ? db.select({ id: trails.id, name: trails.name }).from(trails).where(inArray(trails.id, idsDe("trail")))
+            ? db
+                  .select({ id: trails.id, name: trails.name })
+                  .from(trails)
+                  .where(inArray(trails.id, idsDe("trail")))
             : Promise.resolve([] as { id: string; name: string }[]),
         idsDe("module").length
             ? db
@@ -163,12 +176,12 @@ async function resolverRefs(refs: { refType: RefType; refId: string }[]) {
     const info = new Map<string, Record<string, unknown>>();
     for (const r of tr) info.set("trail:" + r.id, { title: r.name, trailId: r.id });
     for (const r of md) info.set("module:" + r.id, { title: r.title, trailId: r.trailId });
-    for (const r of ls) info.set("lesson:" + r.id, { title: r.title, trailId: r.trailId, lessonId: r.id });
+    for (const r of ls)
+        info.set("lesson:" + r.id, { title: r.title, trailId: r.trailId, lessonId: r.id });
     for (const r of sm) info.set("simulado:" + r.id, { title: r.name, slug: r.slug });
     for (const r of ch) info.set("challenge:" + r.id, { title: r.title, number: r.number });
     return info;
 }
-
 
 async function estagiosConcluidosManualmente(userId: string) {
     const rows = await db
@@ -194,12 +207,18 @@ export async function listarRoadmaps(userId?: string) {
         .orderBy(asc(roadmapStages.position));
     const etapaIds = etapas.map((e) => e.id);
     const refs = etapaIds.length
-        ? await db.select().from(roadmapStageRefs).where(inArray(roadmapStageRefs.stageId, etapaIds))
+        ? await db
+              .select()
+              .from(roadmapStageRefs)
+              .where(inArray(roadmapStageRefs.stageId, etapaIds))
         : [];
 
     let conclusao = SEM_CONCLUSAO;
     let manuais = new Set<string>();
-    let aulas = { porTrail: new Map<string, AulaContainer[]>(), porModule: new Map<string, AulaContainer[]>() };
+    let aulas = {
+        porTrail: new Map<string, AulaContainer[]>(),
+        porModule: new Map<string, AulaContainer[]>(),
+    };
     if (userId) {
         conclusao = await carregarConclusao(userId);
         manuais = await estagiosConcluidosManualmente(userId);
@@ -218,7 +237,10 @@ export async function listarRoadmaps(userId?: string) {
     const etapaConcluida = (stageId: string) => {
         if (manuais.has(stageId)) return true;
         const rs = refsPorEtapa.get(stageId) ?? [];
-        return rs.length > 0 && rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas));
+        return (
+            rs.length > 0 &&
+            rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas))
+        );
     };
 
     return lista.map((r) => {
@@ -266,7 +288,10 @@ export async function obterRoadmap(slug: string, userId?: string) {
 
     let conclusao = SEM_CONCLUSAO;
     let manuais = new Set<string>();
-    let aulas = { porTrail: new Map<string, AulaContainer[]>(), porModule: new Map<string, AulaContainer[]>() };
+    let aulas = {
+        porTrail: new Map<string, AulaContainer[]>(),
+        porModule: new Map<string, AulaContainer[]>(),
+    };
     if (userId) {
         conclusao = await carregarConclusao(userId);
         manuais = await estagiosConcluidosManualmente(userId);
@@ -275,7 +300,9 @@ export async function obterRoadmap(slug: string, userId?: string) {
             refs.filter((r) => r.refType === "module").map((r) => r.refId),
         );
     }
-    const infoRef = await resolverRefs(refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })));
+    const infoRef = await resolverRefs(
+        refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })),
+    );
 
     const refsPorEtapa = new Map<string, typeof refs>();
     for (const r of refs) {
@@ -288,7 +315,9 @@ export async function obterRoadmap(slug: string, userId?: string) {
         const rs = refsPorEtapa.get(e.id) ?? [];
         const completed =
             (userId && manuais.has(e.id)) ||
-            (userId && rs.length > 0 && rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas)));
+            (userId &&
+                rs.length > 0 &&
+                rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas)));
         return {
             id: e.id,
             phase: e.phase,
@@ -336,6 +365,69 @@ export async function obterRoadmap(slug: string, userId?: string) {
     };
 }
 
+// Depois de concluir uma trilha: em qual roadmap ela vive e qual é a próxima
+// trilha dele. Com a trilha em mais de um roadmap, vale o de maior progresso do
+// usuário (desempate pela posição do roadmap). Só oferece etapa destravada; no
+// fim do roadmap (ou sem etapa elegível), proximaTrilha volta nula.
+export async function proximaTrilhaAposConcluir(userId: string, trailId: string) {
+    const candidatos = await db
+        .selectDistinct({ slug: roadmaps.slug, position: roadmaps.position })
+        .from(roadmapStageRefs)
+        .innerJoin(roadmapStages, eq(roadmapStages.id, roadmapStageRefs.stageId))
+        .innerJoin(roadmaps, eq(roadmaps.id, roadmapStages.roadmapId))
+        .where(
+            and(
+                eq(roadmapStageRefs.refType, "trail"),
+                eq(roadmapStageRefs.refId, trailId),
+                eq(roadmaps.published, true),
+            ),
+        );
+    if (!candidatos.length) return { roadmap: null, proximaTrilha: null };
+
+    const detalhes: NonNullable<Awaited<ReturnType<typeof obterRoadmap>>>[] = [];
+    for (const c of [...candidatos].sort((a, b) => a.position - b.position)) {
+        const d = await obterRoadmap(c.slug, userId);
+        if (d) detalhes.push(d);
+    }
+    if (!detalhes.length) return { roadmap: null, proximaTrilha: null };
+
+    // A próxima etapa elegível de cada roadmap: depois da etapa desta trilha,
+    // destravada, não concluída e com uma trilha para apontar.
+    const refDaProxima = (d: (typeof detalhes)[number]) => {
+        const idx = d.stages.findIndex((s) =>
+            s.refs.some((r) => r.refType === "trail" && r.refId === trailId),
+        );
+        if (idx < 0) return null;
+        const etapa = d.stages
+            .slice(idx + 1)
+            .find((s) => !s.completed && !s.locked && s.refs.some((r) => r.refType === "trail"));
+        return etapa?.refs.find((r) => r.refType === "trail") ?? null;
+    };
+
+    // Prefere um roadmap que tenha o que oferecer; entre eles (e no fallback
+    // sem oferta), o de maior progresso do usuário, já ordenados por posição.
+    const comProxima = detalhes
+        .map((d) => ({ d, ref: refDaProxima(d) }))
+        .filter((x) => x.ref !== null);
+    const escolhaEntre = comProxima.length ? comProxima : detalhes.map((d) => ({ d, ref: null }));
+    const { d: escolhido, ref: refTrilha } = escolhaEntre.reduce((melhor, x) =>
+        x.d.progress.stagesDone > melhor.d.progress.stagesDone ? x : melhor,
+    );
+
+    let proximaTrilha = null;
+    if (refTrilha) {
+        const [t] = await db
+            .select({ id: trails.id, name: trails.name, level: trails.trailLevel })
+            .from(trails)
+            .where(eq(trails.id, refTrilha.refId));
+        proximaTrilha = t ?? null;
+    }
+    return {
+        roadmap: { slug: escolhido.slug, name: escolhido.name },
+        proximaTrilha,
+    };
+}
+
 // ============================ CRUD (admin) ============================
 
 type DadosCriarRoadmap = z.infer<typeof createRoadmapSchema>;
@@ -361,10 +453,7 @@ export async function concluirEstagio(stageId: string, userId: string) {
         .from(roadmapStages)
         .where(eq(roadmapStages.id, stageId));
     if (!etapa) throw new AppError(404, "Estágio não encontrado");
-    await db
-        .insert(roadmapStageCompletions)
-        .values({ stageId, userId })
-        .onConflictDoNothing();
+    await db.insert(roadmapStageCompletions).values({ stageId, userId }).onConflictDoNothing();
 
     // As trilhas e módulos do estágio também ficam concluídos: progresso manual, sem XP.
     const refs = await db
@@ -424,7 +513,9 @@ export async function obterRoadmapStudio(id: string) {
               .where(inArray(roadmapStageRefs.stageId, etapaIds))
               .orderBy(asc(roadmapStageRefs.position))
         : [];
-    const info = await resolverRefs(refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })));
+    const info = await resolverRefs(
+        refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })),
+    );
 
     const refsPorEtapa = new Map<string, typeof refs>();
     for (const r of refs) {
@@ -456,12 +547,19 @@ export async function obterRoadmapStudio(id: string) {
 export async function criarRoadmap(dados: DadosCriarRoadmap) {
     const slug = (dados.slug?.trim() || gerarSlug(dados.name)).slice(0, 80);
     if (!slug) throw new AppError(400, "Não foi possível gerar um slug a partir do nome");
-    const [existe] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.slug, slug));
+    const [existe] = await db
+        .select({ id: roadmaps.id })
+        .from(roadmaps)
+        .where(eq(roadmaps.slug, slug));
     if (existe) throw new AppError(409, "Já existe um roadmap com esse slug");
 
     let position = dados.position;
     if (position === undefined) {
-        const [ult] = await db.select({ p: roadmaps.position }).from(roadmaps).orderBy(desc(roadmaps.position)).limit(1);
+        const [ult] = await db
+            .select({ p: roadmaps.position })
+            .from(roadmaps)
+            .orderBy(desc(roadmaps.position))
+            .limit(1);
         position = ult ? ult.p + 1 : 1;
     }
     const [rm] = await db
@@ -487,7 +585,10 @@ export async function atualizarRoadmap(id: string, dados: DadosAtualizarRoadmap)
     const sets: Partial<typeof roadmaps.$inferInsert> = {};
     if (dados.slug !== undefined) {
         const s = dados.slug.trim();
-        const [outro] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.slug, s));
+        const [outro] = await db
+            .select({ id: roadmaps.id })
+            .from(roadmaps)
+            .where(eq(roadmaps.slug, s));
         if (outro && outro.id !== id) throw new AppError(409, "Já existe um roadmap com esse slug");
         sets.slug = s;
     }
@@ -522,7 +623,10 @@ export async function excluirRoadmap(id: string) {
 }
 
 export async function criarEstagio(roadmapId: string, dados: DadosCriarEstagio) {
-    const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, roadmapId));
+    const [rm] = await db
+        .select({ id: roadmaps.id })
+        .from(roadmaps)
+        .where(eq(roadmaps.id, roadmapId));
     if (!rm) throw new AppError(404, "Roadmap não encontrado");
 
     let position = dados.position;
@@ -550,7 +654,10 @@ export async function criarEstagio(roadmapId: string, dados: DadosCriarEstagio) 
 }
 
 export async function atualizarEstagio(id: string, dados: DadosAtualizarEstagio) {
-    const [st] = await db.select({ id: roadmapStages.id }).from(roadmapStages).where(eq(roadmapStages.id, id));
+    const [st] = await db
+        .select({ id: roadmapStages.id })
+        .from(roadmapStages)
+        .where(eq(roadmapStages.id, id));
     if (!st) throw new AppError(404, "Estágio não encontrado");
 
     const sets: Partial<typeof roadmapStages.$inferInsert> = {};
@@ -561,12 +668,19 @@ export async function atualizarEstagio(id: string, dados: DadosAtualizarEstagio)
     if (dados.position !== undefined) sets.position = dados.position;
     if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
 
-    const [atualizado] = await db.update(roadmapStages).set(sets).where(eq(roadmapStages.id, id)).returning();
+    const [atualizado] = await db
+        .update(roadmapStages)
+        .set(sets)
+        .where(eq(roadmapStages.id, id))
+        .returning();
     return atualizado;
 }
 
 export async function excluirEstagio(id: string) {
-    const [st] = await db.select({ id: roadmapStages.id }).from(roadmapStages).where(eq(roadmapStages.id, id));
+    const [st] = await db
+        .select({ id: roadmapStages.id })
+        .from(roadmapStages)
+        .where(eq(roadmapStages.id, id));
     if (!st) throw new AppError(404, "Estágio não encontrado");
     await db.transaction(async (tx) => {
         await tx.delete(roadmapStageRefs).where(eq(roadmapStageRefs.stageId, id));
@@ -575,7 +689,10 @@ export async function excluirEstagio(id: string) {
 }
 
 export async function adicionarRef(stageId: string, dados: DadosCriarRef) {
-    const [st] = await db.select({ id: roadmapStages.id }).from(roadmapStages).where(eq(roadmapStages.id, stageId));
+    const [st] = await db
+        .select({ id: roadmapStages.id })
+        .from(roadmapStages)
+        .where(eq(roadmapStages.id, stageId));
     if (!st) throw new AppError(404, "Estágio não encontrado");
 
     // Valida que o conteúdo referenciado existe, para nunca criar um ref pendurado.
@@ -602,7 +719,10 @@ export async function adicionarRef(stageId: string, dados: DadosCriarRef) {
 }
 
 export async function removerRef(id: string) {
-    const [ref] = await db.select({ id: roadmapStageRefs.id }).from(roadmapStageRefs).where(eq(roadmapStageRefs.id, id));
+    const [ref] = await db
+        .select({ id: roadmapStageRefs.id })
+        .from(roadmapStageRefs)
+        .where(eq(roadmapStageRefs.id, id));
     if (!ref) throw new AppError(404, "Referência não encontrada");
     await db.delete(roadmapStageRefs).where(eq(roadmapStageRefs.id, id));
 }
