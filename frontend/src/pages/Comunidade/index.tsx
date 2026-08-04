@@ -35,6 +35,7 @@ import {
   alternarCurtida,
   obterPost,
   comentarPost,
+  curtirComentario,
   seguir,
   enviarImagem,
   type FeedPost,
@@ -695,6 +696,46 @@ function Composer({
   );
 }
 
+function ComentarioItem({
+  c,
+  onCurtir,
+  onResponder,
+}: {
+  c: Comentario;
+  onCurtir: () => void;
+  onResponder: () => void;
+}) {
+  return (
+    <div className="com-coment">
+      <AvatarPessoa
+        name={c.autor.name}
+        avatarUrl={c.autor.avatarUrl}
+        chave={c.autor.username ?? c.autor.name}
+      />
+      <div className="com-coment__corpo">
+        <div className="com-coment__head">
+          <span className="com-coment__nome">{c.autor.name}</span>
+          <span className="com-coment__lv">Lv {c.autor.level}</span>
+          <span className="com-coment__tempo">{tempoRelativo(c.createdAt)}</span>
+        </div>
+        <p className="com-coment__texto">{c.content}</p>
+        <div className="com-coment__acoes">
+          <button
+            className={`com-coment__acao${c.curtido ? ' com-coment__acao--curtido' : ''}`}
+            onClick={onCurtir}
+          >
+            <Heart size={14} />
+            {c.likes > 0 && <span>{c.likes}</span>}
+          </button>
+          <button className="com-coment__acao" onClick={onResponder}>
+            Responder
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PostCard({
   post,
   destaque,
@@ -718,6 +759,8 @@ function PostCard({
   const [novoComentario, setNovoComentario] = useState('');
   const [enviandoCom, setEnviandoCom] = useState(false);
   const [totalCom, setTotalCom] = useState(post.comentarios);
+  const [respondendoA, setRespondendoA] = useState<{ threadId: string; nome: string } | null>(null);
+  const [textoResposta, setTextoResposta] = useState('');
   const cardRef = useRef<HTMLElement>(null);
 
   const meta = post.kind !== 'post' ? KIND_META[post.kind] : null;
@@ -761,11 +804,55 @@ function PostCard({
       await comentarPost(post.id, texto);
       setNovoComentario('');
       await carregarComentarios();
-    } catch {
-      // mantém o texto para o usuário tentar de novo
+    } catch (err) {
+      console.error('Falha ao comentar; o texto foi mantido para nova tentativa.', err);
     } finally {
       setEnviandoCom(false);
     }
+  }
+
+  async function enviarResposta() {
+    const texto = textoResposta.trim();
+    if (!texto || enviandoCom || !respondendoA) return;
+    setEnviandoCom(true);
+    try {
+      await comentarPost(post.id, texto, respondendoA.threadId);
+      setTextoResposta('');
+      setRespondendoA(null);
+      await carregarComentarios();
+    } catch (err) {
+      console.error('Falha ao responder; o texto foi mantido para nova tentativa.', err);
+    } finally {
+      setEnviandoCom(false);
+    }
+  }
+
+  function alternarResposta(threadId: string, nome: string) {
+    setRespondendoA((atual) => (atual?.threadId === threadId ? null : { threadId, nome }));
+    setTextoResposta('');
+  }
+
+  async function toggleCurtidaComentario(cm: Comentario) {
+    const atualiza = (curtido: boolean, likes: number) =>
+      setComentarios((prev) =>
+        prev ? prev.map((x) => (x.id === cm.id ? { ...x, curtido, likes } : x)) : prev,
+      );
+    atualiza(!cm.curtido, cm.likes + (cm.curtido ? -1 : 1));
+    try {
+      const r = await curtirComentario(cm.id);
+      atualiza(r.curtido, r.likes);
+    } catch {
+      atualiza(cm.curtido, cm.likes);
+    }
+  }
+
+  const principais = comentarios?.filter((c) => !c.parentId) ?? [];
+  const respostasPor = new Map<string, Comentario[]>();
+  for (const c of comentarios ?? []) {
+    if (!c.parentId) continue;
+    const arr = respostasPor.get(c.parentId) ?? [];
+    arr.push(c);
+    respostasPor.set(c.parentId, arr);
   }
 
   return (
@@ -849,17 +936,41 @@ function PostCard({
             </button>
           </div>
           {carregandoCom && <p className="com-thread__vazio">Carregando comentários…</p>}
-          {comentarios?.map((c) => (
-            <div key={c.id} className="com-coment">
-              <AvatarPessoa name={c.autor.name} avatarUrl={c.autor.avatarUrl} chave={c.autor.username ?? c.autor.name} />
-              <div className="com-coment__corpo">
-                <div className="com-coment__head">
-                  <span className="com-coment__nome">{c.autor.name}</span>
-                  <span className="com-coment__lv">Lv {c.autor.level}</span>
-                  <span className="com-coment__tempo">{tempoRelativo(c.createdAt)}</span>
+          {principais.map((c) => (
+            <div key={c.id} className="com-fio">
+              <ComentarioItem
+                c={c}
+                onCurtir={() => toggleCurtidaComentario(c)}
+                onResponder={() => alternarResposta(c.id, c.autor.name)}
+              />
+              {(respostasPor.get(c.id) ?? []).map((r) => (
+                <div key={r.id} className="com-fio__resposta">
+                  <ComentarioItem
+                    c={r}
+                    onCurtir={() => toggleCurtidaComentario(r)}
+                    onResponder={() => alternarResposta(c.id, r.autor.name)}
+                  />
                 </div>
-                <p className="com-coment__texto">{c.content}</p>
-              </div>
+              ))}
+              {respondendoA?.threadId === c.id && (
+                <div className="com-thread__novo com-fio__nova">
+                  <textarea
+                    autoFocus
+                    value={textoResposta}
+                    onChange={(e) => setTextoResposta(e.target.value)}
+                    placeholder={`Responda a ${respondendoA.nome}…`}
+                    rows={2}
+                    maxLength={1000}
+                  />
+                  <button
+                    className="btn btn--accent com-thread__enviar"
+                    onClick={enviarResposta}
+                    disabled={enviandoCom || !textoResposta.trim()}
+                  >
+                    {enviandoCom ? '...' : 'Responder'}
+                  </button>
+                </div>
+              )}
             </div>
           ))}
           {comentarios && comentarios.length === 0 && !carregandoCom && (
