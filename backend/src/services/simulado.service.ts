@@ -6,8 +6,9 @@ import {
     simuladoAttempts,
     simuladoAttemptQuestions,
     simuladoAttemptAnswers,
+    type SnapshotQuestaoRevisao,
 } from "../../schema.ts";
-import { eq, and, sql, inArray, desc, isNull, count, ne } from "drizzle-orm";
+import { eq, and, sql, inArray, desc, isNull, isNotNull, count, ne } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 import {
     corrigirSimulado,
@@ -81,11 +82,7 @@ function aindaVale(attempt: { expiresAt: Date | null; startedAt: Date }, agora: 
     return agora.getTime() - attempt.startedAt.getTime() < VALIDADE_SEM_TEMPO_MS;
 }
 
-export async function iniciarTentativa(
-    userId: string,
-    slug: string,
-    opcoes: OpcoesTentativa = {},
-) {
+export async function iniciarTentativa(userId: string, slug: string, opcoes: OpcoesTentativa = {}) {
     const [simulado] = await db
         .select()
         .from(simulados)
@@ -121,10 +118,7 @@ export async function iniciarTentativa(
     const doSimulado = eq(simuladoQuestions.simuladoId, simulado.id);
     const filtro = topicos ? and(doSimulado, inArray(assunto, topicos)) : doSimulado;
 
-    const [disponiveis] = await db
-        .select({ n: count() })
-        .from(simuladoQuestions)
-        .where(filtro);
+    const [disponiveis] = await db.select({ n: count() }).from(simuladoQuestions).where(filtro);
     const total = Number(disponiveis?.n ?? 0);
     if (total === 0) {
         throw new AppError(
@@ -223,63 +217,118 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
 
     const enviado = attempt.submittedAt !== null;
 
-    const questoes = await db
-        .select({
-            id: simuladoQuestions.id,
-            statement: simuladoQuestions.statement,
-            explanation: simuladoQuestions.explanation,
-            topic: simuladoQuestions.topic,
-            position: simuladoAttemptQuestions.position,
-        })
+    const linhas = await db
+        .select()
         .from(simuladoAttemptQuestions)
-        .innerJoin(simuladoQuestions, eq(simuladoQuestions.id, simuladoAttemptQuestions.questionId))
         .where(eq(simuladoAttemptQuestions.attemptId, attemptId))
         .orderBy(simuladoAttemptQuestions.position);
+    // Tentativa enviada com snapshot renderiza a prova congelada no envio; as
+    // demais (em andamento ou anteriores ao snapshot) leem o banco vivo.
+    const congelada = enviado && linhas.length > 0 && linhas.every((l) => l.snapshot !== null);
 
-    const questionIds = questoes.map((q) => q.id);
-    const opcoes = questionIds.length
-        ? await db
-              .select()
-              .from(simuladoOptions)
-              .where(inArray(simuladoOptions.questionId, questionIds))
-              .orderBy(simuladoOptions.position)
-        : [];
-    const respostas = await db
-        .select()
-        .from(simuladoAttemptAnswers)
-        .where(eq(simuladoAttemptAnswers.attemptId, attemptId));
-    const marcadas = agrupar(respostas.map((r) => [r.questionId, r.optionId]));
-
+    type QuestaoRevisao = {
+        id: string;
+        statement: string;
+        position: number;
+        multiple: boolean;
+        options: { id: string; text: string; position: number; isCorrect?: boolean }[];
+        selected: string[];
+        topic?: string | null;
+        explanation?: string | null;
+    };
     const paraResumo: { topic: string | null; correta: boolean }[] = [];
-    const questions = questoes.map((q) => {
-        const opcoesDaQuestao = embaralharComSemente(
-            opcoes.filter((o) => o.questionId === q.id),
-            attemptId + q.id,
-        );
-        if (enviado) {
-            const corretasSet = new Set(
-                opcoesDaQuestao.filter((o) => o.isCorrect).map((o) => o.id),
+    let questions: QuestaoRevisao[];
+
+    if (congelada) {
+        questions = linhas.map((l) => {
+            const snap = l.snapshot!;
+            const corretasSet = new Set<string>();
+            const marcadasSet = new Set<string>();
+            const options = snap.options.map((o, i) => {
+                const id = `${l.id}:${i}`;
+                if (o.isCorrect) corretasSet.add(id);
+                if (o.marked) marcadasSet.add(id);
+                return { id, text: o.text, position: i + 1, isCorrect: o.isCorrect };
+            });
+            paraResumo.push({
+                topic: snap.topic,
+                correta: questaoCorreta(marcadasSet, corretasSet),
+            });
+            return {
+                id: l.questionId ?? l.id,
+                statement: snap.statement,
+                position: l.position,
+                multiple: corretasSet.size > 1,
+                options,
+                selected: [...marcadasSet],
+                topic: snap.topic,
+                explanation: snap.explanation,
+            };
+        });
+    } else {
+        const questoes = await db
+            .select({
+                id: simuladoQuestions.id,
+                statement: simuladoQuestions.statement,
+                explanation: simuladoQuestions.explanation,
+                topic: simuladoQuestions.topic,
+                position: simuladoAttemptQuestions.position,
+            })
+            .from(simuladoAttemptQuestions)
+            .innerJoin(
+                simuladoQuestions,
+                eq(simuladoQuestions.id, simuladoAttemptQuestions.questionId),
+            )
+            .where(eq(simuladoAttemptQuestions.attemptId, attemptId))
+            .orderBy(simuladoAttemptQuestions.position);
+
+        const questionIds = questoes.map((q) => q.id);
+        const opcoes = questionIds.length
+            ? await db
+                  .select()
+                  .from(simuladoOptions)
+                  .where(inArray(simuladoOptions.questionId, questionIds))
+                  .orderBy(simuladoOptions.position)
+            : [];
+        const respostas = await db
+            .select()
+            .from(simuladoAttemptAnswers)
+            .where(eq(simuladoAttemptAnswers.attemptId, attemptId));
+        const marcadas = agrupar(respostas.map((r) => [r.questionId, r.optionId]));
+
+        questions = questoes.map((q) => {
+            const opcoesDaQuestao = embaralharComSemente(
+                opcoes.filter((o) => o.questionId === q.id),
+                attemptId + q.id,
             );
-            const marcadasSet = new Set(marcadas.get(q.id) ?? []);
-            paraResumo.push({ topic: q.topic, correta: questaoCorreta(marcadasSet, corretasSet) });
-        }
-        return {
-            id: q.id,
-            statement: q.statement,
-            position: q.position,
-            // multi-resposta é derivado do gabarito; só expomos o booleano (a contagem
-            // exata já está no enunciado, ex.: "selecione DUAS").
-            multiple: opcoesDaQuestao.filter((o) => o.isCorrect).length > 1,
-            options: opcoesDaQuestao.map((o) => ({
-                id: o.id,
-                text: o.text,
-                position: o.position,
-                ...(enviado ? { isCorrect: o.isCorrect } : {}),
-            })),
-            selected: [...(marcadas.get(q.id) ?? [])],
-            ...(enviado ? { topic: q.topic, explanation: q.explanation } : {}),
-        };
-    });
+            if (enviado) {
+                const corretasSet = new Set(
+                    opcoesDaQuestao.filter((o) => o.isCorrect).map((o) => o.id),
+                );
+                const marcadasSet = new Set(marcadas.get(q.id) ?? []);
+                paraResumo.push({
+                    topic: q.topic,
+                    correta: questaoCorreta(marcadasSet, corretasSet),
+                });
+            }
+            return {
+                id: q.id,
+                statement: q.statement,
+                position: q.position,
+                // multi-resposta é derivado do gabarito; só expomos o booleano (a contagem
+                // exata já está no enunciado, ex.: "selecione DUAS").
+                multiple: opcoesDaQuestao.filter((o) => o.isCorrect).length > 1,
+                options: opcoesDaQuestao.map((o) => ({
+                    id: o.id,
+                    text: o.text,
+                    position: o.position,
+                    ...(enviado ? { isCorrect: o.isCorrect } : {}),
+                })),
+                selected: [...(marcadas.get(q.id) ?? [])],
+                ...(enviado ? { topic: q.topic, explanation: q.explanation } : {}),
+            };
+        });
+    }
 
     const [sim] = await db
         .select({
@@ -307,7 +356,9 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                   passed: attempt.passed,
                   elapsedSeconds: Math.max(
                       0,
-                      Math.round((attempt.submittedAt!.getTime() - attempt.startedAt.getTime()) / 1000),
+                      Math.round(
+                          (attempt.submittedAt!.getTime() - attempt.startedAt.getTime()) / 1000,
+                      ),
                   ),
                   temasARevisar: resumoPorTema(paraResumo),
               }
@@ -394,28 +445,33 @@ export async function enviarTentativa(userId: string, attemptId: string) {
     if (!simulado) throw new AppError(404, "Simulado não encontrado");
 
     const linhasQ = await db
-        .select({ questionId: simuladoAttemptQuestions.questionId })
+        .select({
+            aqId: simuladoAttemptQuestions.id,
+            questionId: simuladoQuestions.id,
+            statement: simuladoQuestions.statement,
+            explanation: simuladoQuestions.explanation,
+            topic: simuladoQuestions.topic,
+        })
         .from(simuladoAttemptQuestions)
+        .innerJoin(simuladoQuestions, eq(simuladoQuestions.id, simuladoAttemptQuestions.questionId))
         .where(eq(simuladoAttemptQuestions.attemptId, attemptId));
     const questionIds = linhasQ.map((q) => q.questionId);
 
-    const corretasRows = questionIds.length
+    const opcoesRows = questionIds.length
         ? await db
-              .select({ questionId: simuladoOptions.questionId, id: simuladoOptions.id })
+              .select()
               .from(simuladoOptions)
-              .where(
-                  and(
-                      inArray(simuladoOptions.questionId, questionIds),
-                      eq(simuladoOptions.isCorrect, true),
-                  ),
-              )
+              .where(inArray(simuladoOptions.questionId, questionIds))
+              .orderBy(simuladoOptions.position)
         : [];
     const respostasRows = await db
         .select()
         .from(simuladoAttemptAnswers)
         .where(eq(simuladoAttemptAnswers.attemptId, attemptId));
 
-    const corretasPorQuestao = agrupar(corretasRows.map((r) => [r.questionId, r.id]));
+    const corretasPorQuestao = agrupar(
+        opcoesRows.filter((o) => o.isCorrect).map((o) => [o.questionId, o.id]),
+    );
     const respostasPorQuestao = agrupar(respostasRows.map((r) => [r.questionId, r.optionId]));
     const questoes = questionIds.map((id) => ({
         id,
@@ -424,10 +480,39 @@ export async function enviarTentativa(userId: string, attemptId: string) {
 
     const resultado = corrigirSimulado(questoes, respostasPorQuestao, simulado.passPercent);
 
-    await db
-        .update(simuladoAttempts)
-        .set({ submittedAt: new Date(), score: resultado.score, passed: resultado.passed })
-        .where(eq(simuladoAttempts.id, attemptId));
+    // Congela a prova como foi exibida (mesma ordem embaralhada) para a revisão
+    // sobreviver a atualizações do banco de questões.
+    const snapshots = linhasQ.map((q) => {
+        const marcadasSet = respostasPorQuestao.get(q.questionId) ?? new Set<string>();
+        const opcoes = embaralharComSemente(
+            opcoesRows.filter((o) => o.questionId === q.questionId),
+            attemptId + q.questionId,
+        );
+        const snapshot: SnapshotQuestaoRevisao = {
+            statement: q.statement,
+            explanation: q.explanation,
+            topic: q.topic,
+            options: opcoes.map((o) => ({
+                text: o.text,
+                isCorrect: o.isCorrect,
+                marked: marcadasSet.has(o.id),
+            })),
+        };
+        return { aqId: q.aqId, snapshot };
+    });
+
+    await db.transaction(async (tx) => {
+        for (const s of snapshots) {
+            await tx
+                .update(simuladoAttemptQuestions)
+                .set({ snapshot: s.snapshot })
+                .where(eq(simuladoAttemptQuestions.id, s.aqId));
+        }
+        await tx
+            .update(simuladoAttempts)
+            .set({ submittedAt: new Date(), score: resultado.score, passed: resultado.passed })
+            .where(eq(simuladoAttempts.id, attemptId));
+    });
 
     return resultado;
 }
@@ -667,6 +752,17 @@ export async function excluirQuestaoSimulado(questionId: string) {
         await tx
             .delete(simuladoAttemptAnswers)
             .where(eq(simuladoAttemptAnswers.questionId, questionId));
+        // Tentativas com revisão congelada mantêm a linha (a questão vira órfã);
+        // as demais perdem a questão, como antes.
+        await tx
+            .update(simuladoAttemptQuestions)
+            .set({ questionId: null })
+            .where(
+                and(
+                    eq(simuladoAttemptQuestions.questionId, questionId),
+                    isNotNull(simuladoAttemptQuestions.snapshot),
+                ),
+            );
         await tx
             .delete(simuladoAttemptQuestions)
             .where(eq(simuladoAttemptQuestions.questionId, questionId));
@@ -704,6 +800,15 @@ export async function sincronizarQuestoesSimulado(
             await tx
                 .delete(simuladoAttemptAnswers)
                 .where(inArray(simuladoAttemptAnswers.questionId, aRemover));
+            await tx
+                .update(simuladoAttemptQuestions)
+                .set({ questionId: null })
+                .where(
+                    and(
+                        inArray(simuladoAttemptQuestions.questionId, aRemover),
+                        isNotNull(simuladoAttemptQuestions.snapshot),
+                    ),
+                );
             await tx
                 .delete(simuladoAttemptQuestions)
                 .where(inArray(simuladoAttemptQuestions.questionId, aRemover));
