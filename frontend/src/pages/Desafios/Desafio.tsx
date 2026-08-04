@@ -17,5 +17,5 @@ export function Desafio() {
       </div>
     );
   }
-  return <ResolverDesafio desafio={dados} />;
+  return <ResolverDesafio key={dados.id} desafio={dados} />;
 }

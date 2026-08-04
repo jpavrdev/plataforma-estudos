@@ -13,11 +13,13 @@ import { BlocosConteudo } from '../../components/BlocosConteudo';
 import {
   rodarExemplos,
   submeterDesafio,
+  getDesafios,
   getSolucoesDesafio,
   getComentariosDesafio,
   comentarDesafio,
   excluirComentarioDesafio,
   type DesafioDetalhe,
+  type DesafioResumo,
   type Linguagem,
   type RunResultado,
   type SubmitResultado,
@@ -216,6 +218,8 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
   const [submit, setSubmit] = useState<SubmitResultado | null>(null);
   const [casoSel, setCasoSel] = useState(0);
   const [resolvido, setResolvido] = useState(desafio.solved);
+  const [proximo, setProximo] = useState<DesafioResumo | null>(null);
+  const [perguntaProximo, setPerguntaProximo] = useState(false);
 
   const codigo = codigos[linguagem];
   const setCodigo = (v: string) => setCodigos((c) => ({ ...c, [linguagem]: v }));
@@ -247,11 +251,31 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
       if (r.passed) {
         setResolvido(true);
         mostrar(r.xpEarned > 0 ? `Solução aceita! +${r.xpEarned} XP` : 'Solução aceita!');
+        oferecerProximo();
       }
     } catch (e) {
       mostrar(mensagemErro(e, 'Não foi possível enviar.'), 'erro');
     } finally {
       setEnviando(false);
+    }
+  }
+
+  // Depois de uma solução aceita, pergunta se a pessoa quer emendar o próximo
+  // desafio ainda não resolvido, na ordem da lista a partir do atual.
+  async function oferecerProximo() {
+    try {
+      const lista = await getDesafios();
+      const ordenados = [...lista.items].sort((a, b) => (a.number ?? 0) - (b.number ?? 0));
+      const idx = ordenados.findIndex((d) => d.id === desafio.id);
+      const aPartirDoAtual =
+        idx >= 0 ? [...ordenados.slice(idx + 1), ...ordenados.slice(0, idx)] : ordenados;
+      const prox = aPartirDoAtual.find((d) => d.status !== 'solved') ?? null;
+      if (prox) {
+        setProximo(prox);
+        setPerguntaProximo(true);
+      }
+    } catch (err) {
+      console.error('Falha ao buscar o próximo desafio; a pergunta não será exibida.', err);
     }
   }
 
@@ -441,6 +465,41 @@ export function ResolverDesafio({ desafio }: { desafio: DesafioDetalhe }) {
           </div>
         </section>
       </div>
+
+      {perguntaProximo && proximo && (
+        <div className="solve-next-scrim" onClick={() => setPerguntaProximo(false)}>
+          <div
+            className="solve-next"
+            role="dialog"
+            aria-label="Ir para o próximo desafio"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="solve-next__check">
+              <Check size={22} />
+            </span>
+            <h3 className="solve-next__titulo">Solução aceita!</h3>
+            <p className="solve-next__sub">Quer emendar o próximo desafio?</p>
+            <div className="solve-next__alvo">
+              {proximo.number != null && <span className="solve-next__num">#{proximo.number}</span>}
+              <span className="solve-next__nome">{proximo.title}</span>
+              <span className={`solve-pill solve-pill--${proximo.difficulty}`}>
+                {DIF_LABEL[proximo.difficulty]}
+              </span>
+            </div>
+            <div className="solve-next__acoes">
+              <button className="solve-next__ficar" onClick={() => setPerguntaProximo(false)}>
+                Ficar aqui
+              </button>
+              <button
+                className="solve-next__ir"
+                onClick={() => navigate(`/desafios/${proximo.id}`)}
+              >
+                Ir para o próximo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
