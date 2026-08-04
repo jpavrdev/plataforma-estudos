@@ -7,6 +7,7 @@ import {
     feed,
     criarPost,
     alternarCurtida,
+    alternarCurtidaComentario,
     detalhePost,
     comentar,
     tagsPopulares,
@@ -54,7 +55,9 @@ export const postar = async (req: Request, res: Response, next: NextFunction) =>
 export const enviarImagem = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!(await apoiadorAtivo(req.userId!))) {
-            return res.status(403).json({ erro: "Enviar imagens na comunidade é um benefício de apoiador." });
+            return res
+                .status(403)
+                .json({ erro: "Enviar imagens na comunidade é um benefício de apoiador." });
         }
         const r = await salvarImagem(req.body?.image, COMUNIDADE_DIR, "/uploads/comunidade");
         if (!r.ok) return res.status(400).json({ erro: r.erro });
@@ -75,6 +78,14 @@ export const curtir = async (req: Request, res: Response, next: NextFunction) =>
 export const getPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await detalhePost(req.userId!, String(req.params.id)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const curtirComentario = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await alternarCurtidaComentario(req.userId!, String(req.params.id)));
     } catch (err) {
         next(err);
     }

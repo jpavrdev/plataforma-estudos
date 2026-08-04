@@ -37,8 +37,11 @@ export interface FeedPost {
 
 export interface Comentario {
   id: string;
+  parentId: string | null;
   content: string;
   createdAt: string;
+  likes: number;
+  curtido: boolean;
   autor: Omit<AutorPost, 'apoiador'>;
 }
 
@@ -91,8 +94,18 @@ export async function alternarCurtida(id: string) {
   return data;
 }
 
-export async function comentarPost(id: string, content: string) {
-  const { data } = await api.post<{ id: string }>(`/comunidade/posts/${id}/comentarios`, { content });
+export async function comentarPost(id: string, content: string, parentId?: string) {
+  const { data } = await api.post<{ id: string }>(`/comunidade/posts/${id}/comentarios`, {
+    content,
+    parentId,
+  });
+  return data;
+}
+
+export async function curtirComentario(id: string) {
+  const { data } = await api.post<{ curtido: boolean; likes: number }>(
+    `/comunidade/comentarios/${id}/curtir`,
+  );
   return data;
 }
 

@@ -122,7 +122,10 @@ describe("Comunidade", () => {
     test("curtir alterna o estado e a contagem", async () => {
         const autor = await criarUsuarioLogado();
         const outro = await criarUsuarioLogado();
-        const criado = await post("/comunidade/posts", autor.token, { kind: "post", content: "Olá comunidade" });
+        const criado = await post("/comunidade/posts", autor.token, {
+            kind: "post",
+            content: "Olá comunidade",
+        });
         const id = criado.body.id;
 
         const curtir = await post(`/comunidade/posts/${id}/curtir`, outro.token);
@@ -152,7 +155,9 @@ describe("Comunidade", () => {
         });
         const id = criado.body.id;
 
-        const c = await post(`/comunidade/posts/${id}/comentarios`, autor.token, { content: "Tente assim" });
+        const c = await post(`/comunidade/posts/${id}/comentarios`, autor.token, {
+            content: "Tente assim",
+        });
         assert.equal(c.status, 201);
 
         const detalhe = await get(`/comunidade/posts/${id}`, autor.token);
@@ -162,9 +167,102 @@ describe("Comunidade", () => {
         assert.equal(detalhe.body.comentariosLista[0].content, "Tente assim");
     });
 
+    test("curtir comentário alterna estado e contagem por usuário", async () => {
+        const autor = await criarUsuarioLogado();
+        const outro = await criarUsuarioLogado();
+        const criado = await post("/comunidade/posts", autor.token, {
+            kind: "post",
+            content: "Post",
+        });
+        const c = await post(`/comunidade/posts/${criado.body.id}/comentarios`, autor.token, {
+            content: "Comentário",
+        });
+
+        const curtir = await post(`/comunidade/comentarios/${c.body.id}/curtir`, outro.token);
+        assert.equal(curtir.status, 200);
+        assert.equal(curtir.body.curtido, true);
+        assert.equal(curtir.body.likes, 1);
+
+        // Quem curtiu vê curtido=true; o autor vê a contagem, mas curtido=false.
+        const detalheOutro = await get(`/comunidade/posts/${criado.body.id}`, outro.token);
+        assert.equal(detalheOutro.body.comentariosLista[0].likes, 1);
+        assert.equal(detalheOutro.body.comentariosLista[0].curtido, true);
+        const detalheAutor = await get(`/comunidade/posts/${criado.body.id}`, autor.token);
+        assert.equal(detalheAutor.body.comentariosLista[0].curtido, false);
+
+        const descurtir = await post(`/comunidade/comentarios/${c.body.id}/curtir`, outro.token);
+        assert.equal(descurtir.body.curtido, false);
+        assert.equal(descurtir.body.likes, 0);
+
+        const inexistente = await post(
+            "/comunidade/comentarios/00000000-0000-0000-0000-000000000000/curtir",
+            outro.token,
+        );
+        assert.equal(inexistente.status, 404);
+    });
+
+    test("responder pendura no comentário raiz, mesmo respondendo a uma resposta", async () => {
+        const autor = await criarUsuarioLogado();
+        const criado = await post("/comunidade/posts", autor.token, {
+            kind: "post",
+            content: "Post",
+        });
+        const id = criado.body.id;
+
+        const raiz = await post(`/comunidade/posts/${id}/comentarios`, autor.token, {
+            content: "Raiz",
+        });
+        const resposta = await post(`/comunidade/posts/${id}/comentarios`, autor.token, {
+            content: "Resposta",
+            parentId: raiz.body.id,
+        });
+        assert.equal(resposta.status, 201);
+        // Responder a uma resposta achata para o raiz (thread de um nível).
+        const neta = await post(`/comunidade/posts/${id}/comentarios`, autor.token, {
+            content: "Resposta da resposta",
+            parentId: resposta.body.id,
+        });
+        assert.equal(neta.status, 201);
+
+        const detalhe = await get(`/comunidade/posts/${id}`, autor.token);
+        const lista = detalhe.body.comentariosLista;
+        assert.equal(lista.length, 3);
+        const porConteudo = (t: string) => lista.find((c: { content: string }) => c.content === t);
+        assert.equal(porConteudo("Raiz").parentId, null);
+        assert.equal(porConteudo("Resposta").parentId, raiz.body.id);
+        assert.equal(porConteudo("Resposta da resposta").parentId, raiz.body.id);
+
+        // A contagem do post soma raiz e respostas.
+        assert.equal(detalhe.body.comentarios, 3);
+    });
+
+    test("rejeita responder comentário de outro post ou inexistente", async () => {
+        const u = await criarUsuarioLogado();
+        const postA = await post("/comunidade/posts", u.token, { kind: "post", content: "A" });
+        const postB = await post("/comunidade/posts", u.token, { kind: "post", content: "B" });
+        const comentarioA = await post(`/comunidade/posts/${postA.body.id}/comentarios`, u.token, {
+            content: "No post A",
+        });
+
+        const cruzado = await post(`/comunidade/posts/${postB.body.id}/comentarios`, u.token, {
+            content: "x",
+            parentId: comentarioA.body.id,
+        });
+        assert.equal(cruzado.status, 404);
+
+        const fantasma = await post(`/comunidade/posts/${postA.body.id}/comentarios`, u.token, {
+            content: "x",
+            parentId: "00000000-0000-0000-0000-000000000000",
+        });
+        assert.equal(fantasma.status, 404);
+    });
+
     test("filtro por tipo e por 'sem resposta'", async () => {
         const u = await criarUsuarioLogado();
-        const duvida = await post("/comunidade/posts", u.token, { kind: "duvida", content: "Uma dúvida" });
+        const duvida = await post("/comunidade/posts", u.token, {
+            kind: "duvida",
+            content: "Uma dúvida",
+        });
         await post("/comunidade/posts", u.token, { kind: "conquista", content: "Uma conquista" });
 
         const soDuvidas = await get("/comunidade/feed?filtro=duvida", u.token);
@@ -172,7 +270,9 @@ describe("Comunidade", () => {
         assert.equal(soDuvidas.body[0].kind, "duvida");
 
         // Comenta na dúvida: deixa de aparecer em "sem resposta".
-        await post(`/comunidade/posts/${duvida.body.id}/comentarios`, u.token, { content: "resposta" });
+        await post(`/comunidade/posts/${duvida.body.id}/comentarios`, u.token, {
+            content: "resposta",
+        });
         const semResposta = await get("/comunidade/feed?filtro=sem-resposta", u.token);
         assert.equal(semResposta.body.length, 1);
         assert.equal(semResposta.body[0].kind, "conquista");
@@ -209,13 +309,19 @@ describe("Comunidade", () => {
 
     test("barra lateral traz tópicos e a contagem de dúvidas em aberto", async () => {
         const u = await criarUsuarioLogado();
-        await post("/comunidade/posts", u.token, { kind: "duvida", content: "Dúvida aberta", tags: ["logica"] });
+        await post("/comunidade/posts", u.token, {
+            kind: "duvida",
+            content: "Dúvida aberta",
+            tags: ["logica"],
+        });
         const respondida = await post("/comunidade/posts", u.token, {
             kind: "duvida",
             content: "Dúvida respondida",
             tags: ["logica", "javascript"],
         });
-        await post(`/comunidade/posts/${respondida.body.id}/comentarios`, u.token, { content: "aqui está" });
+        await post(`/comunidade/posts/${respondida.body.id}/comentarios`, u.token, {
+            content: "aqui está",
+        });
 
         const lateral = await get("/comunidade/lateral", u.token);
         assert.equal(lateral.status, 200);
@@ -227,8 +333,16 @@ describe("Comunidade", () => {
 
     test("filtrar o feed por tag", async () => {
         const u = await criarUsuarioLogado();
-        await post("/comunidade/posts", u.token, { kind: "post", content: "Sobre arrays", tags: ["array"] });
-        await post("/comunidade/posts", u.token, { kind: "post", content: "Sobre loops", tags: ["logica"] });
+        await post("/comunidade/posts", u.token, {
+            kind: "post",
+            content: "Sobre arrays",
+            tags: ["array"],
+        });
+        await post("/comunidade/posts", u.token, {
+            kind: "post",
+            content: "Sobre loops",
+            tags: ["logica"],
+        });
 
         const soArray = await get("/comunidade/feed?tag=array", u.token);
         assert.equal(soArray.body.length, 1);

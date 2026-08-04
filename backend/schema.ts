@@ -11,6 +11,7 @@ import {
     index,
     boolean,
     jsonb,
+    type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
@@ -836,12 +837,34 @@ export const communityComments = pgTable(
         userId: uuid("user_id")
             .references(() => users.id)
             .notNull(),
+        // Comentário-pai quando é uma resposta; sempre aponta para um comentário
+        // de primeiro nível (thread de um nível só, estilo Twitter).
+        parentId: uuid("parent_id").references((): AnyPgColumn => communityComments.id),
         content: text("content").notNull(),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     },
     (table) => [
         index("community_comments_post_id_idx").on(table.postId),
         index("community_comments_user_id_idx").on(table.userId),
+        index("community_comments_parent_id_idx").on(table.parentId),
+    ],
+);
+
+export const communityCommentLikes = pgTable(
+    "community_comment_likes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        commentId: uuid("comment_id")
+            .references(() => communityComments.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.commentId, table.userId),
+        index("community_comment_likes_user_id_idx").on(table.userId),
     ],
 );
 

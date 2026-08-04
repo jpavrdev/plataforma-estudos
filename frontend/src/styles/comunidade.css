@@ -695,6 +695,53 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+.com-coment__acoes {
+  display: flex;
+  gap: 16px;
+  margin-top: 6px;
+}
+.com-coment__acao {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: color 0.14s ease;
+}
+.com-coment__acao:hover {
+  color: var(--text);
+}
+.com-coment__acao--curtido {
+  color: var(--av-red);
+}
+.com-coment__acao--curtido:hover {
+  color: var(--av-red);
+}
+.com-coment__acao--curtido svg {
+  fill: var(--av-red);
+}
+.com-fio {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.com-fio__resposta {
+  margin-left: 44px;
+}
+.com-fio__resposta .com-av {
+  width: 28px;
+  height: 28px;
+  font-size: 11px;
+}
+.com-fio__nova {
+  margin-left: 44px;
+}
 
 /* ---------- Coluna direita ---------- */
 .com-desafio {
