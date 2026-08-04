@@ -455,6 +455,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "SQL básico ajuda (o banco vetorial é o Postgres)",
         ],
     },
+    "Agentes de IA": {
+        whatYouLearn: [
+            "O loop pensar-agir-observar e quando um agente vale a pena",
+            "Ferramentas bem projetadas, sandbox e guarda-corpos de ação",
+            "LangChain e LangGraph: grafos de estado, checkpoints e retomada",
+            "MCP, engenharia de contexto e multiagente com aprovação humana",
+        ],
+        prerequisites: [
+            "Aplicações com LLMs (function calling e streaming)",
+            "RAG na Prática ajuda no projeto final",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
