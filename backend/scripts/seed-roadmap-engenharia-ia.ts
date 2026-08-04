@@ -78,6 +78,42 @@ const STAGES: Stage[] = [
         tags: ["LLM", "Tokens", "Embeddings"],
         refs: [{ type: "trail", ref: "Fundamentos de LLMs" }],
     },
+    {
+        phase: "core",
+        position: 5,
+        title: "Construindo com LLMs",
+        description:
+            "A mão na API, em Python: chamadas de chat com erros e retentativas, prompt engineering na prática, system prompts versionados, saídas estruturadas e function calling, streaming com SSE e memória de conversa, fechando com um chatbot completo.",
+        tags: ["APIs", "Prompts", "Function calling"],
+        refs: [{ type: "trail", ref: "Aplicações com LLMs" }],
+    },
+    {
+        phase: "core",
+        position: 6,
+        title: "RAG de ponta a ponta",
+        description:
+            "Respostas fundamentadas nos seus documentos: ingestão e chunking, embeddings com pgvector, retrieval com busca híbrida, reranking e permissões, o prompt aumentado com citações e o não sei honesto, tudo medido com conjunto de avaliação.",
+        tags: ["RAG", "pgvector", "Retrieval"],
+        refs: [{ type: "trail", ref: "RAG na Prática" }],
+    },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Agentes de IA",
+        description:
+            "Do chat que responde ao agente que executa: o loop pensar-agir-observar, ferramentas com sandbox e guarda-corpos, LangChain e LangGraph com estado durável, engenharia de contexto, o padrão MCP e sistemas multiagente com aprovação humana nas ações críticas.",
+        tags: ["Agentes", "LangGraph", "MCP"],
+        refs: [{ type: "trail", ref: "Agentes de IA" }],
+    },
+    {
+        phase: "deploy",
+        position: 8,
+        title: "LLMs em produção",
+        description:
+            "O que separa o demo do produto: avaliação com golden set e LLM como juiz, observabilidade com tracing, custo e latência com cache e roteamento, segurança com guardrails e LGPD, filas, fallback e canário, fine-tuning e o checklist final de produção.",
+        tags: ["Evals", "Observabilidade", "Deploy"],
+        refs: [{ type: "trail", ref: "LLMs em Produção" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {

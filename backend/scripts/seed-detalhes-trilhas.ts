@@ -431,6 +431,54 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Lógica de programação e Python básico", "Noções de HTTP e APIs ajudam"],
     },
+    "Aplicações com LLMs": {
+        whatYouLearn: [
+            "Chamar a API de chat em Python, com erros, custos e retentativas",
+            "Prompt engineering na prática e system prompts versionados",
+            "Saídas estruturadas e function calling: o modelo aciona seu código",
+            "Streaming com SSE, memória de conversa e um chatbot completo",
+        ],
+        prerequisites: [
+            "Fundamentos de LLMs (tokens, janela, parâmetros)",
+            "Python e noções de HTTP e APIs",
+        ],
+    },
+    "RAG na Prática": {
+        whatYouLearn: [
+            "Quando usar RAG (e quando contexto longo ou fine-tuning)",
+            "Ingestão, chunking por estrutura e embeddings com pgvector",
+            "Busca híbrida, reranking, filtros com permissão e reescrita",
+            "Prompt aumentado com citações, não sei honesto e avaliação",
+        ],
+        prerequisites: [
+            "Aplicações com LLMs (chamadas, prompts, memória)",
+            "SQL básico ajuda (o banco vetorial é o Postgres)",
+        ],
+    },
+    "Agentes de IA": {
+        whatYouLearn: [
+            "O loop pensar-agir-observar e quando um agente vale a pena",
+            "Ferramentas bem projetadas, sandbox e guarda-corpos de ação",
+            "LangChain e LangGraph: grafos de estado, checkpoints e retomada",
+            "MCP, engenharia de contexto e multiagente com aprovação humana",
+        ],
+        prerequisites: [
+            "Aplicações com LLMs (function calling e streaming)",
+            "RAG na Prática ajuda no projeto final",
+        ],
+    },
+    "LLMs em Produção": {
+        whatYouLearn: [
+            "Avaliar com golden set, métricas objetivas e LLM como juiz",
+            "Observabilidade com tracing, dashboards, alertas e feedback",
+            "Custo e latência: cache, roteamento de modelos, batch e filas",
+            "Guardrails, LGPD, resiliência, canário, fine-tuning e runbook",
+        ],
+        prerequisites: [
+            "RAG na Prática e Agentes de IA (o projeto integra os dois)",
+            "Noções de operação de backend ajudam",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
