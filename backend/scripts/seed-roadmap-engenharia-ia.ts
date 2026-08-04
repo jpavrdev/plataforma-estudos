@@ -78,6 +78,15 @@ const STAGES: Stage[] = [
         tags: ["LLM", "Tokens", "Embeddings"],
         refs: [{ type: "trail", ref: "Fundamentos de LLMs" }],
     },
+    {
+        phase: "core",
+        position: 5,
+        title: "Construindo com LLMs",
+        description:
+            "A mão na API, em Python: chamadas de chat com erros e retentativas, prompt engineering na prática, system prompts versionados, saídas estruturadas e function calling, streaming com SSE e memória de conversa, fechando com um chatbot completo.",
+        tags: ["APIs", "Prompts", "Function calling"],
+        refs: [{ type: "trail", ref: "Aplicações com LLMs" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {

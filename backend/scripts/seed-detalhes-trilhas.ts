@@ -431,6 +431,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Lógica de programação e Python básico", "Noções de HTTP e APIs ajudam"],
     },
+    "Aplicações com LLMs": {
+        whatYouLearn: [
+            "Chamar a API de chat em Python, com erros, custos e retentativas",
+            "Prompt engineering na prática e system prompts versionados",
+            "Saídas estruturadas e function calling: o modelo aciona seu código",
+            "Streaming com SSE, memória de conversa e um chatbot completo",
+        ],
+        prerequisites: [
+            "Fundamentos de LLMs (tokens, janela, parâmetros)",
+            "Python e noções de HTTP e APIs",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
