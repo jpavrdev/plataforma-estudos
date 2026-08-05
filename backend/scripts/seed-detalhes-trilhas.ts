@@ -500,6 +500,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Por Dentro da Máquina ajuda no capítulo de custo",
         ],
     },
+    "Sistemas Operacionais e Concorrência": {
+        whatYouLearn: [
+            "Processos, threads e o custo real de cada um",
+            "Corridas de dados, mutex, semáforos, condvars e atomics",
+            "Escalonador, prioridades, memória virtual, TLB e page faults",
+            "Arquivos, buffering, E/S e multiplexação (select a epoll)",
+        ],
+        prerequisites: [
+            "Por Dentro da Máquina (memória, stack e heap)",
+            "C++ básico para os exemplos com std::thread",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
