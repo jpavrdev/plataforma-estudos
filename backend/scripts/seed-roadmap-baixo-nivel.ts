@@ -104,6 +104,15 @@ const STAGES: Stage[] = [
         tags: ["RTOS", "Escalonamento", "Determinismo"],
         refs: [{ type: "trail", ref: "Sistemas de Tempo Real" }],
     },
+    {
+        phase: "deploy",
+        position: 8,
+        title: "Embarcados na prática",
+        description:
+            "Onde o software encontra o hardware: o microcontrolador por dentro, registradores e volatile, GPIO, timers e interrupções, UART, SPI e I2C, C++ enxuto, energia, robustez, OTA e a qualidade de firmware com MISRA, testes no host e CI.",
+        tags: ["Microcontrolador", "GPIO", "Protocolos"],
+        refs: [{ type: "trail", ref: "Embarcados na Prática" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
