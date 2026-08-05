@@ -886,3 +886,34 @@ export const userFollows = pgTable(
         index("user_follows_following_id_idx").on(table.followingId),
     ],
 );
+
+// Feature flags: lançamento controlado (beta fechado antes do geral).
+// off = ninguém vê (kill switch); beta = só a allowlist; on = todo mundo.
+export const featureFlagStatus = pgEnum("feature_flag_status", ["off", "beta", "on"]);
+
+export const featureFlags = pgTable("feature_flags", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    key: varchar("key", { length: 80 }).notNull().unique(),
+    description: varchar("description", { length: 200 }).notNull(),
+    status: featureFlagStatus("status").default("off").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Allowlist do beta: quem vê a feature enquanto o status é "beta".
+export const featureFlagUsers = pgTable(
+    "feature_flag_users",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        flagId: uuid("flag_id")
+            .references(() => featureFlags.id)
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.flagId, table.userId),
+        index("feature_flag_users_user_id_idx").on(table.userId),
+    ],
+);
