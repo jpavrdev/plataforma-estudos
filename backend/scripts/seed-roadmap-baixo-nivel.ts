@@ -68,6 +68,15 @@ const STAGES: Stage[] = [
         tags: ["Bits", "Memória", "CPU"],
         refs: [{ type: "trail", ref: "Por Dentro da Máquina" }],
     },
+    {
+        phase: "core",
+        position: 4,
+        title: "C++ moderno e idiomático",
+        description:
+            "O C++ que os code reviews cobram: semântica de valor, const-correctness, RAII e ownership com smart pointers, move semantics, templates com concepts e a STL com o custo de cada container na cabeça.",
+        tags: ["RAII", "Move", "STL"],
+        refs: [{ type: "trail", ref: "C++ Moderno" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
