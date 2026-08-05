@@ -479,6 +479,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Noções de operação de backend ajudam",
         ],
     },
+    "Por Dentro da Máquina": {
+        whatYouLearn: [
+            "Binário, hexadecimal, inteiros, ponto flutuante e ponto fixo",
+            "Bits na prática: máscaras, endianness, alinhamento e padding",
+            "CPU, pipeline, hierarquia de memória, stack, heap e cache",
+            "Do fonte ao binário: seções, chamadas, syscalls e medição",
+        ],
+        prerequisites: ["Lógica de programação", "Noções de C ou C++ ajudam bastante"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,

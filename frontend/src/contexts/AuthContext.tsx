@@ -18,6 +18,7 @@ interface User {
   accent?: string | null;
   backgroundUrl?: string | null;
   backgroundDim?: number | null;
+  features?: string[];
 }
 
 interface AuthContextData {
@@ -148,4 +149,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   return useContext(AuthContext);
+}
+
+// Checa se o usuário logado tem uma feature liberada (flag "on", ou "beta" com
+// o usuário na allowlist). A lista vem pronta do /me.
+export function useFeature(key: string): boolean {
+  const { user } = useAuth();
+  return user?.features?.includes(key) ?? false;
 }
