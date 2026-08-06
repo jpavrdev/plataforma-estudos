@@ -512,6 +512,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "C++ básico para os exemplos com std::thread",
         ],
     },
+    "Compiladores e Toolchain": {
+        whatYouLearn: [
+            "As fases da compilação e o que vive dentro de um objeto",
+            "Lexer, parser, AST, otimizações e o papel do UB",
+            "Linker, bibliotecas, make e CMake moderno, cross-compilation",
+            "Sanitizers, análise estática, gdb e warnings como contrato",
+        ],
+        prerequisites: [
+            "C++ e Por Dentro da Máquina (seções, símbolos, binário)",
+            "Linux e linha de comando ajudam muito",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,

@@ -25,6 +25,7 @@ const MAPA: Record<string, string[]> = {
     "Por Dentro da Máquina": ["Sistemas"],
     "C++ Moderno": ["Sistemas"],
     "Sistemas Operacionais e Concorrência": ["Sistemas"],
+    "Compiladores e Toolchain": ["Sistemas"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],

@@ -86,6 +86,15 @@ const STAGES: Stage[] = [
         tags: ["Threads", "Mutex", "Escalonamento"],
         refs: [{ type: "trail", ref: "Sistemas Operacionais e Concorrência" }],
     },
+    {
+        phase: "core",
+        position: 6,
+        title: "Compiladores e toolchain",
+        description:
+            "A caixa preta vira caixa de vidro: as fases da compilação, lexer, parser e AST, otimizações e undefined behavior, o linker, build systems com make e CMake, cross-compilation, sanitizers e debugger.",
+        tags: ["Compilador", "Linker", "CMake"],
+        refs: [{ type: "trail", ref: "Compiladores e Toolchain" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
