@@ -51,6 +51,15 @@ const STAGES: Stage[] = [
         tags: ["Produto", "Papéis", "Outcome"],
         refs: [{ type: "trail", ref: "Fundamentos de Produto" }],
     },
+    {
+        phase: "fundamentos",
+        position: 2,
+        title: "Ágil e delivery",
+        description:
+            "Scrum como o guia manda e como a vida cobra: backlog e histórias bem escritas, refinamento, Kanban e fluxo, previsibilidade sem teatro e os anti-padrões que todo time repete. Ao final desta fase, você já opera como PO júnior.",
+        tags: ["Scrum", "Kanban", "Backlog"],
+        refs: [{ type: "trail", ref: "Ágil e Delivery na Prática" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {

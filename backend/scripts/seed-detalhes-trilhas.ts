@@ -557,6 +557,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Nenhum: é a porta de entrada da carreira de produto"],
     },
+    "Ágil e Delivery na Prática": {
+        whatYouLearn: [
+            "Scrum de verdade: papéis, eventos, artefatos e valores",
+            "Backlog, histórias bem escritas, critérios de aceite e DoD",
+            "Kanban, métricas de fluxo e previsibilidade sem teatro",
+            "Anti-padrões (PO proxy, feature factory) e escala com critério",
+        ],
+        prerequisites: ["Fundamentos de Produto"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
