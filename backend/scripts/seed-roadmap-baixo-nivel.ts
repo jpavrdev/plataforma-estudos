@@ -77,6 +77,15 @@ const STAGES: Stage[] = [
         tags: ["RAII", "Move", "STL"],
         refs: [{ type: "trail", ref: "C++ Moderno" }],
     },
+    {
+        phase: "core",
+        position: 5,
+        title: "SO e concorrência",
+        description:
+            "O sistema operacional sem mistério: processos e threads, corridas de dados, mutex, semáforos e atomics, o escalonador por dentro, memória virtual e a E/S que domina o tempo dos programas.",
+        tags: ["Threads", "Mutex", "Escalonamento"],
+        refs: [{ type: "trail", ref: "Sistemas Operacionais e Concorrência" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
