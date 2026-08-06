@@ -524,6 +524,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Linux e linha de comando ajudam muito",
         ],
     },
+    "Sistemas de Tempo Real": {
+        whatYouLearn: [
+            "Hard vs soft real-time e determinismo de verdade",
+            "RTOS: tarefas, ISRs, filas e comunicação com FreeRTOS",
+            "RMS, EDF, inversão de prioridade e o caso Mars Pathfinder",
+            "Memória sem malloc, ring buffers, WCET, watchdog e padrões RT",
+        ],
+        prerequisites: [
+            "Sistemas Operacionais e Concorrência (threads, mutex, escalonador)",
+            "C++ Moderno para os padrões de projeto",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,

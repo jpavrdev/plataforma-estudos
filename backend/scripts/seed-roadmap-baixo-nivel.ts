@@ -95,6 +95,15 @@ const STAGES: Stage[] = [
         tags: ["Compilador", "Linker", "CMake"],
         refs: [{ type: "trail", ref: "Compiladores e Toolchain" }],
     },
+    {
+        phase: "avancado",
+        position: 7,
+        title: "Sistemas de tempo real",
+        description:
+            "Correto e no prazo: hard e soft real-time, RTOS com tarefas, ISRs e filas, RMS e EDF, a inversão de prioridade do Mars Pathfinder, memória sem malloc, WCET, watchdog e os padrões que mantêm firmware previsível.",
+        tags: ["RTOS", "Escalonamento", "Determinismo"],
+        refs: [{ type: "trail", ref: "Sistemas de Tempo Real" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
