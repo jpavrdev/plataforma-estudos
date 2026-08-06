@@ -21,6 +21,8 @@ const MAPA: Record<string, string[]> = {
     "RAG na Prática": ["IA"],
     "Agentes de IA": ["IA"],
     "LLMs em Produção": ["IA"],
+    "C++": ["Sistemas"],
+    "Por Dentro da Máquina": ["Sistemas"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],
