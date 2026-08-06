@@ -593,6 +593,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Discovery e Pesquisa", "Dados para Produto (métricas de outcome)"],
     },
+    "Produto na Prática": {
+        whatYouLearn: [
+            "Go-to-market, lançamento por fases e feature flags",
+            "Growth loops, ativação e retenção como fundação",
+            "Monetização, produto técnico e IA no trabalho de produto em 2026",
+            "Carreira: níveis, transições de dev e QA, e o case de portfólio",
+        ],
+        prerequisites: ["Estratégia e Priorização (o capstone usa tudo)"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
