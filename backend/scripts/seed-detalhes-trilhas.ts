@@ -575,6 +575,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Fundamentos de Produto", "Ágil e Delivery ajuda no contexto de time"],
     },
+    "Discovery e Pesquisa": {
+        whatYouLearn: [
+            "Os quatro riscos e por que discovery evita desperdício",
+            "Entrevistas sem viés, síntese e mapa de oportunidades",
+            "Priorizar suposições e testar na fidelidade certa pro risco",
+            "Discovery quantitativo: surveys e dados de uso como pergunta",
+        ],
+        prerequisites: ["Fundamentos de Produto", "Dados para Produto ajuda no lado quantitativo"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,

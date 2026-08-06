@@ -69,6 +69,15 @@ const STAGES: Stage[] = [
         tags: ["Métricas", "Funil", "Experimentos"],
         refs: [{ type: "trail", ref: "Dados para Produto" }],
     },
+    {
+        phase: "core",
+        position: 4,
+        title: "Discovery e pesquisa",
+        description:
+            "Reduzir o risco de construir a coisa errada: entrevistas sem viés, mapa de oportunidades, priorização de suposições, protótipos na fidelidade certa e discovery contínuo.",
+        tags: ["Discovery", "Entrevistas", "Protótipos"],
+        refs: [{ type: "trail", ref: "Discovery e Pesquisa" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
