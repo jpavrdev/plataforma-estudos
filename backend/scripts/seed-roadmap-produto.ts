@@ -60,6 +60,15 @@ const STAGES: Stage[] = [
         tags: ["Scrum", "Kanban", "Backlog"],
         refs: [{ type: "trail", ref: "Ágil e Delivery na Prática" }],
     },
+    {
+        phase: "core",
+        position: 3,
+        title: "Dados para produto",
+        description:
+            "O território do Product Analyst: métricas que importam, o funil AARRR, retenção e coorte, instrumentação de eventos e os experimentos A/B sem armadilhas.",
+        tags: ["Métricas", "Funil", "Experimentos"],
+        refs: [{ type: "trail", ref: "Dados para Produto" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
