@@ -584,6 +584,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Fundamentos de Produto", "Dados para Produto ajuda no lado quantitativo"],
     },
+    "Estratégia e Priorização": {
+        whatYouLearn: [
+            "Visão e estratégia como escolhas com diagnóstico",
+            "Posicionamento, segmentação e diferenciais defensáveis",
+            "OKRs sem teatro e roadmap now-next-later",
+            "RICE, custo de atraso e o critério acima dos frameworks",
+        ],
+        prerequisites: ["Discovery e Pesquisa", "Dados para Produto (métricas de outcome)"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
