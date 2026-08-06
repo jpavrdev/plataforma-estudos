@@ -536,6 +536,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "C++ Moderno para os padrões de projeto",
         ],
     },
+    "Embarcados na Prática": {
+        whatYouLearn: [
+            "O microcontrolador por dentro e o blink por registrador",
+            "GPIO, timers, interrupções, ADC e os protocolos UART, SPI e I2C",
+            "C++ enxuto: volatile, custo zero, constexpr e containers estáticos",
+            "Energia, brown-out, flash, OTA, MISRA, testes no host e CI",
+        ],
+        prerequisites: [
+            "Sistemas de Tempo Real (RTOS, ISRs, padrões)",
+            "Uma placa barata (ESP32 ou STM32) pra praticar em casa",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
