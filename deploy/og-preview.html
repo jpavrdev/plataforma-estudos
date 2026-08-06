@@ -1,0 +1,64 @@
+<!--
+  Fonte da imagem de preview de link (frontend/public/og.jpg).
+
+  Os números do rodapé envelhecem a cada release de conteúdo, então a arte fica
+  versionada aqui em vez de existir só como JPEG. Para atualizar: confira os
+  totais no banco de produção, edite os quatro blocos .num e rode
+
+    google-chrome --headless --window-size=1200,630 \
+      --screenshot=og.png file://$PWD/deploy/og-preview.html
+    convert og.png -quality 88 -strip frontend/public/og.jpg
+
+  A imagem precisa sair em 1200x630 e abaixo de 300KB, que é o teto prático dos
+  robôs de link. Ao trocar o arquivo, suba também a versão do ?v= nas tags
+  og:image e twitter:image do index.html: os robôs guardam a imagem por URL e
+  sem isso continuam servindo a antiga.
+-->
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+ html,body{margin:0;padding:0;overflow:hidden;background:#141a26}
+ #og{width:1200px;height:630px;position:relative;overflow:hidden;font-family:'Space Grotesk',system-ui,sans-serif;
+  background:radial-gradient(1100px 700px at 85% -10%, #3f7bff 0%, rgba(63,123,255,0) 60%),linear-gradient(135deg,#141a26 0%,#1b2547 45%,#23306b 100%);
+  color:#fff;box-sizing:border-box;padding:70px 90px;display:flex;flex-direction:column;justify-content:space-between}
+ #og::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:60px 60px;-webkit-mask-image:linear-gradient(160deg,#000 0%,transparent 65%)}
+ .topo{display:flex;align-items:center;gap:18px;position:relative;z-index:1}
+ .logo{width:62px;height:62px;border-radius:18px;background:#2d6bf5;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(45,107,245,.45)}
+ .marca{font-size:32px;font-weight:700;letter-spacing:-.5px}
+ .marca span{color:#8fb4ff}
+ .meio{position:relative;z-index:1}
+ h1{margin:0;font-size:64px;line-height:1.08;font-weight:700;letter-spacing:-2px}
+ h1 code{font-family:'JetBrains Mono',monospace;font-size:56px;color:#5b9dff;letter-spacing:-1px}
+ h1 em{font-style:normal;color:#5b9dff}
+ p{margin:24px 0 0;font-size:26px;color:#c3d3f2;font-weight:400;max-width:880px;line-height:1.4}
+ .selo{margin:14px 0 0;font-size:22px;color:#8fb4ff;font-weight:600}
+ .rodape{display:flex;align-items:flex-end;justify-content:space-between;position:relative;z-index:1}
+ .nums{display:flex;gap:0;align-items:baseline}
+ .num{padding-right:26px;margin-right:26px;border-right:1px solid rgba(255,255,255,.14)}
+ .num:last-child{border:0;padding-right:0;margin-right:0}
+ .num b{display:block;font-size:30px;font-weight:700;letter-spacing:-.5px}
+ .num small{display:block;font-size:17px;color:#93aad6;font-weight:500;margin-top:2px}
+ .dom{font-size:23px;font-weight:600;color:rgba(255,255,255,.72)}
+</style></head><body><div id="og">
+ <div class="topo">
+  <div class="logo"><svg viewBox="0 0 32 32" width="38" height="38"><g transform="translate(-0.5 1.5)" fill="#fff" stroke="#fff"><path d="M16 7 L27.5 11.5 L16 16 L4.5 11.5 Z" stroke="none"/><path d="M10.5 13.4 V16.6 C10.5 18.6 21.5 18.6 21.5 16.6 V13.4" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M27.5 11.8 V17" fill="none" stroke-width="1.5" stroke-linecap="round"/><circle cx="27.5" cy="18.6" r="1.5" stroke="none"/></g></svg></div>
+  <div class="marca">Ensina <span>Dev</span></div>
+ </div>
+ <div class="meio">
+  <h1>Do primeiro <code>if</code><br>ao primeiro emprego</h1>
+  <p>Trilhas guiadas por carreira, desafios de código corrigidos na hora e simulados de certificação.</p>
+  <div class="selo">Grátis, sem plano pago e de código aberto</div>
+ </div>
+ <div class="rodape">
+  <div class="nums">
+   <div class="num"><b>82</b><small>trilhas</small></div>
+   <div class="num"><b>2.800</b><small>aulas</small></div>
+   <div class="num"><b>14 mil</b><small>questões</small></div>
+   <div class="num"><b>142</b><small>desafios</small></div>
+  </div>
+  <div class="dom">ensinadev.com.br</div>
+ </div>
+</div></body></html>
