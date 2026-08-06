@@ -78,6 +78,15 @@ const STAGES: Stage[] = [
         tags: ["Discovery", "Entrevistas", "Protótipos"],
         refs: [{ type: "trail", ref: "Discovery e Pesquisa" }],
     },
+    {
+        phase: "avancado",
+        position: 5,
+        title: "Estratégia e priorização",
+        description:
+            "Visão e estratégia como escolhas, posicionamento, OKRs sem teatro, roadmap now-next-later, os frameworks de priorização e o critério acima deles, stakeholders e influência.",
+        tags: ["Estratégia", "OKRs", "Roadmap"],
+        refs: [{ type: "trail", ref: "Estratégia e Priorização" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {
