@@ -1,3 +1,10 @@
+# O .com é redirecionado para o .com.br, que segue como domínio canônico.
+# Exige que ensinadev.com aponte (A) para esta VPS, senão o Caddy não emite o
+# certificado e fica tentando o desafio da Let's Encrypt em vão.
+ensinadev.com, www.ensinadev.com {
+	redir https://ensinadev.com.br{uri} permanent
+}
+
 ensinadev.com.br, www.ensinadev.com.br {
 	# API: tudo sob /api vai para o backend, removendo o prefixo /api
 	handle_path /api/* {
