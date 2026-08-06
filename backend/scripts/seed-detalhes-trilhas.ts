@@ -548,6 +548,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Uma placa barata (ESP32 ou STM32) pra praticar em casa",
         ],
     },
+    "Fundamentos de Produto": {
+        whatYouLearn: [
+            "Produto vs projeto, outcome vs output e o ciclo de vida",
+            "Os papéis de PO, PM e Product Analyst como o Brasil usa",
+            "O time de produto, o usuário no centro e JTBD introdutório",
+            "Modelos de receita, proposta de valor e conversa com stakeholders",
+        ],
+        prerequisites: ["Nenhum: é a porta de entrada da carreira de produto"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
