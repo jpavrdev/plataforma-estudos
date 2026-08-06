@@ -23,6 +23,7 @@ const MAPA: Record<string, string[]> = {
     "LLMs em Produção": ["IA"],
     "C++": ["Sistemas"],
     "Por Dentro da Máquina": ["Sistemas"],
+    "C++ Moderno": ["Sistemas"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],

@@ -488,6 +488,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Lógica de programação", "Noções de C ou C++ ajudam bastante"],
     },
+    "C++ Moderno": {
+        whatYouLearn: [
+            "Semântica de valor, referências, const-correctness e auto",
+            "RAII, ownership e smart pointers (unique, shared, weak)",
+            "Move semantics, templates com concepts e a STL com custo real",
+            "Erros sem exceção: optional, expected, noexcept e invariantes",
+        ],
+        prerequisites: [
+            "C++ (sintaxe, classes, STL básica)",
+            "Por Dentro da Máquina ajuda no capítulo de custo",
+        ],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
