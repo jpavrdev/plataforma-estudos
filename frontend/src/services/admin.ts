@@ -14,6 +14,14 @@ export interface VisaoGeral {
   trilhas: number;
   aulasTotal: number;
   cadastrosPorDia: { dia: string; n: number }[];
+  usuariosPorTrilha: { nome: string; n: number }[];
+  funilPorAno: {
+    ano: string;
+    registrados: number;
+    comUsername: number;
+    concluiuAula: number;
+    praticou: number;
+  }[];
 }
 
 export interface UsuarioCrm {
@@ -22,6 +30,7 @@ export interface UsuarioCrm {
   username: string | null;
   email: string;
   origem: 'email' | 'social';
+  provider: string | null;
   criadoEm: string;
   ultimaAtividade: string | null;
   aulas: number;
@@ -38,9 +47,26 @@ export async function obterVisaoGeral() {
   return data;
 }
 
-export async function listarUsuariosCrm(busca?: string) {
-  const { data } = await api.get<UsuarioCrm[]>('/admin/users', {
-    params: busca ? { q: busca } : undefined,
+export interface PaginaUsuariosCrm {
+  rows: UsuarioCrm[];
+  total: number;
+}
+
+export async function listarUsuariosCrm(params: {
+  busca?: string;
+  pagina: number;
+  porPagina: number;
+  ordenarPor: string;
+  direcao: 'asc' | 'desc';
+}) {
+  const { data } = await api.get<PaginaUsuariosCrm>('/admin/users', {
+    params: {
+      ...(params.busca ? { q: params.busca } : {}),
+      pagina: params.pagina,
+      porPagina: params.porPagina,
+      ordenarPor: params.ordenarPor,
+      direcao: params.direcao,
+    },
   });
   return data;
 }

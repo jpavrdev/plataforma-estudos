@@ -233,3 +233,256 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/* ==== Painel largo, gráficos novos e paginação ==== */
+
+/* Paleta categórica dos gráficos (validada contra as superfícies clara e escura;
+   a fatia de agregação "Outras" usa sempre o cinza --muted). */
+:root {
+  --viz-1: #5b50d6;
+  --viz-2: #0b8f7c;
+  --viz-3: #c77d0a;
+  --viz-4: #c2417a;
+  --viz-5: #587a29;
+}
+[data-theme='dark'] {
+  --viz-1: #8b82e8;
+  --viz-2: #2ba391;
+  --viz-3: #c6841a;
+  --viz-4: #d4568f;
+  --viz-5: #7fa13f;
+}
+
+.estudio-home--painel {
+  max-width: 1400px;
+}
+
+.painel-duplo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 980px) {
+  .painel-duplo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.painel-donut {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.painel-donut__svg {
+  width: 210px;
+  flex-shrink: 0;
+}
+.painel-donut__fatia {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.painel-donut__fatia.is-apagada {
+  opacity: 0.3;
+}
+.painel-donut__num {
+  fill: var(--text);
+  font-size: 30px;
+  font-weight: 800;
+}
+.painel-donut__sub {
+  fill: var(--muted);
+  font-size: 12px;
+}
+.painel-donut__legenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+.painel-donut__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: default;
+}
+.painel-donut__cor {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.painel-donut__nome {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.painel-donut__valor {
+  margin-left: auto;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.painel-funil {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.painel-funil__topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+.painel-funil__label {
+  color: var(--text);
+  font-weight: 600;
+}
+.painel-funil__valor {
+  color: var(--muted);
+}
+.painel-funil__conv {
+  opacity: 0.8;
+}
+.painel-funil__barra {
+  height: 14px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.painel-funil__fill {
+  height: 100%;
+  border-radius: 5px;
+  background: var(--accent);
+  opacity: 0.85;
+  transition: width 0.3s;
+}
+
+.painel-tabela__body.is-carregando {
+  opacity: 0.45;
+}
+.painel-tabela__vazia {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 0;
+}
+
+.painel-pag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+.painel-pag__info {
+  font-size: 13px;
+  color: var(--muted);
+}
+.painel-pag__botoes {
+  display: flex;
+  gap: 8px;
+}
+.painel-pag__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.painel-pag__btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.painel-pag__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.painel-barra {
+  fill: var(--accent);
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+.painel-barra.is-apagada {
+  opacity: 0.35;
+}
+.painel-barra__valor {
+  fill: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.painel-funil__fill--central {
+  margin: 0 auto;
+  height: 22px;
+  border-radius: 6px;
+}
+
+.painel-graf__controles {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* Funil estilo Power BI: rótulo à esquerda, barras centradas com o valor dentro */
+.painel-funilbi {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.painel-funilbi__linha {
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.painel-funilbi__label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.painel-funilbi__area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+}
+.painel-funilbi__bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s;
+  min-width: 8px;
+}
+.painel-funilbi__valor {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.painel-funilbi__valor-fora {
+  position: absolute;
+  left: 50%;
+  transform: translateX(calc(-50% + 60px));
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}

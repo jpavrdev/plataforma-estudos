@@ -1,6 +1,6 @@
 import { db } from "../../db.ts";
-import { sql } from "drizzle-orm";
-import { calcularXp } from "../domain/xp.ts";
+import { sql, type SQL } from "drizzle-orm";
+import { calcularXp, XP_POR_AULA, XP_POR_QUESTAO } from "../domain/xp.ts";
 
 // Linha de atividade unificada (aula, simulado, desafio, conquista). Serve para
 // derivar "última atividade" e "usuários ativos" sem uma coluna de last-seen.
@@ -53,6 +53,40 @@ export async function visaoGeral() {
         `)
     ).rows as { dia: string; n: number }[];
 
+    // Alunos distintos com aula concluída em cada trilha (o gráfico decide o corte).
+    const porTrilha = (
+        await db.execute(sql`
+            select t.name nome, count(distinct lp.user_id)::int n
+            from lessons_progress lp
+            join lessons l on l.id = lp.lesson_id
+            join trails t on t.id = l.trail_id
+            group by t.name
+            order by n desc, t.name
+        `)
+    ).rows as { nome: string; n: number }[];
+
+    // Funil de onboarding por coorte de ano de cadastro: onde cada safra de
+    // usuários para no caminho registro -> prática. O "todos" é somado no cliente.
+    const funilPorAno = (
+        await db.execute(sql`
+            select
+                to_char(u.created_at, 'YYYY') ano,
+                count(*)::int registrados,
+                count(*) filter (where username is not null and username <> '')::int com_username,
+                count(*) filter (where exists (
+                    select 1 from lessons_progress lp where lp.user_id = u.id
+                ))::int concluiu_aula,
+                count(*) filter (where exists (
+                    select 1 from challenge_submissions cs where cs.user_id = u.id and cs.xp_earned > 0
+                ) or exists (
+                    select 1 from simulado_attempts sa where sa.user_id = u.id
+                ))::int praticou
+            from users u
+            group by ano
+            order by ano
+        `)
+    ).rows as Record<string, any>[];
+
     return {
         usuarios: usuarios.total,
         perfilCompleto: usuarios.perfil_completo,
@@ -67,20 +101,58 @@ export async function visaoGeral() {
         trilhas: conteudo.trilhas,
         aulasTotal: conteudo.aulas_total,
         cadastrosPorDia: cadastros,
+        usuariosPorTrilha: porTrilha,
+        funilPorAno: funilPorAno.map((f) => ({
+            ano: f.ano as string,
+            registrados: f.registrados as number,
+            comUsername: f.com_username as number,
+            concluiuAula: f.concluiu_aula as number,
+            praticou: f.praticou as number,
+        })),
     };
 }
 
 // Métricas por usuário para o CRM, agregadas em uma query só (sem N+1).
 // A busca por nome/username/email é feita no servidor.
-export async function usuariosCrm(busca?: string) {
+// Colunas ordenáveis do CRM (whitelist: o nome vem da query string). O XP é
+// derivado, então a ordenação reproduz a fórmula do domínio em SQL.
+const ORDENACOES: Record<string, SQL> = {
+    name: sql`u.name`,
+    criadoEm: sql`u.created_at`,
+    aulas: sql`coalesce(ap.n, 0)`,
+    trilhas: sql`coalesce(ta.n, 0)`,
+    simulados: sql`coalesce(sa.n, 0)`,
+    desafios: sql`coalesce(ds.n, 0)`,
+    conquistas: sql`coalesce(cq.n, 0)`,
+    xp: sql`(coalesce(ap.n, 0) * ${XP_POR_AULA} + coalesce(ac.n, 0) * ${XP_POR_QUESTAO} + coalesce(ds.xp, 0))`,
+    ultimaAtividade: sql`la.ultima`,
+};
+
+export async function usuariosCrm(
+    busca?: string,
+    pagina = 1,
+    porPagina = 20,
+    ordenarPor = "criadoEm",
+    direcao: "asc" | "desc" = "desc",
+) {
     const termo = busca?.trim();
     const filtro = termo
         ? sql`where u.name ilike ${`%${termo}%`} or u.username ilike ${`%${termo}%`} or u.email ilike ${`%${termo}%`}`
         : sql``;
+
+    const [{ total }] = (
+        await db.execute(sql`select count(*)::int total from users u ${filtro}`)
+    ).rows as { total: number }[];
+
+    const ordem = ORDENACOES[ordenarPor] ?? ORDENACOES.criadoEm;
+    const sentido = direcao === "asc" ? sql`asc nulls first` : sql`desc nulls last`;
+    const offset = (Math.max(1, pagina) - 1) * porPagina;
+
     const { rows } = await db.execute(sql`
         select
             u.id, u.name, u.username, u.email, u.created_at,
             (u.password_hash is null) as social,
+            oa.provider,
             coalesce(ap.n, 0)::int aulas,
             coalesce(ac.n, 0)::int questoes,
             coalesce(ds.n, 0)::int desafios,
@@ -113,16 +185,21 @@ export async function usuariosCrm(busca?: string) {
         left join (
             select user_id, max(ts) ultima from (${ATIVIDADE}) z group by user_id
         ) la on la.user_id = u.id
+        left join (
+            select user_id, min(provider) provider from oauth_accounts group by user_id
+        ) oa on oa.user_id = u.id
         ${filtro}
-        order by u.created_at desc
+        order by ${ordem} ${sentido}, u.created_at desc
+        limit ${porPagina} offset ${offset}
     `);
 
-    return (rows as Record<string, any>[]).map((r) => ({
+    const usuarios = (rows as Record<string, any>[]).map((r) => ({
         id: r.id as string,
         name: r.name as string,
         username: (r.username as string | null) ?? null,
         email: r.email as string,
         origem: r.social ? "social" : "email",
+        provider: (r.provider as string | null) ?? null,
         criadoEm: r.created_at as string,
         ultimaAtividade: (r.ultima_atividade as string | null) ?? null,
         aulas: r.aulas as number,
@@ -133,4 +210,6 @@ export async function usuariosCrm(busca?: string) {
         questoesCertas: r.questoes as number,
         xp: calcularXp({ aulas: r.aulas, questoes: r.questoes, desafiosXp: r.desafios_xp }),
     }));
+
+    return { rows: usuarios, total };
 }
