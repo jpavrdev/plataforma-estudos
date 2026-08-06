@@ -566,6 +566,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Fundamentos de Produto"],
     },
+    "Dados para Produto": {
+        whatYouLearn: [
+            "Métricas acionáveis, north star e o funil AARRR",
+            "Retenção, análise de coorte e churn com contas que fecham",
+            "Instrumentação de eventos e dashboards que respondem perguntas",
+            "Experimentos A/B sem armadilhas (peeking, novelty, significância)",
+        ],
+        prerequisites: ["Fundamentos de Produto", "Ágil e Delivery ajuda no contexto de time"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,
