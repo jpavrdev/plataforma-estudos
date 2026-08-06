@@ -23,13 +23,15 @@
       property="og:description"
       content="Trilhas guiadas por carreira, desafios de código corrigidos na hora e simulados de certificação. Grátis, sem plano pago e de código aberto."
     />
-    <meta property="og:image" content="https://ensinadev.com.br/og.jpg" />
+    <!-- O ?v= muda junto com a arte. Os robôs guardam a imagem pela URL, então
+         sem trocar a versão eles seguem exibindo a anterior por dias. -->
+    <meta property="og:image" content="https://ensinadev.com.br/og.jpg?v=2" />
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="Ensina Dev: do primeiro if ao primeiro emprego. 70 trilhas, 2.300 aulas, 11 mil questões e 140 desafios, de graça."
+      content="Ensina Dev: do primeiro if ao primeiro emprego. 82 trilhas, 2.800 aulas, 14 mil questões e 142 desafios, de graça."
     />
 
     <meta name="twitter:card" content="summary_large_image" />
@@ -38,7 +40,32 @@
       name="twitter:description"
       content="Trilhas guiadas por carreira, desafios de código corrigidos na hora e simulados de certificação. Grátis, sem plano pago e de código aberto."
     />
-    <meta name="twitter:image" content="https://ensinadev.com.br/og.jpg" />
+    <meta name="twitter:image" content="https://ensinadev.com.br/og.jpg?v=2" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "EducationalOrganization",
+            "@id": "https://ensinadev.com.br/#organizacao",
+            "name": "Ensina Dev",
+            "url": "https://ensinadev.com.br/",
+            "description": "Plataforma gratuita de ensino de programação em português, com trilhas guiadas por carreira, desafios de código corrigidos automaticamente e simulados de certificação.",
+            "inLanguage": "pt-BR",
+            "sameAs": ["https://github.com/jpavrdev/plataforma-estudos"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://ensinadev.com.br/#site",
+            "name": "Ensina Dev",
+            "url": "https://ensinadev.com.br/",
+            "inLanguage": "pt-BR",
+            "publisher": { "@id": "https://ensinadev.com.br/#organizacao" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
