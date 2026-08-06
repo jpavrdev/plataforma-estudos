@@ -2,14 +2,23 @@ import type { Request, Response, NextFunction } from "express";
 import { db } from "../../db.ts";
 import { users, languages as languagesTable } from "../../schema.ts";
 import { eq } from "drizzle-orm";
-import { updateMeSchema, completarPerfilSchema, metaSemanalSchema } from "../schemas/auth.schema.ts";
+import {
+    updateMeSchema,
+    completarPerfilSchema,
+    metaSemanalSchema,
+} from "../schemas/auth.schema.ts";
 import { AVATARS_DIR, COVERS_DIR, FUNDOS_DIR } from "../config/paths.ts";
 import { salvarImagem, removerArquivoLocal } from "../services/imagens.ts";
 import { streakDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
 import { perfilPublico } from "../services/perfil-publico.service.ts";
-import { progressoDoUsuario, definirMetaSemanal, limparMetaSemanal } from "../services/progresso.service.ts";
+import {
+    progressoDoUsuario,
+    definirMetaSemanal,
+    limparMetaSemanal,
+} from "../services/progresso.service.ts";
 import { apoiadorAtivo } from "../services/apoiador.service.ts";
+import { featuresDoUsuario } from "../services/feature-flag.service.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -74,7 +83,14 @@ export const getMe = async (req: Request, res: Response) => {
         console.error("getMe: falha ao checar apoio", e);
     }
 
-    res.json({ ...user, streak, level, apoiador });
+    let features: string[] = [];
+    try {
+        features = await featuresDoUsuario(userId);
+    } catch (e) {
+        console.error("getMe: falha ao listar features", e);
+    }
+
+    res.json({ ...user, streak, level, apoiador, features });
 };
 
 // Atualiza o próprio perfil (campos editáveis). Não toca em campos sensíveis.
@@ -323,7 +339,6 @@ export const clearWeeklyGoal = async (req: Request, res: Response, next: NextFun
     }
 };
 
-
 export const uploadBackground = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
     if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
@@ -331,7 +346,12 @@ export const uploadBackground = async (req: Request, res: Response, next: NextFu
         if (!(await apoiadorAtivo(userId))) {
             return res.status(403).json({ erro: "Imagem de fundo é um benefício de apoiador." });
         }
-        const r = await salvarImagem(req.body?.image, FUNDOS_DIR, "/uploads/fundos", 10 * 1024 * 1024);
+        const r = await salvarImagem(
+            req.body?.image,
+            FUNDOS_DIR,
+            "/uploads/fundos",
+            10 * 1024 * 1024,
+        );
         if (!r.ok) return res.status(400).json({ erro: r.erro });
         const [atual] = await db
             .select({ backgroundUrl: users.backgroundUrl })
