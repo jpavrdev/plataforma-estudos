@@ -10,6 +10,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../contexts/ToastContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
@@ -126,6 +127,7 @@ export function Perfil() {
     linkedin: '',
     x: '',
   });
+  const { mostrar } = useToast();
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState('');
   const [enviandoFoto, setEnviandoFoto] = useState(false);
@@ -211,9 +213,11 @@ export function Perfil() {
       setEditando(false);
       // A URL canônica do perfil carrega o username; se ele mudou, acompanha.
       if (data.username) navigate(`/${data.username}`, { replace: true });
+      mostrar('Perfil atualizado.');
     } catch (e) {
+      console.error('Falha ao salvar o perfil', e);
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
-      setErro(msg ?? 'Não foi possível salvar as alterações.');
+      mostrar(msg ?? 'Não foi possível salvar as alterações.', 'erro');
     } finally {
       setSalvando(false);
     }
@@ -222,11 +226,11 @@ export function Perfil() {
   // Valida o arquivo escolhido e abre o recortador; o envio acontece após o corte.
   async function escolherImagem(file: File, tipo: 'avatar' | 'cover') {
     if (!TIPOS_IMG.includes(file.type)) {
-      setErro('Use uma imagem PNG, JPG ou WEBP.');
+      mostrar('Use uma imagem PNG, JPG ou WEBP.', 'erro');
       return;
     }
     if (file.size > MAX_IMG) {
-      setErro('Imagem muito grande (máximo 4MB).');
+      mostrar('Imagem muito grande (máximo 4MB).', 'erro');
       return;
     }
     setErro('');
@@ -248,8 +252,9 @@ export function Perfil() {
       setPerfil((prev) => (prev ? { ...prev, ...data } : data));
       if (avatar) atualizarUsuario({ avatarUrl: data.avatarUrl });
     } catch (e) {
+      console.error('Falha ao enviar a imagem do perfil', e);
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
-      setErro(msg ?? 'Não foi possível enviar a imagem.');
+      mostrar(msg ?? 'Não foi possível enviar a imagem.', 'erro');
     } finally {
       setBusy(false);
     }
@@ -264,8 +269,9 @@ export function Perfil() {
       setPerfil((prev) => (prev ? { ...prev, ...data } : data));
       if (rota === '/me/avatar') atualizarUsuario({ avatarUrl: data.avatarUrl });
     } catch (e) {
+      console.error('Falha ao remover a imagem do perfil', e);
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
-      setErro(msg ?? 'Não foi possível remover a imagem.');
+      mostrar(msg ?? 'Não foi possível remover a imagem.', 'erro');
     } finally {
       setBusy(false);
     }
@@ -738,7 +744,7 @@ export function Perfil() {
               </div>
             </div>
 
-            {erro && (
+            {erro && !perfil && (
               <div className="auth__alert" style={{ marginTop: 16 }}>
                 {erro}
               </div>
