@@ -479,6 +479,129 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Noções de operação de backend ajudam",
         ],
     },
+    "Por Dentro da Máquina": {
+        whatYouLearn: [
+            "Binário, hexadecimal, inteiros, ponto flutuante e ponto fixo",
+            "Bits na prática: máscaras, endianness, alinhamento e padding",
+            "CPU, pipeline, hierarquia de memória, stack, heap e cache",
+            "Do fonte ao binário: seções, chamadas, syscalls e medição",
+        ],
+        prerequisites: ["Lógica de programação", "Noções de C ou C++ ajudam bastante"],
+    },
+    "C++ Moderno": {
+        whatYouLearn: [
+            "Semântica de valor, referências, const-correctness e auto",
+            "RAII, ownership e smart pointers (unique, shared, weak)",
+            "Move semantics, templates com concepts e a STL com custo real",
+            "Erros sem exceção: optional, expected, noexcept e invariantes",
+        ],
+        prerequisites: [
+            "C++ (sintaxe, classes, STL básica)",
+            "Por Dentro da Máquina ajuda no capítulo de custo",
+        ],
+    },
+    "Sistemas Operacionais e Concorrência": {
+        whatYouLearn: [
+            "Processos, threads e o custo real de cada um",
+            "Corridas de dados, mutex, semáforos, condvars e atomics",
+            "Escalonador, prioridades, memória virtual, TLB e page faults",
+            "Arquivos, buffering, E/S e multiplexação (select a epoll)",
+        ],
+        prerequisites: [
+            "Por Dentro da Máquina (memória, stack e heap)",
+            "C++ básico para os exemplos com std::thread",
+        ],
+    },
+    "Compiladores e Toolchain": {
+        whatYouLearn: [
+            "As fases da compilação e o que vive dentro de um objeto",
+            "Lexer, parser, AST, otimizações e o papel do UB",
+            "Linker, bibliotecas, make e CMake moderno, cross-compilation",
+            "Sanitizers, análise estática, gdb e warnings como contrato",
+        ],
+        prerequisites: [
+            "C++ e Por Dentro da Máquina (seções, símbolos, binário)",
+            "Linux e linha de comando ajudam muito",
+        ],
+    },
+    "Sistemas de Tempo Real": {
+        whatYouLearn: [
+            "Hard vs soft real-time e determinismo de verdade",
+            "RTOS: tarefas, ISRs, filas e comunicação com FreeRTOS",
+            "RMS, EDF, inversão de prioridade e o caso Mars Pathfinder",
+            "Memória sem malloc, ring buffers, WCET, watchdog e padrões RT",
+        ],
+        prerequisites: [
+            "Sistemas Operacionais e Concorrência (threads, mutex, escalonador)",
+            "C++ Moderno para os padrões de projeto",
+        ],
+    },
+    "Embarcados na Prática": {
+        whatYouLearn: [
+            "O microcontrolador por dentro e o blink por registrador",
+            "GPIO, timers, interrupções, ADC e os protocolos UART, SPI e I2C",
+            "C++ enxuto: volatile, custo zero, constexpr e containers estáticos",
+            "Energia, brown-out, flash, OTA, MISRA, testes no host e CI",
+        ],
+        prerequisites: [
+            "Sistemas de Tempo Real (RTOS, ISRs, padrões)",
+            "Uma placa barata (ESP32 ou STM32) pra praticar em casa",
+        ],
+    },
+    "Fundamentos de Produto": {
+        whatYouLearn: [
+            "Produto vs projeto, outcome vs output e o ciclo de vida",
+            "Os papéis de PO, PM e Product Analyst como o Brasil usa",
+            "O time de produto, o usuário no centro e JTBD introdutório",
+            "Modelos de receita, proposta de valor e conversa com stakeholders",
+        ],
+        prerequisites: ["Nenhum: é a porta de entrada da carreira de produto"],
+    },
+    "Ágil e Delivery na Prática": {
+        whatYouLearn: [
+            "Scrum de verdade: papéis, eventos, artefatos e valores",
+            "Backlog, histórias bem escritas, critérios de aceite e DoD",
+            "Kanban, métricas de fluxo e previsibilidade sem teatro",
+            "Anti-padrões (PO proxy, feature factory) e escala com critério",
+        ],
+        prerequisites: ["Fundamentos de Produto"],
+    },
+    "Dados para Produto": {
+        whatYouLearn: [
+            "Métricas acionáveis, north star e o funil AARRR",
+            "Retenção, análise de coorte e churn com contas que fecham",
+            "Instrumentação de eventos e dashboards que respondem perguntas",
+            "Experimentos A/B sem armadilhas (peeking, novelty, significância)",
+        ],
+        prerequisites: ["Fundamentos de Produto", "Ágil e Delivery ajuda no contexto de time"],
+    },
+    "Discovery e Pesquisa": {
+        whatYouLearn: [
+            "Os quatro riscos e por que discovery evita desperdício",
+            "Entrevistas sem viés, síntese e mapa de oportunidades",
+            "Priorizar suposições e testar na fidelidade certa pro risco",
+            "Discovery quantitativo: surveys e dados de uso como pergunta",
+        ],
+        prerequisites: ["Fundamentos de Produto", "Dados para Produto ajuda no lado quantitativo"],
+    },
+    "Estratégia e Priorização": {
+        whatYouLearn: [
+            "Visão e estratégia como escolhas com diagnóstico",
+            "Posicionamento, segmentação e diferenciais defensáveis",
+            "OKRs sem teatro e roadmap now-next-later",
+            "RICE, custo de atraso e o critério acima dos frameworks",
+        ],
+        prerequisites: ["Discovery e Pesquisa", "Dados para Produto (métricas de outcome)"],
+    },
+    "Produto na Prática": {
+        whatYouLearn: [
+            "Go-to-market, lançamento por fases e feature flags",
+            "Growth loops, ativação e retenção como fundação",
+            "Monetização, produto técnico e IA no trabalho de produto em 2026",
+            "Carreira: níveis, transições de dev e QA, e o case de portfólio",
+        ],
+        prerequisites: ["Estratégia e Priorização (o capstone usa tudo)"],
+    },
 };
 
 // Tempo estimado de leitura de uma aula: palavras dos blocos de texto a ~180 wpm,

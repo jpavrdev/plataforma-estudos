@@ -15,9 +15,9 @@ const PERIODOS = [
   { chave: 'max', label: 'Máx', dias: Infinity },
 ] as const;
 
-const W = 820;
-const H = 240;
-const PADL = 44;
+const W = 1240;
+const H = 300;
+const PADL = 48;
 const PADR = 14;
 const PADT = 16;
 const PADB = 26;
@@ -67,11 +67,18 @@ export function GraficoCrescimento({ cadastros }: { cadastros: Cadastro[] }) {
       const v = Math.round(vmin + (spanV * i) / 3);
       return { v, y: py(v) };
     });
-    const nLab = Math.min(5, Math.max(2, pts.length));
-    const xlabs = Array.from({ length: nLab }, (_, i) => {
+    const nLab = Math.min(6, Math.max(2, pts.length));
+    const candidatos = Array.from({ length: nLab }, (_, i) => {
       const p = pts[Math.round((i * (pts.length - 1)) / (nLab - 1))];
       return { t: p.t, x: p.x };
     });
+    // Datas irregulares podem cair coladas; mantém 90px entre rótulos, preferindo a data final.
+    const xlabs = candidatos.reduce<{ t: number; x: number }[]>((acc, l, i) => {
+      const ultimo = acc[acc.length - 1];
+      if (!ultimo || l.x - ultimo.x >= 90) return [...acc, l];
+      if (i === candidatos.length - 1) return [...acc.slice(0, -1), l];
+      return acc;
+    }, []);
 
     return { pts, linha, area, ticks, xlabs };
   }, [cadastros, periodo]);
