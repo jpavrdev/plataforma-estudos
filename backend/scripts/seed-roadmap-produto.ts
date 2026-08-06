@@ -87,6 +87,15 @@ const STAGES: Stage[] = [
         tags: ["Estratégia", "OKRs", "Roadmap"],
         refs: [{ type: "trail", ref: "Estratégia e Priorização" }],
     },
+    {
+        phase: "deploy",
+        position: 6,
+        title: "Produto na prática",
+        description:
+            "Do plano ao mercado: lançamento por fases, growth loops, monetização, produto técnico com devs, IA no trabalho de produto em 2026 e o case de portfólio que fecha a jornada.",
+        tags: ["Lançamento", "Growth", "Carreira"],
+        refs: [{ type: "trail", ref: "Produto na Prática" }],
+    },
 ];
 
 async function resolverRef(type: RefType, ref: string): Promise<string | null> {

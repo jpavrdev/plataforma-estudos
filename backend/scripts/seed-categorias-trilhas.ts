@@ -33,6 +33,7 @@ const MAPA: Record<string, string[]> = {
     "Dados para Produto": ["Produto"],
     "Discovery e Pesquisa": ["Produto"],
     "Estratégia e Priorização": ["Produto"],
+    "Produto na Prática": ["Produto"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],
