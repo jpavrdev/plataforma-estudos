@@ -28,6 +28,7 @@ const MAPA: Record<string, string[]> = {
     "Compiladores e Toolchain": ["Sistemas"],
     "Sistemas de Tempo Real": ["Sistemas"],
     "Embarcados na Prática": ["Sistemas"],
+    "Fundamentos de Produto": ["Produto"],
     HTML: ["Front-end"],
     CSS: ["Front-end"],
     JavaScript: ["Front-end"],
