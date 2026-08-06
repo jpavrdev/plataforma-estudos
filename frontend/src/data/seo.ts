@@ -11,7 +11,6 @@ export const SITE = {
   titulo: 'Ensina Dev | Do primeiro if ao primeiro emprego',
   descricao:
     'Trilhas guiadas por carreira, desafios de código corrigidos na hora e simulados de certificação. Grátis, sem plano pago e de código aberto.',
-  imagem: 'https://ensinadev.com.br/og.jpg',
 };
 
 // As chaves usam a mesma grafia das rotas do App.tsx: um segmento iniciado por
