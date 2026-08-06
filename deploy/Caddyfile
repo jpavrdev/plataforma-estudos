@@ -1,11 +1,27 @@
-# O .com é redirecionado para o .com.br, que segue como domínio canônico.
+# O domínio canônico é ensinadev.com.br, sem www. Todos os outros endereços
+# apenas redirecionam para ele.
+#
+# Antes o www servia o site em paralelo, e isso custava caro de dois jeitos: os
+# robôs de link guardam o preview por URL, então www e raiz viravam duas
+# entradas de cache independentes (uma podia estar boa e a outra vazia), e a
+# busca via o mesmo conteúdo em dois endereços, o que divide o sinal do domínio.
+#
+# Os blocos http:// existem de propósito. Sem eles o Caddy cria sozinho o
+# redirecionamento de http para https usando 308, que é correto pelo protocolo
+# mas é de 2015: robô de link antigo às vezes não reconhece esse código e
+# desiste. O `permanent` do redir abaixo responde 301, que todo mundo entende.
 # Exige que ensinadev.com aponte (A) para esta VPS, senão o Caddy não emite o
 # certificado e fica tentando o desafio da Let's Encrypt em vão.
-ensinadev.com, www.ensinadev.com {
+http://ensinadev.com.br, http://www.ensinadev.com.br,
+http://ensinadev.com, http://www.ensinadev.com {
 	redir https://ensinadev.com.br{uri} permanent
 }
 
-ensinadev.com.br, www.ensinadev.com.br {
+https://www.ensinadev.com.br, https://ensinadev.com, https://www.ensinadev.com {
+	redir https://ensinadev.com.br{uri} permanent
+}
+
+https://ensinadev.com.br {
 	# API: tudo sob /api vai para o backend, removendo o prefixo /api
 	handle_path /api/* {
 		reverse_proxy backend:3001
