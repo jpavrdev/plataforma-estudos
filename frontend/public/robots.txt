@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Área administrativa e rotas de sessão não têm valor em busca. As telas de
+# estudo ficam de fora por outro motivo: exigem login, então o robô só veria a
+# tela de entrar. Elas já saem com noindex pelo próprio app.
+Disallow: /estudio
+Disallow: /configuracoes
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://ensinadev.com.br/sitemap.xml

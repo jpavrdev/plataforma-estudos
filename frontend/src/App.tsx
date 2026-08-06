@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useSeo } from './hooks/useSeo';
 import { ToastProvider } from './contexts/ToastContext';
 import { Landing } from './pages/Landing';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
@@ -140,6 +141,7 @@ function MeuPerfil() {
 
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
+  useSeo();
 
   return (
     <>
