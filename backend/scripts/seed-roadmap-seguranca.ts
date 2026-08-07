@@ -10,9 +10,13 @@
 //
 // Reconciliar significa: apagar os estágios que saíram do desenho, atualizar e
 // reposicionar os que ficam, criar os que faltam e acertar as refs de cada um.
-// É seguro para o aluno: a conclusão manual de estágio é gravada em
-// lessons_progress contra a AULA, não contra o estágio, e não existe tabela de
-// progresso presa a roadmap_stages. Nada de progresso se perde aqui.
+//
+// O que o aluno perde e o que ele não perde: o progresso das TRILHAS é intocado,
+// porque vive em lessons_progress e não depende de estágio. Já a conclusão manual
+// de estágio ("já sei isso", em roadmap_stage_completions) é apagada junto com o
+// estágio removido, e tem que ser: ela afirmava que o aluno concluiu um estágio
+// que deixou de existir neste roadmap. Essa tabela tem FK para roadmap_stages, e
+// esquecê-la fazia o delete do estágio abortar com violação de chave.
 //
 // Ref que não resolve NÃO bloqueia: o estágio é criado sem ela e o script avisa.
 // É o que permite rodar antes das trilhas novas existirem e rodar de novo depois
@@ -20,8 +24,15 @@
 //
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-roadmap-seguranca.ts
 import { db } from "../db.ts";
-import { roadmaps, roadmapStages, roadmapStageRefs, trails, simulados } from "../schema.ts";
-import { eq, inArray } from "drizzle-orm";
+import {
+    roadmaps,
+    roadmapStages,
+    roadmapStageRefs,
+    roadmapStageCompletions,
+    trails,
+    simulados,
+} from "../schema.ts";
+import { eq, inArray, count } from "drizzle-orm";
 
 const SLUG = "seguranca";
 
@@ -202,9 +213,21 @@ async function seed() {
     const titulos = STAGES.map((s) => s.title);
     const removidos = atuais.filter((a) => !titulos.includes(a.title));
     for (const r of removidos) {
+        // A ordem importa: roadmap_stage_completions e roadmap_stage_refs têm chave
+        // estrangeira para o estágio, então apagar o estágio antes delas falha.
+        // Apagar a conclusão é o certo aqui: ela dizia que o aluno concluiu um estágio
+        // que deixou de existir neste roadmap. O progresso das TRILHAS dele continua
+        // intacto, porque vive em lessons_progress e não depende do estágio.
+        const [{ n: conclusoes }] = await db
+            .select({ n: count() })
+            .from(roadmapStageCompletions)
+            .where(eq(roadmapStageCompletions.stageId, r.id));
+        await db.delete(roadmapStageCompletions).where(eq(roadmapStageCompletions.stageId, r.id));
         await db.delete(roadmapStageRefs).where(eq(roadmapStageRefs.stageId, r.id));
         await db.delete(roadmapStages).where(eq(roadmapStages.id, r.id));
         console.log(`  estágio removido do roadmap: ${r.title}`);
+        if (Number(conclusoes) > 0)
+            console.log(`     ${conclusoes} conclusão(ões) manual(is) dele foram apagadas junto`);
     }
 
     let criados = 0;
