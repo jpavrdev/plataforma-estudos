@@ -14,6 +14,7 @@ import {
   obterBaralhos,
   obterEstatisticas,
   obterHistorico,
+  obterPontosFracos,
   resumoFlashcards,
   responderCartao,
   revisaoDaTrilha,
@@ -22,6 +23,7 @@ import {
   type Estatisticas,
   type Resposta,
   type ResumoFlashcards,
+  type PontoFraco,
   type SessaoRevisao,
 } from '../../services/flashcards';
 
@@ -96,6 +98,7 @@ export function Revisao() {
   const [baralhos, setBaralhos] = useState<Baralhos | null>(null);
   const [stats, setStats] = useState<Estatisticas | null>(null);
   const [historico, setHistorico] = useState<SessaoRevisao[]>([]);
+  const [fracos, setFracos] = useState<PontoFraco[]>([]);
   // Trilhas escolhidas. Vazio significa o baralho inteiro, e é como a aba abre.
   const [selecao, setSelecao] = useState<Set<string>>(new Set());
   const [comGlossario, setComGlossario] = useState(false);
@@ -125,16 +128,18 @@ export function Revisao() {
   const carregarSala = useCallback(async () => {
     setErro('');
     try {
-      const [r, b, e, h] = await Promise.all([
+      const [r, b, e, h, f] = await Promise.all([
         resumoFlashcards(),
         obterBaralhos(),
         obterEstatisticas(),
         obterHistorico(),
+        obterPontosFracos(),
       ]);
       setResumo(r);
       setBaralhos(b);
       setStats(e);
       setHistorico(h);
+      setFracos(f);
     } catch (err) {
       console.error('Falha ao carregar a revisão.', err);
       setErro('Não foi possível carregar seus cartões.');
@@ -609,6 +614,41 @@ export function Revisao() {
                   ? `${stats.dominados} ${stats.dominados === 1 ? 'cartão já dorme' : 'cartões já dormem'} por mais de três semanas, e ${stats.emAprendizado} ainda estão em aprendizado.`
                   : `${stats.emAprendizado} ${stats.emAprendizado === 1 ? 'cartão ainda está' : 'cartões ainda estão'} em aprendizado. Passando de três semanas de intervalo, eles saem quase de vez da fila.`}
               </p>
+            </div>
+          )}
+
+          {/* Onde a pessoa tropeça. Este bloco é o que transforma estatística em
+              ação: em vez de "você acertou 95%", ele diz quais conceitos ainda
+              escapam e leva direto para a aula deles. */}
+          {fracos.length > 0 && (
+            <div className="rev-fracos">
+              <h2>Onde você mais tropeça</h2>
+              <p className="rev-fracos__ajuda">
+                Cartas que a sua memória já deixou cair. Reler a aula costuma resolver mais rápido
+                que insistir na carta.
+              </p>
+              <div className="rev-fracos__lista">
+                {fracos.map((f) => (
+                  <div key={f.origem + f.id} className="rev-fracos__item">
+                    <div className="rev-fracos__frente">{f.frente}</div>
+                    <div className="rev-fracos__pe">
+                      <span className="rev-fracos__lapsos">
+                        {f.lapsos} {f.lapsos === 1 ? 'esquecimento' : 'esquecimentos'}
+                      </span>
+                      {f.trilhaId && f.aulaId ? (
+                        <a
+                          className="rev-fracos__link"
+                          href={`/trilhas/${f.trilhaId}/aula/${f.aulaId}`}
+                        >
+                          Reler {f.aula}
+                        </a>
+                      ) : (
+                        <span className="rev-fracos__origem">Glossário</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

@@ -9,7 +9,7 @@ import {
     trails,
     glossary,
 } from "../../schema.ts";
-import { and, asc, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 
 /**
@@ -613,6 +613,75 @@ export async function estatisticas(userId: string) {
         tempoTipicoMs: Math.round(Number(tempos?.mediana ?? 0)),
         tempoTotalMs: Number(tempos?.total ?? 0),
     };
+}
+
+/**
+ * As cartas em que o aluno mais tropeça.
+ *
+ * Ordena por lapsos e desempata pela facilidade porque as duas contam coisas
+ * diferentes: lapso é quantas vezes a memória já falhou, facilidade é o quanto o
+ * agendador aprendeu que aquela carta é dura para esta pessoa. Uma carta com dois
+ * lapsos e facilidade no piso incomoda mais que outra com dois lapsos e facilidade
+ * média.
+ *
+ * Vem com a aula de origem junto: insistir na carta resolve menos que reler o
+ * trecho que não ficou.
+ */
+export async function pontosFracos(userId: string, limite = 5) {
+    const cartoes = await db
+        .select({
+            id: userCards.origemId,
+            origem: userCards.origem,
+            lapsos: userCards.lapsos,
+            facilidade: userCards.facilidade,
+            frente: flashcards.frente,
+            aula: lessons.title,
+            aulaId: lessons.id,
+            trilha: trails.name,
+            trilhaId: trails.id,
+        })
+        .from(userCards)
+        .innerJoin(
+            flashcards,
+            and(eq(userCards.origem, "flashcard"), eq(flashcards.id, userCards.origemId)),
+        )
+        .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+        .innerJoin(trails, eq(trails.id, lessons.trailId))
+        .where(and(eq(userCards.userId, userId), sql`${userCards.lapsos} > 0`))
+        .orderBy(desc(userCards.lapsos), asc(userCards.facilidade))
+        .limit(limite);
+
+    // Termo de glossário também erra, e não tem aula para linkar.
+    const termos = await db
+        .select({
+            id: userCards.origemId,
+            origem: userCards.origem,
+            lapsos: userCards.lapsos,
+            facilidade: userCards.facilidade,
+            frente: glossary.term,
+        })
+        .from(userCards)
+        .innerJoin(
+            glossary,
+            and(eq(userCards.origem, "glossario"), eq(glossary.id, userCards.origemId)),
+        )
+        .where(and(eq(userCards.userId, userId), sql`${userCards.lapsos} > 0`))
+        .orderBy(desc(userCards.lapsos), asc(userCards.facilidade))
+        .limit(limite);
+
+    return [
+        ...cartoes.map((c) => ({ ...c, facilidade: Number(c.facilidade) })),
+        ...termos.map((t) => ({
+            ...t,
+            facilidade: Number(t.facilidade),
+            aula: null as string | null,
+            aulaId: null as string | null,
+            trilha: null as string | null,
+            trilhaId: null as string | null,
+        })),
+    ]
+        .sort((a, b) => b.lapsos - a.lapsos || a.facilidade - b.facilidade)
+        .slice(0, limite);
 }
 
 // Silêncio que separa uma sessão da seguinte. Não existe registro de "começou" e

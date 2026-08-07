@@ -86,6 +86,23 @@ export async function obterEstatisticas() {
   return data;
 }
 
+export interface PontoFraco {
+  id: string;
+  origem: 'flashcard' | 'glossario';
+  lapsos: number;
+  facilidade: number;
+  frente: string;
+  aula: string | null;
+  aulaId: string | null;
+  trilha: string | null;
+  trilhaId: string | null;
+}
+
+export async function obterPontosFracos() {
+  const { data } = await api.get<PontoFraco[]>('/flashcards/pontos-fracos');
+  return data;
+}
+
 export async function obterHistorico() {
   const { data } = await api.get<SessaoRevisao[]>('/flashcards/historico');
   return data;

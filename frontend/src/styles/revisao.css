@@ -900,3 +900,68 @@
     opacity: 0;
   }
 }
+
+/* ---------- Onde você mais tropeça ---------- */
+
+.rev-fracos {
+  margin-top: 16px;
+  padding: 20px 22px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  background: var(--surface);
+}
+.rev-fracos h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.rev-fracos__ajuda {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.rev-fracos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rev-fracos__item {
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.rev-fracos__frente {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.rev-fracos__pe {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 7px;
+  font-size: 12px;
+}
+.rev-fracos__lapsos {
+  color: var(--av-red);
+  font-weight: 600;
+}
+.rev-fracos__origem {
+  color: var(--muted);
+}
+.rev-fracos__link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rev-fracos__link:hover {
+  text-decoration: underline;
+}

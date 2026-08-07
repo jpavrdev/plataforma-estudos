@@ -5,6 +5,7 @@ import {
     estatisticas,
     filaDoDia,
     historicoSessoes,
+    pontosFracos,
     responder,
     resumo,
     revisaoDaTrilha,
@@ -59,6 +60,14 @@ export const getEstatisticas = async (req: Request, res: Response, next: NextFun
 export const getHistorico = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await historicoSessoes(req.userId!, 20));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getPontosFracos = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await pontosFracos(req.userId!, 5));
     } catch (err) {
         next(err);
     }
