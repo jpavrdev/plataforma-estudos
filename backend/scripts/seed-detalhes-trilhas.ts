@@ -536,6 +536,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "C++ Moderno para os padrões de projeto",
         ],
     },
+    "Ameaças e Ataques na Prática": {
+        whatYouLearn: [
+            "A cadeia de um ataque real, do reconhecimento à exfiltração",
+            "MITRE ATT&CK: tática, técnica e procedimento sem decoreba",
+            "Engenharia social, phishing moderno, BEC e fadiga de MFA",
+            "Malware, ransomware como negócio e o rastro que cada etapa deixa",
+        ],
+        prerequisites: ["Fundamentos de Cibersegurança", "Noções de redes e de linha de comando"],
+    },
     "Embarcados na Prática": {
         whatYouLearn: [
             "O microcontrolador por dentro e o blink por registrador",

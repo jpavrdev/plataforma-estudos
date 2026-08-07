@@ -39,6 +39,7 @@ const MAPA: Record<string, string[]> = {
     JavaScript: ["Front-end"],
     "UI/UX Design": ["Front-end"],
     "Fundamentos de Cibersegurança": ["Cibersegurança"],
+    "Ameaças e Ataques na Prática": ["Cibersegurança"],
     "Segurança de Aplicações Web": ["Cibersegurança", "Front-end"],
     "ISC2 Certified in Cybersecurity (CC)": ["Cibersegurança"],
     "Fundamentos de QA": ["QA"],
