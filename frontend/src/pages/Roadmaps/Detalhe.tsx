@@ -17,6 +17,7 @@ import {
   type RoadmapRef,
   type RoadmapPhase,
   seguirRoadmap,
+  registrarEntradaNoRoadmap,
 } from '../../services/roadmaps';
 import { obterTrilha } from '../../services/trails';
 import { getTrailLang } from '../../utils/trailLang';
@@ -94,6 +95,9 @@ export function RoadmapDetalhe() {
   // Leva ao conteúdo do estágio conforme o tipo do ref.
   async function irParaRef(ref?: RoadmapRef) {
     if (!ref) return;
+    // Entrar numa trilha daqui diz, sem adivinhação, qual caminho o aluno segue.
+    // É o que faz a sugestão de próxima trilha acertar depois.
+    if (slug) void registrarEntradaNoRoadmap(slug);
     if (ref.refType === 'simulado' && ref.slug) return navigate(`/simulados/${ref.slug}`);
     if (ref.refType === 'lesson' && ref.trailId && ref.lessonId) {
       return navigate(`/trilhas/${ref.trailId}/aula/${ref.lessonId}`);

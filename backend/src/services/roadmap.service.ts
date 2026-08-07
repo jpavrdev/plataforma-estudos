@@ -399,6 +399,30 @@ export async function seguirRoadmap(userId: string, roadmapId: string, explicito
 }
 
 /**
+ * O aluno entrou numa trilha A PARTIR da tela deste roadmap. É o sinal mais forte
+ * que existe sobre qual caminho ele segue, porque não é dedução: ele clicou ali.
+ *
+ * Cria o vínculo se não houver e atualiza a recência sempre. Fica como inferido,
+ * não explícito, porque entrar numa trilha é um ato de estudo e não uma escolha
+ * de caminho declarada; o aluno continua podendo trocar na tela. A diferença para
+ * a inferência por progresso é que aqui não há adivinhação nenhuma.
+ */
+export async function registrarEntradaPorRoadmap(userId: string, roadmapId: string) {
+    const [ja] = await db
+        .select()
+        .from(userRoadmaps)
+        .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
+    if (ja) {
+        await db
+            .update(userRoadmaps)
+            .set({ lastSeenAt: new Date() })
+            .where(eq(userRoadmaps.id, ja.id));
+        return;
+    }
+    await db.insert(userRoadmaps).values({ userId, roadmapId, explicito: false });
+}
+
+/**
  * Abrir o detalhe do roadmap atualiza a recência de quem já segue. NÃO cria
  * vínculo: espiar um roadmap não pode fazer o app achar que o aluno mudou de
  * caminho, senão a curiosidade viraria declaração.

@@ -16,6 +16,7 @@ import {
     removerRef,
     seguirRoadmap,
     registrarVisita,
+    registrarEntradaPorRoadmap,
 } from "../services/roadmap.service.ts";
 import {
     createRoadmapSchema,
@@ -57,6 +58,20 @@ export const seguir = async (req: Request, res: Response, next: NextFunction) =>
         const roadmap = await obterRoadmap(slug, req.userId);
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
         await seguirRoadmap(req.userId!, roadmap.id, true);
+        res.status(204).end();
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Registra que o aluno entrou numa trilha vindo deste roadmap. Não é escolha
+// declarada, é o caminho que ele está de fato percorrendo agora.
+export const registrarEntrada = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const slug = typeof req.params.slug === "string" ? req.params.slug : "";
+        const roadmap = await obterRoadmap(slug, req.userId);
+        if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
+        await registrarEntradaPorRoadmap(req.userId!, roadmap.id);
         res.status(204).end();
     } catch (err) {
         next(err);
