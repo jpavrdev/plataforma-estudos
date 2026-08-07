@@ -379,6 +379,20 @@
       "when": 1785931371631,
       "tag": "0053_feature_flags",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1786112440521,
+      "tag": "0054_user_roadmaps",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1786118584081,
+      "tag": "0055_status_expirada",
+      "breakpoints": true
     }
   ]
 }

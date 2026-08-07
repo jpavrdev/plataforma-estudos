@@ -12,8 +12,9 @@ import {
     simuladoAttempts,
     challenges,
     challengeSubmissions,
+    userRoadmaps,
 } from "../../schema.ts";
-import { eq, and, asc, desc, inArray, count } from "drizzle-orm";
+import { eq, and, asc, desc, inArray, count, countDistinct } from "drizzle-orm";
 import type { z } from "zod";
 import type {
     createRoadmapSchema,
@@ -361,14 +362,126 @@ export async function obterRoadmap(slug: string, userId?: string) {
             status: statusPorProgresso(feitos, total),
         },
         currentStageId: atual?.id ?? null,
+        // A tela precisa saber para não oferecer "seguir" a quem já segue.
+        seguindo: userId ? await estaSeguindo(userId, roadmap.id) : false,
         stages: comCadeado,
     };
 }
 
+async function estaSeguindo(userId: string, roadmapId: string) {
+    const [ja] = await db
+        .select({ id: userRoadmaps.id })
+        .from(userRoadmaps)
+        .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
+    return !!ja;
+}
+
+// ============ Qual roadmap o aluno está seguindo ============
+
+/**
+ * Marca que o aluno segue este roadmap. `explicito` distingue a escolha dele
+ * (botão de seguir) da inferência feita a partir do progresso: escolha explícita
+ * nunca é rebaixada por inferência posterior.
+ */
+export async function seguirRoadmap(userId: string, roadmapId: string, explicito = true) {
+    const [ja] = await db
+        .select()
+        .from(userRoadmaps)
+        .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
+    if (ja) {
+        await db
+            .update(userRoadmaps)
+            .set({ lastSeenAt: new Date(), explicito: ja.explicito || explicito })
+            .where(eq(userRoadmaps.id, ja.id));
+        return;
+    }
+    await db.insert(userRoadmaps).values({ userId, roadmapId, explicito });
+}
+
+/**
+ * Abrir o detalhe do roadmap atualiza a recência de quem já segue. NÃO cria
+ * vínculo: espiar um roadmap não pode fazer o app achar que o aluno mudou de
+ * caminho, senão a curiosidade viraria declaração.
+ */
+export async function registrarVisita(userId: string, roadmapId: string) {
+    await db
+        .update(userRoadmaps)
+        .set({ lastSeenAt: new Date() })
+        .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
+}
+
+/**
+ * Quantos roadmaps publicados contêm cada trilha. É o peso da inferência: trilha
+ * que está em quase todo roadmap (Lógica de Programação, em sete) quase não
+ * informa; trilha exclusiva de um caminho decide sozinha.
+ */
+async function roadmapsPorTrilha(trailIds: string[]): Promise<Map<string, number>> {
+    if (!trailIds.length) return new Map();
+    const linhas = await db
+        .select({ trailId: roadmapStageRefs.refId, n: countDistinct(roadmapStages.roadmapId) })
+        .from(roadmapStageRefs)
+        .innerJoin(roadmapStages, eq(roadmapStages.id, roadmapStageRefs.stageId))
+        .where(
+            and(eq(roadmapStageRefs.refType, "trail"), inArray(roadmapStageRefs.refId, trailIds)),
+        )
+        .groupBy(roadmapStageRefs.refId);
+    return new Map(linhas.map((l) => [l.trailId, Number(l.n)]));
+}
+
+type DetalheRoadmap = NonNullable<Awaited<ReturnType<typeof obterRoadmap>>>;
+
+/**
+ * Adivinha o roadmap a partir do progresso, quando o aluno não declarou nenhum.
+ *
+ * Dois sinais, nesta ordem. O prefixo contínuo (quantos estágios seguidos, a
+ * partir do primeiro, ele concluiu) captura a SEQUÊNCIA que ele vem seguindo, e
+ * é o que separa casos que o volume não separa: quem fez Lógica, Python e SQL
+ * tem prefixo 3 em Engenharia de Dados e 2 em Ciência de Dados, porque pulou
+ * Estatística. O peso por exclusividade desempata.
+ *
+ * Devolve null quando empata, e isso é de propósito: melhor perguntar do que
+ * cravar um caminho errado. Medido contra a base de produção, decide cerca de um
+ * terço dos alunos; o resto ainda não revelou caminho nenhum.
+ */
+async function inferirRoadmap(detalhes: DetalheRoadmap[]): Promise<DetalheRoadmap | null> {
+    const trilhasConcluidas = new Set<string>();
+    for (const d of detalhes)
+        for (const s of d.stages)
+            if (s.completed)
+                for (const r of s.refs) if (r.refType === "trail") trilhasConcluidas.add(r.refId);
+
+    const peso = await roadmapsPorTrilha([...trilhasConcluidas]);
+
+    const pontuados = detalhes.map((d) => {
+        let prefixo = 0;
+        for (const s of d.stages) {
+            if (!s.completed) break;
+            prefixo++;
+        }
+        let pontos = 0;
+        for (const s of d.stages)
+            if (s.completed)
+                for (const r of s.refs)
+                    if (r.refType === "trail") pontos += 1 / (peso.get(r.refId) ?? 1);
+        return { d, prefixo, pontos };
+    });
+
+    const melhor = pontuados.reduce((a, b) =>
+        b.prefixo !== a.prefixo ? (b.prefixo > a.prefixo ? b : a) : b.pontos > a.pontos ? b : a,
+    );
+    const empatados = pontuados.filter(
+        (p) => p.prefixo === melhor.prefixo && Math.abs(p.pontos - melhor.pontos) < 1e-9,
+    );
+    return empatados.length === 1 ? melhor.d : null;
+}
+
 // Depois de concluir uma trilha: em qual roadmap ela vive e qual é a próxima
-// trilha dele. Com a trilha em mais de um roadmap, vale o de maior progresso do
-// usuário (desempate pela posição do roadmap). Só oferece etapa destravada; no
-// fim do roadmap (ou sem etapa elegível), proximaTrilha volta nula.
+// trilha dele. Com a trilha em mais de um roadmap a escolha segue esta ordem:
+// o que o aluno declarou seguir, depois a inferência pelo progresso e, se as
+// duas falharem, a heurística antiga de maior número de estágios concluídos.
+// `origem` diz qual delas decidiu, para a tela poder oferecer a troca em vez de
+// fingir certeza. Só oferece etapa destravada; no fim do roadmap (ou sem etapa
+// elegível), proximaTrilha volta nula.
 export async function proximaTrilhaAposConcluir(userId: string, trailId: string) {
     const candidatos = await db
         .selectDistinct({ slug: roadmaps.slug, position: roadmaps.position })
@@ -405,14 +518,48 @@ export async function proximaTrilhaAposConcluir(userId: string, trailId: string)
     };
 
     // Prefere um roadmap que tenha o que oferecer; entre eles (e no fallback
-    // sem oferta), o de maior progresso do usuário, já ordenados por posição.
-    const comProxima = detalhes
-        .map((d) => ({ d, ref: refDaProxima(d) }))
-        .filter((x) => x.ref !== null);
-    const escolhaEntre = comProxima.length ? comProxima : detalhes.map((d) => ({ d, ref: null }));
-    const { d: escolhido, ref: refTrilha } = escolhaEntre.reduce((melhor, x) =>
-        x.d.progress.stagesDone > melhor.d.progress.stagesDone ? x : melhor,
+    // sem oferta), o escolhido pela ordem: declarado, inferido, heurística.
+    const comProxima = detalhes.filter((d) => refDaProxima(d) !== null);
+    const elegiveis = comProxima.length ? comProxima : detalhes;
+
+    // 1. O que o aluno declarou seguir. Escolha explícita vem antes da inferida,
+    // e entre iguais vale a mais recente.
+    const seguidos = await db
+        .select()
+        .from(userRoadmaps)
+        .where(
+            and(
+                eq(userRoadmaps.userId, userId),
+                inArray(
+                    userRoadmaps.roadmapId,
+                    elegiveis.map((d) => d.id),
+                ),
+            ),
+        );
+    seguidos.sort(
+        (a, b) =>
+            Number(b.explicito) - Number(a.explicito) ||
+            b.lastSeenAt.getTime() - a.lastSeenAt.getTime(),
     );
+    const declarado = seguidos.length
+        ? (elegiveis.find((d) => d.id === seguidos[0].roadmapId) ?? null)
+        : null;
+
+    // 2. Inferência pelo progresso. 3. Heurística antiga, que erra em empate mas
+    // é melhor que não sugerir nada.
+    const inferido = declarado ? null : await inferirRoadmap(elegiveis);
+    const escolhido =
+        declarado ??
+        inferido ??
+        elegiveis.reduce((melhor, d) =>
+            d.progress.stagesDone > melhor.progress.stagesDone ? d : melhor,
+        );
+    const origem: "declarado" | "inferido" | "heuristica" = declarado
+        ? "declarado"
+        : inferido
+          ? "inferido"
+          : "heuristica";
+    const refTrilha = refDaProxima(escolhido);
 
     let proximaTrilha = null;
     if (refTrilha) {
@@ -422,9 +569,15 @@ export async function proximaTrilhaAposConcluir(userId: string, trailId: string)
             .where(eq(trails.id, refTrilha.refId));
         proximaTrilha = t ?? null;
     }
+    // Quando a trilha vive em mais de um roadmap e a escolha não foi declarada
+    // pelo aluno, a tela precisa saber para oferecer a troca em vez de afirmar.
     return {
         roadmap: { slug: escolhido.slug, name: escolhido.name },
         proximaTrilha,
+        origem,
+        outrosRoadmaps: elegiveis
+            .filter((d) => d.id !== escolhido.id)
+            .map((d) => ({ slug: d.slug, name: d.name })),
     };
 }
 

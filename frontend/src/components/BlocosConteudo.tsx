@@ -3,6 +3,8 @@ import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { opcoesKatex } from '../utils/katex';
+
 import { parseGrid } from '../utils/tabela';
 import { glossariar, criarMatcher } from './Glossario';
 import { useGlossario } from '../hooks/useGlossario';
@@ -149,7 +151,7 @@ export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
           <ReactMarkdown
             key={i}
             remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex]}
+            rehypePlugins={[[rehypeKatex, opcoesKatex]]}
             components={componentes}
           >
             {b.value}
@@ -167,7 +169,7 @@ export function TextoMath({ children }: { children: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
-      rehypePlugins={[rehypeKatex]}
+      rehypePlugins={[[rehypeKatex, opcoesKatex]]}
       components={{
         p: ({ children }) => <>{children}</>,
         pre: ({ children }) => (

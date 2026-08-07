@@ -15,6 +15,7 @@ import {
     deleteStageRef,
     completeStage,
     getProximaTrilha,
+    seguir,
 } from "../controllers/RoadmapController.ts";
 
 const router = Router();
@@ -36,6 +37,8 @@ router.delete("/roadmap-stages/:id", autenticar, exigirAdmin, deleteStage);
 router.post("/roadmap-stages/:id/concluir", autenticar, completeStage);
 router.post("/roadmap-stages/:id/refs", autenticar, exigirAdmin, createStageRef);
 router.delete("/roadmap-stage-refs/:id", autenticar, exigirAdmin, deleteStageRef);
+
+router.post("/roadmaps/:slug/seguir", autenticar, seguir);
 
 // Detalhe do aluno por slug (por último, para não capturar as rotas acima).
 router.get("/roadmaps/:slug", autenticar, getRoadmap);

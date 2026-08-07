@@ -11,6 +11,15 @@ import { trails, modules, lessons, questions } from "../schema.ts";
 import { eq, asc, inArray, count } from "drizzle-orm";
 
 const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[] }> = {
+    "SQL para Dados": {
+        whatYouLearn: [
+            "SQL do zero com exemplos de análise, não de cadastro",
+            "Junções sem inflar soma, subconsultas e CTE encadeada",
+            "Funções de janela, agregação em vários níveis e séries temporais",
+            "Plano de execução, índice analítico e checagem de qualidade",
+        ],
+        prerequisites: ["Lógica de programação", "Nenhum SQL anterior: a trilha começa do começo"],
+    },
     "Lógica de Programação": {
         whatYouLearn: [
             "Pensar em algoritmos e resolver problemas passo a passo",
@@ -535,6 +544,51 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Sistemas Operacionais e Concorrência (threads, mutex, escalonador)",
             "C++ Moderno para os padrões de projeto",
         ],
+    },
+    "Segurança em Nuvem e Identidade": {
+        whatYouLearn: [
+            "Responsabilidade compartilhada e por que a falha é de configuração",
+            "Identidade como perímetro: privilégio mínimo, segredo e ciclo de vida",
+            "Hardening, cifra, cadeia de imagens e segurança no pipeline",
+            "Zero trust sem marketing, detecção em nuvem e LGPD para quem opera",
+        ],
+        prerequisites: [
+            "Pentest com Método, ou a trilha Defesa e o SOC",
+            "Redes e noções de nuvem",
+        ],
+    },
+    "Pentest com Método": {
+        whatYouLearn: [
+            "Escopo, autorização e a lei: o que separa profissão de crime",
+            "Reconhecimento, enumeração e análise de vulnerabilidade com critério",
+            "O raciocínio por trás da exploração, incluindo lógica de negócio",
+            "Impacto traduzido para o negócio e o relatório que o cliente lê",
+        ],
+        prerequisites: [
+            "Defesa e o SOC, ou experiência equivalente em segurança",
+            "Redes, Linux e Segurança de Aplicações Web",
+        ],
+    },
+    "Defesa e o SOC": {
+        whatYouLearn: [
+            "Como um centro de operações funciona por dentro, sem romantismo",
+            "Fontes de log, normalização, enriquecimento e retenção com critério",
+            "SIEM na prática: consulta, correlação e os limites da ferramenta",
+            "Detecção testada, triagem com método, resposta a incidente e caça",
+        ],
+        prerequisites: [
+            "Ameaças e Ataques na Prática",
+            "Linux e Linha de Comando, e noções de redes",
+        ],
+    },
+    "Ameaças e Ataques na Prática": {
+        whatYouLearn: [
+            "A cadeia de um ataque real, do reconhecimento à exfiltração",
+            "MITRE ATT&CK: tática, técnica e procedimento sem decoreba",
+            "Engenharia social, phishing moderno, BEC e fadiga de MFA",
+            "Malware, ransomware como negócio e o rastro que cada etapa deixa",
+        ],
+        prerequisites: ["Fundamentos de Cibersegurança", "Noções de redes e de linha de comando"],
     },
     "Embarcados na Prática": {
         whatYouLearn: [
