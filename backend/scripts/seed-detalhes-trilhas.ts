@@ -536,6 +536,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "C++ Moderno para os padrões de projeto",
         ],
     },
+    "Segurança em Nuvem e Identidade": {
+        whatYouLearn: [
+            "Responsabilidade compartilhada e por que a falha é de configuração",
+            "Identidade como perímetro: privilégio mínimo, segredo e ciclo de vida",
+            "Hardening, cifra, cadeia de imagens e segurança no pipeline",
+            "Zero trust sem marketing, detecção em nuvem e LGPD para quem opera",
+        ],
+        prerequisites: [
+            "Pentest com Método, ou a trilha Defesa e o SOC",
+            "Redes e noções de nuvem",
+        ],
+    },
     "Pentest com Método": {
         whatYouLearn: [
             "Escopo, autorização e a lei: o que separa profissão de crime",
