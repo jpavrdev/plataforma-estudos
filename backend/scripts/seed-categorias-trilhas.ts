@@ -42,6 +42,7 @@ const MAPA: Record<string, string[]> = {
     "Ameaças e Ataques na Prática": ["Cibersegurança"],
     "Defesa e o SOC": ["Cibersegurança"],
     "Pentest com Método": ["Cibersegurança"],
+    "Segurança em Nuvem e Identidade": ["Cibersegurança", "Nuvem"],
     "Segurança de Aplicações Web": ["Cibersegurança", "Front-end"],
     "ISC2 Certified in Cybersecurity (CC)": ["Cibersegurança"],
     "Fundamentos de QA": ["QA"],
