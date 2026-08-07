@@ -83,9 +83,9 @@ const STAGES: Stage[] = [
         position: 5,
         title: "SQL e bancos de dados",
         description:
-            "De onde os dados vêm: SQL do zero, modelo relacional, consultas com joins e agregações, e PostgreSQL na prática. Um cientista de dados vive de SQL.",
-        tags: ["SQL", "PostgreSQL", "Consultas"],
-        refs: [{ type: "trail", ref: "Banco de Dados" }],
+            "SQL com profundidade de análise: junções que não estragam a soma, CTE, funções de janela, agregação em vários níveis, séries temporais e leitura de plano de execução.",
+        tags: ["Janelas", "CTE", "Plano de execução"],
+        refs: [{ type: "trail", ref: "SQL para Dados" }],
     },
     {
         phase: "core",
@@ -130,7 +130,10 @@ async function resolverRef(type: RefType, ref: string): Promise<string | null> {
         const [t] = await db.select({ id: trails.id }).from(trails).where(eq(trails.name, ref));
         return t?.id ?? null;
     }
-    const [s] = await db.select({ id: simulados.id }).from(simulados).where(eq(simulados.slug, ref));
+    const [s] = await db
+        .select({ id: simulados.id })
+        .from(simulados)
+        .where(eq(simulados.slug, ref));
     return s?.id ?? null;
 }
 

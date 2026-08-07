@@ -11,6 +11,15 @@ import { trails, modules, lessons, questions } from "../schema.ts";
 import { eq, asc, inArray, count } from "drizzle-orm";
 
 const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[] }> = {
+    "SQL para Dados": {
+        whatYouLearn: [
+            "SQL do zero com exemplos de análise, não de cadastro",
+            "Junções sem inflar soma, subconsultas e CTE encadeada",
+            "Funções de janela, agregação em vários níveis e séries temporais",
+            "Plano de execução, índice analítico e checagem de qualidade",
+        ],
+        prerequisites: ["Lógica de programação", "Nenhum SQL anterior: a trilha começa do começo"],
+    },
     "Lógica de Programação": {
         whatYouLearn: [
             "Pensar em algoritmos e resolver problemas passo a passo",
