@@ -20,8 +20,15 @@
 //
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-roadmap-seguranca.ts
 import { db } from "../db.ts";
-import { roadmaps, roadmapStages, roadmapStageRefs, trails, simulados } from "../schema.ts";
-import { eq, inArray } from "drizzle-orm";
+import {
+    roadmaps,
+    roadmapStages,
+    roadmapStageRefs,
+    roadmapStageCompletions,
+    trails,
+    simulados,
+} from "../schema.ts";
+import { eq, inArray, count } from "drizzle-orm";
 
 const SLUG = "seguranca";
 
@@ -202,9 +209,21 @@ async function seed() {
     const titulos = STAGES.map((s) => s.title);
     const removidos = atuais.filter((a) => !titulos.includes(a.title));
     for (const r of removidos) {
+        // A ordem importa: roadmap_stage_completions e roadmap_stage_refs têm chave
+        // estrangeira para o estágio, então apagar o estágio antes delas falha.
+        // Apagar a conclusão é o certo aqui: ela dizia que o aluno concluiu um estágio
+        // que deixou de existir neste roadmap. O progresso das TRILHAS dele continua
+        // intacto, porque vive em lessons_progress e não depende do estágio.
+        const [{ n: conclusoes }] = await db
+            .select({ n: count() })
+            .from(roadmapStageCompletions)
+            .where(eq(roadmapStageCompletions.stageId, r.id));
+        await db.delete(roadmapStageCompletions).where(eq(roadmapStageCompletions.stageId, r.id));
         await db.delete(roadmapStageRefs).where(eq(roadmapStageRefs.stageId, r.id));
         await db.delete(roadmapStages).where(eq(roadmapStages.id, r.id));
         console.log(`  estágio removido do roadmap: ${r.title}`);
+        if (Number(conclusoes) > 0)
+            console.log(`     ${conclusoes} conclusão(ões) manual(is) dele foram apagadas junto`);
     }
 
     let criados = 0;
