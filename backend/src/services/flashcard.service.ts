@@ -3,6 +3,7 @@ import {
     flashcards,
     userCards,
     cardReviews,
+    cardReports,
     lessons,
     lessonProgress,
     modules,
@@ -782,6 +783,38 @@ export async function historicoSessoes(userId: string, limite = 20) {
             tempoRespondendoMs: respondendo,
         };
     });
+}
+
+/**
+ * Sinaliza uma carta com problema. Só vale para carta que está no baralho do aluno,
+ * senão viraria porta para reportar conteúdo que ele nunca viu.
+ */
+export async function reportarCartao(
+    userId: string,
+    origem: "flashcard" | "glossario",
+    origemId: string,
+    comentario?: string,
+) {
+    const [tem] = await db
+        .select({ id: userCards.id })
+        .from(userCards)
+        .where(
+            and(
+                eq(userCards.userId, userId),
+                eq(userCards.origem, origem),
+                eq(userCards.origemId, origemId),
+            ),
+        );
+    if (!tem) throw new AppError(404, "Cartão não encontrado no seu baralho.");
+
+    await db
+        .insert(cardReports)
+        .values({ userId, origem, origemId, comentario: comentario ?? null })
+        .onConflictDoUpdate({
+            target: [cardReports.userId, cardReports.origem, cardReports.origemId],
+            set: { comentario: comentario ?? null, criadoEm: new Date(), resolvidoEm: null },
+        });
+    return { reportado: true };
 }
 
 /** Números da aba: quantos vencidos hoje, quantos no baralho, quantos dominados. */

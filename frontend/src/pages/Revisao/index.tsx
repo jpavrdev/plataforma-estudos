@@ -16,6 +16,7 @@ import {
   obterHistorico,
   obterPontosFracos,
   resumoFlashcards,
+  reportarCartao,
   responderCartao,
   revisaoDaTrilha,
   type Baralhos,
@@ -124,6 +125,9 @@ export function Revisao() {
   const [jaViu, setJaViu] = useState(false);
   const [saindo, setSaindo] = useState<Resposta | null>(null);
   const [decorrido, setDecorrido] = useState(0);
+  // Reporte da carta atual: fechado, aberto para escrever, ou já enviado.
+  const [reporte, setReporte] = useState<'fechado' | 'aberto' | 'enviado'>('fechado');
+  const [reporteTexto, setReporteTexto] = useState('');
   const [erro, setErro] = useState('');
   const [feitos, setFeitos] = useState(0);
   const timer = useRef<number | null>(null);
@@ -283,6 +287,8 @@ export function Revisao() {
   useEffect(() => {
     mostradaEm.current = Date.now();
     setDecorrido(0);
+    setReporte('fechado');
+    setReporteTexto('');
     if (!modalAberto) return;
     const id = window.setInterval(() => {
       setDecorrido(Math.floor((Date.now() - mostradaEm.current) / 1000));
@@ -302,6 +308,20 @@ export function Revisao() {
   function tudo() {
     setSelecao(new Set());
     setComGlossario(false);
+  }
+
+  async function reportar() {
+    if (!atual) return;
+    // O painel fecha na hora, sem esperar a rede: a pessoa está no meio de uma
+    // sessão e o reporte não é o assunto dela.
+    setReporte('enviado');
+    const texto = reporteTexto.trim();
+    setReporteTexto('');
+    try {
+      await reportarCartao(atual.id, atual.origem, texto || undefined);
+    } catch (err) {
+      console.error('Falha ao reportar o cartão.', err);
+    }
   }
 
   function virar() {
@@ -899,6 +919,43 @@ export function Revisao() {
             <p className="rev-modal__pista">
               Clique na carta ou aperte <b>espaço</b> para {revelado ? 'ver a pergunta' : 'virar'}
             </p>
+
+            {/* Sinalizar carta ruim fica dentro do próprio modal, e não num diálogo
+                por cima: empilhar modal no meio da revisão quebra o fluxo por uma
+                ação que é secundária. */}
+            <div className="rev-reporte">
+              {reporte === 'fechado' && (
+                <button className="rev-reporte__abrir" onClick={() => setReporte('aberto')}>
+                  Algo errado nesta carta?
+                </button>
+              )}
+              {reporte === 'aberto' && (
+                <div className="rev-reporte__form">
+                  <input
+                    className="rev-reporte__campo"
+                    type="text"
+                    maxLength={300}
+                    autoComplete="off"
+                    placeholder="O que está errado? (opcional)"
+                    value={reporteTexto}
+                    onChange={(e) => setReporteTexto(e.target.value)}
+                    onKeyDown={(e) => {
+                      // A tecla não pode vazar para os atalhos da revisão, senão
+                      // digitar "1" avaliaria a carta em vez de escrever.
+                      e.stopPropagation();
+                      if (e.key === 'Enter') void reportar();
+                      if (e.key === 'Escape') setReporte('fechado');
+                    }}
+                  />
+                  <button className="rev-reporte__enviar" onClick={() => void reportar()}>
+                    Enviar
+                  </button>
+                </div>
+              )}
+              {reporte === 'enviado' && (
+                <span className="rev-reporte__ok">Obrigado, vamos revisar essa carta.</span>
+              )}
+            </div>
 
             <div className={`rev__acoes${jaViu ? ' rev__acoes--visivel' : ''}`}>
               {BOTOES.map((b) => (

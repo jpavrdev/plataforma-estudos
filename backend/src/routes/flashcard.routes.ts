@@ -10,6 +10,7 @@ import {
     getRevisaoTrilha,
     getContagemTrilha,
     postResposta,
+    postReporte,
 } from "../controllers/FlashcardController.ts";
 
 const router = Router();
@@ -25,5 +26,6 @@ router.get("/flashcards/pontos-fracos", autenticar, getPontosFracos);
 router.get("/flashcards/trilha/:trailId/contagem", autenticar, getContagemTrilha);
 router.get("/flashcards/trilha/:trailId", autenticar, getRevisaoTrilha);
 router.post("/flashcards/:id/responder", autenticar, postResposta);
+router.post("/flashcards/:id/reportar", autenticar, postReporte);
 
 export default router;

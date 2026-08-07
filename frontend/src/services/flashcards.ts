@@ -121,6 +121,14 @@ export async function contarRevisaoDaTrilha(trailId: string) {
   return data.total;
 }
 
+export async function reportarCartao(id: string, origem: Cartao['origem'], comentario?: string) {
+  const { data } = await api.post<{ reportado: boolean }>(`/flashcards/${id}/reportar`, {
+    origem,
+    comentario,
+  });
+  return data;
+}
+
 export async function responderCartao(
   id: string,
   origem: Cartao['origem'],

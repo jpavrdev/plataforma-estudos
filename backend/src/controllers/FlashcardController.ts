@@ -6,6 +6,7 @@ import {
     filaDoDia,
     historicoSessoes,
     pontosFracos,
+    reportarCartao,
     responder,
     resumo,
     revisaoDaTrilha,
@@ -85,6 +86,21 @@ export const getRevisaoTrilha = async (req: Request, res: Response, next: NextFu
 export const getContagemTrilha = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await contarRevisaoDaTrilha(req.userId!, String(req.params.trailId)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const postReporte = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { origem, comentario } = req.body ?? {};
+        if (origem !== "flashcard" && origem !== "glossario")
+            throw new AppError(400, "Origem inválida.");
+        const texto =
+            typeof comentario === "string" && comentario.trim()
+                ? comentario.trim().slice(0, 300)
+                : undefined;
+        res.json(await reportarCartao(req.userId!, origem, String(req.params.id), texto));
     } catch (err) {
         next(err);
     }

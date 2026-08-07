@@ -739,6 +739,29 @@ export const cardReviews = pgTable(
     (table) => [index("card_reviews_user_idx").on(table.userId, table.criadoEm)],
 );
 
+// Carta sinalizada pelo aluno. Com centenas de cartas autoradas, alguma vai sair
+// confusa ou errada, e sem um canal a gente só descobriria por reclamação avulsa.
+// Único por (aluno, carta): reportar de novo atualiza o comentário em vez de
+// empilhar linha.
+export const cardReports = pgTable(
+    "card_reports",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        origem: cardOrigem("origem").notNull(),
+        origemId: uuid("origem_id").notNull(),
+        comentario: varchar("comentario", { length: 300 }),
+        resolvidoEm: timestamp("resolvido_em", { withTimezone: true }),
+        criadoEm: timestamp("criado_em", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.userId, table.origem, table.origemId),
+        index("card_reports_aberto_idx").on(table.resolvidoEm, table.criadoEm),
+    ],
+);
+
 export const comunicadoKind = pgEnum("comunicado_kind", ["aviso", "pesquisa"]);
 export const comunicadoRespostaStatus = pgEnum("comunicado_resposta_status", [
     "respondido",
