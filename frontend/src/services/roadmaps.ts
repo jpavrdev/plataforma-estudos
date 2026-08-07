@@ -87,6 +87,19 @@ export async function seguirRoadmap(slug: string) {
   await api.post(`/roadmaps/${slug}/seguir`);
 }
 
+/**
+ * Registra que o aluno entrou numa trilha vindo deste roadmap. É o sinal mais
+ * forte sobre o caminho que ele percorre, porque não é dedução: ele clicou ali.
+ * Falha em silêncio de propósito, já que nunca deve impedir a navegação.
+ */
+export async function registrarEntradaNoRoadmap(slug: string) {
+  try {
+    await api.post(`/roadmaps/${slug}/entrei`);
+  } catch (err) {
+    console.error('Falha ao registrar a entrada pelo roadmap.', err);
+  }
+}
+
 // ===================== ADMIN (estúdio) =====================
 
 export async function concluirEstagio(stageId: string) {
