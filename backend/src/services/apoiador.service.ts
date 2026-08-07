@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, count, desc, eq, gt, inArray, isNotNull, isNull, or } from "drizzle-orm";
+import { and, count, desc, eq, gt, lt, inArray, isNotNull, isNull, or } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { subscriptions, users } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -180,7 +180,10 @@ export async function criarCobranca(userId: string, plan: PlanoAvulso) {
 
 export async function criarAssinaturaRecorrente(userId: string) {
     if (!gatewayConfigurado() || !env.ABACATEPAY_PRODUCT_PIX_AUTO) {
-        throw new AppError(503, "O Pix Automático ainda não está disponível. Use o plano mensal ou anual.");
+        throw new AppError(
+            503,
+            "O Pix Automático ainda não está disponível. Use o plano mensal ou anual.",
+        );
     }
     const id = randomUUID();
     const checkout = await criarCheckoutAssinatura(
@@ -316,7 +319,41 @@ const TZ_SP = "America/Sao_Paulo";
 const diaSP = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: TZ_SP });
 
 // Visão do admin: quem paga, quando começou e termina, e o recebido por período.
+/**
+ * Marca como expirada toda cobrança pendente cujo QRCode Pix já venceu.
+ *
+ * Não é limpeza cosmética: o próprio gateway define PIX_TTL_SEGUNDOS, e passado
+ * esse prazo a cobrança NÃO PODE mais ser paga. Deixá-la como pendente faz o
+ * painel mostrar dezenas de cobranças que nunca vão virar nada, e some com o
+ * sinal do que de fato está aberto agora.
+ *
+ * A folga de 10 minutos existe porque o webhook do gateway pode chegar atrasado:
+ * é melhor esperar um pouco mais do que expirar algo que acabou de ser pago.
+ *
+ * Roda antes de listar, então o painel sempre reflete a realidade sem depender de
+ * agendador. Idempotente por natureza: quem já está expirada não é tocada.
+ */
+export async function expirarPendentesVencidas(): Promise<number> {
+    const corte = new Date(Date.now() - (PIX_TTL_SEGUNDOS + 600) * 1000);
+    const alteradas = await db
+        .update(subscriptions)
+        .set({ status: "expirada" })
+        .where(
+            and(
+                eq(subscriptions.status, "pendente"),
+                lt(subscriptions.createdAt, corte),
+                isNull(subscriptions.paidAt),
+            ),
+        )
+        .returning({ id: subscriptions.id });
+    return alteradas.length;
+}
+
 export async function assinaturasAdmin() {
+    // O painel precisa ver o estado real, não o estado congelado no momento em que
+    // a cobrança nasceu.
+    await expirarPendentesVencidas();
+
     const linhas = await db
         .select({
             id: subscriptions.id,

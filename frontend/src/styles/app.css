@@ -6161,6 +6161,12 @@ a.logo {
   background: color-mix(in srgb, var(--av-red) 12%, transparent);
   color: var(--av-red);
 }
+/* Expirada é fim de linha sem drama: não é erro nem ação de ninguém, o QRCode
+   apenas venceu. Fica em cinza para não competir por atenção com o que importa. */
+.assin-status--expirada {
+  background: var(--surface-2);
+  color: var(--muted);
+}
 
 .assin-graf__head {
   display: flex;
