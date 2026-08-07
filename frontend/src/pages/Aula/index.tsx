@@ -29,6 +29,7 @@ import {
   seguirRoadmap,
   type ProximaTrilhaRoadmap,
 } from '../../services/roadmaps';
+import { contarRevisaoDaTrilha } from '../../services/flashcards';
 
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
@@ -45,6 +46,7 @@ export function Aula() {
   const [proximaRoadmap, setProximaRoadmap] = useState<ProximaTrilhaRoadmap | null>(null);
   const [perguntaTrilha, setPerguntaTrilha] = useState(false);
   const [buscandoProxima, setBuscandoProxima] = useState(false);
+  const [temRevisao, setTemRevisao] = useState(false);
 
   // Ao concluir a trilha, pergunta se a pessoa quer emendar a próxima do
   // roadmap; trilha fora de roadmap (ou roadmap no fim) segue para a lista.
@@ -54,7 +56,7 @@ export function Aula() {
     try {
       const r = proximaRoadmap ?? (await proximaTrilhaRoadmap(trailId!));
       setProximaRoadmap(r);
-      if (r.roadmap && r.proximaTrilha) {
+      if ((r.roadmap && r.proximaTrilha) || temRevisao) {
         setPerguntaTrilha(true);
         return;
       }
@@ -81,6 +83,22 @@ export function Aula() {
       console.error('Falha ao trocar o roadmap seguido.', err);
     }
   }
+
+  // A contagem vem ao abrir a aula porque o botão de revisar aparece no fim da
+  // última, e não dá para descobrir isso só na hora de concluir a trilha.
+  useEffect(() => {
+    if (!trailId) return;
+    let ativo = true;
+    contarRevisaoDaTrilha(trailId)
+      .then((n) => ativo && setTemRevisao(n > 0))
+      .catch((err) => {
+        console.error('Falha ao checar os cartões de revisão da trilha.', err);
+        if (ativo) setTemRevisao(false);
+      });
+    return () => {
+      ativo = false;
+    };
+  }, [trailId, lessonId]);
 
   useEffect(() => {
     let ativo = true;
@@ -150,51 +168,77 @@ export function Aula() {
         {!carregando && !erro && trilha && aula && (
           <div className="lesson">
             <SidebarTrilha trilha={trilha} aulaAtualId={aula.id} />
-            <ConteudoAula trilha={trilha} aula={aula} onConcluir={aoConcluirTrilha} />
+            <ConteudoAula
+              trilha={trilha}
+              aula={aula}
+              onConcluir={aoConcluirTrilha}
+              onRevisar={temRevisao ? () => navigate(`/revisao?trilha=${trailId}`) : null}
+            />
           </div>
         )}
 
-        {perguntaTrilha && proximaRoadmap?.roadmap && proximaRoadmap.proximaTrilha && (
+        {perguntaTrilha && (proximaRoadmap?.proximaTrilha || temRevisao) && (
           <div className="solve-next-scrim" onClick={() => setPerguntaTrilha(false)}>
             <div
               className="solve-next"
               role="dialog"
-              aria-label="Próxima trilha do roadmap"
+              aria-label="Trilha concluída"
               onClick={(e) => e.stopPropagation()}
             >
               <span className="solve-next__check">
                 <Check size={22} />
               </span>
               <h3 className="solve-next__titulo">Trilha concluída!</h3>
-              <p className="solve-next__sub">
-                Quer seguir para a próxima trilha do roadmap {proximaRoadmap.roadmap.name}?
-              </p>
-              <div className="solve-next__alvo">
-                <span className="solve-next__nome">{proximaRoadmap.proximaTrilha.name}</span>
-                <span className="solve-next__nivel">
-                  {NIVEL_LABEL[proximaRoadmap.proximaTrilha.level]}
-                </span>
-              </div>
-              {/* Esta trilha vive em mais de um roadmap e o aluno nunca disse qual
-                  segue, então a sugestão é um palpite. Melhor admitir e deixar ele
-                  corrigir do que mandá-lo para o caminho errado em silêncio. */}
-              {proximaRoadmap.origem !== 'declarado' && !!proximaRoadmap.outrosRoadmaps?.length && (
-                <div className="solve-next__troca">
-                  <span className="solve-next__troca-aviso">
-                    Está seguindo outro caminho? Escolha e nós lembramos:
+
+              {/* Revisar vem antes de emendar a próxima trilha de propósito: é o
+                  momento em que o conteúdo ainda está fresco e a revisão custa pouco. */}
+              {temRevisao && (
+                <button
+                  className="solve-next__revisar"
+                  onClick={() => navigate(`/revisao?trilha=${trailId}`)}
+                >
+                  Revisar a trilha em cartões
+                  <span className="solve-next__revisar-nota">
+                    Uma passada rápida pelo que você acabou de estudar
                   </span>
-                  {proximaRoadmap.outrosRoadmaps.map((r) => (
-                    <button
-                      key={r.slug}
-                      type="button"
-                      className="solve-next__troca-opcao"
-                      onClick={() => trocarRoadmap(r.slug)}
-                    >
-                      {r.name}
-                    </button>
-                  ))}
-                </div>
+                </button>
               )}
+
+              {proximaRoadmap?.roadmap && proximaRoadmap.proximaTrilha && (
+                <>
+                  <p className="solve-next__sub">
+                    Quer seguir para a próxima trilha do roadmap {proximaRoadmap.roadmap.name}?
+                  </p>
+                  <div className="solve-next__alvo">
+                    <span className="solve-next__nome">{proximaRoadmap.proximaTrilha.name}</span>
+                    <span className="solve-next__nivel">
+                      {NIVEL_LABEL[proximaRoadmap.proximaTrilha.level]}
+                    </span>
+                  </div>
+                  {/* Esta trilha vive em mais de um roadmap e o aluno nunca disse qual
+                      segue, então a sugestão é um palpite. Melhor admitir e deixar ele
+                      corrigir do que mandá-lo para o caminho errado em silêncio. */}
+                  {proximaRoadmap.origem !== 'declarado' &&
+                    !!proximaRoadmap.outrosRoadmaps?.length && (
+                      <div className="solve-next__troca">
+                        <span className="solve-next__troca-aviso">
+                          Está seguindo outro caminho? Escolha e nós lembramos:
+                        </span>
+                        {proximaRoadmap.outrosRoadmaps.map((r) => (
+                          <button
+                            key={r.slug}
+                            type="button"
+                            className="solve-next__troca-opcao"
+                            onClick={() => trocarRoadmap(r.slug)}
+                          >
+                            {r.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                </>
+              )}
+
               <div className="solve-next__acoes">
                 <button
                   className="solve-next__ficar"
@@ -203,14 +247,16 @@ export function Aula() {
                     navigate('/trilhas');
                   }}
                 >
-                  Agora não
+                  {proximaRoadmap?.proximaTrilha ? 'Agora não' : 'Voltar para as trilhas'}
                 </button>
-                <button
-                  className="solve-next__ir"
-                  onClick={() => navigate(`/trilhas/${proximaRoadmap.proximaTrilha!.id}`)}
-                >
-                  Ir para a próxima
-                </button>
+                {proximaRoadmap?.proximaTrilha && (
+                  <button
+                    className="solve-next__ir"
+                    onClick={() => navigate(`/trilhas/${proximaRoadmap.proximaTrilha!.id}`)}
+                  >
+                    Ir para a próxima
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -292,10 +338,12 @@ function ConteudoAula({
   trilha,
   aula,
   onConcluir,
+  onRevisar,
 }: {
   trilha: TrailDetail;
   aula: LessonDetail;
   onConcluir: () => void;
+  onRevisar: (() => void) | null;
 }) {
   const navigate = useNavigate();
   const todas = trilha.modules.flatMap((m) => m.lessons);
@@ -332,7 +380,12 @@ function ConteudoAula({
       )}
 
       {aula.questions.length > 0 ? (
-        <Quiz aula={aula} onConcluir={onConcluir} irProxima={irProxima} />
+        <Quiz
+          aula={aula}
+          onConcluir={onConcluir}
+          irProxima={irProxima}
+          onRevisar={irProxima ? null : onRevisar}
+        />
       ) : (
         <div className="lesson__nextbar">
           {irProxima ? (
@@ -340,9 +393,16 @@ function ConteudoAula({
               Próxima aula
             </button>
           ) : (
-            <button className="btn btn--accent" onClick={onConcluir}>
-              Concluir trilha
-            </button>
+            <>
+              {onRevisar && (
+                <button className="btn btn--ghost" onClick={onRevisar}>
+                  Revisar em cartões
+                </button>
+              )}
+              <button className="btn btn--accent" onClick={onConcluir}>
+                Concluir trilha
+              </button>
+            </>
           )}
         </div>
       )}
@@ -357,10 +417,12 @@ function Quiz({
   aula,
   onConcluir,
   irProxima,
+  onRevisar,
 }: {
   aula: LessonDetail;
   onConcluir: () => void;
   irProxima: (() => void) | null;
+  onRevisar: (() => void) | null;
 }) {
   const total = aula.questions.length;
   const jaConcluida = aula.state === 'done';
@@ -515,9 +577,18 @@ function Quiz({
                   Próxima aula
                 </button>
               ) : (
-                <button className="btn btn--accent" onClick={onConcluir}>
-                  Concluir trilha
-                </button>
+                <>
+                  {/* Última aula da trilha: revisar aqui é o momento em que o
+                      conteúdo todo ainda está fresco. */}
+                  {onRevisar && (
+                    <button className="btn btn--ghost" onClick={onRevisar}>
+                      Revisar em cartões
+                    </button>
+                  )}
+                  <button className="btn btn--accent" onClick={onConcluir}>
+                    Concluir trilha
+                  </button>
+                </>
               ))}
           </div>
         </div>

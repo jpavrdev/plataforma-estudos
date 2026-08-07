@@ -5,6 +5,7 @@ export const NAV_PRINCIPAL = [
   { label: 'Trilhas', to: '/trilhas' },
   { label: 'Simulados', to: '/simulados' },
   { label: 'Desafios', to: '/desafios' },
+  { label: 'Revisão', to: '/revisao' },
   { label: 'Ranking', to: '/ranking' },
   { label: 'Comunidade', to: '/comunidade' },
   { label: 'Apoiar', to: '/apoie' },

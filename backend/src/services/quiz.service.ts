@@ -1,4 +1,5 @@
 import { db } from "../../db.ts";
+import { abrirCartoesDaAula } from "./flashcard.service.ts";
 import {
     lessons,
     questions,
@@ -87,6 +88,14 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
                 .where(eq(lessonProgress.id, existe.id));
         }
         aulaConcluida = true;
+        // Os cartões desta aula entram no baralho de revisão agora. Só aqui: cartão
+        // de aula não estudada entregaria a resposta antes da hora. Falha em
+        // silêncio de propósito, porque nunca deve impedir a conclusão da aula.
+        try {
+            await abrirCartoesDaAula(userId, lessonId);
+        } catch (e) {
+            console.error("Falha ao abrir os flashcards da aula", e);
+        }
     }
 
     await verificarConquistas(userId);
