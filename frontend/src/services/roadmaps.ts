@@ -51,6 +51,8 @@ export interface RoadmapDetalhe {
   premium: boolean;
   progress: { stagesTotal: number; stagesDone: number; percent: number; status: RoadmapStatus };
   currentStageId: string | null;
+  /** Se o aluno declarou que segue este roadmap. */
+  seguindo: boolean;
   stages: RoadmapStage[];
 }
 
@@ -64,14 +66,25 @@ export async function obterRoadmap(slug: string) {
   return data;
 }
 
+/** Como o backend escolheu o roadmap da sugestão. Só 'declarado' é certeza:
+ *  nos outros dois a tela oferece a troca em vez de afirmar. */
+export type OrigemSugestao = 'declarado' | 'inferido' | 'heuristica';
+
 export interface ProximaTrilhaRoadmap {
   roadmap: { slug: string; name: string } | null;
   proximaTrilha: { id: string; name: string; level: Nivel } | null;
+  origem?: OrigemSugestao;
+  outrosRoadmaps?: { slug: string; name: string }[];
 }
 
 export async function proximaTrilhaRoadmap(trailId: string) {
   const { data } = await api.get<ProximaTrilhaRoadmap>(`/roadmaps/proxima-trilha/${trailId}`);
   return data;
+}
+
+/** Declara que o aluno segue este roadmap. Idempotente. */
+export async function seguirRoadmap(slug: string) {
+  await api.post(`/roadmaps/${slug}/seguir`);
 }
 
 // ===================== ADMIN (estúdio) =====================

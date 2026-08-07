@@ -14,6 +14,8 @@ import {
     excluirEstagio,
     adicionarRef,
     removerRef,
+    seguirRoadmap,
+    registrarVisita,
 } from "../services/roadmap.service.ts";
 import {
     createRoadmapSchema,
@@ -37,7 +39,25 @@ export const getRoadmap = async (req: Request, res: Response, next: NextFunction
         const slug = typeof req.params.slug === "string" ? req.params.slug : "";
         const roadmap = await obterRoadmap(slug, req.userId);
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
+        // Abrir o detalhe atualiza a recência de quem JÁ segue, e só isso: abrir
+        // não faz ninguém passar a seguir, senão bastaria espiar um roadmap para
+        // o app achar que você mudou de caminho.
+        if (req.userId) await registrarVisita(req.userId, roadmap.id);
         res.json(roadmap);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// O aluno declara que está seguindo este roadmap. Idempotente: chamar de novo só
+// atualiza a data do último acesso.
+export const seguir = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const slug = typeof req.params.slug === "string" ? req.params.slug : "";
+        const roadmap = await obterRoadmap(slug, req.userId);
+        if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
+        await seguirRoadmap(req.userId!, roadmap.id, true);
+        res.status(204).end();
     } catch (err) {
         next(err);
     }

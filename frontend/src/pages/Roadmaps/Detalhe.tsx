@@ -9,7 +9,15 @@ import { Flame, Check, ChevronRight, ChevronLeft, Play } from '../../components/
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
-import { concluirEstagio, obterRoadmap, type RoadmapDetalhe, type RoadmapStage, type RoadmapRef, type RoadmapPhase } from '../../services/roadmaps';
+import {
+  concluirEstagio,
+  obterRoadmap,
+  type RoadmapDetalhe,
+  type RoadmapStage,
+  type RoadmapRef,
+  type RoadmapPhase,
+  seguirRoadmap,
+} from '../../services/roadmaps';
 import { obterTrilha } from '../../services/trails';
 import { getTrailLang } from '../../utils/trailLang';
 
@@ -59,11 +67,26 @@ export function RoadmapDetalhe() {
   const [concluindo, setConcluindo] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
+  const [seguindo, setSeguindo] = useState(false);
+
+  async function marcarComoSeguido() {
+    if (!rm || seguindo) return;
+    setSeguindo(true);
+    try {
+      await seguirRoadmap(rm.slug);
+    } catch (err) {
+      console.error('Falha ao seguir o roadmap.', err);
+      setSeguindo(false);
+    }
+  }
 
   useEffect(() => {
     if (!slug) return;
     obterRoadmap(slug)
-      .then(setRm)
+      .then((r) => {
+        setRm(r);
+        setSeguindo(r.seguindo);
+      })
       .catch(() => setErro('Não foi possível carregar o roadmap.'))
       .finally(() => setCarregando(false));
   }, [slug]);
@@ -81,7 +104,9 @@ export function RoadmapDetalhe() {
         const detalhe = await obterTrilha(ref.trailId, getTrailLang(ref.trailId));
         const aulas = detalhe.modules.flatMap((m) => m.lessons);
         const alvo =
-          aulas.find((l) => l.state === 'current') ?? aulas.find((l) => l.state !== 'locked') ?? aulas[0];
+          aulas.find((l) => l.state === 'current') ??
+          aulas.find((l) => l.state !== 'locked') ??
+          aulas[0];
         return navigate(alvo ? `/trilhas/${ref.trailId}/aula/${alvo.id}` : '/trilhas');
       } catch {
         return navigate('/trilhas');
@@ -147,9 +172,7 @@ export function RoadmapDetalhe() {
 
           {carregando && <p className="track__desc">Carregando roadmap...</p>}
           {erro && <div className="auth__alert">{erro}</div>}
-          {!carregando && !erro && !rm && (
-            <p className="track__desc">Roadmap não encontrado.</p>
-          )}
+          {!carregando && !erro && !rm && <p className="track__desc">Roadmap não encontrado.</p>}
 
           {rm && (
             <>
@@ -158,6 +181,16 @@ export function RoadmapDetalhe() {
                   <div className="rmd-hero__kicker">Roadmap de carreira</div>
                   <h1 className="rmd-hero__title">{rm.name}</h1>
                   <p className="rmd-hero__desc">{rm.description}</p>
+                  {/* Declarar o caminho é o que permite acertar a próxima trilha
+                      quando ela vive em vários roadmaps. Sem isso o app adivinha. */}
+                  <button
+                    type="button"
+                    className={`rmd-seguir${seguindo ? ' rmd-seguir--ativo' : ''}`}
+                    onClick={marcarComoSeguido}
+                    disabled={seguindo}
+                  >
+                    {seguindo ? 'Você está seguindo este roadmap' : 'Seguir este roadmap'}
+                  </button>
                 </div>
                 <Ring percent={rm.progress.percent} />
               </div>
@@ -239,7 +272,11 @@ export function RoadmapDetalhe() {
               <button className="btn btn--ghost" onClick={() => setConfirmando(null)}>
                 Cancelar
               </button>
-              <button className="btn btn--accent" onClick={confirmarConclusao} disabled={concluindo}>
+              <button
+                className="btn btn--accent"
+                onClick={confirmarConclusao}
+                disabled={concluindo}
+              >
                 {concluindo ? 'Concluindo...' : 'Concluir mesmo assim'}
               </button>
             </div>

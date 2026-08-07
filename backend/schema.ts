@@ -631,6 +631,33 @@ export const roadmapStageRefs = pgTable(
     (table) => [index("roadmap_stage_refs_stage_id_idx").on(table.stageId)],
 );
 
+// Qual roadmap o aluno está seguindo. Guarda INTENÇÃO e RECÊNCIA, nunca progresso:
+// o progresso do roadmap continua derivado do progresso das trilhas, como sempre foi.
+// Existe porque a mesma trilha vive em vários roadmaps, e sem isso o app só conseguia
+// adivinhar qual caminho o aluno segue ao sugerir a próxima trilha.
+export const userRoadmaps = pgTable(
+    "user_roadmaps",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        roadmapId: uuid("roadmap_id")
+            .references(() => roadmaps.id)
+            .notNull(),
+        // Verdadeiro quando o próprio aluno escolheu seguir; falso quando foi inferido
+        // do progresso dele. A escolha explícita sempre vence a inferência.
+        explicito: boolean("explicito").default(false).notNull(),
+        startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
+        lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.userId, table.roadmapId),
+        index("user_roadmaps_user_id_idx").on(table.userId),
+        index("user_roadmaps_roadmap_id_idx").on(table.roadmapId),
+    ],
+);
+
 export const comunicadoKind = pgEnum("comunicado_kind", ["aviso", "pesquisa"]);
 export const comunicadoRespostaStatus = pgEnum("comunicado_resposta_status", [
     "respondido",

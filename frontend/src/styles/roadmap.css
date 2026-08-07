@@ -52,3 +52,55 @@
     box-shadow: none;
   }
 }
+
+/* ---------- Seguir o roadmap e trocar o palpite ---------- */
+.rmd-seguir {
+  margin-top: 16px;
+  padding: 9px 16px;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rmd-seguir:hover {
+  filter: brightness(1.06);
+}
+/* Já seguindo vira estado, não botão: sem cursor de clique e sem destaque. */
+.rmd-seguir--ativo,
+.rmd-seguir--ativo:hover {
+  background: var(--surface-2);
+  color: var(--muted);
+  border-color: var(--border);
+  cursor: default;
+  filter: none;
+}
+.solve-next__troca {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.solve-next__troca-aviso {
+  width: 100%;
+  font-size: 13px;
+  color: var(--muted);
+}
+.solve-next__troca-opcao {
+  padding: 6px 12px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.solve-next__troca-opcao:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
