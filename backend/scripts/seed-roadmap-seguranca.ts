@@ -10,9 +10,13 @@
 //
 // Reconciliar significa: apagar os estágios que saíram do desenho, atualizar e
 // reposicionar os que ficam, criar os que faltam e acertar as refs de cada um.
-// É seguro para o aluno: a conclusão manual de estágio é gravada em
-// lessons_progress contra a AULA, não contra o estágio, e não existe tabela de
-// progresso presa a roadmap_stages. Nada de progresso se perde aqui.
+//
+// O que o aluno perde e o que ele não perde: o progresso das TRILHAS é intocado,
+// porque vive em lessons_progress e não depende de estágio. Já a conclusão manual
+// de estágio ("já sei isso", em roadmap_stage_completions) é apagada junto com o
+// estágio removido, e tem que ser: ela afirmava que o aluno concluiu um estágio
+// que deixou de existir neste roadmap. Essa tabela tem FK para roadmap_stages, e
+// esquecê-la fazia o delete do estágio abortar com violação de chave.
 //
 // Ref que não resolve NÃO bloqueia: o estágio é criado sem ela e o script avisa.
 // É o que permite rodar antes das trilhas novas existirem e rodar de novo depois
