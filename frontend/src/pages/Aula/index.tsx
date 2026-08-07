@@ -22,6 +22,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { BlocosConteudo, md, TextoMath } from '../../components/BlocosConteudo';
+import { opcoesKatex } from '../../utils/katex';
 import { getTrailLang } from '../../utils/trailLang';
 import {
   proximaTrilhaRoadmap,
@@ -320,7 +321,7 @@ function ConteudoAula({
         <div className="lesson__md">
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex]}
+            rehypePlugins={[[rehypeKatex, opcoesKatex]]}
             components={md}
           >
             {aula.content}
@@ -593,7 +594,7 @@ function Quiz({
               <div className="quiz__solucao-corpo lesson__md">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
+                  rehypePlugins={[[rehypeKatex, opcoesKatex]]}
                   components={md}
                 >
                   {explicacao}
