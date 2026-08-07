@@ -536,6 +536,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "C++ Moderno para os padrões de projeto",
         ],
     },
+    "Pentest com Método": {
+        whatYouLearn: [
+            "Escopo, autorização e a lei: o que separa profissão de crime",
+            "Reconhecimento, enumeração e análise de vulnerabilidade com critério",
+            "O raciocínio por trás da exploração, incluindo lógica de negócio",
+            "Impacto traduzido para o negócio e o relatório que o cliente lê",
+        ],
+        prerequisites: [
+            "Defesa e o SOC, ou experiência equivalente em segurança",
+            "Redes, Linux e Segurança de Aplicações Web",
+        ],
+    },
     "Defesa e o SOC": {
         whatYouLearn: [
             "Como um centro de operações funciona por dentro, sem romantismo",
