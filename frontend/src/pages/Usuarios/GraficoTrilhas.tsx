@@ -16,9 +16,14 @@ interface Props {
 
 export function GraficoTrilhas({ dados }: Props) {
   const [hover, setHover] = useState<number | null>(null);
+  // Drill-down: cada nível guarda o conjunto que estava sendo mostrado quando o
+  // usuário clicou em "Outras". Voltar é desempilhar.
+  const [pilha, setPilha] = useState<{ nome: string; n: number }[][]>([]);
+
+  const base = pilha.length ? pilha[pilha.length - 1] : dados;
 
   const fatias = useMemo(() => {
-    const comAlunos = dados.filter((d) => d.n > 0);
+    const comAlunos = base.filter((d) => d.n > 0);
     const top = comAlunos.slice(0, 5);
     const resto = comAlunos.slice(5);
     const outras = resto.reduce((s, d) => s + d.n, 0);
@@ -29,12 +34,15 @@ export function GraficoTrilhas({ dados }: Props) {
         : []),
     ];
     const total = lista.reduce((s, d) => s + d.n, 0);
-    if (total === 0) return { lista: [], total: 0 };
+    if (total === 0) return { lista: [], total: 0, resto: [] };
 
     let acumulado = 0;
     const circ = 2 * Math.PI * R;
     return {
       total,
+      // Guardado para o detalhamento: a fatia de agregação esconde 40 trilhas, e
+      // "Outras (40)" sozinho não responde a pergunta óbvia de quais são.
+      resto,
       lista: lista.map((d) => {
         const frac = d.n / total;
         const seg = {
@@ -47,7 +55,7 @@ export function GraficoTrilhas({ dados }: Props) {
         return seg;
       }),
     };
-  }, [dados]);
+  }, [base]);
 
   const ativo = hover != null ? fatias.lista[hover] : null;
 
@@ -60,16 +68,43 @@ export function GraficoTrilhas({ dados }: Props) {
     );
   }
 
+  const nivel = pilha.length;
+
   return (
     <div className="painel-graf">
-      <div className="painel-graf__titulo">Alunos por trilha</div>
+      <div className="painel-graf__titulo">
+        {nivel > 0 ? (
+          <>
+            <button
+              type="button"
+              className="painel-graf__voltar"
+              // Volta para a raiz, não um nível: o rótulo é o nome do topo, e
+              // fazer ele andar um passo por clique contraria o que ele diz.
+              onClick={() => {
+                setPilha([]);
+                setHover(null);
+              }}
+            >
+              Alunos por trilha
+            </button>
+            <span className="painel-graf__crumb">
+              {' / '}
+              {nivel === 1 ? 'demais trilhas' : `demais trilhas, ${nivel}º nível`}
+            </span>
+          </>
+        ) : (
+          'Alunos por trilha'
+        )}
+      </div>
       <div className="painel-graf__leitura">
         {ativo ? (
           <>
             <b>{ativo.n}</b> alunos em {ativo.nome} ({Math.round(ativo.frac * 100)}%)
           </>
+        ) : nivel > 0 ? (
+          <span>As {base.length} trilhas que estavam agrupadas. Clique no título para voltar</span>
         ) : (
-          <span>Alunos com aula concluída em cada trilha (quem estuda duas conta nas duas)</span>
+          <span>Alunos com aula concluída em cada trilha. Clique em Outras para abrir o resto</span>
         )}
       </div>
       <div className="painel-donut">
@@ -102,12 +137,36 @@ export function GraficoTrilhas({ dados }: Props) {
           {fatias.lista.map((f, i) => (
             <li
               key={f.nome}
-              className="painel-donut__item"
+              className={`painel-donut__item${f.outras ? ' painel-donut__item--clicavel' : ''}`}
               onMouseEnter={() => setHover(i)}
               onMouseLeave={() => setHover(null)}
+              onClick={
+                f.outras
+                  ? () => {
+                      setPilha((p) => [...p, fatias.resto]);
+                      setHover(null);
+                    }
+                  : undefined
+              }
+              role={f.outras ? 'button' : undefined}
+              tabIndex={f.outras ? 0 : undefined}
+              onKeyDown={
+                f.outras
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setPilha((p) => [...p, fatias.resto]);
+                        setHover(null);
+                      }
+                    }
+                  : undefined
+              }
             >
               <span className="painel-donut__cor" style={{ background: f.cor }} />
-              <span className="painel-donut__nome">{f.nome}</span>
+              <span className="painel-donut__nome">
+                {f.nome}
+                {f.outras && <span className="painel-donut__dica"> abrir</span>}
+              </span>
               <span className="painel-donut__valor">
                 {f.n} · {Math.round(f.frac * 100)}%
               </span>

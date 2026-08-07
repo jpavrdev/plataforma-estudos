@@ -4,7 +4,20 @@ import { adminAssinaturas, type AssinaturasAdminData } from '../../services/apoi
 
 type Granularidade = 'dia' | 'semana' | 'mes';
 
-const MESES_ABREV = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const MESES_ABREV = [
+  'jan',
+  'fev',
+  'mar',
+  'abr',
+  'mai',
+  'jun',
+  'jul',
+  'ago',
+  'set',
+  'out',
+  'nov',
+  'dez',
+];
 
 function nomeDoMes(chave: string) {
   const [ano, mes] = chave.split('-').map(Number);
@@ -23,9 +36,7 @@ function montarSerie(
     return Array.from({ length: 12 }, (_, i) => {
       const d = new Date(agora.getFullYear(), agora.getMonth() - 11 + i, 1);
       const chave = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-      const cents = porDia
-        .filter((p) => p.d.startsWith(chave))
-        .reduce((s, p) => s + p.cents, 0);
+      const cents = porDia.filter((p) => p.d.startsWith(chave)).reduce((s, p) => s + p.cents, 0);
       return { label: MESES_ABREV[d.getMonth()], cents, titulo: nomeDoMes(chave) };
     });
   }
@@ -70,6 +81,9 @@ const STATUS: Record<string, string> = {
   pendente: 'Pendente',
   ativa: 'Ativa',
   cancelada: 'Cancelada',
+  // Cobrança cujo QRCode Pix venceu. Nunca mais pode ser paga, então não é
+  // pendência de verdade: misturar as duas escondia quantas estão abertas agora.
+  expirada: 'Expirada',
 };
 
 function dinheiro(cents: number) {

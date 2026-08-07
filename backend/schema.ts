@@ -748,7 +748,14 @@ export const subscriptionPlan = pgEnum("subscription_plan", [
     "anual",
     "pix_auto",
 ]);
-export const subscriptionStatus = pgEnum("subscription_status", ["pendente", "ativa", "cancelada"]);
+// "expirada": o QRCode Pix venceu (PIX_TTL_SEGUNDOS) e a cobrança não pode mais
+// ser paga. É diferente de "cancelada", que é ato do usuário ou do admin.
+export const subscriptionStatus = pgEnum("subscription_status", [
+    "pendente",
+    "ativa",
+    "cancelada",
+    "expirada",
+]);
 
 // Apoio ao projeto. Cada pagamento vira uma linha; apoiador ativo = alguma
 // linha ativa com expires_at no futuro. O gateway confirma via webhook.

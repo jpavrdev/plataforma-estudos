@@ -78,7 +78,7 @@ export interface AssinaturasAdminData {
   assinaturas: {
     id: string;
     plan: Plano;
-    status: 'pendente' | 'ativa' | 'cancelada';
+    status: 'pendente' | 'ativa' | 'cancelada' | 'expirada';
     amountCents: number;
     paidAt: string | null;
     expiresAt: string | null;
