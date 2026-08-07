@@ -10,10 +10,20 @@ const escapar = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // Monta o regex e o mapa de definições a partir do glossário buscado do backend.
 // Termos maiores primeiro para o casamento preferir o mais específico.
+//
+// Duas decisões que parecem detalhe e não são. A fronteira usa lookaround com
+// classe unicode em vez de \b: o \b do JavaScript só conhece [A-Za-z0-9_], então
+// palavra começando com acento (índice, área) nunca casava, porque entre o espaço
+// e o "í" ele não enxerga fronteira. E o casamento passou a ignorar a caixa, senão
+// toda ocorrência em início de frase se perdia; por isso o mapa é indexado em
+// minúsculas e a busca normaliza.
 export function criarMatcher(glossario: TermoGlossario[]): Matcher {
-  const defs = new Map(glossario.map((g) => [g.term, g.definition]));
+  const defs = new Map(glossario.map((g) => [g.term.toLowerCase(), g.definition]));
   const termos = glossario.map((g) => g.term).sort((a, b) => b.length - a.length);
-  const regex = termos.length ? new RegExp(`\\b(${termos.map(escapar).join('|')})\\b`, 'g') : null;
+  const LETRA = '[\\p{L}\\p{N}_]';
+  const regex = termos.length
+    ? new RegExp(`(?<!${LETRA})(${termos.map(escapar).join('|')})(?!${LETRA})`, 'giu')
+    : null;
   return { regex, defs };
 }
 
@@ -54,11 +64,14 @@ function marcarTexto(texto: string, matcher: Matcher, usados: Set<string>): Reac
   let m: RegExpExecArray | null;
   while ((m = regex.exec(texto)) !== null) {
     const termo = m[0];
-    const definicao = defs.get(termo);
-    if (!definicao || usados.has(termo)) continue;
+    // A chave é normalizada porque o casamento aceita qualquer caixa, mas o texto
+    // exibido continua sendo exatamente o que estava escrito na aula.
+    const chave = termo.toLowerCase();
+    const definicao = defs.get(chave);
+    if (!definicao || usados.has(chave)) continue;
     if (m.index > ultimo) out.push(texto.slice(ultimo, m.index));
     out.push(<TermoDestacado key={k++} termo={termo} definicao={definicao} />);
-    usados.add(termo);
+    usados.add(chave);
     ultimo = m.index + termo.length;
   }
   if (out.length === 0) return texto;
