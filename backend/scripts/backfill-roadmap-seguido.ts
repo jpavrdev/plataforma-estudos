@@ -11,8 +11,8 @@
 //
 // Empate NÃO vira palpite: o aluno fica de fora e será resolvido no runtime assim
 // que tocar uma trilha que diferencie. Medido na base de produção em 2026-08-07,
-// decide cerca de um terço; o resto só fez trilha compartilhada e genuinamente
-// ainda não revelou caminho nenhum.
+// decide 112 dos 489 alunos com progresso; o resto só tocou trilha compartilhada
+// e genuinamente ainda não revelou caminho nenhum.
 //
 // Idempotente: quem já tem linha não é tocado. Só INSERE, nunca apaga nem altera
 // linha existente, então o pior caso é uma associação errada que o aluno corrige
@@ -101,10 +101,11 @@ async function backfill() {
             pulados++;
             continue;
         }
-        const concluiu = (trailId: string) => {
-            const as = aulasDaTrilha.get(trailId);
-            return !!as?.length && as.every((id) => feitas.has(id));
-        };
+        // Trilha TOCADA, não concluída: quem está na décima aula de Python já
+        // revelou o caminho. A primeira versão exigia a trilha inteira e por isso
+        // decidiu 16 alunos onde a medição prometia 112.
+        const tocou = (trailId: string) =>
+            (aulasDaTrilha.get(trailId) ?? []).some((id) => feitas.has(id));
 
         const pontuados = publicados
             .map((r) => {
@@ -112,13 +113,13 @@ async function backfill() {
                 if (!lista.length) return null;
                 let prefixo = 0;
                 for (const e of lista) {
-                    if (!e.trilhas.some(concluiu)) break;
+                    if (!e.trilhas.some(tocou)) break;
                     prefixo++;
                 }
                 let pontos = 0;
                 for (const e of lista)
                     for (const t of e.trilhas)
-                        if (concluiu(t)) pontos += 1 / (roadmapsDaTrilha.get(t)?.size ?? 1);
+                        if (tocou(t)) pontos += 1 / (roadmapsDaTrilha.get(t)?.size ?? 1);
                 return { roadmapId: r.id, slug: r.slug, prefixo, pontos };
             })
             .filter((x): x is NonNullable<typeof x> => x !== null && x.pontos > 0);

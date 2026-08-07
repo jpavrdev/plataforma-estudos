@@ -399,6 +399,30 @@ export async function seguirRoadmap(userId: string, roadmapId: string, explicito
 }
 
 /**
+ * O aluno entrou numa trilha A PARTIR da tela deste roadmap. É o sinal mais forte
+ * que existe sobre qual caminho ele segue, porque não é dedução: ele clicou ali.
+ *
+ * Cria o vínculo se não houver e atualiza a recência sempre. Fica como inferido,
+ * não explícito, porque entrar numa trilha é um ato de estudo e não uma escolha
+ * de caminho declarada; o aluno continua podendo trocar na tela. A diferença para
+ * a inferência por progresso é que aqui não há adivinhação nenhuma.
+ */
+export async function registrarEntradaPorRoadmap(userId: string, roadmapId: string) {
+    const [ja] = await db
+        .select()
+        .from(userRoadmaps)
+        .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
+    if (ja) {
+        await db
+            .update(userRoadmaps)
+            .set({ lastSeenAt: new Date() })
+            .where(eq(userRoadmaps.id, ja.id));
+        return;
+    }
+    await db.insert(userRoadmaps).values({ userId, roadmapId, explicito: false });
+}
+
+/**
  * Abrir o detalhe do roadmap atualiza a recência de quem já segue. NÃO cria
  * vínculo: espiar um roadmap não pode fazer o app achar que o aluno mudou de
  * caminho, senão a curiosidade viraria declaração.
@@ -440,29 +464,44 @@ type DetalheRoadmap = NonNullable<Awaited<ReturnType<typeof obterRoadmap>>>;
  * Estatística. O peso por exclusividade desempata.
  *
  * Devolve null quando empata, e isso é de propósito: melhor perguntar do que
- * cravar um caminho errado. Medido contra a base de produção, decide cerca de um
- * terço dos alunos; o resto ainda não revelou caminho nenhum.
+ * cravar um caminho errado. Medido contra a base de produção, decide 112 dos 489
+ * alunos com progresso; o resto só tocou trilha compartilhada e genuinamente ainda
+ * não revelou caminho nenhum.
  */
-async function inferirRoadmap(detalhes: DetalheRoadmap[]): Promise<DetalheRoadmap | null> {
-    const trilhasConcluidas = new Set<string>();
-    for (const d of detalhes)
-        for (const s of d.stages)
-            if (s.completed)
-                for (const r of s.refs) if (r.refType === "trail") trilhasConcluidas.add(r.refId);
+async function inferirRoadmap(
+    userId: string,
+    detalhes: DetalheRoadmap[],
+): Promise<DetalheRoadmap | null> {
+    // Conta trilha TOCADA (ao menos uma aula feita), não trilha concluída. Quem
+    // está na décima aula de Python já revelou o caminho; exigir as 35 adia a
+    // resposta para depois de ela deixar de ser útil. Medido na base: com
+    // "concluída" a inferência decide 16 alunos, com "tocada" decide 112.
+    const tocadas = new Set(
+        (
+            await db
+                .selectDistinct({ trailId: lessons.trailId })
+                .from(lessonProgress)
+                .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
+                .where(eq(lessonProgress.userId, userId))
+        ).map((r) => r.trailId),
+    );
 
-    const peso = await roadmapsPorTrilha([...trilhasConcluidas]);
+    const tocou = (s: DetalheRoadmap["stages"][number]) =>
+        s.refs.some((r) => r.refType === "trail" && tocadas.has(r.refId));
+
+    const peso = await roadmapsPorTrilha([...tocadas]);
 
     const pontuados = detalhes.map((d) => {
         let prefixo = 0;
         for (const s of d.stages) {
-            if (!s.completed) break;
+            if (!tocou(s)) break;
             prefixo++;
         }
         let pontos = 0;
         for (const s of d.stages)
-            if (s.completed)
-                for (const r of s.refs)
-                    if (r.refType === "trail") pontos += 1 / (peso.get(r.refId) ?? 1);
+            for (const r of s.refs)
+                if (r.refType === "trail" && tocadas.has(r.refId))
+                    pontos += 1 / (peso.get(r.refId) ?? 1);
         return { d, prefixo, pontos };
     });
 
@@ -541,13 +580,18 @@ export async function proximaTrilhaAposConcluir(userId: string, trailId: string)
             Number(b.explicito) - Number(a.explicito) ||
             b.lastSeenAt.getTime() - a.lastSeenAt.getTime(),
     );
-    const declarado = seguidos.length
+    // O vínculo vale para escolher, mas SÓ o explícito vira certeza. Vínculo
+    // inferido continua sendo palpite: apresentá-lo como declarado esconde a
+    // opção de trocar na tela, e o aluno fica preso num caminho que ele nunca
+    // escolheu. Foi exatamente o que aconteceu depois do backfill.
+    const seguido = seguidos.length
         ? (elegiveis.find((d) => d.id === seguidos[0].roadmapId) ?? null)
         : null;
+    const declarado = seguido && seguidos[0].explicito ? seguido : null;
 
     // 2. Inferência pelo progresso. 3. Heurística antiga, que erra em empate mas
     // é melhor que não sugerir nada.
-    const inferido = declarado ? null : await inferirRoadmap(elegiveis);
+    const inferido = declarado ? null : (seguido ?? (await inferirRoadmap(userId, elegiveis)));
     const escolhido =
         declarado ??
         inferido ??
