@@ -11,6 +11,7 @@ const MAPA: Record<string, string[]> = {
     "AWS DVA-C02": ["Nuvem"],
     "AZURE AZ-900": ["Nuvem"],
     "AZURE DP-900": ["Nuvem", "Dados"],
+    "SQL para Dados": ["Dados"],
     "AZURE AI-900": ["Nuvem", "IA"],
     "AZURE AI-901": ["Nuvem", "IA"],
     "AZURE SC-900": ["Nuvem", "Cibersegurança"],
