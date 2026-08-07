@@ -536,6 +536,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "C++ Moderno para os padrões de projeto",
         ],
     },
+    "Defesa e o SOC": {
+        whatYouLearn: [
+            "Como um centro de operações funciona por dentro, sem romantismo",
+            "Fontes de log, normalização, enriquecimento e retenção com critério",
+            "SIEM na prática: consulta, correlação e os limites da ferramenta",
+            "Detecção testada, triagem com método, resposta a incidente e caça",
+        ],
+        prerequisites: [
+            "Ameaças e Ataques na Prática",
+            "Linux e Linha de Comando, e noções de redes",
+        ],
+    },
     "Ameaças e Ataques na Prática": {
         whatYouLearn: [
             "A cadeia de um ataque real, do reconhecimento à exfiltração",
