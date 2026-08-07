@@ -9,7 +9,7 @@ import {
     trails,
     glossary,
 } from "../../schema.ts";
-import { and, asc, count, desc, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 
 /**
@@ -256,9 +256,16 @@ interface CartaoNaFila {
 export async function filaDoDia(
     userId: string,
     limite = 500,
-    filtro?: { trilhas?: string[]; glossario?: boolean },
+    filtro?: { trilhas?: string[]; glossario?: boolean; adiantado?: boolean },
 ): Promise<CartaoNaFila[]> {
-    const vencidos = and(eq(userCards.userId, userId), lte(userCards.proximaRevisao, new Date()));
+    // Modo adiantado serve o que ainda NÃO venceu, do mais perto de vencer para o
+    // mais longe. Existe para quem está em dia e quer estudar mesmo assim, e o
+    // agendador já se protege sozinho: responder cedo cai no bônus abaixo de 1 e
+    // rende menos estabilidade que responder na data.
+    const agora = new Date();
+    const vencidos = filtro?.adiantado
+        ? and(eq(userCards.userId, userId), gt(userCards.proximaRevisao, agora))
+        : and(eq(userCards.userId, userId), lte(userCards.proximaRevisao, agora));
 
     // Sem filtro a fila é o baralho inteiro. Com filtro, a seleção de trilhas e o
     // glossário são somados: dá para revisar duas trilhas juntas, ou só o glossário.

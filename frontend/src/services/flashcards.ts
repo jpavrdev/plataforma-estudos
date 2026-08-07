@@ -65,13 +65,14 @@ export async function resumoFlashcards() {
  * limite vem tudo o que venceu, e a sessão só acaba quando a fila acabar.
  */
 export async function filaDoDia(
-  selecao?: { trilhas?: string[]; glossario?: boolean },
+  selecao?: { trilhas?: string[]; glossario?: boolean; adiantado?: boolean },
   limite?: number | null,
 ) {
   const q = new URLSearchParams();
   if (limite) q.set('limite', String(limite));
   if (selecao?.trilhas?.length) q.set('trilhas', selecao.trilhas.join(','));
   if (selecao?.glossario) q.set('glossario', '1');
+  if (selecao?.adiantado) q.set('adiantado', '1');
   const { data } = await api.get<Cartao[]>(`/flashcards/fila?${q.toString()}`);
   return data;
 }

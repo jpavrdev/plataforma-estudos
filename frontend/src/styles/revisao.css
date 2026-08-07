@@ -70,6 +70,14 @@
   color: var(--success);
 }
 
+.rev-sala__nota {
+  margin: 12px auto 0;
+  max-width: 40ch;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 /* Três cartas empilhadas, só para dar cara de baralho ao botão de começar. */
 .rev-sala__baralho {
   position: relative;

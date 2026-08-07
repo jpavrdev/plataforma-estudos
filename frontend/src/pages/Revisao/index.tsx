@@ -45,6 +45,11 @@ const SESSAO = 'ensina:revisao';
 // precisa de um limite para não aceitar número absurdo digitado sem querer.
 const MAX_POR_SESSAO = 100;
 
+// Quantas cartas o modo adiantado serve quando o aluno não pediu um número. Varar o
+// baralho inteiro adiantado desmontaria o agendamento, então aqui o padrão é um
+// punhado, e não "todas" como na fila normal.
+const ADIANTADO_PADRAO = 10;
+
 const HORA = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
 const DIA = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
 
@@ -104,6 +109,9 @@ export function Revisao() {
   const [comGlossario, setComGlossario] = useState(false);
   const [escolhendo, setEscolhendo] = useState(false);
   const [vazio, setVazio] = useState(false);
+  // Sessão adiantada muda o texto da tela: o aluno precisa saber que está puxando
+  // cartas do futuro, senão estranha por que a fila "vazia" virou cartas.
+  const [adiantando, setAdiantando] = useState(false);
   // Quantas cartas a sessão entrega, como o aluno digitou. Vazio é "vai até acabar".
   const [limiteTexto, setLimiteTexto] = useState('');
   // Nulo é "sessão não começou"; a fila só é buscada quando o aluno manda começar.
@@ -156,11 +164,11 @@ export function Revisao() {
     setAberto(abrir && cartoes.length > 0);
   }, []);
 
-  async function comecar() {
-    const escolha = { trilhas: [...selecao], glossario: comGlossario, limite };
+  async function comecar(adiantado = false) {
+    const escolha = { trilhas: [...selecao], glossario: comGlossario, limite, adiantado };
     setVazio(false);
     try {
-      const cartoes = await filaDoDia(escolha, limite);
+      const cartoes = await filaDoDia(escolha, limite ?? (adiantado ? ADIANTADO_PADRAO : null));
       // Escolha sem nada vencido é avisada aqui, e não desabilitando a linha na lista:
       // linha apagada contaria quanto tem em cada baralho, que é o que não queremos
       // mostrar.
@@ -168,6 +176,7 @@ export function Revisao() {
         setVazio(true);
         return;
       }
+      setAdiantando(adiantado);
       // A sessão fica guardada para sobreviver a um F5. Não guardamos as cartas: no
       // retorno a fila é remontada do servidor, e o que já foi respondido não vence
       // mais, então o progresso se preserva sozinho.
@@ -184,6 +193,7 @@ export function Revisao() {
     localStorage.removeItem(SESSAO);
     setFila(null);
     setAberto(false);
+    setAdiantando(false);
     void carregarSala();
   }
 
@@ -473,26 +483,34 @@ export function Revisao() {
                     Ir para as trilhas
                   </Link>
                 </>
-              ) : tudoMarcado ? (
-                <>
-                  <h3>Você está em dia</h3>
-                  <p>
-                    Nenhuma carta venceu ainda. Cada uma volta na data que a sua resposta marcou, e
-                    o que você achou fácil volta bem mais tarde.
-                  </p>
-                </>
               ) : (
                 <>
-                  <h3>Este conteúdo está em dia</h3>
-                  <p>Nada venceu no que você escolheu. Troque para revisar outra coisa.</p>
-                  <button
-                    type="button"
-                    className="rev-sala__selecao"
-                    onClick={() => setEscolhendo(true)}
-                  >
-                    <span>{descricaoSelecao}</span>
-                    <b>Trocar</b>
+                  <h3>{tudoMarcado ? 'Você está em dia' : 'Este conteúdo está em dia'}</h3>
+                  <p>
+                    {tudoMarcado
+                      ? 'Nenhuma carta venceu ainda. Cada uma volta na data que a sua resposta marcou, e o que você achou fácil volta bem mais tarde.'
+                      : 'Nada venceu no que você escolheu. Troque o conteúdo ou puxe cartas do futuro.'}
+                  </p>
+                  {!tudoMarcado && (
+                    <button
+                      type="button"
+                      className="rev-sala__selecao"
+                      onClick={() => setEscolhendo(true)}
+                    >
+                      <span>{descricaoSelecao}</span>
+                      <b>Trocar</b>
+                    </button>
+                  )}
+                  {/* Estar em dia virava parede: quem tinha vinte minutos livres não
+                      tinha o que fazer. Puxar cartas que ainda não venceram resolve,
+                      e o agendador já cobra o preço de revisar cedo. */}
+                  <button className="btn btn--ghost" onClick={() => void comecar(true)}>
+                    Revisar adiantado
                   </button>
+                  <p className="rev-sala__nota">
+                    Puxa {limite ?? ADIANTADO_PADRAO} cartas que ainda não venceram. Elas rendem
+                    menos que revisadas na data certa.
+                  </p>
                 </>
               )}
             </div>
@@ -518,8 +536,9 @@ export function Revisao() {
               </span>
               <h3>Sessão concluída</h3>
               <p>
-                {feitos} {feitos === 1 ? 'cartão revisado' : 'cartões revisados'}. Cada um voltou
-                para uma data diferente, conforme você se avaliou.
+                {feitos} {feitos === 1 ? 'cartão revisado' : 'cartões revisados'}
+                {adiantando ? ', adiantados' : ''}. Cada um voltou para uma data diferente, conforme
+                você se avaliou.
               </p>
               <button className="btn btn--accent" onClick={terminar}>
                 Voltar
@@ -788,12 +807,7 @@ export function Revisao() {
               )}
 
               <div className="rev-escolha__rodape">
-                <button
-                  className="btn btn--accent"
-                  onClick={() => {
-                    void comecar();
-                  }}
-                >
+                <button className="btn btn--accent" onClick={() => void comecar()}>
                   Começar revisão
                 </button>
               </div>
