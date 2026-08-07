@@ -23,7 +23,11 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { BlocosConteudo, md, TextoMath } from '../../components/BlocosConteudo';
 import { getTrailLang } from '../../utils/trailLang';
-import { proximaTrilhaRoadmap, type ProximaTrilhaRoadmap } from '../../services/roadmaps';
+import {
+  proximaTrilhaRoadmap,
+  seguirRoadmap,
+  type ProximaTrilhaRoadmap,
+} from '../../services/roadmaps';
 
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
 
@@ -59,6 +63,22 @@ export function Aula() {
       setBuscandoProxima(false);
     }
     navigate('/trilhas');
+  }
+
+  // O aluno corrige o palpite: passa a seguir o roadmap que escolheu e a sugestão
+  // é recalculada a partir dele, agora com origem declarada.
+  async function trocarRoadmap(slug: string) {
+    try {
+      await seguirRoadmap(slug);
+      const r = await proximaTrilhaRoadmap(trailId!);
+      setProximaRoadmap(r);
+      if (!r.roadmap || !r.proximaTrilha) {
+        setPerguntaTrilha(false);
+        navigate('/trilhas');
+      }
+    } catch (err) {
+      console.error('Falha ao trocar o roadmap seguido.', err);
+    }
   }
 
   useEffect(() => {
@@ -154,6 +174,26 @@ export function Aula() {
                   {NIVEL_LABEL[proximaRoadmap.proximaTrilha.level]}
                 </span>
               </div>
+              {/* Esta trilha vive em mais de um roadmap e o aluno nunca disse qual
+                  segue, então a sugestão é um palpite. Melhor admitir e deixar ele
+                  corrigir do que mandá-lo para o caminho errado em silêncio. */}
+              {proximaRoadmap.origem !== 'declarado' && !!proximaRoadmap.outrosRoadmaps?.length && (
+                <div className="solve-next__troca">
+                  <span className="solve-next__troca-aviso">
+                    Está seguindo outro caminho? Escolha e nós lembramos:
+                  </span>
+                  {proximaRoadmap.outrosRoadmaps.map((r) => (
+                    <button
+                      key={r.slug}
+                      type="button"
+                      className="solve-next__troca-opcao"
+                      onClick={() => trocarRoadmap(r.slug)}
+                    >
+                      {r.name}
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="solve-next__acoes">
                 <button
                   className="solve-next__ficar"
