@@ -240,6 +240,10 @@ interface CartaoNaFila {
     origem: "flashcard" | "glossario";
     trilha: string | null;
     aula: string | null;
+    // De onde a carta saiu. Vai junto para o verso virar link e o aluno poder reler
+    // a aula na hora em que descobriu que não lembra. Nulo em termo de glossário.
+    trilhaId: string | null;
+    aulaId: string | null;
 }
 
 /**
@@ -321,7 +325,9 @@ async function montarCartoes(
                   frente: flashcards.frente,
                   verso: flashcards.verso,
                   aula: lessons.title,
+                  aulaId: lessons.id,
                   trilha: trails.name,
+                  trilhaId: trails.id,
               })
               .from(flashcards)
               .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
@@ -344,6 +350,8 @@ async function montarCartoes(
             origem: "flashcard",
             trilha: c.trilha,
             aula: c.aula,
+            trilhaId: c.trilhaId,
+            aulaId: c.aulaId,
         });
     for (const t of termos)
         porId.set(t.id, {
@@ -353,6 +361,8 @@ async function montarCartoes(
             origem: "glossario",
             trilha: null,
             aula: null,
+            trilhaId: null,
+            aulaId: null,
         });
 
     // Mantém a ordem da fila, e descarta o que sumiu do catálogo.
@@ -458,7 +468,9 @@ export async function revisaoDaTrilha(userId: string, trailId: string) {
             frente: flashcards.frente,
             verso: flashcards.verso,
             aula: lessons.title,
+            aulaId: lessons.id,
             trilha: trails.name,
+            trilhaId: trails.id,
         })
         .from(flashcards)
         // O join com o progresso é o que garante a regra: só entra cartão de aula

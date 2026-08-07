@@ -817,9 +817,26 @@ export function Revisao() {
                   <div className="rev__face rev__face--verso">
                     <span className="rev__origem">Resposta</span>
                     <p className="rev__texto rev__texto--verso">{atual.verso}</p>
-                    <span className="rev__rodape">
-                      {atual.origem === 'glossario' ? 'Termo do glossário' : atual.aula}
-                    </span>
+                    {/* O link só existe no verso: na frente ele convidaria a fugir
+                        antes de tentar lembrar. Aqui a pessoa já sabe se precisa
+                        reler, e é o momento em que a dúvida está viva. Abre em outra
+                        aba para a sessão não ser interrompida, e para o clique com
+                        stopPropagation, senão a carta viraria junto. */}
+                    {atual.trilhaId && atual.aulaId ? (
+                      <a
+                        className="rev__rodape rev__rodape--link"
+                        href={`/trilhas/${atual.trilhaId}/aula/${atual.aulaId}`}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Reler {atual.aula}
+                      </a>
+                    ) : (
+                      <span className="rev__rodape">
+                        {atual.origem === 'glossario' ? 'Termo do glossário' : atual.aula}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

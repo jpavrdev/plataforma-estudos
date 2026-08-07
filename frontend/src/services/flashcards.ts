@@ -9,6 +9,8 @@ export interface Cartao {
   origem: 'flashcard' | 'glossario';
   trilha: string | null;
   aula: string | null;
+  trilhaId: string | null;
+  aulaId: string | null;
 }
 
 export interface ResumoFlashcards {
