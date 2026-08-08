@@ -84,6 +84,27 @@ const APOS_ERRO = 0.4;
 
 const entre = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
+/**
+ * Fisher-Yates na ordem de APRESENTAÇÃO. Roda sempre depois de o limite já ter
+ * cortado a fila: quem entra na sessão continua sendo decidido pela data de
+ * vencimento, que é trabalho do agendador. Sortear antes do corte faria a carta
+ * atrasada há duas semanas perder a vaga para uma que venceu hoje.
+ *
+ * Por que embaralhar: em ordem fixa a carta anterior vira pista da seguinte, e o
+ * aluno passa a responder a sequência em vez da pergunta. Isso infla a nota que
+ * ele dá, e a nota é justamente o que define a estabilidade e a próxima data. A
+ * ordem fixa não deixa a revisão só monótona, ela distorce o agendador. De
+ * quebra, misturar as aulas é prática intercalada em vez de em bloco, que rende
+ * mais retenção mesmo parecendo mais difícil na hora.
+ */
+function embaralhar<T>(itens: T[]): T[] {
+    for (let i = itens.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [itens[i], itens[j]] = [itens[j], itens[i]];
+    }
+    return itens;
+}
+
 /** A curva: chance de lembrar depois de tantos dias sem rever o cartão. */
 export function retencao(estabilidade: number, dias: number): number {
     if (estabilidade <= 0) return 0;
@@ -350,7 +371,10 @@ export async function filaDoDia(
     }
     if (!linhas.length) return [];
 
-    return montarCartoes(linhas);
+    // A ordem por vencimento acima escolheu QUAIS cartas entram. Daqui para frente
+    // a ordem é sorteada, senão a fila sai em blocos por aula, sempre na mesma
+    // sequência em que as cartas foram autoradas.
+    return montarCartoes(embaralhar(linhas));
 }
 
 async function montarCartoes(
@@ -552,13 +576,15 @@ export async function revisaoDaTrilha(userId: string, trailId: string) {
     // trilho de linguagem chega mesmo depois do baralho limpo. Fica a primeira na
     // ordem da trilha, que é estável.
     const vistas = new Set<string>();
-    return cartoes
-        .filter((c) => {
-            if (vistas.has(c.frente)) return false;
-            vistas.add(c.frente);
-            return true;
-        })
-        .map((c) => ({ ...c, origem: "flashcard" as const }));
+    const unicos = cartoes.filter((c) => {
+        if (vistas.has(c.frente)) return false;
+        vistas.add(c.frente);
+        return true;
+    });
+
+    // A ordem da trilha acima serve ao dedup, que precisa ser estável. A revisão em
+    // si sai sorteada: aqui o objetivo é retenção, não refazer o caminho da trilha.
+    return embaralhar(unicos).map((c) => ({ ...c, origem: "flashcard" as const }));
 }
 
 /** Quantos cartões a trilha já liberou para este aluno. Alimenta a chamada de revisão. */
