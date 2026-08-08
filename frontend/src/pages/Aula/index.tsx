@@ -22,7 +22,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { BlocosConteudo, md, TextoMath } from '../../components/BlocosConteudo';
-import { opcoesKatex } from '../../utils/katex';
+import { normalizarFormulasEmBloco, opcoesKatex } from '../../utils/katex';
 import { getTrailLang } from '../../utils/trailLang';
 import {
   proximaTrilhaRoadmap,
@@ -372,7 +372,7 @@ function ConteudoAula({
             rehypePlugins={[[rehypeKatex, opcoesKatex]]}
             components={md}
           >
-            {aula.content}
+            {normalizarFormulasEmBloco(aula.content)}
           </ReactMarkdown>
         </div>
       ) : (
@@ -668,7 +668,7 @@ function Quiz({
                   rehypePlugins={[[rehypeKatex, opcoesKatex]]}
                   components={md}
                 >
-                  {explicacao}
+                  {normalizarFormulasEmBloco(explicacao)}
                 </ReactMarkdown>
               </div>
             )}

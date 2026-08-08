@@ -3,7 +3,7 @@ import ReactMarkdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { opcoesKatex } from '../utils/katex';
+import { normalizarFormulasEmBloco, opcoesKatex } from '../utils/katex';
 
 import { parseGrid } from '../utils/tabela';
 import { glossariar, criarMatcher } from './Glossario';
@@ -154,7 +154,7 @@ export function BlocosConteudo({ blocks }: { blocks: Bloco[] }) {
             rehypePlugins={[[rehypeKatex, opcoesKatex]]}
             components={componentes}
           >
-            {b.value}
+            {normalizarFormulasEmBloco(b.value)}
           </ReactMarkdown>
         );
       })}
@@ -188,7 +188,7 @@ export function TextoMath({ children }: { children: string }) {
         },
       }}
     >
-      {children}
+      {normalizarFormulasEmBloco(children)}
     </ReactMarkdown>
   );
 }
