@@ -8,6 +8,7 @@ import { javascript } from "./javascript.ts";
 import { java } from "./java.ts";
 import { html } from "./html.ts";
 import { fundamentosDeLlms } from "./fundamentos-de-llms.ts";
+import { aplicacoesComLlms } from "./aplicacoes-com-llms.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -18,4 +19,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     java,
     html,
     fundamentosDeLlms,
+    aplicacoesComLlms,
 ];
