@@ -353,5 +353,287 @@ export const fundamentosDeLlms: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "De onde vem o nome do parâmetro temperatura?",
+                        verso: "Da física estatística, pela distribuição de Boltzmann.",
+                    },
+                    {
+                        frente: "O que acontece com temperatura acima de 1?",
+                        verso: "A saída fica errática; é terreno de experimento.",
+                    },
+                    {
+                        frente: "Temperatura é botão de qualidade?",
+                        verso: "Não. É botão de variância.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que outro nome tem o top-p?",
+                        verso: "Nucleus sampling.",
+                    },
+                    {
+                        frente: "O que o top-k limita?",
+                        verso: "O sorteio às k opções mais prováveis, em número fixo.",
+                    },
+                    {
+                        frente: "Em que tipo de modelo o top-k é mais comum?",
+                        verso: "Nos modelos abertos.",
+                    },
+                    {
+                        frente: "Em que valor o top-p costuma ficar quando não se mexe nele?",
+                        verso: "Entre 0,9 e 1,0.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "A sequência de parada aparece na resposta?",
+                        verso: "Não. Ela encerra a geração e fica de fora.",
+                    },
+                    {
+                        frente: "Por que a stop sequence é mais confiável que pedir no prompt?",
+                        verso: "A parada é mecânica, executada pela infraestrutura.",
+                    },
+                    {
+                        frente: "Que teto de saída uma classificação de uma palavra pede?",
+                        verso: "Minúsculo, de dezenas de tokens.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Como se chama escolher sempre a opção mais provável?",
+                        verso: "Decodificação gulosa.",
+                    },
+                    {
+                        frente: "Por que a aritmética de GPU introduz variação?",
+                        verso: "Somar em ordens diferentes dá resultados minimamente diferentes.",
+                    },
+                    {
+                        frente: "Como avaliar uma saída de LLM que varia entre execuções?",
+                        verso: "Rodando a mesma entrada várias vezes e medindo a taxa de acerto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que faixa de temperatura serve para suporte e chat factual?",
+                        verso: "De 0,2 a 0,5.",
+                    },
+                    {
+                        frente: "Que configuração usar para testes e avaliação?",
+                        verso: "Temperatura 0, seed se houver e versão datada fixa.",
+                    },
+                    {
+                        frente: "Por que código pede um teto de saída generoso?",
+                        verso: "Truncar código é pior que gastar tokens.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que famílias representam os modelos de pesos abertos?",
+                        verso: "Llama, Mistral, Qwen, DeepSeek e Gemma.",
+                    },
+                    {
+                        frente: "Todo modelo de pesos abertos permite uso comercial?",
+                        verso: "Não. Há licenças que restringem; ler a licença é parte do trabalho.",
+                    },
+                    {
+                        frente: "O que convergiu entre as APIs dos dois campos?",
+                        verso: "O formato de mensagens com papéis system, user e assistant.",
+                    },
+                    {
+                        frente: "Que servidores expõem modelo aberto com API compatível com o padrão?",
+                        verso: "vLLM e Ollama.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantas vezes o flagship custa mais que o mini, por token?",
+                        verso: "De 20 a 60 vezes.",
+                    },
+                    {
+                        frente: "Onde a distância entre mini e flagship aparece de verdade?",
+                        verso: "Em raciocínio longo, ambiguidade e tarefas de várias etapas.",
+                    },
+                    {
+                        frente: "Como se controla quanto um raciocinador pensa antes de responder?",
+                        verso: "Por níveis de esforço ou orçamento de tokens de pensamento.",
+                    },
+                    {
+                        frente: "De que tamanho é o conjunto de teste para decidir o porte do modelo?",
+                        verso: "De 30 a 100 exemplos reais com resposta esperada.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o MMLU mede?",
+                        verso: "Conhecimento geral, em formato de prova multidisciplinar.",
+                    },
+                    {
+                        frente: "O que é a saturação de um benchmark?",
+                        verso: "Os modelos de ponta empatam perto do teto e a diferença some.",
+                    },
+                    {
+                        frente: "O que o GPQA cobra?",
+                        verso: "Ciência difícil, de nível pós-graduação.",
+                    },
+                    {
+                        frente: "Quando reavaliar a escolha de modelo?",
+                        verso: "Em lançamento relevante ou renegociação, com o teste automatizado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Com quantos bits a quantização costuma guardar os pesos?",
+                        verso: "Com 4 ou 8, no lugar dos 16 do treino.",
+                    },
+                    {
+                        frente: "Quanto ocupa um modelo de 8 bilhões de parâmetros em 4 bits?",
+                        verso: "Cerca de 5 GB, e roda em notebook comum.",
+                    },
+                    {
+                        frente: "Que motor de execução está por trás do Ollama e do LM Studio?",
+                        verso: "O llama.cpp.",
+                    },
+                    {
+                        frente: "Qual é a contrapartida de rodar modelo local em notebook?",
+                        verso: "A qualidade fica bem atrás dos flagships de API.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que modelos geram imagem a partir de texto?",
+                        verso: "DALL-E, Imagen, Midjourney e Flux, entre outros.",
+                    },
+                    {
+                        frente: "O gerador de imagem é o mesmo endpoint do chat?",
+                        verso: "Não. Costuma ser modelo e endpoint separados.",
+                    },
+                    {
+                        frente: "O que a visão dos modelos trouxe além do OCR antigo?",
+                        verso: "Compreensão de layout, tabelas e manuscrito razoável.",
+                    },
+                    {
+                        frente: "Que princípio orienta a escolha de modalidade?",
+                        verso: "Usar a que a tarefa pede, não a mais impressionante.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que caso ficou emblemático de alucinação no direito?",
+                        verso: "Advogados sancionados por petição com jurisprudência inventada.",
+                    },
+                    {
+                        frente: "Que tipo de pedido aumenta o risco de alucinação?",
+                        verso: "Quanto mais específico o fato: números, nomes, datas e referências.",
+                    },
+                    {
+                        frente: "Que instrução simples de prompt reduz alucinação?",
+                        verso: "Permitir explicitamente que o modelo responda que não sabe.",
+                    },
+                    {
+                        frente: "Qual é o perigo real, mais do que o modelo errar?",
+                        verso: "O sistema tratar o texto gerado como fato, sem verificação.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O modelo sabe que horas são?",
+                        verso: "Não. Ele não tem relógio nem calendário próprio.",
+                    },
+                    {
+                        frente: "Que três caminhos trazem o presente até o modelo?",
+                        verso: "Busca na web, RAG e injeção direta do volátil no prompt.",
+                    },
+                    {
+                        frente: "Modelo com busca embutida está sempre atualizado?",
+                        verso: "Não. A busca é ferramenta acionada, nem sempre na hora certa.",
+                    },
+                    {
+                        frente: "O que pode ficar por conta da memória do modelo?",
+                        verso: "O estável: linguagem, conceitos e raciocínio.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O pós-treino elimina o viés?",
+                        verso: "Não. Reduz os casos gritantes, e o viés fino sobrevive.",
+                    },
+                    {
+                        frente: "Que tipo de instrução no prompt reduz o espaço do viés?",
+                        verso: "Critérios objetivos explícitos, proibindo inferir por atributo pessoal.",
+                    },
+                    {
+                        frente: "Onde a qualidade em português cai mais rápido?",
+                        verso: "Nos modelos menores, treinados com menos dados da língua.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde um prompt injection costuma se esconder?",
+                        verso: "Texto branco no fundo branco, comentário de HTML, rodapé de email.",
+                    },
+                    {
+                        frente: "Demarcar o conteúdo de terceiros blinda contra injection?",
+                        verso: "Não. Ajuda, mas o modelo ainda pode obedecer ao injetado.",
+                    },
+                    {
+                        frente: "Que prática protege dado sensível que precisa passar pelo prompt?",
+                        verso: "Mascarar antes da chamada e reidratar depois, no seu código.",
+                    },
+                    {
+                        frente: "Por que injection fica mais grave quando o modelo ganha ferramentas?",
+                        verso: "O ataque deixa de constranger e vira ação no mundo real.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que pergunta o módulo da janela de contexto responde?",
+                        verso: "O que cabe, onde a informação se perde e como gerir.",
+                    },
+                    {
+                        frente: "Que pergunta o módulo de embeddings responde?",
+                        verso: "Como significado vira número comparável.",
+                    },
+                    {
+                        frente: "O que envelhece rápido na área, segundo o fechamento?",
+                        verso: "Nomes de modelo, preços e rankings.",
+                    },
+                ],
+            },
+        },
     },
 };
