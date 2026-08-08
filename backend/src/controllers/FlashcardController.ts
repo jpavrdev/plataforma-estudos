@@ -36,8 +36,7 @@ export const getFila = async (req: Request, res: Response, next: NextFunction) =
             .map((t) => t.trim())
             .filter((t) => UUID.test(t));
         const glossario = req.query.glossario === "1";
-        const adiantado = req.query.adiantado === "1";
-        res.json(await filaDoDia(req.userId!, limite, { trilhas, glossario, adiantado }));
+        res.json(await filaDoDia(req.userId!, limite, { trilhas, glossario }));
     } catch (err) {
         next(err);
     }

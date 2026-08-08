@@ -185,6 +185,82 @@ async function vencerHa(userId: string, frente: string, dias: number) {
         .where(and(eq(userCards.userId, userId), eq(userCards.origemId, card.id)));
 }
 
+describe("a fila serve a trilha inteira, e não só o que venceu", () => {
+    beforeEach(limparBanco);
+
+    test("carta agendada para o futuro continua na fila", async () => {
+        const aluno = await novoAluno();
+        await aulaCom(5, aluno.id);
+        // Tudo agendado para daqui a uma semana: pela regra antiga, fila vazia.
+        await db
+            .update(userCards)
+            .set({ proximaRevisao: new Date(Date.now() + 7 * 86400000) })
+            .where(eq(userCards.userId, aluno.id));
+
+        const fila = await filaDoDia(aluno.id);
+
+        assert.equal(fila.length, 5, "a fila tem de servir o que ainda não venceu");
+    });
+
+    test("a sala e a revisão da trilha entregam a mesma quantidade", async () => {
+        const aluno = await novoAluno();
+        const { trilha } = await aulaCom(8, aluno.id);
+        // Metade vencida, metade no futuro: o total não pode depender disso.
+        const cartas = await db.select().from(userCards).where(eq(userCards.userId, aluno.id));
+        for (const [i, c] of cartas.entries())
+            await db
+                .update(userCards)
+                .set({
+                    proximaRevisao: new Date(Date.now() + (i % 2 ? 5 : -5) * 86400000),
+                })
+                .where(eq(userCards.id, c.id));
+
+        const sala = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
+        const daTrilha = await revisaoDaTrilha(aluno.id, trilha.id);
+
+        assert.equal(sala.length, daTrilha.length);
+        assert.deepEqual(
+            new Set(sala.map((c) => c.frente)),
+            new Set(daTrilha.map((c) => c.frente)),
+        );
+    });
+
+    test("a gêmea não conta duas vezes na fila da sala", async () => {
+        const { trilha, js, py } = await montarTrilhaComDoisTrilhos();
+        const aluno = await novoAluno();
+        await concluir(aluno.id, js.id);
+        await concluir(aluno.id, py.id);
+        // Simula o baralho sujo de antes da correção, com a gêmea aberta na mão.
+        const [gemea] = await db
+            .select()
+            .from(flashcards)
+            .where(eq(flashcards.frente, "O que é um algoritmo?"));
+        await db
+            .insert(userCards)
+            .values({ userId: aluno.id, origem: "flashcard", origemId: gemea.id })
+            .onConflictDoNothing();
+
+        const sala = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
+        const perguntas = sala.map((c) => c.frente);
+
+        assert.equal(new Set(perguntas).size, perguntas.length, "pergunta repetida na sala");
+    });
+
+    test("o limite continua priorizando o mais atrasado", async () => {
+        const aluno = await novoAluno();
+        await aulaCom(6, aluno.id);
+        for (let i = 0; i < 6; i++) await vencerHa(aluno.id, `Pergunta ${i}?`, 30 - i * 10);
+
+        const fila = await filaDoDia(aluno.id, 2);
+
+        assert.equal(fila.length, 2);
+        assert.deepEqual(
+            new Set(fila.map((c) => c.frente)),
+            new Set(["Pergunta 0?", "Pergunta 1?"]),
+        );
+    });
+});
+
 describe("ordem da fila de revisão", () => {
     beforeEach(limparBanco);
 
