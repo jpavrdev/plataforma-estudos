@@ -170,5 +170,165 @@ export const testesEQualidade: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que o relógio atrapalha um teste unitário?",
+                        verso: "Sem controlá-lo, o resultado muda a cada execução.",
+                    },
+                    {
+                        frente: "Por que banco de dados atrapalha um teste unitário?",
+                        verso: "É lento, exige estado limpo e acopla os testes entre si.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um stub faz?",
+                        verso: "Devolve uma resposta fixa e pronta, sem lógica real por trás.",
+                    },
+                    {
+                        frente: "O que um mock faz além do stub?",
+                        verso: "Registra as chamadas, para depois verificar a interação.",
+                    },
+                    {
+                        frente: "O que um spy faz?",
+                        verso: "Observa uma função real sem trocar o comportamento dela.",
+                    },
+                    {
+                        frente: "O que um fake é?",
+                        verso: "Uma implementação simplificada porém funcional, como repositório em memória.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que vi.fn() devolve por padrão, sem configuração?",
+                        verso: "undefined, quando chamada.",
+                    },
+                    {
+                        frente: "Que método controla o retorno de um vi.fn assíncrono?",
+                        verso: "mockResolvedValue, feito para funções que devolvem Promise.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que toHaveBeenCalled verifica?",
+                        verso: "Se a função foi chamada ao menos uma vez, sem checar argumento.",
+                    },
+                    {
+                        frente: "Que matcher confirma os argumentos exatos de uma chamada?",
+                        verso: "toHaveBeenCalledWith",
+                    },
+                    {
+                        frente: "Para que serve toHaveBeenCalledTimes?",
+                        verso: "Confirmar que a função foi chamada exatamente N vezes.",
+                    },
+                    {
+                        frente: "De que toHaveBeenCalledOnce é atalho?",
+                        verso: "De toHaveBeenCalledTimes com o valor um.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o risco principal de mockar quase tudo?",
+                        verso: "O teste passa a verificar o próprio mock, não o comportamento real.",
+                    },
+                    {
+                        frente: "O que deve permanecer real dentro de um teste unitário?",
+                        verso: "A lógica de decisão do próprio service, que é o alvo do teste.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que tipo de defeito o teste de integração pega e o unitário não?",
+                        verso: "SQL errado, serialização e ordem de middleware.",
+                    },
+                    {
+                        frente: "O que continua real num teste de integração de CRUD?",
+                        verso: "A rota, o middleware e o banco de dados.",
+                    },
+                    {
+                        frente: "Como as dependências aparecem em cada nível?",
+                        verso: "Mockadas no unitário; reais no de integração.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que hook sobe e migra o banco de teste?",
+                        verso: "O beforeAll, que roda uma vez antes de todos.",
+                    },
+                    {
+                        frente: "Que hook limpa as tabelas entre os testes?",
+                        verso: "O afterEach.",
+                    },
+                    {
+                        frente: "Que hook fecha a conexão com o banco?",
+                        verso: "O afterAll, com o encerramento do pool.",
+                    },
+                    {
+                        frente: "Por que não rodar integração contra o banco de desenvolvimento?",
+                        verso: "A limpeza entre testes apagaria os dados de dev.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o supertest recebe para testar uma rota Express?",
+                        verso: "O próprio objeto app, sem precisar subir porta.",
+                    },
+                    {
+                        frente: "Onde fica o JSON já parseado da resposta no supertest?",
+                        verso: "Em res.body, como objeto ou array.",
+                    },
+                    {
+                        frente: "Que método do supertest manda o corpo da requisição?",
+                        verso: "O send, com o objeto que vira JSON.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Num teste de POST, o que confirma a resposta esperada?",
+                        verso: "Conferir o status e o corpo da resposta.",
+                    },
+                    {
+                        frente: "De onde vem o id usado no GET depois de um POST?",
+                        verso: "Do corpo devolvido pela resposta do POST.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza um teste isolado dos demais?",
+                        verso: "Não depende de dado de outro teste, nem deixa dado para trás.",
+                    },
+                    {
+                        frente: "Por que o teste de integração é mais lento que o unitário?",
+                        verso: "Ele faz entrada e saída real, como consulta a banco.",
+                    },
+                    {
+                        frente: "Qual é a quantidade típica de cada nível?",
+                        verso: "Centenas de unitários, um bloco por endpoint, poucos de ponta a ponta.",
+                    },
+                ],
+            },
+        },
     },
 };
