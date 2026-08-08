@@ -499,5 +499,262 @@ export const logicaDeProgramacao: CartasDaTrilha = {
                 ],
             },
         },
+
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Definir uma função é como programar o quê, na imagem da aula?",
+                        verso: "Um botão de controle remoto: nada acontece só por ele ter sido programado.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "Qual palavra abre a definição de uma função em JavaScript?",
+                        verso: "function, seguida do nome, dos parênteses e do bloco entre chaves.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Qual palavra abre a definição de uma função em Python?",
+                        verso: "def, seguida do nome, dos parênteses e dos dois-pontos.",
+                    },
+                    {
+                        frente: "O que define o corpo de uma função em Python?",
+                        verso: "A indentação das linhas abaixo dos dois-pontos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que uma função com parâmetro evita escrever uma função por caso?",
+                        verso: "O mesmo corpo serve a valores diferentes, trocando só o argumento na chamada.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre mostrar na tela e devolver com return?",
+                        verso: "Mostrar serve ao humano ler; devolver serve ao programa usar o valor depois.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "O que se guarda ao atribuir o retorno de uma função JavaScript sem return?",
+                        verso: "undefined, porque não houve valor devolvido.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "O que se guarda ao atribuir o retorno de uma função Python sem return?",
+                        verso: "None, porque não houve valor devolvido.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Na analogia da aula, o que representa a variável global?",
+                        verso: "O aviso no mural da entrada: todo mundo que passa consegue ver.",
+                    },
+                    {
+                        frente: "O que acontece com a variável local quando a função termina?",
+                        verso: "Some, como o que ficou na sala de reunião depois que todos saíram.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Uma função pode chamar outra função?",
+                        verso: "Pode, e é assim que partes pequenas montam a resposta final.",
+                    },
+                    {
+                        frente: "Na analogia da festa, o que cada função representa?",
+                        verso: "Um responsável por uma tarefa isolada: comida, decoração ou música.",
+                    },
+                ],
+            },
+        },
+
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que o índice do último elemento é o tamanho menos um?",
+                        verso: "Porque a contagem das posições começa em zero, não em um.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "O que dá o tamanho de um array em JavaScript?",
+                        verso: "A propriedade length, escrita sem parênteses.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "O que dá o tamanho de uma lista em Python?",
+                        verso: "A função len(lista), e não lista.length como em outras linguagens.",
+                    },
+                    {
+                        frente: "O que o índice negativo faz numa lista Python?",
+                        verso: "Conta a partir do fim: o -1 é o último elemento.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "É preciso definir o tamanho da lista na hora de criá-la?",
+                        verso: "Não. Ela cresce e encolhe conforme o programa roda.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "O que unshift e shift fazem num array?",
+                        verso: "Mexem no começo: unshift adiciona, shift remove e devolve o primeiro.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Como se adicionam vários itens de uma vez a uma lista Python?",
+                        verso: "Com extend, passando a lista dos novos valores; o append entra um por vez.",
+                    },
+                    {
+                        frente: "Como se remove o primeiro item de uma lista em Python?",
+                        verso: "Com pop(0), passando o índice zero.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que não escrever lista[0], lista[1], lista[2] na mão?",
+                        verso: "Só funciona sabendo o tamanho, e vira inviável com mil posições.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "Quando usar for...of em vez do for com índice?",
+                        verso: "Quando só o valor importa; com índice serve quando a posição importa.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Quando usar enumerate ao percorrer uma lista?",
+                        verso: "Quando você precisa do valor e da posição ao mesmo tempo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que descrever uma pessoa com posições numeradas é frágil?",
+                        verso: "Trocar a ordem sem querer quebraria o programa inteiro.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "Quais são as duas formas de acessar uma propriedade de objeto em JavaScript?",
+                        verso: "Com ponto, obj.chave, ou com colchetes e a chave entre aspas.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Como se acessa um valor dentro de um dicionário em Python?",
+                        verso: "Sempre por colchetes, com a chave entre aspas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Com que estrutura conhecida uma lista de registros se parece?",
+                        verso: "Uma planilha: cada posição é uma linha e cada campo é uma coluna.",
+                    },
+                ],
+            },
+        },
+
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os quatro passos do roteiro para atacar um problema?",
+                        verso: "Entender, quebrar em passos, escolher as ferramentas e testar aos poucos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como funciona a busca linear?",
+                        verso: "Percorre item a item comparando, e para assim que encontra o que procura.",
+                    },
+                    {
+                        frente: "Qual é a receita para achar o maior valor de uma lista?",
+                        verso: "Apostar no primeiro item como campeão e trocar sempre que aparecer alguém maior.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Que atalho o Python oferece para saber se um item está numa lista?",
+                        verso: "O operador in, que já devolve True ou False.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é o passo que a ordenação por seleção repete?",
+                        verso: "Achar o menor do trecho que falta e trocá-lo com o primeiro desse trecho.",
+                    },
+                    {
+                        frente: "Vale escrever a ordenação na mão no dia a dia?",
+                        verso: "Não. Entender a ideia ajuda a raciocinar, mas o pronto da linguagem resolve.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Qual é a diferença entre sorted() e .sort() em Python?",
+                        verso: "O sorted devolve uma lista nova; o .sort reordena a própria lista.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que fazer quando o código roda, mas o resultado sai errado?",
+                        verso: "Imprimir os valores em pontos-chave e testar uma hipótese de cada vez.",
+                    },
+                ],
+                javascript: [
+                    {
+                        frente: "Que erro comum faz um if entrar sempre como verdadeiro?",
+                        verso: "Usar = no lugar de ===, porque o = atribui em vez de comparar.",
+                    },
+                ],
+                python: [
+                    {
+                        frente: "Que erro o Python acusa quando a indentação está desalinhada?",
+                        verso: "IndentationError, e ele nem chega a rodar o programa.",
+                    },
+                    {
+                        frente: "Onde fica, no traceback do Python, o tipo do problema?",
+                        verso: "Na última linha, e logo acima aparece onde o erro aconteceu.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual padrão dos laços a função que conta pendentes reaproveita?",
+                        verso: "O contador: começa em zero e soma 1 quando a condição bate.",
+                    },
+                ],
+            },
+        },
     },
 };
