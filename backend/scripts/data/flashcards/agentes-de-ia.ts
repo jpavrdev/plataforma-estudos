@@ -368,5 +368,271 @@ export const agentesDeIa: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a história institucional do MCP?",
+                        verso: "Criado pela Anthropic em 2024 e doado à Linux Foundation em 2025.",
+                    },
+                    {
+                        frente: "Quantos conectores o MCP troca por quantos?",
+                        verso: "Troca N vezes M conectores por N clientes mais M servidores.",
+                    },
+                    {
+                        frente: "Quais são as duas frentes práticas do MCP?",
+                        verso: "Consumir servidores existentes e expor o próprio sistema como servidor.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são as três primitivas que um servidor MCP expõe?",
+                        verso: "Tools, resources e prompts.",
+                    },
+                    {
+                        frente: "Quais são os dois transportes do MCP?",
+                        verso: "STDIO para servidores locais e HTTP para remotos.",
+                    },
+                    {
+                        frente: "Qual é a diferença de uso entre tools e resources?",
+                        verso: "Tool é ação que o modelo chama; resource é dado que a aplicação lê.",
+                    },
+                    {
+                        frente: "O que a descoberta do protocolo permite?",
+                        verso: "Listar as tools e schemas do servidor sem código novo no host.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O servidor expõe vinte tools e a tarefa precisa de três. O que fazer?",
+                        verso: "Filtrar: só as três necessárias entram no cardápio.",
+                    },
+                    {
+                        frente: "Por que classificar o risco das tools importadas?",
+                        verso: "A política de leitura, reversível e crítica não viaja pelo protocolo.",
+                    },
+                    {
+                        frente: "O que a escolha entre credencial de serviço e OAuth define?",
+                        verso: "Em nome de quem o agente age no sistema externo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que quer dizer que tool não é endpoint, e sim intenção?",
+                        verso: "Expõem-se ações de valor com granularidade de passo, não a API inteira.",
+                    },
+                    {
+                        frente: "Por que as descrições exigem capricho extra num servidor público?",
+                        verso: "Serão lidas por modelos de terceiros, sem o contexto da casa.",
+                    },
+                    {
+                        frente: "Por que separar escopos OAuth de leitura e de escrita?",
+                        verso: "O cliente recebe só o poder de que precisa.",
+                    },
+                    {
+                        frente: "O que o teste do consumidor cego revela?",
+                        verso: "Descrições que só fazem sentido para quem já conhece o sistema.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é tool poisoning?",
+                        verso: "Instruções maliciosas injetadas nas descrições das tools descobertas.",
+                    },
+                    {
+                        frente: "Como se avalia a procedência de um servidor MCP?",
+                        verso: "Preferindo servidores oficiais ou auditados, e fixando versões.",
+                    },
+                    {
+                        frente: "O que hosts maduros fazem com as descrições entre conexões?",
+                        verso: "Detectam mudanças e mostram ao usuário o que cada servidor expõe.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os três motivos legítimos para dividir em agentes?",
+                        verso: "Contexto, especialização e paralelismo.",
+                    },
+                    {
+                        frente: "Que tipo de erro nasce especificamente do multiagente?",
+                        verso: "O erro de coordenação: mal-entendidos entre os papéis.",
+                    },
+                    {
+                        frente: "Qual é o antídoto para erros de coordenação?",
+                        verso: "Contratos claros: schemas nas fronteiras entre os agentes.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "No padrão supervisor, para onde o controle sempre volta?",
+                        verso: "Ao agente coordenador, que delega e consolida.",
+                    },
+                    {
+                        frente: "O que caracteriza o handoff?",
+                        verso: "Transferir a conversa inteira ao agente mais adequado.",
+                    },
+                    {
+                        frente: "Qual é o cuidado típico do padrão supervisor?",
+                        verso: "O coordenador vira gargalo de contexto ao consolidar tudo.",
+                    },
+                    {
+                        frente: "Qual é o cuidado típico do pipeline?",
+                        verso: "Rigidez: etapa fora da ordem prevista não cabe.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que viaja entre os agentes de uma equipe bem desenhada?",
+                        verso: "Resultados estruturados no schema combinado da fronteira.",
+                    },
+                    {
+                        frente: "O que o supervisor faz com uma entrega fora do schema?",
+                        verso: "Rejeita antes de repassar e devolve o erro orientado.",
+                    },
+                    {
+                        frente: "Qual é o dividendo de teste dos contratos?",
+                        verso: "Cada agente vira testável isolado, com entradas sintéticas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quais são as três formas canônicas de human-in-the-loop?",
+                        verso: "Aprovação, escalação e revisão amostral.",
+                    },
+                    {
+                        frente: "O que acontece com a recusa de uma aprovação?",
+                        verso: "Vira observação com motivo, e o agente replaneja.",
+                    },
+                    {
+                        frente: "O que organiza a transferência para o humano na escalação?",
+                        verso: "O scratchpad virando resumo do caso: plano, fatos e pendências.",
+                    },
+                    {
+                        frente: "Por que aprovações em atacado matam o controle?",
+                        verso: "Fadiga de aprovação vira aprovação cega.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como se orça o custo em sistemas multiagente?",
+                        verso: "Por tarefa composta, com teto somado e aborto gracioso.",
+                    },
+                    {
+                        frente: "Qual é a ordem de depuração de uma execução composta?",
+                        verso: "Log de coordenação primeiro, depois o rastro do agente culpado.",
+                    },
+                    {
+                        frente: "Qual é o tamanho típico de uma boa equipe de agentes?",
+                        verso: "Pequena: de dois a cinco papéis com contratos nítidos.",
+                    },
+                    {
+                        frente: "Quando parar de dividir a equipe em mais agentes?",
+                        verso: "Quando o log de coordenação fica mais complexo que o trabalho.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a tarefa típica do agente do projeto?",
+                        verso: "Investigar um pedido atrasado e resolver com o cliente, sob aprovação.",
+                    },
+                    {
+                        frente: "Como o RAG da trilha anterior entra no projeto?",
+                        verso: "Como ferramenta de consulta às políticas, com citações.",
+                    },
+                    {
+                        frente: "Quantas tools do servidor MCP externo entram no cardápio?",
+                        verso: "Três das quinze expostas, filtradas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é o cardápio da primeira etapa do projeto?",
+                        verso: "Somente leitura: consultas, rastreio e políticas.",
+                    },
+                    {
+                        frente: "O que o teste de derrubar o servidor na volta 3 prova?",
+                        verso: "Que o checkpointer retoma a execução do ponto exato.",
+                    },
+                    {
+                        frente: "Por que o agente só de leitura é a via de adoção nas empresas?",
+                        verso: "O diagnóstico pronto constrói a confiança que compra as ações depois.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como o projeto torna reversível o envio de email?",
+                        verso: "Vira criação de rascunho, com envio humano em um clique.",
+                    },
+                    {
+                        frente: "O que a tela de aprovação renderiza?",
+                        verso: "O diagnóstico com fontes e as ações propostas, completas e editáveis.",
+                    },
+                    {
+                        frente: "Qual é a prova de fogo da etapa de ações?",
+                        verso: "Nenhuma crítica roda sem aprovação, por nenhum caminho do grafo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que testar agente por desfecho, e não por caminho?",
+                        verso: "O caminho varia entre execuções; o desfecho e as regras não.",
+                    },
+                    {
+                        frente: "Por que rodar cada caso cinco vezes e medir taxa?",
+                        verso: "A variância é parte do sistema: uma execução é sorte, taxa é retrato.",
+                    },
+                    {
+                        frente: "O que a sabotagem de ferramentas avalia?",
+                        verso: "Se o agente se recupera ou desiste com elegância quando o mundo falha.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é autonomia com contabilidade?",
+                        verso: "Poderes classificados, voltas medidas e críticas com dono humano.",
+                    },
+                    {
+                        frente: "Que trio entrega tarefas duráveis com pausa e retomada?",
+                        verso: "Grafo de estado, checkpointer e interrupção antes do nó crítico.",
+                    },
+                    {
+                        frente: "Que hábito a trilha sela sobre ferramentas?",
+                        verso: "Classificar toda ferramenta por risco antes de dá-la ao modelo.",
+                    },
+                ],
+            },
+        },
     },
 };
