@@ -230,6 +230,199 @@ export const protocolosDaWeb: CartasDaTrilha = {
                     },
                 ],
             },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a mensagem comum por trás de qualquer status 4xx?",
+                        verso: "Ajuste alguma coisa na requisição; repetir igual não vai resolver.",
+                    },
+                    {
+                        frente: "Quando 400 Bad Request é o status certo?",
+                        verso: "Quando a requisição está malformada, como um JSON inválido.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que um 5xx diz ao cliente sobre de quem é a culpa?",
+                        verso: "Não é dele: tente mais tarde ou avise quem cuida do servidor.",
+                    },
+                    {
+                        frente: "Quando aparece um 500 Internal Server Error?",
+                        verso: "Em erro genérico e inesperado, como exceção não tratada ou bug.",
+                    },
+                ],
+            },
+        },
+
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o header Accept comunica ao servidor?",
+                        verso: "Os formatos de resposta que o cliente consegue entender.",
+                    },
+                    {
+                        frente: "Para que serve o header Accept-Language?",
+                        verso: "Diz os idiomas que o cliente prefere receber na resposta.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual Content-Type um formulário HTML simples usa?",
+                        verso: "application/x-www-form-urlencoded, no formato campo=valor&campo2=valor2.",
+                    },
+                    {
+                        frente: "Qual Content-Type um formulário com upload de arquivo usa?",
+                        verso: "multipart/form-data.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o ETag identifica?",
+                        verso: "A versão atual do recurso, usada depois para revalidar o cache.",
+                    },
+                    {
+                        frente: "Qual header o cliente manda com o ETag que ele já tem?",
+                        verso: "O If-None-Match, perguntando se aquela versão ainda vale.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O token do esquema Bearer costuma ter validade?",
+                        verso: "Costuma, com renovação; o Basic não tem validade embutida por padrão.",
+                    },
+                    {
+                        frente: "Por que o Authorization vai em toda requisição, e não só no login?",
+                        verso: "Porque cada requisição chega ao servidor isolada das demais.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o atributo Secure faz num cookie?",
+                        verso: "Só deixa o cookie ser enviado em conexões HTTPS.",
+                    },
+                    {
+                        frente: "Contra o que o atributo SameSite protege?",
+                        verso: "Contra CSRF, controlando o envio do cookie a partir de outros sites.",
+                    },
+                ],
+            },
+        },
+
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quantos tipos de valor o JSON define?",
+                        verso: "Seis: string, number, boolean, null, object e array.",
+                    },
+                    {
+                        frente: "JSON aceita aspas simples numa string?",
+                        verso: "Não. Sempre aspas duplas, tanto no valor quanto na chave.",
+                    },
+                    {
+                        frente: "JSON separa número inteiro de número decimal?",
+                        verso: "Não. Existe um tipo number só para os dois.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que forma de aninhamento representa uma relação um para um?",
+                        verso: "Um object dentro de outro object.",
+                    },
+                    {
+                        frente: "Que forma de aninhamento representa uma relação um para muitos?",
+                        verso: "Um array de objects, com um object para cada item.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que acontece com um campo undefined ao serializar em JavaScript?",
+                        verso: "É removido do JSON; dentro de um array, vira null em vez de sumir.",
+                    },
+                    {
+                        frente: "Como um objeto de data costuma sair na serialização?",
+                        verso: "Convertido em texto, porque o JSON não tem tipo de data.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde o JSON nasceu?",
+                        verso: "Dentro do JavaScript: é quase um subconjunto da sintaxe de objetos dele.",
+                    },
+                    {
+                        frente: "Qual formato dominava a troca de dados na web antes do JSON?",
+                        verso: "O XML, sobretudo nos serviços baseados em SOAP.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Em quais dois papéis o Content-Type aparece?",
+                        verso: "Na requisição, dizendo como ler o corpo que chega; na resposta, o que vai.",
+                    },
+                ],
+            },
+        },
+
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Se a URL é sempre o recurso, onde fica a ação?",
+                        verso: "No método HTTP. A URL não muda entre ler e remover o mesmo recurso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Coleção em URL vai no singular ou no plural?",
+                        verso: "No plural, e o mesmo substantivo serve para acessar um item dela.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que status devolver ao listar uma coleção que está vazia?",
+                        verso: "200 OK. Um array vazio é resposta legítima, não erro.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que versionar a API em vez de simplesmente mudar o endpoint?",
+                        verso: "Cliente antigo continua funcionando: app não atualizado, parceiro integrado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que o status sozinho não basta na resposta de erro?",
+                        verso: "Ele dá a categoria, mas não diz qual campo falhou nem o que corrigir.",
+                    },
+                ],
+            },
         },
     },
 };
