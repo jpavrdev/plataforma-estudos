@@ -5,6 +5,8 @@ import { protocolosDaWeb } from "./protocolos-da-web.ts";
 import { python } from "./python.ts";
 import { awsClfC02 } from "./aws-clf-c02.ts";
 import { javascript } from "./javascript.ts";
+import { java } from "./java.ts";
+import { html } from "./html.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -12,4 +14,6 @@ export const TRILHAS: CartasDaTrilha[] = [
     python,
     awsClfC02,
     javascript,
+    java,
+    html,
 ];

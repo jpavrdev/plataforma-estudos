@@ -21,6 +21,9 @@
 import { db } from "../db.ts";
 import { flashcards, lessons, modules, trails } from "../schema.ts";
 import { and, eq } from "drizzle-orm";
+import { readdirSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { TRILHAS } from "./data/flashcards/index.ts";
 
 export interface Cartao {
@@ -90,7 +93,11 @@ function conferir(dados: CartasDaTrilha): string[] {
 function cartoesDaAula(grupos: CartoesDaAula | undefined, linguagem: string | null): Cartao[] {
     if (!grupos) return [];
     const daLinguagem =
-        linguagem === "python" ? grupos.python : linguagem === "javascript" ? grupos.javascript : [];
+        linguagem === "python"
+            ? grupos.python
+            : linguagem === "javascript"
+              ? grupos.javascript
+              : [];
     return [...(grupos.neutra ?? []), ...(daLinguagem ?? [])];
 }
 
@@ -144,7 +151,24 @@ async function semearTrilha(dados: CartasDaTrilha) {
     return { criados, pulados };
 }
 
+/**
+ * Arquivo de dados que existe mas não entrou no índice não é semeado, e o seeder
+ * termina dizendo que deu tudo certo. Já aconteceu: dois arquivos ficaram de fora
+ * porque só o import foi adicionado, e o silêncio custou uma rodada inteira.
+ */
+function conferirRegistro() {
+    const pasta = join(dirname(fileURLToPath(import.meta.url)), "data", "flashcards");
+    const arquivos = readdirSync(pasta).filter((f) => f.endsWith(".ts") && f !== "index.ts");
+    if (arquivos.length !== TRILHAS.length) {
+        console.error(
+            `Há ${arquivos.length} arquivos de cartões em data/flashcards, mas ${TRILHAS.length} no índice. Alguma trilha não foi registrada em index.ts.`,
+        );
+        process.exit(1);
+    }
+}
+
 async function semear() {
+    conferirRegistro();
     const alvo = process.argv[2];
     const escolhidas = alvo ? TRILHAS.filter((t) => t.trilha === alvo) : TRILHAS;
     if (!escolhidas.length) {
