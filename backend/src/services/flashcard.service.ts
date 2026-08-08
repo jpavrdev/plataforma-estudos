@@ -84,6 +84,27 @@ const APOS_ERRO = 0.4;
 
 const entre = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
+/**
+ * Fisher-Yates na ordem de APRESENTAÇÃO. Roda sempre depois de o limite já ter
+ * cortado a fila: quem entra na sessão continua sendo decidido pela data de
+ * vencimento, que é trabalho do agendador. Sortear antes do corte faria a carta
+ * atrasada há duas semanas perder a vaga para uma que venceu hoje.
+ *
+ * Por que embaralhar: em ordem fixa a carta anterior vira pista da seguinte, e o
+ * aluno passa a responder a sequência em vez da pergunta. Isso infla a nota que
+ * ele dá, e a nota é justamente o que define a estabilidade e a próxima data. A
+ * ordem fixa não deixa a revisão só monótona, ela distorce o agendador. De
+ * quebra, misturar as aulas é prática intercalada em vez de em bloco, que rende
+ * mais retenção mesmo parecendo mais difícil na hora.
+ */
+function embaralhar<T>(itens: T[]): T[] {
+    for (let i = itens.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [itens[i], itens[j]] = [itens[j], itens[i]];
+    }
+    return itens;
+}
+
 /** A curva: chance de lembrar depois de tantos dias sem rever o cartão. */
 export function retencao(estabilidade: number, dias: number): number {
     if (estabilidade <= 0) return 0;
@@ -191,6 +212,26 @@ async function termosDaAula(lessonId: string): Promise<string[]> {
 }
 
 /**
+ * As perguntas que o aluno já tem abertas nesta trilha.
+ *
+ * A identidade de um cartão dentro da trilha é a pergunta, não a linha: o QC do
+ * seeder proíbe frente repetida na mesma trilha, então frente igual é sempre o
+ * mesmo cartão. É o que permite reconhecer a gêmea de outro trilho de linguagem.
+ */
+async function frentesAbertas(userId: string, trailId: string): Promise<Set<string>> {
+    const linhas = await db
+        .select({ frente: flashcards.frente })
+        .from(userCards)
+        .innerJoin(
+            flashcards,
+            and(eq(userCards.origem, "flashcard"), eq(flashcards.id, userCards.origemId)),
+        )
+        .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+        .where(and(eq(userCards.userId, userId), eq(lessons.trailId, trailId)));
+    return new Set(linhas.map((l) => l.frente));
+}
+
+/**
  * Cria o estado dos cartões de uma aula que o aluno acabou de concluir. Cartão de
  * aula não estudada nunca entra: entregaria a resposta antes da hora.
  *
@@ -198,13 +239,26 @@ async function termosDaAula(lessonId: string): Promise<string[]> {
  * definição. É a mesma regra: o aluno só recebe o que já leu.
  */
 export async function abrirCartoesDaAula(userId: string, lessonId: string) {
-    const [cartoes, idsGlossario] = await Promise.all([
-        db.select({ id: flashcards.id }).from(flashcards).where(eq(flashcards.lessonId, lessonId)),
+    const [[aula], cartoes, idsGlossario] = await Promise.all([
+        db.select({ trailId: lessons.trailId }).from(lessons).where(eq(lessons.id, lessonId)),
+        db
+            .select({ id: flashcards.id, frente: flashcards.frente })
+            .from(flashcards)
+            .where(eq(flashcards.lessonId, lessonId)),
         termosDaAula(lessonId),
     ]);
 
+    // Trilha com trilhos de linguagem tem a mesma aula duas vezes, uma por
+    // linguagem, e o cartão conceitual foi semeado nas duas: são linhas
+    // diferentes com a MESMA pergunta. Quem estudou os dois trilhos abriria as
+    // duas e veria a pergunta repetida na revisão. A pergunta que o aluno já tem
+    // na trilha barra a gêmea.
+    const jaPerguntadas = aula ? await frentesAbertas(userId, aula.trailId) : new Set<string>();
+
     const candidatos = [
-        ...cartoes.map((c) => ({ origem: "flashcard" as const, origemId: c.id })),
+        ...cartoes
+            .filter((c) => !jaPerguntadas.has(c.frente))
+            .map((c) => ({ origem: "flashcard" as const, origemId: c.id })),
         ...idsGlossario.map((id) => ({ origem: "glossario" as const, origemId: id })),
     ];
     if (!candidatos.length) return 0;
@@ -317,7 +371,10 @@ export async function filaDoDia(
     }
     if (!linhas.length) return [];
 
-    return montarCartoes(linhas);
+    // A ordem por vencimento acima escolheu QUAIS cartas entram. Daqui para frente
+    // a ordem é sorteada, senão a fila sai em blocos por aula, sempre na mesma
+    // sequência em que as cartas foram autoradas.
+    return montarCartoes(embaralhar(linhas));
 }
 
 async function montarCartoes(
@@ -447,7 +504,7 @@ async function abrirCartaoAvulso(
     if (origem !== "flashcard") throw new AppError(404, "Cartão não encontrado no seu baralho.");
 
     const [permitido] = await db
-        .select({ id: flashcards.id })
+        .select({ frente: flashcards.frente, trailId: lessons.trailId })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .innerJoin(
@@ -456,6 +513,28 @@ async function abrirCartaoAvulso(
         )
         .where(eq(flashcards.id, origemId));
     if (!permitido) throw new AppError(404, "Cartão não encontrado no seu baralho.");
+
+    // Se a mesma pergunta já está aberta pelo outro trilho de linguagem, responder
+    // aqui mexe naquele cartão em vez de abrir um segundo. Sem isso a gêmea
+    // renasceria no baralho pela porta de trás, que é o caminho da revisão de
+    // trilha (ela lê o catálogo, não o baralho).
+    const [gemea] = await db
+        .select({ uc: userCards })
+        .from(userCards)
+        .innerJoin(
+            flashcards,
+            and(eq(userCards.origem, "flashcard"), eq(flashcards.id, userCards.origemId)),
+        )
+        .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+        .where(
+            and(
+                eq(userCards.userId, userId),
+                eq(lessons.trailId, permitido.trailId),
+                eq(flashcards.frente, permitido.frente),
+            ),
+        )
+        .limit(1);
+    if (gemea) return gemea.uc;
 
     const [criado] = await db
         .insert(userCards)
@@ -493,13 +572,27 @@ export async function revisaoDaTrilha(userId: string, trailId: string) {
         .where(and(eq(lessons.trailId, trailId), eq(lessons.published, true)))
         .orderBy(asc(modules.position), asc(lessons.position), asc(flashcards.position));
 
-    return cartoes.map((c) => ({ ...c, origem: "flashcard" as const }));
+    // Aqui a leitura é do catálogo, e não do baralho, então a gêmea do outro
+    // trilho de linguagem chega mesmo depois do baralho limpo. Fica a primeira na
+    // ordem da trilha, que é estável.
+    const vistas = new Set<string>();
+    const unicos = cartoes.filter((c) => {
+        if (vistas.has(c.frente)) return false;
+        vistas.add(c.frente);
+        return true;
+    });
+
+    // A ordem da trilha acima serve ao dedup, que precisa ser estável. A revisão em
+    // si sai sorteada: aqui o objetivo é retenção, não refazer o caminho da trilha.
+    return embaralhar(unicos).map((c) => ({ ...c, origem: "flashcard" as const }));
 }
 
 /** Quantos cartões a trilha já liberou para este aluno. Alimenta a chamada de revisão. */
 export async function contarRevisaoDaTrilha(userId: string, trailId: string) {
     const [linha] = await db
-        .select({ n: count() })
+        // Conta pergunta distinta, e não linha, pelo mesmo motivo do dedup em
+        // revisaoDaTrilha: senão o botão promete mais cartas do que vai mostrar.
+        .select({ n: sql<number>`count(distinct ${flashcards.frente})` })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .innerJoin(
