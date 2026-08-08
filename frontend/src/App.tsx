@@ -87,6 +87,10 @@ const OAuthCallback = lazy(() =>
 const CertificadoValidar = lazy(() =>
   import('./pages/CertificadoValidar').then((m) => ({ default: m.CertificadoValidar })),
 );
+const Privacidade = lazy(() =>
+  import('./pages/Legal/Privacidade').then((m) => ({ default: m.Privacidade })),
+);
+const Termos = lazy(() => import('./pages/Legal/Termos').then((m) => ({ default: m.Termos })));
 const PerfilPublico = lazy(() =>
   import('./pages/PerfilPublico').then((m) => ({ default: m.PerfilPublico })),
 );
@@ -160,6 +164,9 @@ function AppRoutes() {
           <Route path="/redefinir-senha" element={<RedefinirSenha />} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="/certificados/:code" element={<CertificadoValidar />} />
+          {/* Públicas mesmo logado: são documentos, e o link do rodapé leva aqui. */}
+          <Route path="/privacidade" element={<Privacidade />} />
+          <Route path="/termos" element={<Termos />} />
           <Route
             path="/completar-perfil"
             element={

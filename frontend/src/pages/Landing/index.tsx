@@ -409,6 +409,11 @@ export function Landing() {
             <Link to="/cadastro">Criar conta</Link>
             <Link to="/recuperar-senha">Recuperar senha</Link>
           </nav>
+          <nav className="lp-rodape__col">
+            <h4>Legal</h4>
+            <Link to="/termos">Termos de Uso</Link>
+            <Link to="/privacidade">Política de Privacidade</Link>
+          </nav>
         </div>
         <div className="lp-container lp-rodape__base">
           <span>© {new Date().getFullYear()} Ensina Dev. Todos os direitos reservados.</span>
