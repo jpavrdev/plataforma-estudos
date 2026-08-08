@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Só entram aqui as páginas que um visitante sem conta consegue abrir. Hoje são
-  duas: o catálogo inteiro (trilhas, roadmaps, simulados) vive atrás de login e
-  por isso não é indexável. Quando alguma vitrine pública existir, este arquivo
-  passa a ser gerado pelo backend a partir do banco.
+  Só entram aqui as páginas que um visitante sem conta consegue abrir: a landing,
+  o cadastro e os dois documentos legais. O catálogo inteiro (trilhas, roadmaps,
+  simulados) vive atrás de login e por isso não é indexável. Quando alguma
+  vitrine pública existir, este arquivo passa a ser gerado pelo backend a partir
+  do banco.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -17,5 +18,17 @@
     <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ensinadev.com.br/termos</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ensinadev.com.br/privacidade</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>

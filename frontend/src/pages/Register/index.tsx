@@ -222,13 +222,13 @@ export function Register() {
 
       <p className="auth__terms">
         Ao criar a conta, você concorda com os{' '}
-        <a className="link" href="#">
+        <Link className="link" to="/termos">
           Termos
-        </a>{' '}
+        </Link>{' '}
         e a{' '}
-        <a className="link" href="#">
+        <Link className="link" to="/privacidade">
           Política de Privacidade
-        </a>
+        </Link>
         .
       </p>
       <p className="auth__foot">

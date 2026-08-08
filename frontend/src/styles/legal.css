@@ -1,0 +1,96 @@
+/* Termos de Uso e Política de Privacidade. Documento longo, então a medida da
+   linha é limitada: texto corrido em coluna larga cansa e faz perder a linha. */
+
+.legal {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+.legal__topo,
+.legal__rodape {
+  width: min(100% - 2.5rem, 720px);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.legal__topo {
+  padding-block: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.legal__rodape {
+  margin-top: auto;
+  padding-block: 1.5rem 2.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.legal__doc {
+  width: min(100% - 2.5rem, 720px);
+  margin-inline: auto;
+  padding-block: 2.5rem 3rem;
+  line-height: 1.7;
+}
+
+.legal__doc h1 {
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.legal__resumo {
+  color: var(--muted);
+  font-size: 1.02rem;
+  margin: 0.75rem 0 0;
+}
+
+.legal__data {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0.75rem 0 0;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.legal__doc h2 {
+  font-size: 1.15rem;
+  margin: 2.25rem 0 0.75rem;
+  scroll-margin-top: 1rem;
+}
+
+.legal__doc h3 {
+  font-size: 1rem;
+  color: var(--muted);
+  margin: 1.5rem 0 0.5rem;
+}
+
+.legal__doc p {
+  margin: 0 0 1rem;
+}
+
+.legal__doc ul {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+}
+
+.legal__doc li {
+  margin-bottom: 0.6rem;
+}
+
+.legal__doc strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .legal__doc {
+    padding-block: 1.75rem 2.25rem;
+  }
+}
