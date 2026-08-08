@@ -356,5 +356,235 @@ export const ragNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Onde os trechos mais relevantes devem ficar na lista?",
+                        verso: "Nas pontas, porque o meio do contexto é a região fraca.",
+                    },
+                    {
+                        frente: "Onde a pergunta entra no prompt aumentado?",
+                        verso: "Por último, fechando o prompt.",
+                    },
+                    {
+                        frente: "Como cada trecho entra identificado no prompt?",
+                        verso: "Com número e origem, como o manual e a seção de onde veio.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quem parseia os números de citação da resposta?",
+                        verso: "A aplicação, que os resolve pelos metadados.",
+                    },
+                    {
+                        frente: "O que a interface deve fazer com a citação?",
+                        verso: "Exibir clicável, idealmente com o trecho destacável.",
+                    },
+                    {
+                        frente: "Que número de citação nunca deve virar link?",
+                        verso: "O órfão, fora do intervalo de trechos enviados.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em quantas camadas o não sei honesto se constrói?",
+                        verso: "Quatro: busca, prompt, aplicação e avaliação.",
+                    },
+                    {
+                        frente: "Por que a alucinação em RAG é pior que num chat comum?",
+                        verso: "Vem com a autoridade visual de um sistema que cita fontes.",
+                    },
+                    {
+                        frente: "Que três coisas um bom não sei entrega?",
+                        verso: "O que foi procurado, uma reformulação sugerida e o canal certo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que entra no prompt de um turno de RAG conversacional?",
+                        verso: "System, histórico, trechos novos e a pergunta reescrita.",
+                    },
+                    {
+                        frente: "Como o histórico entra no RAG conversacional?",
+                        verso: "Pela janela deslizante, sem os trechos de turnos passados.",
+                    },
+                    {
+                        frente: "O que é indexação efêmera de um anexo?",
+                        verso: "Chunking e busca com escopo da conversa, descartados depois.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que porte de modelo costuma bastar para geração fundamentada?",
+                        verso: "O intermediário; o flagship raramente se paga aqui.",
+                    },
+                    {
+                        frente: "Que etapa do turno tem o melhor custo-benefício do RAG?",
+                        verso: "A reescrita da pergunta, que custa centavos.",
+                    },
+                    {
+                        frente: "Como o streaming ajuda na latência do RAG?",
+                        verso: "Esconde a geração: o usuário lê enquanto o texto sai.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro dimensões a avaliação de RAG cobre?",
+                        verso: "Retrieval, geração, sistema inteiro e honestidade.",
+                    },
+                    {
+                        frente: "O que a dimensão de honestidade mede?",
+                        verso: "Se o sistema resiste ao que não está na base.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De que tamanho é um conjunto de avaliação que já muda o jogo?",
+                        verso: "De 30 a 100 casos.",
+                    },
+                    {
+                        frente: "Que proporção de armadilhas o conjunto sugere?",
+                        verso: "Cerca de 15% das perguntas.",
+                    },
+                    {
+                        frente: "Que tipo de caso testa a busca híbrida?",
+                        verso: "As perguntas com termo exato: código e sigla.",
+                    },
+                    {
+                        frente: "Quanto tempo de manutenção o conjunto pede?",
+                        verso: "Meia hora por semana mantém o conjunto honesto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a sigla MRR quer dizer?",
+                        verso: "Mean reciprocal rank, a média do inverso da posição.",
+                    },
+                    {
+                        frente: "Por que a média geral do recall esconde o problema?",
+                        verso: "Só aberta por tipo de caso ela vira acionável.",
+                    },
+                    {
+                        frente: "Que métrica mostra o limiar de corte funcionando?",
+                        verso: "A taxa de vazio correto nas perguntas-armadilha.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a groundedness mede numa resposta de RAG?",
+                        verso: "Se cada afirmação está sustentada pelos trechos enviados.",
+                    },
+                    {
+                        frente: "Quais são os vieses conhecidos do LLM como juiz?",
+                        verso: "Leniência e se impressionar com respostas longas.",
+                    },
+                    {
+                        frente: "Quando a correção pode ser programática?",
+                        verso: "Quando a verdade é verificável por código: valor, data, sim ou não.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a ordem do funil de suspeitos do RAG?",
+                        verso: "Busca larga, ordenação, prompt e geração, e por fim as citações.",
+                    },
+                    {
+                        frente: "Quais são os cinco passos do protocolo de mudança?",
+                        verso: "Baseline, uma mudança, rodar de novo, comparar aberto e registrar.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O RAG substitui as ferramentas do chatbot no projeto?",
+                        verso: "Não. Ferramentas ficam com o dado pontual; o RAG com o texto.",
+                    },
+                    {
+                        frente: "Onde vivem os chunks e vetores do projeto?",
+                        verso: "No mesmo Postgres do app, com pgvector.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quando a estante do projeto está pronta?",
+                        verso: "Quando a segunda ingestão não muda nada e os chunks passam no teste do órfão.",
+                    },
+                    {
+                        frente: "Por que o chunking do projeto usa os headers do markdown?",
+                        verso: "São as fronteiras naturais de assunto do documento.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que decide o caminho do turno no projeto?",
+                        verso: "O retrieval: achou material, vai por RAG; não achou, fluxo normal.",
+                    },
+                    {
+                        frente: "Por que os trechos enviados ficam logados por resposta?",
+                        verso: "Auditoria: saber com que material cada resposta foi gerada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quantos casos tem o conjunto de avaliação do projeto?",
+                        verso: "Quarenta, sobre os documentos reais, com armadilhas.",
+                    },
+                    {
+                        frente: "Que trade-off o limiar de corte mais alto cria?",
+                        verso: "O não sei correto sobe e o recall geral pode cair.",
+                    },
+                    {
+                        frente: "Números muito acima do esperado pedem que reação?",
+                        verso: "Desconfiar do conjunto: os casos podem estar fáceis demais.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que frase resume o RAG maduro?",
+                        verso: "O trecho certo, no prompt certo, com a citação certa, sempre medido.",
+                    },
+                    {
+                        frente: "Que hábito de depuração a trilha adiciona?",
+                        verso: "Imprimir os trechos recuperados antes de culpar o prompt.",
+                    },
+                    {
+                        frente: "Que ferramentas o mapa aponta para preparar documentos?",
+                        verso: "Extração, chunking por estrutura e metadados.",
+                    },
+                ],
+            },
+        },
     },
 };
