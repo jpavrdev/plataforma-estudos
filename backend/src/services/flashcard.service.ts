@@ -10,7 +10,7 @@ import {
     trails,
     glossary,
 } from "../../schema.ts";
-import { and, asc, count, desc, eq, gt, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 
 /**
@@ -308,19 +308,28 @@ interface CartaoNaFila {
  * quiser para na hora que cansar, que dá no mesmo. O limite alto que sobra é só uma
  * trava de payload, para um baralho gigante não virar uma resposta de megabytes.
  */
+/**
+ * A fila de revisão do conteúdo escolhido.
+ *
+ * Serve TUDO que o aluno já estudou naquele conteúdo, e não só o que venceu hoje.
+ * A tela da trilha sempre funcionou assim, e ver "4 cartas" na sala de revisão e
+ * "116" no botão da trilha, para o mesmo conteúdo, é diferença que ninguém
+ * consegue explicar para quem está estudando. As duas fazem a mesma coisa, então
+ * entregam o mesmo número.
+ *
+ * O agendador não sai de cena, muda de papel: ele deixa de trancar o que aparece e
+ * passa a mandar na PRIORIDADE. A ordem é do mais atrasado para o mais adiantado,
+ * então quando o aluno pede um número de cartas, quem entra no corte é o que está
+ * mais perto de ser esquecido. Responder continua reagendando cada carta pela
+ * curva, e responder adiantado continua rendendo menos estabilidade, pelo bônus
+ * abaixo de 1.
+ */
 export async function filaDoDia(
     userId: string,
     limite = 500,
-    filtro?: { trilhas?: string[]; glossario?: boolean; adiantado?: boolean },
+    filtro?: { trilhas?: string[]; glossario?: boolean },
 ): Promise<CartaoNaFila[]> {
-    // Modo adiantado serve o que ainda NÃO venceu, do mais perto de vencer para o
-    // mais longe. Existe para quem está em dia e quer estudar mesmo assim, e o
-    // agendador já se protege sozinho: responder cedo cai no bônus abaixo de 1 e
-    // rende menos estabilidade que responder na data.
-    const agora = new Date();
-    const vencidos = filtro?.adiantado
-        ? and(eq(userCards.userId, userId), gt(userCards.proximaRevisao, agora))
-        : and(eq(userCards.userId, userId), lte(userCards.proximaRevisao, agora));
+    const meus = eq(userCards.userId, userId);
 
     // Sem filtro a fila é o baralho inteiro. Com filtro, a seleção de trilhas e o
     // glossário são somados: dá para revisar duas trilhas juntas, ou só o glossário.
@@ -330,7 +339,7 @@ export async function filaDoDia(
         linhas = await db
             .select()
             .from(userCards)
-            .where(vencidos)
+            .where(meus)
             .orderBy(asc(userCards.proximaRevisao))
             .limit(limite);
     } else {
@@ -348,7 +357,7 @@ export async function filaDoDia(
                         ),
                     )
                     .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
-                    .where(and(vencidos, inArray(lessons.trailId, filtro.trilhas)))
+                    .where(and(meus, inArray(lessons.trailId, filtro.trilhas)))
                     .orderBy(asc(userCards.proximaRevisao))
                     .limit(limite)
                     .then((r) => r.map((x) => x.uc)),
@@ -359,7 +368,7 @@ export async function filaDoDia(
                 db
                     .select()
                     .from(userCards)
-                    .where(and(vencidos, eq(userCards.origem, "glossario")))
+                    .where(and(meus, eq(userCards.origem, "glossario")))
                     .orderBy(asc(userCards.proximaRevisao))
                     .limit(limite),
             );
@@ -374,7 +383,42 @@ export async function filaDoDia(
     // A ordem por vencimento acima escolheu QUAIS cartas entram. Daqui para frente
     // a ordem é sorteada, senão a fila sai em blocos por aula, sempre na mesma
     // sequência em que as cartas foram autoradas.
-    return montarCartoes(embaralhar(linhas));
+    return montarCartoes(embaralhar(await semGemeas(linhas)));
+}
+
+/**
+ * Tira da fila a carta gêmea: a mesma pergunta duas vezes na mesma trilha, uma por
+ * trilho de linguagem.
+ *
+ * O código já não abre mais gêmea (ver abrirCartoesDaAula) e existe script para
+ * limpar as antigas, mas enquanto sobrar uma no baralho de alguém ela apareceria
+ * repetida na sessão, e o total da sala não bateria com o da trilha. Como as linhas
+ * chegam ordenadas por vencimento, a que fica é a mais atrasada.
+ *
+ * Cartão de glossário passa direto: o id dele já é único por termo.
+ */
+async function semGemeas<T extends { origem: "flashcard" | "glossario"; origemId: string }>(
+    linhas: T[],
+): Promise<T[]> {
+    const ids = linhas.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
+    if (!ids.length) return linhas;
+
+    const dados = await db
+        .select({ id: flashcards.id, frente: flashcards.frente, trailId: lessons.trailId })
+        .from(flashcards)
+        .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+        .where(inArray(flashcards.id, ids));
+    const porId = new Map(dados.map((d) => [d.id, `${d.trailId}:${d.frente}`]));
+
+    const vistas = new Set<string>();
+    return linhas.filter((l) => {
+        if (l.origem !== "flashcard") return true;
+        const chave = porId.get(l.origemId);
+        if (!chave) return true;
+        if (vistas.has(chave)) return false;
+        vistas.add(chave);
+        return true;
+    });
 }
 
 async function montarCartoes(
