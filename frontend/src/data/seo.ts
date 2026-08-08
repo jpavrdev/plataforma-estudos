@@ -32,6 +32,18 @@ const ROTAS: Record<string, MetaPagina> = {
   '/auth/callback': { titulo: 'Entrando | Ensina Dev', indexar: false },
   '/completar-perfil': { titulo: 'Completar perfil | Ensina Dev', indexar: false },
   '/certificados/:code': { titulo: 'Validação de certificado | Ensina Dev', indexar: false },
+  // Indexáveis de propósito: documento legal precisa ser encontrável por quem
+  // procura, e não só por quem já está dentro do cadastro.
+  '/privacidade': {
+    titulo: 'Política de Privacidade | Ensina Dev',
+    descricao:
+      'Que dados o Ensina Dev coleta, por que coleta cada um, com quem compartilha e como pedir a exclusão.',
+  },
+  '/termos': {
+    titulo: 'Termos de Uso | Ensina Dev',
+    descricao:
+      'As regras de uso do Ensina Dev: conta, comunidade, execução de código, certificados e apoio ao projeto.',
+  },
 
   '/home': { titulo: 'Início | Ensina Dev', indexar: false },
   '/trilhas': { titulo: 'Trilhas | Ensina Dev', indexar: false },
