@@ -61,18 +61,19 @@ export async function resumoFlashcards() {
 }
 
 /**
- * Sem seleção vem o baralho inteiro; com seleção, só as trilhas escolhidas. Sem
- * limite vem tudo o que venceu, e a sessão só acaba quando a fila acabar.
+ * Sem seleção vem o baralho inteiro; com seleção, só as trilhas escolhidas. Vem
+ * tudo que o aluno já estudou naquele conteúdo, e não só o que venceu hoje: é a
+ * mesma coisa que o botão de revisar da trilha entrega. Sem limite, a sessão só
+ * acaba quando a fila acabar.
  */
 export async function filaDoDia(
-  selecao?: { trilhas?: string[]; glossario?: boolean; adiantado?: boolean },
+  selecao?: { trilhas?: string[]; glossario?: boolean },
   limite?: number | null,
 ) {
   const q = new URLSearchParams();
   if (limite) q.set('limite', String(limite));
   if (selecao?.trilhas?.length) q.set('trilhas', selecao.trilhas.join(','));
   if (selecao?.glossario) q.set('glossario', '1');
-  if (selecao?.adiantado) q.set('adiantado', '1');
   const { data } = await api.get<Cartao[]>(`/flashcards/fila?${q.toString()}`);
   return data;
 }

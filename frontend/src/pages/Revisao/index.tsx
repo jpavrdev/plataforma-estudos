@@ -46,11 +46,6 @@ const SESSAO = 'ensina:revisao';
 // precisa de um limite para não aceitar número absurdo digitado sem querer.
 const MAX_POR_SESSAO = 100;
 
-// Quantas cartas o modo adiantado serve quando o aluno não pediu um número. Varar o
-// baralho inteiro adiantado desmontaria o agendamento, então aqui o padrão é um
-// punhado, e não "todas" como na fila normal.
-const ADIANTADO_PADRAO = 10;
-
 const HORA = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
 const DIA = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
 
@@ -110,9 +105,6 @@ export function Revisao() {
   const [comGlossario, setComGlossario] = useState(false);
   const [escolhendo, setEscolhendo] = useState(false);
   const [vazio, setVazio] = useState(false);
-  // Sessão adiantada muda o texto da tela: o aluno precisa saber que está puxando
-  // cartas do futuro, senão estranha por que a fila "vazia" virou cartas.
-  const [adiantando, setAdiantando] = useState(false);
   // Quantas cartas a sessão entrega, como o aluno digitou. Vazio é "vai até acabar".
   const [limiteTexto, setLimiteTexto] = useState('');
   // Nulo é "sessão não começou"; a fila só é buscada quando o aluno manda começar.
@@ -168,23 +160,22 @@ export function Revisao() {
     setAberto(abrir && cartoes.length > 0);
   }, []);
 
-  async function comecar(adiantado = false) {
-    const escolha = { trilhas: [...selecao], glossario: comGlossario, limite, adiantado };
+  async function comecar() {
+    const escolha = { trilhas: [...selecao], glossario: comGlossario, limite };
     setVazio(false);
     try {
-      const cartoes = await filaDoDia(escolha, limite ?? (adiantado ? ADIANTADO_PADRAO : null));
-      // Escolha sem nada vencido é avisada aqui, e não desabilitando a linha na lista:
-      // linha apagada contaria quanto tem em cada baralho, que é o que não queremos
-      // mostrar.
+      const cartoes = await filaDoDia(escolha, limite);
+      // Escolha sem nenhuma carta é avisada aqui, e não desabilitando a linha na
+      // lista: linha apagada contaria quanto tem em cada baralho, que é o que não
+      // queremos mostrar.
       if (!cartoes.length) {
         setVazio(true);
         return;
       }
-      setAdiantando(adiantado);
-      // A sessão fica guardada para sobreviver a um F5. Não guardamos as cartas: no
-      // retorno a fila é remontada do servidor, e o que já foi respondido não vence
-      // mais, então o progresso se preserva sozinho.
-      localStorage.setItem(SESSAO, JSON.stringify(escolha));
+      // A sessão fica guardada para sobreviver a um F5. As cartas não são guardadas:
+      // no retorno a fila é remontada do servidor e as já respondidas são tiradas
+      // pela lista de "feitas".
+      localStorage.setItem(SESSAO, JSON.stringify({ ...escolha, feitas: [] }));
       setEscolhendo(false);
       iniciarSessao(cartoes);
     } catch (err) {
@@ -197,7 +188,6 @@ export function Revisao() {
     localStorage.removeItem(SESSAO);
     setFila(null);
     setAberto(false);
-    setAdiantando(false);
     void carregarSala();
   }
 
@@ -216,6 +206,7 @@ export function Revisao() {
       glossario?: boolean;
       limite?: number | null;
       restam?: number;
+      feitas?: string[];
     };
     try {
       escolha = JSON.parse(bruto);
@@ -227,9 +218,16 @@ export function Revisao() {
     setSelecao(new Set(escolha.trilhas ?? []));
     setComGlossario(Boolean(escolha.glossario));
     setLimiteTexto(escolha.limite ? String(escolha.limite) : '');
-    filaDoDia(escolha, escolha.restam ?? escolha.limite)
+    // A fila é remontada sem limite e cortada aqui, depois de tirar o que já foi
+    // respondido. Pedir "restam" direto ao servidor traria as respondidas de volta
+    // ocupando as vagas, porque elas continuam no baralho.
+    const feitas = new Set(escolha.feitas ?? []);
+    filaDoDia(escolha)
       .then((cartoes) => {
-        if (cartoes.length) iniciarSessao(cartoes, false);
+        const faltando = cartoes.filter((c) => !feitas.has(c.id));
+        const corte = escolha.restam ?? escolha.limite ?? undefined;
+        const fila = corte ? faltando.slice(0, corte) : faltando;
+        if (fila.length) iniciarSessao(fila, false);
         else localStorage.removeItem(SESSAO);
       })
       .catch((err) => {
@@ -342,20 +340,25 @@ export function Revisao() {
       setIndice((i) => i + 1);
     }, SAIDA_MS);
     setFeitos((n) => n + 1);
-    // O que falta é anotado a cada resposta. Sem isso, recarregar no meio de uma
-    // sessão de 10 traria 10 cartas novas em vez das que sobraram.
-    if (limite) {
-      const bruto = localStorage.getItem(SESSAO);
-      if (bruto) {
-        try {
-          localStorage.setItem(
-            SESSAO,
-            JSON.stringify({ ...JSON.parse(bruto), restam: Math.max(0, total - indice - 1) }),
-          );
-        } catch (err) {
-          console.error('Sessão de revisão salva ilegível, descartando.', err);
-          localStorage.removeItem(SESSAO);
-        }
+    // O que falta, e o que já passou, são anotados a cada resposta. O "restam" evita
+    // que recarregar no meio de uma sessão de 10 traga 10 cartas novas. A lista de
+    // respondidas é o que impede a carta que acabou de ser respondida de voltar no
+    // F5: a fila não filtra mais por vencimento, então ela continua no baralho.
+    const bruto = localStorage.getItem(SESSAO);
+    if (bruto) {
+      try {
+        const sessao = JSON.parse(bruto);
+        localStorage.setItem(
+          SESSAO,
+          JSON.stringify({
+            ...sessao,
+            restam: Math.max(0, total - indice - 1),
+            feitas: [...(sessao.feitas ?? []), atual.id],
+          }),
+        );
+      } catch (err) {
+        console.error('Sessão de revisão salva ilegível, descartando.', err);
+        localStorage.removeItem(SESSAO);
       }
     }
     try {
@@ -403,13 +406,15 @@ export function Revisao() {
         ...(baralhos?.trilhas ?? []).filter((t) => selecao.has(t.id)).map((t) => t.nome),
         ...(comGlossario ? ['Glossário'] : []),
       ].join(' + ');
-  // Quantas cartas a escolha atual tem vencidas hoje. Sem trilha marcada, o baralho todo.
+  // Quantas cartas a escolha atual tem, e não quantas venceram: a fila serve tudo
+  // que o aluno já estudou naquele conteúdo. Zero aqui significa que ele ainda não
+  // concluiu nenhuma aula do que marcou, e não que está em dia.
   const escolhidos = tudoMarcado
-    ? (resumo?.vencidos ?? 0)
+    ? (resumo?.total ?? 0)
     : (baralhos?.trilhas ?? [])
         .filter((t) => selecao.has(t.id))
-        .reduce((soma, t) => soma + t.vencidos, 0) +
-      (comGlossario ? (baralhos?.glossario.vencidos ?? 0) : 0);
+        .reduce((soma, t) => soma + t.total, 0) +
+      (comGlossario ? (baralhos?.glossario.total ?? 0) : 0);
 
   return (
     <div className="home-shell">
@@ -484,9 +489,9 @@ export function Revisao() {
             </div>
           )}
 
-          {/* Fila vazia não é falha, é o estado normal de quem está em dia. O texto
-              muda conforme o motivo: baralho ainda sem carta, tudo agendado para
-              frente, ou só a escolha atual sem nada vencido. */}
+          {/* Fila vazia agora só acontece por falta de aula concluída, e não por
+              estar em dia: a fila serve tudo que o aluno estudou. O texto muda
+              conforme o motivo: baralho inteiro sem carta, ou só a escolha atual. */}
           {!trilhaId && baralhos && fila === null && escolhidos === 0 && (
             <div className="rev-sala__aviso">
               <span className="rev-sala__check">
@@ -505,32 +510,19 @@ export function Revisao() {
                 </>
               ) : (
                 <>
-                  <h3>{tudoMarcado ? 'Você está em dia' : 'Este conteúdo está em dia'}</h3>
+                  <h3>Nada por aqui ainda</h3>
                   <p>
-                    {tudoMarcado
-                      ? 'Nenhuma carta venceu ainda. Cada uma volta na data que a sua resposta marcou, e o que você achou fácil volta bem mais tarde.'
-                      : 'Nada venceu no que você escolheu. Troque o conteúdo ou puxe cartas do futuro.'}
+                    Você ainda não concluiu nenhuma aula do que escolheu. Troque o conteúdo ou
+                    estude uma aula dessa trilha para as cartas nascerem.
                   </p>
-                  {!tudoMarcado && (
-                    <button
-                      type="button"
-                      className="rev-sala__selecao"
-                      onClick={() => setEscolhendo(true)}
-                    >
-                      <span>{descricaoSelecao}</span>
-                      <b>Trocar</b>
-                    </button>
-                  )}
-                  {/* Estar em dia virava parede: quem tinha vinte minutos livres não
-                      tinha o que fazer. Puxar cartas que ainda não venceram resolve,
-                      e o agendador já cobra o preço de revisar cedo. */}
-                  <button className="btn btn--ghost" onClick={() => void comecar(true)}>
-                    Revisar adiantado
+                  <button
+                    type="button"
+                    className="rev-sala__selecao"
+                    onClick={() => setEscolhendo(true)}
+                  >
+                    <span>{descricaoSelecao}</span>
+                    <b>Trocar</b>
                   </button>
-                  <p className="rev-sala__nota">
-                    Puxa {limite ?? ADIANTADO_PADRAO} cartas que ainda não venceram. Elas rendem
-                    menos que revisadas na data certa.
-                  </p>
                 </>
               )}
             </div>
@@ -556,9 +548,8 @@ export function Revisao() {
               </span>
               <h3>Sessão concluída</h3>
               <p>
-                {feitos} {feitos === 1 ? 'cartão revisado' : 'cartões revisados'}
-                {adiantando ? ', adiantados' : ''}. Cada um voltou para uma data diferente, conforme
-                você se avaliou.
+                {feitos} {feitos === 1 ? 'cartão revisado' : 'cartões revisados'}. Cada um voltou
+                para uma data diferente, conforme você se avaliou.
               </p>
               <button className="btn btn--accent" onClick={terminar}>
                 Voltar
