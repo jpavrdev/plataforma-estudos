@@ -352,5 +352,247 @@ export const fundamentosDeQa: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é o teste de fogo de um caso de teste bem escrito?",
+                        verso: "Outra pessoa executa sem tirar dúvida com quem escreveu.",
+                    },
+                    {
+                        frente: "Por que um caso de teste gigante é problemático?",
+                        verso: "Falhando no meio, fica difícil saber o estado real do sistema.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a parte mais valiosa de um plano de teste?",
+                        verso: "A lista do que não será testado, com o risco assumido ao lado.",
+                    },
+                    {
+                        frente: "Que estratégia um sistema com norma obrigatória do setor exige?",
+                        verso: "A estratégia baseada em padrões.",
+                    },
+                    {
+                        frente: "O que o plano combina sobre dados de teste?",
+                        verso: "Como criar a massa, para ela ser previsível e reaproveitável.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que informar ambiente e versão no relatório de bug?",
+                        verso: "Boa parte dos casos de não consegui reproduzir vem daí.",
+                    },
+                    {
+                        frente: "Qual é o problema de juntar vários defeitos num relatório só?",
+                        verso: "Cada um tem prioridade e correção próprias, e algum se perde.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre severidade e prioridade?",
+                        verso: "Severidade mede o estrago técnico; prioridade, a urgência.",
+                    },
+                    {
+                        frente: "Como classificar um crash em relatório usado uma vez por ano?",
+                        verso: "Severidade alta e prioridade baixa.",
+                    },
+                    {
+                        frente: "Como classificar o nome da empresa errado na home, com campanha amanhã?",
+                        verso: "Severidade baixa e prioridade alta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença de escopo entre critério de aceitação e pronto?",
+                        verso: "O critério é de uma história; a definição de pronto vale para todas.",
+                    },
+                    {
+                        frente: "Quem escreve a definição de pronto, e quando?",
+                        verso: "O time, na retrospectiva.",
+                    },
+                    {
+                        frente: "Com que frequência cada um dos dois muda?",
+                        verso: "O critério muda a cada história; a definição de pronto é estável.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "No modelo cascata, onde o teste fica?",
+                        verso: "Numa fase depois de a construção terminar.",
+                    },
+                    {
+                        frente: "Em quanto tempo o feedback chega em cascata e em ágil?",
+                        verso: "Em meses na cascata, em dias no ágil.",
+                    },
+                    {
+                        frente: "Qual é a mudança mais importante para QA ao migrar para ágil?",
+                        verso: "QA passa a entrar no começo, e não no fim.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são os três papéis do Scrum?",
+                        verso: "Product Owner, Scrum Master e time de desenvolvimento.",
+                    },
+                    {
+                        frente: "O Scrum define o papel de testador?",
+                        verso: "Não. Quem faz QA integra o time de desenvolvimento.",
+                    },
+                    {
+                        frente: "Qual cerimônia é a mais valiosa para QA?",
+                        verso: "O refinamento do backlog.",
+                    },
+                    {
+                        frente: "O que QA leva para a retrospectiva?",
+                        verso: "Dados sobre a origem dos defeitos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a frase que resume o limite de trabalho em progresso?",
+                        verso: "Pare de começar, comece a terminar.",
+                    },
+                    {
+                        frente: "O que a fila de teste sempre cheia costuma significar?",
+                        verso: "Que QA virou gargalo do fluxo.",
+                    },
+                    {
+                        frente: "O que itens voltando de teste para desenvolvimento denunciam?",
+                        verso: "Critério pouco claro ou entrega incompleta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é o formato clássico de uma história de usuário?",
+                        verso: "Como um papel, quero uma ação, para um benefício.",
+                    },
+                    {
+                        frente: "Que letra do INVEST toca mais de perto o trabalho de QA?",
+                        verso: "O T, de testável.",
+                    },
+                    {
+                        frente: "Por que a história de usuário é um lembrete de conversa?",
+                        verso: "O detalhe nasce na conversa, e não no texto curto do cartão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sintoma denuncia o muro entre desenvolvimento e teste?",
+                        verso: "A frase já terminei, agora é com o QA.",
+                    },
+                    {
+                        frente: "O que qualidade é responsabilidade de todo mundo significa?",
+                        verso: "Cada papel contribui de um jeito, e a função de QA continua existindo.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta certa antes de automatizar um caso?",
+                        verso: "O que ganho, comparado ao custo de manter esse teste funcionando?",
+                    },
+                    {
+                        frente: "Que característica faz um teste ser bom candidato à automação?",
+                        verso: "Alta repetição com resultado determinístico.",
+                    },
+                    {
+                        frente: "Por que tela que muda a cada sprint não deve ser automatizada ainda?",
+                        verso: "A manutenção supera o benefício.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a distribuição que a pirâmide de testes propõe?",
+                        verso: "Muitos de unidade na base e poucos de ponta a ponta no topo.",
+                    },
+                    {
+                        frente: "Por que a pirâmide tem essa forma?",
+                        verso: "Quanto mais alto o nível, mais lento, frágil e caro de manter.",
+                    },
+                    {
+                        frente: "Como se chama a suíte com muita interface e quase nada abaixo?",
+                        verso: "Cone de sorvete, ou pirâmide invertida.",
+                    },
+                    {
+                        frente: "Em que velocidade cada camada da pirâmide roda?",
+                        verso: "Milissegundos na unidade, segundos na integração, minutos no topo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o padrão AAA organiza num teste automatizado?",
+                        verso: "Preparar o cenário, executar a ação e verificar o resultado.",
+                    },
+                    {
+                        frente: "A que formato manual o AAA corresponde?",
+                        verso: "Pré-condições, passos e resultado esperado.",
+                    },
+                    {
+                        frente: "Como cobrir uma regra com trinta combinações?",
+                        verso: "Todas no nível barato, e um cenário representativo no topo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a certificação mais conhecida da área de teste?",
+                        verso: "O ISTQB Foundation Level.",
+                    },
+                    {
+                        frente: "O que caracteriza o perfil de QA de automação?",
+                        verso: "Escrever código de teste e cuidar da suíte e da infraestrutura.",
+                    },
+                    {
+                        frente: "Que categoria de ferramenta costuma dar o melhor retorno cedo?",
+                        verso: "As de API, como Postman e REST Assured.",
+                    },
+                    {
+                        frente: "Que conselho a aula dá sobre certificação para quem começa?",
+                        verso: "Construir prática primeiro: a certificação rende mais com contexto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o trabalho central de QA?",
+                        verso: "Reduzir o risco de entregar algo que não serve e informar o risco que sobra.",
+                    },
+                    {
+                        frente: "O que a trilha de testes em código acrescenta aos fundamentos?",
+                        verso: "Como escrever unidade, integração e mocks de verdade.",
+                    },
+                ],
+            },
+        },
     },
 };
