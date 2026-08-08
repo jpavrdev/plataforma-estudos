@@ -1,0 +1,1035 @@
+/* Revisão espaçada.
+   A carta sobe acima da tela e o resto da página continua ali atrás, só escurecido:
+   o véu é translúcido de propósito, para dar a sensação de altura em vez de trocar
+   de tela. */
+
+/* ---------- A sala (a página que fica atrás) ---------- */
+
+.rev-sala {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+.rev-sala__head {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.rev-sala__titulo {
+  margin: 0 0 6px;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.rev-sala__sub {
+  margin: 0 auto;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.rev-sala__erro {
+  border: 1px solid color-mix(in srgb, var(--av-red) 45%, transparent);
+  background: color-mix(in srgb, var(--av-red) 12%, transparent);
+  color: var(--text);
+  border-radius: var(--r-lg);
+  padding: 12px 14px;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.rev-sala__aviso {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  padding: 38px 26px;
+  text-align: center;
+}
+.rev-sala__aviso h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+}
+.rev-sala__aviso a {
+  text-decoration: none;
+}
+.rev-sala__aviso p {
+  margin: 0 auto 20px;
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.rev-sala__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.rev-sala__nota {
+  margin: 12px auto 0;
+  max-width: 40ch;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Três cartas empilhadas, só para dar cara de baralho ao botão de começar. */
+.rev-sala__baralho {
+  position: relative;
+  width: 56px;
+  height: 72px;
+  margin: 0 auto 18px;
+}
+.rev-sala__baralho span {
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+}
+.rev-sala__baralho span:nth-child(1) {
+  transform: rotate(-14deg) translate(-7px, 4px);
+}
+.rev-sala__baralho span:nth-child(2) {
+  transform: rotate(8deg) translate(7px, 2px);
+}
+.rev-sala__baralho span:nth-child(3) {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  transform: rotate(-2deg) translateY(-4px);
+}
+
+/* Dois botões lado a lado no card da sessão pausada, do mesmo tamanho: continuar e
+   terminar são escolhas de mesmo peso, e um maior que o outro empurraria a decisão. */
+.rev-sala__par {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 380px;
+  margin: 0 auto;
+}
+.rev-sala__par .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* A linha do conteúdo escolhido, dentro do card de começar. Clicável inteira, para
+   não depender de mirar num link pequeno. */
+.rev-sala__selecao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 16px;
+  padding: 11px 14px;
+  border-radius: var(--r-lg);
+  border: 1px dashed var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.rev-sala__selecao:hover {
+  border-color: var(--accent);
+}
+.rev-sala__selecao span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rev-sala__selecao b {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ---------- O modal da carta ---------- */
+
+.rev-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px 16px 28px;
+
+  /* Escurecido, não preto: a página continua visível atrás e é isso que faz a carta
+     parecer estar acima dela. Sem backdrop-filter de propósito: o desfoque no fundo
+     conflita com a composição do próprio véu e há navegador que deixa de pintar um
+     dos dois. Escurecer sozinho já entrega o foco na carta. */
+  background: rgba(10, 13, 22, 0.72);
+  animation: rev-veu 0.25s ease both;
+}
+[data-theme='dark'] .rev-modal {
+  background: rgba(2, 4, 9, 0.74);
+}
+
+@keyframes rev-veu {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rev-modal__fechar {
+  position: absolute;
+  top: 76px;
+  right: 24px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+}
+.rev-modal__fechar:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.rev-modal__topo {
+  width: min(380px, 86vw);
+}
+.rev-modal__barra {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+.rev-modal__barra-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.25s ease;
+}
+.rev-modal__contador {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 7px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.rev-modal__relogio {
+  font-family: var(--font-code);
+  font-variant-numeric: tabular-nums;
+}
+.rev-modal__pista {
+  margin: 0;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.72);
+}
+.rev-modal__pista b {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ---------- A carta ---------- */
+
+/* A cena dá a perspectiva (sem ela o giro fica chapado) e é ela que entra e sai da
+   tela. O giro fica na carta, um elemento à parte: entrada, saída e virada são três
+   transformações diferentes, e empilhar as três no mesmo elemento faz uma anular a
+   outra. A animação usa fill backwards de propósito, para não deixar um transform
+   preso no fim e travar a saída. A transição também fica aqui, e não só na classe de
+   saída: declarada apenas lá, o navegador aplica o estado final de uma vez e a saída
+   não chega a ser vista. */
+.rev__cena {
+  position: relative;
+  perspective: 1500px;
+  perspective-origin: 50% 45%;
+  animation: rev-sobe 0.42s cubic-bezier(0.18, 0.9, 0.28, 1.12) backwards;
+  transition:
+    transform 0.3s ease-in,
+    opacity 0.3s ease-in;
+}
+
+@keyframes rev-sobe {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* A sombra projetada no chão é o que convence o olho de que a carta está no ar. Ela
+   encolhe quando a carta sobe e cresce quando desce, no mesmo compasso do balanço. */
+.rev__cena::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: -30px;
+  width: 60%;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5), transparent 70%);
+  filter: blur(7px);
+  transform: translateX(-50%);
+  animation: rev-sombra 5s ease-in-out infinite;
+}
+
+/* preserve-3d é obrigatório aqui: sem ele esta camada achata o contexto 3D e o giro
+   da carta perde a perspectiva da cena. */
+.rev__flutua {
+  transform-style: preserve-3d;
+  animation: rev-flutua 5s ease-in-out infinite;
+}
+
+@keyframes rev-flutua {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateY(-11px) rotate(0.5deg);
+  }
+}
+
+@keyframes rev-sombra {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: translateX(-50%) scale(0.86);
+  }
+}
+
+.rev__carta {
+  position: relative;
+  width: min(380px, 86vw);
+  height: min(440px, 54vh);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.3, 0.8, 0.35, 1);
+}
+.rev__carta--virada {
+  transform: rotateY(180deg);
+}
+
+/* As duas faces ocupam o mesmo espaço; a de trás já nasce girada e escondida. O halo
+   é o que vende a altura: a carta projeta sombra longa e tem um brilho de destaque
+   em volta, como se estivesse iluminada à frente da página. */
+.rev__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 30px 26px 22px;
+  text-align: center;
+  border-radius: 20px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 34px 80px rgba(0, 0, 0, 0.6),
+    0 0 90px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+[data-theme='dark'] .rev__face {
+  background: var(--surface-2);
+}
+.rev__face--verso {
+  transform: rotateY(180deg);
+}
+
+.rev__origem {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  color: var(--accent);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rev__texto {
+  margin: auto 0;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.rev__texto--verso {
+  font-size: 18px;
+  font-weight: 500;
+}
+.rev__rodape {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--muted);
+  max-width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rev__rodape--link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-bottom: 1px;
+}
+.rev__rodape--link:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* Saída: a carta some para o lado da resposta. Errei cai para a esquerda, Fácil voa
+   para a direita, e o meio fica quase reto. É um retorno visual do julgamento. */
+.rev__cena--saindo {
+  animation: none;
+  opacity: 0;
+}
+.rev__cena--saindo-errei {
+  transform: translate(-220px, 40px) rotate(-13deg) scale(0.92);
+}
+.rev__cena--saindo-dificil {
+  transform: translate(-80px, 48px) rotate(-5deg) scale(0.92);
+}
+.rev__cena--saindo-intermediaria {
+  transform: translate(80px, 48px) rotate(5deg) scale(0.92);
+}
+.rev__cena--saindo-facil {
+  transform: translate(220px, 40px) rotate(13deg) scale(0.92);
+}
+
+/* ---------- Avaliação ---------- */
+
+/* Os botões existem antes de virar a carta, só que invisíveis: reservar o espaço
+   evita o conteúdo pular no momento da virada. */
+.rev__acoes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  width: min(460px, 100%);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.rev__acoes--visivel {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* Os botões são claros e sólidos, não vidro escuro: eles ficam sobre o véu, e um
+   fundo translúcido ali vira quase preto e some. Cada um tem o próprio tom, e as
+   cores são fixas nos dois temas porque o fundo deles é sempre o véu. */
+.rev__botao {
+  padding: 12px 6px;
+  border-radius: var(--r-lg);
+  border: 1px solid transparent;
+  background: #f3f1ec;
+  color: #2b3242;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
+}
+.rev__botao:hover {
+  filter: brightness(1.06);
+}
+.rev__botao:active {
+  transform: translateY(1px);
+}
+.rev__botao--errei {
+  background: #ffe1e7;
+  color: #a81f3c;
+}
+.rev__botao--dificil {
+  background: #ffeed1;
+  color: #8a5910;
+}
+.rev__botao--intermediaria {
+  background: #d8f4e5;
+  color: #10683f;
+}
+.rev__botao--facil {
+  background: #dde7ff;
+  color: #1b48b0;
+}
+
+/* ---------- Tela de escolha do conteúdo ---------- */
+
+/* Reaproveita o véu do modal da carta, só que com um painel no lugar da carta. */
+.rev-modal--painel {
+  padding: 24px 16px;
+}
+
+.rev-escolha {
+  width: min(460px, 100%);
+  max-height: min(560px, 82vh);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  padding: 20px 20px 16px;
+  animation: rev-sobe 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.06) backwards;
+}
+.rev-escolha__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.rev-escolha__topo h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+.rev-escolha__x {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: pointer;
+}
+.rev-escolha__x:hover {
+  color: var(--text);
+}
+.rev-escolha__ajuda {
+  margin: 4px 0 14px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.rev-escolha__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+.rev-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 12px 13px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.rev-item:hover {
+  border-color: var(--accent);
+}
+.rev-item--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.rev-item__check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--on-accent);
+}
+.rev-item--on .rev-item__check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.rev-item__nome {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rev-escolha__quantas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+.rev-quant {
+  width: 92px;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+.rev-quant::placeholder {
+  font-weight: 400;
+  color: var(--muted);
+}
+.rev-quant:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.rev-escolha__vazio {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--av-red) 12%, transparent);
+  color: var(--text);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.rev-escolha__rodape {
+  display: flex;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.rev-escolha__rodape .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ---------- Estatísticas ---------- */
+
+.rev-stats {
+  margin-top: 22px;
+  padding: 20px 22px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  background: var(--surface);
+}
+.rev-stats h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Seis números em duas fileiras de três. Deixar o grid se auto-ajustar largava o
+   último sozinho numa linha, o que dava peso a ele sem motivo. */
+.rev-stats__numeros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 12px;
+  margin-bottom: 18px;
+}
+@media (max-width: 560px) {
+  .rev-stats__numeros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.rev-stats__numeros b {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.rev-stats__numeros span {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.rev-stats__barra {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.rev-stats__fatia--errei {
+  background: var(--av-red);
+}
+.rev-stats__fatia--dificil {
+  background: var(--amber);
+}
+.rev-stats__fatia--intermediaria {
+  background: var(--av-green);
+}
+.rev-stats__fatia--facil {
+  background: var(--av-blue);
+}
+
+.rev-stats__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.rev-stats__legenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.rev-stats__legenda b {
+  color: var(--text);
+}
+.rev-stats__ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.rev-stats__ponto--errei {
+  background: var(--av-red);
+}
+.rev-stats__ponto--dificil {
+  background: var(--amber);
+}
+.rev-stats__ponto--intermediaria {
+  background: var(--av-green);
+}
+.rev-stats__ponto--facil {
+  background: var(--av-blue);
+}
+
+.rev-stats__nota {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---------- Histórico de sessões ---------- */
+
+.rev-hist {
+  margin-top: 16px;
+  padding: 20px 22px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  background: var(--surface);
+}
+.rev-hist h2 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.rev-hist__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.rev-hist__item {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.rev-hist__item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.rev-hist__topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.rev-hist__quando {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.rev-hist__peso {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.rev-hist__conteudo {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.rev-hist__barra {
+  display: flex;
+  height: 6px;
+  margin-top: 9px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.rev-hist__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 7px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.rev-hist__legenda span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.rev-hist__legenda b {
+  color: var(--text);
+}
+
+/* ---------- Convite para revisar, no fim da trilha ---------- */
+
+.solve-next__revisar {
+  display: block;
+  width: 100%;
+  margin: 4px 0 16px;
+  padding: 13px 16px;
+  border-radius: var(--r-lg);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border));
+  background: var(--accent-soft);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+.solve-next__revisar:hover {
+  border-color: var(--accent);
+}
+.solve-next__revisar-nota {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .rev-sala {
+    padding: 24px 14px 60px;
+  }
+  .rev-sala__titulo {
+    font-size: 22px;
+  }
+  .rev__carta {
+    height: min(420px, 52vh);
+  }
+  .rev__texto {
+    font-size: 18px;
+  }
+  .rev__texto--verso {
+    font-size: 16px;
+  }
+  .rev__acoes {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Quem pediu menos movimento no sistema continua vendo a troca de carta, só que sem
+   giro nem voo: a informação é a mesma, a animação é que sai. */
+@media (prefers-reduced-motion: reduce) {
+  .rev-modal,
+  .rev__cena,
+  .rev__flutua,
+  .rev__carta {
+    animation: none;
+    transition: none;
+  }
+  .rev__carta--virada {
+    transform: none;
+  }
+  .rev__face {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+  }
+  .rev__face--verso {
+    transform: none;
+    visibility: hidden;
+  }
+  .rev__carta--virada .rev__face--frente {
+    visibility: hidden;
+  }
+  .rev__carta--virada .rev__face--verso {
+    visibility: visible;
+  }
+  .rev__cena--saindo {
+    transform: none;
+    opacity: 0;
+  }
+}
+
+/* ---------- Onde você mais tropeça ---------- */
+
+.rev-fracos {
+  margin-top: 16px;
+  padding: 20px 22px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-2xl);
+  background: var(--surface);
+}
+.rev-fracos h2 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.rev-fracos__ajuda {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.rev-fracos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rev-fracos__item {
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.rev-fracos__frente {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.rev-fracos__pe {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 7px;
+  font-size: 12px;
+}
+.rev-fracos__lapsos {
+  color: var(--av-red);
+  font-weight: 600;
+}
+.rev-fracos__origem {
+  color: var(--muted);
+}
+.rev-fracos__link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rev-fracos__link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Reportar carta ---------- */
+
+.rev-reporte {
+  display: flex;
+  justify-content: center;
+  min-height: 32px;
+}
+.rev-reporte__abrir {
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: inherit;
+  font-size: 11.5px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.rev-reporte__abrir:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+.rev-reporte__form {
+  display: flex;
+  gap: 8px;
+  width: min(420px, 100%);
+}
+.rev-reporte__campo {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+}
+.rev-reporte__campo::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+.rev-reporte__campo:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.rev-reporte__enviar {
+  flex: none;
+  padding: 8px 16px;
+  border-radius: var(--r-md);
+  border: none;
+  background: #f3f1ec;
+  color: #2b3242;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.rev-reporte__ok {
+  font-size: 12px;
+  color: #7fe0b4;
+}
