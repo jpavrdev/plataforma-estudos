@@ -352,5 +352,243 @@ export const aplicacoesComLlms: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O streaming reduz o tempo total da resposta?",
+                        verso: "Não. Reduz a espera percebida, não o total.",
+                    },
+                    {
+                        frente: "O que a métrica de tokens por segundo descreve?",
+                        verso: "A velocidade da digitação na tela.",
+                    },
+                    {
+                        frente: "Por que structured outputs combina mal com streaming?",
+                        verso: "O consumo parcial não serve; a resposta completa é mais simples.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que evento abre o stream, antes dos deltas?",
+                        verso: "O início da mensagem, que prepara a interface.",
+                    },
+                    {
+                        frente: "Ferramentas também chegam pelo stream?",
+                        verso: "Sim. O pedido de tool_use vem como evento no meio.",
+                    },
+                    {
+                        frente: "O delta serve para quê, e o acumulado para quê?",
+                        verso: "O delta é para a tela; o acumulado é para o sistema.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantas pernas tem o caminho do token num produto real?",
+                        verso: "Três: provedor, backend e navegador.",
+                    },
+                    {
+                        frente: "O que o navegador usa para consumir SSE?",
+                        verso: "EventSource, ou fetch com leitura de stream.",
+                    },
+                    {
+                        frente: "Que framework Python retransmite o stream ao navegador na aula?",
+                        verso: "FastAPI, com uma resposta de streaming.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o navegador usa para abortar a conexão do stream?",
+                        verso: "AbortController no fetch, ou fechar o EventSource.",
+                    },
+                    {
+                        frente: "Como o histórico registra uma resposta interrompida?",
+                        verso: "Marcada como interrompida, para o modelo saber que não terminou.",
+                    },
+                    {
+                        frente: "Jogar fora a resposta parcial é a saída certa?",
+                        verso: "Não. Perde contexto; tratá-la como completa engana o modelo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro métricas descrevem a experiência de um chat?",
+                        verso: "TTFT, tokens por segundo, tempo total e taxa de interrupção.",
+                    },
+                    {
+                        frente: "Qual é a ordem típica das fontes de latência?",
+                        verso: "Tamanho do prompt, porte do modelo, rede e resposta longa.",
+                    },
+                    {
+                        frente: "O que o modo raciocínio faz com o TTFT?",
+                        verso: "Aumenta: o modelo pensa antes de falar.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que campos uma mensagem guarda além do papel e do conteúdo?",
+                        verso: "Timestamp e metadados, como tokens e ferramenta usada.",
+                    },
+                    {
+                        frente: "O que a tabela de conversas guarda?",
+                        verso: "Identidade, dono e metadados da conversa.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Dez mensagens equivalem a quantos tokens?",
+                        verso: "Pode ser 300 ou 30 mil. Por isso o corte é por token.",
+                    },
+                    {
+                        frente: "Que par é indivisível ao cortar o histórico?",
+                        verso: "O tool_use e o resultado dele.",
+                    },
+                    {
+                        frente: "O que a janela deslizante esquece, e quando isso dói?",
+                        verso: "O que saiu. Dói quando o que saiu importava.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que gatilho dispara o resumo progressivo?",
+                        verso: "O histórico passar de um teto de tokens, como 8 mil.",
+                    },
+                    {
+                        frente: "Onde o resumo entra na montagem da chamada?",
+                        verso: "Logo após o system, como contexto do passado.",
+                    },
+                    {
+                        frente: "Qual é o risco do resumo progressivo?",
+                        verso: "Compressão com perda: o que ele omitir, sumiu.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Como os fatos são gravados na tabela do usuário?",
+                        verso: "Em chave-valor com data e origem, por upsert na chave.",
+                    },
+                    {
+                        frente: "Como os fatos entram na chamada?",
+                        verso: "Como bloco curto depois do system.",
+                    },
+                    {
+                        frente: "O que ajuda a escolher quais fatos injetar?",
+                        verso: "A relevância, e embeddings ajudam nessa seleção.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Onde vive cada camada de memória?",
+                        verso: "Fatos na tabela do usuário, resumo na conversa, janela na montagem.",
+                    },
+                    {
+                        frente: "Que escopo cada camada de memória cobre?",
+                        verso: "Fatos entre sessões, resumo na conversa atual, janela no presente.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que loja fictícia é o cenário do projeto da trilha?",
+                        verso: "A Livraria Paginacem.",
+                    },
+                    {
+                        frente: "Que framework serve a API do projeto?",
+                        verso: "FastAPI.",
+                    },
+                    {
+                        frente: "Que camada cuida de autenticação, validação e SSE?",
+                        verso: "A rota de chat.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a fatia vertical do projeto deixa de fora no começo?",
+                        verso: "Ferramentas e resumo. Só o ciclo completo rodando.",
+                    },
+                    {
+                        frente: "Que tom o system prompt do projeto define?",
+                        verso: "Livreiro atencioso, sem melação.",
+                    },
+                    {
+                        frente: "Que checagem confirma que o SSE está funcionando?",
+                        verso: "O texto pintar incremental na tela, e não todo no fim.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quais são as três ferramentas do bot do projeto?",
+                        verso: "consultar_livro, status_pedido e politicas_troca.",
+                    },
+                    {
+                        frente: "De onde vem a identidade do usuário nas ferramentas?",
+                        verso: "Da sessão autenticada, injetada pelo backend.",
+                    },
+                    {
+                        frente: "O que a interface pode mostrar enquanto a ferramenta roda?",
+                        verso: "Um aviso discreto de consulta em andamento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quais são os três anéis de proteção do projeto?",
+                        verso: "Orçamento por usuário, rate limit próprio e teto por resposta.",
+                    },
+                    {
+                        frente: "O que registrar para preparar o terreno contra abuso?",
+                        verso: "Tamanho e frequência de mensagem fora da curva.",
+                    },
+                    {
+                        frente: "Como o orçamento diário é reiniciado?",
+                        verso: "Com reset no dia seguinte.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que áreas o roteiro de aceitação do projeto cobre?",
+                        verso: "Memória, ferramentas, persona, transporte, custo e resiliência.",
+                    },
+                    {
+                        frente: "Que teste de resiliência o roteiro exige?",
+                        verso: "Backoff nos transitórios e o parcial tratado na queda.",
+                    },
+                    {
+                        frente: "O projeto termina quando parece pronto?",
+                        verso: "Não. Termina quando o roteiro de aceitação passa inteiro.",
+                    },
+                ],
+            },
+        },
     },
 };
