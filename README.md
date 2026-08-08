@@ -150,9 +150,107 @@ labs/               terminal Linux descartável
 deploy/             Caddyfile e assets de produção
 ```
 
-## Banco de dados
+## Modelo de dados
 
-`backend/schema.ts` é a fonte de verdade. Depois de alterá-lo:
+São 50 tabelas, e quase todas penduram em um de dois eixos: **`users`**, para tudo
+que é do aluno, e **`trails`**, para tudo que é conteúdo. Entender esses dois já
+resolve a leitura do resto.
+
+| Área | Ancora em | Tabelas |
+| --- | --- | --- |
+| **Conteúdo** | `trails` | `modules`, `lessons`, `questions`, `question_options`, `tags`, `trail_tags`, `trail_reviews`, `glossary`, `languages` |
+| **Conta** | `users` | `oauth_accounts`, `tokens`, `user_follows` |
+| **Progresso** | ambos | `lessons_progress`, `question_answers`, `achievements`, `user_achievements`, `ranking_snapshots`, `certificates` |
+| **Roadmaps** | ambos | `roadmaps`, `roadmap_stages`, `roadmap_stage_refs`, `roadmap_stage_completions`, `user_roadmaps` |
+| **Simulados** | `users` | `simulados`, `simulado_questions`, `simulado_options`, `simulado_attempts`, `simulado_attempt_questions`, `simulado_attempt_answers` |
+| **Desafios** | `users` | `challenges`, `challenge_tests`, `challenge_submissions`, `challenge_comments` |
+| **Revisão** | ambos | `flashcards`, `user_cards`, `card_reviews`, `card_reports` |
+| **Comunidade** | `users` | `community_posts`, `community_comments`, `community_likes`, `community_comment_likes`, `community_post_tags` |
+| **Operação** | `users` | `subscriptions`, `resume_analyses`, `comunicados`, `comunicado_respostas`, `feature_flags`, `feature_flag_users` |
+
+As três áreas marcadas com "ambos" pertencem ao aluno, mas cobram conteúdo que vem
+da trilha. Os diagramas abaixo abrem as três partes onde a estrutura não é óbvia.
+
+### Conteúdo e progresso
+
+A espinha do produto. O aluno lê a aula, responde o quiz, e os dois viram
+progresso.
+
+```mermaid
+erDiagram
+    trails    ||--o{ modules           : "tem"
+    trails    ||--o{ lessons           : "tem"
+    modules   ||--o{ lessons           : "agrupa"
+    lessons   ||--o{ questions         : "quiz de"
+    questions ||--o{ question_options  : "alternativas"
+
+    users     ||--o{ lessons_progress  : "conclui"
+    lessons   ||--o{ lessons_progress  : "concluida em"
+    users     ||--o{ question_answers  : "responde"
+    questions ||--o{ question_answers  : "respondida em"
+    question_options ||--o{ question_answers : "escolhida"
+
+    users     ||--o{ certificates      : "emite"
+    trails    ||--o{ certificates      : "de"
+```
+
+Uma conclusão por aluno e aula, uma resposta por aluno e questão, e um certificado
+por aluno e trilha. As três são restrições únicas no banco, não convenção.
+
+### Simulados
+
+A parte com mais tabelas, porque uma tentativa **congela** as questões sorteadas.
+Sem isso, editar o simulado depois reescreveria provas já feitas.
+
+```mermaid
+erDiagram
+    simulados         ||--o{ simulado_questions : "tem"
+    simulado_questions ||--o{ simulado_options  : "alternativas"
+
+    users     ||--o{ simulado_attempts : "faz"
+    simulados ||--o{ simulado_attempts : "de"
+
+    simulado_attempts  ||--o{ simulado_attempt_questions : "questões sorteadas"
+    simulado_questions ||--o{ simulado_attempt_questions : "sorteada em"
+    simulado_attempts  ||--o{ simulado_attempt_answers   : "respostas"
+    simulado_questions ||--o{ simulado_attempt_answers   : "respondida em"
+    simulado_options   ||--o{ simulado_attempt_answers   : "marcada"
+```
+
+### Revisão espaçada
+
+Linha cheia é chave estrangeira de verdade. Linha tracejada é relacionamento que
+existe na aplicação mas **não** no banco, e o motivo está logo abaixo.
+
+```mermaid
+erDiagram
+    lessons ||--o{ flashcards   : "cartões da aula"
+    users   ||--o{ user_cards   : "baralho"
+    users   ||--o{ card_reviews : "cada resposta"
+    users   ||--o{ card_reports : "erro reportado"
+
+    flashcards ||..o{ user_cards : "origem = flashcard"
+    glossary   ||..o{ user_cards : "origem = glossario"
+```
+
+`user_cards`, `card_reviews` e `card_reports` são **polimórficas**: a coluna
+`origem_id` aponta para `flashcards.id` ou para `glossary.id` conforme o valor de
+`origem`, e por isso **não tem chave estrangeira**. Quem for procurar esse
+relacionamento no banco não vai encontrar. A unicidade é
+`(user_id, origem, origem_id)`.
+
+### Notas de modelagem
+
+- **`lessons.trail_id` é denormalizado.** A aula já pertence à trilha pelo módulo, mas a coluna direta evita um join em consulta quente.
+- **Postgres não indexa chave estrangeira sozinho.** Coluna de FK nova pede um `index()` declarado no schema.
+- **`community_comments.parent_id` aponta para a própria tabela**, com thread de um nível só.
+
+Os diagramas acima são um mapa, não a especificação. A fonte de verdade é
+[`backend/schema.ts`](backend/schema.ts).
+
+## Migrations
+
+Depois de alterar o `schema.ts`:
 
 ```bash
 docker compose exec backend npx drizzle-kit generate   # gera a migration
@@ -162,9 +260,6 @@ docker compose exec backend npx drizzle-kit migrate    # aplica
 Sempre confira a migration gerada antes de commitar. Renomear valor de enum, por
 exemplo, o drizzle-kit resolve derrubando e recriando o tipo, o que apaga dados; o
 certo nesse caso é escrever `ALTER TYPE ... RENAME VALUE` à mão.
-
-Postgres não cria índice para chave estrangeira sozinho. Coluna de FK nova pede um
-`index()` declarado no schema.
 
 ## Testes
 
