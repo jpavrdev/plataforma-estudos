@@ -178,5 +178,177 @@ export const llmsEmProducao: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que perfil de produto tem o custo dominado pelas voltas do loop?",
+                        verso: "O agente. A alavanca é limite de voltas e dieta de contexto.",
+                    },
+                    {
+                        frente: "O que domina o custo de uma geração longa, como relatório?",
+                        verso: "Os tokens de saída. A alavanca é limitar o tamanho.",
+                    },
+                    {
+                        frente: "Em três cenários de projeção de custo, quais são eles?",
+                        verso: "Médio, percentil 95 e abuso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde vive o cache semântico, diferente do cache de prompt?",
+                        verso: "Na sua infra, em Redis ou pgvector, e não no provedor.",
+                    },
+                    {
+                        frente: "O que o cache semântico economiza, diferente do de prompt?",
+                        verso: "A chamada inteira, e não só o reprocessamento do prefixo.",
+                    },
+                    {
+                        frente: "O que fazer com o cache semântico quando a base é atualizada?",
+                        verso: "Invalidar, senão ele serve resposta velha com confiança.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é a estratégia de roteamento por escolha do produto?",
+                        verso: "A própria feature define o tier: simples e previsível.",
+                    },
+                    {
+                        frente: "Qual é o custo da escalada por falha?",
+                        verso: "A latência dobra no caso difícil, que tenta duas vezes.",
+                    },
+                    {
+                        frente: "Como se vigia a qualidade de um roteamento?",
+                        verso: "Com uma suíte de avaliação por rota, e não só no agregado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é o canal certo quando ninguém espera e o volume é grande?",
+                        verso: "A Batch API, com prazo de horas e cerca de metade do preço.",
+                    },
+                    {
+                        frente: "Qual é o canal certo para análise pronta em minutos?",
+                        verso: "Fila própria com workers, respeitando o rate limit.",
+                    },
+                    {
+                        frente: "Por que jobs de fila precisam ser idempotentes?",
+                        verso: "Retry acontece, e o job repetido não pode duplicar o efeito.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual alavanca de latência muda só a percepção, e não o real?",
+                        verso: "Estados visíveis na interface: a espera vira progresso.",
+                    },
+                    {
+                        frente: "O que paralelizar etapas faz com o tempo total?",
+                        verso: "A soma vira o máximo entre elas.",
+                    },
+                    {
+                        frente: "Por que custo e latência costumam melhorar juntos?",
+                        verso: "Contexto menor custa menos tokens e processa mais rápido.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre injection direta e indireta?",
+                        verso: "A direta vem do usuário; a indireta vem escondida no que o sistema lê.",
+                    },
+                    {
+                        frente: "Por que lista negra de palavras falha contra injection?",
+                        verso: "A linguagem natural tem variações infinitas para o mesmo pedido.",
+                    },
+                    {
+                        frente: "Por que o system prompt não deve conter segredo?",
+                        verso: "Ele pode vazar; projete assumindo que será lido um dia.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que guardrail de saída protege especificamente o RAG?",
+                        verso: "Groundedness: a resposta precisa se apoiar nos documentos.",
+                    },
+                    {
+                        frente: "Em que ordem organizar as checagens do pipeline?",
+                        verso: "Baratas e rápidas primeiro; juiz de LLM só onde for crítico.",
+                    },
+                    {
+                        frente: "Qual é o custo de um guardrail agressivo demais?",
+                        verso: "Falso positivo: uso legítimo bloqueado e usuário frustrado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Na LGPD, quem é controlador e quem é operador numa chamada de API?",
+                        verso: "Sua empresa controla; o provedor opera sob contrato.",
+                    },
+                    {
+                        frente: "O que verificar no contrato com o provedor sobre dados?",
+                        verso: "Treino com seus dados, retenção, local e DPA assinado.",
+                    },
+                    {
+                        frente: "Além do banco principal, onde o dado de um titular pode estar?",
+                        verso: "Em logs, traces, caches, memórias e embeddings derivados.",
+                    },
+                    {
+                        frente: "Que risco os embeddings da base carregam?",
+                        verso: "Reidentificação indireta: são dado, e se apagam junto.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é o papel do backend proxy entre o app e o provedor?",
+                        verso: "Proteger a chave e aplicar autenticação, limites e log.",
+                    },
+                    {
+                        frente: "Qual é o primeiro passo ao achar a chave num commit público?",
+                        verso: "Revogar imediatamente e auditar o uso dela.",
+                    },
+                    {
+                        frente: "Que risco o acesso interno indevido representa?",
+                        verso: "Logs com dado pessoal abertos ao time inteiro.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é a suíte adversarial?",
+                        verso: "Um golden set de ataques que roda como teste de regressão.",
+                    },
+                    {
+                        frente: "O que é um kill switch num produto com IA?",
+                        verso: "Um flag que desliga ou restringe a IA sem precisar de deploy.",
+                    },
+                    {
+                        frente: "Quais são as cinco fases de um incidente?",
+                        verso: "Detectar, conter, comunicar, corrigir e aprender.",
+                    },
+                    {
+                        frente: "Por que o red team caseiro complementa a ferramenta automática?",
+                        verso: "Ele mira as regras e os fluxos específicos do seu produto.",
+                    },
+                ],
+            },
+        },
     },
 };
