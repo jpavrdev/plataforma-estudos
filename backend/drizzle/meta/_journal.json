@@ -393,6 +393,20 @@
       "when": 1786118584081,
       "tag": "0055_status_expirada",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1786145062687,
+      "tag": "0056_flashcards",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1786146593143,
+      "tag": "0057_reporte_de_cartao",
+      "breakpoints": true
     }
   ]
 }

@@ -12,6 +12,7 @@ import {
     boolean,
     jsonb,
     type AnyPgColumn,
+    numeric,
 } from "drizzle-orm/pg-core";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
@@ -655,6 +656,109 @@ export const userRoadmaps = pgTable(
         unique().on(table.userId, table.roadmapId),
         index("user_roadmaps_user_id_idx").on(table.userId),
         index("user_roadmaps_roadmap_id_idx").on(table.roadmapId),
+    ],
+);
+
+// Cartão de revisão de uma aula. Autorado, não derivado das questões do quiz: a aula
+// ensina bem mais que os cinco fatos que o quiz cobra, e o cartão existe para pegar
+// justamente o que sobrou.
+export const flashcards = pgTable(
+    "flashcards",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        lessonId: uuid("lesson_id")
+            .references(() => lessons.id)
+            .notNull(),
+        frente: text("frente").notNull(),
+        verso: varchar("verso", { length: 200 }).notNull(),
+        position: integer("position").default(0).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("flashcards_lesson_id_idx").on(table.lessonId)],
+);
+
+export const cardOrigem = pgEnum("card_origem", ["flashcard", "glossario"]);
+
+// Estado de memória de cada cartão para cada aluno, no modelo da curva do
+// esquecimento. Guarda só o necessário para calcular a próxima data: estabilidade,
+// facilidade e histórico de acerto.
+export const userCards = pgTable(
+    "user_cards",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        origem: cardOrigem("origem").notNull(),
+        // Polimórfico sem FK: aponta para flashcards.id ou glossary.id conforme a origem.
+        origemId: uuid("origem_id").notNull(),
+        // Estabilidade da memória, em dias até a retenção cair ao alvo da curva do
+        // esquecimento. É o estado do modelo; o intervalo é ela arredondada, guardado
+        // à parte por ser o número que aparece para o aluno.
+        estabilidade: numeric("estabilidade", { precision: 8, scale: 2 }).default("0").notNull(),
+        intervaloDias: integer("intervalo_dias").default(0).notNull(),
+        facilidade: numeric("facilidade", { precision: 4, scale: 2 }).default("2.50").notNull(),
+        repeticoes: integer("repeticoes").default(0).notNull(),
+        lapsos: integer("lapsos").default(0).notNull(),
+        proximaRevisao: timestamp("proxima_revisao", { withTimezone: true }).defaultNow().notNull(),
+        ultimaRevisao: timestamp("ultima_revisao", { withTimezone: true }),
+    },
+    (table) => [
+        unique().on(table.userId, table.origem, table.origemId),
+        // A consulta quente é sempre "meus cartões vencidos até agora".
+        index("user_cards_fila_idx").on(table.userId, table.proximaRevisao),
+    ],
+);
+
+export const cardResposta = pgEnum("card_resposta", ["errei", "dificil", "intermediaria", "facil"]);
+
+// Uma linha por resposta dada. O estado do cartão em user_cards é sobrescrito a cada
+// revisão, então sem este registro não há como mostrar estatística nem histórico, nem,
+// mais adiante, calibrar o modelo de memória com o que o aluno de fato lembrou.
+export const cardReviews = pgTable(
+    "card_reviews",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        origem: cardOrigem("origem").notNull(),
+        origemId: uuid("origem_id").notNull(),
+        resposta: cardResposta("resposta").notNull(),
+        // Retenção que a curva previa no instante da resposta. É o que permite
+        // comparar depois o previsto com o que a pessoa realmente lembrou.
+        retencaoPrevista: numeric("retencao_prevista", { precision: 4, scale: 3 }),
+        estabilidadeAntes: numeric("estabilidade_antes", { precision: 8, scale: 2 }).notNull(),
+        estabilidadeDepois: numeric("estabilidade_depois", { precision: 8, scale: 2 }).notNull(),
+        intervaloDias: integer("intervalo_dias").notNull(),
+        // Quanto tempo entre a carta aparecer e o aluno se avaliar, em milissegundos.
+        // Nulo quando o cliente não mandou.
+        tempoMs: integer("tempo_ms"),
+        criadoEm: timestamp("criado_em", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("card_reviews_user_idx").on(table.userId, table.criadoEm)],
+);
+
+// Carta sinalizada pelo aluno. Com centenas de cartas autoradas, alguma vai sair
+// confusa ou errada, e sem um canal a gente só descobriria por reclamação avulsa.
+// Único por (aluno, carta): reportar de novo atualiza o comentário em vez de
+// empilhar linha.
+export const cardReports = pgTable(
+    "card_reports",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id)
+            .notNull(),
+        origem: cardOrigem("origem").notNull(),
+        origemId: uuid("origem_id").notNull(),
+        comentario: varchar("comentario", { length: 300 }),
+        resolvidoEm: timestamp("resolvido_em", { withTimezone: true }),
+        criadoEm: timestamp("criado_em", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.userId, table.origem, table.origemId),
+        index("card_reports_aberto_idx").on(table.resolvidoEm, table.criadoEm),
     ],
 );
 
