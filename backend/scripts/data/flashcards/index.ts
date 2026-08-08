@@ -4,5 +4,12 @@ import { logicaDeProgramacao } from "./logica-de-programacao.ts";
 import { protocolosDaWeb } from "./protocolos-da-web.ts";
 import { python } from "./python.ts";
 import { awsClfC02 } from "./aws-clf-c02.ts";
+import { javascript } from "./javascript.ts";
 
-export const TRILHAS: CartasDaTrilha[] = [logicaDeProgramacao, protocolosDaWeb, python, awsClfC02];
+export const TRILHAS: CartasDaTrilha[] = [
+    logicaDeProgramacao,
+    protocolosDaWeb,
+    python,
+    awsClfC02,
+    javascript,
+];
