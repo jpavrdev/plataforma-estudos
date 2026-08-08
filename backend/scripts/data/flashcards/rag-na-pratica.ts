@@ -180,5 +180,181 @@ export const ragNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que vetorizar os chunks em lote na indexação?",
+                        verso: "As APIs aceitam listas: dezenas por chamada, mais barato e rápido.",
+                    },
+                    {
+                        frente: "O que nunca deve entrar no texto embedado?",
+                        verso: "Metadados de controle, como datas e permissões.",
+                    },
+                    {
+                        frente: "Que prefixo pode melhorar o vetor de um chunk?",
+                        verso: "O caminho de seções, que devolve contexto ao trecho.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o pgvector acrescenta ao Postgres?",
+                        verso: "Coluna de vetor e operadores de distância.",
+                    },
+                    {
+                        frente: "Que operador do pgvector calcula distância de cosseno?",
+                        verso: "O operador de losangos, escrito como menor igual maior.",
+                    },
+                    {
+                        frente: "Que ganho escondido a busca vetorial tem dentro do Postgres?",
+                        verso: "Compõe com SQL normal: WHERE, JOIN e transações na mesma query.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a sigla ANN significa na busca vetorial?",
+                        verso: "Busca por vizinhança aproximada.",
+                    },
+                    {
+                        frente: "Qual dial do HNSW troca velocidade por recall?",
+                        verso: "O ef_search, ajustado na consulta.",
+                    },
+                    {
+                        frente: "Até que volume a busca exata costuma bastar?",
+                        verso: "Até dezenas de milhares de chunks.",
+                    },
+                    {
+                        frente: "Que particularidade o IVFFlat tem na criação?",
+                        verso: "Exige a tabela já populada: ele aprende as listas dos dados.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que biblioteca serve para busca vetorial em memória, sem servidor?",
+                        verso: "O FAISS.",
+                    },
+                    {
+                        frente: "Que motores vetoriais dedicados de código aberto a aula cita?",
+                        verso: "Qdrant e Weaviate.",
+                    },
+                    {
+                        frente: "O que torna barata a migração de banco vetorial?",
+                        verso: "Esconder o banco atrás de um módulo com interface gravar e buscar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como trocar o modelo de embedding com segurança?",
+                        verso: "Índice novo em paralelo, validação e virada de uma vez.",
+                    },
+                    {
+                        frente: "Que rotina roda a cada deploy para proteger o índice?",
+                        verso: "Validar o modelo do índice e abortar se divergir.",
+                    },
+                    {
+                        frente: "Que vantagem de backup o pgvector traz?",
+                        verso: "Os vetores entram no backup do Postgres que já existe.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quantos candidatos um k fixo alto demais traz de ruim?",
+                        verso: "Trechos irrelevantes que poluem o prompt da pergunta simples.",
+                    },
+                    {
+                        frente: "O que a sigla MMR quer dizer?",
+                        verso: "Maximal marginal relevance, a diversificação dos resultados.",
+                    },
+                    {
+                        frente: "Como o MMR escolhe os resultados?",
+                        verso: "Um a um, penalizando quem se parece com os já escolhidos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que algoritmo clássico faz a busca lexical?",
+                        verso: "O BM25.",
+                    },
+                    {
+                        frente: "O que a sigla RRF quer dizer?",
+                        verso: "Reciprocal rank fusion, a fusão por posição.",
+                    },
+                    {
+                        frente: "Qual é a conta do RRF para cada documento?",
+                        verso: "Somar 1 dividido por 60 mais a posição, em cada lista.",
+                    },
+                    {
+                        frente: "Qual é o custo da busca híbrida?",
+                        verso: "Duas buscas por consulta, ambas baratas e paralelizáveis.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que arquitetura de modelo faz o reranking?",
+                        verso: "O cross-encoder, que lê pergunta e candidato juntos.",
+                    },
+                    {
+                        frente: "Quantos candidatos a etapa larga costuma recuperar?",
+                        verso: "De 30 a 50, priorizando recall.",
+                    },
+                    {
+                        frente: "Quantos trechos sobram depois do reranking?",
+                        verso: "De 5 a 8, os realmente relevantes.",
+                    },
+                    {
+                        frente: "Quanta latência um reranker costuma somar?",
+                        verso: "De dezenas a centenas de milissegundos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que teste valida o filtro de permissões?",
+                        verso: "Usuário sem acesso pergunta do restrito e a busca volta vazia.",
+                    },
+                    {
+                        frente: "Que filtro impede citar política revogada?",
+                        verso: "O de versão vigente, no status do documento.",
+                    },
+                    {
+                        frente: "Que saídas existem para filtro muito seletivo com índice aproximado?",
+                        verso: "k maior antes do filtro, índice parcial ou partição por tenant.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual técnica de transformação é obrigatória em chat?",
+                        verso: "A reescrita com contexto, que resolve os pronomes.",
+                    },
+                    {
+                        frente: "O que o multi-query faz?",
+                        verso: "Gera duas ou três variações da pergunta e busca com todas.",
+                    },
+                    {
+                        frente: "Qual é a lógica por trás do HyDE?",
+                        verso: "A resposta imaginada se parece mais com os documentos que a pergunta.",
+                    },
+                ],
+            },
+        },
     },
 };
