@@ -20,6 +20,7 @@ import { cicdECloud } from "./cicd-e-cloud.ts";
 import { segurancaDeAplicacoesWeb } from "./seguranca-de-aplicacoes-web.ts";
 import { fundamentosDeProduto } from "./fundamentos-de-produto.ts";
 import { discoveryEPesquisa } from "./discovery-e-pesquisa.ts";
+import { estrategiaEPriorizacao } from "./estrategia-e-priorizacao.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -42,4 +43,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     segurancaDeAplicacoesWeb,
     fundamentosDeProduto,
     discoveryEPesquisa,
+    estrategiaEPriorizacao,
 ];
