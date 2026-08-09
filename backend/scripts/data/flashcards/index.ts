@@ -25,6 +25,7 @@ import { dadosParaProduto } from "./dados-para-produto.ts";
 import { produtoNaPratica } from "./produto-na-pratica.ts";
 import { agilEDeliveryNaPratica } from "./agil-e-delivery-na-pratica.ts";
 import { apisEFrameworks } from "./apis-e-frameworks.ts";
+import { autenticacao } from "./autenticacao.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -52,4 +53,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     produtoNaPratica,
     agilEDeliveryNaPratica,
     apisEFrameworks,
+    autenticacao,
 ];
