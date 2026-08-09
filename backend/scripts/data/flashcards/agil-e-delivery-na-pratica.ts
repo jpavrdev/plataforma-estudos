@@ -338,5 +338,251 @@ export const agilEDeliveryNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que escala os pontos de história costumam usar, e por quê?",
+                        verso: "Uma que lembra Fibonacci: a distância cresce junto com a incerteza.",
+                    },
+                    {
+                        frente: "Qual condição o no estimates exige para funcionar?",
+                        verso: "Fatiar os itens em tamanhos parecidos, o que dá trabalho.",
+                    },
+                    {
+                        frente: "Por que o planning poker pede carta revelada ao mesmo tempo?",
+                        verso: "Pra ninguém ancorar no palpite do mais experiente.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que lei explica velocity virar meta e perder o sentido?",
+                        verso: "A lei de Goodhart: medida que vira alvo deixa de medir.",
+                    },
+                    {
+                        frente: "O que acontece com a série de velocity quando o time muda?",
+                        verso: "Reinicia em parte: o histórico anterior perde valor.",
+                    },
+                    {
+                        frente: "O que a velocity não diz sobre o produto?",
+                        verso: "Se ele melhorou, se o cliente gostou ou se a arquitetura aguenta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como funciona a simulação de Monte Carlo, em uma frase?",
+                        verso: "Sorteia semanas passadas até completar o escopo, milhares de vezes.",
+                    },
+                    {
+                        frente: "Que três condições a previsão probabilística exige?",
+                        verso: "Histórico do mesmo time, escopo contado e estabilidade razoável.",
+                    },
+                    {
+                        frente: "Qual é o ganho maior da previsão por percentil?",
+                        verso: "Político: a conversa vira sobre risco, não sobre coragem.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é release planning ágil, então?",
+                        verso: "Uma sequência de fatias de valor com objetivo verificável.",
+                    },
+                    {
+                        frente: "Que três hábitos sustentam um plano de release honesto?",
+                        verso: "Separar compromisso de previsão, nomear risco e atualizar por Sprint.",
+                    },
+                    {
+                        frente: "Como o atraso anunciado na última hora é lido de fora?",
+                        verso: "Não parece azar: parece que ninguém estava olhando.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três qualidades um bom Sprint Goal tem?",
+                        verso: "Curto, único e verificável por alguém de fora do time.",
+                    },
+                    {
+                        frente: "Por que prometer contando com hora extra falha?",
+                        verso: "Funciona uma vez e cobra em bug e gente cansada depois.",
+                    },
+                    {
+                        frente: "Que três partes tem a resposta de quando não cabe tudo?",
+                        verso: "O que cabe, o custo do resto e a escolha devolvida a quem decide.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que consenso entre áreas com metas diferentes produz?",
+                        verso: "Média, e não direção para o produto.",
+                    },
+                    {
+                        frente: "Que tipo de delegação pedir primeiro, para ser aceita?",
+                        verso: "Pequena e específica: decidir sozinho abaixo de certo impacto.",
+                    },
+                    {
+                        frente: "O que os dois anti-padrões de PO quebram em comum?",
+                        verso: "A ligação curta entre quem decide valor e quem constrói.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quem popularizou o termo feature factory?",
+                        verso: "John Cutler, para o time que produz sem saber se gerou valor.",
+                    },
+                    {
+                        frente: "Como o time sente a feature factory por dentro?",
+                        verso: "Um cansaço estranho: entrega sempre e não sente progresso.",
+                    },
+                    {
+                        frente: "Qual limite não pode ser cruzado sobre medir resultado?",
+                        verso: "Um trimestre inteiro sem nenhuma entrega com efeito verificado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que outra variação do scrumfall aparece além da sprint de fase?",
+                        verso: "A sprint zero de dois meses montando arquitetura antes de entregar.",
+                    },
+                    {
+                        frente: "O que muda o cálculo econômico de adiar o teste?",
+                        verso: "Automatizar o caminho crítico e ter ambiente sob demanda.",
+                    },
+                    {
+                        frente: "Quando é aceitável ter incremento pronto sem publicar?",
+                        verso: "Com integração externa lenta: ele continua sendo incremento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pergunta honesta se faz antes de contratar mais gente?",
+                        verso: "Se dobrássemos o time amanhã, o que travaria primeiro?",
+                    },
+                    {
+                        frente: "O que cada time precisa ter ao dividir um time em dois?",
+                        verso: "O próprio PO, ou uma ordenação clara que evite disputa.",
+                    },
+                    {
+                        frente: "O que sobreviveu bem da moda de escalar por framework?",
+                        verso: "Times pequenos com contrato de API e coordenação por objetivo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que três motivos a transparência vem primeiro?",
+                        verso: "É barata, não ameaça ninguém e produz os argumentos do resto.",
+                    },
+                    {
+                        frente: "Que ordem os cinco movimentos de mudança seguem?",
+                        verso: "Visibilidade, uma dor, dados de fluxo, eventos e quem decide fora.",
+                    },
+                    {
+                        frente: "Qual é a única falha grave ao tentar mudar um time?",
+                        verso: "Parar de inspecionar o que você mesmo está tentando.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como é composto o time do Entregaí?",
+                        verso: "Cinco Developers, uma Scrum Master e o Product Owner.",
+                    },
+                    {
+                        frente: "Que duas perguntas de partida orientam um backlog herdado?",
+                        verso: "Qual problema custa mais caro e qual item tem prazo externo real.",
+                    },
+                    {
+                        frente: "Que fração dos contatos de suporte é sobre status do pedido?",
+                        verso: "Quarenta por cento, o maior motivo de contato do app.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que argumento faz um item técnico disputar ordem de verdade?",
+                        verso: "Risco ou custo datado, não que a coisa está velha.",
+                    },
+                    {
+                        frente: "Que fatia menor testa a hipótese do programa de fidelidade?",
+                        verso: "Um cupom para quem não pede há trinta dias.",
+                    },
+                    {
+                        frente: "O que significa ordenar, na definição da aula?",
+                        verso: "Escolher o que não será feito agora, descendo item pro fim.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual foi o Sprint Goal fechado na Planning do Entregaí?",
+                        verso: "Quem tem endereço salvo compra sem redigitar, em três passos.",
+                    },
+                    {
+                        frente: "Que três partes a comunicação do que ficou de fora tem?",
+                        verso: "O que entra e por quê, o que sai e quando, e o convite a contestar.",
+                    },
+                    {
+                        frente: "Onde a Sprint começa a falhar, na hora da capacidade?",
+                        verso: "Na tentação de empurrar só mais um item além do que cabe.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que troca o PO do Entregaí fez para o contorno do Pix entrar?",
+                        verso: "Saiu a redução de quatro para três passos do checkout.",
+                    },
+                    {
+                        frente: "Que três detalhes tornam a troca no meio da Sprint profissional?",
+                        verso: "Conversa antes, registro visível do que saiu e aviso no mesmo dia.",
+                    },
+                    {
+                        frente: "Qual era o tamanho do incidente de pagamento no Entregaí?",
+                        verso: "Quinze por cento das tentativas falhando e trinta contatos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que aconteceu com o cycle time médio na Sprint do Entregaí?",
+                        verso: "Caiu de seis para quatro dias, com menos itens abertos juntos.",
+                    },
+                    {
+                        frente: "Que sugestão de fora entrou no backlog durante a Review?",
+                        verso: "Avisar o cliente quando o pagamento falha, em vez de só dar erro.",
+                    },
+                    {
+                        frente: "Que ciclo o caso inteiro percorreu, do começo ao fim?",
+                        verso: "Backlog bruto virou ordem, objetivo, entrega, número e backlog novo.",
+                    },
+                ],
+            },
+        },
     },
 };
