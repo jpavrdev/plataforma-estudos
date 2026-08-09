@@ -175,5 +175,161 @@ export const testesE2e: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza um teste sem asserção útil?",
+                        verso: "Ele passa sempre, inclusive quando o produto está quebrado.",
+                    },
+                    {
+                        frente: "Que pergunta avalia a qualidade de uma asserção?",
+                        verso: "Se a funcionalidade quebrar de verdade, este teste falha?",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é o duplo problema de uma pausa fixa?",
+                        verso: "Lenta demais quando dá certo e curta demais quando dá errado.",
+                    },
+                    {
+                        frente: "Que efeito colateral a pausa fixa provoca, além de lentidão?",
+                        verso: "Esconde um problema de desempenho real do produto.",
+                    },
+                    {
+                        frente: "Que espera é a melhor para fluxos com API?",
+                        verso: "Esperar a requisição terminar: segue na hora e aguarda o necessário.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Playwright verifica antes de executar um clique?",
+                        verso: "Que o elemento existe, está visível, estável, habilitado e recebe evento.",
+                    },
+                    {
+                        frente: "Em que situação a espera automática não resolve?",
+                        verso: "Quando o efeito da ação não tem reflexo visível na interface.",
+                    },
+                    {
+                        frente: "Qual é a pegadinha do Cypress na ordem de execução?",
+                        verso: "Comandos são enfileirados, mas JavaScript comum executa na hora.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O teste lê Carregando em vez do valor. Qual é a causa?",
+                        verso: "O elemento já existe no DOM, mas o conteúdo ainda não chegou.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre ler o texto e usar a asserção de texto?",
+                        verso: "A leitura fotografa o instante; a asserção repete até bater.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a primeira pergunta de triagem quando um teste falha?",
+                        verso: "O produto quebrou, ou o teste quebrou?",
+                    },
+                    {
+                        frente: "Um teste falha só em paralelo. Qual é a causa provável?",
+                        verso: "Testes disputando o mesmo dado durante a execução simultânea.",
+                    },
+                    {
+                        frente: "Um teste falha só na segunda execução. O que isso indica?",
+                        verso: "Estado deixado pela primeira, sem limpeza entre testes.",
+                    },
+                    {
+                        frente: "O que olhar primeiro quando a falha só acontece no CI?",
+                        verso: "O trace ou o vídeo da execução no próprio CI.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que possibilidades a interceptação de requisições abre?",
+                        verso: "Observar a chamada, sincronizar a espera e simular a resposta.",
+                    },
+                    {
+                        frente: "Que defeito a verificação do corpo enviado revela?",
+                        verso: "Campo que a tela não envia, ou envia em formato diferente.",
+                    },
+                    {
+                        frente: "Um clique dispara três requisições. O que isso indica?",
+                        verso: "Envio duplicado, laço de repetição ou falta de trava no botão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a regra prática sobre simular resposta de API?",
+                        verso: "Deixar o caminho principal real e simular as bordas.",
+                    },
+                    {
+                        frente: "Por que o mock de rede congela um contrato?",
+                        verso: "Se a API mudar de formato, o teste segue passando com o antigo.",
+                    },
+                    {
+                        frente: "Que cenários compensam simular?",
+                        verso: "Os impossíveis ou caríssimos de reproduzir, como cartão recusado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é o princípio sobre autenticação nos testes?",
+                        verso: "Testar o login pela interface uma vez e chegar autenticado nos demais.",
+                    },
+                    {
+                        frente: "Por que um checkout que falha no login é um teste ruim?",
+                        verso: "A falha não diz nada sobre o checkout, que era o alvo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quanto tempo separa preparar dado pela interface e pela API?",
+                        verso: "De 20 a 40 segundos contra menos de um segundo.",
+                    },
+                    {
+                        frente: "Qual é a regra de ouro da preparação de dados?",
+                        verso: "Interface só para o que está sendo testado; o resto pelo caminho rápido.",
+                    },
+                    {
+                        frente: "O que muda nos pontos de falha ao preparar pela API?",
+                        verso: "De todas as telas do caminho para uma chamada só.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é contaminação de estado entre testes?",
+                        verso: "Um teste deixa o sistema diferente e o próximo tropeça nisso.",
+                    },
+                    {
+                        frente: "Qual é a desvantagem de limpar depois de cada teste?",
+                        verso: "Falhando no meio, a limpeza pode não ser executada.",
+                    },
+                    {
+                        frente: "Que verificação mais revela contaminação de estado?",
+                        verso: "Rodar o mesmo teste duas vezes seguidas.",
+                    },
+                ],
+            },
+        },
     },
 };
