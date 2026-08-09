@@ -334,5 +334,251 @@ export const discoveryEPesquisa: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a regra prática pra escolher a fidelidade do protótipo?",
+                        verso: "Escrever a pergunta antes e usar a menor fidelidade que responde a ela.",
+                    },
+                    {
+                        frente: "Segundo a aula, qual protótipo é caro de verdade?",
+                        verso: "O que o time não tem mais coragem de jogar fora.",
+                    },
+                    {
+                        frente: "Qual é o segundo sinal de que a fidelidade subiu cedo demais?",
+                        verso: "O time defender o protótipo quando o usuário trava.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são as duas perguntas salva-vidas numa sessão de teste?",
+                        verso: "O que você está pensando agora? E o que você esperava que acontecesse?",
+                    },
+                    {
+                        frente: "Que severidade de problema exige correção antes de lançar?",
+                        verso: "A que impede: a pessoa não conclui sem ajuda de alguém.",
+                    },
+                    {
+                        frente: "Por que separar as anotações de usabilidade das de valor?",
+                        verso: "Misturar as duas leituras produz confiança falsa.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é o botão falso como teste de demanda?",
+                        verso: "Botão que registra o clique e avisa na hora que aquilo ainda não existe.",
+                    },
+                    {
+                        frente: "O que separa sinal forte de sinal fraco num teste de demanda?",
+                        verso: "O custo que a pessoa paga pra sinalizar interesse.",
+                    },
+                    {
+                        frente: "O que fazer com quem se cadastrou quando o time decide não fazer?",
+                        verso: "Avisar mesmo assim, com uma mensagem curta e honesta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que os testes com gente por trás ensinam de mais valioso?",
+                        verso: "As regras de exceção, que não aparecem em fluxograma de reunião.",
+                    },
+                    {
+                        frente: "Em que situações o Wizard of Oz não deve ser usado?",
+                        verso: "Com dado sensível sem consentimento e em decisão crítica sem supervisão.",
+                    },
+                    {
+                        frente: "O que combinar antes de subir um Wizard of Oz?",
+                        verso: "Quantas semanas vai durar e qual pergunta encerra o teste.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que as ferramentas de 2026 aceleram no discovery?",
+                        verso: "Execução, variação e volume: mais versões, mais rápido e mais barato.",
+                    },
+                    {
+                        frente: "Que quatro trabalhos do discovery seguem humanos?",
+                        verso: "Escolher o risco, recrutar, ouvir sem induzir e decidir com evidência fraca.",
+                    },
+                    {
+                        frente: "Como guardar a frase literal no registro de aprendizado?",
+                        verso: "Com o participante e o minuto da gravação ao lado.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais duas opções toda pergunta fechada precisa oferecer?",
+                        verso: "Outro e não se aplica, pra quem não cabe nas caixinhas do time.",
+                    },
+                    {
+                        frente: "Qual é o teto razoável de duração de uma survey?",
+                        verso: "De cinco a oito minutos; depois disso o abandono cresce rápido.",
+                    },
+                    {
+                        frente: "O que é o viés de aquiescência?",
+                        verso: "A tendência humana de concordar com afirmações de quem te atende.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como é uma tela de MaxDiff?",
+                        verso: "Quatro ou cinco itens, pedindo o mais e o menos importante do grupo.",
+                    },
+                    {
+                        frente: "Quais são as duas perguntas do modelo Kano para cada item?",
+                        verso: "A funcional, com o item presente, e a disfuncional, com ele ausente.",
+                    },
+                    {
+                        frente: "Por que item encantador precisa entrar com parcimônia?",
+                        verso: "Custa caro e envelhece: câmera boa em celular já foi encanto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o vaivém entre carrinho e página do produto indica?",
+                        verso: "Falta uma informação ali: prazo, compatibilidade ou política de troca.",
+                    },
+                    {
+                        frente: "Qual é o sinal mais honesto de valor nos dados de uso?",
+                        verso: "Recorrência: gente que volta sozinha na semana seguinte.",
+                    },
+                    {
+                        frente: "O que um dicionário de eventos precisa registrar?",
+                        verso: "Nome, momento exato em que dispara, propriedades e dono.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Como reescrever 'todo mundo quer isso' depois de seis entrevistas?",
+                        verso: "Seis de seis pessoas disseram isso; ainda não sabemos o tamanho.",
+                    },
+                    {
+                        frente: "Por que três fontes independentes valem mais que uma fonte enorme?",
+                        verso: "Cada uma tem um viés, e viéses diferentes raramente erram junto.",
+                    },
+                    {
+                        frente: "Em que consiste o erro do quantitativo sem contexto?",
+                        verso: "Otimizar por trimestres um botão que nem deveria estar na tela.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quem costuma responder survey espontânea?",
+                        verso: "O muito engajado ou o muito irritado; o do meio fica calado.",
+                    },
+                    {
+                        frente: "Por que a lista de cancelados é a fonte mais valiosa da empresa?",
+                        verso: "Guarda as piores experiências, que já sumiram da base ativa.",
+                    },
+                    {
+                        frente: "O que escrever ao lado de todo percentual que sai da sua mão?",
+                        verso: "O número absoluto, o canal da coleta e a data.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como o contrato do Caronaê é cobrado das empresas?",
+                        verso: "Por funcionário ativo, com um teto de custo mensal por empresa.",
+                    },
+                    {
+                        frente: "Que teste a aula dá pra saber se uma meta serve como outcome?",
+                        verso: "Se dá pra bater entregando, é output; se dá pra errar fazendo tudo certo, é longe.",
+                    },
+                    {
+                        frente: "Quais três grupos o trio recrutou pras entrevistas?",
+                        verso: "Quem nunca andou, quem andou uma vez e parou, e o usuário frequente.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De quem é o teste da mãe usado nas entrevistas do Caronaê?",
+                        verso: "Do Rob Fitzpatrick: perguntas que nem a sua mãe consegue enfeitar.",
+                    },
+                    {
+                        frente: "Que pergunta o trio faz quando alguém pede uma funcionalidade?",
+                        verso: "Me conta a última vez que você precisou disso.",
+                    },
+                    {
+                        frente: "Onde a solução pedida pelo usuário vai parar?",
+                        verso: "No fim da árvore, como candidata a teste se o ramo for escolhido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quais quatro critérios o trio usou pra pontuar os ramos?",
+                        verso: "Alcance, gravidade, alinhamento e capacidade, de um a três cada.",
+                    },
+                    {
+                        frente: "O que o critério de capacidade pergunta sobre um ramo?",
+                        verso: "Se o time ataca aquilo sozinho, sem depender de outra área.",
+                    },
+                    {
+                        frente: "Como o trio registrou os ramos que ficaram de fora?",
+                        verso: "Por escrito, com data e motivo, no mesmo documento da árvore.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "De quem são as quatro famílias de risco do mapa de suposições?",
+                        verso: "Do Marty Cagan: desejabilidade, usabilidade, viabilidade técnica e de negócio.",
+                    },
+                    {
+                        frente: "Como escrever uma suposição pra evitar autoengano?",
+                        verso: "Como afirmação que pode ser falsa, não como algo a entender.",
+                    },
+                    {
+                        frente: "Qual era o critério de custo combinado pro concierge do Caronaê?",
+                        verso: "Custo médio de até doze reais por acionamento da garantia.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o trio manteve e o que trocou depois dos dois testes?",
+                        verso: "Manteve o outcome e o ramo do horário; trocou só a solução.",
+                    },
+                    {
+                        frente: "Quanto tempo levou o ciclo inteiro, do outcome até a decisão?",
+                        verso: "Duas semanas e meia, sem uma linha de código na feature.",
+                    },
+                    {
+                        frente: "Que duas perguntas fazer quando alguém propõe construir algo grande?",
+                        verso: "O que precisa ser verdade pra isso funcionar? E como descobrir barato?",
+                    },
+                ],
+            },
+        },
     },
 };
