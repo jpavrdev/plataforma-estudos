@@ -334,5 +334,251 @@ export const fundamentosDeProduto: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é o risco típico do modelo de assinatura?",
+                        verso: "O cancelamento silencioso.",
+                    },
+                    {
+                        frente: "Como funciona o modelo de receita por transação?",
+                        verso: "A empresa fica com uma fatia de cada operação feita.",
+                    },
+                    {
+                        frente: "Que conflito é típico de produto sustentado por anúncio?",
+                        verso: "Quem paga é o anunciante, e o produto otimiza tempo de tela.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são as três partes de uma proposta de valor?",
+                        verso: "O que resolve, para quem, e melhor que qual alternativa.",
+                    },
+                    {
+                        frente: "Qual costuma ser a alternativa real que o usuário já usa?",
+                        verso: "Planilha, caderno, ou simplesmente conviver com a dor.",
+                    },
+                    {
+                        frente: "Qual é o erro comum na parte de segmento?",
+                        verso: "Dizer que serve para qualquer empresa.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o CAC mede?",
+                        verso: "Quanto se gasta para conquistar um cliente novo.",
+                    },
+                    {
+                        frente: "O que o LTV representa?",
+                        verso: "A margem que o cliente deixa enquanto permanece.",
+                    },
+                    {
+                        frente: "Como se calcula a vida média a partir do cancelamento mensal?",
+                        verso: "Um dividido pela taxa de cancelamento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que setor é a maior escola de produto do país em 2026?",
+                        verso: "Fintech, puxado por pagamentos e crédito digital.",
+                    },
+                    {
+                        frente: "Que exigência aparece com frequência nas vagas de produto?",
+                        verso: "Saber consultar dados e questionar métricas do produto.",
+                    },
+                    {
+                        frente: "Que tipo de problema o agro costuma trazer?",
+                        verso: "Safra e rastreabilidade, numa cadeia longa e pouco digitalizada.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como o NPS é calculado?",
+                        verso: "Percentual de promotores menos o de detratores.",
+                    },
+                    {
+                        frente: "Por que cobrar receita direta de um time de produto frustra?",
+                        verso: "O time influencia, mas não controla preço nem mercado.",
+                    },
+                    {
+                        frente: "Que métrica de produto alimenta o cancelamento?",
+                        verso: "A frequência de uso no primeiro mês.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que escrever ajuda a pensar melhor?",
+                        verso: "O texto expõe buracos que a conversa disfarça.",
+                    },
+                    {
+                        frente: "Qual é a vantagem do texto sobre a reunião?",
+                        verso: "Alinha também quem não estava presente na hora.",
+                    },
+                    {
+                        frente: "O que significa começar um documento pela conclusão?",
+                        verso: "Abrir com a proposta e com o que você precisa de quem lê.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são as três partes de uma apresentação de decisão?",
+                        verso: "Contexto, opções consideradas e recomendação.",
+                    },
+                    {
+                        frente: "Por que incluir a opção de não fazer nada?",
+                        verso: "É alternativa real, e revela o custo de agir.",
+                    },
+                    {
+                        frente: "Qual é o problema de apresentar opções sem recomendar?",
+                        verso: "Transfere a decisão sem transferir o contexto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza o não agora?",
+                        verso: "Reconhece o valor e explica a fila com critério.",
+                    },
+                    {
+                        frente: "Por que o sim covarde é pior que um não claro?",
+                        verso: "Só adia a frustração e trava o time com excesso.",
+                    },
+                    {
+                        frente: "O que precisa acompanhar qualquer não profissional?",
+                        verso: "A evidência do critério e alguma alternativa possível.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quem é stakeholder de um produto?",
+                        verso: "Quem afeta o produto ou é afetado por ele.",
+                    },
+                    {
+                        frente: "Que eixos o mapa de stakeholders cruza?",
+                        verso: "Interesse pelo tema e influência sobre o resultado.",
+                    },
+                    {
+                        frente: "Como tratar quem tem alta influência e baixo interesse?",
+                        verso: "Manter satisfeito com resumo curto, sem surpresa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza uma boa mensagem assíncrona?",
+                        verso: "Traz contexto completo e o que se espera de resposta.",
+                    },
+                    {
+                        frente: "Que conversa justifica um encontro ao vivo?",
+                        verso: "Negociação difícil, em que tom e reação importam.",
+                    },
+                    {
+                        frente: "Por que informação importante não pode morar em conversa privada?",
+                        verso: "O time perde acesso e o contexto some com a pessoa.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é um teardown de produto?",
+                        verso: "Análise estruturada feita só com o que se observa de fora.",
+                    },
+                    {
+                        frente: "Que escopo funciona melhor num teardown?",
+                        verso: "Um fluxo principal, analisado com profundidade.",
+                    },
+                    {
+                        frente: "Por que evitar analisar um produto pelo qual você é apaixonado?",
+                        verso: "Quem admira demais deixa de enxergar as frições.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que é o onboarding num teardown?",
+                        verso: "O trecho entre o primeiro contato e o primeiro valor.",
+                    },
+                    {
+                        frente: "Por que registrar hesitações durante o uso?",
+                        verso: "Elas revelam dúvidas que outras pessoas também têm.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é uma north star metric?",
+                        verso: "Métrica que representa o valor entregue ao usuário.",
+                    },
+                    {
+                        frente: "Por que downloads é métrica de vaidade?",
+                        verso: "Sobe com campanha sem indicar valor recebido.",
+                    },
+                    {
+                        frente: "Que evidência pública sugere o que um produto mede?",
+                        verso: "O que a tela inicial destaca e o que a notificação puxa.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quem são os concorrentes reais de um produto?",
+                        verso: "Tudo que faz o mesmo job na vida da pessoa.",
+                    },
+                    {
+                        frente: "O que é efeito de rede?",
+                        verso: "O produto melhora conforme mais gente passa a usar.",
+                    },
+                    {
+                        frente: "Como um custo de troca se enfraquece?",
+                        verso: "O concorrente facilita a importação do histórico.",
+                    },
+                    {
+                        frente: "Por que uma feature bonita raramente é diferencial defensável?",
+                        verso: "Pode ser copiada em pouco tempo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que abre um bom documento de teardown?",
+                        verso: "Resumo com alvo, escopo, data e conclusões.",
+                    },
+                    {
+                        frente: "Por que datar a análise importa?",
+                        verso: "O produto muda e a conclusão envelhece rápido.",
+                    },
+                    {
+                        frente: "Por que a seção de limites fortalece o teardown?",
+                        verso: "Mostra que você sabe o que não dá para saber de fora.",
+                    },
+                ],
+            },
+        },
     },
 };
