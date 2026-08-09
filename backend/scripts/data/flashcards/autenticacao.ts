@@ -502,5 +502,87 @@ export const autenticacao: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os quatro papéis do modelo OAuth 2.0?",
+                        verso: "Resource Owner, Client, Authorization Server e Resource Server.",
+                    },
+                    {
+                        frente: "Que nome técnico o OAuth dá ao que ele faz?",
+                        verso: "Autorização delegada: o provedor entrega uma permissão limitada.",
+                    },
+                    {
+                        frente: "Que token especial o OpenID Connect acrescenta?",
+                        verso: "O id_token, que padroniza os dados de identidade do usuário.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que nome tem o fluxo OAuth usado por aplicação com back-end?",
+                        verso: "Authorization Code Flow, o fluxo de código de autorização.",
+                    },
+                    {
+                        frente: "Que três parâmetros a aplicação envia no redirecionamento inicial?",
+                        verso: "O client_id, o redirect_uri e o scope dos dados pedidos.",
+                    },
+                    {
+                        frente: "Que claims o payload do id_token do Google já traz?",
+                        verso: "O email, o name e o sub, identificador único e estável.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro checagens o id_token exige antes de ser aceito?",
+                        verso: "Assinatura, audiência, emissor e expiração, todas antes de confiar.",
+                    },
+                    {
+                        frente: "Que endpoint de perfil cada provedor expõe?",
+                        verso: "O /userinfo no Google e o /user no GitHub.",
+                    },
+                    {
+                        frente: "Que campos a tabela de usuários ganha com login social?",
+                        verso: "Um por provedor, tipo googleId e githubId, para vincular a conta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que defesas o credential stuffing pede, além do rate limit?",
+                        verso: "Autenticação em duas etapas e monitoramento de tentativa suspeita.",
+                    },
+                    {
+                        frente: "Que dois fundamentos nunca saem do checklist de autenticação?",
+                        verso: "Hash lento com salt e cookie com HttpOnly, Secure e SameSite.",
+                    },
+                    {
+                        frente: "Por que nenhuma defesa de autenticação funciona sozinha?",
+                        verso: "Segurança ali é soma de camadas pequenas, cada uma cobrindo um ataque.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como a etapa da senha resolve o problema dela?",
+                        verso: "Hash lento e com salt, nunca texto puro nem hash rápido.",
+                    },
+                    {
+                        frente: "Como a etapa da sessão resolve o esquecimento do HTTP?",
+                        verso: "Estado no servidor e id num cookie com HttpOnly e Secure.",
+                    },
+                    {
+                        frente: "Que conjunto mínimo uma API séria em produção combina?",
+                        verso: "Hash, token com par curto e longo, papéis em middleware e OAuth.",
+                    },
+                ],
+            },
+        },
     },
 };
