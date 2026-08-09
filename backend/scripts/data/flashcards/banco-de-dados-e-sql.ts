@@ -294,5 +294,199 @@ export const bancoDeDadosESql: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que PostgreSQL, MySQL e SQLite compartilham?",
+                        verso: "O núcleo do SQL, com diferenças em tipos e sintaxe.",
+                    },
+                    {
+                        frente: "O que a flag de detach faz num docker run?",
+                        verso: "Roda o container em segundo plano, liberando o terminal.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que diferencia um meta-comando do psql de um comando SQL?",
+                        verso: "O meta-comando usa barra invertida e não leva ponto e vírgula.",
+                    },
+                    {
+                        frente: "Que meta-comando lista as tabelas do banco?",
+                        verso: "O \\dt.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que tipo do Postgres guarda valor monetário sem erro de arredondamento?",
+                        verso: "O NUMERIC.",
+                    },
+                    {
+                        frente: "Que comando cria um banco novo?",
+                        verso: "CREATE DATABASE, seguido do nome.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que constraint impede dois cadastros com o mesmo email?",
+                        verso: "A UNIQUE.",
+                    },
+                    {
+                        frente: "O que a constraint NOT NULL garante?",
+                        verso: "Que nenhuma linha deixa aquela coluna vazia.",
+                    },
+                    {
+                        frente: "O que a constraint CHECK faz?",
+                        verso: "Impõe uma regra de valor, como saldo nunca ficar negativo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é um sequential scan?",
+                        verso: "O banco varre a tabela inteira, linha por linha, contra a condição.",
+                    },
+                    {
+                        frente: "Qual é o custo de manter um índice?",
+                        verso: "Cada escrita atualiza o índice também, e ele ocupa disco.",
+                    },
+                    {
+                        frente: "Que comando cria um índice numa coluna?",
+                        verso: "CREATE INDEX, com o nome e a tabela mais a coluna.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o pacote pg faz numa API Node?",
+                        verso: "É o driver que conecta e executa SQL no Postgres.",
+                    },
+                    {
+                        frente: "Por que a string de conexão fica em variável de ambiente?",
+                        verso: "Ela carrega credencial, e não pode ir para o repositório.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde ficam as linhas retornadas por uma query com o pg?",
+                        verso: "Na propriedade rows do objeto devolvido.",
+                    },
+                    {
+                        frente: "Por que a chamada de query precisa de await?",
+                        verso: "A comunicação pela rede é assíncrona e ela devolve uma Promise.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é SQL injection?",
+                        verso: "A entrada do usuário sendo interpretada como parte do SQL.",
+                    },
+                    {
+                        frente: "Qual é a causa raiz da vulnerabilidade de injection?",
+                        verso: "Concatenar o valor direto na string da consulta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um placeholder numerado representa numa query?",
+                        verso: "A posição que o banco troca pelo valor do array de parâmetros.",
+                    },
+                    {
+                        frente: "Por que a query parametrizada é segura?",
+                        verso: "O valor viaja separado do comando, e nunca vira SQL.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que abrir conexão a cada requisição é ruim?",
+                        verso: "Abrir tem custo, e o Postgres limita conexões simultâneas.",
+                    },
+                    {
+                        frente: "O que o pool faz na prática?",
+                        verso: "Mantém conexões abertas e as reaproveita entre as queries.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um ORM faz, na essência?",
+                        verso: "Mapeia tabelas do banco para objetos ou classes da linguagem.",
+                    },
+                    {
+                        frente: "O que o ORM não resolve sozinho?",
+                        verso: "A necessidade de entender modelagem de dados e índices.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o bloco datasource do schema declara?",
+                        verso: "O tipo do banco e a URL de conexão lida do ambiente.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é uma migration, na prática?",
+                        verso: "Um passo versionado que altera o schema, aplicado em ordem.",
+                    },
+                    {
+                        frente: "Que comando aplica migrations já existentes, sem gerar nova?",
+                        verso: "O migrate deploy, usado em produção.",
+                    },
+                    {
+                        frente: "Por que ALTER TABLE manual por cada dev é má prática?",
+                        verso: "As mudanças não ficam versionadas nem chegam iguais aos ambientes.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é o problema N mais um?",
+                        verso: "Uma query busca N registros e dispara mais uma por registro no laço.",
+                    },
+                    {
+                        frente: "Que recurso do Prisma evita o problema N mais um?",
+                        verso: "O include, que carrega o relacionamento em poucas consultas fixas.",
+                    },
+                    {
+                        frente: "Quantas queries um laço sobre 50 usuários dispara sem include?",
+                        verso: "Cinquenta e uma.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual foi a ordem lógica da trilha, do início ao fim?",
+                        verso: "Relacional e SQL, modelagem, Postgres, API e por fim ORMs.",
+                    },
+                ],
+            },
+        },
     },
 };
