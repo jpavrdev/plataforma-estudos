@@ -299,5 +299,211 @@ export const segurancaDeAplicacoesWeb: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é uma configuração incorreta, em segurança?",
+                        verso: "Um ajuste errado, ausente ou no padrão inseguro de fábrica.",
+                    },
+                    {
+                        frente: "Por que conta e senha padrão são risco clássico?",
+                        verso: "São credenciais públicas: acesso direto sem precisar de outra falha.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que devolver a stack trace crua ao cliente é perigoso?",
+                        verso: "Vaza caminho, versão e estrutura de tabela, úteis no reconhecimento.",
+                    },
+                    {
+                        frente: "O que a listagem de diretórios ligada expõe?",
+                        verso: "Arquivos que não deveriam ser servidos, como configuração e código.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o cabeçalho de HSTS faz?",
+                        verso: "Instrui o navegador a usar HTTPS por um tempo, dificultando o downgrade.",
+                    },
+                    {
+                        frente: "Para que serve o cabeçalho de nosniff?",
+                        verso: "Faz o navegador respeitar o tipo declarado, sem tentar adivinhar.",
+                    },
+                    {
+                        frente: "O que o cabeçalho de frame options bloqueia?",
+                        verso: "O enquadramento da página em outro site, usado em clickjacking.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é uma dependência transitiva?",
+                        verso: "Dependência das suas dependências, que entra sem você declarar.",
+                    },
+                    {
+                        frente: "De que categoria antiga a de cadeia de suprimentos evoluiu?",
+                        verso: "De componentes vulneráveis e desatualizados, ampliada.",
+                    },
+                    {
+                        frente: "O que o lockfile versionado resolve?",
+                        verso: "Instalação reproduzível, travando versões e hashes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é typosquatting em pacotes?",
+                        verso: "Publicar pacote com nome parecido com o de um popular, esperando erro de digitação.",
+                    },
+                    {
+                        frente: "Por que script de instalação de pacote é risco?",
+                        verso: "Roda código sozinho na instalação, e pode roubar variável de ambiente.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza uma falha de design, e não de implementação?",
+                        verso: "Falta o controle, ou ele é fraco por concepção: código nenhum resolve.",
+                    },
+                    {
+                        frente: "Quando o threat modeling rende mais?",
+                        verso: "Antes de codar, ainda no desenho da solução.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que o servidor não pode confiar no preço vindo do navegador?",
+                        verso: "O cliente altera o valor; o preço confiável vem do banco.",
+                    },
+                    {
+                        frente: "Aceitar quantidade negativa no carrinho é que tipo de falha?",
+                        verso: "Falha de lógica de negócio, tratada como controle de segurança.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é desserialização?",
+                        verso: "Reconstruir um objeto a partir de bytes ou texto salvos.",
+                    },
+                    {
+                        frente: "Como receber dado de fonte não confiável com segurança?",
+                        verso: "Em formato puro, como JSON, validando o schema de cada campo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que verificar a assinatura digital de uma atualização?",
+                        verso: "Confirma que veio do fornecedor e não foi alterada no caminho.",
+                    },
+                    {
+                        frente: "Contra o que o atributo de integridade numa tag de script protege?",
+                        verso: "Script de CDN adulterado: se o conteúdo mudar, o navegador recusa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que significa falhar fechado numa checagem de autorização?",
+                        verso: "Se a checagem falhar ou der erro, o acesso é negado.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que informações nunca devem ir para o log?",
+                        verso: "Senha, token de sessão, chave de API e cartão completo.",
+                    },
+                    {
+                        frente: "Por que a falha de logging é perigosa, se o atacante não a explora?",
+                        verso: "Sem registro nem alerta, os outros ataques passam despercebidos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre logging e alerta?",
+                        verso: "O log registra o que aconteceu; o alerta avisa alguém a tempo de agir.",
+                    },
+                    {
+                        frente: "Por que enviar o log de segurança para fora do servidor?",
+                        verso: "Com o servidor comprometido, o atacante não apaga o rastro.",
+                    },
+                    {
+                        frente: "Que ataque um pico de falhas de login sugere?",
+                        verso: "Força bruta ou credential stuffing.",
+                    },
+                    {
+                        frente: "Que ataque muitos erros 403 do mesmo usuário sugerem?",
+                        verso: "Varredura em busca de IDOR.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que validar só no navegador não basta?",
+                        verso: "O atacante fala direto com a API e ignora aquela validação.",
+                    },
+                    {
+                        frente: "Qual é a defesa definitiva contra XSS ao exibir dado do usuário?",
+                        verso: "Output encoding no contexto certo de saída.",
+                    },
+                    {
+                        frente: "Que cabeçalho restringe as origens de scripts da página?",
+                        verso: "O Content-Security-Policy.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é um WAF, e qual é a sua limitação principal?",
+                        verso: "Filtro que bloqueia tráfego malicioso conhecido, mas é contornável.",
+                    },
+                    {
+                        frente: "Contra que ataque o rate limiting no login protege?",
+                        verso: "Força bruta e credential stuffing.",
+                    },
+                    {
+                        frente: "O que o menor privilégio na aplicação reduz?",
+                        verso: "A escalada de privilégio depois de uma invasão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que significa shift-left em segurança?",
+                        verso: "Mover as práticas para o início do ciclo, no design e no código.",
+                    },
+                    {
+                        frente: "O que a análise de composição de software examina?",
+                        verso: "As dependências de terceiros, cobrindo a cadeia de suprimentos.",
+                    },
+                ],
+            },
+        },
     },
 };
