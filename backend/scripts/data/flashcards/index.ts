@@ -26,6 +26,7 @@ import { produtoNaPratica } from "./produto-na-pratica.ts";
 import { agilEDeliveryNaPratica } from "./agil-e-delivery-na-pratica.ts";
 import { apisEFrameworks } from "./apis-e-frameworks.ts";
 import { autenticacao } from "./autenticacao.ts";
+import { cacheFilasEPerformance } from "./cache-filas-e-performance.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -54,4 +55,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     agilEDeliveryNaPratica,
     apisEFrameworks,
     autenticacao,
+    cacheFilasEPerformance,
 ];
