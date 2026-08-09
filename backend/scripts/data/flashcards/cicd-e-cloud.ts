@@ -146,5 +146,149 @@ export const cicdECloud: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Em que pasta o GitHub Actions procura os workflows?",
+                        verso: "Em .github/workflows/",
+                    },
+                    {
+                        frente: "Que gatilho dispara o workflow manualmente?",
+                        verso: "O workflow_dispatch.",
+                    },
+                    {
+                        frente: "Que gatilho dispara em horários definidos?",
+                        verso: "O schedule, no formato de cron.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o campo runs-on define num job?",
+                        verso: "A máquina virtual onde o job vai rodar.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre um step com run e um com uses?",
+                        verso: "run executa comandos de shell; uses executa uma action pronta.",
+                    },
+                    {
+                        frente: "O que acontece com os steps seguintes quando um falha?",
+                        verso: "São pulados: o job para na primeira falha.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Para que serve a action de checkout?",
+                        verso: "Clonar o repositório no runner, no commit que disparou o workflow.",
+                    },
+                    {
+                        frente: "Para que serve o campo with num step?",
+                        verso: "Passar parâmetros de configuração para a action.",
+                    },
+                    {
+                        frente: "O que a action de cache guarda?",
+                        verso: "Arquivos entre execuções, como dependências já baixadas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que acontece com npm install se o lockfile estiver desalinhado?",
+                        verso: "Ele ajusta e segue; o npm ci falha imediatamente.",
+                    },
+                    {
+                        frente: "O que o comando de checagem de tipos com noEmit faz num step?",
+                        verso: "Confere os tipos do TypeScript sem gerar arquivo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sintaxe acessa um secret dentro do workflow?",
+                        verso: "A interpolação de secrets com o nome da chave.",
+                    },
+                    {
+                        frente: "O que acontece com um secret nos logs do Actions?",
+                        verso: "Fica mascarado, diferente de variável de ambiente comum.",
+                    },
+                    {
+                        frente: "Por que senha de banco não pode ir no YAML?",
+                        verso: "Fica exposta para qualquer um com acesso ao repositório.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que campo faz um job esperar outro terminar com sucesso?",
+                        verso: "O needs, listando o job pré-requisito.",
+                    },
+                    {
+                        frente: "O que acontece com o job dependente se o anterior falhar?",
+                        verso: "Ele não roda: o needs bloqueia a execução.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que é um registry de imagens no fluxo do pipeline?",
+                        verso: "O lugar onde a imagem construída fica armazenada e versionada.",
+                    },
+                    {
+                        frente: "Que registry já vem integrado ao GitHub?",
+                        verso: "O GitHub Container Registry, o GHCR.",
+                    },
+                    {
+                        frente: "Que autenticação o GHCR costuma usar?",
+                        verso: "O token que o próprio Actions injeta no workflow.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Onde fica guardado o valor de um secret do repositório?",
+                        verso: "Nas configurações de secrets, fora do código versionado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que tag identifica exatamente qual commit gerou a imagem?",
+                        verso: "A tag com o sha do commit.",
+                    },
+                    {
+                        frente: "Para que serve marcar a mesma imagem com mais de uma tag?",
+                        verso: "Referenciar a mesma imagem de formas diferentes, sem duplicar.",
+                    },
+                    {
+                        frente: "Quando usar a tag de versão semântica?",
+                        verso: "Para marcar releases, em geral a partir de uma tag do repositório.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que o cache de camadas local não ajuda no runner?",
+                        verso: "Cada execução usa uma máquina nova, sem os builds anteriores.",
+                    },
+                    {
+                        frente: "Qual é o efeito de reaproveitar cache de camadas entre execuções?",
+                        verso: "O build fica mais rápido, reusando o que não mudou.",
+                    },
+                ],
+            },
+        },
     },
 };
