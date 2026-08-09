@@ -338,5 +338,169 @@ export const apisEFrameworks: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que dá pra encadear .json() depois de .status()?",
+                        verso: "O res.status devolve o próprio res, então a cadeia continua.",
+                    },
+                    {
+                        frente: "O que muda entre res.send e res.json com um valor simples?",
+                        verso: "O send manda texto puro; o json manda entre aspas, como JSON válido.",
+                    },
+                    {
+                        frente: "Por que escrever .status() mesmo quando o status é 200?",
+                        verso: "Deixa explícito o que cada caminho da rota promete a quem chama.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que seis status cobrem a maioria das respostas de uma API REST?",
+                        verso: "200, 201, 204, 400, 404 e 500.",
+                    },
+                    {
+                        frente: "Por que o 204 usa .end() e não um JSON vazio?",
+                        verso: "O 204 promete sem conteúdo: corpo nenhum, nem chaves vazias.",
+                    },
+                    {
+                        frente: "Quais são as duas origens diferentes de um 404?",
+                        verso: "Rota que não existe, o Express resolve; recurso que não existe, seu código.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual envelope de erro a aula propõe para toda a API?",
+                        verso: "Sempre dentro de error, com message e details opcional.",
+                    },
+                    {
+                        frente: "O que o campo details do envelope de erro carrega?",
+                        verso: "Informação extra estruturada, como os campos que falharam.",
+                    },
+                    {
+                        frente: "O que um formato de erro consistente permite no cliente?",
+                        verso: "Uma função só tratando qualquer erro, de qualquer rota.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que os quatro parâmetros do tratador são obrigatórios?",
+                        verso: "É a contagem que faz o Express reconhecer a função como de erro.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre chamar next() e next(erro)?",
+                        verso: "O vazio segue o pipeline normal; com erro pula pro tratador.",
+                    },
+                    {
+                        frente: "O que o cliente recebe num erro inesperado, e o que fica no log?",
+                        verso: "Mensagem genérica pro cliente; o detalhe completo só no console.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que tipo de erro o Express intercepta sozinho, sem ajuda?",
+                        verso: "O síncrono, lançado direto no corpo da rota quando ela é chamada.",
+                    },
+                    {
+                        frente: "O que acontece com a resposta se a rejeição não for tratada?",
+                        verso: "Pode nunca ser enviada: o cliente espera e o tratador não roda.",
+                    },
+                    {
+                        frente: "Que pacote resolve o try e catch repetido em rota assíncrona?",
+                        verso: "O express-async-handler, ou um wrapper próprio com .catch(next).",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que regra de direção as camadas seguem entre si?",
+                        verso: "Cada camada só conhece a de baixo, nunca a de cima.",
+                    },
+                    {
+                        frente: "Que analogia a aula usa para as três camadas?",
+                        verso: "Restaurante: a placa, o garçom que traduz e a cozinha que prepara.",
+                    },
+                    {
+                        frente: "Que cinco sintomas denunciam o arquivo que cresceu demais?",
+                        verso: "Difícil achar, camadas misturadas, testar, reaproveitar e conflito.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que roteiro de quatro passos um bom controller segue?",
+                        verso: "Extrai da requisição, chama o service, monta a resposta e repassa o erro.",
+                    },
+                    {
+                        frente: "Que teste diz se o controller está bem desenhado?",
+                        verso: "Trocar a forma de guardar os dados não deveria mexer nele.",
+                    },
+                    {
+                        frente: "Que sinal denuncia regra de negócio escondida no controller?",
+                        verso: "Um if decidindo se algo pode ou não ser criado ali dentro.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que duas coisas um service concentra?",
+                        verso: "A regra de negócio do domínio e o acesso aos dados.",
+                    },
+                    {
+                        frente: "O que a função listar do service devolve quando não há nada?",
+                        verso: "Um array vazio, nunca null.",
+                    },
+                    {
+                        frente: "Por que o service nunca devolve um 404?",
+                        verso: "404 é conceito de HTTP, e o service não conhece protocolo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que valores a convenção usa para NODE_ENV?",
+                        verso: "development, test ou production, conforme o ambiente.",
+                    },
+                    {
+                        frente: "Onde o Node expõe as variáveis de ambiente?",
+                        verso: "No objeto global process.env.",
+                    },
+                    {
+                        frente: "Que quatro boas práticas o uso de .env pede?",
+                        verso: "Não commitar, versionar o exemplo, ter padrão e centralizar a leitura.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que seis pastas a estrutura do projeto integrador tem?",
+                        verso: "config, routes, controllers, services, schemas e middlewares.",
+                    },
+                    {
+                        frente: "Em que ordem o app.js liga as peças?",
+                        verso: "express.json, depois as rotas e o tratador de erro por último.",
+                    },
+                    {
+                        frente: "O que a pasta schemas guarda no projeto integrador?",
+                        verso: "Os schemas do Zod que validam o corpo das requisições.",
+                    },
+                ],
+            },
+        },
     },
 };
