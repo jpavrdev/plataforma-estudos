@@ -19,6 +19,7 @@ import { bancoDeDadosESql } from "./banco-de-dados-e-sql.ts";
 import { cicdECloud } from "./cicd-e-cloud.ts";
 import { segurancaDeAplicacoesWeb } from "./seguranca-de-aplicacoes-web.ts";
 import { fundamentosDeProduto } from "./fundamentos-de-produto.ts";
+import { discoveryEPesquisa } from "./discovery-e-pesquisa.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -40,4 +41,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     cicdECloud,
     segurancaDeAplicacoesWeb,
     fundamentosDeProduto,
+    discoveryEPesquisa,
 ];
