@@ -338,5 +338,251 @@ export const dockerEContainers: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro problemas o roteiro manual de docker run tem?",
+                        verso: "Ordem frágil, flags demais, nada documentado e refazer é penoso.",
+                    },
+                    {
+                        frente: "Que quatro passos o roteiro manual exige, na ordem?",
+                        verso: "Criar a rede, subir o banco, subir o cache e por fim a API.",
+                    },
+                    {
+                        frente: "O que o Compose substitui, em uma frase?",
+                        verso: "A sequência de docker run por um arquivo declarativo único.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que sete chaves configuram um service no Compose?",
+                        verso: "image ou build, ports, environment, volumes, depends_on e networks.",
+                    },
+                    {
+                        frente: "Que formato e nome o arquivo do Compose costuma ter?",
+                        verso: "Um YAML chamado docker-compose.yml, na raiz do projeto.",
+                    },
+                    {
+                        frente: "O que significa o Compose ser declarativo?",
+                        verso: "Você diz o que quer, e ele cria, conecta e sobe tudo sozinho.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que portas os três services da stack usam?",
+                        verso: "3000 na API, 5432 no Postgres e 6379 no Redis.",
+                    },
+                    {
+                        frente: "Onde os volumes nomeados são declarados no arquivo?",
+                        verso: "Numa chave volumes no nível raiz, fora de qualquer service.",
+                    },
+                    {
+                        frente: "O que o depends_on evita, e o que ele não elimina?",
+                        verso: "Evita a ordem errada; não elimina o erro de conexão recusada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que seis coisas o docker compose up faz de uma vez?",
+                        verso: "Lê o arquivo, constrói, cria rede e volumes, sobe na ordem e junta logs.",
+                    },
+                    {
+                        frente: "O que o up sozinho não percebe depois de mudar o Dockerfile?",
+                        verso: "Que a imagem mudou: precisa da flag de build pra reconstruir.",
+                    },
+                    {
+                        frente: "Quando rodar o up sem o modo desanexado ajuda?",
+                        verso: "Só quando você está depurando o começo, com os logs na tela.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que peça resolve o nome do service dentro da rede?",
+                        verso: "Um DNS interno do Compose, que aponta pro IP atual do container.",
+                    },
+                    {
+                        frente: "Por que o localhost não serve entre containers?",
+                        verso: "Cada um tem o próprio loopback, que aponta pra ele mesmo.",
+                    },
+                    {
+                        frente: "O que acontece com o nome se o container reiniciar com outro IP?",
+                        verso: "Continua funcionando: a resolução por nome acompanha o IP novo.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que muda na connection string ao containerizar a API?",
+                        verso: "Só o host, de localhost pro nome do service; o resto é igual.",
+                    },
+                    {
+                        frente: "Quando localhost faria sentido na connection string?",
+                        verso: "Só se a API rodasse fora do compose, direto na máquina.",
+                    },
+                    {
+                        frente: "O que o ioredis precisa mudar pra conectar no Redis do compose?",
+                        verso: "Só o host da URL, de localhost pra redis; nada no código.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que o Postgres demora a aceitar conexão ao subir?",
+                        verso: "Inicializa o diretório de dados e cria o banco antes de abrir a porta.",
+                    },
+                    {
+                        frente: "Que duas defesas cobrem o intervalo até o banco ficar pronto?",
+                        verso: "Retry na conexão da app e health check no Compose; se complementam.",
+                    },
+                    {
+                        frente: "Que diferença o depends_on simples não enxerga?",
+                        verso: "Entre container iniciado e processo lá dentro pronto pra uso.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro parâmetros um healthcheck declara?",
+                        verso: "test, interval, timeout e retries, no service do compose.",
+                    },
+                    {
+                        frente: "Que código de saída marca o container como saudável?",
+                        verso: "O zero: qualquer outro conta como falha na checagem.",
+                    },
+                    {
+                        frente: "Que forma do depends_on espera o service ficar saudável?",
+                        verso: "A longa, com a condição de service_healthy no lugar da lista.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que entrada extra protege o node_modules no compose de dev?",
+                        verso: "Um mount só pra pasta do node_modules, por cima do bind mount.",
+                    },
+                    {
+                        frente: "O que o compose de dev sobrescreve, além de montar o código?",
+                        verso: "O comando, trocando o CMD por um watcher tipo o nodemon.",
+                    },
+                    {
+                        frente: "Como se aponta o compose para o arquivo de produção?",
+                        verso: "Com a flag de arquivo, indicando o docker-compose de produção.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que causa o erro de nome de host não encontrado indica?",
+                        verso: "O nome do service está errado ou ele ficou fora da rede.",
+                    },
+                    {
+                        frente: "Que causa o erro de banco inexistente aponta?",
+                        verso: "O POSTGRES_DB e o banco da connection string não batem.",
+                    },
+                    {
+                        frente: "O que o logs sem nome de service mostra?",
+                        verso: "Todos misturados, com cada linha prefixada por quem gerou.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que cada FROM começa num Dockerfile multi-stage?",
+                        verso: "Uma etapa nova, que pode ser nomeada com AS.",
+                    },
+                    {
+                        frente: "Que três coisas sobram numa imagem de etapa única?",
+                        verso: "As devDependencies, o código-fonte original e o cache de instalação.",
+                    },
+                    {
+                        frente: "Qual etapa de um multi-stage vira a imagem de verdade?",
+                        verso: "Só a final; as anteriores servem de apoio e não sobram.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que tamanhos aproximados as três bases do Node têm?",
+                        verso: "Cerca de 1,1 GB na completa, 200 MB na slim e 150 MB na alpine.",
+                    },
+                    {
+                        frente: "Por que instalar compilador na etapa de build não pesa depois?",
+                        verso: "Ele fica naquela etapa, que não vira a imagem publicada.",
+                    },
+                    {
+                        frente: "Que passo além do alpine existe em imagem base?",
+                        verso: "As distroless: só o runtime e a app, sem shell nem gerenciador.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que comandos criam o usuário de sistema numa imagem alpine?",
+                        verso: "O addgroup e o adduser em modo de sistema, sem senha nem privilégio.",
+                    },
+                    {
+                        frente: "A partir do USER, o que passa a rodar com aquele usuário?",
+                        verso: "Tudo que vem depois no Dockerfile, incluindo o CMD.",
+                    },
+                    {
+                        frente: "Por que apagar um segredo numa instrução posterior não resolve?",
+                        verso: "A camada anterior fica na imagem e o docker history revela.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o docker push envia de fato ao registry?",
+                        verso: "Só as camadas que faltam lá, aproveitando o que já existe.",
+                    },
+                    {
+                        frente: "Por que publicar uma tag de versão além da latest?",
+                        verso: "Sem ela ninguém sabe qual build roda nem como voltar atrás.",
+                    },
+                    {
+                        frente: "Que fluxo leva a imagem da sua máquina ao servidor?",
+                        verso: "Construir e testar, taggear, autenticar, dar push e depois pull.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o Kubernetes faz em relação ao Docker?",
+                        verso: "Não substitui: gerencia containers rodando em várias máquinas.",
+                    },
+                    {
+                        frente: "Que quatro diferenças separam VPS de serviço gerenciado?",
+                        verso: "Quem administra, como se entrega, escala automática e controle.",
+                    },
+                    {
+                        frente: "O que um pipeline automatiza do que foi feito na mão aqui?",
+                        verso: "Build, tag e push a cada envio de código, sem depender de ninguém.",
+                    },
+                ],
+            },
+        },
     },
 };
