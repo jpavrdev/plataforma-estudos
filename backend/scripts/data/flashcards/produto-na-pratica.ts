@@ -174,5 +174,169 @@ export const produtoNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que eixo de cobrança o Financem escolheu, e com que ajuste?",
+                        verso: "Funcionalidade, com um teto generoso de notas no plano gratuito.",
+                    },
+                    {
+                        frente: "Quantos planos costumam ser o limite prático da clareza?",
+                        verso: "Três: acima disso a decisão de compra trava.",
+                    },
+                    {
+                        frente: "Quando o modelo de cobrança por uso é justo?",
+                        verso: "Quando existe custo variável real por unidade consumida.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o custo define, se não define o preço?",
+                        verso: "O piso: abaixo dele o negócio não se paga.",
+                    },
+                    {
+                        frente: "Que contrapartidas justificam um desconto em negociação?",
+                        verso: "Prazo maior, pagamento antecipado ou caso de sucesso público.",
+                    },
+                    {
+                        frente: "O que observar ao tratar preço como hipótese?",
+                        verso: "Conversão, objeções que aparecem e desconto concedido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três terrenos o teste de preço por sorteio toca?",
+                        verso: "Justiça, confiança e o terreno jurídico do consumidor.",
+                    },
+                    {
+                        frente: "Que critérios de preço diferente as pessoas aceitam?",
+                        verso: "Praça, moeda e segmento declarado, como estudante ou pequena empresa.",
+                    },
+                    {
+                        frente: "Qual é o limite ético ao mexer no empacotamento?",
+                        verso: "Não retirar valor de quem já estava pagando por ele.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Como se compõe o MRR de um mês?",
+                        verso: "O do mês anterior mais novo e expansão, menos contração e churn.",
+                    },
+                    {
+                        frente: "Que receita não entra no MRR?",
+                        verso: "A avulsa e a de projeto pontual, porque não são previsíveis.",
+                    },
+                    {
+                        frente: "O que a contração alta diz ao time de produto?",
+                        verso: "O cliente encolheu o uso semanas antes de encolher o plano.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro tipos de limite o plano gratuito pode usar?",
+                        verso: "Por volume, por funcionalidade, por tempo ou por pessoa.",
+                    },
+                    {
+                        frente: "Que quatro papéis o plano gratuito pode cumprir?",
+                        verso: "Loop de conteúdo, de indicação, efeito de rede ou confiança.",
+                    },
+                    {
+                        frente: "O que significa precisar de 20% de conversão pra fechar a conta?",
+                        verso: "Que aquilo não é freemium: é teste gratuito com prazo.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro territórios técnicos cobrem quase toda conversa?",
+                        verso: "API, banco de dados, deploy e dívida técnica.",
+                    },
+                    {
+                        frente: "Que três hábitos fazem a engenharia confiar no PM?",
+                        verso: "Trazer o problema antes, sustentar a prioridade e dizer não pra fora.",
+                    },
+                    {
+                        frente: "Que dois vícios o PM deve evitar na conversa técnica?",
+                        verso: "Fingir que entendeu e usar termo decorado pra parecer da turma.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são os quatro tipos de dívida técnica?",
+                        verso: "Deliberada registrada, deliberada esquecida, por aprendizado e por idade.",
+                    },
+                    {
+                        frente: "Que fatia de capacidade se reserva para saúde técnica?",
+                        verso: "Entre dez e vinte por cento, com o time escolhendo o que entra.",
+                    },
+                    {
+                        frente: "Que direito o PM ganha ao reservar essa fatia?",
+                        verso: "Pedir de vez em quando qual efeito ela produziu.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é o padrão de qualidade reconhecível de uma API?",
+                        verso: "Ir do zero ao primeiro sucesso sozinho, sem falar com ninguém.",
+                    },
+                    {
+                        frente: "O que é a interface principal de um produto de API?",
+                        verso: "A documentação, e não um anexo do produto.",
+                    },
+                    {
+                        frente: "Que exemplo de código serve numa documentação de API?",
+                        verso: "O que roda colado, sem precisar de nenhuma edição.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "De que escolhas técnicas o PM deve ficar longe?",
+                        verso: "Linguagem, padrão de código e estrutura interna dos módulos.",
+                    },
+                    {
+                        frente: "Como é uma condição de revisão que de fato dispara?",
+                        verso: "De negócio e observável: quando passarmos de cinco mil clientes.",
+                    },
+                    {
+                        frente: "Que exemplo mostra o limite do comprar pronto?",
+                        verso: "Terceirizar o motor de projeção seria entregar o produto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quais são as quatro frentes do PM durante um incidente?",
+                        verso: "Impacto, comunicação, decisão de produto e proteção do time.",
+                    },
+                    {
+                        frente: "De que premissa parte a análise pós-incidente?",
+                        verso: "As pessoas agiram razoavelmente com a informação que tinham.",
+                    },
+                    {
+                        frente: "Que números tornam a qualidade visível no plano?",
+                        verso: "Tempo fora do ar, taxa de erro e incidentes por trimestre.",
+                    },
+                ],
+            },
+        },
     },
 };
