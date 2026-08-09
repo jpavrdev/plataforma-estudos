@@ -174,5 +174,169 @@ export const agilEDeliveryNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três adjetivos definem um Product Backlog saudável?",
+                        verso: "Emergente, ordenado e enxuto o bastante pra alguém ler o topo.",
+                    },
+                    {
+                        frente: "Como é a granularidade de um backlog saudável?",
+                        verso: "Decrescente: topo pequeno e detalhado, fim com ideia grossa.",
+                    },
+                    {
+                        frente: "Que três forças combinam no critério de ordenação?",
+                        verso: "Valor esperado, risco que a entrega resolve e dependência técnica.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De onde veio a história de usuário, e ela é do Scrum?",
+                        verso: "Nasceu no Extreme Programming; não faz parte do Guia do Scrum.",
+                    },
+                    {
+                        frente: "Que três palavras resumem a técnica, segundo Ron Jeffries?",
+                        verso: "Cartão, conversa e confirmação, nessa ordem.",
+                    },
+                    {
+                        frente: "Qual pedaço da história o mercado mais corta, e não pode faltar?",
+                        verso: "O para quê: sem ele, o time não propõe um jeito melhor.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que teste diz se um critério de aceite é verificável?",
+                        verso: "Duas pessoas chegam sozinhas ao mesmo veredito?",
+                    },
+                    {
+                        frente: "Que caminhos o critério de aceite costuma esquecer?",
+                        verso: "Os de erro: só o caminho feliz vira retrabalho depois.",
+                    },
+                    {
+                        frente: "Como um bom critério de aceite precisa ser?",
+                        verso: "Concreto pra virar teste e curto pra caber num cartão.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que régua diz se o refinamento aconteceu?",
+                        verso: "Chegar na Planning com os itens do topo já entendidos.",
+                    },
+                    {
+                        frente: "Que pergunta resolve quase todo problema de fatiamento?",
+                        verso: "Qual é a menor versão que alguém de fora usaria e comentaria?",
+                    },
+                    {
+                        frente: "Que padrões servem pra fatiar um item grande?",
+                        verso: "Caminho feliz antes do erro, por tipo de usuário e por regra.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "De quem é a DoD e de quem são os critérios de aceite?",
+                        verso: "A DoD é do time e da empresa; o critério é do item e do usuário.",
+                    },
+                    {
+                        frente: "O que a DoD compartilhada entre times precisa cobrir?",
+                        verso: "O que atravessa fronteira: integração, segurança e contrato.",
+                    },
+                    {
+                        frente: "De que tamanho deve ser uma Definition of Done útil?",
+                        verso: "De seis a dez linhas que o time aplica todo dia mesmo.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que exercício revela as esperas escondidas no quadro?",
+                        verso: "Seguir um item por uma semana e anotar cada parada dele.",
+                    },
+                    {
+                        frente: "O que diferencia item ativo de item em espera?",
+                        verso: "No ativo alguém trabalha agora; o em espera aguarda gente ou ambiente.",
+                    },
+                    {
+                        frente: "Para onde um time maduro olha primeiro no quadro?",
+                        verso: "Para o que está parado, que é o que está custando prazo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é o efeito mais valioso do limite de WIP?",
+                        verso: "Vira problema do time: o fluxo travou, não a minha tarefa.",
+                    },
+                    {
+                        frente: "Como a lei de Little se enuncia em palavras?",
+                        verso: "Tempo médio é a quantidade em andamento sobre a taxa de saída.",
+                    },
+                    {
+                        frente: "Que dois caminhos existem pra entregar mais rápido?",
+                        verso: "Subir a taxa de saída, que é difícil, ou baixar o que está aberto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a métrica de fluxo mais acionável no dia a dia?",
+                        verso: "A idade do item aberto, que alerta hoje e não no fim do mês.",
+                    },
+                    {
+                        frente: "Que percentis vale olhar na distribuição de tempo de entrega?",
+                        verso: "Cinquenta, oitenta e cinco e noventa e cinco por cento.",
+                    },
+                    {
+                        frente: "De que as métricas de fluxo não dependem?",
+                        verso: "De estimativa: basta registrar quando o item entrou e saiu.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três classes de serviço o suporte costuma usar?",
+                        verso: "Urgente, padrão e data fixa, somadas ao limite de WIP.",
+                    },
+                    {
+                        frente: "O que continua existindo ao juntar Scrum com Kanban?",
+                        verso: "Sprint Backlog, Sprint Goal e a Review inspecionando o incremento.",
+                    },
+                    {
+                        frente: "Que três contextos favorecem o Kanban puro?",
+                        verso: "Suporte, itens uniformes e miúdos, e fluxo dominado por fila.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quando o replenishment acontece?",
+                        verso: "Semanalmente ou quando abre espaço na primeira coluna.",
+                    },
+                    {
+                        frente: "O que muda na decisão do PO em fluxo contínuo?",
+                        verso: "A granularidade: decide item a item, não em lote quinzenal.",
+                    },
+                    {
+                        frente: "Por que fluxo contínuo exige mais maturidade que sprint?",
+                        verso: "Sem a data de fim, ninguém é forçado a inspecionar.",
+                    },
+                ],
+            },
+        },
     },
 };
