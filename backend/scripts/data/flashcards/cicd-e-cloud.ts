@@ -290,5 +290,215 @@ export const cicdECloud: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que já é automático na entrega contínua?",
+                        verso: "Testar, buildar e publicar a imagem. Falta alguém liberar o deploy.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dado cada ambiente carrega?",
+                        verso: "Fake em dev, cópia anonimizada em staging, real em produção.",
+                    },
+                    {
+                        frente: "Quem acessa cada ambiente?",
+                        verso: "Quem desenvolve em dev, time interno em staging, usuário em produção.",
+                    },
+                    {
+                        frente: "Em que ambiente quebrar faz parte do trabalho?",
+                        verso: "Em dev, onde se testa ideia nova.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que comando faz o servidor baixar as camadas novas da imagem?",
+                        verso: "O docker compose pull.",
+                    },
+                    {
+                        frente: "Que segredo a esteira guarda no deploy por SSH?",
+                        verso: "A chave privada do servidor.",
+                    },
+                    {
+                        frente: "Que segredo a esteira guarda num serviço gerenciado?",
+                        verso: "O token de API do serviço.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que o deploy precisa aplicar as migrations, e não só trocar a imagem?",
+                        verso: "O código novo espera um schema que ainda não existe.",
+                    },
+                    {
+                        frente: "Que mudança de schema tem risco baixo?",
+                        verso: "Adicionar coluna opcional: o código antigo a ignora.",
+                    },
+                    {
+                        frente: "Que mudança de schema quebra ao inserir em linhas existentes?",
+                        verso: "Adicionar coluna obrigatória sem valor padrão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que precisa acontecer antes de a imagem ser construída?",
+                        verso: "O código passar pelo job de lint e testes.",
+                    },
+                    {
+                        frente: "Por que dá para reverter só trocando a tag da imagem?",
+                        verso: "Cada versão publicada já é uma imagem pronta no registry.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que você gerencia no modelo IaaS?",
+                        verso: "Sistema operacional, runtime, deploy e monitoramento.",
+                    },
+                    {
+                        frente: "O que você gerencia no modelo PaaS?",
+                        verso: "Só o código ou a imagem da aplicação.",
+                    },
+                    {
+                        frente: "Como o esforço operacional varia entre IaaS e PaaS?",
+                        verso: "Alto no IaaS, baixo no PaaS, em troca de controle.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que comando sobe os containers em segundo plano na VPS?",
+                        verso: "O docker compose up com a flag de detach.",
+                    },
+                    {
+                        frente: "Num PaaS, quem escolhe em que servidor a aplicação roda?",
+                        verso: "A própria plataforma.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um banco gerenciado tira da responsabilidade da equipe?",
+                        verso: "Backup automático, atualização de versão e replicação.",
+                    },
+                    {
+                        frente: "Por que dados de um banco em container podem sumir?",
+                        verso: "Por padrão eles vivem dentro do container, e somem com ele.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que a mesma imagem se comporta diferente em dev e produção?",
+                        verso: "O comportamento muda pela configuração, não pelo código.",
+                    },
+                    {
+                        frente: "Onde o arquivo de ambiente de produção deve existir?",
+                        verso: "Só no servidor de produção ou num gerenciador de secrets.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que registro DNS aponta um domínio direto para um IP?",
+                        verso: "O registro do tipo A.",
+                    },
+                    {
+                        frente: "Por que a aplicação Node não fala HTTPS diretamente?",
+                        verso: "O proxy reverso na frente cuida da conexão criptografada.",
+                    },
+                    {
+                        frente: "Qual é o limite da escala vertical?",
+                        verso: "O teto físico da máquina.",
+                    },
+                    {
+                        frente: "O que a escala horizontal exige da aplicação?",
+                        verso: "Que ela seja stateless, com um balanceador na frente.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a função do nível warn num log?",
+                        verso: "Sinalizar algo fora do esperado que ainda não quebrou nada.",
+                    },
+                    {
+                        frente: "Que comando acompanha o log de um serviço em tempo real?",
+                        verso: "O docker compose logs com a flag de follow.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é o objetivo de um endpoint de health?",
+                        verso: "Informar rápido se a aplicação está de pé e respondendo.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre liveness e readiness?",
+                        verso: "Liveness olha se o processo está vivo; readiness, se está pronto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a métrica de latência mede?",
+                        verso: "O tempo entre a requisição chegar e a resposta ser enviada.",
+                    },
+                    {
+                        frente: "O que a saturação representa nos quatro sinais de ouro?",
+                        verso: "Quão perto do limite estão recursos como CPU e memória.",
+                    },
+                    {
+                        frente: "Por que a taxa de erro é o sinal mais direto?",
+                        verso: "Um pico dela mostra na hora que algo quebrou.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza um rolling deploy?",
+                        verso: "Trocar as instâncias aos poucos, mantendo sempre alguma no ar.",
+                    },
+                    {
+                        frente: "O que acontece com o ambiente antigo no blue-green?",
+                        verso: "Fica parado, disponível como opção rápida de rollback.",
+                    },
+                    {
+                        frente: "Qual estratégia de deploy tem downtime, e por quanto tempo?",
+                        verso: "O deploy direto, pelo tempo do restart.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o princípio do menor privilégio pede da credencial do banco?",
+                        verso: "Acesso só às tabelas e operações de que a aplicação precisa.",
+                    },
+                ],
+            },
+        },
     },
 };
