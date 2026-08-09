@@ -174,5 +174,165 @@ export const discoveryEPesquisa: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que fica de fora do nível de outcome da árvore?",
+                        verso: "A lista de entregas do trimestre.",
+                    },
+                    {
+                        frente: "O que fica de fora do nível de oportunidade?",
+                        verso: "Nome de feature ou de tecnologia.",
+                    },
+                    {
+                        frente: "O que o nível de teste guarda na árvore?",
+                        verso: "O experimento que decide se a solução segue.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza uma oportunidade bem escrita?",
+                        verso: "Está na voz do usuário e não embute tecnologia.",
+                    },
+                    {
+                        frente: "Um pedido de exportar para Excel é o quê, na árvore?",
+                        verso: "Uma solução, que ainda esconde a oportunidade por trás.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quem mantém a árvore de oportunidades atualizada?",
+                        verso: "O trio de produto: produto, design e engenharia.",
+                    },
+                    {
+                        frente: "Onde a entrevista semanal para de ajudar?",
+                        verso: "Ela não mede quanta gente vive aquela dor.",
+                    },
+                    {
+                        frente: "O que o funil de uso entrega para a árvore, e o que não entrega?",
+                        verso: "Entrega onde procurar; não diz qual é a dor da etapa.",
+                    },
+                    {
+                        frente: "De quem vem o ticket de suporte, e por que isso limita?",
+                        verso: "Só de quem procurou ajuda, deixando os calados de fora.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Entre o que a comparação de oportunidades acontece?",
+                        verso: "Entre ramos irmãos, no mesmo nível da árvore.",
+                    },
+                    {
+                        frente: "O que o critério de alcance mede?",
+                        verso: "Quantas pessoas do segmento vivem aquela dor.",
+                    },
+                    {
+                        frente: "Que critérios têm o peso mais alto na comparação de ramos?",
+                        verso: "Tamanho da dor, alcance e alinhamento com o outcome.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quantas ideias vale gerar antes de qualquer filtro?",
+                        verso: "De dez a quinze.",
+                    },
+                    {
+                        frente: "Por que cada pessoa gera ideias sozinha antes do grupo?",
+                        verso: "Para o grupo não ancorar na voz mais alta da sala.",
+                    },
+                    {
+                        frente: "Por que levar três soluções concorrentes em vez de uma?",
+                        verso: "Comparar revela suposições que uma ideia sozinha esconde.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é uma suposição por trás de uma solução?",
+                        verso: "Algo que precisa ser verdade para a solução funcionar.",
+                    },
+                    {
+                        frente: "Quais são as quatro famílias de suposição?",
+                        verso: "Desejabilidade, usabilidade, viabilidade técnica e de negócio.",
+                    },
+                    {
+                        frente: "Que pergunta guia a família de viabilidade de negócio?",
+                        verso: "Cabe em custo, jurídico e no modelo da empresa?",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são os dois eixos do mapa de suposições?",
+                        verso: "Importância da suposição e evidência que já existe.",
+                    },
+                    {
+                        frente: "O que fazer com muita importância e pouca evidência?",
+                        verso: "Testar agora, antes de o time construir.",
+                    },
+                    {
+                        frente: "O que fazer com pouca importância e pouca evidência?",
+                        verso: "Nada: é ruído, não gaste tempo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que definir o critério de sucesso antes de rodar o teste?",
+                        verso: "Sem número combinado antes, todo resultado vira bom.",
+                    },
+                    {
+                        frente: "Quais são os cinco campos de um teste bem desenhado?",
+                        verso: "Suposição, método, critério, amostra e prazo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual suposição deve ser testada primeiro?",
+                        verso: "A mais importante e com menos evidência hoje.",
+                    },
+                    {
+                        frente: "Por que valor costuma ser testado antes de usabilidade?",
+                        verso: "Fluxo perfeito não salva algo que ninguém quer.",
+                    },
+                    {
+                        frente: "Quando testar viabilidade técnica logo na primeira semana?",
+                        verso: "Quando ela é o risco que pode matar a solução inteira.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que campo do registro de aprendizado quase todo time esquece?",
+                        verso: "A decisão tomada: seguir, ajustar ou matar.",
+                    },
+                    {
+                        frente: "O que é a ideia zumbi?",
+                        verso: "Ideia que volta sempre, sem evidência nova nenhuma.",
+                    },
+                    {
+                        frente: "Qual é o erro comum no campo de resultado?",
+                        verso: "Já escrever a conclusão em vez do número cru observado.",
+                    },
+                ],
+            },
+        },
     },
 };
