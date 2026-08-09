@@ -331,5 +331,243 @@ export const testesE2e: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que problema o Page Object resolve?",
+                        verso: "Concentra os seletores e as ações de uma tela num lugar só.",
+                    },
+                    {
+                        frente: "O que denuncia um Page Object mal feito?",
+                        verso: "Métodos que só renomeiam seletores, sem representar ação de negócio.",
+                    },
+                    {
+                        frente: "Por que não colocar asserção dentro do Page Object?",
+                        verso: "A verificação pertence ao teste, que é quem define o esperado.",
+                    },
+                    {
+                        frente: "Qual é o risco do Page Object, que os seletores soltos não têm?",
+                        verso: "Abstração demais, virando uma camada difícil de manter.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a vantagem da fixture sobre um auxiliar simples?",
+                        verso: "Prepara antes e limpa depois, mesmo quando o teste falha.",
+                    },
+                    {
+                        frente: "Qual é o risco de usar arquivo de dados para simular API?",
+                        verso: "Congela o formato: a API muda e o teste segue passando.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que princípio de organização a trilha propõe?",
+                        verso: "Organizar por funcionalidade do produto, não por tipo de artefato.",
+                    },
+                    {
+                        frente: "Para que servem as etiquetas nos testes?",
+                        verso: "Executar subconjuntos, como só os críticos ou os de fumaça.",
+                    },
+                    {
+                        frente: "O que acontece com a suíte que só roda inteira e leva quarenta minutos?",
+                        verso: "Ninguém executa antes de subir.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta filtro antes de escrever um teste de ponta a ponta?",
+                        verso: "Este defeito seria pego mais barato em outro nível?",
+                    },
+                    {
+                        frente: "Onde ficam as variações de uma regra com muitas combinações?",
+                        verso: "No teste de unidade, deixando um cenário representativo no topo.",
+                    },
+                    {
+                        frente: "Onde verificar o contrato completo da API?",
+                        verso: "No teste de API: roda em segundos e aponta o campo exato.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o maior estrago causado por um teste instável?",
+                        verso: "Ensina o time que teste vermelho não significa nada.",
+                    },
+                    {
+                        frente: "Qual é o perigo das tentativas automáticas de reexecução?",
+                        verso: "A instabilidade some do radar e nunca é investigada.",
+                    },
+                    {
+                        frente: "Que sintoma indica falha por ordem entre testes?",
+                        verso: "Falhar quando a suíte roda em ordem aleatória.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que esperar a aplicação responder antes de rodar a suíte?",
+                        verso: "Senão os testes começam antes de a aplicação estar de pé.",
+                    },
+                    {
+                        frente: "Qual é o problema de salvar artefato só quando passa?",
+                        verso: "Falhou e não sobra evidência nenhuma para investigar.",
+                    },
+                    {
+                        frente: "Que erro de CI faz a suíte passar hoje e falhar amanhã?",
+                        verso: "Versão flutuante de navegador ou dependência, sem fixar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre paralelismo local e distribuição?",
+                        verso: "O local usa vários processos numa máquina; a distribuição, várias.",
+                    },
+                    {
+                        frente: "Qual é o pré-requisito inegociável do paralelismo?",
+                        verso: "Que os testes sejam independentes entre si.",
+                    },
+                    {
+                        frente: "A suíte passa em sequência e falha em paralelo. O que indica?",
+                        verso: "Compartilhamento de estado entre os testes.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que pergunta o trace responde e o print não?",
+                        verso: "Se a requisição saiu e se houve erro de JavaScript na execução.",
+                    },
+                    {
+                        frente: "Que evidência a trilha aponta como esquecida e muito útil?",
+                        verso: "O console do navegador.",
+                    },
+                    {
+                        frente: "Quando ligar o trace, para não pesar demais?",
+                        verso: "Na primeira repetição, e não em toda execução.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pergunta define a escolha do ambiente de execução?",
+                        verso: "O que você quer provar com essa execução?",
+                    },
+                    {
+                        frente: "Por que a homologação compartilhada gera falha sem defeito?",
+                        verso: "Outras pessoas alteram dados, versões e configuração durante a corrida.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que acontece com uma suíte que fica lenta demais?",
+                        verso: "Não para de funcionar, mas para de ser usada no momento certo.",
+                    },
+                    {
+                        frente: "Qual é a maior fatia de tempo numa suíte lenta?",
+                        verso: "A preparação de estado pela interface, incluindo o login.",
+                    },
+                    {
+                        frente: "Que ação tem o maior ganho permanente contra lentidão?",
+                        verso: "Mover testes para níveis mais baratos.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é o ganho de testar API na mesma ferramenta do E2E?",
+                        verso: "Ter a camada de melhor retorno sem outra ferramenta e outro pipeline.",
+                    },
+                    {
+                        frente: "Onde ficam as verificações de permissão por perfil e rota?",
+                        verso: "Na camada de API, que executa em segundos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que parcela dos problemas de acessibilidade a verificação automática pega?",
+                        verso: "Cerca de um terço.",
+                    },
+                    {
+                        frente: "Que problemas o axe detecta sozinho?",
+                        verso: "Contraste insuficiente, imagem sem alt e campo sem rótulo.",
+                    },
+                    {
+                        frente: "Por que o seletor por papel acessível já testa acessibilidade?",
+                        verso: "Exercita a mesma estrutura que a tecnologia assistiva usa.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o teste visual verifica que o funcional não verifica?",
+                        verso: "A aparência da tela, contra uma imagem aprovada antes.",
+                    },
+                    {
+                        frente: "Por que imagem de referência gerada em outro sistema falha no CI?",
+                        verso: "As fontes renderizam de forma diferente em cada sistema.",
+                    },
+                    {
+                        frente: "Que cuidados o teste visual exige para não ficar instável?",
+                        verso: "Mascarar área dinâmica, desligar animação e fixar o tamanho da janela.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza um teste de componente?",
+                        verso: "Monta o componente isolado em navegador real, sem a aplicação inteira.",
+                    },
+                    {
+                        frente: "Em que o teste de componente difere do de unidade de interface?",
+                        verso: "Roda em navegador real, então CSS e evento funcionam de verdade.",
+                    },
+                    {
+                        frente: "O teste de componente precisa de backend?",
+                        verso: "Não. Ele monta só o componente.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que frase resume a trilha?",
+                        verso: "Suíte enxuta em que o time confia protege mais que uma grande e ignorada.",
+                    },
+                    {
+                        frente: "Que comportamento indica uma suíte doente?",
+                        verso: "Reexecutar o teste quando ele falha, em vez de investigar.",
+                    },
+                    {
+                        frente: "Que item faz parte do checklist de uma suíte saudável?",
+                        verso: "Cada teste cria o que precisa e não depende de dado preexistente.",
+                    },
+                ],
+            },
+        },
     },
 };
