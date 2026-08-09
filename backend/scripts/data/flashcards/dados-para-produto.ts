@@ -338,5 +338,251 @@ export const dadosParaProduto: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o sorteio compra que nenhum ajuste posterior consegue?",
+                        verso: "Comparabilidade até nas variáveis que você nem mediu.",
+                    },
+                    {
+                        frente: "Por que o contrafactual não existe na prática?",
+                        verso: "Ninguém vive as duas versões ao mesmo tempo.",
+                    },
+                    {
+                        frente: "Em que três casos o teste A/B não se aplica?",
+                        verso: "Preço público, mudança de marca e efeito de rede entre grupos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que a métrica primária precisa ser única?",
+                        verso: "Quem declara três vai declarar vitória pela que der certo.",
+                    },
+                    {
+                        frente: "Qual é a regra de bolso para tamanho de amostra por variante?",
+                        verso: "Dezesseis vezes p vezes um menos p, sobre o efeito ao quadrado.",
+                    },
+                    {
+                        frente: "Qual é a primeira pergunta do desenho de um experimento?",
+                        verso: "Qual é o menor efeito que mudaria a nossa decisão?",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é poder estatístico e qual é o padrão de mercado?",
+                        verso: "A chance de detectar o efeito se ele existir; o padrão é 80%.",
+                    },
+                    {
+                        frente: "Por que relatar o intervalo em vez do p-valor?",
+                        verso: "A faixa mostra tamanho do efeito e incerteza, e engana menos.",
+                    },
+                    {
+                        frente: "Quando qualquer diferença fica estatisticamente significante?",
+                        verso: "Com base grande o bastante, até 0,2 ponto sem valor prático.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que taxa de falso positivo dez espiadas produzem?",
+                        verso: "Perto de 20%, contra os 5% combinados no desenho.",
+                    },
+                    {
+                        frente: "O que é o teste A e A e para que ele serve?",
+                        verso: "Dois grupos idênticos, pra ver se a infraestrutura acusa diferença.",
+                    },
+                    {
+                        frente: "Em que ordem ler o resultado de um experimento?",
+                        verso: "Guardrails, primária, secundárias e só os segmentos já declarados.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três cuidados melhoram uma comparação antes e depois?",
+                        verso: "Janelas iguais, um grupo sem a mudança e métricas que não deviam mexer.",
+                    },
+                    {
+                        frente: "O que a aleatorização por região resolve?",
+                        verso: "Boa parte dos casos de efeito de rede e de preço público.",
+                    },
+                    {
+                        frente: "Que três coisas o relatório de um desenho fraco precisa escrever?",
+                        verso: "O desenho usado, o que ele não descarta e qual seria o teste ideal.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que cinco linhas formam o contrato antes da primeira consulta?",
+                        verso: "Pergunta, decisão, dado, recorte e o que faria mudar de ideia.",
+                    },
+                    {
+                        frente: "O que mais se negocia junto com a pergunta?",
+                        verso: "A profundidade: duas horas e duas semanas respondem diferente.",
+                    },
+                    {
+                        frente: "Que resposta profissional muitos analistas evitam dar?",
+                        verso: "Que a pergunta não pode ser respondida com o dado de hoje.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que é padronização numa análise de segmento?",
+                        verso: "Aplicar as taxas do período novo ao mix do período antigo.",
+                    },
+                    {
+                        frente: "O total se moveu e nenhum segmento se moveu. Qual é a resposta?",
+                        verso: "O mix: mudou a composição do público, não o produto.",
+                    },
+                    {
+                        frente: "Por que os cortes comportamentais são mais perigosos?",
+                        verso: "O comportamento pode ser consequência, e não causa.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que ganho no meio do funil vale mais que no fim?",
+                        verso: "Ele se propaga para todas as etapas seguintes.",
+                    },
+                    {
+                        frente: "Quanto autoriza cada banco no fluxo de conexão do Financem?",
+                        verso: "Setenta e dois no A, sessenta e oito no B e trinta e seis no C.",
+                    },
+                    {
+                        frente: "Como uma análise de funil vira tarefa em vez de slide?",
+                        verso: "Quebrando a etapa por dimensão até achar o dono do problema.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que técnica descarta história errada em quinze minutos?",
+                        verso: "Procurar o grupo que não deveria ter sido afetado pela mudança.",
+                    },
+                    {
+                        frente: "Por que variação relativa sem a base absoluta engana?",
+                        verso: "Crescer 200% pode ser três usuários virando nove.",
+                    },
+                    {
+                        frente: "Quando dizer que provavelmente contribuiu, sem isolar?",
+                        verso: "Sempre que a evidência é fraca: conclusão fraca é profissional.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que significa não conseguir escrever o resumo de três linhas?",
+                        verso: "Que você ainda não entendeu o que descobriu.",
+                    },
+                    {
+                        frente: "Quando cortar o eixo vertical é aceitável?",
+                        verso: "Em série de linha com variação pequena e o corte sinalizado.",
+                    },
+                    {
+                        frente: "Qual é a métrica do ofício de análise?",
+                        verso: "Decisão tomada com mais informação, não relatório entregue.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o plano pago do Financem acrescenta ao gratuito?",
+                        verso: "Projeção de saldo, metas por categoria e histórico ilimitado.",
+                    },
+                    {
+                        frente: "Quem é o público do Financem?",
+                        verso: "Adulto de 25 a 45 anos, renda média, com mais de uma conta.",
+                    },
+                    {
+                        frente: "Com quantas unidades cada usuário contribui pra north star?",
+                        verso: "No máximo quatro por mês, uma por semana conferida.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três entradas alimentam os usuários ativos semanais?",
+                        verso: "Novos ativados, taxa de retorno semanal e ressuscitados.",
+                    },
+                    {
+                        frente: "Que guardrail o time de aquisição observa?",
+                        verso: "A média de semanas conferidas da coorte que ele trouxe.",
+                    },
+                    {
+                        frente: "Quanto rende mexer nos dois fatores da árvore ao mesmo tempo?",
+                        verso: "Efeito multiplicativo: 23,2% acima do ponto de partida.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantos eventos o plano do Financem tem?",
+                        verso: "Quinze, cobrindo o caminho inteiro da north star.",
+                    },
+                    {
+                        frente: "Que propriedades o evento de cancelamento carrega?",
+                        verso: "O motivo e os dias de casa, que separam voluntário de involuntário.",
+                    },
+                    {
+                        frente: "Que segunda pergunta os eventos não conseguem responder?",
+                        verso: "O que a pessoa faz com a informação do resumo, fora da tela.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quanto o banco C responde das 6.400 perdas da autorização?",
+                        verso: "3.072 pessoas, quase metade do buraco daquela etapa.",
+                    },
+                    {
+                        frente: "Qual foi o segundo vazamento escolhido, e com que hipótese?",
+                        verso: "O retorno na semana dois, apoiado no achado das duas contas.",
+                    },
+                    {
+                        frente: "Por que mexer no formulário de cadastro renderia pouco?",
+                        verso: "A perda vem de intenção baixa comprada na mídia paga.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que decisão foi combinada para um ganho entre dois e cinco pontos?",
+                        verso: "Iterar com uma variante nova, sem lançar para a base.",
+                    },
+                    {
+                        frente: "Que ritual semanal sustenta o ciclo?",
+                        verso: "Meia hora com north star, entradas, funil e a coorte mais recente.",
+                    },
+                    {
+                        frente: "Que duas posturas atravessam a trilha inteira?",
+                        verso: "Honestidade aritmética e ceticismo com o próprio gráfico.",
+                    },
+                ],
+            },
+        },
     },
 };
