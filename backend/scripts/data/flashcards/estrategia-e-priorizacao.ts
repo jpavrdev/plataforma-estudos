@@ -174,5 +174,169 @@ export const estrategiaEPriorizacao: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quem criou o modelo de OKR e quem o popularizou?",
+                        verso: "Andy Grove, na Intel, e John Doerr depois dele.",
+                    },
+                    {
+                        frente: "Que natureza tem o Objetivo, ao contrário do Key Result?",
+                        verso: "Qualitativo, inspirador e com prazo, sem número na frase.",
+                    },
+                    {
+                        frente: "O que é uma iniciativa, na anatomia do OKR?",
+                        verso: "O trabalho em si: uma hipótese de alavanca, trocável.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a régua rápida pra saber se um número serve como KR?",
+                        verso: "Se entregarmos tudo e ele não se mover, fracassamos?",
+                    },
+                    {
+                        frente: "Quantos Key Results por objetivo a aula recomenda?",
+                        verso: "De dois a quatro; acima disso vira lista de desejos.",
+                    },
+                    {
+                        frente: "Que regra final de qualidade fecha a escrita de KRs?",
+                        verso: "Alguém de fora, lendo só os KRs, diz o que melhorou pro usuário.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quanto tempo dura um check-in de OKR, e com que frequência?",
+                        verso: "De quinze a trinta minutos, toda semana ou a cada duas.",
+                    },
+                    {
+                        frente: "O que a nota de confiança acrescenta ao valor do KR?",
+                        verso: "O termômetro de vamos chegar lá, que vira decisão em vez de leitura.",
+                    },
+                    {
+                        frente: "Pode mudar OKR no meio do trimestre?",
+                        verso: "Raramente, e sempre com data e motivo registrados.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que nome a aula dá à meta batida com o outcome piorado?",
+                        verso: "Efeito cobra em versão corporativa.",
+                    },
+                    {
+                        frente: "Qual é o par de guarda do KR de cadastros?",
+                        verso: "A ativação em sete dias, que não pode piorar junto.",
+                    },
+                    {
+                        frente: "Como corrigir um KR binário de entrega que não dá leitura?",
+                        verso: "Quebrar em marcos verificáveis ou declarar como compromisso.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que pergunta decide se vale a pena adotar OKR?",
+                        verso: "Se o custo do ritual é menor que o foco e o alinhamento que compra.",
+                    },
+                    {
+                        frente: "Que desenho serve melhor a uma crise aguda no trimestre?",
+                        verso: "Plano de guerra com check-in diário, sem a cerimônia de OKR.",
+                    },
+                    {
+                        frente: "O que descartar quando a ferramenta não serve à estratégia?",
+                        verso: "A ferramenta, nunca a estratégia.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que a comparação com obra civil não vale pra produto?",
+                        verso: "A estimativa do nunca construído tem variância que o formato não registra.",
+                    },
+                    {
+                        frente: "O que o executivo ganha e o que perde com o roadmap de datas?",
+                        verso: "Ganha previsibilidade de entrega e perde a de resultado.",
+                    },
+                    {
+                        frente: "Qual escolha perversa o time enfrenta quando a evidência muda?",
+                        verso: "Entregar o inútil combinado ou pagar o custo de furar o roadmap.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que horizonte típico cobre a coluna Later?",
+                        verso: "Além de dois trimestres, com compromisso baixo de propósito.",
+                    },
+                    {
+                        frente: "Que nível de detalhe cabe na coluna Next?",
+                        verso: "Médio: o problema definido, com a solução ainda em descoberta.",
+                    },
+                    {
+                        frente: "Com que dois campos cada item do roadmap nasce?",
+                        verso: "A justificativa do problema e a medida de como saberemos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o time passa a fazer assim que uma data vira promessa?",
+                        verso: "Gerencia pra data: corta escopo, adia refatoração e esconde risco.",
+                    },
+                    {
+                        frente: "O que de fato destrói a confiança do stakeholder?",
+                        verso: "A incerteza descoberta depois, não a incerteza avisada.",
+                    },
+                    {
+                        frente: "Que quarto nível a tabela acrescenta aos três de compromisso?",
+                        verso: "Fora do plano: não está na direção atual, e o porquê é dito.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o recorte do time precisa carregar, além dos problemas?",
+                        verso: "As medidas de sucesso, o que está fora do escopo e a razão.",
+                    },
+                    {
+                        frente: "O que cortar do recorte que vai pro cliente e pra vendas?",
+                        verso: "A aposta interna e qualquer data decorativa sem compromisso.",
+                    },
+                    {
+                        frente: "Quando um tema muda de horizonte, o que precisa acontecer?",
+                        verso: "Os três recortes mudam na mesma semana, com o mesmo porquê.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três perguntas cada item da pauta de revisão responde?",
+                        verso: "O que aprendemos, o que muda no plano e o que fica registrado.",
+                    },
+                    {
+                        frente: "Que três coisas caras o registro de decisão compra?",
+                        verso: "Memória do time, proteção contra revisionismo e leitura do processo.",
+                    },
+                    {
+                        frente: "O que a revisão faz com a demo impressionante do concorrente?",
+                        verso: "Nada no plano: investiga o problema por trás dela.",
+                    },
+                ],
+            },
+        },
     },
 };
