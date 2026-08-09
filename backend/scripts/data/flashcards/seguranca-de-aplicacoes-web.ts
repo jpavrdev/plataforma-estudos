@@ -151,5 +151,153 @@ export const segurancaDeAplicacoesWeb: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a causa raiz comum a toda injeção?",
+                        verso: "Misturar, numa mesma string, o dado do usuário com o comando.",
+                    },
+                    {
+                        frente: "Que vulnerabilidade a categoria de injeção passou a englobar em 2025?",
+                        verso: "O XSS, o cross-site scripting.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a correção principal contra SQL injection?",
+                        verso: "A consulta parametrizada, que envia instrução e valores separados.",
+                    },
+                    {
+                        frente: "Que cuidado um ORM não dispensa?",
+                        verso: "O SQL bruto embutido, que continua vulnerável.",
+                    },
+                    {
+                        frente: "Por que validar a entrada não substitui a parametrização?",
+                        verso: "É defesa extra: só rejeita formato claramente inválido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um command injection dá ao atacante, no pior caso?",
+                        verso: "A capacidade de executar comandos no servidor.",
+                    },
+                    {
+                        frente: "Qual é a defesa contra command injection?",
+                        verso: "Passar argumentos separados, sem shell no meio.",
+                    },
+                    {
+                        frente: "Em que uma injeção de NoSQL transforma o dado?",
+                        verso: "Em operador de consulta, como maior que ou diferente de.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde vive a carga de um XSS refletido?",
+                        verso: "Na própria requisição, em geral na URL.",
+                    },
+                    {
+                        frente: "Qual XSS atinge todo mundo que vê o conteúdo depois?",
+                        verso: "O armazenado, que fica salvo no servidor.",
+                    },
+                    {
+                        frente: "Onde a carga de um XSS baseado em DOM é processada?",
+                        verso: "No JavaScript do cliente; o servidor pode nem ver.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é um ataque de CSRF?",
+                        verso: "Fazer o navegador da vítima logada enviar requisição com o cookie dela.",
+                    },
+                    {
+                        frente: "Que atributo de cookie ajuda contra CSRF?",
+                        verso: "O SameSite, que barra o envio em requisição de outro site.",
+                    },
+                    {
+                        frente: "Como funciona o token anti-CSRF?",
+                        verso: "Um valor secreto por sessão, exigido na submissão e desconhecido do atacante.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que a categoria de exposição de dados virou falha criptográfica?",
+                        verso: "A exposição é o sintoma; a causa raiz é falha na criptografia.",
+                    },
+                    {
+                        frente: "Base64 protege um dado?",
+                        verso: "Não. É codificação reversível sem chave, não criptografia.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma conexão TLS bem configurada oferece?",
+                        verso: "Confidencialidade, integridade no caminho e autenticação do servidor.",
+                    },
+                    {
+                        frente: "O que um atacante na mesma rede lê num login sem HTTPS?",
+                        verso: "Usuário, senha e cookie de sessão, tudo em texto plano.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a forma correta de guardar senha?",
+                        verso: "Hash de mão única com bcrypt, scrypt ou argon2.",
+                    },
+                    {
+                        frente: "O que é o salt no hashing de senha?",
+                        verso: "Um valor aleatório e único por usuário, somado antes do hash.",
+                    },
+                    {
+                        frente: "Por que SHA-256 com salt ainda é insuficiente para senha?",
+                        verso: "É rápido demais: a GPU testa bilhões por segundo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quando cifrar em vez de hashear um dado?",
+                        verso: "Quando é preciso ler o valor original depois.",
+                    },
+                    {
+                        frente: "Qual cifra é recomendada hoje para dado em repouso?",
+                        verso: "AES-256 em modo autenticado, com vetor de inicialização único.",
+                    },
+                    {
+                        frente: "Por que o modo ECB é desaconselhado?",
+                        verso: "Blocos iguais viram cifra igual, e o padrão do dado vaza.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que hardcodar chave de API no código é perigoso?",
+                        verso: "O histórico do Git é permanente, e bots varrem repositórios.",
+                    },
+                    {
+                        frente: "Por que o gerador aleatório comum não serve para segredo?",
+                        verso: "Não é criptograficamente seguro: a sequência é previsível.",
+                    },
+                ],
+            },
+        },
     },
 };
