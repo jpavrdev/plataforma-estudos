@@ -174,5 +174,169 @@ export const dockerEContainers: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que as flags de interativo e terminal do docker exec fazem?",
+                        verso: "Uma mantém a entrada aberta e a outra aloca um terminal.",
+                    },
+                    {
+                        frente: "Que sinal o docker stop envia antes de forçar?",
+                        verso: "O SIGTERM, pedindo que o processo encerre com calma.",
+                    },
+                    {
+                        frente: "Como remover um container que ainda está rodando?",
+                        verso: "Parando antes, ou usando a flag de força no próprio rm.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a tag latest realmente significa?",
+                        verso: "Só a tag que aquele projeto chamou de latest naquele momento.",
+                    },
+                    {
+                        frente: "Por que travar a versão da imagem base em vez de usar latest?",
+                        verso: "O latest muda com o tempo e quebra o roda igual em qualquer lugar.",
+                    },
+                    {
+                        frente: "O que o docker rmi afeta, e o que ele não afeta?",
+                        verso: "Só a imagem local; o registry continua com ela publicada.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três coisas uma imagem oficial garante?",
+                        verso: "Curadoria conjunta, documentação padronizada e correção de segurança.",
+                    },
+                    {
+                        frente: "Que outros registries existem além do Docker Hub?",
+                        verso: "O do GitHub, o de cada provedor de nuvem e registries privados.",
+                    },
+                    {
+                        frente: "Quando escrever um Dockerfile próprio faz sentido?",
+                        verso: "Pra sua aplicação, que é única; não pra infra padrão.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três problemas o COPY sem .dockerignore causa?",
+                        verso: "Imagem maior, build mais lento e segredo dentro de uma camada.",
+                    },
+                    {
+                        frente: "Que sintaxe o .dockerignore usa?",
+                        verso: "Uma linha por padrão, cerquilha de comentário, asterisco e exceção.",
+                    },
+                    {
+                        frente: "Quando o Docker lê o .dockerignore?",
+                        verso: "Antes de montar o contexto, excluindo o que casar com os padrões.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três formas existem de passar configuração ao container?",
+                        verso: "A flag por variável, o arquivo de env, e o ENV no Dockerfile.",
+                    },
+                    {
+                        frente: "Quando o ENV do Dockerfile é a escolha certa?",
+                        verso: "Pra valor padrão fixo, igual em toda imagem, e raramente segredo.",
+                    },
+                    {
+                        frente: "Onde o arquivo de variáveis nunca pode entrar?",
+                        verso: "No repositório nem na imagem: fica no gitignore e no dockerignore.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que camada o docker run acrescenta por cima da imagem?",
+                        verso: "Uma camada gravável, exclusiva daquele container.",
+                    },
+                    {
+                        frente: "A camada gravável é compartilhada entre containers da imagem?",
+                        verso: "Não: cada container tem a sua, e a imagem segue só leitura.",
+                    },
+                    {
+                        frente: "Que comandos preservam os dados gravados no container?",
+                        verso: "stop, start e restart; só o rm apaga a camada gravável.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é o formato do -v ao montar um volume nomeado?",
+                        verso: "Nome do volume, dois pontos e o caminho dentro do container.",
+                    },
+                    {
+                        frente: "Precisa criar o volume antes de montá-lo?",
+                        verso: "Não: o Docker cria na hora do run se ele ainda não existir.",
+                    },
+                    {
+                        frente: "Que comando remove todos os volumes sem container usando?",
+                        verso: "O volume prune, que limpa os que não estão em uso.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Postgres faz ao achar arquivos de dados no caminho?",
+                        verso: "Usa esses arquivos em vez de criar um banco vazio do zero.",
+                    },
+                    {
+                        frente: "O que garante a continuidade dos dados entre containers?",
+                        verso: "O volume montado no mesmo caminho pelos dois containers.",
+                    },
+                    {
+                        frente: "O que acontece com bind mount numa pasta vazia do host?",
+                        verso: "O banco novo nasce ali e persiste enquanto a pasta existir.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que caminho o bind mount aponta, ao contrário do volume?",
+                        verso: "Direto pra uma pasta do host, escolhida por você.",
+                    },
+                    {
+                        frente: "Que pegadinha o bind mount cria com o node_modules?",
+                        verso: "O do host sobrescreve o da imagem; resolve com um segundo mount.",
+                    },
+                    {
+                        frente: "Que ferramenta completa o hot reload dentro do container?",
+                        verso: "Uma de reload, tipo o nodemon, reiniciando a cada alteração.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quem gerencia cada um dos dois tipos de montagem?",
+                        verso: "O Docker gerencia o volume; o bind mount é pasta sua no host.",
+                    },
+                    {
+                        frente: "Que três cuidados os dois tipos de montagem pedem?",
+                        verso: "Não mexer na área do Docker, não versionar dados e olhar permissão.",
+                    },
+                    {
+                        frente: "Por que a pasta de dados do volume não entra no Git?",
+                        verso: "Os dados mudam a cada segundo e não fazem sentido num commit.",
+                    },
+                ],
+            },
+        },
     },
 };
