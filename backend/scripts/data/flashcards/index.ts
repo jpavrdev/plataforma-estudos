@@ -30,6 +30,7 @@ import { cacheFilasEPerformance } from "./cache-filas-e-performance.ts";
 import { dockerEContainers } from "./docker-e-containers.ts";
 import { go } from "./go.ts";
 import { linuxELinhaDeComando } from "./linux-e-linha-de-comando.ts";
+import { redes } from "./redes.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -62,4 +63,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     dockerEContainers,
     go,
     linuxELinhaDeComando,
+    redes,
 ];
