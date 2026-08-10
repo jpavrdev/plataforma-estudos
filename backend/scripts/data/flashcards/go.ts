@@ -310,5 +310,155 @@ export const go: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que acoplamento a interface implícita permite entre pacotes?",
+                        verso: "Um pacote usa tipos de outro que a satisfazem sem saber dela.",
+                    },
+                    {
+                        frente: "O que basta a um tipo ter para satisfazer uma interface?",
+                        verso: "Os métodos que ela declara; nada mais precisa ser escrito.",
+                    },
+                    {
+                        frente: "Que palavra o Go não tem, ao contrário de outras linguagens?",
+                        verso: "A de implementar: a satisfação da interface é implícita.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que interface famosa da biblioteca padrão tem um método só?",
+                        verso: "A Stringer, com o método que devolve a representação em texto.",
+                    },
+                    {
+                        frente: "O que o tipo ganha ao implementar a Stringer?",
+                        verso: "Controla como ele é impresso pelo pacote fmt.",
+                    },
+                    {
+                        frente: "Por que interfaces enxutas são preferidas em Go?",
+                        verso: "São fáceis de satisfazer e de combinar entre si.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que recurso trata vários tipos possíveis de uma vez?",
+                        verso: "O type switch, que escolhe o caso pelo tipo dinâmico do valor.",
+                    },
+                    {
+                        frente: "Quando a interface vazia é útil, na prática?",
+                        verso: "Quando é preciso guardar um valor de tipo desconhecido.",
+                    },
+                    {
+                        frente: "O que uma asserção de tipo sem comma-ok pode causar?",
+                        verso: "Um panic, se o tipo não for o esperado no valor.",
+                    },
+                ],
+            },
+        },
+        8: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que método a interface error declara?",
+                        verso: "Um que devolve a mensagem do erro como texto.",
+                    },
+                    {
+                        frente: "Por que a clareza do if de erro é proposital em Go?",
+                        verso: "Nada de erro escondido saltando níveis, como acontece com exceção.",
+                    },
+                    {
+                        frente: "Onde o fluxo de erro fica visível num programa Go?",
+                        verso: "No próprio código, linha a linha, onde algo pode dar errado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que propagar um erro significa, em Go?",
+                        verso: "Devolver pra cima, pra quem chamou decidir o que fazer.",
+                    },
+                    {
+                        frente: "O que embrulhar um erro preserva, além do contexto novo?",
+                        verso: "A causa original, que ferramentas ainda conseguem inspecionar.",
+                    },
+                    {
+                        frente: "Que história a mensagem final de um erro embrulhado conta?",
+                        verso: "O que aconteceu camada por camada, do topo até a causa.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um panic faz com a pilha de chamadas?",
+                        verso: "Começa a desmontá-la, interrompendo o fluxo normal.",
+                    },
+                    {
+                        frente: "Que caso prático justifica usar recover num servidor?",
+                        verso: "Não derrubar tudo por causa de uma requisição problemática.",
+                    },
+                    {
+                        frente: "Que exemplos a aula dá de falha esperada, e não de panic?",
+                        verso: "Arquivo não encontrado e entrada inválida: viram erro, não panic.",
+                    },
+                ],
+            },
+        },
+        9: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quem gerencia as goroutines de um programa Go?",
+                        verso: "O próprio runtime do Go, e não o sistema operacional.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre concorrência e paralelismo?",
+                        verso: "Concorrência estrutura tarefas independentes; paralelismo as roda junto.",
+                    },
+                    {
+                        frente: "O que o programa faz logo depois de iniciar uma goroutine?",
+                        verso: "Segue adiante: ele não espera aquela goroutine terminar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que lema do Go orienta o uso de channels?",
+                        verso: "Não comunicar compartilhando memória; compartilhar memória comunicando.",
+                    },
+                    {
+                        frente: "O que o encontro de envio e recebimento dispensa?",
+                        verso: "As travas manuais: a sincronização sai natural do channel.",
+                    },
+                    {
+                        frente: "A que o select se compara, em estrutura?",
+                        verso: "A um switch, só que para operações de canal.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três projetos pequenos a aula sugere para praticar?",
+                        verso: "Ferramenta de linha de comando, API com net/http e processador concorrente.",
+                    },
+                    {
+                        frente: "Que pacote padrão sobe uma API HTTP em Go?",
+                        verso: "O net/http, da própria biblioteca padrão.",
+                    },
+                    {
+                        frente: "Que caminhos naturais seguem depois dos fundamentos?",
+                        verso: "Aprofundar a biblioteca padrão, escrever testes e fazer serviços de rede.",
+                    },
+                ],
+            },
+        },
     },
 };
