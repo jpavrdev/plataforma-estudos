@@ -339,5 +339,251 @@ export const ameacasEAtaquesNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta importa mais que ter backup?",
+                        verso: "Se o administrador do domínio consegue apagá-lo.",
+                    },
+                    {
+                        frente: "Que conta o invasor persegue no ataque de ransomware?",
+                        verso: "A de administrador do domínio.",
+                    },
+                    {
+                        frente: "O que a cifragem costuma ser na linha do tempo?",
+                        verso: "O último passo, depois de dias dentro da rede.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o backup resolve, e o que ele não resolve?",
+                        verso: "Resolve a indisponibilidade e não resolve o vazamento.",
+                    },
+                    {
+                        frente: "O que restaurar os sistemas encerra?",
+                        verso: "A parada, e não o incidente.",
+                    },
+                    {
+                        frente: "Que camada a tripla extorsão acrescenta?",
+                        verso: "A pressão sobre clientes e parceiros da vítima.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que explica cifrar em maio o que foi invadido em janeiro?",
+                        verso: "O acesso ficou no estoque de alguém até ser vendido.",
+                    },
+                    {
+                        frente: "Que papel o corretor de acesso cumpre?",
+                        verso: "Invade e revende o acesso a quem opera o ransomware.",
+                    },
+                    {
+                        frente: "O que o modelo como serviço divide?",
+                        verso: "O trabalho e o lucro entre quem opera e quem se afilia.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que decifrar arquivo não faz?",
+                        verso: "Não expulsa o invasor da rede.",
+                    },
+                    {
+                        frente: "O que quem volta a operar sem erradicar comprou?",
+                        verso: "Tempo, e não solução.",
+                    },
+                    {
+                        frente: "Que risco pagar o resgate não elimina?",
+                        verso: "O de o dado vazar mesmo assim.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é um backup que nunca foi restaurado?",
+                        verso: "Uma hipótese, e não uma cópia.",
+                    },
+                    {
+                        frente: "Quando o primeiro teste de restauração não pode acontecer?",
+                        verso: "No dia do incidente.",
+                    },
+                    {
+                        frente: "Que característica o backup precisa ter contra ransomware?",
+                        verso: "Ficar fora do alcance das contas administrativas.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a senha de administrador local repetida provoca?",
+                        verso: "Uma estação comprometida vira todas comprometidas.",
+                    },
+                    {
+                        frente: "O que o escalonamento de privilégio busca?",
+                        verso: "Sair de um acesso comum para um acesso administrativo.",
+                    },
+                    {
+                        frente: "Que defesa quebra a senha local repetida?",
+                        verso: "Senha única por máquina, gerenciada automaticamente.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a rede plana permite ao invasor?",
+                        verso: "Comprometer qualquer coisa é estar a um passo de tudo.",
+                    },
+                    {
+                        frente: "O que a segmentação faz com o invasor?",
+                        verso: "Obriga a fazer barulho a cada fronteira.",
+                    },
+                    {
+                        frente: "O que a segmentação não faz?",
+                        verso: "Impedir o invasor de andar pela rede.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como uma pessoa navega, segundo a aula?",
+                        verso: "Em rajadas e pausas.",
+                    },
+                    {
+                        frente: "O que entrega a máquina comprometida?",
+                        verso: "A regularidade da conversa, sempre no mesmo intervalo.",
+                    },
+                    {
+                        frente: "Que horário chama atenção no tráfego de comando e controle?",
+                        verso: "A madrugada, repetida todo dia.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa sistema cifrado de dado exfiltrado?",
+                        verso: "O sistema se restaura; o dado que saiu não volta.",
+                    },
+                    {
+                        frente: "Por que detectar tarde a exfiltração equivale a não detectar?",
+                        verso: "O dado já saiu, e não há como trazê-lo de volta.",
+                    },
+                    {
+                        frente: "O que a coleta faz antes da exfiltração?",
+                        verso: "Junta e compacta os dados num ponto só.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como está a fonte que parou de enviar evento?",
+                        verso: "Calada, e não tranquila.",
+                    },
+                    {
+                        frente: "Que atenção o silêncio inesperado merece?",
+                        verso: "A mesma de um alerta vermelho.",
+                    },
+                    {
+                        frente: "Que rastros o anti-forense costuma atacar?",
+                        verso: "Registros de log e marcas de tempo dos arquivos.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a mitigação faz enquanto todo mundo dorme?",
+                        verso: "Continua protegendo.",
+                    },
+                    {
+                        frente: "O que a detecção exige para proteger?",
+                        verso: "Alguém acordado para responder.",
+                    },
+                    {
+                        frente: "Que ordem a aula recomenda entre as duas?",
+                        verso: "Mitigar primeiro; detectar o que não dá para mitigar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quanto custa ao invasor trocar um domínio?",
+                        verso: "Minutos.",
+                    },
+                    {
+                        frente: "Quanto custa a ele trocar o jeito de trabalhar?",
+                        verso: "Meses.",
+                    },
+                    {
+                        frente: "O que se deve detectar, segundo esse cálculo?",
+                        verso: "O que dói mais para ele abandonar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que assinar toda lista disponível aumenta?",
+                        verso: "O ruído, e não a segurança.",
+                    },
+                    {
+                        frente: "Que vulnerabilidade nenhuma ferramenta corrige?",
+                        verso: "O time cansado de alerta.",
+                    },
+                    {
+                        frente: "Que critério escolhe uma fonte de inteligência?",
+                        verso: "A relevância para o próprio ambiente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um mapa com começo e fim, mas sem meio, indica?",
+                        verso: "Que você não enxergou as etapas do meio.",
+                    },
+                    {
+                        frente: "O que esse buraco no mapa não significa?",
+                        verso: "Que o invasor pulou etapas.",
+                    },
+                    {
+                        frente: "Que ganho mapear o incidente ao catálogo traz?",
+                        verso: "Revela as lacunas de visibilidade do ambiente.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "É preciso saber atacar para defender bem?",
+                        verso: "Não, mas é preciso saber o que o atacante faria depois.",
+                    },
+                    {
+                        frente: "O que a antecipação transforma?",
+                        verso: "Alerta solto em investigação.",
+                    },
+                    {
+                        frente: "Que hábito a trilha deixa como método?",
+                        verso: "Perguntar sempre qual seria o próximo passo do invasor.",
+                    },
+                ],
+            },
+        },
     },
 };
