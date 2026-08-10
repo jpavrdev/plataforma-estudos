@@ -174,5 +174,169 @@ export const arquiteturaEEscala: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro recursos físicos leitura e escrita disputam?",
+                        verso: "CPU, memória de páginas, disco para o WAL e locks de linha.",
+                    },
+                    {
+                        frente: "O que a sigla WAL guarda dentro do banco?",
+                        verso: "O log de escrita à prova de falhas, gravado em disco.",
+                    },
+                    {
+                        frente: "Por que multiplicar réplicas pressiona o teto de conexões?",
+                        verso: "Cada réplica traz o próprio pool e todos somam no mesmo banco.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que nome o Postgres dá ao mecanismo dessa cópia contínua?",
+                        verso: "Replicação por streaming, da primária para as réplicas.",
+                    },
+                    {
+                        frente: "Que nome tem o intervalo entre a gravação e a cópia chegar?",
+                        verso: "Lag de replicação, quase sempre de milissegundos.",
+                    },
+                    {
+                        frente: "O que muda quando cai a primária, e quando cai uma réplica?",
+                        verso: "Sem primária o sistema para de escrever; sem uma réplica as outras seguem.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que custo uma conexão aberta e parada gera no banco?",
+                        verso: "Memória e recursos do lado do Postgres, mesmo sem query.",
+                    },
+                    {
+                        frente: "Que pooler externo a aula cita, e onde ele fica?",
+                        verso: "O PgBouncer, entre a aplicação e o Postgres.",
+                    },
+                    {
+                        frente: "O que denuncia um pool grande demais em várias réplicas?",
+                        verso: "A soma dos pools estoura o teto de conexões do banco.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dois planos o Postgres escolhe entre si numa busca?",
+                        verso: "O sequential scan, que varre tudo, e o index scan, que pula direto.",
+                    },
+                    {
+                        frente: "Por que o N+1 dói mais em escala do que em desenvolvimento?",
+                        verso: "Cada query extra prende uma conexão do pool, vezes as réplicas.",
+                    },
+                    {
+                        frente: "Que condição revela cada um dos dois vilões?",
+                        verso: "O índice pede EXPLAIN; o N+1 pede carga parecida com produção.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que nome alternativo o sharding recebe, e o que ele divide?",
+                        verso: "Particionamento horizontal, que divide os dados entre instâncias.",
+                    },
+                    {
+                        frente: "Quando nenhuma técnica de leitura resolve, e sobra o sharding?",
+                        verso: "Quando o gargalo é a escrita, que ainda converge para a primária.",
+                    },
+                    {
+                        frente: "Diante de uma partição de rede, o que o CAP obriga a escolher?",
+                        verso: "Entre consistência total e disponibilidade, enquanto a falha durar.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que código HTTP a rota devolve ao só enfileirar o trabalho?",
+                        verso: "O 202 Accepted, dizendo que aceitou sem ter terminado.",
+                    },
+                    {
+                        frente: "O que acontece com a latência numa cadeia síncrona?",
+                        verso: "Ela vira a soma de todos os serviços encadeados.",
+                    },
+                    {
+                        frente: "Que pista prática indica trabalho que deveria ir para a fila?",
+                        verso: "A resposta precisaria mentir que deu certo sem saber ainda.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que campo limita quantos jobs um worker pega ao mesmo tempo?",
+                        verso: "O concurrency configurado naquele worker.",
+                    },
+                    {
+                        frente: "Que escala independente a fila abre além da API?",
+                        verso: "Dá para aumentar os workers sem tocar nas réplicas da API.",
+                    },
+                    {
+                        frente: "Que unidade nova a fila acrescenta ao deploy?",
+                        verso: "O worker, com saúde, logs e versão próprios.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que broker se destaca por roteamento flexível de mensagens?",
+                        verso: "O RabbitMQ, focado em distribuir tarefas entre consumidores.",
+                    },
+                    {
+                        frente: "Que três critérios decidem qual broker adotar?",
+                        verso: "O volume, o tempo de guarda e o que a equipe já opera.",
+                    },
+                    {
+                        frente: "Quantos consumidores recebem cada mensagem, em fila e tópico?",
+                        verso: "Um só na fila; no tópico, todo assinante ganha uma cópia.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dois nomes separam quem decide o próximo passo?",
+                        verso: "Orquestração, com quem inicia chamando, e coreografia por evento.",
+                    },
+                    {
+                        frente: "Que preço de leitura o desacoplamento por eventos cobra?",
+                        verso: "Some o lugar único onde se lia a história inteira do fluxo.",
+                    },
+                    {
+                        frente: "Que dilema o payload de um evento carrega?",
+                        verso: "Dado demais pesa em todos; de menos faz consultar a origem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três garantias de entrega um broker pode oferecer?",
+                        verso: "At-most-once, at-least-once e o caro exactly-once.",
+                    },
+                    {
+                        frente: "Onde mora a janela que gera a mensagem repetida?",
+                        verso: "Entre processar a mensagem e confirmar o ack ao broker.",
+                    },
+                    {
+                        frente: "Que duas guardas de idempotência a aula compara?",
+                        verso: "A chave no Redis, que expira, e a tabela no banco, que dura.",
+                    },
+                ],
+            },
+        },
     },
 };
