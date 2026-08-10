@@ -46,6 +46,7 @@ import { cppModerno } from "./cpp-moderno.ts";
 import { sistemasOperacionaisEConcorrencia } from "./sistemas-operacionais-e-concorrencia.ts";
 import { compiladoresEToolchain } from "./compiladores-e-toolchain.ts";
 import { sistemasDeTempoReal } from "./sistemas-de-tempo-real.ts";
+import { embarcadosNaPratica } from "./embarcados-na-pratica.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -94,4 +95,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     sistemasOperacionaisEConcorrencia,
     compiladoresEToolchain,
     sistemasDeTempoReal,
+    embarcadosNaPratica,
 ];
