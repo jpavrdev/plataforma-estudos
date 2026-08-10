@@ -49,6 +49,7 @@ import { sistemasDeTempoReal } from "./sistemas-de-tempo-real.ts";
 import { embarcadosNaPratica } from "./embarcados-na-pratica.ts";
 import { preCalculo } from "./pre-calculo.ts";
 import { calculo1 } from "./calculo-1.ts";
+import { algebraLinear } from "./algebra-linear.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -100,4 +101,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     embarcadosNaPratica,
     preCalculo,
     calculo1,
+    algebraLinear,
 ];
