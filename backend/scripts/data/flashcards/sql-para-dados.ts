@@ -341,5 +341,251 @@ export const sqlParaDados: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Em que momento a janela é calculada na consulta?",
+                        verso: "Depois do WHERE e do HAVING, antes do ORDER BY final.",
+                    },
+                    {
+                        frente: "Que duas ideias cabem dentro dos parênteses do OVER?",
+                        verso: "O PARTITION BY dos grupos e o ORDER BY da sequência.",
+                    },
+                    {
+                        frente: "Que cálculo a janela encurta para uma expressão só?",
+                        verso: "A participação percentual, sem subconsulta nem junção.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que receita de três partes pega o primeiro de cada grupo?",
+                        verso: "Particionar pelo grupo, ordenar e filtrar a numeração um.",
+                    },
+                    {
+                        frente: "Por que esse filtro não cabe no WHERE da mesma consulta?",
+                        verso: "A janela é calculada depois, então a coluna ainda não existe.",
+                    },
+                    {
+                        frente: "Que acréscimo barato estabiliza um ranking com empate?",
+                        verso: "Uma segunda coluna no ORDER BY da janela, como o id.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois argumentos extras o lag e o lead aceitam?",
+                        verso: "O deslocamento e o valor padrão para quando não há vizinho.",
+                    },
+                    {
+                        frente: "Que comparação um lag de doze faz numa série mensal?",
+                        verso: "Com o mesmo mês do ano anterior.",
+                    },
+                    {
+                        frente: "O que acontece com o lag sem PARTITION BY na série?",
+                        verso: "Ele atravessa a fronteira e pega o grupo anterior.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa ROWS de RANGE no frame?",
+                        verso: "ROWS conta linhas; RANGE inclui todos os empates do valor.",
+                    },
+                    {
+                        frente: "Que efeito o RANGE padrão tem no acumulado com empate?",
+                        verso: "Mostra o total do dia inteiro, e não o valor até a linha.",
+                    },
+                    {
+                        frente: "Que frame o last_value exige para pegar o último mesmo?",
+                        verso: "Um que vá até UNBOUNDED FOLLOWING, não à linha atual.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que se escreve dentro do OVER quando existe GROUP BY?",
+                        verso: "A agregação já pronta, e não a coluna crua da tabela.",
+                    },
+                    {
+                        frente: "Que recurso a janela exige do banco, e a que custo?",
+                        verso: "Ordenar cada partição, usando memória e às vezes disco.",
+                    },
+                    {
+                        frente: "Que otimização mais barata a aula recomenda na janela?",
+                        verso: "Filtrar antes, para ordenar menos linhas na partição.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que alternativa ingênua o GROUPING SETS substitui?",
+                        verso: "Três consultas unidas, varrendo a tabela três vezes.",
+                    },
+                    {
+                        frente: "O que o conjunto vazio representa num GROUPING SETS?",
+                        verso: "O total geral, sem nenhuma coluna de agrupamento.",
+                    },
+                    {
+                        frente: "Que atalho gera todas as combinações possíveis?",
+                        verso: "O CUBE, útil para explorar cruzamentos de dimensão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que regra separa o agrupamento da formatação?",
+                        verso: "Agrupar pela data e formatar em texto só no SELECT.",
+                    },
+                    {
+                        frente: "Que conversão precede o truncar num carimbo universal?",
+                        verso: "O AT TIME ZONE, para o fuso do negócio, antes de truncar.",
+                    },
+                    {
+                        frente: "Por que o mês corrente sempre parece pior que o anterior?",
+                        verso: "Ele ainda não terminou; a comparação precisa igualar dias.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três coisas um buraco na série estraga de uma vez?",
+                        verso: "O gráfico, a média por período e a comparação com o lag.",
+                    },
+                    {
+                        frente: "Quando o buraco deve virar nulo, e não zero?",
+                        verso: "Quando faltou medição, como um sensor fora do ar.",
+                    },
+                    {
+                        frente: "Que tabela permite distinguir ausência de fato de falha?",
+                        verso: "A de controle de cargas, dizendo quais dias processaram.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três etapas montam uma coorte em SQL?",
+                        verso: "Achar o mês de entrada, marcar os ativos e cruzar os dois.",
+                    },
+                    {
+                        frente: "Quanto vale sempre o mês zero de uma coorte?",
+                        verso: "Cem por cento, porque é a própria coorte de origem.",
+                    },
+                    {
+                        frente: "Por que a coorte nova aparece vazia, e não ruim?",
+                        verso: "Ela tem menos meses observados que as mais antigas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sintaxe as funções de percentil exigem?",
+                        verso: "O WITHIN GROUP, com um ORDER BY interno próprio.",
+                    },
+                    {
+                        frente: "Que função devolve o valor mais frequente do grupo?",
+                        verso: "A mode, ao lado das funções de conjunto ordenado.",
+                    },
+                    {
+                        frente: "Por que percentil de grupo pequeno engana?",
+                        verso: "Ele fica instável e varia muito de uma semana para a outra.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que cuidado o EXPLAIN ANALYZE exige antes de rodar?",
+                        verso: "Ele executa a consulta de verdade, com todo o custo.",
+                    },
+                    {
+                        frente: "Que três causas produzem estimativa ruim no plano?",
+                        verso: "Estatística velha, correlação entre colunas e filtro por função.",
+                    },
+                    {
+                        frente: "Que segundo sinal o plano entrega além da estimativa?",
+                        verso: "Onde o tempo se concentra, como ordenação que vai a disco.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que custo o índice cobra do outro lado da carga?",
+                        verso: "Ele é atualizado a cada escrita e pesa na carga em lote.",
+                    },
+                    {
+                        frente: "Que índice cabe numa tabela enorme ordenada por tempo?",
+                        verso: "O BRIN, que guarda só os limites de cada faixa de blocos.",
+                    },
+                    {
+                        frente: "Que saída existe quando o filtro usa função sobre a coluna?",
+                        verso: "Um índice de expressão, guardando exatamente aquela função.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que exigência a atualização concorrente impõe ao resultado?",
+                        verso: "Um índice único, para permitir ler durante o refresh.",
+                    },
+                    {
+                        frente: "Que perfil de consulta compensa materializar?",
+                        verso: "Cara de calcular, consultada sempre e de grão estável.",
+                    },
+                    {
+                        frente: "Que informação deve acompanhar todo número materializado?",
+                        verso: "A hora da última atualização, para revelar a defasagem.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que amostrar duas tabelas em separado quebra a junção?",
+                        verso: "Quase nenhuma linha encontra o par sorteado do outro lado.",
+                    },
+                    {
+                        frente: "Que técnica mantém a amostra coerente entre tabelas?",
+                        verso: "Sortear pela chave de negócio, por hash do identificador.",
+                    },
+                    {
+                        frente: "Que uso a amostra nunca deve ter numa análise?",
+                        verso: "Publicar número final, que exige a base inteira.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sexta checagem fecha o conjunto de qualidade?",
+                        verso: "A conciliação: o mesmo total somado por dois caminhos.",
+                    },
+                    {
+                        frente: "Que passo transforma checagem esporádica em proteção?",
+                        verso: "Rodar junto da carga e falhar quando o resultado destoa.",
+                    },
+                    {
+                        frente: "Que informação precisa acompanhar todo número publicado?",
+                        verso: "O recorte: período, filtros e o que ficou de fora.",
+                    },
+                ],
+            },
+        },
     },
 };
