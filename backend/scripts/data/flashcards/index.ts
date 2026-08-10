@@ -47,6 +47,7 @@ import { sistemasOperacionaisEConcorrencia } from "./sistemas-operacionais-e-con
 import { compiladoresEToolchain } from "./compiladores-e-toolchain.ts";
 import { sistemasDeTempoReal } from "./sistemas-de-tempo-real.ts";
 import { embarcadosNaPratica } from "./embarcados-na-pratica.ts";
+import { preCalculo } from "./pre-calculo.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -96,4 +97,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     compiladoresEToolchain,
     sistemasDeTempoReal,
     embarcadosNaPratica,
+    preCalculo,
 ];
