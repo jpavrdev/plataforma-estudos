@@ -174,5 +174,169 @@ export const orquestracaoDePipelines: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o schedule de um DAG descreve?",
+                        verso: "Um intervalo que se repete, e não um instante isolado.",
+                    },
+                    {
+                        frente: "O que cada disparo representa?",
+                        verso: "A passagem de um desses intervalos.",
+                    },
+                    {
+                        frente: "Que sintaxe descreve o agendamento clássico?",
+                        verso: "A expressão cron, com cinco campos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que período uma run processa?",
+                        verso: "O anterior, que acabou de fechar.",
+                    },
+                    {
+                        frente: "Que período ela nunca processa?",
+                        verso: "Aquele em que ela dispara.",
+                    },
+                    {
+                        frente: "O que a run da meia-noite do dia 10 processa?",
+                        verso: "Os dados do dia 9.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o catchup tenta ser?",
+                        verso: "Consistente, rodando as execuções que faltaram.",
+                    },
+                    {
+                        frente: "O que o Airflow entende quando faltam execuções?",
+                        verso: "Que ainda deve aquelas runs a você.",
+                    },
+                    {
+                        frente: "Que pergunta o catchup obriga a responder?",
+                        verso: "Se faz sentido reprocessar todo o período pendente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quando limitar a uma run ativa deixa de ser opção?",
+                        verso: "Quando uma run depende do resultado da anterior.",
+                    },
+                    {
+                        frente: "Que outro caso exige execução não sobreposta?",
+                        verso: "Duas runs escrevendo na mesma tabela ao mesmo tempo.",
+                    },
+                    {
+                        frente: "Que cuidado o fuso horário exige no agendamento?",
+                        verso: "Declarar o fuso, para o horário não variar no verão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a escolha certa de forma de disparo?",
+                        verso: "A que corresponde a quem sabe quando a DAG deve rodar.",
+                    },
+                    {
+                        frente: "Que três gatilhos a aula lista?",
+                        verso: "O relógio, uma pessoa, ou o próprio dado.",
+                    },
+                    {
+                        frente: "Qual não é o critério dessa escolha?",
+                        verso: "O gatilho mais familiar para o time.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "A ordem no arquivo Python define a execução?",
+                        verso: "Não: quem manda é o grafo de dependências declarado.",
+                    },
+                    {
+                        frente: "Que formas declaram dependência entre tasks?",
+                        verso: "As setas duplas, ou os métodos de upstream e downstream.",
+                    },
+                    {
+                        frente: "O que uma dependência declarada garante?",
+                        verso: "Que a task só começa depois da anterior terminar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a trigger rule muda?",
+                        verso: "A condição para a task ser liberada.",
+                    },
+                    {
+                        frente: "O que a trigger rule não muda?",
+                        verso: "O que a task faz.",
+                    },
+                    {
+                        frente: "Que regra de disparo vale por padrão?",
+                        verso: "Todas as anteriores terem terminado com sucesso.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o estado pulado significa?",
+                        verso: "Que aquela task não era necessária desta vez.",
+                    },
+                    {
+                        frente: "O que o estado pulado não é?",
+                        verso: "Uma falha.",
+                    },
+                    {
+                        frente: "O que uma junção depois de um branch precisa?",
+                        verso: "Uma trigger rule que aceite ramos pulados.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para que o XCom foi feito?",
+                        verso: "Para pequenos pedaços de metadado entre as tasks.",
+                    },
+                    {
+                        frente: "Para que o XCom não serve?",
+                        verso: "Para carregar o dado em si.",
+                    },
+                    {
+                        frente: "Onde o dado grande deve trafegar?",
+                        verso: "Por armazenamento externo, com a task passando o caminho.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o TaskGroup oferece?",
+                        verso: "Organização visual e lógica.",
+                    },
+                    {
+                        frente: "O que o TaskGroup não oferece?",
+                        verso: "Isolamento de execução.",
+                    },
+                    {
+                        frente: "Como as tasks de um grupo são executadas?",
+                        verso: "Como tasks normais do mesmo DAG.",
+                    },
+                ],
+            },
+        },
     },
 };
