@@ -341,5 +341,251 @@ export const preCalculo: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que efeito um passo constante no expoente produz?",
+                        verso: "O resultado é multiplicado sempre pelo mesmo fator.",
+                    },
+                    {
+                        frente: "Que ponto toda exponencial de base positiva atravessa?",
+                        verso: "O de altura um, quando o expoente vale zero.",
+                    },
+                    {
+                        frente: "Que base faz a exponencial decrescer?",
+                        verso: "A entre zero e um, que encolhe a cada passo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que pergunta o logaritmo responde, no fundo?",
+                        verso: "A que potência a base precisa ser elevada para chegar ali.",
+                    },
+                    {
+                        frente: "Que restrição o logaritmando precisa respeitar?",
+                        verso: "Ser positivo, porque potência de base positiva nunca zera.",
+                    },
+                    {
+                        frente: "Em que o produto vira soma nas propriedades?",
+                        verso: "No logaritmo, que troca produto por soma de logaritmos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que ritmo a logarítmica tem ante a exponencial?",
+                        verso: "Ela avança devagar, enquanto a outra dispara multiplicando.",
+                    },
+                    {
+                        frente: "Que relação liga a exponencial e a logarítmica?",
+                        verso: "São inversas: uma desfaz exatamente o que a outra faz.",
+                    },
+                    {
+                        frente: "Que valor a logarítmica conta, na leitura da aula?",
+                        verso: "Quantas vezes a base foi multiplicada para chegar ali.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dança resolve quase toda equação exponencial?",
+                        verso: "Deixar os dois lados na mesma base e comparar o resto.",
+                    },
+                    {
+                        frente: "Que conferência a equação logarítmica sempre exige?",
+                        verso: "Checar se a solução mantém o logaritmando positivo.",
+                    },
+                    {
+                        frente: "O que comparar depois de igualar as bases?",
+                        verso: "Os expoentes, que passam a valer a mesma coisa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que efeito a escala logarítmica tem no número gigante?",
+                        verso: "Vira um passo tranquilo, no lugar de uma explosão.",
+                    },
+                    {
+                        frente: "Que dois fenômenos a exponencial modela na aula?",
+                        verso: "O crescimento e o decaimento ao longo do tempo.",
+                    },
+                    {
+                        frente: "Que escalas conhecidas usam logaritmo por trás?",
+                        verso: "As de terremoto e de som, entre outras do dia a dia.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como o radiano mede um ângulo, afinal?",
+                        verso: "Pelo tamanho do arco que ele abre no círculo.",
+                    },
+                    {
+                        frente: "Quantos radianos uma volta completa vale?",
+                        verso: "Dois pi, equivalentes aos 360 graus da volta.",
+                    },
+                    {
+                        frente: "Que régua o grau usa, diferente do radiano?",
+                        verso: "A das fatias de uma volta dividida em 360.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em que direção o cosseno e o seno andam no círculo?",
+                        verso: "O cosseno na horizontal e o seno na vertical.",
+                    },
+                    {
+                        frente: "Que faixa de valores o seno e o cosseno ocupam?",
+                        verso: "De menos um a um, sem nunca sair desse intervalo.",
+                    },
+                    {
+                        frente: "Que razão a tangente representa no círculo?",
+                        verso: "A do seno pelo cosseno, indefinida quando o cosseno zera.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que relação existe entre as ondas de seno e cosseno?",
+                        verso: "São a mesma onda, com pontos de partida diferentes.",
+                    },
+                    {
+                        frente: "Que período o seno e o cosseno repetem?",
+                        verso: "O de uma volta completa, dois pi radianos.",
+                    },
+                    {
+                        frente: "Que grandeza a amplitude mede numa onda?",
+                        verso: "A altura máxima que ela alcança a partir do eixo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para que serve uma identidade trigonométrica?",
+                        verso: "Para reescrever a expressão, e não para resolvê-la.",
+                    },
+                    {
+                        frente: "Que identidade fundamental relaciona seno e cosseno?",
+                        verso: "A soma dos quadrados dos dois vale sempre um.",
+                    },
+                    {
+                        frente: "Que garantia a identidade dá ao trocar a expressão?",
+                        verso: "O valor não muda, só a forma de escrever.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que erro lidera as equações trigonométricas?",
+                        verso: "Esquecer a segunda solução da volta completa.",
+                    },
+                    {
+                        frente: "Que pergunta fechar a conta exige antes?",
+                        verso: "Em quais quadrantes aquele sinal aparece na volta.",
+                    },
+                    {
+                        frente: "Quantas soluções uma equação trigonométrica tem?",
+                        verso: "Infinitas, repetindo a cada volta do círculo.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta vem antes da conta numa função por partes?",
+                        verso: "Em qual pedaço a entrada se encaixa, pela condição.",
+                    },
+                    {
+                        frente: "Que ordem a aula fixa para função por partes?",
+                        verso: "A condição primeiro e a conta só depois dela.",
+                    },
+                    {
+                        frente: "Onde uma função por partes costuma dar salto?",
+                        verso: "Na fronteira entre dois pedaços, se os valores diferem.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o infinito representa num limite?",
+                        verso: "Uma direção para onde caminhar, não um número a alcançar.",
+                    },
+                    {
+                        frente: "Que pergunta o limite no infinito faz?",
+                        verso: "Para onde a função aponta quando a entrada cresce sem fim.",
+                    },
+                    {
+                        frente: "Que curva o comportamento assintótico descreve?",
+                        verso: "A que se aproxima de um valor sem jamais tocá-lo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que calcular um limite realmente observa?",
+                        verso: "Para onde a função vai, e não o que ocorre no ponto.",
+                    },
+                    {
+                        frente: "Por que o valor no ponto pode ser ignorado?",
+                        verso: "O limite olha a aproximação, não a chegada exata.",
+                    },
+                    {
+                        frente: "Que situação torna o limite mais interessante?",
+                        verso: "Quando a função nem está definida naquele ponto.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa a taxa média da instantânea?",
+                        verso: "A média cobre um trecho; a instantânea, um instante só.",
+                    },
+                    {
+                        frente: "Como a taxa instantânea nasce da média?",
+                        verso: "Encolhendo o trecho até quase zero de comprimento.",
+                    },
+                    {
+                        frente: "Que reta a taxa instantânea determina no gráfico?",
+                        verso: "A tangente, encostada na curva naquele ponto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que promessa a continuidade faz sobre a função?",
+                        verso: "Que ela não vai surpreender com um salto no caminho.",
+                    },
+                    {
+                        frente: "Sobre que base a derivada é construída?",
+                        verso: "Sobre a continuidade, a base firme sem salto.",
+                    },
+                    {
+                        frente: "Que gesto simples testa a continuidade num desenho?",
+                        verso: "Percorrer a curva sem tirar o lápis do papel.",
+                    },
+                ],
+            },
+        },
     },
 };
