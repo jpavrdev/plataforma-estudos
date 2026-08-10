@@ -339,5 +339,251 @@ export const visualizacaoDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que estatístico popularizou o termo EDA?",
+                        verso: "John Tukey, defendendo olhar o dado antes de concluir.",
+                    },
+                    {
+                        frente: "Que cinco etapas o roteiro de uma EDA percorre?",
+                        verso: "Estrutura, univariada, bivariada, caça a problemas e hipóteses.",
+                    },
+                    {
+                        frente: "O que o describe entrega e o que ele não mostra?",
+                        verso: "Média, desvio e quartis; nunca a forma da distribuição.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três coisas um countplot faz procurar na coluna?",
+                        verso: "Categoria dominante, categoria rara e desbalanceamento.",
+                    },
+                    {
+                        frente: "Que erro uma barra quase invisível pode denunciar?",
+                        verso: "Erro de digitação, com o mesmo nome escrito de dois jeitos.",
+                    },
+                    {
+                        frente: "Que parâmetro ordena as barras do countplot?",
+                        verso: "O order, indo da categoria mais frequente à menos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três cruzamentos a análise bivariada distingue?",
+                        verso: "Numérica com numérica, numérica com categórica e o pairplot.",
+                    },
+                    {
+                        frente: "Que quatro coisas se procura num scatter plot?",
+                        verso: "Direção, força, formato e grupos ou pontos isolados.",
+                    },
+                    {
+                        frente: "Que comando do pandas o boxplot por categoria espelha?",
+                        verso: "O groupby com mediana, mas mostrando a distribuição inteira.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que parâmetro escreve o valor dentro de cada célula?",
+                        verso: "O annot igual a verdadeiro, confirmando o que a cor sugere.",
+                    },
+                    {
+                        frente: "Por que fixar vmin e vmax entre menos um e um?",
+                        verso: "Para a mesma cor significar a mesma força em heatmaps diferentes.",
+                    },
+                    {
+                        frente: "O que uma célula bem vermelha inicia, e o que não encerra?",
+                        verso: "Inicia uma pergunta; não encerra nenhuma conclusão de causa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como uma EDA de ponta a ponta termina, afinal?",
+                        verso: "Com uma pergunta mais precisa do que a inicial.",
+                    },
+                    {
+                        frente: "Que dois comandos abrem a etapa de estrutura?",
+                        verso: "O info e a contagem de nulos com isna somado.",
+                    },
+                    {
+                        frente: "Que achado o exemplo trata como bom primeiro insight?",
+                        verso: "Categoria mais cara com a avaliação mais baixa.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três pilares um bom gráfico persegue ao mesmo tempo?",
+                        verso: "Clareza, foco na mensagem e honestidade com o número.",
+                    },
+                    {
+                        frente: "Que função do seaborn tira as bordas de cima e da direita?",
+                        verso: "O despine, atalho para esconder aqueles dois spines.",
+                    },
+                    {
+                        frente: "Em que década Tufte propôs essa régua de avaliação?",
+                        verso: "Nos anos 1980, com a razão entre tinta e dado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que pergunta testa se o título ainda é descritivo?",
+                        verso: "Que conclusão alguém leva se ler só o título.",
+                    },
+                    {
+                        frente: "Que custo a legenda impõe a quem lê o gráfico?",
+                        verso: "Obriga o olho a ir e voltar entre a cor e o nome.",
+                    },
+                    {
+                        frente: "Que alternativa substitui a legenda com poucas séries?",
+                        verso: "Rotular direto no fim de cada linha ou barra.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que exemplo mostra o eixo truncado exagerando a diferença?",
+                        verso: "Aprovação de 91% e 94% num eixo que começa em 90.",
+                    },
+                    {
+                        frente: "Quando a escala logarítmica é legítima, e quando engana?",
+                        verso: "Legítima em ordens de grandeza; engana sem aviso no eixo.",
+                    },
+                    {
+                        frente: "Que risco o eixo secundário traz ao gráfico?",
+                        verso: "Comparar duas curvas como se dividissem a mesma escala.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que problema o excesso de cor cria no gráfico?",
+                        verso: "O olho decifra a legenda em vez de comparar valores.",
+                    },
+                    {
+                        frente: "A partir de quantas categorias a pizza deve virar barra?",
+                        verso: "De quatro ou cinco em diante, ordenada na horizontal.",
+                    },
+                    {
+                        frente: "Que exemplo mostra a agregação escondendo o essencial?",
+                        verso: "Crescimento total de 5% com uma região caindo 20.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que prevalência o daltonismo tem entre homens e mulheres?",
+                        verso: "Cerca de um em doze homens e uma em duzentas mulheres.",
+                    },
+                    {
+                        frente: "Que parâmetro do seaborn varia formato junto com a cor?",
+                        verso: "O style, usado ao lado do hue na linha e no ponto.",
+                    },
+                    {
+                        frente: "Por que a cor não pode ser o único canal do gráfico?",
+                        verso: "Ele precisa funcionar impresso em preto e branco também.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quantas mensagens um gráfico de apresentação carrega?",
+                        verso: "Uma só, escolhida antes de o gráfico ser desenhado.",
+                    },
+                    {
+                        frente: "Como a ordem do trabalho inverte na apresentação?",
+                        verso: "Você já sabe a conclusão e desenha o gráfico que a prova.",
+                    },
+                    {
+                        frente: "Que teste rápido diz se o gráfico está pronto?",
+                        verso: "O do e daí: a resposta cabe numa frase, que é o título.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três públicos a aula separa para o mesmo dado?",
+                        verso: "A diretoria, o colega técnico e o público geral.",
+                    },
+                    {
+                        frente: "Que troca de vocabulário o público geral pede?",
+                        verso: "Outlier vira valor fora do padrão; mediana, valor do meio.",
+                    },
+                    {
+                        frente: "O que simplificar para um público nunca autoriza?",
+                        verso: "Distorcer o dado: o eixo e a escala seguem honestos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três posições o annotate combina numa chamada?",
+                        verso: "O texto, o ponto apontado e onde o texto aparece.",
+                    },
+                    {
+                        frente: "Quando o text basta no lugar do annotate?",
+                        verso: "Quando o ponto já fala por si, como o topo de uma barra.",
+                    },
+                    {
+                        frente: "Que padrão de cor destaca uma categoria entre muitas?",
+                        verso: "Uma cor só na protagonista e cinza em todo o resto.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que metáfora descreve o lugar do gráfico exploratório?",
+                        verso: "A parte de baixo do iceberg, que ninguém mais vê.",
+                    },
+                    {
+                        frente: "O que um dashboard reúne, e com que critério?",
+                        verso: "Vários gráficos ligados, cada um com sua pergunta.",
+                    },
+                    {
+                        frente: "Que ferramentas de dashboard a aula cita?",
+                        verso: "Power BI, Tableau, Looker Studio, Streamlit e Dash.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três gráficos avaliam um modelo já treinado?",
+                        verso: "A curva de erro, a matriz de confusão e a curva ROC.",
+                    },
+                    {
+                        frente: "Que peças o exemplo final da trilha junta numa tela?",
+                        verso: "O groupby, o histplot, o título-conclusão e a anotação.",
+                    },
+                    {
+                        frente: "O que a próxima etapa faz com o olhar treinado aqui?",
+                        verso: "Transforma a leitura do dado em previsão do que virá.",
+                    },
+                ],
+            },
+        },
     },
 };
