@@ -339,5 +339,251 @@ export const compiladoresEToolchain: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que inteligência o make realmente não tem?",
+                        verso: "Ele não entende C: só compara datas e roda receitas.",
+                    },
+                    {
+                        frente: "Que par de flags gera as dependências de header?",
+                        verso: "As que produzem os arquivos de dependência no gcc.",
+                    },
+                    {
+                        frente: "Que ideia o make legou a todo build system moderno?",
+                        verso: "O grafo de dependências somado aos timestamps.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que caractere a linha de receita exige no começo?",
+                        verso: "O tab; espaço produz o erro de separador ausente.",
+                    },
+                    {
+                        frente: "Que dois alvos viraram convenção universal?",
+                        verso: "O all, que constrói tudo, e o clean, que apaga.",
+                    },
+                    {
+                        frente: "Por que o PHONY existe num Makefile?",
+                        verso: "Para o make não confundir o alvo com um arquivo real.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três modificadores a propagação de propriedades usa?",
+                        verso: "O privado, o de interface e o público entre targets.",
+                    },
+                    {
+                        frente: "Que disciplina o build fora da árvore impõe?",
+                        verso: "Gerar tudo num diretório à parte, nunca junto do fonte.",
+                    },
+                    {
+                        frente: "Que dois comandos resumem o fluxo diário do CMake?",
+                        verso: "O de configurar e o de construir o diretório gerado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três partes o triplet do alvo codifica?",
+                        verso: "A arquitetura, o fornecedor e a ABI do sistema.",
+                    },
+                    {
+                        frente: "Que papel o sysroot cumpre na compilação cruzada?",
+                        verso: "Guarda os headers e as bibliotecas do alvo no seu disco.",
+                    },
+                    {
+                        frente: "Que verificação de sanidade fecha o processo?",
+                        verso: "Rodar o file no artefato e conferir a arquitetura.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que régua mede o custo real de um build lento?",
+                        verso: "O foco de cada pessoa que espera, vezes as esperas.",
+                    },
+                    {
+                        frente: "Para que o Ninja foi feito, e para que não foi?",
+                        verso: "Para ser gerado por ferramenta, não escrito à mão.",
+                    },
+                    {
+                        frente: "Que inimigos quebram a reprodutibilidade do build?",
+                        verso: "Carimbos de data, caminho absoluto e ordem instável.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que engano o nome da flag de todos os avisos causa?",
+                        verso: "Ela liga o conjunto clássico, não todos os avisos.",
+                    },
+                    {
+                        frente: "Que resposta profissional um falso positivo merece?",
+                        verso: "Reescrever o trecho, não desligar o aviso no projeto.",
+                    },
+                    {
+                        frente: "Que problema um time com quinhentos avisos tem?",
+                        verso: "Um só: o hábito de ignorar o revisor gratuito.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que faixa de custo cada sanitizer cobra?",
+                        verso: "Cerca do dobro no de memória e até quinze vezes no de corrida.",
+                    },
+                    {
+                        frente: "Que dois sanitizers não convivem no mesmo binário?",
+                        verso: "O de memória e o de corrida, que disputam a instrumentação.",
+                    },
+                    {
+                        frente: "Que flag melhora o rastro de pilha do sanitizer?",
+                        verso: "A que preserva o ponteiro de quadro, junto da de depuração.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que artefato o clang-tidy precisa para saber compilar?",
+                        verso: "O banco de comandos de compilação do projeto.",
+                    },
+                    {
+                        frente: "Que erro de adoção afoga o time no primeiro dia?",
+                        verso: "Ligar todas as checagens de uma vez sobre o legado.",
+                    },
+                    {
+                        frente: "Que outras ferramentas cobrem análise estática?",
+                        verso: "O cppcheck e o analisador embutido no próprio gcc.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que comando resolve um crash logo de cara no gdb?",
+                        verso: "O backtrace, com a pilha inteira até o main.",
+                    },
+                    {
+                        frente: "Que ferramenta lista os dumps recentes no systemd?",
+                        verso: "O coredumpctl, que abre o último direto no gdb.",
+                    },
+                    {
+                        frente: "Que papel o core dump cumpre depois da queda?",
+                        verso: "O de caixa-preta, com pilha e variáveis do instante.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três coisas o clang-format deliberadamente não faz?",
+                        verso: "Julgar nomes, detectar bug ou opinar sobre arquitetura.",
+                    },
+                    {
+                        frente: "Que ganho social justifica adotar o formatador?",
+                        verso: "Tirar formatação do review e sobrar espaço para design.",
+                    },
+                    {
+                        frente: "Que pegadinha a adoção num repositório legado tem?",
+                        verso: "O commit gigante que polui o histórico de autoria.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que exercício a aula pede antes de rodar o comando?",
+                        verso: "Prever a saída, testando o próprio modelo mental.",
+                    },
+                    {
+                        frente: "Que símbolos o objeto do main deve apresentar?",
+                        verso: "Um definido para o próprio main e os usados indefinidos.",
+                    },
+                    {
+                        frente: "Que papel a bancada de três arquivos cumpre?",
+                        verso: "Atravessar cada fase da trilha com as próprias mãos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que informação o nome decorado codifica no símbolo?",
+                        verso: "Os tipos dos parâmetros, para separar sobrecargas.",
+                    },
+                    {
+                        frente: "Que cobrança o menos c desloca para o futuro?",
+                        verso: "A de existir definição, deixada para o momento do link.",
+                    },
+                    {
+                        frente: "Que valor quebrar o build de propósito tem?",
+                        verso: "Vira vacina: o erro real depois vira diagnóstico de rotina.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois consertos o undefined reference admite?",
+                        verso: "Remover a chamada ou implementar a função que falta.",
+                    },
+                    {
+                        frente: "Que comando empacota objetos numa biblioteca estática?",
+                        verso: "O ar com as opções de criar e indexar o arquivo.",
+                    },
+                    {
+                        frente: "Que dependências o ldd mostra no executável final?",
+                        verso: "As que ficam para a carga, como a biblioteca padrão.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que compilar sempre com informação de depuração?",
+                        verso: "Ela não custa desempenho e salva a investigação depois.",
+                    },
+                    {
+                        frente: "Que medida registra o efeito de cada nível no binário?",
+                        verso: "O tamanho da seção de código em cada compilação.",
+                    },
+                    {
+                        frente: "Que versão do binário precisa ficar guardada?",
+                        verso: "A que ainda tem os símbolos, para depurar a queda.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que inventário a trilha deixa na mão do aluno?",
+                        verso: "Ler erro pela fase, abrir objeto e conferir dependência.",
+                    },
+                    {
+                        frente: "Que hábito único resume a trilha inteira?",
+                        verso: "Olhar embaixo do capô por rotina, e não por heroísmo.",
+                    },
+                    {
+                        frente: "Que prática o fechamento sugere com projeto real?",
+                        verso: "Recompilar biblioteca aberta lendo o build dela.",
+                    },
+                ],
+            },
+        },
     },
 };
