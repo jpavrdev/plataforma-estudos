@@ -38,6 +38,7 @@ import { analiseDeDados } from "./analise-de-dados.ts";
 import { sqlParaDados } from "./sql-para-dados.ts";
 import { visualizacaoDeDados } from "./visualizacao-de-dados.ts";
 import { machineLearning } from "./machine-learning.ts";
+import { machineLearningNaPratica } from "./machine-learning-na-pratica.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -78,4 +79,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     sqlParaDados,
     visualizacaoDeDados,
     machineLearning,
+    machineLearningNaPratica,
 ];
