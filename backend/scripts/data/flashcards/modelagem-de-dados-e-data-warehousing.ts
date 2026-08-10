@@ -175,5 +175,169 @@ export const modelagemDeDadosEDataWarehousing: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta o OLTP responde?",
+                        verso: "O que está acontecendo agora, com poucas linhas por vez.",
+                    },
+                    {
+                        frente: "Que pergunta o OLAP responde?",
+                        verso: "O que aconteceu ao longo do tempo, varrendo milhões.",
+                    },
+                    {
+                        frente: "Que consequência a diferença entre os dois tem?",
+                        verso: "São cargas opostas, e pedem modelos diferentes.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quem definiu o data warehouse orientado por assunto?",
+                        verso: "Bill Inmon.",
+                    },
+                    {
+                        frente: "Que quatro qualidades essa definição lista?",
+                        verso: "Orientado por assunto, integrado, variante no tempo e não volátil.",
+                    },
+                    {
+                        frente: "Para que o data warehouse é organizado?",
+                        verso: "Para dar suporte a decisões.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por onde a abordagem de Inmon começa?",
+                        verso: "Pelo todo, desdobrando depois nas partes.",
+                    },
+                    {
+                        frente: "Por onde a abordagem de Kimball começa?",
+                        verso: "Pelas partes, integrando depois pelo todo.",
+                    },
+                    {
+                        frente: "Onde as duas querem chegar?",
+                        verso: "A um warehouse confiável e integrado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o data warehouse define, nessa comparação?",
+                        verso: "Escopo: a empresa toda.",
+                    },
+                    {
+                        frente: "O que o data mart define?",
+                        verso: "Recorte: uma área.",
+                    },
+                    {
+                        frente: "O que o ODS define?",
+                        verso: "Velocidade: o agora, e não o histórico.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como o analytics costuma ler os dados?",
+                        verso: "Poucas colunas de muitas linhas.",
+                    },
+                    {
+                        frente: "Como o armazenamento colunar guarda os dados?",
+                        verso: "Coluna a coluna, do mesmo jeito que a consulta lê.",
+                    },
+                    {
+                        frente: "Que dois ganhos o colunar traz?",
+                        verso: "Varre menos dados e comprime melhor.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a modelagem dimensional troca?",
+                        verso: "A eliminação de redundância pela facilidade de consulta.",
+                    },
+                    {
+                        frente: "Que perguntas a modelagem dimensional responde bem?",
+                        verso: "Quanto, quando, onde e por quem.",
+                    },
+                    {
+                        frente: "Em que escala ela foi pensada?",
+                        verso: "Grandes volumes de dados analíticos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Do que a tabela fato é feita, sobretudo?",
+                        verso: "De números e de chaves.",
+                    },
+                    {
+                        frente: "Onde mora o texto que não muda a cada evento?",
+                        verso: "Numa dimensão, e não na tabela fato.",
+                    },
+                    {
+                        frente: "O que cada linha da tabela fato representa?",
+                        verso: "Um evento de negócio no grão declarado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que as dimensões são, na comparação da aula?",
+                        verso: "As perguntas que um analista faz.",
+                    },
+                    {
+                        frente: "Que dimensão aparece em quase todo esquema estrela?",
+                        verso: "A dimensão de tempo.",
+                    },
+                    {
+                        frente: "Por que a dimensão de tempo é quase universal?",
+                        verso: "Quase toda pergunta de negócio compara períodos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "A quantos joins cada dimensão fica da tabela fato?",
+                        verso: "Exatamente um.",
+                    },
+                    {
+                        frente: "O que essa distância única garante?",
+                        verso: "Consulta simples e previsível.",
+                    },
+                    {
+                        frente: "O que acontece quando o número de dimensões cresce?",
+                        verso: "A consulta segue previsível, com um join para cada.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a primeira decisão de design de uma tabela fato?",
+                        verso: "Declarar o grão.",
+                    },
+                    {
+                        frente: "O que vem depois de declarar o grão?",
+                        verso: "Escolher as dimensões e as medidas.",
+                    },
+                    {
+                        frente: "O que o grão define?",
+                        verso: "O que uma linha da tabela fato representa.",
+                    },
+                ],
+            },
+        },
     },
 };
