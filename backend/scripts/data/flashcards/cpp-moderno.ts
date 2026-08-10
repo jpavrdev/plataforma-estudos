@@ -338,5 +338,251 @@ export const cppModerno: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que taxa de crescimento a realocação costuma usar?",
+                        verso: "Algo entre uma vez e meia e o dobro da capacidade.",
+                    },
+                    {
+                        frente: "Que três coisas a realocação invalida de uma vez?",
+                        verso: "Ponteiros, referências e iteradores para o conteúdo.",
+                    },
+                    {
+                        frente: "Que defesa sobrevive à realocação do vector?",
+                        verso: "Guardar índices, que continuam válidos depois dela.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que característica de memória os dois mapas dividem?",
+                        verso: "São de nós: cada elemento é uma alocação espalhada.",
+                    },
+                    {
+                        frente: "Que estrutura vence os dois em coleção pequena?",
+                        verso: "Um vector de pares, percorrido de forma contígua.",
+                    },
+                    {
+                        frente: "Que ajuste evita o rehash durante uma carga grande?",
+                        verso: "O reserve no unordered_map, como no vector.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que consequência o SSO traz ao move de string curta?",
+                        verso: "Ele não fica mais barato que a cópia, sem ponteiro a roubar.",
+                    },
+                    {
+                        frente: "Que dois acidentes clássicos a string_view causa?",
+                        verso: "Devolver view de local e guardar view de temporário.",
+                    },
+                    {
+                        frente: "Onde a string_view é sempre segura de usar?",
+                        verso: "Em parâmetro de entrada, que vive durante a chamada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que regra de captura um lambda guardado exige?",
+                        verso: "Capturar por valor, se ele sobrevive ao escopo atual.",
+                    },
+                    {
+                        frente: "Que duas fricções os ranges do C++20 resolvem?",
+                        verso: "O par de iteradores repetido e a composição ruim.",
+                    },
+                    {
+                        frente: "Que leitura o pipeline de ranges produz?",
+                        verso: "Dado, filtro e transformação, na ordem de quem conta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que política o módulo defende para escolher container?",
+                        verso: "Começar no vector e trocar só com motivo nomeável.",
+                    },
+                    {
+                        frente: "Que lenda urbana a lista ligada carrega?",
+                        verso: "A inserção de custo um, que exige achar o ponto antes.",
+                    },
+                    {
+                        frente: "Que primeira pergunta o ritual de escolha faz?",
+                        verso: "Se o acesso é por chave ou por sequência de posição.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que grupos costumam desligar exceções no build?",
+                        verso: "Jogos, embarcados, kernels e sistemas de latência crítica.",
+                    },
+                    {
+                        frente: "Como se deve lançar e capturar uma exceção?",
+                        verso: "Lançar por valor e capturar por referência constante.",
+                    },
+                    {
+                        frente: "Que erro capturar por valor comete com a hierarquia?",
+                        verso: "Fatia o objeto para a base e perde o tipo derivado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em que versão do padrão o expected chegou?",
+                        verso: "No C++23, com o valor ou o erro tipado.",
+                    },
+                    {
+                        frente: "Que duas operações monádicas encadeiam sem pirâmide?",
+                        verso: "O and_then, para etapa que falha, e o transform.",
+                    },
+                    {
+                        frente: "Que pergunta decide entre optional e expected?",
+                        verso: "Se o chamador precisa saber o porquê da falha.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que problema histórico o código de erro sempre teve?",
+                        verso: "Ser ignorável: o chamador esquece de olhar o retorno.",
+                    },
+                    {
+                        frente: "Que par o std::error_code carrega por dentro?",
+                        verso: "Um valor e a categoria de onde o erro veio.",
+                    },
+                    {
+                        frente: "Que pergunta de review todo caminho de erro responde?",
+                        verso: "Que rastro sobra se aquilo falhar de madrugada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pena a promessa quebrada do noexcept cobra?",
+                        verso: "O terminate imediato, sem chance de tratamento.",
+                    },
+                    {
+                        frente: "Que efeito o noexcept tem no código gerado?",
+                        verso: "Dispensa a infraestrutura de unwinding daquele trecho.",
+                    },
+                    {
+                        frente: "Por que resistir a marcar a API pública inteira?",
+                        verso: "É contrato de interface, e retirar depois quebra quem usa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que documentação o assert produz no código?",
+                        verso: "Executável: a pré-condição derruba onde a premissa mentiu.",
+                    },
+                    {
+                        frente: "Que suposição o compilador faz sobre o UB?",
+                        verso: "Que ele nunca acontece, e otimiza em cima disso.",
+                    },
+                    {
+                        frente: "Que defesa de indústria transforma UB em erro visível?",
+                        verso: "Os sanitizers no CI, com rastro de pilha no teste.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que o código legado sobreviveu vinte anos?",
+                        verso: "Os crimes dele são silenciosos e só aparecem sob uso raro.",
+                    },
+                    {
+                        frente: "Que método de modernização a aula adota?",
+                        verso: "Mudanças em camadas, cada uma deixando a classe coerente.",
+                    },
+                    {
+                        frente: "Que definição de código legado a aula propõe?",
+                        verso: "Aquele cujos contratos vivem só na cabeça de alguém.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas opções de armazenamento a aula compara?",
+                        verso: "O vector de char e o unique_ptr de array com o tamanho.",
+                    },
+                    {
+                        frente: "Que critério escolhe entre as duas opções?",
+                        verso: "O contrato de tamanho que a classe promete cumprir.",
+                    },
+                    {
+                        frente: "Que diferença de tamanho separa as duas opções?",
+                        verso: "O vector guarda três ponteiros; o unique_ptr, um só.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que detalhe o move padrão deixa incoerente na classe?",
+                        verso: "O tamanho é copiado, e a origem fica com valor antigo.",
+                    },
+                    {
+                        frente: "Por que a cópia volta a ser escrita à mão?",
+                        verso: "O unique_ptr a suprime, e ela precisa ser profunda.",
+                    },
+                    {
+                        frente: "Que três garantias a classe já tem depois do move?",
+                        verso: "Destrutor correto, cópia profunda e move sem exceção.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que ferida antiga do C o span fecha?",
+                        verso: "O par de ponteiro e tamanho viajando separado na assinatura.",
+                    },
+                    {
+                        frente: "Que arranjo garante que objeto construído é válido?",
+                        verso: "Construtor privado e fábrica que valida antes de criar.",
+                    },
+                    {
+                        frente: "Que três decisões de fronteira a API final toma?",
+                        verso: "Const na leitura, views na borda e erro tipado na criação.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como o checklist deve ser usado no review?",
+                        verso: "Como régua de leitura, com cada exceção justificada.",
+                    },
+                    {
+                        frente: "Que exercício consolida o critério da trilha?",
+                        verso: "Revisar código velho seu com o checklist na mão.",
+                    },
+                    {
+                        frente: "Que versões formam a base comum e a seguinte hoje?",
+                        verso: "O C++20 como base e o C++23 já nos três compiladores.",
+                    },
+                ],
+            },
+        },
     },
 };
