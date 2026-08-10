@@ -174,5 +174,169 @@ export const processamentoComSpark: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um RDD guarda, em vez dos dados prontos?",
+                        verso: "O lineage, o caminho de transformações desde a origem.",
+                    },
+                    {
+                        frente: "Para que serve o lineage?",
+                        verso: "Para reconstruir qualquer partição perdida.",
+                    },
+                    {
+                        frente: "O que o RDD representa no Spark?",
+                        verso: "A abstração original de coleção distribuída.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que todo DataFrame é, em PySpark?",
+                        verso: "Um Dataset de linhas genéricas.",
+                    },
+                    {
+                        frente: "Por que não existe API de Dataset tipada em Python?",
+                        verso: "Pela tipagem dinâmica da linguagem.",
+                    },
+                    {
+                        frente: "Que ganho a API estruturada traz sobre o RDD?",
+                        verso: "O otimizador passa a entender o que o código faz.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Catalyst faz?",
+                        verso: "Escolhe o melhor plano antes de rodar.",
+                    },
+                    {
+                        frente: "O que o Tungsten faz?",
+                        verso: "Faz o plano rodar perto do limite de CPU e memória.",
+                    },
+                    {
+                        frente: "Um dos dois sozinho explica o ganho?",
+                        verso: "Não: o ganho vem dos dois juntos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que preferir Parquet como formato intermediário?",
+                        verso: "Ele preserva o schema junto dos dados.",
+                    },
+                    {
+                        frente: "Que leitura o Parquet permite ao Spark?",
+                        verso: "Ler apenas as colunas necessárias.",
+                    },
+                    {
+                        frente: "Que fontes o Spark lê nativamente?",
+                        verso: "Arquivos, tabelas e bancos por conector.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quanto custa declarar um schema explícito?",
+                        verso: "Uma linha a mais de código.",
+                    },
+                    {
+                        frente: "Que dois custos o schema explícito evita?",
+                        verso: "O tempo de inferência e a surpresa de tipo errado.",
+                    },
+                    {
+                        frente: "Quando o tipo errado costuma aparecer sem schema?",
+                        verso: "Só em produção.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a criação de coluna derivada faz?",
+                        verso: "Acrescenta ou substitui uma coluna no DataFrame.",
+                    },
+                    {
+                        frente: "Que ganho filtrar cedo traz?",
+                        verso: "Menos dado atravessa as etapas seguintes.",
+                    },
+                    {
+                        frente: "O que uma expressão de coluna descreve?",
+                        verso: "O cálculo, sem executar nada na hora.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que tipo de transformação a agregação por chave é?",
+                        verso: "Wide: exige shuffle entre os executors.",
+                    },
+                    {
+                        frente: "Por que ela exige shuffle?",
+                        verso: "Linhas da mesma chave podem estar em executors diferentes.",
+                    },
+                    {
+                        frente: "O que a agregação por grupo devolve?",
+                        verso: "Uma linha por grupo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quando um join multiplica linhas?",
+                        verso: "Quando a chave não é única de um dos lados.",
+                    },
+                    {
+                        frente: "O que conferir antes de um join um-para-um?",
+                        verso: "A cardinalidade dos dois lados.",
+                    },
+                    {
+                        frente: "Que problema o fan-out inesperado causa?",
+                        verso: "Somas infladas e resultado errado em silêncio.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que uma função de janela faz com as linhas?",
+                        verso: "Enriquece cada linha, sem reduzir o conjunto.",
+                    },
+                    {
+                        frente: "O que a janela responde?",
+                        verso: "Uma linha para cada linha original.",
+                    },
+                    {
+                        frente: "Que visão a janela acrescenta a cada linha?",
+                        verso: "A do grupo ao redor dela.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que procurar antes de escrever uma UDF?",
+                        verso: "A combinação de funções nativas que resolve o mesmo.",
+                    },
+                    {
+                        frente: "Que lugar a UDF ocupa na escolha?",
+                        verso: "O de último recurso.",
+                    },
+                    {
+                        frente: "Que custo a UDF costuma trazer?",
+                        verso: "O otimizador deixa de enxergar o que ela faz.",
+                    },
+                ],
+            },
+        },
     },
 };
