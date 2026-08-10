@@ -31,6 +31,7 @@ import { dockerEContainers } from "./docker-e-containers.ts";
 import { go } from "./go.ts";
 import { linuxELinhaDeComando } from "./linux-e-linha-de-comando.ts";
 import { redes } from "./redes.ts";
+import { kubernetes } from "./kubernetes.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -64,4 +65,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     go,
     linuxELinhaDeComando,
     redes,
+    kubernetes,
 ];
