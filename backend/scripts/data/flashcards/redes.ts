@@ -174,5 +174,169 @@ export const redes: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que nome alternativo a tabela MAC do switch recebe?",
+                        verso: "Tabela CAM, que liga cada MAC à porta física dele.",
+                    },
+                    {
+                        frente: "O que o switch faz quando não conhece o MAC de destino?",
+                        verso: "Faz flooding: replica o quadro por todas as outras portas.",
+                    },
+                    {
+                        frente: "Que domínios o switch divide, e quais ele não divide?",
+                        verso: "Divide os de colisão, um por porta; não divide os de broadcast.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantos bits o MAC tem, e o que os primeiros 24 dizem?",
+                        verso: "Quarenta e oito bits; os 24 primeiros são o OUI do fabricante.",
+                    },
+                    {
+                        frente: "Por que o MAC não serve para rotear entre redes?",
+                        verso: "Ele é plano: nada nele aponta onde a máquina está.",
+                    },
+                    {
+                        frente: "O que fica constante e o que é reescrito no caminho?",
+                        verso: "Os IPs seguem fim a fim; os MACs são reescritos a cada salto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que primeira decisão o host toma ao enviar um pacote?",
+                        verso: "Se o destino está na mesma sub-rede, comparando com a máscara.",
+                    },
+                    {
+                        frente: "Que nome tem a regra que escolhe a rota mais específica?",
+                        verso: "Longest prefix match: vence o prefixo mais longo.",
+                    },
+                    {
+                        frente: "Que rotas um servidor costuma ter na tabela?",
+                        verso: "As das redes diretamente conectadas e a rota default.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a sigla ARP significa, por extenso?",
+                        verso: "Address Resolution Protocol, que traduz um IP em MAC.",
+                    },
+                    {
+                        frente: "Que MAC o host resolve quando o destino é remoto?",
+                        verso: "O do gateway, nunca o do destino final na outra rede.",
+                    },
+                    {
+                        frente: "Por que as entradas do cache ARP expiram?",
+                        verso: "Para acompanhar mudanças, como uma placa trocada na rede.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que padrão marca o quadro com o número da VLAN?",
+                        verso: "O 802.1Q, que insere a tag com o VLAN ID no quadro.",
+                    },
+                    {
+                        frente: "Quantos bits o VLAN ID tem, e quantos valores úteis?",
+                        verso: "Doze bits, o que dá até 4094 valores utilizáveis.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre porta de acesso e de tronco?",
+                        verso: "A de acesso leva uma VLAN sem tag; a de tronco leva várias com tag.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que problema a camada de transporte resolve, além do IP?",
+                        verso: "Entregar ao processo certo, e não só à máquina certa.",
+                    },
+                    {
+                        frente: "Que quatro garantias o TCP entrega, e a que custo?",
+                        verso: "Numera, confirma, reenvia e ordena, custando etapas e cabeçalho maior.",
+                    },
+                    {
+                        frente: "Por que streaming e voz preferem UDP?",
+                        verso: "Um quadro atrasado é inútil: melhor perder que esperar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dois objetivos o handshake do TCP cumpre?",
+                        verso: "Confirmar que os dois lados aceitam e sincronizar os números iniciais.",
+                    },
+                    {
+                        frente: "Como uma conexão TCP se encerra de forma ordenada?",
+                        verso: "Com FIN e ACK em cada um dos dois sentidos independentes.",
+                    },
+                    {
+                        frente: "Que flag corta a conexão na hora, e quando ela aparece?",
+                        verso: "O RST, por exemplo ao falar numa porta sem ninguém escutando.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantos bits a porta tem, e qual é a faixa dela?",
+                        verso: "Dezesseis bits, indo de zero a 65535.",
+                    },
+                    {
+                        frente: "O que define uma conexão TCP de forma única?",
+                        verso: "O par de sockets, de origem e destino, somado ao protocolo.",
+                    },
+                    {
+                        frente: "Que faixa o Linux usa por padrão para portas efêmeras?",
+                        verso: "Algo em torno de 32768 a 60999, escolhida pelo sistema.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quem mantém a convenção das portas padrão?",
+                        verso: "A IANA, com as conhecidas na faixa de zero a 1023.",
+                    },
+                    {
+                        frente: "Quando o DNS recorre ao TCP em vez do UDP?",
+                        verso: "Quando a resposta é grande demais para o datagrama.",
+                    },
+                    {
+                        frente: "Que faixas de porta vêm acima das conhecidas?",
+                        verso: "As registradas e, mais acima, a dinâmica das efêmeras.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro mecanismos somados tornam o TCP confiável?",
+                        verso: "Numeração, confirmação, retransmissão e a janela do receptor.",
+                    },
+                    {
+                        frente: "Que pista mais rápida que o temporizador denuncia uma perda?",
+                        verso: "Vários ACKs repetidos pedindo sempre o mesmo byte.",
+                    },
+                    {
+                        frente: "O que a janela anunciada em cada ACK controla?",
+                        verso: "Quanto o emissor pode mandar sem confirmação, pelo buffer livre.",
+                    },
+                ],
+            },
+        },
     },
 };
