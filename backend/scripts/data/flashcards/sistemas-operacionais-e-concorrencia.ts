@@ -339,5 +339,251 @@ export const sistemasOperacionaisEConcorrencia: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que a tabela de páginas não pode ser plana?",
+                        verso: "Seriam 68 bilhões de páginas por processo em 48 bits.",
+                    },
+                    {
+                        frente: "Que combinação de bits impede a pilha de executar?",
+                        verso: "A de escrita com a de não executável na página.",
+                    },
+                    {
+                        frente: "Quem confere as permissões a cada acesso de memória?",
+                        verso: "O hardware, lendo os bits da tabela sem custo visível.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantos acessos extras a tradução custaria sem o TLB?",
+                        verso: "Quatro, um por nível da tabela de páginas.",
+                    },
+                    {
+                        frente: "Por que a localidade paga duas vezes no desempenho?",
+                        verso: "Ela acerta o cache do dado e o TLB da tradução.",
+                    },
+                    {
+                        frente: "Quanto uma hugepage cobre a mais por entrada de TLB?",
+                        verso: "Quinhentas e doze vezes mais, com página de 2 MB.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que estratégia evita ler o executável inteiro no exec?",
+                        verso: "O demand paging, materializando página só quando usada.",
+                    },
+                    {
+                        frente: "O que o fork realmente copia, e o que ele adia?",
+                        verso: "Copia o mapa; a página só é copiada na primeira escrita.",
+                    },
+                    {
+                        frente: "Que distância a alocação preguiçosa explica?",
+                        verso: "A do prometido no virtual contra o residente na RAM.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que uso de swap é sinal de máquina saudável?",
+                        verso: "Guardar páginas realmente frias e liberar RAM para cache.",
+                    },
+                    {
+                        frente: "Que círculo vicioso o thrashing estabelece?",
+                        verso: "Cada página trazida despeja outra que já era necessária.",
+                    },
+                    {
+                        frente: "Que três saídas o thrashing admite, em ordem?",
+                        verso: "Reduzir o conjunto de trabalho, somar RAM ou aceitar o limite.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que cópia extra o caminho tradicional do read faz?",
+                        verso: "A do cache do kernel para o buffer do seu processo.",
+                    },
+                    {
+                        frente: "O que dois processos ganham ao mapear compartilhado?",
+                        verso: "As mesmas molduras físicas nas duas tabelas de páginas.",
+                    },
+                    {
+                        frente: "Que problema o mapeamento compartilhado traz junto?",
+                        verso: "A corrida: sincronizar vira responsabilidade sua.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que uniformidade o descritor traz ao Unix?",
+                        verso: "Arquivo, pipe, socket e dispositivo com a mesma interface.",
+                    },
+                    {
+                        frente: "Onde o shell faz a cirurgia do redirecionamento?",
+                        verso: "Entre o fork e o exec, na tabela do processo filho.",
+                    },
+                    {
+                        frente: "Que limite clássico o número de descritores tem?",
+                        verso: "Mil e vinte e quatro por processo, elevável na config.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas salas de espera separam o print do disco?",
+                        verso: "O buffer da biblioteca e o cache de páginas do kernel.",
+                    },
+                    {
+                        frente: "Que faixa de custo o fsync cobra em cada mídia?",
+                        verso: "Uns dois milissegundos no SSD e até vinte no disco.",
+                    },
+                    {
+                        frente: "Por que o log some no crash, e onde ele estava?",
+                        verso: "Preso no buffer da biblioteca, que ainda não escoou.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Onde o custo do modelo bloqueante realmente aparece?",
+                        verso: "Na arquitetura: uma thread reservada por conexão aberta.",
+                    },
+                    {
+                        frente: "Que erro o retorno de indisponível convida a cometer?",
+                        verso: "Chamar de novo em laço, queimando CPU à toa.",
+                    },
+                    {
+                        frente: "Que meio-termo o mundo real usa o tempo todo?",
+                        verso: "Threads bloqueantes num pool de tamanho controlado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que mudança estrutural o epoll traz sobre o select?",
+                        verso: "Registra uma vez e devolve só os descritores prontos.",
+                    },
+                    {
+                        frente: "Que cláusula dura o contrato do event loop impõe?",
+                        verso: "Nenhum handler pode demorar, ou o loop inteiro atrasa.",
+                    },
+                    {
+                        frente: "Que fronteira o io_uring representa hoje?",
+                        verso: "Duas filas compartilhadas, com menos syscalls no caminho.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que recurso domina o tempo em sistema de informação?",
+                        verso: "A entrada e saída, quase nunca o cálculo da CPU.",
+                    },
+                    {
+                        frente: "Que pergunta abre a investigação de lentidão?",
+                        verso: "Quantas idas a disco e rede aquele caminho faz.",
+                    },
+                    {
+                        frente: "Que problema clássico vira aritmética com essa régua?",
+                        verso: "O N mais um, com 101 consultas onde cabiam duas.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que contrato de atomicidade o log precisa cumprir?",
+                        verso: "Cada linha aparecendo inteira, sem se misturar com outra.",
+                    },
+                    {
+                        frente: "Que abordagem a aula recusa para resolver as corridas?",
+                        verso: "Band-aid local em cada uma, em vez de mudar o desenho.",
+                    },
+                    {
+                        frente: "Onde as corridas custam barato de achar?",
+                        verso: "No papel, antes de virarem chamado de madrugada.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que princípio o desenho da fila aplica?",
+                        verso: "O confinamento: o recurso tem uma dona única.",
+                    },
+                    {
+                        frente: "Que custo o mutex em volta do write imporia?",
+                        verso: "Cada thread pagaria a syscall e o disco sob o cadeado.",
+                    },
+                    {
+                        frente: "Onde cada lado paga o custo no desenho da fila?",
+                        verso: "O produtor em nanossegundos e a escritora na E/S lenta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que política o projeto adota por classe de mensagem?",
+                        verso: "Erro e auditoria nunca se perdem; depuração pode cair.",
+                    },
+                    {
+                        frente: "Que desfecho a fila sem teto agenda para o pico?",
+                        verso: "O estouro de memória, levando junto os logs do incidente.",
+                    },
+                    {
+                        frente: "Onde a mesma decisão de backpressure reaparece?",
+                        verso: "Em brokers, proxies e roteadores com buffer limitado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que prazo o orquestrador costuma dar antes do kill?",
+                        verso: "Cerca de dez segundos entre o pedido e a execução.",
+                    },
+                    {
+                        frente: "Que plano B a drenagem precisa ter no desligamento?",
+                        verso: "Um limite de tempo, para não travar além do prazo.",
+                    },
+                    {
+                        frente: "Que teste o desligamento merece, como o caminho feliz?",
+                        verso: "Mandar o sinal sob carga e conferir o arquivo depois.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que primeira pergunta o mapa de decisões faz?",
+                        verso: "Se dá para compartilhar menos, com dado imutável ou próprio.",
+                    },
+                    {
+                        frente: "Que transformação confinar mais fila produz?",
+                        verso: "Concorrência vira troca de mensagem, mais fácil de seguir.",
+                    },
+                    {
+                        frente: "Que aparência a concorrência bem feita costuma ter?",
+                        verso: "Quase nada compartilhado, e o pouco com dono claro.",
+                    },
+                ],
+            },
+        },
     },
 };
