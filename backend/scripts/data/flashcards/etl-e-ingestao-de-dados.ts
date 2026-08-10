@@ -338,5 +338,251 @@ export const etlEIngestaoDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que acontece com dado sujo que passa despercebido?",
+                        verso: "Só troca de lugar: vira métrica errada no painel.",
+                    },
+                    {
+                        frente: "Que outro destino o dado sujo costuma ter?",
+                        verso: "Viés silencioso dentro do modelo.",
+                    },
+                    {
+                        frente: "Que problemas a limpeza trata?",
+                        verso: "Nulos, tipos errados, duplicatas e outliers.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que padronizar deixa o dado?",
+                        verso: "Comparável.",
+                    },
+                    {
+                        frente: "O que enriquecer deixa o dado?",
+                        verso: "Útil.",
+                    },
+                    {
+                        frente: "Que exemplo de padronização a aula usa?",
+                        verso: "Unificar formato de data, unidade e grafia.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma chave de deduplicação errada provoca?",
+                        verso: "Apagar dado válido, em vez de limpar duplicata.",
+                    },
+                    {
+                        frente: "O que a resolução de entidade tenta descobrir?",
+                        verso: "Se dois registros diferentes são a mesma coisa.",
+                    },
+                    {
+                        frente: "Que cuidado a deduplicação exige antes?",
+                        verso: "Definir qual campo realmente identifica o registro.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a função de janela faz que o agrupamento não faz?",
+                        verso: "Calcula sem colapsar as linhas.",
+                    },
+                    {
+                        frente: "Que risco um join mal feito traz?",
+                        verso: "Multiplicar linhas e inflar as somas.",
+                    },
+                    {
+                        frente: "O que a agregação faz com o detalhe?",
+                        verso: "Resume, perdendo o nível original.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta certa entre SQL e código?",
+                        verso: "Qual deles o problema e o time pedem naquele caso.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta certa?",
+                        verso: "Qual das duas linguagens é melhor.",
+                    },
+                    {
+                        frente: "Que trabalho o SQL costuma fazer melhor?",
+                        verso: "Junções e agregações sobre tabelas grandes.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta define a estratégia de carga?",
+                        verso: "Se os dados de origem podem mudar depois de criados.",
+                    },
+                    {
+                        frente: "Que carga os dados imutáveis pedem?",
+                        verso: "Append, apenas acrescentando.",
+                    },
+                    {
+                        frente: "Que carga os dados que mudam pedem?",
+                        verso: "Upsert, atualizando ou inserindo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma carga idempotente garante?",
+                        verso: "O destino termina igual, rodando uma ou cem vezes.",
+                    },
+                    {
+                        frente: "O que indica que a carga não é idempotente?",
+                        verso: "O resultado mudar a cada repetição.",
+                    },
+                    {
+                        frente: "Por que a idempotência importa tanto?",
+                        verso: "Reprocessar deixa de ser arriscado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma carga incremental leva ao destino?",
+                        verso: "Só o que mudou desde a última execução.",
+                    },
+                    {
+                        frente: "Que controle a carga incremental exige?",
+                        verso: "Saber até onde a carga anterior chegou.",
+                    },
+                    {
+                        frente: "Que ganho a carga incremental traz?",
+                        verso: "Menos dado movido e janela de carga menor.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a carga precisa fazer numa dimensão tipo 2?",
+                        verso: "Fechar a versão antiga e abrir a nova.",
+                    },
+                    {
+                        frente: "Que coluna marca a versão vigente?",
+                        verso: "A de linha atual, ou a data de fim de vigência.",
+                    },
+                    {
+                        frente: "O que a carga da dimensão precisa detectar?",
+                        verso: "Que atributo mudou desde a última versão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quando o backfill é seguro?",
+                        verso: "Só quando a carga já é idempotente.",
+                    },
+                    {
+                        frente: "Que teste antecede um backfill grande?",
+                        verso: "Rodar o mesmo dia várias vezes e comparar o resultado.",
+                    },
+                    {
+                        frente: "O que o backfill faz, afinal?",
+                        verso: "Reprocessa um período inteiro que já passou.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o pipeline confiável faz com a falha?",
+                        verso: "Isola e continua entregando o resto.",
+                    },
+                    {
+                        frente: "Para que serve a fila de mensagens mortas?",
+                        verso: "Guardar o que falhou, sem travar o resto.",
+                    },
+                    {
+                        frente: "O que a quarentena separa?",
+                        verso: "O registro inválido, para análise posterior.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que validar na entrada evita?",
+                        verso: "Descobrir o problema semanas depois, num relatório.",
+                    },
+                    {
+                        frente: "Em quanto tempo a validação na entrada revela o erro?",
+                        verso: "Em segundos.",
+                    },
+                    {
+                        frente: "O que validar na entrada não é?",
+                        verso: "Burocracia.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que sinais uma carga monitorada emite?",
+                        verso: "Volume, duração e taxa de erro por execução.",
+                    },
+                    {
+                        frente: "O que a queda súbita de volume costuma indicar?",
+                        verso: "Origem quebrada, ou filtro errado no caminho.",
+                    },
+                    {
+                        frente: "Que alerta toda carga programada merece?",
+                        verso: "O de execução que simplesmente não aconteceu.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a escolha entre caseiro e gerenciado não é?",
+                        verso: "Uma decisão única e definitiva.",
+                    },
+                    {
+                        frente: "O que times maduros costumam fazer?",
+                        verso: "Conector gerenciado no comum, pipeline próprio no específico.",
+                    },
+                    {
+                        frente: "Que critério separa os dois casos?",
+                        verso: "Se a fonte é comum ou específica do negócio.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como um pipeline confiável nasce?",
+                        verso: "Não nasce pronto: ele acumula decisões.",
+                    },
+                    {
+                        frente: "O que essas pequenas escolhas evitam?",
+                        verso: "Os grandes incêndios.",
+                    },
+                    {
+                        frente: "Que antipadrão a trilha mais combate?",
+                        verso: "Pipeline sem idempotência, validação nem monitoramento.",
+                    },
+                ],
+            },
+        },
     },
 };
