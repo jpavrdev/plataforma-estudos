@@ -339,5 +339,251 @@ export const modelagemDeDadosEDataWarehousing: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que normalizar uma dimensão troca?",
+                        verso: "Menos redundância por mais joins.",
+                    },
+                    {
+                        frente: "Qual é a pergunta certa entre estrela e floco de neve?",
+                        verso: "Qual atende o seu volume e o seu padrão de consulta.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta certa nessa escolha?",
+                        verso: "Qual dos dois esquemas é mais correto.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o tipo 1 faz com o valor antigo?",
+                        verso: "Sobrescreve, sem guardar histórico.",
+                    },
+                    {
+                        frente: "O que o tipo 2 cria a cada mudança?",
+                        verso: "Uma nova linha, preservando o histórico.",
+                    },
+                    {
+                        frente: "O que a técnica de SCD trata?",
+                        verso: "Atributos de dimensão que mudam devagar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Sobre o que a matriz de barramento é?",
+                        verso: "Garantir que as dimensões compartilhadas se encaixem.",
+                    },
+                    {
+                        frente: "Sobre o que ela não é?",
+                        verso: "Construir tudo de uma vez.",
+                    },
+                    {
+                        frente: "O que uma dimensão conformada permite?",
+                        verso: "Comparar tabelas fato diferentes pela mesma dimensão.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é uma dimensão degenerada?",
+                        verso: "Um identificador de negócio que fica na própria fato.",
+                    },
+                    {
+                        frente: "O que a dimensão junk agrupa?",
+                        verso: "Sinalizadores soltos, de baixa cardinalidade.",
+                    },
+                    {
+                        frente: "O que a dimensão role-playing faz?",
+                        verso: "A mesma dimensão usada em papéis diferentes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que uma hierarquia bem modelada permite?",
+                        verso: "Abrir o número nível por nível, até o detalhe.",
+                    },
+                    {
+                        frente: "O que separa relatório fechado de relatório navegável?",
+                        verso: "A hierarquia por trás dos números.",
+                    },
+                    {
+                        frente: "Que operação a hierarquia habilita?",
+                        verso: "O drill-down, descendo de nível.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três tipos de tabela fato existem?",
+                        verso: "Transação, snapshot periódico e snapshot acumulado.",
+                    },
+                    {
+                        frente: "O que a fato de transação registra?",
+                        verso: "Um evento por linha, no momento em que acontece.",
+                    },
+                    {
+                        frente: "O que o snapshot periódico registra?",
+                        verso: "O estado ao fim de cada período.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que nunca se deve somar?",
+                        verso: "A medida não aditiva.",
+                    },
+                    {
+                        frente: "O que guardar no lugar da razão pronta?",
+                        verso: "Numerador e denominador, separados.",
+                    },
+                    {
+                        frente: "O que a medida semi-aditiva permite?",
+                        verso: "Somar em algumas dimensões, mas não no tempo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma tabela fato sem fato registra?",
+                        verso: "O acontecimento em si, sem medida numérica.",
+                    },
+                    {
+                        frente: "Que exemplo clássico ela tem?",
+                        verso: "A presença registrada, como uma aula assistida.",
+                    },
+                    {
+                        frente: "O que se costuma medir numa fato sem fato?",
+                        verso: "A contagem de ocorrências.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a tabela fato nunca referencia diretamente?",
+                        verso: "A chave de negócio.",
+                    },
+                    {
+                        frente: "O que ela referencia, então?",
+                        verso: "A chave substituta da versão vigente no momento.",
+                    },
+                    {
+                        frente: "O que o carregamento da dimensão resolve antes?",
+                        verso: "Qual versão estava vigente quando o evento ocorreu.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que problema a bridge table resolve?",
+                        verso: "O relacionamento muitos-para-muitos com a dimensão.",
+                    },
+                    {
+                        frente: "Que risco a bridge table traz?",
+                        verso: "Contagem dobrada, se o peso não for tratado.",
+                    },
+                    {
+                        frente: "O que a bridge costuma carregar junto?",
+                        verso: "Um fator de alocação para dividir a medida.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta a nuvem substituiu?",
+                        verso: "Quantos servidores comprar para os próximos anos.",
+                    },
+                    {
+                        frente: "Que pergunta ficou no lugar dela?",
+                        verso: "Quanto processamento eu preciso agora, e por quanto tempo.",
+                    },
+                    {
+                        frente: "O que separar armazenamento e computação permite?",
+                        verso: "Escalar cada um por conta própria.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que escolher a chave de distribuição realmente é?",
+                        verso: "Uma decisão de modelagem, e não só de infraestrutura.",
+                    },
+                    {
+                        frente: "Que pergunta essa escolha responde?",
+                        verso: "Quais colunas a tabela mais filtra e junta.",
+                    },
+                    {
+                        frente: "O que o particionamento evita na consulta?",
+                        verso: "Ler as partições que não interessam.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a tabela larga troca?",
+                        verso: "Espaço em disco, que é barato, por menos joins.",
+                    },
+                    {
+                        frente: "Que recurso é o mais caro num banco colunar?",
+                        verso: "O join em tempo de consulta.",
+                    },
+                    {
+                        frente: "Que estrutura a tabela larga elimina?",
+                        verso: "As junções repetidas com dimensões pequenas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que estrela e tabela única respondem?",
+                        verso: "Como consultar rápido e de forma simples.",
+                    },
+                    {
+                        frente: "O que o Data Vault responde?",
+                        verso: "Como guardar tudo, de todas as fontes, sem perder histórico.",
+                    },
+                    {
+                        frente: "Que resiliência o Data Vault busca?",
+                        verso: "Não travar quando a origem muda.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "No que vira um lake ou warehouse sem modelo?",
+                        verso: "Num pântano de dados.",
+                    },
+                    {
+                        frente: "Que ilusão a ausência de modelo cria?",
+                        verso: "A de ser rápido de alimentar.",
+                    },
+                    {
+                        frente: "Quando essa ilusão acaba?",
+                        verso: "No dia em que ninguém mais confia no que está lá.",
+                    },
+                ],
+            },
+        },
     },
 };
