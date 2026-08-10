@@ -177,5 +177,169 @@ export const calculo3: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que situação a regra da cadeia acompanha?",
+                        verso: "Uma grandeza variando quando tudo de que ela depende muda.",
+                    },
+                    {
+                        frente: "Que soma a regra da cadeia produz?",
+                        verso: "Uma parcela por caminho de dependência entre as variáveis.",
+                    },
+                    {
+                        frente: "Que desenho ajuda a montar a regra da cadeia?",
+                        verso: "A árvore de dependências entre as variáveis.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quando a derivação implícita mostra seu valor?",
+                        verso: "Quando a relação não se deixa escrever com y isolado.",
+                    },
+                    {
+                        frente: "Que razão a derivação implícita usa?",
+                        verso: "A das parciais da relação, com o sinal trocado.",
+                    },
+                    {
+                        frente: "Que forma a relação assume na derivação implícita?",
+                        verso: "A de uma equação igualada a zero.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que pergunta a derivada direcional responde?",
+                        verso: "Como a função muda em qualquer rumo escolhido.",
+                    },
+                    {
+                        frente: "Que exigência o vetor da direção tem?",
+                        verso: "Ser unitário, de módulo igual a um.",
+                    },
+                    {
+                        frente: "Que caso particular a derivada direcional recupera?",
+                        verso: "As parciais, quando a direção segue um dos eixos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para onde o gradiente sempre aponta?",
+                        verso: "Para onde a subida é mais íngreme.",
+                    },
+                    {
+                        frente: "O que o comprimento do gradiente informa?",
+                        verso: "O quanto essa subida é acentuada.",
+                    },
+                    {
+                        frente: "O que compõe o vetor gradiente?",
+                        verso: "As derivadas parciais, uma em cada coordenada.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que ângulo o gradiente forma com a curva de nível?",
+                        verso: "Reto: ele a cruza perpendicularmente.",
+                    },
+                    {
+                        frente: "Por que o gradiente não corre pela curva de nível?",
+                        verso: "Ali a função não muda, e ele mede variação.",
+                    },
+                    {
+                        frente: "Que uso o gradiente tem no plano tangente?",
+                        verso: "Serve de vetor normal à superfície de nível.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que encontrar os pontos críticos exige?",
+                        verso: "Resolver um sistema com as parciais igualadas a zero.",
+                    },
+                    {
+                        frente: "O que classificar um ponto crítico envolve?",
+                        verso: "Entender a geometria em volta daquela solução.",
+                    },
+                    {
+                        frente: "Que tipos um ponto crítico pode ter?",
+                        verso: "Máximo local, mínimo local ou ponto de sela.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que atalho o teste da segunda derivada oferece?",
+                        verso: "O discriminante, que classifica sem análise direta.",
+                    },
+                    {
+                        frente: "O que fazer quando o discriminante zera?",
+                        verso: "Analisar direto, porque o atalho não decide.",
+                    },
+                    {
+                        frente: "Que matriz dá nome a esse teste?",
+                        verso: "A Hessiana, com as parciais de segunda ordem.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que dois lugares o extremo se esconde?",
+                        verso: "Num ponto crítico do interior ou na fronteira.",
+                    },
+                    {
+                        frente: "Que condição a região precisa cumprir?",
+                        verso: "Ser fechada e limitada.",
+                    },
+                    {
+                        frente: "Que trabalho a fronteira acrescenta?",
+                        verso: "Estudá-la à parte, muitas vezes parametrizada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que troca Lagrange propõe?",
+                        verso: "Trocar o isolamento de variável pelo alinhamento de gradientes.",
+                    },
+                    {
+                        frente: "Que relação os gradientes têm no ponto ótimo?",
+                        verso: "São paralelos, um sendo múltiplo do outro.",
+                    },
+                    {
+                        frente: "Que equação entra junto no sistema de Lagrange?",
+                        verso: "A própria restrição do problema.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que pergunta abre todo problema de otimização?",
+                        verso: "O que exatamente se quer tornar máximo ou mínimo.",
+                    },
+                    {
+                        frente: "Que papel a restrição cumpre no problema?",
+                        verso: "Delimita as escolhas possíveis.",
+                    },
+                    {
+                        frente: "Que conferência fecha o problema aplicado?",
+                        verso: "Ver se a resposta faz sentido no contexto.",
+                    },
+                ],
+            },
+        },
     },
 };
