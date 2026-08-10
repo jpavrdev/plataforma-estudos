@@ -57,6 +57,7 @@ import { estatisticaMatematica } from "./estatistica-matematica.ts";
 import { fundamentosDeCiberseguranca } from "./fundamentos-de-ciberseguranca.ts";
 import { ameacasEAtaquesNaPratica } from "./ameacas-e-ataques-na-pratica.ts";
 import { defesaEOSoc } from "./defesa-e-o-soc.ts";
+import { pentestComMetodo } from "./pentest-com-metodo.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -116,4 +117,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     fundamentosDeCiberseguranca,
     ameacasEAtaquesNaPratica,
     defesaEOSoc,
+    pentestComMetodo,
 ];
