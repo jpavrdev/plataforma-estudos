@@ -177,5 +177,169 @@ export const algebraLinear: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que informação um único determinante já revela?",
+                        verso: "Se a matriz pode ou não ser invertida.",
+                    },
+                    {
+                        frente: "Que regra prática resolve o determinante de ordem três?",
+                        verso: "A de Sarrus, repetindo as duas primeiras colunas ao lado.",
+                    },
+                    {
+                        frente: "Que matrizes têm determinante?",
+                        verso: "Só as quadradas, com linhas e colunas em igual número.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que fila escolher antes de expandir por Laplace?",
+                        verso: "A com mais zeros, que economiza boa parte da conta.",
+                    },
+                    {
+                        frente: "O que o cofator acrescenta ao menor complementar?",
+                        verso: "O sinal, alternado conforme a posição na matriz.",
+                    },
+                    {
+                        frente: "O que é o menor complementar de uma entrada?",
+                        verso: "O determinante que sobra ao apagar a linha e a coluna dela.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que acontece ao trocar duas linhas da matriz?",
+                        verso: "O determinante troca de sinal.",
+                    },
+                    {
+                        frente: "Que determinante uma linha de zeros garante?",
+                        verso: "Zero, sem precisar de conta.",
+                    },
+                    {
+                        frente: "Que efeito multiplicar uma linha por escalar tem?",
+                        verso: "O determinante fica multiplicado por esse mesmo escalar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o determinante zerado faz com a inversa?",
+                        verso: "Ela desaparece: a matriz deixa de ser invertível.",
+                    },
+                    {
+                        frente: "Que garantia o determinante não nulo dá ao sistema?",
+                        verso: "A de solução única.",
+                    },
+                    {
+                        frente: "Que nome a matriz de determinante zero recebe?",
+                        verso: "Matriz singular.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Em que a regra de Cramer transforma cada incógnita?",
+                        verso: "Num quociente de determinantes.",
+                    },
+                    {
+                        frente: "Que condição a regra de Cramer exige do sistema?",
+                        verso: "Determinante não nulo e tantas equações quanto incógnitas.",
+                    },
+                    {
+                        frente: "Que troca monta o determinante de cada incógnita?",
+                        verso: "A da coluna dela pela coluna dos termos independentes.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que faz de um objeto um vetor?",
+                        verso: "Poder ser somado e escalado seguindo as mesmas regras de sempre.",
+                    },
+                    {
+                        frente: "O que a letra n indica no espaço de vetores?",
+                        verso: "A quantidade de coordenadas de cada vetor.",
+                    },
+                    {
+                        frente: "Como se somam dois vetores?",
+                        verso: "Coordenada a coordenada, na mesma posição.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma combinação linear monta?",
+                        verso: "A soma dos vetores multiplicados por escalares quaisquer.",
+                    },
+                    {
+                        frente: "O que o espaço gerado reúne?",
+                        verso: "Todos os vetores possíveis de montar combinando aqueles.",
+                    },
+                    {
+                        frente: "Que metáfora a aula usa para o espaço gerado?",
+                        verso: "Ingredientes e todos os pratos que dá para preparar com eles.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a independência linear significa, em resumo?",
+                        verso: "Ausência de redundância entre os vetores do conjunto.",
+                    },
+                    {
+                        frente: "Que combinação denuncia dependência linear?",
+                        verso: "Uma que dá o vetor nulo sem todos os escalares zerados.",
+                    },
+                    {
+                        frente: "O que um vetor dependente acrescenta ao conjunto?",
+                        verso: "Nada: os outros juntos já alcançam a direção dele.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que ponto todo subespaço precisa conter?",
+                        verso: "A origem, sem exceção.",
+                    },
+                    {
+                        frente: "Que duas operações um subespaço precisa suportar?",
+                        verso: "A soma de vetores e a multiplicação por escalar.",
+                    },
+                    {
+                        frente: "Que diferença separa subespaço de subconjunto qualquer?",
+                        verso: "O subespaço herda a estrutura; o outro apenas mora dentro.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que uma base precisa reunir?",
+                        verso: "Independência linear e capacidade de gerar todo o espaço.",
+                    },
+                    {
+                        frente: "O que a dimensão conta num espaço?",
+                        verso: "Os graus de liberdade, o número de vetores da base.",
+                    },
+                    {
+                        frente: "Que liberdade a escolha da base admite?",
+                        verso: "Bases diferentes, sempre com a mesma quantidade de vetores.",
+                    },
+                ],
+            },
+        },
     },
 };
