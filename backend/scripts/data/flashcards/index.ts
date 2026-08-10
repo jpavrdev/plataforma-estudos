@@ -43,6 +43,7 @@ import { doModeloAoProduto } from "./do-modelo-ao-produto.ts";
 import { cpp } from "./cpp.ts";
 import { porDentroDaMaquina } from "./por-dentro-da-maquina.ts";
 import { cppModerno } from "./cpp-moderno.ts";
+import { sistemasOperacionaisEConcorrencia } from "./sistemas-operacionais-e-concorrencia.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -88,4 +89,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     cpp,
     porDentroDaMaquina,
     cppModerno,
+    sistemasOperacionaisEConcorrencia,
 ];
