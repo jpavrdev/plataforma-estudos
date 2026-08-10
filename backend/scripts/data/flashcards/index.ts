@@ -36,6 +36,7 @@ import { arquiteturaEEscala } from "./arquitetura-e-escala.ts";
 import { estatisticaEProbabilidade } from "./estatistica-e-probabilidade.ts";
 import { analiseDeDados } from "./analise-de-dados.ts";
 import { sqlParaDados } from "./sql-para-dados.ts";
+import { visualizacaoDeDados } from "./visualizacao-de-dados.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -74,4 +75,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     estatisticaEProbabilidade,
     analiseDeDados,
     sqlParaDados,
+    visualizacaoDeDados,
 ];
