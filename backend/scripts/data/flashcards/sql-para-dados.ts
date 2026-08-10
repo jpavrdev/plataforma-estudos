@@ -177,5 +177,169 @@ export const sqlParaDados: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta de cardinalidade antecede toda junção?",
+                        verso: "Para uma linha da esquerda, quantas casam do outro lado.",
+                    },
+                    {
+                        frente: "Que uso legítimo o CROSS JOIN tem em análise?",
+                        verso: "Gerar todas as combinações antes de preencher buracos.",
+                    },
+                    {
+                        frente: "Por que a definição por produto cartesiano não é física?",
+                        verso: "Nenhum banco gera todas as combinações antes de filtrar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que sutileza o count guarda numa junção externa?",
+                        verso: "Contar coluna da direita, senão o sem par conta como um.",
+                    },
+                    {
+                        frente: "Que uso principal o FULL JOIN tem em trabalho com dados?",
+                        verso: "A conciliação, listando o que existe só de um lado.",
+                    },
+                    {
+                        frente: "Por que a diferença entre INNER e LEFT passa despercebida?",
+                        verso: "Com os dois lados íntegros, elas devolvem o mesmo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois diagnósticos flagram a junção que multiplica?",
+                        verso: "Contar linhas antes e depois e checar a chave da direita.",
+                    },
+                    {
+                        frente: "Por que o erro que infla sobrevive mais que o que reduz?",
+                        verso: "Número maior que o esperado quase nunca é questionado.",
+                    },
+                    {
+                        frente: "Que duas saídas resolvem a multiplicação real?",
+                        verso: "Agregar antes de juntar ou filtrar a direita até ficar única.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Em que momento o EXISTS para de procurar?",
+                        verso: "Na primeira linha encontrada pela subconsulta.",
+                    },
+                    {
+                        frente: "Por que o NOT EXISTS vence o NOT IN para ausência?",
+                        verso: "Ele testa linha, sem o terceiro estado do desconhecido.",
+                    },
+                    {
+                        frente: "Que coluna a variante com LEFT JOIN deve testar?",
+                        verso: "A chave primária da direita, que nunca é nula sozinha.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que operador faz nulo casar com nulo na comparação?",
+                        verso: "O IS NOT DISTINCT FROM, ao custo de perder o índice.",
+                    },
+                    {
+                        frente: "Que regra posicional salva a junção externa?",
+                        verso: "Condição sobre a direita vai no ON, nunca no WHERE.",
+                    },
+                    {
+                        frente: "Que exceção justifica o filtro de nulo no WHERE?",
+                        verso: "A anti-junção, em que o IS NULL é intencional.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três formas a subconsulta assume no WHERE?",
+                        verso: "Escalar comparada, lista com IN e existência com EXISTS.",
+                    },
+                    {
+                        frente: "O que uma subconsulta escalar sem resultado devolve?",
+                        verso: "Nulo, e a comparação descarta todas as linhas.",
+                    },
+                    {
+                        frente: "Onde mais a subconsulta escalar pode aparecer?",
+                        verso: "No SELECT, virando uma coluna constante por linha.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que limitação isola uma tabela derivada no FROM?",
+                        verso: "Ela não enxerga colunas das outras tabelas do mesmo FROM.",
+                    },
+                    {
+                        frente: "Que palavra libera a subconsulta a ver a linha da esquerda?",
+                        verso: "O LATERAL, que funciona como um laço por linha.",
+                    },
+                    {
+                        frente: "Que pergunta define o grão da subconsulta interna?",
+                        verso: "Média por o quê: a resposta vira o agrupamento.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que nome a literatura dá a esse padrão de consulta?",
+                        verso: "Consulta em laço, uma busca por linha da externa.",
+                    },
+                    {
+                        frente: "Por que o EXISTS correlacionado escapa do problema?",
+                        verso: "Ele para na primeira linha e vira semi-junção no plano.",
+                    },
+                    {
+                        frente: "Que regra prática decide manter ou reescrever?",
+                        verso: "Existência fica; agregação por linha vira junção agregada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que ganho a CTE traz ao repetir o mesmo recorte?",
+                        verso: "Declarado uma vez, os dois lados não podem divergir.",
+                    },
+                    {
+                        frente: "Como conferir uma etapa intermediária de uma CTE?",
+                        verso: "Trocando o SELECT final por um sobre aquela etapa.",
+                    },
+                    {
+                        frente: "Que promessa a CTE não cumpre, apesar da fama?",
+                        verso: "Deixar a consulta mais rápida; ela deixa é revisável.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sequência de etapas um pipeline em CTE costuma seguir?",
+                        verso: "Recortar, limpar, agregar, enriquecer e calcular a métrica.",
+                    },
+                    {
+                        frente: "O que passar de cinco ou seis etapas costuma indicar?",
+                        verso: "Que a análise merece virar tabela intermediária agendada.",
+                    },
+                    {
+                        frente: "Que comportamento a CTE tinha até a versão 11 do Postgres?",
+                        verso: "Era barreira de otimização: nenhum filtro descia nela.",
+                    },
+                ],
+            },
+        },
     },
 };
