@@ -33,6 +33,7 @@ import { linuxELinhaDeComando } from "./linux-e-linha-de-comando.ts";
 import { redes } from "./redes.ts";
 import { kubernetes } from "./kubernetes.ts";
 import { arquiteturaEEscala } from "./arquitetura-e-escala.ts";
+import { estatisticaEProbabilidade } from "./estatistica-e-probabilidade.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -68,4 +69,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     redes,
     kubernetes,
     arquiteturaEEscala,
+    estatisticaEProbabilidade,
 ];
