@@ -34,6 +34,7 @@ import { redes } from "./redes.ts";
 import { kubernetes } from "./kubernetes.ts";
 import { arquiteturaEEscala } from "./arquitetura-e-escala.ts";
 import { estatisticaEProbabilidade } from "./estatistica-e-probabilidade.ts";
+import { analiseDeDados } from "./analise-de-dados.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -70,4 +71,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     kubernetes,
     arquiteturaEEscala,
     estatisticaEProbabilidade,
+    analiseDeDados,
 ];
