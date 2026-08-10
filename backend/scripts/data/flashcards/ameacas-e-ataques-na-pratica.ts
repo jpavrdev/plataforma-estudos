@@ -175,5 +175,169 @@ export const ameacasEAtaquesNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um controle que exige perfeição realmente é?",
+                        verso: "Uma esperança, e não um controle.",
+                    },
+                    {
+                        frente: "O que fazer no lugar de exigir que ninguém erre?",
+                        verso: "Reduzir o custo do erro.",
+                    },
+                    {
+                        frente: "Que condição faz o controle humano falhar?",
+                        verso: "O dia corrido, com a pessoa sob pressão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que conselho sobre phishing envelheceu mal?",
+                        verso: "Procurar erro de português na mensagem.",
+                    },
+                    {
+                        frente: "Como é o phishing que dói hoje?",
+                        verso: "Bem escrito, no momento certo e sobre assunto esperado.",
+                    },
+                    {
+                        frente: "Que variante do phishing mira a alta gestão?",
+                        verso: "O whaling.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Para onde o filtro de correio empurrou o golpe?",
+                        verso: "Para o telefone e para o celular pessoal.",
+                    },
+                    {
+                        frente: "Por que esse canal favorece o golpista?",
+                        verso: "A empresa enxerga menos e o funcionário está mais sozinho.",
+                    },
+                    {
+                        frente: "Que isca a aula descreve fora da tela?",
+                        verso: "O código impresso colado por cima do original.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é verdadeiro na fraude de fatura desviada?",
+                        verso: "O fornecedor, a nota, o valor e o histórico.",
+                    },
+                    {
+                        frente: "O que muda na fraude de fatura desviada?",
+                        verso: "Só o número da conta bancária.",
+                    },
+                    {
+                        frente: "Por que nenhum filtro pega esse golpe?",
+                        verso: "Não há anexo malicioso nem link falso na mensagem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que fator a pessoa pode digitar no lugar errado?",
+                        verso: "Qualquer um que ela consiga digitar.",
+                    },
+                    {
+                        frente: "Que fator resiste ao phishing?",
+                        verso: "O que o navegador se recusa a entregar fora do site certo.",
+                    },
+                    {
+                        frente: "O que a fadiga de MFA explora?",
+                        verso: "O cansaço de receber notificação até alguém aprovar.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta substituiu que arquivo é esse?",
+                        verso: "Por que ele está fazendo isso agora.",
+                    },
+                    {
+                        frente: "O que nenhum antivírus vai apagar?",
+                        verso: "O interpretador de comandos do próprio sistema.",
+                    },
+                    {
+                        frente: "Que abuso a classificação por arquivo não cobre?",
+                        verso: "O de ferramenta legítima já instalada na máquina.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que raio um incidente com trojan tem?",
+                        verso: "Conhecido, limitado a quem executou o arquivo.",
+                    },
+                    {
+                        frente: "O que o worm faz enquanto se analisa?",
+                        verso: "Infecta mais máquinas a cada minuto.",
+                    },
+                    {
+                        frente: "Que urgência o worm impõe à resposta?",
+                        verso: "A de conter antes mesmo de terminar a análise.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quando olhar de fora vale mais que olhar de dentro?",
+                        verso: "Quando o próprio sistema pode estar mentindo.",
+                    },
+                    {
+                        frente: "Que evidência o rootkit não consegue filtrar?",
+                        verso: "O tráfego que sai pelo cabo.",
+                    },
+                    {
+                        frente: "O que um RAT dá ao invasor?",
+                        verso: "Controle remoto interativo da máquina.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o infostealer alimenta?",
+                        verso: "O mercado de credenciais roubadas.",
+                    },
+                    {
+                        frente: "Que erro comum deixa o invasor dentro de casa?",
+                        verso: "Trocar a senha sem encerrar as sessões.",
+                    },
+                    {
+                        frente: "Que dado o infostealer costuma levar junto?",
+                        verso: "Cookies de sessão e senhas salvas no navegador.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que presente a persistência dá ao defensor?",
+                        verso: "Ela precisa ficar gravada em algum lugar para funcionar.",
+                    },
+                    {
+                        frente: "O que diferencia a persistência do que só roda em memória?",
+                        verso: "Ela deixa rastro no disco ou na configuração.",
+                    },
+                    {
+                        frente: "Que objetivo a persistência cumpre?",
+                        verso: "Fazer o acesso voltar depois do reinício.",
+                    },
+                ],
+            },
+        },
     },
 };
