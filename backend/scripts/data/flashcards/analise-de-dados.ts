@@ -177,5 +177,169 @@ export const analiseDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a sigla CSV quer dizer, por extenso?",
+                        verso: "Comma-separated values, valores separados por vírgula.",
+                    },
+                    {
+                        frente: "Que outras duas funções de leitura o pandas traz?",
+                        verso: "read_excel para planilhas e read_json para arquivos JSON.",
+                    },
+                    {
+                        frente: "Que três coisas o read_csv já faz sozinho?",
+                        verso: "Cria o índice, separa as colunas e converte os tipos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que arquivos brasileiros usam ponto e vírgula?",
+                        verso: "A vírgula já serve de separador decimal no número.",
+                    },
+                    {
+                        frente: "Que parâmetro ensina o pandas a reconhecer um ausente?",
+                        verso: "O na_values, com a lista de marcadores do arquivo.",
+                    },
+                    {
+                        frente: "Que três parâmetros ajustam cabeçalho e índice na leitura?",
+                        verso: "O header, o names e o index_col do read_csv.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro perguntas a inspeção inicial responde?",
+                        verso: "Quanto tem, de que tipo é, o que falta e como os números se distribuem.",
+                    },
+                    {
+                        frente: "Que pergunta o shape e o dtypes deixam sem resposta?",
+                        verso: "Se falta dado: só o info mostra os valores não nulos.",
+                    },
+                    {
+                        frente: "Que colunas o describe ignora ao resumir?",
+                        verso: "As de texto; ele só resume as numéricas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Em que ordem o value_counts devolve a contagem?",
+                        verso: "Do valor mais frequente para o menos frequente.",
+                    },
+                    {
+                        frente: "Que método lista os valores distintos sem contá-los?",
+                        verso: "O unique, que devolve só quais valores existem.",
+                    },
+                    {
+                        frente: "Que tipo de coluna esses três métodos investigam?",
+                        verso: "As categóricas, que o describe deixa de fora.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o to_csv grava por padrão além das colunas?",
+                        verso: "O índice do DataFrame, como se fosse mais uma coluna.",
+                    },
+                    {
+                        frente: "Que parâmetro do read_csv também existe na gravação?",
+                        verso: "O sep, para gravar com outro separador de coluna.",
+                    },
+                    {
+                        frente: "Que três passos formam o fluxo básico do módulo?",
+                        verso: "Carregar com read_csv, inspecionar e salvar com to_csv.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta decide entre colchete simples e duplo?",
+                        verso: "Se você quer uma coluna isolada ou um pedaço da tabela.",
+                    },
+                    {
+                        frente: "Que erro duas colunas sem lista dentro do colchete geram?",
+                        verso: "KeyError: o pandas procura uma coluna com aquele nome composto.",
+                    },
+                    {
+                        frente: "Quando o atalho de ponto para uma coluna falha?",
+                        verso: "Com espaço, começando por número ou batendo com um método.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que ponta do fatiamento o loc inclui, e o iloc não?",
+                        verso: "A última: o loc inclui o fim e o iloc exclui.",
+                    },
+                    {
+                        frente: "Que operação faz rótulo e posição deixarem de coincidir?",
+                        verso: "Um sort_values ou um filtro, que reordenam as linhas.",
+                    },
+                    {
+                        frente: "Que regra mental escolhe entre os dois seletores?",
+                        verso: "Pensou num nome, loc; pensou numa posição, iloc.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que o and do Python quebra ao filtrar uma Series?",
+                        verso: "Ele espera um booleano só, e a Series traz um por linha.",
+                    },
+                    {
+                        frente: "Que precedência obriga os parênteses em cada condição?",
+                        verso: "A do operador de conjunto, maior que a das comparações.",
+                    },
+                    {
+                        frente: "Que método atalha várias igualdades encadeadas?",
+                        verso: "O isin, que testa se o valor está numa lista de opções.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que papel a segunda coluna cumpre num sort_values?",
+                        verso: "O de desempate, só decidindo quando a primeira empata.",
+                    },
+                    {
+                        frente: "Que método devolve a ordem original do índice?",
+                        verso: "O sort_index, útil depois de um sort_values.",
+                    },
+                    {
+                        frente: "Que atalho evita inverter o ascending e cortar o topo?",
+                        verso: "O nlargest e o nsmallest, que já pegam o top N.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que forma de criar coluna deve ser sempre a primeira?",
+                        verso: "A vetorizada, que roda em C e é a mais rápida.",
+                    },
+                    {
+                        frente: "O que acontece com um valor fora do dicionário do map?",
+                        verso: "Ele vira NaN na Series resultante.",
+                    },
+                    {
+                        frente: "Por que a atribuição encadeada não altera o original?",
+                        verso: "O pedaço filtrado vira uma cópia independente na hora.",
+                    },
+                ],
+            },
+        },
     },
 };
