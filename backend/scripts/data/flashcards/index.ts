@@ -53,6 +53,7 @@ import { algebraLinear } from "./algebra-linear.ts";
 import { geometriaAnalitica } from "./geometria-analitica.ts";
 import { calculo2 } from "./calculo-2.ts";
 import { calculo3 } from "./calculo-3.ts";
+import { estatisticaMatematica } from "./estatistica-matematica.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -108,4 +109,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     geometriaAnalitica,
     calculo2,
     calculo3,
+    estatisticaMatematica,
 ];
