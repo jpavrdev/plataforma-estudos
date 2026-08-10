@@ -174,5 +174,169 @@ export const kubernetes: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o ReplicaSet faz quando sobra Pod além da conta?",
+                        verso: "Remove o excedente até bater o número desejado.",
+                    },
+                    {
+                        frente: "Onde fica gravado o vínculo real entre Pod e ReplicaSet?",
+                        verso: "No ownerReferences de cada Pod criado.",
+                    },
+                    {
+                        frente: "Que capacidade falta ao ReplicaSet, e quem a traz?",
+                        verso: "Rollout com histórico; o Deployment é quem entrega isso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que mudança gera uma revisão nova no Deployment?",
+                        verso: "Só a do template do Pod; mexer nas réplicas não gera.",
+                    },
+                    {
+                        frente: "Quantas revisões o Deployment guarda por padrão?",
+                        verso: "Dez, controladas pelo revisionHistoryLimit.",
+                    },
+                    {
+                        frente: "O que acontece com os ReplicaSets antigos após um rollout?",
+                        verso: "Ficam guardados, escalados a zero, para permitir voltar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que valores padrão maxSurge e maxUnavailable têm?",
+                        verso: "Vinte e cinco por cento cada um, no RollingUpdate.",
+                    },
+                    {
+                        frente: "Por que maxSurge e maxUnavailable não podem ser zero juntos?",
+                        verso: "O rollout não teria como avançar sem folga em nenhum lado.",
+                    },
+                    {
+                        frente: "Como cada um dos dois arredonda quando é porcentagem?",
+                        verso: "O maxSurge para cima e o maxUnavailable para baixo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que a escala declarativa vence a imperativa em produção?",
+                        verso: "O manifesto é a fonte da verdade e o apply desfaz o scale.",
+                    },
+                    {
+                        frente: "De que componente o HPA depende para CPU e memória?",
+                        verso: "Do Metrics Server instalado no cluster.",
+                    },
+                    {
+                        frente: "Sobre qual valor o HPA calcula a utilização de CPU?",
+                        verso: "Sobre o requests do container, não o limite nem o nó.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três campos ajustam o comportamento de um Job?",
+                        verso: "completions, parallelism e o backoffLimit de retentativas.",
+                    },
+                    {
+                        frente: "Quantas retentativas um Job faz por padrão?",
+                        verso: "Seis, definidas pelo backoffLimit.",
+                    },
+                    {
+                        frente: "Que três valores o concurrencyPolicy do CronJob aceita?",
+                        verso: "Allow para sobrepor, Forbid para pular e Replace para trocar.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que plugin implementa a rede plana do cluster?",
+                        verso: "O CNI, como o Calico, o Cilium ou o Flannel.",
+                    },
+                    {
+                        frente: "Que três regras o modelo de rede garante?",
+                        verso: "Um IP por Pod, comunicação sem NAT e independência do nó.",
+                    },
+                    {
+                        frente: "Por que nunca se guarda o IP de um Pod em configuração?",
+                        verso: "Ele muda sem aviso quando o Pod é recriado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em que objeto o cluster mantém a lista de Pods do Service?",
+                        verso: "Em Endpoints, ou EndpointSlice, sempre atualizado.",
+                    },
+                    {
+                        frente: "Quem faz o balanceamento entre os Pods de um Service?",
+                        verso: "O kube-proxy em cada nó, perto de um rodízio.",
+                    },
+                    {
+                        frente: "O que indica um Service com a lista de Endpoints vazia?",
+                        verso: "O selector não casou com nenhuma label de Pod.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como os três tipos de Service se relacionam?",
+                        verso: "Em camadas: o LoadBalancer contém NodePort, que contém ClusterIP.",
+                    },
+                    {
+                        frente: "Por que o NodePort responde por qualquer nó do cluster?",
+                        verso: "A porta abre em todos, mesmo sem Pod naquele nó.",
+                    },
+                    {
+                        frente: "O que acontece com LoadBalancer num cluster sem nuvem?",
+                        verso: "O IP externo fica pendente, a menos que exista algo como MetalLB.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que controladores conhecidos executam as regras de Ingress?",
+                        verso: "O NGINX Ingress, o Traefik e o HAProxy, entre outros.",
+                    },
+                    {
+                        frente: "O que o Ingress enxerga que um Service comum não vê?",
+                        verso: "Host, caminho e cabeçalho, porque trabalha na camada 7.",
+                    },
+                    {
+                        frente: "De onde o Ingress tira o certificado para terminar o TLS?",
+                        verso: "De um Secret que guarda o certificado e a chave.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sufixo forma o domínio padrão de um cluster?",
+                        verso: "O svc.cluster.local, no fim do nome completo.",
+                    },
+                    {
+                        frente: "Quando o nome DNS de um Service é registrado?",
+                        verso: "Automaticamente, assim que o Service é criado.",
+                    },
+                    {
+                        frente: "Que três formas de nome resolvem um Service?",
+                        verso: "O nome curto, o nome com namespace e o nome completo.",
+                    },
+                ],
+            },
+        },
     },
 };
