@@ -174,5 +174,169 @@ export const cppModerno: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que absurdo o C++ antigo aceitava na cópia?",
+                        verso: "Copiar de um objeto que morreria na linha seguinte.",
+                    },
+                    {
+                        frente: "Que três coisas mudam de mãos ao mover um vector?",
+                        verso: "Os ponteiros de início, de fim e o de capacidade.",
+                    },
+                    {
+                        frente: "Que truques a época usava antes do move existir?",
+                        verso: "Destino por referência, swap esperto e contador manual.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que estado o padrão promete ao objeto de origem?",
+                        verso: "Válido, porém não especificado após o move.",
+                    },
+                    {
+                        frente: "Que disciplina o objeto movido exige em seguida?",
+                        verso: "Ou ele morre, ou recebe valor novo antes de ser lido.",
+                    },
+                    {
+                        frente: "Que garantia mais forte o unique_ptr dá ao ser movido?",
+                        verso: "Ele fica nulo, um estado especificado e testável.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois cuidados a atribuição de move soma?",
+                        verso: "Liberar o recurso atual e proteger contra mover para si.",
+                    },
+                    {
+                        frente: "Que função da biblioteca decide entre mover e copiar?",
+                        verso: "O move_if_noexcept, usado quando o vector realoca.",
+                    },
+                    {
+                        frente: "Que teste de compilação flagra o move sem noexcept?",
+                        verso: "Um static_assert de construtor de move sem exceção.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa a RVO da NRVO?",
+                        verso: "A NRVO trata variável local nomeada e não é garantida.",
+                    },
+                    {
+                        frente: "Como ajudar a NRVO a funcionar no retorno?",
+                        verso: "Retornar uma local só, do mesmo tipo, sem condicional.",
+                    },
+                    {
+                        frente: "Que reflexo antigo o move e a elisão tornaram obsoleto?",
+                        verso: "Devolver por parâmetro de saída para evitar cópia.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que o const impede o move sem dar erro?",
+                        verso: "O tipo não casa com o construtor e a cópia assume.",
+                    },
+                    {
+                        frente: "Que efeito o move escrito no return provoca?",
+                        verso: "Ele bloqueia a NRVO e piora em vez de otimizar.",
+                    },
+                    {
+                        frente: "Quando o move num return ainda se justifica?",
+                        verso: "Ao devolver um membro de um objeto que vai morrer.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa o template da função virtual?",
+                        verso: "O template resolve em compilação; a virtual, em execução.",
+                    },
+                    {
+                        frente: "Que tipo de requisito o template impõe ao tipo?",
+                        verso: "Estrutural: importa o que ele faz, não de quem herda.",
+                    },
+                    {
+                        frente: "Que parte de uma classe template chega a ser gerada?",
+                        verso: "Só os métodos realmente usados no código.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que trabalho o linker faz com instâncias duplicadas?",
+                        verso: "Descarta as repetidas e mantém uma só no binário.",
+                    },
+                    {
+                        frente: "Que preço o template no header cobra do projeto?",
+                        verso: "O de build: cada unidade recompila as mesmas instâncias.",
+                    },
+                    {
+                        frente: "Que recurso do C++20 ataca a raiz do custo de build?",
+                        verso: "Os módulos, compilados uma vez e importados prontos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que regra de bolso resume a escolha entre as duas?",
+                        verso: "Especializa-se classe e sobrecarrega-se função.",
+                    },
+                    {
+                        frente: "Que comportamento surpreendente a especialização tem?",
+                        verso: "O resultado depende da ordem de declaração dos arquivos.",
+                    },
+                    {
+                        frente: "Que disputa o overload entra que a especialização não?",
+                        verso: "A resolução de sobrecarga, em que a mais específica vence.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que artesanato os concepts substituíram?",
+                        verso: "O enable_if com SFINAE, que funcionava e era ilegível.",
+                    },
+                    {
+                        frente: "Que expressão lista o que precisa compilar no tipo?",
+                        verso: "O requires, com as chamadas e retornos exigidos.",
+                    },
+                    {
+                        frente: "Que critério ordena dois templates viáveis com concept?",
+                        verso: "Vence o de restrição mais específica entre eles.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quantas linhas úteis um muro de erro costuma ter?",
+                        verso: "Umas três, no meio de centenas de eco e ruído.",
+                    },
+                    {
+                        frente: "Que ruído se apara mentalmente na saída do erro?",
+                        verso: "Os allocators e parâmetros padrão já expandidos.",
+                    },
+                    {
+                        frente: "Que estratégia resolve quando a leitura direta falha?",
+                        verso: "Encolher o caso num arquivo mínimo com tipos concretos.",
+                    },
+                ],
+            },
+        },
     },
 };
