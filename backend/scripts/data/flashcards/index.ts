@@ -60,6 +60,7 @@ import { defesaEOSoc } from "./defesa-e-o-soc.ts";
 import { pentestComMetodo } from "./pentest-com-metodo.ts";
 import { segurancaEmNuvemEIdentidade } from "./seguranca-em-nuvem-e-identidade.ts";
 import { modelagemDeDadosEDataWarehousing } from "./modelagem-de-dados-e-data-warehousing.ts";
+import { etlEIngestaoDeDados } from "./etl-e-ingestao-de-dados.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -122,4 +123,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     pentestComMetodo,
     segurancaEmNuvemEIdentidade,
     modelagemDeDadosEDataWarehousing,
+    etlEIngestaoDeDados,
 ];
