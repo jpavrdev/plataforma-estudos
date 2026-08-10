@@ -32,6 +32,7 @@ import { go } from "./go.ts";
 import { linuxELinhaDeComando } from "./linux-e-linha-de-comando.ts";
 import { redes } from "./redes.ts";
 import { kubernetes } from "./kubernetes.ts";
+import { arquiteturaEEscala } from "./arquitetura-e-escala.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -66,4 +67,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     linuxELinhaDeComando,
     redes,
     kubernetes,
+    arquiteturaEEscala,
 ];
