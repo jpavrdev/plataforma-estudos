@@ -339,5 +339,251 @@ export const estatisticaEProbabilidade: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três motivos deixam a população fora de alcance?",
+                        verso: "Custo e tempo, população em movimento e teste destrutivo.",
+                    },
+                    {
+                        frente: "Que qualidade uma boa amostra precisa ter acima de tudo?",
+                        verso: "Representar a população, e não apenas ser grande.",
+                    },
+                    {
+                        frente: "Que comparação mostra que tamanho não basta?",
+                        verso: "Quarenta bem sorteados vencem 40 mil escolhidos errado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma amostra enviesada ganha ao crescer de tamanho?",
+                        verso: "Só mais confiança na conclusão errada, nunca correção.",
+                    },
+                    {
+                        frente: "Que história clássica ilustra o viés de sobrevivência?",
+                        verso: "A dos aviões que voltavam, analisados por Abraham Wald.",
+                    },
+                    {
+                        frente: "Em que momento o viés deixa de ter conserto?",
+                        verso: "Depois da coleta: nenhuma fórmula o corrige.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que erro a variabilidade amostral não indica?",
+                        verso: "Nem falha de cálculo, nem viés: ela é natural.",
+                    },
+                    {
+                        frente: "Como o tamanho da amostra afeta a oscilação da média?",
+                        verso: "Amostra pequena varia mais; a maior aproxima as médias.",
+                    },
+                    {
+                        frente: "Que população o dado representa nesse laboratório?",
+                        verso: "A de todas as rolagens possíveis daquele dado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que a média de 30 rolagens dificilmente cai longe de 3,5?",
+                        verso: "A maioria das rolagens teria de sair longe da média junto.",
+                    },
+                    {
+                        frente: "Que propriedade torna uma amostra só útil para estimar?",
+                        verso: "A concentração das médias amostrais perto do valor real.",
+                    },
+                    {
+                        frente: "Que desvio padrão as médias tiveram ante as rolagens?",
+                        verso: "0,31 contra 1,72 das rolagens individuais do dado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que condição o TCL dispensa nos dados originais?",
+                        verso: "Que eles já sejam normais; basta a amostra crescer.",
+                    },
+                    {
+                        frente: "Que fórmula calcula o erro padrão da média?",
+                        verso: "O desvio padrão dividido pela raiz do tamanho da amostra.",
+                    },
+                    {
+                        frente: "Quanto a amostra cresce para o erro cair à metade?",
+                        verso: "Quatro vezes, porque a raiz de n está no denominador.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que limitação a estimativa pontual carrega?",
+                        verso: "Ela não diz o quanto o palpite mudaria com outra amostra.",
+                    },
+                    {
+                        frente: "Que nome a faixa de valores plausíveis recebe?",
+                        verso: "Intervalo de confiança, a chamada estimativa intervalar.",
+                    },
+                    {
+                        frente: "Por que três amostras dão três médias sem nenhuma errar?",
+                        verso: "A variabilidade amostral é natural, e todas são válidas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que valor crítico o intervalo de 95% usa?",
+                        verso: "Aproximadamente 1,96, multiplicando o erro padrão.",
+                    },
+                    {
+                        frente: "De que a confiança de 95% é propriedade, afinal?",
+                        verso: "Do procedimento repetido, não do intervalo já calculado.",
+                    },
+                    {
+                        frente: "O que acontece com o intervalo ao pedir 99% de confiança?",
+                        verso: "Ele fica mais largo; amostra maior é que o estreita.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o teste nunca consegue provar sobre H0?",
+                        verso: "Que ela é verdadeira; ela só deixa de ser rejeitada.",
+                    },
+                    {
+                        frente: "Que analogia jurídica descreve a lógica do teste?",
+                        verso: "A presunção de inocência, com H0 valendo até prova.",
+                    },
+                    {
+                        frente: "Que diferença separa teste bicaudal de unicaudal?",
+                        verso: "O bicaudal testa qualquer diferença; o unicaudal, uma direção.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Sob que suposição o p-valor é calculado?",
+                        verso: "Assumindo H0 verdadeira, do começo ao fim da conta.",
+                    },
+                    {
+                        frente: "Que três leituras o p-valor não sustenta?",
+                        verso: "Chance de H0 ser verdade, prova de H1 e tamanho do efeito.",
+                    },
+                    {
+                        frente: "Quando o nível de significância deve ser escolhido?",
+                        verso: "Antes de rodar o teste, com 0,05 como convenção.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que probabilidade corresponde exatamente ao erro tipo I?",
+                        verso: "O alfa escolhido para o teste, 5% quando vale 0,05.",
+                    },
+                    {
+                        frente: "Que nome tem a chance de detectar um efeito que existe?",
+                        verso: "O poder do teste, igual a um menos o beta.",
+                    },
+                    {
+                        frente: "Por que amostra grande exige olhar o tamanho de efeito?",
+                        verso: "Ela detecta até diferença trivial, sem valor prático.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que outro nome o diagrama de dispersão carrega?",
+                        verso: "Scatter plot, com um ponto por observação.",
+                    },
+                    {
+                        frente: "Que três padrões a direção de uma relação admite?",
+                        verso: "Positiva, negativa e a ausência de relação aparente.",
+                    },
+                    {
+                        frente: "O que a direção sozinha ainda não responde?",
+                        verso: "O quanto as variáveis andam juntas, que é a força.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que medida serve de matéria-prima para a correlação?",
+                        verso: "A covariância, média dos produtos dos desvios.",
+                    },
+                    {
+                        frente: "Que defeito da covariância a correlação corrige?",
+                        verso: "A escala presa à unidade, que impedia comparar pares.",
+                    },
+                    {
+                        frente: "Que tipo de relação forte o r de Pearson não enxerga?",
+                        verso: "A curva, como o arco de desempenho ao longo da vida.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três motivos quebram o elo entre correlação e causa?",
+                        verso: "Coincidência espúria, variável de confusão e causa reversa.",
+                    },
+                    {
+                        frente: "Que exemplo a aula dá de causalidade reversa?",
+                        verso: "Exercício e depressão: sentir-se melhor pode vir antes.",
+                    },
+                    {
+                        frente: "Que palavra torna o experimento controlado uma prova?",
+                        verso: "Aleatoriamente: o sorteio equilibra os dois grupos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que nome a distância vertical até a reta recebe?",
+                        verso: "Resíduo, a diferença entre o y real e o previsto.",
+                    },
+                    {
+                        frente: "Que dois nomes separam prever dentro e fora da faixa?",
+                        verso: "Interpolar dentro do observado e extrapolar fora dele.",
+                    },
+                    {
+                        frente: "Que valor a reta previu para 10 horas, e por que assusta?",
+                        verso: "Nota 10,35, impossível numa prova que vai só até 10.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que arco a trilha inteira percorre, de ponta a ponta?",
+                        verso: "De descrever uma pilha de números a prever um ainda não visto.",
+                    },
+                    {
+                        frente: "Que papel cada bloco cumpre no fio condutor da trilha?",
+                        verso: "Descritiva resume, probabilidade modela e a inferência generaliza.",
+                    },
+                    {
+                        frente: "Que ganho a aula chama de maior do que decorar fórmula?",
+                        verso: "A desconfiança treinada diante de qualquer número pronto.",
+                    },
+                ],
+            },
+        },
     },
 };
