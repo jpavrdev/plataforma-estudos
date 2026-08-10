@@ -341,5 +341,251 @@ export const estatisticaMatematica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Onde está a força da desigualdade de Chebyshev?",
+                        verso: "Em valer para todas as distribuições ao mesmo tempo.",
+                    },
+                    {
+                        frente: "O que Chebyshev limita?",
+                        verso: "A probabilidade de se afastar muito da média.",
+                    },
+                    {
+                        frente: "Que preço a generalidade de Chebyshev cobra?",
+                        verso: "Um limite frouxo para qualquer distribuição específica.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a lei dos grandes números promete?",
+                        verso: "Regularidade no acúmulo, não em cada tentativa.",
+                    },
+                    {
+                        frente: "Para onde a média amostral caminha?",
+                        verso: "Para a média verdadeira, conforme a amostra cresce.",
+                    },
+                    {
+                        frente: "O que a lei não garante sobre uma tentativa isolada?",
+                        verso: "Nada: o acaso individual continua valendo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que o sino aparece onde menos se espera?",
+                        verso: "Ele é o destino comum das somas.",
+                    },
+                    {
+                        frente: "Que forma a soma de muitas variáveis assume?",
+                        verso: "A normal, mesmo sem as parcelas serem normais.",
+                    },
+                    {
+                        frente: "Que condição o teorema central do limite pede?",
+                        verso: "Amostras independentes e tamanho suficiente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que toda estatística de uma amostra também é?",
+                        verso: "Uma variável aleatória, com distribuição própria.",
+                    },
+                    {
+                        frente: "Que efeito o tamanho da amostra tem na média?",
+                        verso: "Reduz a dispersão da distribuição amostral.",
+                    },
+                    {
+                        frente: "Que nome o desvio da distribuição amostral recebe?",
+                        verso: "Erro padrão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que preço estimar a dispersão pelos dados cobra?",
+                        verso: "Caudas mais largas na distribuição usada.",
+                    },
+                    {
+                        frente: "Quando a t de Student substitui a normal?",
+                        verso: "Quando o desvio vem da própria amostra.",
+                    },
+                    {
+                        frente: "Que parâmetro define a t de Student?",
+                        verso: "Os graus de liberdade.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a estatística faz com a incerteza?",
+                        verso: "Organiza numa distribuição que dá para estudar.",
+                    },
+                    {
+                        frente: "O que um estimador pontual entrega?",
+                        verso: "Um único valor como palpite do parâmetro.",
+                    },
+                    {
+                        frente: "Que diferença separa estimador de estimativa?",
+                        verso: "O estimador é a regra; a estimativa, o número obtido.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um bom estimador precisa fazer?",
+                        verso: "Errar cada vez menos conforme os dados se acumulam.",
+                    },
+                    {
+                        frente: "O que o viés de um estimador mede?",
+                        verso: "O erro sistemático em relação ao parâmetro.",
+                    },
+                    {
+                        frente: "O que a consistência garante?",
+                        verso: "Convergência ao parâmetro conforme a amostra cresce.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que receita antiga o método dos momentos usa?",
+                        verso: "Igualar o que a teoria prevê ao que a amostra mostra.",
+                    },
+                    {
+                        frente: "Que momentos entram nesse método?",
+                        verso: "Os teóricos, igualados aos calculados na amostra.",
+                    },
+                    {
+                        frente: "Que vantagem o método dos momentos tem?",
+                        verso: "Simplicidade de cálculo, sem precisar otimizar nada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que valor a máxima verossimilhança elege?",
+                        verso: "Aquele sob o qual o observado era o mais esperado.",
+                    },
+                    {
+                        frente: "Que função é maximizada nessa estimação?",
+                        verso: "A verossimilhança, ou o logaritmo dela.",
+                    },
+                    {
+                        frente: "Por que trabalhar com o logaritmo da verossimilhança?",
+                        verso: "Ele troca produtos por somas, sem mudar o ponto de máximo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que um intervalo de confiança descreve?",
+                        verso: "A confiabilidade do método que o produziu.",
+                    },
+                    {
+                        frente: "O que o intervalo de confiança não afirma?",
+                        verso: "Onde exatamente o parâmetro está.",
+                    },
+                    {
+                        frente: "Que efeito aumentar a confiança tem no intervalo?",
+                        verso: "Deixa o intervalo mais largo.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que se faz com a hipótese nula?",
+                        verso: "Leva-se a julgamento, sem nunca prová-la verdadeira.",
+                    },
+                    {
+                        frente: "Que erro rejeitar uma nula verdadeira produz?",
+                        verso: "O erro do tipo um.",
+                    },
+                    {
+                        frente: "Que erro não rejeitar uma nula falsa produz?",
+                        verso: "O erro do tipo dois.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um resultado significativo responde?",
+                        verso: "Se o efeito existe, não se ele é grande ou importante.",
+                    },
+                    {
+                        frente: "O que o p-valor mede?",
+                        verso: "A chance de um resultado tão extremo sob a nula.",
+                    },
+                    {
+                        frente: "O que o nível de significância fixa antes do teste?",
+                        verso: "O risco aceito de rejeitar a nula sem razão.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que preço trocar o desvio conhecido pela estimativa tem?",
+                        verso: "Caudas mais pesadas e menos certeza sobre a média.",
+                    },
+                    {
+                        frente: "Que distribuição o desvio conhecido permite usar?",
+                        verso: "A normal.",
+                    },
+                    {
+                        frente: "Que dados o teste para a média compara?",
+                        verso: "A média amostral e o valor afirmado na hipótese.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que às vezes importa mais que o centro do processo?",
+                        verso: "O quanto ele oscila, testado pela variância.",
+                    },
+                    {
+                        frente: "Que aproximação o teste de proporção costuma usar?",
+                        verso: "A normal, com amostra grande o bastante.",
+                    },
+                    {
+                        frente: "Que distribuição o teste de variância utiliza?",
+                        verso: "A qui-quadrado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "A favor de que o qui-quadrado nunca aponta?",
+                        verso: "Da hipótese nula: ele só mede a discrepância.",
+                    },
+                    {
+                        frente: "O que o teste qui-quadrado compara?",
+                        verso: "As frequências observadas com as esperadas.",
+                    },
+                    {
+                        frente: "Que usos clássicos o qui-quadrado tem?",
+                        verso: "Aderência e independência entre categorias.",
+                    },
+                ],
+            },
+        },
     },
 };
