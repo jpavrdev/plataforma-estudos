@@ -174,5 +174,169 @@ export const linuxELinhaDeComando: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dez caracteres o ls -l mostra no começo da linha?",
+                        verso: "Um do tipo e três blocos de rwx: dono, grupo e outros.",
+                    },
+                    {
+                        frente: "Como se soma o valor octal de cada bloco de permissão?",
+                        verso: "Leitura quatro, escrita dois e execução um, somados no bloco.",
+                    },
+                    {
+                        frente: "O que a permissão de execução significa num diretório?",
+                        verso: "Entrar nele e acessar os arquivos que estão dentro.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que ordem o Linux segue ao escolher o bloco de permissão?",
+                        verso: "Dono, senão grupo, senão outros; nunca os três somados.",
+                    },
+                    {
+                        frente: "Que comando mostra UID, GID e os grupos de um usuário?",
+                        verso: "O id; o groups mostra só a lista de grupos.",
+                    },
+                    {
+                        frente: "O que a opção de acréscimo do usermod evita?",
+                        verso: "Substituir a lista de grupos em vez de acrescentar a ela.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que comando edita o sudoers, e por quê?",
+                        verso: "O visudo: ele confere a sintaxe antes de salvar e evita trancar tudo.",
+                    },
+                    {
+                        frente: "Que grupos costumam dar direito a sudo nas distros?",
+                        verso: "O sudo ou o wheel, conforme a família da distribuição.",
+                    },
+                    {
+                        frente: "Que diferença de escopo separa su de sudo?",
+                        verso: "O su abre uma sessão inteira; o sudo roda um comando por vez.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que campo guarda o PID do processo pai?",
+                        verso: "O PPID, que liga o filho a quem o criou.",
+                    },
+                    {
+                        frente: "O que o init faz quando um pai morre antes do filho?",
+                        verso: "Adota o órfão: ele é o ancestral de todos os processos.",
+                    },
+                    {
+                        frente: "Que diferença separa o ps do top e do htop?",
+                        verso: "O ps tira uma foto do momento; os outros atualizam sozinhos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sinais o Ctrl mais C e o Ctrl mais Z enviam?",
+                        verso: "O de interromper e o de suspender, respectivamente.",
+                    },
+                    {
+                        frente: "Para que muitos serviços usam o SIGHUP?",
+                        verso: "Como pedido para recarregar a configuração sem reiniciar.",
+                    },
+                    {
+                        frente: "Que faixa a niceness usa, e quem sobe a prioridade?",
+                        verso: "De menos vinte a dezenove; só o root consegue subir.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro subsistemas do kernel a aula separa?",
+                        verso: "Escalonador, gerência de memória, sistema de arquivos e drivers.",
+                    },
+                    {
+                        frente: "Em que unidade o kernel mapeia a memória virtual na física?",
+                        verso: "Em páginas, que podem ir pro swap quando a RAM aperta.",
+                    },
+                    {
+                        frente: "Que formatos diferentes convivem sob a mesma árvore?",
+                        verso: "ext4 e XFS, por exemplo, padronizados por uma camada do kernel.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que anéis do x86 correspondem aos dois espaços?",
+                        verso: "O anel zero no kernel e o anel três no usuário.",
+                    },
+                    {
+                        frente: "Quem impõe a barreira entre os dois espaços?",
+                        verso: "A própria CPU, com os seus modos de privilégio.",
+                    },
+                    {
+                        frente: "Que dois caminhos controlados levam ao modo kernel?",
+                        verso: "Uma chamada de sistema ou uma interrupção de hardware.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que trio clássico do Unix cria e roda um programa?",
+                        verso: "fork para duplicar, exec para trocar o programa e wait para esperar.",
+                    },
+                    {
+                        frente: "O que uma syscall devolve no erro, e onde vai o motivo?",
+                        verso: "Devolve menos um e põe o código na variável de erro.",
+                    },
+                    {
+                        frente: "Que biblioteca dispara a syscall no lugar do programador?",
+                        verso: "A libc, que arruma os argumentos e ainda trata o retorno.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que opção do strace segue os processos filhos?",
+                        verso: "A de follow, que acompanha o que o fork criar.",
+                    },
+                    {
+                        frente: "Que formato cada linha do strace segue?",
+                        verso: "Nome da syscall, argumentos entre parênteses e o retorno.",
+                    },
+                    {
+                        frente: "O que o ltrace mostra, ao contrário do strace?",
+                        verso: "As chamadas a funções de biblioteca, não as ao kernel.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que os arquivos de /proc costumam ter tamanho zero?",
+                        verso: "O conteúdo é gerado sob demanda, não fica gravado em disco.",
+                    },
+                    {
+                        frente: "Para onde o atalho /proc/self sempre aponta?",
+                        verso: "Para o processo que está fazendo a leitura naquele momento.",
+                    },
+                    {
+                        frente: "Que comando lê e escreve os parâmetros de /proc/sys?",
+                        verso: "O sysctl, com nomes por ponto que espelham o caminho.",
+                    },
+                ],
+            },
+        },
     },
 };
