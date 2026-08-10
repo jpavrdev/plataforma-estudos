@@ -42,6 +42,7 @@ import { machineLearningNaPratica } from "./machine-learning-na-pratica.ts";
 import { doModeloAoProduto } from "./do-modelo-ao-produto.ts";
 import { cpp } from "./cpp.ts";
 import { porDentroDaMaquina } from "./por-dentro-da-maquina.ts";
+import { cppModerno } from "./cpp-moderno.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -86,4 +87,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     doModeloAoProduto,
     cpp,
     porDentroDaMaquina,
+    cppModerno,
 ];
