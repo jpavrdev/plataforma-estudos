@@ -177,5 +177,169 @@ export const estatisticaMatematica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "De que experimento a binomial nasce?",
+                        verso: "Da repetição independente do cara ou coroa.",
+                    },
+                    {
+                        frente: "Quantos resultados o ensaio de Bernoulli tem?",
+                        verso: "Dois: sucesso ou fracasso.",
+                    },
+                    {
+                        frente: "Que dois parâmetros a binomial exige?",
+                        verso: "O número de repetições e a probabilidade de sucesso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que pergunta a distribuição geométrica faz?",
+                        verso: "Quando o primeiro sucesso chega.",
+                    },
+                    {
+                        frente: "Que pergunta a Poisson faz?",
+                        verso: "Quantos eventos cabem num intervalo.",
+                    },
+                    {
+                        frente: "Que parâmetro a Poisson usa?",
+                        verso: "A taxa média de eventos no intervalo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que preferência a uniforme tem dentro do intervalo?",
+                        verso: "Nenhuma: trechos de mesmo tamanho pesam igual.",
+                    },
+                    {
+                        frente: "Que propriedade curiosa a exponencial tem?",
+                        verso: "A falta de memória do tempo já decorrido.",
+                    },
+                    {
+                        frente: "Que grandeza a exponencial costuma modelar?",
+                        verso: "O tempo de espera até o próximo evento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que acontece ao somar muitos acasos pequenos?",
+                        verso: "Reencontra-se a curva em forma de sino.",
+                    },
+                    {
+                        frente: "Que dois parâmetros definem a normal?",
+                        verso: "A média e o desvio padrão.",
+                    },
+                    {
+                        frente: "Que simetria a curva normal tem?",
+                        verso: "É simétrica em torno da média.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "De onde a distribuição certa se deduz?",
+                        verso: "Da estrutura do experimento e das perguntas feitas.",
+                    },
+                    {
+                        frente: "Que estrago escolher a distribuição no chute causa?",
+                        verso: "Contas certas sobre um modelo que não descreve o caso.",
+                    },
+                    {
+                        frente: "Que pergunta separa discreta de contínua?",
+                        verso: "Se o resultado é contado ou medido.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que objeto é primário nas variáveis conjuntas?",
+                        verso: "A distribuição conjunta, da qual as outras se extraem.",
+                    },
+                    {
+                        frente: "O que a distribuição conjunta descreve?",
+                        verso: "O comportamento das variáveis ao mesmo tempo.",
+                    },
+                    {
+                        frente: "O que não se pode fazer a partir das marginais?",
+                        verso: "Reconstruir a distribuição conjunta.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como uma marginal é obtida da conjunta?",
+                        verso: "Somando ou integrando sobre a outra variável.",
+                    },
+                    {
+                        frente: "O que a distribuição condicional fixa?",
+                        verso: "Um valor de uma variável, remedindo a outra.",
+                    },
+                    {
+                        frente: "Que informação a marginal perde?",
+                        verso: "A da relação entre as variáveis.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Sobre o que a independência é uma afirmação?",
+                        verso: "Sobre toda a distribuição conjunta.",
+                    },
+                    {
+                        frente: "Que resumo não basta para provar independência?",
+                        verso: "A covariância, que é um número só.",
+                    },
+                    {
+                        frente: "Que fatoração a independência produz?",
+                        verso: "A conjunta vira o produto das marginais.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que tipo de relação a covariância mede?",
+                        verso: "Apenas o alinhamento linear entre as variáveis.",
+                    },
+                    {
+                        frente: "O que passa despercebido pela covariância?",
+                        verso: "Toda estrutura curva entre as variáveis.",
+                    },
+                    {
+                        frente: "Que vantagem a correlação tem sobre a covariância?",
+                        verso: "Fica entre menos um e um, sem depender da unidade.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que condição a esperança da soma exige?",
+                        verso: "Nenhuma: é sempre a soma das esperanças.",
+                    },
+                    {
+                        frente: "Que condição a variância da soma exige?",
+                        verso: "Independência, ou a covariância entra na conta.",
+                    },
+                    {
+                        frente: "Que termo entra na variância da soma sem independência?",
+                        verso: "O dobro da covariância entre as variáveis.",
+                    },
+                ],
+            },
+        },
     },
 };
