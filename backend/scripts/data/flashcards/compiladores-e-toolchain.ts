@@ -175,5 +175,169 @@ export const compiladoresEToolchain: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que conta a IR transforma de multiplicação em soma?",
+                        verso: "N vezes M tradutores viram N front-ends mais M back-ends.",
+                    },
+                    {
+                        frente: "Que duas siglas o GCC usa no lugar da IR única?",
+                        verso: "O GIMPLE de alto nível e o RTL antes do assembly.",
+                    },
+                    {
+                        frente: "Que consequência libertadora a IR traz ao otimizar?",
+                        verso: "A otimização vale igual para todas as linguagens.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que regra autoriza o compilador a reescrever tudo?",
+                        verso: "A do como se: o comportamento observável não muda.",
+                    },
+                    {
+                        frente: "Que efeito dominó uma otimização provoca nas outras?",
+                        verso: "Propagar vira constante, dobrar resolve e o morto some.",
+                    },
+                    {
+                        frente: "Que limite o otimizador nunca ultrapassa?",
+                        verso: "Ele só reescreve o que consegue provar seguro.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que promessa o nível zero de otimização cumpre?",
+                        verso: "Traduzir quase literalmente, com cada variável na pilha.",
+                    },
+                    {
+                        frente: "Que risco subir para o nível três costuma trazer?",
+                        verso: "Código maior, que às vezes perde onde deveria ganhar.",
+                    },
+                    {
+                        frente: "Que combinação a aula recomenda para desenvolver?",
+                        verso: "Otimização mínima com informação de depuração ligada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que caso real de 2009 ilustra o UB no kernel?",
+                        verso: "O teste de nulo removido depois da desreferência.",
+                    },
+                    {
+                        frente: "Por que assumir a ausência de UB não é malícia?",
+                        verso: "É a outra face da velocidade que se cobra do compilador.",
+                    },
+                    {
+                        frente: "Que buracos deliberados o padrão deixa sem promessa?",
+                        verso: "O estouro com sinal e o acesso fora dos limites.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que exercício fundamental o godbolt torna trivial?",
+                        verso: "Comparar o assembly de dois níveis lado a lado.",
+                    },
+                    {
+                        frente: "Que meia dúzia de padrões basta para ler assembly?",
+                        verso: "O mover, o chamar, o retornar e os rótulos de salto.",
+                    },
+                    {
+                        frente: "Que rotina o hábito do godbolt instala na engenharia?",
+                        verso: "Comparar as duas versões antes de afirmar o ganho.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que convenção o GCC e o Clang seguem no Linux?",
+                        verso: "A mesma ABI, e por isso os objetos deles se linkam.",
+                    },
+                    {
+                        frente: "Que flag do nm já imprime o nome legível?",
+                        verso: "A de demangle, que desfaz a decoração do C++.",
+                    },
+                    {
+                        frente: "Que custo o extern C impõe às funções ligadas?",
+                        verso: "Elas não podem ser sobrecarregadas, com símbolo cru.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que método de três passos diagnostica o erro?",
+                        verso: "Anotar o símbolo, ver quem consome e quem deveria dar.",
+                    },
+                    {
+                        frente: "Que variante do erro aponta para a tabela virtual?",
+                        verso: "A que cita a vtable de uma classe sem método definido.",
+                    },
+                    {
+                        frente: "Que ferramenta confirma os dois lados do problema?",
+                        verso: "O nm, listando o indefinido e o definido em cada objeto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que sentido o linker lê o comando de estáticas?",
+                        verso: "Da esquerda para a direita, sem olhar para trás.",
+                    },
+                    {
+                        frente: "Que uso clássico o símbolo fraco tem no embarcado?",
+                        verso: "Handlers de interrupção que o seu código sobrescreve.",
+                    },
+                    {
+                        frente: "Que letra o nm usa para marcar um símbolo fraco?",
+                        verso: "A de fraco, no lugar do T de código definido.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que o script de link fica invisível no desktop?",
+                        verso: "O linker usa um padrão embutido, adequado ao sistema.",
+                    },
+                    {
+                        frente: "Por que a área de dados inicial mora na flash?",
+                        verso: "A RAM perde tudo sem energia e precisa ser copiada.",
+                    },
+                    {
+                        frente: "Que erro o script emite quando o código não cabe?",
+                        verso: "O de região estourada, citando a área e os bytes a mais.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que ferramenta lista as funções por tamanho?",
+                        verso: "O nm ordenado por tamanho, com o nome já legível.",
+                    },
+                    {
+                        frente: "Que dupla de flags permite o linker podar de verdade?",
+                        verso: "Seção por função na compilação e coleta de lixo no link.",
+                    },
+                    {
+                        frente: "Que recurso do C++ mais incha o binário?",
+                        verso: "Os templates, com uma cópia por combinação de tipos.",
+                    },
+                ],
+            },
+        },
     },
 };
