@@ -338,5 +338,251 @@ export const machineLearning: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta a acurácia nunca faz sobre o erro?",
+                        verso: "Em que tipo de caso ele aconteceu: todo erro pesa igual.",
+                    },
+                    {
+                        frente: "Em que cenário a acurácia continua sendo razoável?",
+                        verso: "Com classes equilibradas, perto de metade para cada lado.",
+                    },
+                    {
+                        frente: "Que três exemplos de desbalanceamento a aula cita?",
+                        verso: "Fraude em cartão, doença rara e spam em certos contextos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que quatro grupos a matriz de confusão separa?",
+                        verso: "Verdadeiro positivo e negativo, e falso positivo e negativo.",
+                    },
+                    {
+                        frente: "Como o scikit-learn organiza a matriz de confusão?",
+                        verso: "Classes reais nas linhas e previstas nas colunas, em ordem.",
+                    },
+                    {
+                        frente: "Que exemplo inverte o custo dos dois tipos de erro?",
+                        verso: "O filtro de spam, em que o falso positivo pesa mais.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que outro nome o recall carrega na literatura?",
+                        verso: "Sensibilidade, a fração de positivos reais encontrada.",
+                    },
+                    {
+                        frente: "Que trade-off precisão e recall mantêm entre si?",
+                        verso: "Prever positivo com mais folga sobe um e derruba o outro.",
+                    },
+                    {
+                        frente: "Que valores de AUC marcam sorteio e separação perfeita?",
+                        verso: "Meio para a moeda jogada e um para a separação perfeita.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dupla de nomes técnicos os dois problemas recebem?",
+                        verso: "Viés no underfitting e variância no overfitting.",
+                    },
+                    {
+                        frente: "Que causa comum leva um modelo ao overfitting?",
+                        verso: "Ser complexo demais para o tamanho real dos dados.",
+                    },
+                    {
+                        frente: "Que sinal separa underfitting de overfitting nos números?",
+                        verso: "O underfitting vai mal nos dois; o overfitting só no teste.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que valores de k a validação cruzada costuma usar?",
+                        verso: "Cinco ou dez partes, treinando uma vez para cada uma.",
+                    },
+                    {
+                        frente: "Que dois números a validação cruzada entrega no fim?",
+                        verso: "A média dos scores e o desvio entre eles.",
+                    },
+                    {
+                        frente: "Que custo a validação cruzada cobra do projeto?",
+                        verso: "Treinar o modelo do zero em cada uma das k rodadas.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que comparação a aula faz entre algoritmo e feature?",
+                        verso: "Modelo simples com feature boa vence sofisticado com ruim.",
+                    },
+                    {
+                        frente: "Que três verbos definem feature engineering?",
+                        verso: "Criar, transformar e selecionar as variáveis de entrada.",
+                    },
+                    {
+                        frente: "Que exemplos de feature a data completa rende?",
+                        verso: "O mês, o dia da semana e se aquilo caiu no fim de semana.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que medida da trilha de estatística o StandardScaler repete?",
+                        verso: "O z-score: valor menos a média sobre o desvio padrão.",
+                    },
+                    {
+                        frente: "O que muda e o que permanece ao padronizar a variável?",
+                        verso: "O eixo muda; o formato da distribuição continua igual.",
+                    },
+                    {
+                        frente: "Por que o MinMaxScaler sofre mais com outlier?",
+                        verso: "Um valor extremo define o mínimo ou o máximo sozinho.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que variáveis o one-hot encoding pode explodir em colunas?",
+                        verso: "As de muitos valores únicos, como CEP e id de produto.",
+                    },
+                    {
+                        frente: "Que parâmetro evita a coluna redundante no get_dummies?",
+                        verso: "O drop_first, que descarta a primeira de cada variável.",
+                    },
+                    {
+                        frente: "Que codificação uma categoria com ordem natural pede?",
+                        verso: "Um número que respeite a ordem, e não uma coluna por valor.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que troca a imputação faz ao preencher o buraco?",
+                        verso: "Preserva a linha, mas troca o vazio por uma suposição.",
+                    },
+                    {
+                        frente: "Que efeito imputar pela média tem na variável?",
+                        verso: "Reduz a variância real, criando gente artificial na média.",
+                    },
+                    {
+                        frente: "Quando remover a linha enviesa em vez de só perder dado?",
+                        verso: "Quando a falta não é aleatória e tem padrão próprio.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que o vazamento de dados é um erro silencioso?",
+                        verso: "O código roda sem erro e as métricas saem ótimas.",
+                    },
+                    {
+                        frente: "Que objeto do scikit-learn encadeia preparo e modelo?",
+                        verso: "O Pipeline, garantindo a ordem certa em cada etapa.",
+                    },
+                    {
+                        frente: "Por que o Pipeline é essencial na validação cruzada?",
+                        verso: "Sem ele, cada fold de teste vaza no preparo já aplicado.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que parte dos dados falta no aprendizado sem rótulo?",
+                        verso: "O y: só existem as features, sem nenhuma resposta certa.",
+                    },
+                    {
+                        frente: "Que dois assuntos o não-supervisionado cobre na trilha?",
+                        verso: "O agrupamento e a redução de dimensionalidade.",
+                    },
+                    {
+                        frente: "Que verbo troca o prever no aprendizado sem rótulo?",
+                        verso: "O descobrir: achar estrutura que ninguém nomeou.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que método ajuda a escolher o valor de k?",
+                        verso: "O do cotovelo, olhando a inércia de cada rodada.",
+                    },
+                    {
+                        frente: "Que grandeza a inércia do k-means soma?",
+                        verso: "As distâncias ao quadrado de cada ponto ao seu centroide.",
+                    },
+                    {
+                        frente: "Que parâmetro protege o k-means de uma partida ruim?",
+                        verso: "O n_init, que roda várias vezes e fica com o melhor.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o PCA faz com as colunas originais, afinal?",
+                        verso: "Cria eixos novos misturando todas, em vez de escolher.",
+                    },
+                    {
+                        frente: "Que atributo mostra quanta variância cada componente guarda?",
+                        verso: "O explained_variance_ratio_, um valor por componente.",
+                    },
+                    {
+                        frente: "Que preço a simplificação por PCA cobra na leitura?",
+                        verso: "Os componentes perdem o significado direto das colunas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três usos clássicos o não-supervisionado tem?",
+                        verso: "Segmentação, detecção de anomalia e exploração de base.",
+                    },
+                    {
+                        frente: "Que métricas internas avaliam grupos sem rótulo?",
+                        verso: "A inércia e o coeficiente de silhueta dos clusters.",
+                    },
+                    {
+                        frente: "Como o clustering aponta uma anomalia sem algoritmo novo?",
+                        verso: "Pela distância grande até o centroide mais próximo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro frentes a próxima trilha aprofunda?",
+                        verso: "Features, hiperparâmetros, ensembles e uma entrada em deep learning.",
+                    },
+                    {
+                        frente: "Que técnica troca o chute no ajuste de hiperparâmetro?",
+                        verso: "O GridSearch, testando combinações com validação cruzada.",
+                    },
+                    {
+                        frente: "Que dois nomes de ensemble a aula antecipa?",
+                        verso: "O random forest e o boosting, times de árvores.",
+                    },
+                ],
+            },
+        },
     },
 };
