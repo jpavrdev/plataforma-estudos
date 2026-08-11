@@ -341,5 +341,251 @@ export const calculo2: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que papel a sequência cumpre antes da série?",
+                        verso: "É o alfabeto; a série será a palavra.",
+                    },
+                    {
+                        frente: "O que investigar numa sequência antes de somar?",
+                        verso: "Para onde os termos dela caminham.",
+                    },
+                    {
+                        frente: "O que uma sequência convergente tem?",
+                        verso: "Um limite finito para o termo geral.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De que depende a soma de uma série existir?",
+                        verso: "De as somas parciais terem para onde ir.",
+                    },
+                    {
+                        frente: "Que série é o modelo básico de convergência?",
+                        verso: "A geométrica, com razão de módulo menor que um.",
+                    },
+                    {
+                        frente: "Que soma a série geométrica convergente tem?",
+                        verso: "O primeiro termo dividido por um menos a razão.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que sinal condena a série logo de saída?",
+                        verso: "O termo geral não ir a zero.",
+                    },
+                    {
+                        frente: "O que o teste da divergência não consegue provar?",
+                        verso: "A convergência: termo indo a zero não basta.",
+                    },
+                    {
+                        frente: "Que exigências o teste da integral faz da função?",
+                        verso: "Ser positiva, contínua e decrescente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que séries conhecidas servem de esqueleto na comparação?",
+                        verso: "A p-série e a geométrica.",
+                    },
+                    {
+                        frente: "Que versão da comparação usa um limite?",
+                        verso: "A do limite da razão entre os termos gerais.",
+                    },
+                    {
+                        frente: "O que a comparação exige dos termos das séries?",
+                        verso: "Que sejam positivos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que vale mais que dominar todos os testes?",
+                        verso: "Escolher o certo, lendo a forma do termo geral.",
+                    },
+                    {
+                        frente: "Que teste o fatorial no termo geral sugere?",
+                        verso: "O teste da razão.",
+                    },
+                    {
+                        frente: "Que condições a série alternada precisa cumprir?",
+                        verso: "Termos decrescendo em módulo e indo a zero.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma série de potências é, no fundo?",
+                        verso: "Uma função disfarçada de soma infinita.",
+                    },
+                    {
+                        frente: "O que o raio de convergência informa?",
+                        verso: "Até onde o disfarce da série ainda funciona.",
+                    },
+                    {
+                        frente: "Que teste costuma achar o raio de convergência?",
+                        verso: "O teste da razão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que série única dá origem a dezenas de outras?",
+                        verso: "A série geométrica.",
+                    },
+                    {
+                        frente: "Que operações produzem novas séries a partir de uma?",
+                        verso: "Substituir, derivar e integrar termo a termo.",
+                    },
+                    {
+                        frente: "Que cuidado a série nova sempre herda?",
+                        verso: "O intervalo de convergência, que precisa ser conferido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que os coeficientes de Taylor guardam?",
+                        verso: "Uma fotografia local, em cada derivada no centro.",
+                    },
+                    {
+                        frente: "O que diferencia Maclaurin de Taylor?",
+                        verso: "O centro fixado em zero.",
+                    },
+                    {
+                        frente: "Que dado cada coeficiente de Taylor usa?",
+                        verso: "A derivada no centro, dividida pelo fatorial da ordem.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que hábito quem domina meia dúzia de séries tem?",
+                        verso: "Construir o que precisa a partir do que já sabe.",
+                    },
+                    {
+                        frente: "Que séries fundamentais a aula manda guardar?",
+                        verso: "As da exponencial, do seno, do cosseno e a geométrica.",
+                    },
+                    {
+                        frente: "Que trabalho as séries conhecidas poupam?",
+                        verso: "O de derivar tudo de novo a cada função nova.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que um polinômio de Taylor representa?",
+                        verso: "A função vista com poucas casas decimais.",
+                    },
+                    {
+                        frente: "O que mais termos fazem com a aproximação?",
+                        verso: "Deixam o retrato da função mais nítido.",
+                    },
+                    {
+                        frente: "Onde a aproximação de Taylor é melhor?",
+                        verso: "Perto do centro, piorando conforme se afasta dele.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que resolver uma equação diferencial significa?",
+                        verso: "Reconstruir a função a partir da lei da sua taxa.",
+                    },
+                    {
+                        frente: "O que a ordem de uma equação diferencial indica?",
+                        verso: "A maior derivada que nela aparece.",
+                    },
+                    {
+                        frente: "O que a condição inicial acrescenta à solução?",
+                        verso: "Fixa a constante, escolhendo uma curva da família.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que separar variáveis reorganiza?",
+                        verso: "A equação, até cada lado depender de uma variável só.",
+                    },
+                    {
+                        frente: "Que passo vem logo depois da separação?",
+                        verso: "Integrar os dois lados.",
+                    },
+                    {
+                        frente: "Que constante a separação deixa para o fim?",
+                        verso: "A de integração, ajustada pela condição inicial.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que truque o fator integrante realiza?",
+                        verso: "Transforma um lado inteiro na derivada de um produto.",
+                    },
+                    {
+                        frente: "Que passo segue a multiplicação pelo fator integrante?",
+                        verso: "Integrar os dois lados e isolar a função.",
+                    },
+                    {
+                        frente: "Que forma a equação linear de primeira ordem tem?",
+                        verso: "A derivada mais um coeficiente vezes a função, igual a um termo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que laço faz a curva exponencial disparar?",
+                        verso: "Quanto maior a quantidade, mais depressa ela aumenta.",
+                    },
+                    {
+                        frente: "Que equação descreve o crescimento exponencial?",
+                        verso: "A que iguala a taxa a um múltiplo da própria quantidade.",
+                    },
+                    {
+                        frente: "Que sinal da constante produz decaimento?",
+                        verso: "O sinal negativo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Para onde o corpo que esfria caminha?",
+                        verso: "Para o equilíbrio com a temperatura do ambiente.",
+                    },
+                    {
+                        frente: "O que a exponencial mede nesses problemas?",
+                        verso: "A rapidez com que o equilíbrio se aproxima.",
+                    },
+                    {
+                        frente: "Que balanço o problema de mistura acompanha?",
+                        verso: "O que entra menos o que sai do tanque.",
+                    },
+                ],
+            },
+        },
     },
 };
