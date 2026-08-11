@@ -174,5 +174,169 @@ export const azureAz104: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que permissão cria o primeiro grupo de gerenciamento?",
+                        verso: "A de Management Group Contributor.",
+                    },
+                    {
+                        frente: "Que alternativa existe para gerenciar a hierarquia raiz?",
+                        verso: "Elevar o acesso a partir do diretório.",
+                    },
+                    {
+                        frente: "O que um grupo de gerenciamento agrupa?",
+                        verso: "Assinaturas, para aplicar governança de uma vez.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que efeitos de política exigem uma identidade gerenciada?",
+                        verso: "Modify e DeployIfNotExists.",
+                    },
+                    {
+                        frente: "Por que essa identidade é necessária?",
+                        verso: "Ela precisa de permissão para alterar ou implantar.",
+                    },
+                    {
+                        frente: "O que o efeito Deny faz?",
+                        verso: "Impede a criação do recurso fora do padrão.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que fazer antes de excluir um grupo de recursos protegido?",
+                        verso: "Remover o bloqueio.",
+                    },
+                    {
+                        frente: "Quem não pode remover bloqueios?",
+                        verso: "O Contributor.",
+                    },
+                    {
+                        frente: "O que o bloqueio de exclusão ainda permite?",
+                        verso: "Alterar o recurso, mas não apagá-lo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um orçamento faz ao ser atingido?",
+                        verso: "Notifica.",
+                    },
+                    {
+                        frente: "O que ele não faz?",
+                        verso: "Não bloqueia a criação nem desliga nada.",
+                    },
+                    {
+                        frente: "O que o Advisor recomenda?",
+                        verso: "Ações de custo, segurança, desempenho e confiabilidade.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Sobre o que o controle de acesso por função é?",
+                        verso: "Sobre pessoas.",
+                    },
+                    {
+                        frente: "Sobre o que a política é?",
+                        verso: "Sobre recursos.",
+                    },
+                    {
+                        frente: "Sobre o que o bloqueio é?",
+                        verso: "Sobre operações, e ele fica acima do controle de acesso.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o namespace hierárquico transforma na conta?",
+                        verso: "Vira Data Lake Storage, com diretórios e permissões reais.",
+                    },
+                    {
+                        frente: "Quando ele pode ser habilitado?",
+                        verso: "Só na criação da conta.",
+                    },
+                    {
+                        frente: "O que a conta de armazenamento reúne?",
+                        verso: "Blob, arquivos, filas e tabelas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como a replicação para a região secundária acontece?",
+                        verso: "De forma assíncrona.",
+                    },
+                    {
+                        frente: "O que essa assincronia implica?",
+                        verso: "Uma janela de possível perda de dados no failover.",
+                    },
+                    {
+                        frente: "O que a redundância local protege?",
+                        verso: "Contra falha dentro do próprio data center.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como invalidar um SAS avulso antes do vencimento?",
+                        verso: "Regerando a chave que o assinou.",
+                    },
+                    {
+                        frente: "Que efeito colateral isso tem?",
+                        verso: "Invalida todos os outros tokens assinados por ela.",
+                    },
+                    {
+                        frente: "Que alternativa evita esse efeito?",
+                        verso: "A política de acesso armazenada, revogável sozinha.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Contra o que o soft delete protege?",
+                        verso: "Contra exclusão.",
+                    },
+                    {
+                        frente: "Contra o que o versionamento protege?",
+                        verso: "Contra sobrescrita.",
+                    },
+                    {
+                        frente: "O que é um snapshot?",
+                        verso: "Uma foto tirada de propósito, num instante escolhido.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que porta o protocolo SMB usa?",
+                        verso: "A porta 445.",
+                    },
+                    {
+                        frente: "Que problema essa porta costuma dar?",
+                        verso: "Muitos provedores a bloqueiam, e a montagem falha de fora.",
+                    },
+                    {
+                        frente: "Que ferramenta copia dados em massa para o armazenamento?",
+                        verso: "O AzCopy.",
+                    },
+                ],
+            },
+        },
     },
 };
