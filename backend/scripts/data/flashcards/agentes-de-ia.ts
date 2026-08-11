@@ -188,5 +188,185 @@ export const agentesDeIa: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a divisão de papéis entre LangChain e LangGraph?",
+                        verso: "LangChain é a camada ergonômica; LangGraph, o runtime de orquestração.",
+                    },
+                    {
+                        frente: "Qual é o custo honesto de adotar o framework?",
+                        verso: "Mais uma camada para aprender e depurar, e a tentação de usar tudo.",
+                    },
+                    {
+                        frente: "Por que construir o loop na mão antes de adotar framework?",
+                        verso: "Para entender o que ele faz por você e usá-lo bem.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De onde o decorator de ferramenta deriva o schema?",
+                        verso: "Da assinatura da função e da docstring escrita.",
+                    },
+                    {
+                        frente: "O que não muda com a adoção do framework?",
+                        verso: "O desenho das ferramentas, o prompt e os guarda-corpos de negócio.",
+                    },
+                    {
+                        frente: "Que sinais indicam que é hora do grafo explícito?",
+                        verso: "Fases distintas, pausas para aprovação e ramos paralelos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é um nó no LangGraph?",
+                        verso: "Uma função que recebe o estado e devolve atualizações.",
+                    },
+                    {
+                        frente: "O que a aresta condicional faz?",
+                        verso: "Decide o próximo nó olhando o estado atual da execução.",
+                    },
+                    {
+                        frente: "Como o guarda-corpo de voltas aparece no grafo?",
+                        verso: "Como aresta condicional que roteia para o fim ao bater o teto.",
+                    },
+                    {
+                        frente: "Onde o privilégio mínimo por fase entra no grafo?",
+                        verso: "Num nó de política que restringe o cardápio conforme a fase.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o checkpointer grava, e quando?",
+                        verso: "O estado do grafo a cada passo, em armazenamento durável.",
+                    },
+                    {
+                        frente: "O que o identificador de thread permite após um reinício?",
+                        verso: "Retomar do último checkpoint, sem repetir as voltas anteriores.",
+                    },
+                    {
+                        frente: "Como a interrupção antes de um nó habilita a aprovação humana?",
+                        verso: "O estado dorme antes do nó crítico até alguém retomar.",
+                    },
+                    {
+                        frente: "Que políticas de dados valem para o estado gravado?",
+                        verso: "Backup, retenção definida e nenhum segredo no estado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Em que cenário o LlamaIndex brilha?",
+                        verso: "Agentes sobre documentos e índices, com integração de dados forte.",
+                    },
+                    {
+                        frente: "Qual é a troca ao adotar o SDK de agentes de um provedor?",
+                        verso: "Integração profunda em troca de acoplamento ao ecossistema dele.",
+                    },
+                    {
+                        frente: "Quando o Python puro continua sendo escolha honesta?",
+                        verso: "Agentes simples, com controle total e sem dependência extra.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que o custo por volta cresce ao longo da tarefa?",
+                        verso: "O histórico inteiro é reprocessado e pago a cada nova chamada.",
+                    },
+                    {
+                        frente: "Quais são as três frentes da disciplina de contexto?",
+                        verso: "Dieta na entrada, organização do meio e memória de longo prazo.",
+                    },
+                    {
+                        frente: "O que um salto abrupto no gráfico de tokens por volta revela?",
+                        verso: "Entrou uma observação gorda: alguma ferramenta foi tagarela.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a técnica número um de dieta de contexto?",
+                        verso: "Truncar na fonte: a ferramenta devolve resumo e id para detalhar.",
+                    },
+                    {
+                        frente: "O que um stub substitui na poda de observações?",
+                        verso: "O conteúdo bruto já processado, mantendo o registro da ação.",
+                    },
+                    {
+                        frente: "O que nunca se comprime no contexto do agente?",
+                        verso: "A tarefa original e as notas de decisão.",
+                    },
+                    {
+                        frente: "Qual é o sinal de que a dieta passou do ponto?",
+                        verso: "O agente repete trabalho ou pergunta o que já foi respondido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre o histórico e o scratchpad?",
+                        verso: "O histórico é a sequência bruta; o scratchpad é o destilado.",
+                    },
+                    {
+                        frente: "Que seções compõem um bom scratchpad?",
+                        verso: "Plano com status, fatos com fonte, decisões e pendências.",
+                    },
+                    {
+                        frente: "Onde o scratchpad deve ser renderizado no contexto?",
+                        verso: "Em destaque perto do topo, longe do meio perdido.",
+                    },
+                    {
+                        frente: "O que o padrão plan-and-execute acrescenta ao loop?",
+                        verso: "Um plano escrito antes de agir, atualizado a cada passo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença de escopo entre scratchpad e memória longa?",
+                        verso: "O scratchpad vive uma tarefa; a memória atravessa tarefas.",
+                    },
+                    {
+                        frente: "Por que a memória do agente é por agente, e não por usuário?",
+                        verso: "É conhecimento operacional do papel, não preferência pessoal.",
+                    },
+                    {
+                        frente: "Qual é o risco da memória sem revisão do que entra?",
+                        verso: "Uma execução ruim vira lição errada repetida em toda tarefa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como se implementa o isolamento de estado entre usuários?",
+                        verso: "Todo estado tem dono e toda leitura filtra por ele.",
+                    },
+                    {
+                        frente: "Como duas tarefas simultâneas do mesmo usuário convivem?",
+                        verso: "Em threads separados por tarefa, sem escrita cruzada.",
+                    },
+                    {
+                        frente: "Por que o estado de tarefa concluída deve expirar?",
+                        verso: "Retenção definida evita acúmulo infinito e passivo de LGPD.",
+                    },
+                ],
+            },
+        },
     },
 };
