@@ -175,5 +175,169 @@ export const isc2Cc: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Para que a continuidade de negócios existe?",
+                        verso: "Manter as funções essenciais durante e depois da interrupção.",
+                    },
+                    {
+                        frente: "Em que ela se apoia?",
+                        verso: "Em política, plano e equipe designada.",
+                    },
+                    {
+                        frente: "O que ela cobre além da tecnologia?",
+                        verso: "Pessoas, processos e comunicação.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a análise de impacto no negócio identifica?",
+                        verso: "Os processos críticos do negócio.",
+                    },
+                    {
+                        frente: "O que o RTO define?",
+                        verso: "Quanto tempo até restaurar.",
+                    },
+                    {
+                        frente: "O que o RPO define?",
+                        verso: "Quanto dado se aceita perder.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é a recuperação de desastres?",
+                        verso: "O braço técnico da continuidade de negócios.",
+                    },
+                    {
+                        frente: "O que ela restaura?",
+                        verso: "Sistemas, dados e infraestrutura.",
+                    },
+                    {
+                        frente: "Que sites alternativos existem?",
+                        verso: "Quente, morno e frio.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para que a resposta a incidentes existe?",
+                        verso: "Detectar, conter e resolver eventos de segurança.",
+                    },
+                    {
+                        frente: "O que ela reduz?",
+                        verso: "O dano e o tempo de recuperação.",
+                    },
+                    {
+                        frente: "Quem conduz esse trabalho?",
+                        verso: "A equipe de resposta a incidentes, com papéis definidos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quantas fases o ciclo de resposta a incidentes tem?",
+                        verso: "Seis.",
+                    },
+                    {
+                        frente: "Que fases abrem o ciclo?",
+                        verso: "Preparação, detecção e contenção.",
+                    },
+                    {
+                        frente: "Que fases fecham o ciclo?",
+                        verso: "Erradicação, recuperação e lições aprendidas.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta a identificação responde?",
+                        verso: "Quem é você.",
+                    },
+                    {
+                        frente: "Que pergunta a autenticação responde?",
+                        verso: "Como provar isso.",
+                    },
+                    {
+                        frente: "Que pergunta a autorização responde?",
+                        verso: "O que você pode fazer.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De que o controle físico preventivo depende?",
+                        verso: "Da combinação de várias barreiras, e não de uma só.",
+                    },
+                    {
+                        frente: "O que o CPTED propõe?",
+                        verso: "Prevenir pelo desenho do próprio ambiente.",
+                    },
+                    {
+                        frente: "Que mecanismos físicos a aula cita?",
+                        verso: "Crachá, catraca e fechadura.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a prevenção sozinha não faz?",
+                        verso: "Perceber quando alguém passou por ela.",
+                    },
+                    {
+                        frente: "Que combinação permite perceber isso?",
+                        verso: "Câmeras, alarmes e registros de acesso.",
+                    },
+                    {
+                        frente: "Que papel o registro cumpre depois do fato?",
+                        verso: "Permite reconstruir quem passou, e quando.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o menor privilégio limita?",
+                        verso: "O que uma única conta consegue fazer.",
+                    },
+                    {
+                        frente: "O que a segregação de funções garante?",
+                        verso: "Que ninguém sozinho controle um processo inteiro.",
+                    },
+                    {
+                        frente: "O que os dois reduzem juntos?",
+                        verso: "O estrago de uma conta comprometida ou mal usada.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Com quem o modelo discricionário deixa a decisão?",
+                        verso: "Com o dono do recurso.",
+                    },
+                    {
+                        frente: "Como o modelo obrigatório decide?",
+                        verso: "Por rótulos e habilitações definidos por uma autoridade.",
+                    },
+                    {
+                        frente: "A que o modelo por papéis amarra o acesso?",
+                        verso: "Ao papel da pessoa na organização.",
+                    },
+                ],
+            },
+        },
     },
 };
