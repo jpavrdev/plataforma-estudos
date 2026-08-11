@@ -85,6 +85,7 @@ import { php } from "./php.ts";
 import { laravel } from "./laravel.ts";
 import { ruby } from "./ruby.ts";
 import { rubyOnRails } from "./ruby-on-rails.ts";
+import { springBoot } from "./spring-boot.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -172,4 +173,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     laravel,
     ruby,
     rubyOnRails,
+    springBoot,
 ];
