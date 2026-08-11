@@ -338,5 +338,251 @@ export const modernDataStack: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um teste genérico não substitui?",
+                        verso: "A modelagem.",
+                    },
+                    {
+                        frente: "O que um teste genérico confirma?",
+                        verso: "Que uma suposição sobre o dado continua verdadeira.",
+                    },
+                    {
+                        frente: "Com que frequência essa confirmação acontece?",
+                        verso: "A cada execução do pipeline.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um teste singular é?",
+                        verso: "Uma pergunta que só devia ter uma resposta: nenhuma linha.",
+                    },
+                    {
+                        frente: "O que uma linha no resultado significa?",
+                        verso: "A realidade quebrou a regra que alguém escreveu.",
+                    },
+                    {
+                        frente: "Que forma um teste singular tem?",
+                        verso: "A de uma consulta que procura o caso proibido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "De onde nasce o site de documentação?",
+                        verso: "Do mesmo arquivo de schema que já declara os testes.",
+                    },
+                    {
+                        frente: "O que documentar deixa de ser?",
+                        verso: "Uma tarefa extra.",
+                    },
+                    {
+                        frente: "No que documentar se transforma?",
+                        verso: "Em parte de declarar o modelo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que uma execução bem-sucedida garante?",
+                        verso: "Só que a consulta rodou sem erro.",
+                    },
+                    {
+                        frente: "O que ela não garante?",
+                        verso: "Que o dado está atualizado.",
+                    },
+                    {
+                        frente: "Quem responde se o dado está fresco?",
+                        verso: "A verificação de freshness na origem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Para que o teste existe?",
+                        verso: "Para avisar rápido no dia em que o pipeline parar.",
+                    },
+                    {
+                        frente: "Para que ele não existe?",
+                        verso: "Para provar que o pipeline funcionou uma vez.",
+                    },
+                    {
+                        frente: "O que testar cedo encurta?",
+                        verso: "O tempo entre o erro e a descoberta dele.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o warehouse nunca recebe?",
+                        verso: "Jinja: ele só recebe SQL.",
+                    },
+                    {
+                        frente: "Quem faz a ponte entre o modelo e o select final?",
+                        verso: "A compilação do dbt.",
+                    },
+                    {
+                        frente: "Que arquivo depurar quando algo não bate?",
+                        verso: "O SQL compilado, e não o modelo escrito.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que perguntar antes de escrever um macro novo?",
+                        verso: "Se aquela necessidade já não foi resolvida num package.",
+                    },
+                    {
+                        frente: "Que vantagem o package pronto tem?",
+                        verso: "Já vem testado e usado por outros times.",
+                    },
+                    {
+                        frente: "O que um package traz para o projeto?",
+                        verso: "Macros e modelos prontos, versionados como dependência.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um snapshot não faz?",
+                        verso: "Transformar o dado.",
+                    },
+                    {
+                        frente: "O que o snapshot preserva?",
+                        verso: "Um estado que a origem apagaria na próxima sobrescrita.",
+                    },
+                    {
+                        frente: "Que técnica de modelagem o snapshot implementa?",
+                        verso: "A dimensão que muda devagar, do tipo 2.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é um seed?",
+                        verso: "Dado do próprio time, versionado junto do projeto.",
+                    },
+                    {
+                        frente: "O que é um source?",
+                        verso: "Dado que já existe no warehouse e o dbt apenas declara.",
+                    },
+                    {
+                        frente: "Qual dos dois o dbt carrega?",
+                        verso: "O seed.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a configuração muda entre dev e produção?",
+                        verso: "Para onde o dbt escreve e como ele se conecta.",
+                    },
+                    {
+                        frente: "O que não muda entre os ambientes?",
+                        verso: "Uma linha sequer do SQL dos modelos.",
+                    },
+                    {
+                        frente: "O que essa separação permite?",
+                        verso: "Testar em dev exatamente o que vai rodar em produção.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o dbt sabe sozinho?",
+                        verso: "Em que ordem os próprios modelos devem rodar.",
+                    },
+                    {
+                        frente: "O que o dbt não sabe?",
+                        verso: "Que horas são.",
+                    },
+                    {
+                        frente: "Quem cuida do horário, então?",
+                        verso: "O orquestrador que chama o dbt.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que é uma métrica que existe em três lugares?",
+                        verso: "Três opiniões parecidas com números.",
+                    },
+                    {
+                        frente: "O que o semantic layer centraliza?",
+                        verso: "A definição da métrica, num lugar só.",
+                    },
+                    {
+                        frente: "O que isso garante a quem consulta?",
+                        verso: "O mesmo número, venha de onde vier a pergunta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quando um PR de dado inspira confiança?",
+                        verso: "Depois que o pipeline provou sozinho que compila e passa.",
+                    },
+                    {
+                        frente: "O que a integração contínua roda nesse PR?",
+                        verso: "A compilação dos modelos e os testes.",
+                    },
+                    {
+                        frente: "O que ela evita?",
+                        verso: "Descobrir a quebra só depois do merge.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que existe entre a tabela crua e o número do painel?",
+                        verso: "Uma cadeia inteira de decisões.",
+                    },
+                    {
+                        frente: "Quem assina cada uma dessas decisões?",
+                        verso: "O analytics engineer.",
+                    },
+                    {
+                        frente: "O que isso implica sobre o número final?",
+                        verso: "Ele carrega escolhas, e não apenas cálculo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Pelo que um projeto dbt maduro não se reconhece?",
+                        verso: "Pelo número de modelos.",
+                    },
+                    {
+                        frente: "Pelo que ele se reconhece?",
+                        verso: "Pela confiança de quem lê o SQL escrito por outra pessoa.",
+                    },
+                    {
+                        frente: "O que essa pessoa precisa entender na hora?",
+                        verso: "O que o modelo faz e de onde vem o dado.",
+                    },
+                ],
+            },
+        },
     },
 };
