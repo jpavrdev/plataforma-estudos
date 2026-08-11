@@ -274,5 +274,203 @@ export const css: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o Flexbox organiza?",
+                        verso: "Os filhos de um elemento, em linha ou em coluna.",
+                    },
+                    {
+                        frente: "Onde o Flexbox é ligado?",
+                        verso: "No container, o elemento pai.",
+                    },
+                    {
+                        frente: "Quantas direções o Flexbox trata por vez?",
+                        verso: "Uma: linha ou coluna.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a propriedade de justificar alinha?",
+                        verso: "Os itens no eixo principal.",
+                    },
+                    {
+                        frente: "O que a propriedade de alinhar itens alinha?",
+                        verso: "Os itens no eixo transversal.",
+                    },
+                    {
+                        frente: "O que a justificação faz com o espaço que sobra?",
+                        verso: "Distribui entre os itens e ao redor deles.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que muda quando a direção vira coluna?",
+                        verso: "Os eixos giram: o principal passa a ser o vertical.",
+                    },
+                    {
+                        frente: "O que a quebra permite?",
+                        verso: "Que os itens passem para a linha seguinte.",
+                    },
+                    {
+                        frente: "O que a propriedade de espaçamento cria?",
+                        verso: "O respiro entre os itens, sem precisar de margem.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o crescimento de um item define?",
+                        verso: "Quanto ele cresce na sobra de espaço.",
+                    },
+                    {
+                        frente: "O que o encolhimento define?",
+                        verso: "Quanto ele cede quando falta espaço.",
+                    },
+                    {
+                        frente: "O que a base define?",
+                        verso: "O tamanho inicial do item no eixo principal.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quantas dimensões o Grid trata?",
+                        verso: "Duas: linhas e colunas ao mesmo tempo.",
+                    },
+                    {
+                        frente: "Onde o Grid é ligado?",
+                        verso: "No container, pelo valor de grid no display.",
+                    },
+                    {
+                        frente: "O que define as colunas?",
+                        verso: "A propriedade de modelo de colunas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a propriedade de espaçamento cria no grid?",
+                        verso: "O respiro entre as células, sem sobrar nas bordas.",
+                    },
+                    {
+                        frente: "O que o modelo de linhas define?",
+                        verso: "A altura das linhas.",
+                    },
+                    {
+                        frente: "Como um item é posicionado numa célula específica?",
+                        verso: "Indicando as linhas de início e de fim.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois passos as áreas nomeadas exigem?",
+                        verso: "Batizar cada item e desenhar o layout no container.",
+                    },
+                    {
+                        frente: "Onde o nome do item é definido?",
+                        verso: "No próprio filho, pela propriedade de área.",
+                    },
+                    {
+                        frente: "O que torna as áreas nomeadas atraentes?",
+                        verso: "O layout fica desenhado dentro do próprio código.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a função de intervalo define?",
+                        verso: "Um piso e um teto para a coluna.",
+                    },
+                    {
+                        frente: "Que combinação cria uma grade que se encaixa sozinha?",
+                        verso: "A repetição automática com intervalo mínimo e máximo.",
+                    },
+                    {
+                        frente: "Quando escolher Flexbox em vez de Grid?",
+                        verso: "Quando o arranjo é numa direção só.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é design responsivo?",
+                        verso: "Uma página só, que se adapta a qualquer tela.",
+                    },
+                    {
+                        frente: "Em que ele se apoia?",
+                        verso: "Unidades relativas, layout flexível e media queries.",
+                    },
+                    {
+                        frente: "O que ele substitui?",
+                        verso: "Fazer um site separado para cada tipo de tela.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma media query faz?",
+                        verso: "Aplica CSS só quando uma condição de tela é verdadeira.",
+                    },
+                    {
+                        frente: "Que condição é a mais usada?",
+                        verso: "A de largura da tela.",
+                    },
+                    {
+                        frente: "Que tag precisa existir no HTML para o responsivo funcionar?",
+                        verso: "A meta de viewport.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que unidades deixam o layout fluido?",
+                        verso: "As relativas, como porcentagem, vw e rem.",
+                    },
+                    {
+                        frente: "A que a porcentagem é relativa?",
+                        verso: "Ao elemento pai.",
+                    },
+                    {
+                        frente: "Que ajuste impede a imagem de estourar o espaço?",
+                        verso: "Limitar a largura máxima a cem por cento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é um layout responsivo, no fim?",
+                        verso: "A soma das técnicas da trilha, e não uma técnica única.",
+                    },
+                    {
+                        frente: "Por onde a montagem começa?",
+                        verso: "Pela meta de viewport e por um HTML bem estruturado.",
+                    },
+                    {
+                        frente: "Que abordagem escreve primeiro o estilo do celular?",
+                        verso: "A de mobile primeiro.",
+                    },
+                ],
+            },
+        },
     },
 };
