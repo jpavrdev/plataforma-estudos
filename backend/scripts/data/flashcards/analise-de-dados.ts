@@ -341,5 +341,169 @@ export const analiseDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que nome o padrão por trás do groupby carrega?",
+                        verso: "Split-apply-combine: dividir, aplicar e combinar.",
+                    },
+                    {
+                        frente: "Que comando de SQL corresponde ao groupby?",
+                        verso: "O GROUP BY, com a mesma ideia de chave e agregação.",
+                    },
+                    {
+                        frente: "O que a etapa apply faz em cada grupo?",
+                        verso: "Aplica a função escolhida separadamente, grupo a grupo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que passo falta quando o groupby devolve um objeto?",
+                        verso: "Encadear a função de agregação que gera a tabela.",
+                    },
+                    {
+                        frente: "Que forma geral toda agregação por grupo segue?",
+                        verso: "Agrupar pela chave, escolher a coluna e chamar a função.",
+                    },
+                    {
+                        frente: "Que etapa o groupby sozinho já executou?",
+                        verso: "O split: as linhas já estão separadas em grupos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa o count do size num grupo?",
+                        verso: "O count ignora nulos; o size conta todas as linhas.",
+                    },
+                    {
+                        frente: "O que a divergência entre count e size denuncia?",
+                        verso: "Que existe dado faltando naquela coluna do grupo.",
+                    },
+                    {
+                        frente: "Que duas formas o agg aceita para pedir agregações?",
+                        verso: "Uma lista de funções ou um dicionário de coluna e função.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que acontece com as chaves ao agrupar por duas colunas?",
+                        verso: "As duas viram o índice, em níveis, e não colunas soltas.",
+                    },
+                    {
+                        frente: "Que método devolve as chaves para colunas comuns?",
+                        verso: "O reset_index, desfazendo o índice em níveis.",
+                    },
+                    {
+                        frente: "Que estrutura de Python puro equivale a essa chave?",
+                        verso: "Uma tupla usada como chave de dicionário.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que função de agregação o pivot_table usa por padrão?",
+                        verso: "A média, trocável pelo parâmetro aggfunc.",
+                    },
+                    {
+                        frente: "Por que uma célula do pivot_table aparece como NaN?",
+                        verso: "Aquele cruzamento de linha e coluna não teve nenhum dado.",
+                    },
+                    {
+                        frente: "Que ferramenta de planilha o pivot_table reproduz?",
+                        verso: "A tabela dinâmica, cruzando duas chaves numa grade.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a sigla NaN quer dizer, e o que ela marca?",
+                        verso: "Not a Number, o marcador de dado ausente na célula.",
+                    },
+                    {
+                        frente: "Quantos NaN bastam para o dropna remover a linha?",
+                        verso: "Um só: ele derruba a linha com qualquer ausente.",
+                    },
+                    {
+                        frente: "Que preenchimento cabe quando existe outlier na coluna?",
+                        verso: "A mediana, mais robusta ao valor extremo que a média.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quando o astype quebra ao converter uma coluna?",
+                        verso: "Se um único valor da coluna não puder ser convertido.",
+                    },
+                    {
+                        frente: "O que o errors igual a coerce faz com o valor ruim?",
+                        verso: "Vira NaN, em vez de travar a conversão inteira.",
+                    },
+                    {
+                        frente: "Que operações o tipo datetime libera na coluna?",
+                        verso: "Filtrar por período, extrair mês e calcular diferença.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três valores o parâmetro keep aceita?",
+                        verso: "O first, que é o padrão, o last e o False.",
+                    },
+                    {
+                        frente: "O que o keep igual a False descarta?",
+                        verso: "Todas as cópias, inclusive a primeira ocorrência.",
+                    },
+                    {
+                        frente: "Que pergunta vem antes de remover uma duplicata?",
+                        verso: "Se existe chave única confirmando o mesmo registro.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde o strip remove espaço, e onde ele não mexe?",
+                        verso: "Nas pontas da string; o meio dela fica intacto.",
+                    },
+                    {
+                        frente: "Que método do str filtra linhas por um trecho de texto?",
+                        verso: "O contains, que devolve verdadeiro ou falso por linha.",
+                    },
+                    {
+                        frente: "Que sintoma uma categoria bagunçada produz?",
+                        verso: "Nenhum erro: o agrupamento só mente na contagem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que o z-score falha numa amostra pequena?",
+                        verso: "O próprio outlier puxa a média e o desvio, e se disfarça.",
+                    },
+                    {
+                        frente: "Que medida torna o IQR resistente ao valor absurdo?",
+                        verso: "O quartil, que não se abala com um extremo isolado.",
+                    },
+                    {
+                        frente: "Que duas decisões seguem a detecção de um outlier?",
+                        verso: "Remover a linha ou limitar o valor com o clip.",
+                    },
+                ],
+            },
+        },
     },
 };
