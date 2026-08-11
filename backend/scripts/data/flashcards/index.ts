@@ -54,6 +54,7 @@ import { geometriaAnalitica } from "./geometria-analitica.ts";
 import { calculo2 } from "./calculo-2.ts";
 import { calculo3 } from "./calculo-3.ts";
 import { estatisticaMatematica } from "./estatistica-matematica.ts";
+import { fundamentosDeCiberseguranca } from "./fundamentos-de-ciberseguranca.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -110,4 +111,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     calculo2,
     calculo3,
     estatisticaMatematica,
+    fundamentosDeCiberseguranca,
 ];
