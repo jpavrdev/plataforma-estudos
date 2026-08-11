@@ -177,5 +177,169 @@ export const calculo1: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que reta melhor imita a curva bem de perto?",
+                        verso: "A tangente, que aponta na mesma direção no ponto de contato.",
+                    },
+                    {
+                        frente: "Que reta a taxa de variação média desenha?",
+                        verso: "A secante, que corta a curva em dois pontos.",
+                    },
+                    {
+                        frente: "Como a secante vira tangente?",
+                        verso: "Aproximando o segundo ponto do primeiro até quase encostar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que roteiro derivar pela definição sempre segue?",
+                        verso: "Montar o quociente, simplificar a divisão por zero e só então o limite.",
+                    },
+                    {
+                        frente: "Que quociente a definição de derivada usa?",
+                        verso: "O da variação da função pela variação da entrada.",
+                    },
+                    {
+                        frente: "Por que simplificar antes de aplicar o limite?",
+                        verso: "Sem isso o quociente cai numa divisão por zero.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que implicação liga derivabilidade e continuidade?",
+                        verso: "Toda função derivável é contínua, e nunca o contrário.",
+                    },
+                    {
+                        frente: "Que exemplo clássico é contínuo e não derivável?",
+                        verso: "O do módulo na origem, onde o gráfico faz um bico.",
+                    },
+                    {
+                        frente: "Que tipo de condição a continuidade é para derivar?",
+                        verso: "Necessária, porém não suficiente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pergunta sobre ritmo a derivada responde?",
+                        verso: "Se a grandeza sobe ou desce agora, e com que rapidez.",
+                    },
+                    {
+                        frente: "O que o sinal da derivada informa no instante?",
+                        verso: "Positivo indica subida e negativo, descida.",
+                    },
+                    {
+                        frente: "Que grandeza a derivada da posição representa?",
+                        verso: "A velocidade, a taxa instantânea de mudança.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que derivar devolve, além de um número?",
+                        verso: "Uma nova função, que pode ser derivada outra vez.",
+                    },
+                    {
+                        frente: "Que camadas as derivadas sucessivas revelam?",
+                        verso: "As do comportamento original, uma a cada nova derivação.",
+                    },
+                    {
+                        frente: "Que nome a derivada da derivada recebe?",
+                        verso: "Segunda derivada.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a regra da potência faz com o expoente?",
+                        verso: "Desce como fator e diminui uma unidade no expoente.",
+                    },
+                    {
+                        frente: "Quanto vale a derivada de uma constante?",
+                        verso: "Zero, porque nada varia.",
+                    },
+                    {
+                        frente: "Que liberdade a constante multiplicando tem?",
+                        verso: "Sai da derivada e multiplica o resultado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que armadilha a derivada do produto esconde?",
+                        verso: "Não é o produto das derivadas, o erro mais comum do cálculo.",
+                    },
+                    {
+                        frente: "Que forma a regra do produto tem em palavras?",
+                        verso: "Derivada do primeiro vezes o segundo, mais o primeiro vezes a do segundo.",
+                    },
+                    {
+                        frente: "Que detalhe do quociente muda em relação ao produto?",
+                        verso: "O sinal de menos no meio e o denominador ao quadrado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que estrutura pede a regra da cadeia?",
+                        verso: "A função composta, uma encaixada dentro da outra.",
+                    },
+                    {
+                        frente: "Que produto a regra da cadeia monta?",
+                        verso: "O da derivada de fora pela derivada de dentro.",
+                    },
+                    {
+                        frente: "Que descuido a regra da cadeia costuma cobrar?",
+                        verso: "Esquecer a derivada de dentro no fim da conta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que função coincide com a própria derivada?",
+                        verso: "A exponencial natural, de base e.",
+                    },
+                    {
+                        frente: "Que fator aparece ao derivar uma base diferente?",
+                        verso: "O logaritmo natural da base, multiplicando a exponencial.",
+                    },
+                    {
+                        frente: "Que derivada o logaritmo natural tem?",
+                        verso: "Um sobre x, com x positivo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que derivada o seno tem?",
+                        verso: "O cosseno, sem troca de sinal.",
+                    },
+                    {
+                        frente: "Que sinal aparece ao derivar o cosseno?",
+                        verso: "O de menos, devolvendo menos seno.",
+                    },
+                    {
+                        frente: "Em torno de que par giram as derivadas trigonométricas?",
+                        verso: "Do seno e do cosseno, base para todas as outras.",
+                    },
+                ],
+            },
+        },
     },
 };
