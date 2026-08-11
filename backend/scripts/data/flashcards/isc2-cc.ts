@@ -339,5 +339,251 @@ export const isc2Cc: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quantas camadas o modelo OSI tem?",
+                        verso: "Sete.",
+                    },
+                    {
+                        frente: "Que camada fica na base do modelo?",
+                        verso: "A física, que lida com bits.",
+                    },
+                    {
+                        frente: "Que camada fica no topo?",
+                        verso: "A de aplicação, que o usuário enxerga.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantas camadas o modelo TCP/IP tem?",
+                        verso: "Quatro.",
+                    },
+                    {
+                        frente: "O que o TCP entrega na camada de transporte?",
+                        verso: "Confiabilidade, ao custo de velocidade.",
+                    },
+                    {
+                        frente: "O que o UDP entrega?",
+                        verso: "Velocidade, sem garantia de entrega.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantos bits um endereço IPv4 tem?",
+                        verso: "Trinta e dois.",
+                    },
+                    {
+                        frente: "Por que o IPv4 está se esgotando?",
+                        verso: "Pela explosão de dispositivos conectados.",
+                    },
+                    {
+                        frente: "O que todo dispositivo precisa para ser localizado?",
+                        verso: "Um endereço único na rede.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que uma porta identifica?",
+                        verso: "Qual serviço, dentro do mesmo endereço, recebe os dados.",
+                    },
+                    {
+                        frente: "Que porta o HTTPS usa?",
+                        verso: "A porta 443.",
+                    },
+                    {
+                        frente: "Que porta o SSH usa?",
+                        verso: "A porta 22.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o Wi-Fi trocou, e o que trouxe junto?",
+                        verso: "Trocou o cabo por ondas de rádio, e trouxe novos riscos.",
+                    },
+                    {
+                        frente: "De que a segurança da rede sem fio mais depende?",
+                        verso: "Do protocolo de criptografia em uso.",
+                    },
+                    {
+                        frente: "Qual é o protocolo mais recente dessa evolução?",
+                        verso: "O WPA3.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que separa vírus, worm e trojan?",
+                        verso: "A forma como cada um se espalha.",
+                    },
+                    {
+                        frente: "Como o worm se espalha?",
+                        verso: "Sozinho, sem ação humana.",
+                    },
+                    {
+                        frente: "Como o trojan chega?",
+                        verso: "Disfarçado de algo legítimo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o IDS faz?",
+                        verso: "Detecta e alerta, sem bloquear sozinho.",
+                    },
+                    {
+                        frente: "O que o IPS acrescenta?",
+                        verso: "Fica no caminho do tráfego e bloqueia.",
+                    },
+                    {
+                        frente: "Que formas o IDS pode ter?",
+                        verso: "De host e de rede.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que sustenta a disponibilidade da rede?",
+                        verso: "O data center, com sua infraestrutura física.",
+                    },
+                    {
+                        frente: "O que cobre a falta de energia no curto prazo?",
+                        verso: "O nobreak.",
+                    },
+                    {
+                        frente: "O que cobre o longo prazo?",
+                        verso: "O gerador.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que princípio une o design seguro de rede?",
+                        verso: "A defesa em profundidade.",
+                    },
+                    {
+                        frente: "O que esse princípio evita?",
+                        verso: "Depender de um único controle perfeito.",
+                    },
+                    {
+                        frente: "O que a segmentação acrescenta ao design?",
+                        verso: "Limita o alcance de quem conseguir entrar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que separa os modelos de serviço em nuvem?",
+                        verso: "Quanto da infraestrutura o cliente gerencia.",
+                    },
+                    {
+                        frente: "O que a nuvem híbrida combina?",
+                        verso: "Infraestrutura própria com serviços de nuvem pública.",
+                    },
+                    {
+                        frente: "O que muda na segurança conforme o modelo?",
+                        verso: "A fatia da responsabilidade que fica com o cliente.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que vantagem a criptografia simétrica tem?",
+                        verso: "É rápida.",
+                    },
+                    {
+                        frente: "Que desafio ela carrega?",
+                        verso: "Distribuir a chave com segurança.",
+                    },
+                    {
+                        frente: "Como a assimétrica resolve isso?",
+                        verso: "Com um par de chaves, uma pública e uma privada.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que classificar um dado diz?",
+                        verso: "O quanto ele importa.",
+                    },
+                    {
+                        frente: "O que rotular faz?",
+                        verso: "Avisa quem encontra o dado sobre essa classificação.",
+                    },
+                    {
+                        frente: "O que o descarte seguro garante?",
+                        verso: "Que o dado não possa ser recuperado depois.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o logging faz?",
+                        verso: "Registra o que aconteceu.",
+                    },
+                    {
+                        frente: "O que o monitoramento faz?",
+                        verso: "Observa esses registros de perto.",
+                    },
+                    {
+                        frente: "O que o SIEM acrescenta?",
+                        verso: "Correlaciona eventos de todas as fontes.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o hardening reduz?",
+                        verso: "O que pode ser atacado.",
+                    },
+                    {
+                        frente: "O que a gestão de configuração garante?",
+                        verso: "Que essa redução se mantenha ao longo do tempo.",
+                    },
+                    {
+                        frente: "O que os patches corrigem?",
+                        verso: "Falhas já conhecidas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que nenhum sistema técnico substitui?",
+                        verso: "Uma pessoa treinada para desconfiar na hora certa.",
+                    },
+                    {
+                        frente: "O que a engenharia social ataca?",
+                        verso: "A confiança, e não o código.",
+                    },
+                    {
+                        frente: "Que risco a IA generativa acrescenta ao golpe?",
+                        verso: "Mensagens mais convincentes, e em escala.",
+                    },
+                ],
+            },
+        },
     },
 };
