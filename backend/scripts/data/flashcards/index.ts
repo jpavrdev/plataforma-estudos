@@ -68,6 +68,7 @@ import { streamingDeDados } from "./streaming-de-dados.ts";
 import { modernDataStack } from "./modern-data-stack.ts";
 import { qualidadeEGovernancaDeDados } from "./qualidade-e-governanca-de-dados.ts";
 import { awsAiPractitioner } from "./aws-ai-practitioner.ts";
+import { awsDvaC02 } from "./aws-dva-c02.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -138,4 +139,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     modernDataStack,
     qualidadeEGovernancaDeDados,
     awsAiPractitioner,
+    awsDvaC02,
 ];
