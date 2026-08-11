@@ -339,5 +339,251 @@ export const embarcadosNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que padrão de projeto domina o produto a bateria?",
+                        verso: "O duty cycling: acordar, medir, transmitir e dormir.",
+                    },
+                    {
+                        frente: "Que métrica decide a vida útil do produto?",
+                        verso: "A corrente média, dominada pelo tempo dormindo.",
+                    },
+                    {
+                        frente: "Que três regras práticas economizam bateria?",
+                        verso: "Transmitir em rajada, agrupar medidas e cortar sensor no sono.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que tratamento cada causa de reset merece?",
+                        verso: "Ligar otimista no power-on e investigar no watchdog.",
+                    },
+                    {
+                        frente: "Que defesa o chip oferece contra a queda parcial?",
+                        verso: "O reset por subtensão, segurando o chip abaixo do limiar.",
+                    },
+                    {
+                        frente: "Que valor os contadores de causa têm no campo?",
+                        verso: "Revelam o padrão de reinício antes de virar reclamação.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que regra de ouro amarra o firmware defensivo?",
+                        verso: "Toda espera por hardware precisa ter um prazo limite.",
+                    },
+                    {
+                        frente: "Que versão adulta o debounce bloqueante ganha?",
+                        verso: "Amostragem periódica por timer, sem travar o laço.",
+                    },
+                    {
+                        frente: "Que checagem a leitura analógica ainda merece?",
+                        verso: "A de plausibilidade contra a física do fenômeno medido.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Em que unidade o apagamento da flash acontece?",
+                        verso: "Por setor inteiro, nunca byte a byte como a escrita.",
+                    },
+                    {
+                        frente: "Que solução clássica evita gastar o mesmo endereço?",
+                        verso: "O log rotativo, gravando cada versão num lugar novo.",
+                    },
+                    {
+                        frente: "Por que cada registro gravado carrega um CRC?",
+                        verso: "A energia pode cair no meio e deixar o registro pela metade.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três peças a arquitetura de OTA seguro tem?",
+                        verso: "Um bootloader imutável e duas partições de aplicação.",
+                    },
+                    {
+                        frente: "Que seguro o rollback acrescenta ao fluxo?",
+                        verso: "A partição nova sobe em teste antes de virar definitiva.",
+                    },
+                    {
+                        frente: "Que padrão aberto atende o mundo Cortex-M no OTA?",
+                        verso: "O MCUboot, ao lado do esquema pronto do ESP-IDF.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que problema do C as regras do MISRA tentam conter?",
+                        verso: "O poder demais com aviso de menos, e o indefinido.",
+                    },
+                    {
+                        frente: "Que degrau maior o MISRA abre no processo?",
+                        verso: "A segurança funcional, com rastreabilidade e evidência.",
+                    },
+                    {
+                        frente: "Que saída madura o MISRA oferece a uma regra ruim?",
+                        verso: "O desvio, registrado com justificativa e aprovação.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três problemas testar gravando na placa tem?",
+                        verso: "É lento, não escala e depende do único hardware.",
+                    },
+                    {
+                        frente: "Que formato a pirâmide de teste embarcado tem?",
+                        verso: "Base larga no host e topo estreito rodando no alvo.",
+                    },
+                    {
+                        frente: "Que só o alvo revela, e o host jamais mostra?",
+                        verso: "O timing real, a errata do periférico e o consumo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantos breakpoints de hardware o Cortex-M oferece?",
+                        verso: "Poucos, tipicamente entre quatro e oito por núcleo.",
+                    },
+                    {
+                        frente: "Que limite filosófico o breakpoint carrega?",
+                        verso: "Parar o núcleo não para o motor nem o outro lado do fio.",
+                    },
+                    {
+                        frente: "Que lente quase não distorce, mas fala pouco?",
+                        verso: "O LED, que custa nanossegundos e não muda o timing.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que erro comum amarra duas versões diferentes?",
+                        verso: "Confundir a do firmware com a do protocolo de comunicação.",
+                    },
+                    {
+                        frente: "Quem deve ser a única fonte da versão?",
+                        verso: "O sistema de build, gerando o header a partir da tag.",
+                    },
+                    {
+                        frente: "Que dois consumidores a versão gravada atende?",
+                        verso: "O humano no log de boot e a máquina no comando.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três perguntas o CI de firmware responde?",
+                        verso: "Se ainda compila, se ainda passa e se ainda cabe.",
+                    },
+                    {
+                        frente: "Que relatório é a métrica mais negligenciada?",
+                        verso: "O de tamanho, com flash e RAM de cada alvo do build.",
+                    },
+                    {
+                        frente: "Que artefato todo build verde precisa arquivar?",
+                        verso: "O binário com a versão e o hash no próprio nome.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que corrente média um ano com 2600 mAh permite?",
+                        verso: "Cerca de 0,3 miliampere, dividindo pelas horas do ano.",
+                    },
+                    {
+                        frente: "Como os 128 KB de flash são repartidos no papel?",
+                        verso: "Bootloader de 16 KB e duas partições de 48 KB.",
+                    },
+                    {
+                        frente: "Que sensor único cobre as três grandezas do projeto?",
+                        verso: "O BME280, com temperatura, umidade e pressão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que estado é o padrão da máquina da estação?",
+                        verso: "Dormindo, onde a bateria agradece o tempo todo.",
+                    },
+                    {
+                        frente: "Que arquitetura o projeto adota, e sem o quê?",
+                        verso: "O superloop com interrupções, sem sistema operacional.",
+                    },
+                    {
+                        frente: "Quanto de dado a fila estática precisa segurar?",
+                        verso: "Mais de uma hora de medidas acumuladas.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que tamanho o payload de uma medida ocupa?",
+                        verso: "Doze bytes, do carimbo de tempo às três grandezas.",
+                    },
+                    {
+                        frente: "Que ciclo de confiança o ack do gateway fecha?",
+                        verso: "A estação reenvia sem ele e conta a perda no diagnóstico.",
+                    },
+                    {
+                        frente: "Que paranoia o comando de manutenção exige?",
+                        verso: "Validar faixa de argumento, por vir do mundo externo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que ensaio de bancada testa a robustez de verdade?",
+                        verso: "Derrubar a alimentação mil vezes em pontos aleatórios.",
+                    },
+                    {
+                        frente: "Com o que o limiar de subtensão é calibrado?",
+                        verso: "Com a rajada do rádio, o momento de maior corrente.",
+                    },
+                    {
+                        frente: "Que dados de diagnóstico viajam na telemetria?",
+                        verso: "Resets por causa, timeouts, perdas e tentativas de OTA.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que mudou de verdade, além da lista de tópicos?",
+                        verso: "O olhar: o aparelho deixou de ser uma caixa preta.",
+                    },
+                    {
+                        frente: "Que três caminhos o leque final apresenta?",
+                        verso: "Aprofundar o RTOS, descer à eletrônica ou subir ao Linux.",
+                    },
+                    {
+                        frente: "Por que o firmware não pode pedir desculpas?",
+                        verso: "Ele roda no marca-passo, no freio e no elevador.",
+                    },
+                ],
+            },
+        },
     },
 };
