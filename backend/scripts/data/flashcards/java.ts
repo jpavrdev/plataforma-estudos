@@ -33,6 +33,38 @@ export const java: CartasDaTrilha = {
             },
         },
         2: {
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a divisão entre dois inteiros devolve?",
+                        verso: "Um inteiro, descartando a parte fracionária.",
+                    },
+                    {
+                        frente: "O que o operador de resto entrega?",
+                        verso: "O que sobra da divisão.",
+                    },
+                    {
+                        frente: "O que a atribuição composta faz?",
+                        verso: "Aplica a operação e guarda no mesmo lugar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que os operadores relacionais devolvem?",
+                        verso: "Um valor booleano.",
+                    },
+                    {
+                        frente: "O que o E lógico faz com o segundo operando?",
+                        verso: "Nem avalia, se o primeiro já for falso.",
+                    },
+                    {
+                        frente: "Que erro comum troca comparação por atribuição?",
+                        verso: "Usar um sinal de igual onde precisa de dois.",
+                    },
+                ],
+            },
             1: {
                 neutra: [
                     {
@@ -51,6 +83,38 @@ export const java: CartasDaTrilha = {
             },
         },
         3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a condição de um if precisa ser?",
+                        verso: "Uma expressão booleana.",
+                    },
+                    {
+                        frente: "Quantos blocos de senão um encadeamento aceita?",
+                        verso: "Vários intermediários e um final.",
+                    },
+                    {
+                        frente: "O que acontece sem as chaves no bloco?",
+                        verso: "Só a primeira instrução entra nele.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quando o laço while testa a condição?",
+                        verso: "Antes de executar o corpo.",
+                    },
+                    {
+                        frente: "Quando o do-while testa?",
+                        verso: "Depois, então o corpo roda ao menos uma vez.",
+                    },
+                    {
+                        frente: "O que provoca um laço infinito?",
+                        verso: "A condição nunca deixar de ser verdadeira.",
+                    },
+                ],
+            },
             2: {
                 neutra: [
                     {
@@ -69,6 +133,22 @@ export const java: CartasDaTrilha = {
             },
         },
         4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o tamanho de um array tem de especial?",
+                        verso: "É fixo depois de criado.",
+                    },
+                    {
+                        frente: "Em que índice o array começa?",
+                        verso: "No zero.",
+                    },
+                    {
+                        frente: "O que acontece ao acessar índice fora do intervalo?",
+                        verso: "Uma exceção é lançada em execução.",
+                    },
+                ],
+            },
             2: {
                 neutra: [
                     {
@@ -87,6 +167,38 @@ export const java: CartasDaTrilha = {
             },
         },
         6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma classe é, em relação ao objeto?",
+                        verso: "O molde a partir do qual ele é criado.",
+                    },
+                    {
+                        frente: "O que a criação do objeto reserva?",
+                        verso: "O espaço em memória para os dados dele.",
+                    },
+                    {
+                        frente: "O que cada objeto guarda separadamente?",
+                        verso: "Os próprios valores dos atributos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o modificador privado protege?",
+                        verso: "O atributo do acesso direto de fora.",
+                    },
+                    {
+                        frente: "O que os métodos de acesso oferecem?",
+                        verso: "Um caminho controlado para ler e alterar.",
+                    },
+                    {
+                        frente: "Que ganho o encapsulamento traz?",
+                        verso: "Permite mudar o interior sem quebrar quem usa.",
+                    },
+                ],
+            },
             2: {
                 neutra: [
                     {
@@ -97,6 +209,22 @@ export const java: CartasDaTrilha = {
             },
         },
         7: {
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a sobrescrita substitui?",
+                        verso: "A implementação herdada da superclasse.",
+                    },
+                    {
+                        frente: "O que o polimorfismo permite?",
+                        verso: "Tratar objetos diferentes pela mesma referência.",
+                    },
+                    {
+                        frente: "Quem decide qual versão do método roda?",
+                        verso: "O tipo real do objeto, em tempo de execução.",
+                    },
+                ],
+            },
             1: {
                 neutra: [
                     {
@@ -115,6 +243,54 @@ export const java: CartasDaTrilha = {
             },
         },
         8: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que vantagem a lista tem sobre o array?",
+                        verso: "Cresce e encolhe conforme os elementos entram e saem.",
+                    },
+                    {
+                        frente: "O que ela guarda por baixo?",
+                        verso: "Um array, redimensionado quando necessário.",
+                    },
+                    {
+                        frente: "Que operação custa mais numa lista?",
+                        verso: "Inserir ou remover no meio.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o generic acrescenta à coleção?",
+                        verso: "O tipo dos elementos, verificado na compilação.",
+                    },
+                    {
+                        frente: "O que ele dispensa na leitura?",
+                        verso: "A conversão manual de tipo.",
+                    },
+                    {
+                        frente: "O que acontece ao tentar inserir o tipo errado?",
+                        verso: "O compilador recusa.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa exceção verificada da não verificada?",
+                        verso: "A verificada precisa ser declarada ou tratada.",
+                    },
+                    {
+                        frente: "O que o bloco final garante?",
+                        verso: "Que aquele trecho roda de qualquer forma.",
+                    },
+                    {
+                        frente: "O que capturar exceção genérica esconde?",
+                        verso: "O erro real, misturado com o que era esperado.",
+                    },
+                ],
+            },
             2: {
                 neutra: [
                     {
@@ -125,6 +301,22 @@ export const java: CartasDaTrilha = {
             },
         },
         9: {
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a trilha deixa como base?",
+                        verso: "A sintaxe e a orientação a objetos da linguagem.",
+                    },
+                    {
+                        frente: "Que passo natural vem depois?",
+                        verso: "Um framework ou um projeto próprio.",
+                    },
+                    {
+                        frente: "Que hábito o fechamento reforça?",
+                        verso: "Ler o erro do compilador antes de mudar o código.",
+                    },
+                ],
+            },
             1: {
                 neutra: [
                     {
@@ -138,6 +330,56 @@ export const java: CartasDaTrilha = {
                     {
                         frente: "Qual é a diferença entre operação intermediária e terminal numa stream?",
                         verso: "A intermediária encadeia e não roda; a terminal encerra e produz o resultado.",
+                    },
+                ],
+            },
+        },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a assinatura de um método declara?",
+                        verso: "O nome, os parâmetros e o tipo de retorno.",
+                    },
+                    {
+                        frente: "O que um método sem retorno declara?",
+                        verso: "O tipo vazio.",
+                    },
+                    {
+                        frente: "O que a chamada do método precisa respeitar?",
+                        verso: "A ordem e o tipo dos parâmetros.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como o argumento chega ao método em Java?",
+                        verso: "Por valor, sempre.",
+                    },
+                    {
+                        frente: "O que muda quando o argumento é um objeto?",
+                        verso: "A cópia é da referência, e o objeto pode ser alterado.",
+                    },
+                    {
+                        frente: "O que o retorno faz com a execução?",
+                        verso: "Encerra o método e devolve o valor.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a sobrecarga permite?",
+                        verso: "Métodos de mesmo nome, com listas de parâmetros diferentes.",
+                    },
+                    {
+                        frente: "O que não basta para diferenciar uma sobrecarga?",
+                        verso: "Apenas o tipo de retorno.",
+                    },
+                    {
+                        frente: "Até onde vai o escopo de uma variável local?",
+                        verso: "Até o fim do bloco onde ela foi declarada.",
                     },
                 ],
             },
