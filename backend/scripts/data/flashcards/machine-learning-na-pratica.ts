@@ -339,5 +339,251 @@ export const machineLearningNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que interface o Pipeline expõe, apesar de várias etapas?",
+                        verso: "A mesma do estimador: fit, predict e score.",
+                    },
+                    {
+                        frente: "Que risco o Pipeline elimina no preparo manual?",
+                        verso: "Esquecer a ordem ou reajustar um transformador sem querer.",
+                    },
+                    {
+                        frente: "O que o Pipeline empacota num objeto só?",
+                        verso: "A sequência inteira de preparo mais o modelo final.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que trinca cada entrada do ColumnTransformer declara?",
+                        verso: "Um nome, um transformador e a lista de colunas dele.",
+                    },
+                    {
+                        frente: "O que cada transformador enxerga do DataFrame?",
+                        verso: "Só as colunas atribuídas a ele, nunca as das outras trincas.",
+                    },
+                    {
+                        frente: "Que estrutura cabe no lugar de um transformador único?",
+                        verso: "Um Pipeline inteiro, com imputação e escala na sequência.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que separador liga a etapa ao hiperparâmetro no grid?",
+                        verso: "Dois underscores entre o nome da etapa e o parâmetro.",
+                    },
+                    {
+                        frente: "O que a busca faz com o pipeline a cada fold?",
+                        verso: "Clona do zero e ajusta só com o treino daquele fold.",
+                    },
+                    {
+                        frente: "Que alternativa arriscada o pipeline na busca evita?",
+                        verso: "Transformar o dataset inteiro antes de entregar à busca.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que fontes de aleatoriedade um projeto de ML esconde?",
+                        verso: "A divisão dos dados e o sorteio interno de cada modelo.",
+                    },
+                    {
+                        frente: "Que impossibilidade a falta de reprodutibilidade cria?",
+                        verso: "Comparar dois modelos de forma justa e depurar o erro.",
+                    },
+                    {
+                        frente: "Que ferramenta automatiza o registro de cada execução?",
+                        verso: "O MLflow, guardando hiperparâmetros e métricas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que tipo de objeto o joblib é especializado em salvar?",
+                        verso: "Os que carregam muitos arrays do NumPy por dentro.",
+                    },
+                    {
+                        frente: "Que perguntas um arquivo salvo sozinho não responde?",
+                        verso: "De onde veio o dado e qual código gerou aquele modelo.",
+                    },
+                    {
+                        frente: "Que separação a organização de pastas exige do projeto?",
+                        verso: "Dado bruto intocado, preparo isolado do treino e modelos à parte.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que cinco táticas atacam o desbalanceamento?",
+                        verso: "Pesar classes, undersampling, oversampling, SMOTE e trocar a métrica.",
+                    },
+                    {
+                        frente: "O que o SMOTE faz de diferente do oversampling simples?",
+                        verso: "Cria exemplos sintéticos interpolando entre vizinhos.",
+                    },
+                    {
+                        frente: "Em que momento a reamostragem pode acontecer?",
+                        verso: "Só depois do split, e apenas no conjunto de treino.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa ruído de viés nos dados?",
+                        verso: "O ruído é aleatório; o viés é sistemático e não some.",
+                    },
+                    {
+                        frente: "Por que ruído no rótulo é pior que ruído na feature?",
+                        verso: "Ele contamina direto o que o modelo tenta imitar.",
+                    },
+                    {
+                        frente: "Que checagem manual revela um rótulo errado?",
+                        verso: "Amostrar os exemplos que o modelo erra com confiança.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três sinais denunciam overfitting na prática?",
+                        verso: "Gap crescente, ótimo só no CV e ensemble complexo demais.",
+                    },
+                    {
+                        frente: "Que remédio o boosting oferece contra árvores demais?",
+                        verso: "O early stopping, parando quando a validação estaciona.",
+                    },
+                    {
+                        frente: "Que dois ajustes regularizam um modelo linear?",
+                        verso: "Diminuir o C na logística ou subir o alpha no Ridge.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três limitações o feature_importances_ carrega?",
+                        verso: "Infla muitos valores únicos, mede no treino e confunde correlatas.",
+                    },
+                    {
+                        frente: "Que pergunta o SHAP e o LIME respondem, diferente?",
+                        verso: "Por que este exemplo específico recebeu essa previsão.",
+                    },
+                    {
+                        frente: "De onde vem o nome SHAP, e a que teoria ele remete?",
+                        verso: "Dos valores de Shapley, da teoria dos jogos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Contra o que o modelo deve ser comparado, além do dummy?",
+                        verso: "Contra a melhor regra de negócio que alguém já escreveu.",
+                    },
+                    {
+                        frente: "Que resposta madura cabe quando o erro custa caro demais?",
+                        verso: "Não deixar o modelo decidir sozinho, com revisão humana.",
+                    },
+                    {
+                        frente: "Que problema um dataset pequeno demais produz?",
+                        verso: "Um modelo instável, que muda a previsão a cada divisão.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três tipos de camada uma rede organiza?",
+                        verso: "A de entrada, as ocultas e a de saída da previsão.",
+                    },
+                    {
+                        frente: "A que a palavra profundo se refere em deep learning?",
+                        verso: "À quantidade de camadas ocultas empilhadas na rede.",
+                    },
+                    {
+                        frente: "O que é parâmetro e o que é hiperparâmetro na rede?",
+                        verso: "Os pesos são aprendidos; camadas e ativação, escolhidas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que nome a passagem dos dados até a previsão recebe?",
+                        verso: "Forward pass, com os pesos ainda aleatórios no início.",
+                    },
+                    {
+                        frente: "Que nome uma rodada completa sobre o treino recebe?",
+                        verso: "Época, dividida em lotes menores para caber na memória.",
+                    },
+                    {
+                        frente: "Que hiperparâmetro do boosting reaparece na rede?",
+                        verso: "A taxa de aprendizado, o tamanho de cada passo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro tipos de dado não estruturado a aula cita?",
+                        verso: "Imagem, texto, áudio e voz, com muito volume.",
+                    },
+                    {
+                        frente: "Que dois custos o deep learning cobra do projeto?",
+                        verso: "Muito dado e máquina, sem nenhum dos dois ele não paga.",
+                    },
+                    {
+                        frente: "Que vantagem o ML clássico mantém ao explicar decisão?",
+                        verso: "Importância de feature e SHAP funcionam melhor em árvore.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde cada uma das duas grandes bibliotecas nasceu?",
+                        verso: "O TensorFlow no Google e o PyTorch na atual Meta.",
+                    },
+                    {
+                        frente: "Que perfil de uso cada uma das duas atrai?",
+                        verso: "O TensorFlow em produção e o PyTorch em pesquisa.",
+                    },
+                    {
+                        frente: "Que custo a rede cobra em decisões de configuração?",
+                        verso: "Mais hiperparâmetros que uma floresta para escolher.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro frentes o próximo estágio do roadmap cobre?",
+                        verso: "Produção, servir previsões, MLOps e monitorar com ética.",
+                    },
+                    {
+                        frente: "Que honestidade a trilha repete em quase todo módulo?",
+                        verso: "Complexidade não é sinônimo de qualidade no modelo.",
+                    },
+                    {
+                        frente: "Que arco a trilha percorre, do começo ao fim?",
+                        verso: "Do modelo que roda no notebook ao modelo em que se confia.",
+                    },
+                ],
+            },
+        },
     },
 };
