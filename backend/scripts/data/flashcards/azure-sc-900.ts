@@ -174,5 +174,169 @@ export const azureSc900: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que forma o Acesso Condicional tem?",
+                        verso: "A de uma regra se-então.",
+                    },
+                    {
+                        frente: "Que sinais ele reúne?",
+                        verso: "Usuário, dispositivo, localização e risco.",
+                    },
+                    {
+                        frente: "Que decisões ele pode tomar?",
+                        verso: "Bloquear, ou conceder exigindo mais controles.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que os papéis do Entra gerenciam?",
+                        verso: "Identidades e o diretório.",
+                    },
+                    {
+                        frente: "O que o controle de acesso por função do Azure gerencia?",
+                        verso: "Os recursos: assinaturas, máquinas e armazenamento.",
+                    },
+                    {
+                        frente: "Que erro a prova cobra nessa dupla?",
+                        verso: "Confundir o escopo de cada um.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Entra ID Governance promete?",
+                        verso: "O acesso certo, à pessoa certa, na hora certa.",
+                    },
+                    {
+                        frente: "O que um pacote de acesso faz?",
+                        verso: "Concede um conjunto de acessos sob solicitação.",
+                    },
+                    {
+                        frente: "O que uma revisão de acesso produz?",
+                        verso: "A decisão de manter ou remover cada acesso.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o PIM troca?",
+                        verso: "O acesso permanente pelo acesso sob demanda.",
+                    },
+                    {
+                        frente: "Como o administrador fica no PIM?",
+                        verso: "Apenas elegível, até ativar o papel.",
+                    },
+                    {
+                        frente: "O que a ativação costuma exigir?",
+                        verso: "MFA, justificativa e prazo limitado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o risco de entrada avalia?",
+                        verso: "Se o login atual é do dono legítimo.",
+                    },
+                    {
+                        frente: "Que sinais indicam risco de entrada?",
+                        verso: "Endereço anônimo e viagem atípica.",
+                    },
+                    {
+                        frente: "O que o risco de usuário avalia?",
+                        verso: "Se a conta em si já está comprometida.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é uma rede virtual no Azure?",
+                        verso: "A sua rede privada e isolada.",
+                    },
+                    {
+                        frente: "O que dividir em sub-redes permite?",
+                        verso: "Separar os recursos por função.",
+                    },
+                    {
+                        frente: "Que movimento essa separação limita?",
+                        verso: "O movimento lateral de um invasor.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como o grupo de segurança de rede decide?",
+                        verso: "Por regras de prioridade, na entrada e na saída.",
+                    },
+                    {
+                        frente: "Que comportamento ele tem quanto ao estado?",
+                        verso: "É stateful: a resposta volta sozinha.",
+                    },
+                    {
+                        frente: "O que ele protege?",
+                        verso: "O tráfego que chega e sai dos recursos da sub-rede.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Azure Firewall protege?",
+                        verso: "O tráfego da rede virtual, de forma central e gerenciada.",
+                    },
+                    {
+                        frente: "O que o firewall de aplicação web protege?",
+                        verso: "As aplicações web, contra ataques de camada 7.",
+                    },
+                    {
+                        frente: "Que ataques ele barra?",
+                        verso: "Injeção e execução de script no navegador, entre outros.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a proteção contra DDoS faz?",
+                        verso: "Absorve e mitiga ataques que inundam a rede.",
+                    },
+                    {
+                        frente: "Com que frequência ela monitora o tráfego?",
+                        verso: "O tempo todo.",
+                    },
+                    {
+                        frente: "Que objetivo o ataque de DDoS tem?",
+                        verso: "Derrubar o serviço pelo volume.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o Azure Bastion dá?",
+                        verso: "Acesso remoto seguro sem endereço público na máquina.",
+                    },
+                    {
+                        frente: "O que o Key Vault centraliza?",
+                        verso: "Segredos, chaves e certificados.",
+                    },
+                    {
+                        frente: "O que os dois têm em comum?",
+                        verso: "Tiram do caminho a exposição direta do recurso.",
+                    },
+                ],
+            },
+        },
     },
 };
