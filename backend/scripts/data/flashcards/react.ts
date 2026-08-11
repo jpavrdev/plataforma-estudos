@@ -174,5 +174,169 @@ export const react: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que sinal indica que o efeito não deveria existir?",
+                        verso: "Ele não sincronizar com nada fora do React.",
+                    },
+                    {
+                        frente: "Para que o efeito serve, então?",
+                        verso: "Para sincronizar com um sistema externo.",
+                    },
+                    {
+                        frente: "Quando o efeito roda?",
+                        verso: "Depois da renderização, e não durante.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que entra na lista de dependências?",
+                        verso: "Todo valor reativo que o efeito usa.",
+                    },
+                    {
+                        frente: "O que a função de limpeza desfaz?",
+                        verso: "O que o efeito montou, antes de rodar de novo.",
+                    },
+                    {
+                        frente: "Quando a limpeza roda?",
+                        verso: "Antes do próximo efeito e ao desmontar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que entra nas dependências, pela regra?",
+                        verso: "O que o efeito sincroniza.",
+                    },
+                    {
+                        frente: "Para onde vai o que o efeito apenas dispara?",
+                        verso: "Para um evento de efeito.",
+                    },
+                    {
+                        frente: "Que problema isso resolve?",
+                        verso: "O efeito refazer tudo por um valor que ele só lê.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que fazer com valor derivado do estado?",
+                        verso: "Calcular durante a renderização, sem efeito.",
+                    },
+                    {
+                        frente: "O que fazer com resposta a uma interação?",
+                        verso: "Tratar no manipulador do evento.",
+                    },
+                    {
+                        frente: "Que sintoma indica efeito desnecessário?",
+                        verso: "Renderizações em cadeia só para acertar o estado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que escrever a busca à mão uma vez ensina?",
+                        verso: "Os problemas que a busca de dados carrega.",
+                    },
+                    {
+                        frente: "O que escrevê-la em todo componente repete?",
+                        verso: "Os mesmos bugs em cada tela.",
+                    },
+                    {
+                        frente: "Que problemas a busca manual precisa tratar?",
+                        verso: "Corrida, cancelamento, erro e carregamento.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a prop de filhos permite?",
+                        verso: "Encaixar conteúdo dentro de um componente.",
+                    },
+                    {
+                        frente: "Que problema a composição evita?",
+                        verso: "Uma prop nova para cada variação de conteúdo.",
+                    },
+                    {
+                        frente: "O que o componente de moldura não precisa saber?",
+                        verso: "O que exatamente vai dentro dele.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um hook próprio extrai?",
+                        verso: "A lógica com estado, para ser reusada.",
+                    },
+                    {
+                        frente: "Com que palavra o nome de um hook começa?",
+                        verso: "Com use.",
+                    },
+                    {
+                        frente: "O que dois componentes com o mesmo hook compartilham?",
+                        verso: "A lógica, e não o estado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Para que tipo de dado o context serve?",
+                        verso: "O que muda pouco e é lido por muitos.",
+                    },
+                    {
+                        frente: "Que exemplos a aula cita?",
+                        verso: "Tema, idioma e usuário logado.",
+                    },
+                    {
+                        frente: "Por que ele custa caro com estado que muda sempre?",
+                        verso: "Toda mudança renderiza quem consome.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para que uma ref serve?",
+                        verso: "Guardar um valor sem provocar renderização.",
+                    },
+                    {
+                        frente: "Que uso clássico ela tem no DOM?",
+                        verso: "Alcançar o elemento para focar ou medir.",
+                    },
+                    {
+                        frente: "O que muda na tela quando uma ref é alterada?",
+                        verso: "Nada: ela não dispara renderização.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que mudou na passagem de ref na versão 19?",
+                        verso: "A ref passou a ser uma prop comum.",
+                    },
+                    {
+                        frente: "O que isso dispensa?",
+                        verso: "O encaminhamento explícito da ref.",
+                    },
+                    {
+                        frente: "Que ganho essa mudança traz?",
+                        verso: "Menos cerimônia para expor o elemento interno.",
+                    },
+                ],
+            },
+        },
     },
 };
