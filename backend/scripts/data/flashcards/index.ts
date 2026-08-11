@@ -7,6 +7,7 @@ import { awsClfC02 } from "./aws-clf-c02.ts";
 import { javascript } from "./javascript.ts";
 import { java } from "./java.ts";
 import { html } from "./html.ts";
+import { fundamentosDeLlms } from "./fundamentos-de-llms.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -16,4 +17,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     javascript,
     java,
     html,
+    fundamentosDeLlms,
 ];
