@@ -52,6 +52,7 @@ import { calculo1 } from "./calculo-1.ts";
 import { algebraLinear } from "./algebra-linear.ts";
 import { geometriaAnalitica } from "./geometria-analitica.ts";
 import { calculo2 } from "./calculo-2.ts";
+import { calculo3 } from "./calculo-3.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -106,4 +107,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     algebraLinear,
     geometriaAnalitica,
     calculo2,
+    calculo3,
 ];
