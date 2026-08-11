@@ -175,5 +175,169 @@ export const doModeloAoProduto: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um objeto salvo com joblib guarda além dos pesos?",
+                        verso: "A estrutura interna dos objetos daquela versão da biblioteca.",
+                    },
+                    {
+                        frente: "Por que fixar as bibliotecas ainda não basta?",
+                        verso: "O interpretador Python também precisa ser o mesmo.",
+                    },
+                    {
+                        frente: "Que frase resume o problema que a reprodutibilidade ataca?",
+                        verso: "Funciona na minha máquina, e só nela.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que camadas o requirements.txt deixa de resolver?",
+                        verso: "O sistema operacional e as bibliotecas de sistema.",
+                    },
+                    {
+                        frente: "Que três coisas a imagem do modelo carrega juntas?",
+                        verso: "O código da API, o arquivo do modelo e as dependências.",
+                    },
+                    {
+                        frente: "Que pergunta o container troca sobre a máquina?",
+                        verso: "Deixa de ser o que ela tem instalado e vira se tem Docker.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que papel o Dockerfile e a imagem cumprem, comparados?",
+                        verso: "O Dockerfile é a receita; a imagem é o prato pronto.",
+                    },
+                    {
+                        frente: "Que vantagem a variante slim da imagem oficial traz?",
+                        verso: "Ela é mais enxuta, com só o essencial do sistema.",
+                    },
+                    {
+                        frente: "Que arquivos nunca deveriam entrar na imagem do modelo?",
+                        verso: "O notebook de treino, o dado bruto e o histórico de teste.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três serviços gerenciados de nuvem a aula cita?",
+                        verso: "O SageMaker, o Vertex AI e o Azure Machine Learning.",
+                    },
+                    {
+                        frente: "Que troca a VPS faz ante o serviço gerenciado?",
+                        verso: "Mais atenção operacional por custo previsível e controle.",
+                    },
+                    {
+                        frente: "Que critérios decidem onde o modelo vai rodar?",
+                        verso: "O volume de pedidos, o orçamento e o tamanho do time.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que peças o módulo junta até chegar ao serviço no ar?",
+                        verso: "O modelo salvo, a API, o ambiente fixado e a imagem.",
+                    },
+                    {
+                        frente: "Quem passa a chamar o modelo depois do deploy?",
+                        verso: "Outras aplicações, sozinhas, sem ninguém rodar nada.",
+                    },
+                    {
+                        frente: "A partir de quando um modelo em produção envelhece?",
+                        verso: "Do primeiro dia: o mundo ao redor não para.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o modelo memoriza, e o que ele não entende?",
+                        verso: "Relações estatísticas daquele momento, não o mundo.",
+                    },
+                    {
+                        frente: "Que dois nomes as causas da degradação recebem?",
+                        verso: "Data drift na entrada e concept drift na relação.",
+                    },
+                    {
+                        frente: "Que exemplo de crédito a aula usa para a degradação?",
+                        verso: "Modelo treinado com juros baixos, avaliado com juros altos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que permanece igual quando existe só data drift?",
+                        verso: "A relação entre as features e o que o modelo prevê.",
+                    },
+                    {
+                        frente: "Que dois testes formais detectam data drift?",
+                        verso: "O de Kolmogorov-Smirnov e o índice PSI do mercado.",
+                    },
+                    {
+                        frente: "Que leitura o data drift detectado merece?",
+                        verso: "É alerta para investigar, não sentença de modelo ruim.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que o concept drift é mais difícil de pegar?",
+                        verso: "Só fica evidente quando o rótulo verdadeiro chega.",
+                    },
+                    {
+                        frente: "Que exemplo de streaming ilustra o concept drift?",
+                        verso: "Dias sem assistir deixando de indicar cancelamento.",
+                    },
+                    {
+                        frente: "O que pode continuar parecido mesmo com concept drift?",
+                        verso: "A distribuição das próprias features de entrada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três indicadores de saúde a API também exige?",
+                        verso: "A latência, a taxa de erro e o throughput do serviço.",
+                    },
+                    {
+                        frente: "Como as métricas do modelo devem ser lidas no tempo?",
+                        verso: "Comparadas semana a semana, nunca num número isolado.",
+                    },
+                    {
+                        frente: "Que sinal indireto a própria previsão do modelo dá?",
+                        verso: "A distribuição dela, se muda muito de uma classe.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que dois limites um alerta bem calibrado define?",
+                        verso: "Um de atenção e outro mais grave, pelo histórico.",
+                    },
+                    {
+                        frente: "Que três causas um alerta pode ter, antes do drift?",
+                        verso: "Bug no pipeline, evento pontual ou drift de verdade.",
+                    },
+                    {
+                        frente: "Que ferramentas de dashboard a aula cita?",
+                        verso: "O Grafana, o Prometheus e o CloudWatch da nuvem.",
+                    },
+                ],
+            },
+        },
     },
 };
