@@ -15,6 +15,7 @@ import { llmsEmProducao } from "./llms-em-producao.ts";
 import { fundamentosDeQa } from "./fundamentos-de-qa.ts";
 import { testesEQualidade } from "./testes-e-qualidade.ts";
 import { testesE2e } from "./testes-e2e.ts";
+import { bancoDeDadosESql } from "./banco-de-dados-e-sql.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -32,4 +33,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     fundamentosDeQa,
     testesEQualidade,
     testesE2e,
+    bancoDeDadosESql,
 ];
