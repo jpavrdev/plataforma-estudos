@@ -338,5 +338,251 @@ export const rubyOnRails: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Para que tipo de interface o Hotwire não serve?",
+                        verso: "Editor de texto rico, mapa interativo e planilha.",
+                    },
+                    {
+                        frente: "O que essas interfaces continuam pedindo?",
+                        verso: "Um framework JavaScript de verdade.",
+                    },
+                    {
+                        frente: "O que o Hotwire propõe no lugar?",
+                        verso: "Mandar HTML pelo fio, com pouco JavaScript.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o Turbo Drive faz com a navegação?",
+                        verso: "Troca o corpo da página sem recarregar tudo.",
+                    },
+                    {
+                        frente: "O que um Turbo Frame delimita?",
+                        verso: "Um pedaço da página que se atualiza sozinho.",
+                    },
+                    {
+                        frente: "O que fica de fora da atualização do frame?",
+                        verso: "O resto da página, que permanece igual.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um Turbo Stream envia?",
+                        verso: "Instruções de alteração para pedaços da página.",
+                    },
+                    {
+                        frente: "Que operações ele descreve?",
+                        verso: "Acrescentar, substituir, remover e atualizar.",
+                    },
+                    {
+                        frente: "Por onde ele pode chegar além da resposta?",
+                        verso: "Pela conexão persistente, empurrado pelo servidor.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o Stimulus liga ao HTML?",
+                        verso: "Um controlador de comportamento, por atributos.",
+                    },
+                    {
+                        frente: "O que ele não faz?",
+                        verso: "Renderizar a interface: isso continua no servidor.",
+                    },
+                    {
+                        frente: "Que tamanho de código o Stimulus espera?",
+                        verso: "Pedaços pequenos, para interações pontuais.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o Propshaft faz com os assets?",
+                        verso: "Serve e versiona os arquivos já prontos.",
+                    },
+                    {
+                        frente: "O que o importmap dispensa?",
+                        verso: "O passo de empacotar o JavaScript.",
+                    },
+                    {
+                        frente: "Que ganho essa combinação busca?",
+                        verso: "Menos ferramenta de build no caminho.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o Active Job abstrai?",
+                        verso: "Qual serviço de fila roda o trabalho.",
+                    },
+                    {
+                        frente: "O que o Solid Queue usa como armazenamento?",
+                        verso: "O próprio banco de dados.",
+                    },
+                    {
+                        frente: "O que mandar para segundo plano?",
+                        verso: "O trabalho lento que a resposta não precisa esperar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que cada etapa de um job com continuação precisa ser?",
+                        verso: "Idempotente.",
+                    },
+                    {
+                        frente: "O que pode acontecer com uma etapa?",
+                        verso: "Ser interrompida no meio e refeita desde o começo dela.",
+                    },
+                    {
+                        frente: "Que problema as continuações resolvem?",
+                        verso: "Trabalhos longos que precisam sobreviver a reinícios.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o cache troca?",
+                        verso: "Trabalho repetido por espaço guardado.",
+                    },
+                    {
+                        frente: "O que o cache de fragmento guarda?",
+                        verso: "O pedaço de HTML já renderizado.",
+                    },
+                    {
+                        frente: "O que a chave do cache precisa refletir?",
+                        verso: "Tudo que muda o conteúdo guardado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que uma conexão persistente permite?",
+                        verso: "O servidor empurrar atualização sem o cliente pedir.",
+                    },
+                    {
+                        frente: "O que um canal representa?",
+                        verso: "Um assunto que os clientes assinam.",
+                    },
+                    {
+                        frente: "O que o Solid Cable usa por trás?",
+                        verso: "O próprio banco de dados.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que nunca colocar em evento ou log?",
+                        verso: "Senha, token ou número de cartão.",
+                    },
+                    {
+                        frente: "Por que essa regra é definitiva?",
+                        verso: "Uma vez emitido, o dado sai do seu controle.",
+                    },
+                    {
+                        frente: "Que vantagem o evento estruturado tem sobre o texto solto?",
+                        verso: "Pode ser consultado e agregado por campo.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um teste de model exercita?",
+                        verso: "As regras e validações do próprio objeto.",
+                    },
+                    {
+                        frente: "O que um teste de controller exercita?",
+                        verso: "A resposta da ação para uma requisição.",
+                    },
+                    {
+                        frente: "O que as fixtures fornecem?",
+                        verso: "Dados prontos para os testes.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um teste de sistema exercita?",
+                        verso: "A aplicação pelo navegador, como o usuário faria.",
+                    },
+                    {
+                        frente: "O que é pior que teste nenhum?",
+                        verso: "Um teste que falha de vez em quando.",
+                    },
+                    {
+                        frente: "O que a suíte instável ensina à equipe?",
+                        verso: "A ignorar o vermelho.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o comando local de integração roda?",
+                        verso: "A mesma sequência de checagens do servidor.",
+                    },
+                    {
+                        frente: "Que ganho isso traz antes de abrir o PR?",
+                        verso: "Descobrir a quebra sem esperar a fila remota.",
+                    },
+                    {
+                        frente: "O que essa sequência costuma incluir?",
+                        verso: "Testes, análise de estilo e checagem de segurança.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o Kamal implanta?",
+                        verso: "Contêineres, em servidores que você controla.",
+                    },
+                    {
+                        frente: "O que ele dispensa?",
+                        verso: "Uma plataforma gerenciada entre você e a máquina.",
+                    },
+                    {
+                        frente: "O que ele faz durante a troca de versão?",
+                        verso: "Sobe a nova e só depois tira a antiga.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o projeto final junta?",
+                        verso: "As decisões da trilha numa aplicação inteira.",
+                    },
+                    {
+                        frente: "Que hábito a trilha deixa?",
+                        verso: "Seguir a convenção e sair dela só com motivo.",
+                    },
+                    {
+                        frente: "Para onde seguir depois?",
+                        verso: "Para as partes do framework que o seu projeto pedir.",
+                    },
+                ],
+            },
+        },
     },
 };
