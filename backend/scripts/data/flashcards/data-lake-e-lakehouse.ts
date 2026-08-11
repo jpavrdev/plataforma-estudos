@@ -338,5 +338,251 @@ export const dataLakeELakehouse: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o lakehouse não faz com o lake?",
+                        verso: "Não o troca por outra coisa.",
+                    },
+                    {
+                        frente: "Onde as garantias do lakehouse são aplicadas?",
+                        verso: "Direto sobre os arquivos que já estão no object storage.",
+                    },
+                    {
+                        frente: "Que garantias antes só o warehouse oferecia?",
+                        verso: "As de transação, schema fiscalizado e histórico.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três camadas a arquitetura medalhão tem?",
+                        verso: "Bronze, prata e ouro.",
+                    },
+                    {
+                        frente: "O que a camada bronze guarda?",
+                        verso: "O dado como chegou da origem.",
+                    },
+                    {
+                        frente: "O que a camada ouro entrega?",
+                        verso: "O dado pronto para o consumo do negócio.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o ACID garante em cada transação?",
+                        verso: "Tudo ou nada.",
+                    },
+                    {
+                        frente: "Sobre o que o MERGE se apoia?",
+                        verso: "Sobre essa garantia, para fazer upsert com segurança.",
+                    },
+                    {
+                        frente: "O que o time travel guarda?",
+                        verso: "Cada versão da tabela, para permitir voltar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o schema enforcement faz na escrita?",
+                        verso: "Barra o dado que não obedece ao schema declarado.",
+                    },
+                    {
+                        frente: "O que a schema evolution permite?",
+                        verso: "Mudar o schema de propósito, sem quebrar a tabela.",
+                    },
+                    {
+                        frente: "Que diferença separa os dois?",
+                        verso: "Um fiscaliza; o outro autoriza a mudança planejada.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta certa entre lake, warehouse e lakehouse?",
+                        verso: "Que conjunto de garantias o caso de uso exige.",
+                    },
+                    {
+                        frente: "O que schema rígido e SQL puro pedem?",
+                        verso: "Um warehouse.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta certa?",
+                        verso: "Qual dos três vence de forma absoluta.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o MERGE substitui numa transação só?",
+                        verso: "Um delete e um insert separados, ou o reprocesso inteiro.",
+                    },
+                    {
+                        frente: "Que resultado o MERGE atômico garante?",
+                        verso: "Ou a tabela reflete o novo estado, ou nada muda.",
+                    },
+                    {
+                        frente: "Que fonte o MERGE costuma consumir no lakehouse?",
+                        verso: "O fluxo de mudanças que vem do CDC.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que problemas o time travel resolve?",
+                        verso: "Auditoria, depuração e reversão de curto prazo.",
+                    },
+                    {
+                        frente: "O que o time travel não é?",
+                        verso: "Um backup de longo prazo.",
+                    },
+                    {
+                        frente: "O que limita o alcance do time travel?",
+                        verso: "O período de retenção dos arquivos e do próprio log.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o comando de otimização compacta?",
+                        verso: "Os arquivos, juntando os pequenos em maiores.",
+                    },
+                    {
+                        frente: "O que a ordenação por coluna ataca?",
+                        verso: "Quantos arquivos um filtro precisa abrir.",
+                    },
+                    {
+                        frente: "Que problema cada um dos dois resolve?",
+                        verso: "Um ataca o excesso de arquivos, o outro o conteúdo deles.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o vacuum libera?",
+                        verso: "Espaço, apagando o que ficou para trás.",
+                    },
+                    {
+                        frente: "Que arquivos ficaram para trás?",
+                        verso: "Os antigos, substituídos pela otimização e pelo merge.",
+                    },
+                    {
+                        frente: "Qual é o preço de apagar cedo demais?",
+                        verso: "Perder o alcance do time travel justo na hora que precisa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o particionamento ataca?",
+                        verso: "Quais pastas abrir.",
+                    },
+                    {
+                        frente: "O que a ordenação dentro dos arquivos ataca?",
+                        verso: "Quais arquivos abrir dentro dessas pastas.",
+                    },
+                    {
+                        frente: "Escolher mal a coluna de partição se corrige com mais partições?",
+                        verso: "Não: o problema é a coluna, e não a quantidade.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é um lakehouse sem governança?",
+                        verso: "Um data lake com um nome mais bonito.",
+                    },
+                    {
+                        frente: "O que continua acontecendo com os arquivos?",
+                        verso: "Seguem abertos para qualquer engine ler.",
+                    },
+                    {
+                        frente: "Que três peças a governança reúne?",
+                        verso: "Catálogo, controle de acesso e linhagem.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "No que trocar de engine se transforma no lakehouse?",
+                        verso: "Numa configuração de acesso, e não numa migração.",
+                    },
+                    {
+                        frente: "O que acontece com os dados nessa troca?",
+                        verso: "Continuam exatamente onde estavam.",
+                    },
+                    {
+                        frente: "O que permite várias engines sobre a mesma tabela?",
+                        verso: "O formato aberto, com metadados que qualquer uma lê.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Streaming e lote exigem dois lakehouses diferentes?",
+                        verso: "Não: os dois alimentam as mesmas tabelas.",
+                    },
+                    {
+                        frente: "O que muda entre streaming e lote?",
+                        verso: "O ritmo que a fonte de dados exige.",
+                    },
+                    {
+                        frente: "O que o streaming precisa acertar na escrita?",
+                        verso: "Não deixar um rastro de arquivos pequenos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que os times relaxam com o layout?",
+                        verso: "Porque o armazenamento é barato.",
+                    },
+                    {
+                        frente: "Onde a conta aparece no fim do mês?",
+                        verso: "Na leitura, e não no armazenamento.",
+                    },
+                    {
+                        frente: "Quem paga a conta de um layout ruim?",
+                        verso: "Quem consulta, toda vez que consulta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O lakehouse é um produto que se compra pronto?",
+                        verso: "Não: é uma disciplina que se pratica.",
+                    },
+                    {
+                        frente: "Que quatro práticas a aula deixa no fecho?",
+                        verso: "Camadas claras, table format, manutenção e governança.",
+                    },
+                    {
+                        frente: "Onde o table format deve ser usado?",
+                        verso: "Onde é preciso, e não em todo lugar.",
+                    },
+                ],
+            },
+        },
     },
 };
