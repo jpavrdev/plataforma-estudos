@@ -174,5 +174,169 @@ export const php: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Onde preferir a sintaxe alternativa dos condicionais?",
+                        verso: "Em arquivos de template.",
+                    },
+                    {
+                        frente: "Onde preferir as chaves?",
+                        verso: "Em arquivos só de lógica.",
+                    },
+                    {
+                        frente: "O que a sintaxe alternativa troca?",
+                        verso: "As chaves por palavras de abertura e fechamento.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que laço percorre array sem controlar o índice?",
+                        verso: "O foreach.",
+                    },
+                    {
+                        frente: "O que o foreach entrega a cada volta?",
+                        verso: "O valor, e opcionalmente a chave.",
+                    },
+                    {
+                        frente: "Que laço serve quando a condição decide a parada?",
+                        verso: "O while.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um parâmetro com valor padrão permite?",
+                        verso: "Chamar a função sem passar aquele argumento.",
+                    },
+                    {
+                        frente: "Onde os parâmetros com padrão precisam ficar?",
+                        verso: "Depois dos obrigatórios.",
+                    },
+                    {
+                        frente: "O que o retorno declarado documenta?",
+                        verso: "O tipo que a função entrega.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para onde vale a declaração de tipos estritos?",
+                        verso: "Só para o arquivo onde está escrita.",
+                    },
+                    {
+                        frente: "Onde ela precisa aparecer?",
+                        verso: "Como a primeira instrução do arquivo.",
+                    },
+                    {
+                        frente: "O que ela muda no comportamento?",
+                        verso: "O PHP deixa de converter o argumento e reclama.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que os argumentos nomeados permitem?",
+                        verso: "Passar só o que interessa, fora de ordem.",
+                    },
+                    {
+                        frente: "O que uma função de seta captura sozinha?",
+                        verso: "As variáveis do escopo em volta.",
+                    },
+                    {
+                        frente: "Quantas expressões uma função de seta tem?",
+                        verso: "Uma só, que já é o retorno.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois tipos de array o PHP tem?",
+                        verso: "Indexado e associativo.",
+                    },
+                    {
+                        frente: "O que o array associativo usa como chave?",
+                        verso: "Uma string escolhida por você.",
+                    },
+                    {
+                        frente: "O que acontece ao remover um item do indexado?",
+                        verso: "As chaves ficam com buracos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a filtragem deixa para trás nas chaves?",
+                        verso: "Os índices originais, agora com buracos.",
+                    },
+                    {
+                        frente: "O que corrige isso antes de virar JSON?",
+                        verso: "Reindexar o array.",
+                    },
+                    {
+                        frente: "Que problema o array com buracos causa numa API?",
+                        verso: "Vira objeto no JSON, onde deveria ser lista.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que as funções de ordenação fazem com o array?",
+                        verso: "Ordenam no próprio lugar, sem devolver cópia.",
+                    },
+                    {
+                        frente: "Que cuidado a ordenação de associativo exige?",
+                        verso: "Escolher a função que preserva as chaves.",
+                    },
+                    {
+                        frente: "Que função diz se um valor está no array?",
+                        verso: "A de busca por valor, com comparação estrita opcional.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o espalhamento faz com um array?",
+                        verso: "Desmonta os itens dentro de outro array ou chamada.",
+                    },
+                    {
+                        frente: "O que a desestruturação faz?",
+                        verso: "Distribui os itens em variáveis de uma vez.",
+                    },
+                    {
+                        frente: "Que ganho o espalhamento traz na junção?",
+                        verso: "Combina arrays sem função auxiliar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a codificação para JSON espera do array?",
+                        verso: "Chaves sequenciais, para virar lista.",
+                    },
+                    {
+                        frente: "O que a decodificação devolve por padrão?",
+                        verso: "Um objeto, salvo se você pedir array associativo.",
+                    },
+                    {
+                        frente: "Que cuidado a decodificação exige?",
+                        verso: "Checar se falhou antes de usar o resultado.",
+                    },
+                ],
+            },
+        },
     },
 };
