@@ -11,6 +11,7 @@ import { fundamentosDeLlms } from "./fundamentos-de-llms.ts";
 import { aplicacoesComLlms } from "./aplicacoes-com-llms.ts";
 import { ragNaPratica } from "./rag-na-pratica.ts";
 import { agentesDeIa } from "./agentes-de-ia.ts";
+import { llmsEmProducao } from "./llms-em-producao.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -24,4 +25,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     aplicacoesComLlms,
     ragNaPratica,
     agentesDeIa,
+    llmsEmProducao,
 ];
