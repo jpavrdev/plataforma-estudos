@@ -338,5 +338,251 @@ export const laravel: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um guard define?",
+                        verso: "Como o usuário é autenticado em cada contexto.",
+                    },
+                    {
+                        frente: "O que um provider define?",
+                        verso: "De onde os usuários são carregados.",
+                    },
+                    {
+                        frente: "Que guard a aplicação web usa por padrão?",
+                        verso: "O de sessão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que manter ao adotar passkey?",
+                        verso: "Um segundo caminho de entrada.",
+                    },
+                    {
+                        frente: "O que acontece com quem perde o dispositivo sem alternativa?",
+                        verso: "Perde a conta.",
+                    },
+                    {
+                        frente: "O que a passkey substitui?",
+                        verso: "A senha, por uma chave presa ao dispositivo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um middleware próprio permite?",
+                        verso: "Interceptar a requisição antes da ação.",
+                    },
+                    {
+                        frente: "O que ele pode fazer com a requisição?",
+                        verso: "Deixar seguir, alterar ou interromper.",
+                    },
+                    {
+                        frente: "Onde ele é registrado?",
+                        verso: "Na configuração da aplicação, ou direto na rota.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que esconder o botão na view é?",
+                        verso: "Experiência de uso, e não segurança.",
+                    },
+                    {
+                        frente: "O que realmente protege a ação?",
+                        verso: "A verificação no controller.",
+                    },
+                    {
+                        frente: "O que uma policy agrupa?",
+                        verso: "As regras de autorização de um model.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que defesa o framework já dá contra injeção?",
+                        verso: "As consultas preparadas do construtor de queries.",
+                    },
+                    {
+                        frente: "Que defesa ele dá no template?",
+                        verso: "O escape automático da saída.",
+                    },
+                    {
+                        frente: "O que ainda fica por conta de quem escreve?",
+                        verso: "A autorização e as regras de negócio.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um resource de API define?",
+                        verso: "Como o model vira JSON.",
+                    },
+                    {
+                        frente: "O que os campos esparsos permitem ao cliente?",
+                        verso: "Pedir só as colunas que ele quer.",
+                    },
+                    {
+                        frente: "Que ganho isso traz?",
+                        verso: "Menos tráfego, sem precisar de um endpoint novo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dois cenários o Sanctum cobre?",
+                        verso: "Token de API e sessão para front-end do mesmo domínio.",
+                    },
+                    {
+                        frente: "O que um token de API carrega?",
+                        verso: "As habilidades que ele pode exercer.",
+                    },
+                    {
+                        frente: "O que revogar um token faz?",
+                        verso: "Encerra o acesso daquele cliente na hora.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o worker carrega ao subir?",
+                        verso: "O código na memória.",
+                    },
+                    {
+                        frente: "O que acontece sem reiniciar o worker no deploy?",
+                        verso: "Ele segue rodando a versão antiga.",
+                    },
+                    {
+                        frente: "O que mandar para a fila?",
+                        verso: "O trabalho lento, que não precisa de resposta imediata.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o cache troca?",
+                        verso: "Trabalho repetido por memória.",
+                    },
+                    {
+                        frente: "O que a invalidação precisa garantir?",
+                        verso: "Que o dado velho saia quando a fonte muda.",
+                    },
+                    {
+                        frente: "O que estender a validade de uma chave evita?",
+                        verso: "Recalcular só porque o tempo acabou.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que um evento representa?",
+                        verso: "Algo que aconteceu na aplicação.",
+                    },
+                    {
+                        frente: "O que um listener faz?",
+                        verso: "Reage ao evento, sem o emissor saber quem escuta.",
+                    },
+                    {
+                        frente: "O que uma notificação escolhe?",
+                        verso: "O canal de entrega, como email ou banco.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um teste de feature exercita?",
+                        verso: "O caminho da requisição até a resposta.",
+                    },
+                    {
+                        frente: "O que um teste de unidade isola?",
+                        verso: "Uma peça pequena, sem o resto da aplicação.",
+                    },
+                    {
+                        frente: "O que o banco de teste precisa garantir?",
+                        verso: "Que cada teste começa do mesmo estado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que características toda chamada a modelo tem?",
+                        verso: "É lenta e pode falhar.",
+                    },
+                    {
+                        frente: "Para onde mandar essa chamada?",
+                        verso: "Para a fila.",
+                    },
+                    {
+                        frente: "O que tratar como em qualquer API externa?",
+                        verso: "O tempo esgotado e o erro.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que acontece com o embedding quando o texto muda?",
+                        verso: "Precisa ser gerado de novo.",
+                    },
+                    {
+                        frente: "O que a busca aponta se isso não for feito?",
+                        verso: "Para o conteúdo antigo.",
+                    },
+                    {
+                        frente: "O que a busca semântica compara?",
+                        verso: "A proximidade entre vetores, não as palavras exatas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que precisa estar desligado em produção?",
+                        verso: "O modo de depuração.",
+                    },
+                    {
+                        frente: "O que os comandos de cache de configuração fazem?",
+                        verso: "Deixam configuração e rotas pré-compiladas.",
+                    },
+                    {
+                        frente: "O que conferir nas permissões de arquivo?",
+                        verso: "Que só as pastas de escrita sejam graváveis.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o deploy precisa rodar depois de subir o código?",
+                        verso: "As migrations e a limpeza dos caches.",
+                    },
+                    {
+                        frente: "O que reiniciar junto do deploy?",
+                        verso: "Os workers de fila.",
+                    },
+                    {
+                        frente: "O que o projeto final consolida?",
+                        verso: "As decisões da trilha numa aplicação inteira.",
+                    },
+                ],
+            },
+        },
     },
 };
