@@ -338,5 +338,251 @@ export const ruby: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quando o método de inicialização é chamado?",
+                        verso: "Ao criar a instância.",
+                    },
+                    {
+                        frente: "Como um método privado não pode ser chamado?",
+                        verso: "Com receptor explícito.",
+                    },
+                    {
+                        frente: "Que exceção essa regra tem?",
+                        verso: "A atribuição, que aceita o receptor.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o leitor de atributo gera?",
+                        verso: "O método que devolve o valor.",
+                    },
+                    {
+                        frente: "O que o escritor gera?",
+                        verso: "O método que define o valor.",
+                    },
+                    {
+                        frente: "O que o acessor faz?",
+                        verso: "Gera os dois de uma vez.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a chamada ao pai faz sem argumentos?",
+                        verso: "Repassa os mesmos argumentos recebidos.",
+                    },
+                    {
+                        frente: "O que ela faz com parênteses vazios?",
+                        verso: "Chama o método do pai sem passar nada.",
+                    },
+                    {
+                        frente: "Quantas classes uma classe pode herdar?",
+                        verso: "Uma só.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dois papéis um módulo cumpre?",
+                        verso: "Espaço de nomes e mistura de comportamento.",
+                    },
+                    {
+                        frente: "O que a mistura acrescenta à classe?",
+                        verso: "Os métodos do módulo, como se fossem dela.",
+                    },
+                    {
+                        frente: "O que o módulo não pode fazer?",
+                        verso: "Ser instanciado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o duck typing observa no objeto?",
+                        verso: "O que ele sabe fazer, e não a classe dele.",
+                    },
+                    {
+                        frente: "O que o módulo de comparação pede da classe?",
+                        verso: "Um método que compare dois objetos.",
+                    },
+                    {
+                        frente: "O que o módulo de enumeração pede?",
+                        verso: "Um método que percorre os elementos.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o bloco de garantia faz?",
+                        verso: "Roda sempre, com ou sem exceção.",
+                    },
+                    {
+                        frente: "O que o resgate captura?",
+                        verso: "A exceção lançada dentro do bloco.",
+                    },
+                    {
+                        frente: "Que exceção evitar capturar de forma ampla?",
+                        verso: "A raiz da hierarquia, que engole tudo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De onde uma exceção própria deve herdar?",
+                        verso: "Da classe de erro padrão da aplicação.",
+                    },
+                    {
+                        frente: "Que ganho uma hierarquia própria traz?",
+                        verso: "Capturar por família, sem listar cada erro.",
+                    },
+                    {
+                        frente: "O que o nome da exceção deve dizer?",
+                        verso: "O que deu errado, no vocabulário do domínio.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Minitest traz por padrão?",
+                        verso: "Um framework de teste simples, já na biblioteca padrão.",
+                    },
+                    {
+                        frente: "Que estilo ele usa?",
+                        verso: "Asserções dentro de métodos de teste.",
+                    },
+                    {
+                        frente: "O que um teste precisa deixar claro?",
+                        verso: "O que se esperava e o que aconteceu.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que estilo o RSpec usa?",
+                        verso: "O de especificação, descrevendo comportamento.",
+                    },
+                    {
+                        frente: "O que um bloco de descrição agrupa?",
+                        verso: "Os exemplos de um mesmo comportamento.",
+                    },
+                    {
+                        frente: "O que a expectativa declara?",
+                        verso: "O resultado esperado, em linguagem quase natural.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o RuboCop verifica?",
+                        verso: "Estilo e padrões do código.",
+                    },
+                    {
+                        frente: "O que ele consegue corrigir sozinho?",
+                        verso: "Boa parte dos desvios de formatação.",
+                    },
+                    {
+                        frente: "Que ferramenta ajuda a investigar em execução?",
+                        verso: "O depurador da própria linguagem.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma versão maior costuma trazer junto?",
+                        verso: "Recursos novos e mudanças que podem quebrar código.",
+                    },
+                    {
+                        frente: "Onde conferir o que mudou?",
+                        verso: "Nas notas de versão da linguagem.",
+                    },
+                    {
+                        frente: "Que cuidado a atualização pede?",
+                        verso: "Rodar a suíte de testes antes de adotar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um compilador em tempo de execução faz?",
+                        verso: "Traduz o código mais usado para instruções nativas.",
+                    },
+                    {
+                        frente: "Que ganho ele busca?",
+                        verso: "Menos tempo de execução no trecho quente.",
+                    },
+                    {
+                        frente: "Que custo ele traz?",
+                        verso: "Mais memória e tempo de aquecimento.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma thread compartilha?",
+                        verso: "A mesma memória do processo.",
+                    },
+                    {
+                        frente: "O que uma fiber permite?",
+                        verso: "Pausar e retomar a execução de forma cooperativa.",
+                    },
+                    {
+                        frente: "O que um ractor isola?",
+                        verso: "A memória, permitindo paralelismo real.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o Ruby::Box isola?",
+                        verso: "Definições, alterações em classes e variáveis globais.",
+                    },
+                    {
+                        frente: "Que estágio ele tem na versão 4?",
+                        verso: "Experimental.",
+                    },
+                    {
+                        frente: "O que isso implica para quem adota?",
+                        verso: "A interface ainda pode mudar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o projeto final exercita?",
+                        verso: "As decisões da trilha num programa inteiro.",
+                    },
+                    {
+                        frente: "Que hábito a trilha deixa?",
+                        verso: "Código legível, com testes e ferramenta de estilo.",
+                    },
+                    {
+                        frente: "Para onde seguir depois?",
+                        verso: "Para um framework ou para as bibliotecas do ecossistema.",
+                    },
+                ],
+            },
+        },
     },
 };
