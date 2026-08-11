@@ -341,5 +341,251 @@ export const algebraLinear: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que basta conhecer para conhecer a transformação toda?",
+                        verso: "O que ela faz nos vetores de uma base.",
+                    },
+                    {
+                        frente: "Que duas condições definem uma transformação linear?",
+                        verso: "Preservar a soma de vetores e a multiplicação por escalar.",
+                    },
+                    {
+                        frente: "Para onde a transformação linear sempre leva a origem?",
+                        verso: "Para a origem do espaço de chegada.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que fixa a matriz de uma transformação?",
+                        verso: "A escolha de uma base, que vira a transformação em números.",
+                    },
+                    {
+                        frente: "O que cada coluna dessa matriz guarda?",
+                        verso: "A imagem de um vetor da base, escrita em coordenadas.",
+                    },
+                    {
+                        frente: "A que operação a matriz reduz a transformação?",
+                        verso: "A um produto de matriz por vetor.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Onde o núcleo e a imagem moram?",
+                        verso: "O núcleo no espaço de partida e a imagem no de chegada.",
+                    },
+                    {
+                        frente: "O que o núcleo reúne?",
+                        verso: "Os vetores que a transformação leva ao vetor nulo.",
+                    },
+                    {
+                        frente: "O que a imagem reúne?",
+                        verso: "Tudo que a transformação alcança no espaço de chegada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que soma o teorema do núcleo e da imagem fixa?",
+                        verso: "A das dimensões do núcleo e da imagem, igual à do domínio.",
+                    },
+                    {
+                        frente: "Que metáfora a aula usa para o domínio?",
+                        verso: "Um orçamento de dimensões, gasto entre núcleo e imagem.",
+                    },
+                    {
+                        frente: "O que uma dimensão a mais no núcleo custa?",
+                        verso: "Uma dimensão a menos disponível para a imagem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que compor duas transformações significa?",
+                        verso: "Encaixar duas máquinas em série, uma depois da outra.",
+                    },
+                    {
+                        frente: "Que operação corresponde à composição em matrizes?",
+                        verso: "O produto das matrizes, na ordem em que se aplicam.",
+                    },
+                    {
+                        frente: "O que a transformação inversa faz?",
+                        verso: "Desfaz exatamente o trabalho da primeira.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um autovetor revela sobre a transformação?",
+                        verso: "Um eixo natural, direção em que ela apenas escala.",
+                    },
+                    {
+                        frente: "O que o autovalor mede naquela direção?",
+                        verso: "O fator de esticamento ou de encolhimento aplicado.",
+                    },
+                    {
+                        frente: "Que vetor nunca conta como autovetor?",
+                        verso: "O vetor nulo, excluído por definição.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em que o polinômio característico converte a busca?",
+                        verso: "Num problema de raízes, resolvido por equação polinomial.",
+                    },
+                    {
+                        frente: "Que determinante gera o polinômio característico?",
+                        verso: "O da matriz menos o autovalor vezes a identidade.",
+                    },
+                    {
+                        frente: "O que são as raízes do polinômio característico?",
+                        verso: "Os autovalores da matriz.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que sistema cada autovalor abre?",
+                        verso: "Um homogêneo, cuja solução dá as direções invariantes.",
+                    },
+                    {
+                        frente: "Que nome o conjunto ligado a um autovalor recebe?",
+                        verso: "Autoespaço.",
+                    },
+                    {
+                        frente: "Que solução do sistema homogêneo é descartada?",
+                        verso: "A trivial, do vetor nulo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que diagonalizar troca, no fundo?",
+                        verso: "O referencial, passando às coordenadas dos autovetores.",
+                    },
+                    {
+                        frente: "Que forma a transformação assume na base de autovetores?",
+                        verso: "A de multiplicação simples, eixo a eixo.",
+                    },
+                    {
+                        frente: "Que condição permite diagonalizar uma matriz?",
+                        verso: "Ter autovetores independentes em número igual à dimensão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que conta a diagonalização torna barata?",
+                        verso: "A potência alta da matriz, nas coordenadas certas.",
+                    },
+                    {
+                        frente: "O que sobra elevado à potência na forma diagonal?",
+                        verso: "Apenas os autovalores, cada um na sua posição.",
+                    },
+                    {
+                        frente: "Que tipo de problema a diagonalização costuma resolver?",
+                        verso: "Os de evolução repetida, como potências e recorrências.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a norma transforma em conta?",
+                        verso: "A ideia de comprimento, válida em qualquer dimensão.",
+                    },
+                    {
+                        frente: "Que resultado o produto interno devolve?",
+                        verso: "Um número, e não outro vetor.",
+                    },
+                    {
+                        frente: "Como o produto interno se conecta à norma?",
+                        verso: "A norma é a raiz do produto do vetor com ele mesmo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que dois vetores ortogonais não compartilham?",
+                        verso: "Nenhuma componente na direção um do outro.",
+                    },
+                    {
+                        frente: "Que valor o produto interno de ortogonais tem?",
+                        verso: "Zero.",
+                    },
+                    {
+                        frente: "O que o produto interno revela sobre o ângulo?",
+                        verso: "O cosseno dele, depois de dividir pelas normas.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa ortogonal de ortonormal?",
+                        verso: "O ortonormal ainda exige norma igual a um em cada vetor.",
+                    },
+                    {
+                        frente: "Que vantagem uma base ortonormal traz?",
+                        verso: "Eixos alinhados ao problema, com contas bem mais curtas.",
+                    },
+                    {
+                        frente: "Que propriedade um conjunto ortogonal sem vetor nulo tem?",
+                        verso: "Ser linearmente independente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que Gram-Schmidt não altera no conjunto?",
+                        verso: "O espaço gerado, que continua exatamente o mesmo.",
+                    },
+                    {
+                        frente: "O que Gram-Schmidt entrega no lugar dos vetores?",
+                        verso: "Outros ortogonais, mais bem comportados para as contas.",
+                    },
+                    {
+                        frente: "Que passo remove a redundância em Gram-Schmidt?",
+                        verso: "Subtrair a projeção sobre os vetores já ortogonalizados.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que projetar encontra dentro de um subespaço?",
+                        verso: "O ponto mais próximo daquilo que você tem.",
+                    },
+                    {
+                        frente: "Que relação a diferença da projeção guarda?",
+                        verso: "Fica ortogonal ao subespaço inteiro.",
+                    },
+                    {
+                        frente: "Que problema clássico a projeção ortogonal resolve?",
+                        verso: "O do ajuste por mínimos quadrados.",
+                    },
+                ],
+            },
+        },
     },
 };
