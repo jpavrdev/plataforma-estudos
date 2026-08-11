@@ -78,6 +78,7 @@ import { azureAz104 } from "./azure-az-104.ts";
 import { azureSc900 } from "./azure-sc-900.ts";
 import { istqbCtfl } from "./istqb-ctfl.ts";
 import { isc2Cc } from "./isc2-cc.ts";
+import { css } from "./css.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -158,4 +159,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     azureSc900,
     istqbCtfl,
     isc2Cc,
+    css,
 ];
