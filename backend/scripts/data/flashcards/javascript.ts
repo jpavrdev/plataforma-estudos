@@ -84,6 +84,22 @@ export const javascript: CartasDaTrilha = {
             },
         },
         3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o operador de soma faz com uma string?",
+                        verso: "Concatena, em vez de somar.",
+                    },
+                    {
+                        frente: "O que a divisão por zero devolve?",
+                        verso: "Infinito, e não um erro.",
+                    },
+                    {
+                        frente: "O que resulta de uma operação inválida com números?",
+                        verso: "Um valor que não é número.",
+                    },
+                ],
+            },
             2: {
                 neutra: [
                     {
@@ -144,6 +160,22 @@ export const javascript: CartasDaTrilha = {
             },
         },
         5: {
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o break faz no laço?",
+                        verso: "Encerra o laço na hora.",
+                    },
+                    {
+                        frente: "O que o continue faz?",
+                        verso: "Pula para a próxima repetição.",
+                    },
+                    {
+                        frente: "Que erro comum o continue causa?",
+                        verso: "Pular a atualização do contador e travar o laço.",
+                    },
+                ],
+            },
             1: {
                 neutra: [
                     {

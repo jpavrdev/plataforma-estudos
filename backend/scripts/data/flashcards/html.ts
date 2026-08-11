@@ -80,6 +80,22 @@ export const html: CartasDaTrilha = {
             },
         },
         3: {
+            4: {
+                neutra: [
+                    {
+                        frente: "Que atributo funde células na horizontal?",
+                        verso: "O de expansão por colunas.",
+                    },
+                    {
+                        frente: "Que atributo funde células na vertical?",
+                        verso: "O de expansão por linhas.",
+                    },
+                    {
+                        frente: "O que acontece com a célula absorvida?",
+                        verso: "Ela sai do código, em vez de ficar vazia.",
+                    },
+                ],
+            },
             1: {
                 neutra: [
                     {
@@ -106,6 +122,22 @@ export const html: CartasDaTrilha = {
             },
         },
         4: {
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a validação nativa dispensa?",
+                        verso: "Escrever código para checar o básico.",
+                    },
+                    {
+                        frente: "Que atributo torna o campo obrigatório?",
+                        verso: "O de campo requerido.",
+                    },
+                    {
+                        frente: "A validação nativa substitui a do servidor?",
+                        verso: "Não: ela é conveniência, e não segurança.",
+                    },
+                ],
+            },
             1: {
                 neutra: [
                     {

@@ -811,14 +811,23 @@ export function Revisao() {
                 />
               </div>
 
+              {/* Fila vazia deixou de significar "está tudo em dia": a sessão serve
+                  todo o conteúdo escolhido. Sobrou um motivo só, e o texto diz qual,
+                  separando "não estudei nada ainda" de "escolhi o baralho errado". */}
               {vazio && (
                 <p className="rev-escolha__vazio">
-                  Nada venceu no que você escolheu. Marque outro conteúdo.
+                  {baralhoVazio
+                    ? 'Você ainda não tem cartas. Elas nascem quando você conclui uma aula.'
+                    : 'Não há cartas no que você escolheu. Marque outro conteúdo.'}
                 </p>
               )}
 
               <div className="rev-escolha__rodape">
-                <button className="btn btn--accent" onClick={() => void comecar()}>
+                <button
+                  className="btn btn--accent"
+                  onClick={() => void comecar()}
+                  disabled={baralhoVazio}
+                >
                   Começar revisão
                 </button>
               </div>
