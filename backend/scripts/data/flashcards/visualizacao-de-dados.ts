@@ -175,5 +175,169 @@ export const visualizacaoDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três coisas se observa em qualquer histograma?",
+                        verso: "O formato, a quantidade de picos e o tamanho da cauda.",
+                    },
+                    {
+                        frente: "O que um histograma bimodal costuma denunciar?",
+                        verso: "Dois grupos misturados dentro da mesma variável.",
+                    },
+                    {
+                        frente: "Que faixa de bins serve de ponto de partida razoável?",
+                        verso: "Algo entre dez e trinta, ajustando pelo resultado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que medida o corpo da caixa representa por inteiro?",
+                        verso: "O IQR, onde está metade das observações.",
+                    },
+                    {
+                        frente: "Até onde os bigodes do boxplot se estendem?",
+                        verso: "Ao valor mais extremo dentro de 1,5 vez o IQR.",
+                    },
+                    {
+                        frente: "Que três comparações várias caixas lado a lado permitem?",
+                        verso: "Mediana mais alta, grupo mais consistente e mais outliers.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três coisas se lê numa nuvem de pontos?",
+                        verso: "A tendência, a força e os padrões fora da reta.",
+                    },
+                    {
+                        frente: "Por que a dispersão vem antes do coeficiente?",
+                        verso: "Ela mostra se a relação é mesmo reta e se há grupos.",
+                    },
+                    {
+                        frente: "Que padrão fora da reta a nuvem pode revelar?",
+                        verso: "Uma curva, ou duas nuvens separadas de pontos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que duas orientações de barra o matplotlib oferece?",
+                        verso: "A vertical com bar e a horizontal com barh.",
+                    },
+                    {
+                        frente: "Que pergunta separa barra agrupada de empilhada?",
+                        verso: "Comparar subcategorias ou mostrar a composição do total.",
+                    },
+                    {
+                        frente: "Em que caso raro a pizza ainda se sustenta?",
+                        verso: "Com duas ou três fatias de diferença bem grande.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que dois padrões a linha entrega de leitura?",
+                        verso: "A tendência de longo prazo e a sazonalidade que repete.",
+                    },
+                    {
+                        frente: "A partir de quantas linhas o gráfico vira emaranhado?",
+                        verso: "De seis ou sete em diante, com todas se cruzando.",
+                    },
+                    {
+                        frente: "Que pergunta simples decide entre linha e barra?",
+                        verso: "Se o eixo x é tempo ou se é categoria sem ordem.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois compromissos o seaborn assume de saída?",
+                        verso: "Vir bonito por padrão e conversar direto com o pandas.",
+                    },
+                    {
+                        frente: "Que tipo de valor os parâmetros x e y recebem?",
+                        verso: "Nomes de coluna em texto, não os valores prontos.",
+                    },
+                    {
+                        frente: "Que três coisas o hue dispensa escrever à mão?",
+                        verso: "O laço, o dicionário de cores e a chamada da legenda.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que troca o kdeplot faz em relação ao histplot?",
+                        verso: "Curva suave no lugar das barras, sem contagem exata.",
+                    },
+                    {
+                        frente: "Que vantagem a curva de densidade leva sobre as barras?",
+                        verso: "Ela não depende de escolher o número de bins.",
+                    },
+                    {
+                        frente: "Que parâmetro empilha em vez de sobrepor os grupos?",
+                        verso: "O multiple igual a stack, quando a sobreposição atrapalha.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que detalhe o violinplot soma ao boxplot?",
+                        verso: "O formato inteiro da distribuição, espelhado dos dois lados.",
+                    },
+                    {
+                        frente: "O que a linha vertical de cada barra do barplot indica?",
+                        verso: "A incerteza em torno da média agregada do grupo.",
+                    },
+                    {
+                        frente: "Que método do pandas o countplot desenha?",
+                        verso: "O value_counts da coluna categórica escolhida.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três leituras todo heatmap de correlação permite?",
+                        verso: "Diagonal sempre um, matriz simétrica e a paleta divergente.",
+                    },
+                    {
+                        frente: "O que o pairplot desenha na diagonal da grade?",
+                        verso: "A distribuição de cada variável isolada.",
+                    },
+                    {
+                        frente: "Que limite do heatmap o pairplot cobre?",
+                        verso: "Ele mostra a forma da relação, e não só o valor de r.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três famílias de paleta a aula separa?",
+                        verso: "Qualitativa, sequencial e divergente, cada uma com seu uso.",
+                    },
+                    {
+                        frente: "Que paleta o seaborn traz pensando em daltonismo?",
+                        verso: "A colorblind, entre as opções prontas da biblioteca.",
+                    },
+                    {
+                        frente: "Que objeto a maioria das funções do seaborn devolve?",
+                        verso: "Um Axes do matplotlib, ajustável do jeito de sempre.",
+                    },
+                ],
+            },
+        },
     },
 };
