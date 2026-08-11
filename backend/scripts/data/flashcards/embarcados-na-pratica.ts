@@ -175,5 +175,169 @@ export const embarcadosNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois módulos clássicos falam UART no projeto?",
+                        verso: "O console de depuração e o receptor de GPS.",
+                    },
+                    {
+                        frente: "Onde o receptor amostra cada bit da linha?",
+                        verso: "No meio do tempo de bit, contando pelo baud rate.",
+                    },
+                    {
+                        frente: "Que cuidado elétrico a UART exige na bancada?",
+                        verso: "Casar os níveis lógicos; o padrão antigo pede conversor.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que estrutura mestre e escravo formam no SPI?",
+                        verso: "Dois registradores de deslocamento ligados em anel.",
+                    },
+                    {
+                        frente: "Que duas escolhas definem os quatro modos do SPI?",
+                        verso: "O nível de repouso do clock e a borda de amostragem.",
+                    },
+                    {
+                        frente: "Que três coisas o SPI deliberadamente não tem?",
+                        verso: "Endereço, confirmação de recebimento e detecção de erro.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que valor de pull-up virou padrão de fato em 3,3 V?",
+                        verso: "Os 4,7k, dentro da faixa de 2,2k a 10k ohms.",
+                    },
+                    {
+                        frente: "Que recurso educado um escravo lento pode usar?",
+                        verso: "O clock stretching, segurando o sinal enquanto processa.",
+                    },
+                    {
+                        frente: "Que dor de bancada lidera a lista do I2C?",
+                        verso: "Pull-up ausente, e o barramento simplesmente não fala.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pergunta costuma decidir sozinha o barramento?",
+                        verso: "O que o componente escolhido oferece de interface.",
+                    },
+                    {
+                        frente: "Que diagnóstico o ACK do I2C entrega de graça?",
+                        verso: "Se o dispositivo está presente e respondendo na hora.",
+                    },
+                    {
+                        frente: "Que critério desempata quando dois barramentos servem?",
+                        verso: "O que simplifica o software e o time já sabe depurar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que campo funciona como seguro de futuro no frame?",
+                        verso: "O byte de versão, para o novo entender o antigo.",
+                    },
+                    {
+                        frente: "Que erro o CRC pega que a soma simples não pega?",
+                        verso: "A rajada curta de bits corrompidos, típica de fio real.",
+                    },
+                    {
+                        frente: "Por que serializar campo a campo em vez da struct?",
+                        verso: "Padding e ordem de bytes variam entre compiladores.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que custo as exceções cobram mesmo sem nenhum throw?",
+                        verso: "Kilobytes de tabela de unwind ocupando a flash.",
+                    },
+                    {
+                        frente: "Que recursos do C++ ficam no subset embarcado?",
+                        verso: "Classes com invariante, RAII, template e constexpr.",
+                    },
+                    {
+                        frente: "Como o firmware devolve erro sem exceções?",
+                        verso: "Com enum de retorno e o valor entregue por referência.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que ganho o pino virar parte do tipo produz?",
+                        verso: "O pino errado não compila, e o erro sai do runtime.",
+                    },
+                    {
+                        frente: "Que engrenagem faz o template virar número pronto?",
+                        verso: "Os parâmetros são constantes resolvidas na compilação.",
+                    },
+                    {
+                        frente: "Como se confere o custo zero de uma abstração?",
+                        verso: "Lendo o assembly ou comparando o tamanho no map file.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que tabela clássica o constexpr costuma gerar?",
+                        verso: "A de consulta do CRC, com 256 entradas prontas.",
+                    },
+                    {
+                        frente: "Que teste mais barato o build oferece sobre valores?",
+                        verso: "O static_assert, reprovando a tabela errada no build.",
+                    },
+                    {
+                        frente: "Que moral econômica o módulo fixa sobre recursos?",
+                        verso: "Flash é abundante, RAM é escassa e ciclo é disputado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pergunta escolher o N do container força?",
+                        verso: "Qual é o pior caso de itens acumulados ao mesmo tempo.",
+                    },
+                    {
+                        frente: "Que comportamento o container estático recusa ter?",
+                        verso: "Realocar em silêncio, mudando endereço e tempo.",
+                    },
+                    {
+                        frente: "Que orçamento o sizeof desses containers revela?",
+                        verso: "O de RAM, verificável já na compilação do projeto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que recursos do C++ não emitem um byte a mais?",
+                        verso: "Classe sem virtual, template, constexpr e namespace.",
+                    },
+                    {
+                        frente: "Que biblioteca arrasta dezenas de kilobytes à flash?",
+                        verso: "O iostream, com formatação e localidade embutidas.",
+                    },
+                    {
+                        frente: "Como o tamanho vira métrica de regressão no build?",
+                        verso: "Registrando flash e RAM e alertando quando engorda.",
+                    },
+                ],
+            },
+        },
     },
 };
