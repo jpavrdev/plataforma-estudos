@@ -174,5 +174,169 @@ export const modernDataStack: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um modelo dbt não é?",
+                        verso: "A tabela em si.",
+                    },
+                    {
+                        frente: "O que um modelo dbt é, então?",
+                        verso: "A definição de como aquela tabela deve ser construída.",
+                    },
+                    {
+                        frente: "O que acontece com a tabela a cada execução?",
+                        verso: "É recriada a partir da definição.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um nome de tabela escrito à mão indica?",
+                        verso: "Que falta um ref, ou falta um source declarado.",
+                    },
+                    {
+                        frente: "O que o ref aponta?",
+                        verso: "Outro modelo do mesmo projeto.",
+                    },
+                    {
+                        frente: "O que o source declara?",
+                        verso: "Uma tabela bruta que o dbt não construiu.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "De onde vem o grafo de um projeto dbt?",
+                        verso: "Da soma de todos os ref e source escritos no SQL.",
+                    },
+                    {
+                        frente: "Que qualidade esse grafo tem?",
+                        verso: "Fica sempre atualizado, porque nasce do próprio código.",
+                    },
+                    {
+                        frente: "O que esse grafo não é?",
+                        verso: "Um diagrama mantido à parte.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a camada de staging responde?",
+                        verso: "Qual é a fonte, já limpa.",
+                    },
+                    {
+                        frente: "O que a camada intermediária responde?",
+                        verso: "Como essas fontes se combinam.",
+                    },
+                    {
+                        frente: "O que a camada de marts responde?",
+                        verso: "O que o negócio precisa consultar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que duas perguntas um bom nome de modelo responde?",
+                        verso: "Em que camada ele está e o que ele representa.",
+                    },
+                    {
+                        frente: "O que fazer se o nome não responde isso?",
+                        verso: "Rever a convenção de nomes do projeto.",
+                    },
+                    {
+                        frente: "Quando o nome precisa responder isso?",
+                        verso: "Antes de alguém abrir o arquivo.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma view guarda?",
+                        verso: "Uma pergunta, e não o dado.",
+                    },
+                    {
+                        frente: "O que acontece a cada consulta a uma view?",
+                        verso: "O warehouse refaz a pergunta do zero.",
+                    },
+                    {
+                        frente: "Que garantia isso traz?",
+                        verso: "O resultado sempre reflete a origem naquele instante.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a materialização em tabela troca?",
+                        verso: "Custo de leitura por custo de escrita.",
+                    },
+                    {
+                        frente: "O que cada execução passa a pagar?",
+                        verso: "O recálculo do modelo inteiro.",
+                    },
+                    {
+                        frente: "O que fica barato depois disso?",
+                        verso: "Cada consulta ao modelo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Sobre o que a materialização incremental é?",
+                        verso: "Reprocessar só o necessário na maioria das vezes.",
+                    },
+                    {
+                        frente: "Sobre o que ela não é?",
+                        verso: "Nunca reprocessar tudo.",
+                    },
+                    {
+                        frente: "De onde vem o ganho de custo?",
+                        verso: "De não recalcular a tabela inteira a cada execução.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a materialização efêmera elimina?",
+                        verso: "O objeto, e não o processamento.",
+                    },
+                    {
+                        frente: "Onde a lógica passa a rodar?",
+                        verso: "Embutida dentro de quem a referencia.",
+                    },
+                    {
+                        frente: "O que ela não deixa no warehouse?",
+                        verso: "Rastro consultável.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Existe materialização certa em abstrato?",
+                        verso: "Não existe.",
+                    },
+                    {
+                        frente: "O que a escolha precisa equilibrar?",
+                        verso: "Custo, frescor e complexidade.",
+                    },
+                    {
+                        frente: "De que mais a escolha depende?",
+                        verso: "Do volume e do padrão de consulta daquele modelo.",
+                    },
+                ],
+            },
+        },
     },
 };
