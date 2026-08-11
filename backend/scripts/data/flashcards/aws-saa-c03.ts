@@ -502,5 +502,235 @@ export const awsSaaC03: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quando o Lambda compensa numa arquitetura?",
+                        verso: "Carga variável, orientada a eventos e de curta duração.",
+                    },
+                    {
+                        frente: "Quando ele deixa de compensar?",
+                        verso: "Em processamento constante de alto volume ou execução longa.",
+                    },
+                    {
+                        frente: "Como o Lambda é cobrado?",
+                        verso: "Por invocação e tempo de execução, não por servidor parado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o API Gateway desacopla?",
+                        verso: "O cliente da implementação do backend.",
+                    },
+                    {
+                        frente: "O que permite trocar o backend sem mudar o contrato?",
+                        verso: "O próprio API Gateway, mantendo a mesma rota.",
+                    },
+                    {
+                        frente: "O que o VPC Link permite alcançar?",
+                        verso: "Um serviço privado dentro da VPC.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Fargate remove?",
+                        verso: "A gestão dos servidores.",
+                    },
+                    {
+                        frente: "O que o Fargate mantém?",
+                        verso: "O modelo de contêiner de longa duração.",
+                    },
+                    {
+                        frente: "O que o ECR guarda no fluxo de contêineres?",
+                        verso: "As imagens.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta certa entre Lambda, Fargate, ECS e EKS?",
+                        verso: "Que mistura de controle, portabilidade e esforço a carga pede.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta ao escolher onde rodar a carga?",
+                        verso: "Qual serviço é melhor em abstrato.",
+                    },
+                    {
+                        frente: "O que o EKS oferece a mais?",
+                        verso: "A portabilidade do Kubernetes, com mais esforço operacional.",
+                    },
+                ],
+            },
+        },
+        8: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como todo bucket do S3 nasce?",
+                        verso: "Privado.",
+                    },
+                    {
+                        frente: "O que é preciso para haver acesso público?",
+                        verso: "Alguém criar política ou lista de controle permitindo.",
+                    },
+                    {
+                        frente: "Que trava ainda pode barrar esse acesso?",
+                        verso: "O bloqueio de acesso público.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que trocar de classe de armazenamento nunca reduz?",
+                        verso: "A durabilidade do objeto.",
+                    },
+                    {
+                        frente: "O que muda entre as classes?",
+                        verso: "Disponibilidade, resiliência, tempo de recuperação e custo.",
+                    },
+                    {
+                        frente: "O que uma regra de ciclo de vida automatiza?",
+                        verso: "A troca de classe e a expiração do objeto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o tipo de volume EBS define?",
+                        verso: "Performance e custo.",
+                    },
+                    {
+                        frente: "O que ele não aumenta?",
+                        verso: "A resiliência à falha de uma zona de disponibilidade.",
+                    },
+                    {
+                        frente: "De onde vem essa resiliência?",
+                        verso: "Da arquitetura espalhada por várias zonas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que pergunta separa S3, EBS e sistema de arquivos?",
+                        verso: "Se preciso de objeto por API, disco preso à instância ou pasta.",
+                    },
+                    {
+                        frente: "O que o EFS entrega?",
+                        verso: "Uma pasta compartilhada por várias instâncias ao mesmo tempo.",
+                    },
+                    {
+                        frente: "Para que serve o FSx?",
+                        verso: "Sistemas de arquivos especializados, como Windows e Lustre.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que problema o Storage Gateway resolve?",
+                        verso: "O uso híbrido contínuo, entre o local e a nuvem.",
+                    },
+                    {
+                        frente: "Que problema a Snow Family resolve?",
+                        verso: "A migração de dados em massa, uma única vez.",
+                    },
+                    {
+                        frente: "Que problema o AWS Backup resolve?",
+                        verso: "Centralizar a política de backup entre serviços.",
+                    },
+                ],
+            },
+        },
+        9: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Contra o que o Multi-AZ protege?",
+                        verso: "Contra falhas de infraestrutura.",
+                    },
+                    {
+                        frente: "Contra o que a read replica protege?",
+                        verso: "Contra sobrecarga de leitura.",
+                    },
+                    {
+                        frente: "Dá para usar os dois juntos?",
+                        verso: "Dá: eles resolvem problemas diferentes.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o Aurora troca em relação ao RDS?",
+                        verso: "O modelo de armazenamento, por uma camada distribuída.",
+                    },
+                    {
+                        frente: "Que qualidade essa camada tem?",
+                        verso: "É autorreparável.",
+                    },
+                    {
+                        frente: "O que o Aurora Serverless ajusta sozinho?",
+                        verso: "A capacidade, conforme a demanda.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a decisão mais importante no DynamoDB?",
+                        verso: "O design da chave primária.",
+                    },
+                    {
+                        frente: "Quando essa decisão é tomada?",
+                        verso: "Antes da primeira linha de código de consulta.",
+                    },
+                    {
+                        frente: "O que o DAX acrescenta?",
+                        verso: "Um cache em memória, com latência de microssegundos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que os Streams tornam o DynamoDB?",
+                        verso: "Reativo.",
+                    },
+                    {
+                        frente: "O que as Global Tables tornam?",
+                        verso: "Global, com réplicas em várias regiões.",
+                    },
+                    {
+                        frente: "O que o TTL mantém?",
+                        verso: "A tabela enxuta, sem esforço manual.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta certa ao escolher o banco?",
+                        verso: "Qual é o padrão de acesso aos dados.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta certa ao escolher o banco?",
+                        verso: "Qual banco eu conheço melhor.",
+                    },
+                    {
+                        frente: "Que serviço atende carga analítica na AWS?",
+                        verso: "O Redshift.",
+                    },
+                ],
+            },
+        },
     },
 };
