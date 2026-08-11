@@ -185,5 +185,173 @@ export const fundamentosDeLlms: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "De quantas dimensões costuma ser um vetor de embedding?",
+                        verso: "De algumas centenas a poucos milhares.",
+                    },
+                    {
+                        frente: "Como se chama o espaço onde textos parecidos ficam próximos?",
+                        verso: "Espaço semântico.",
+                    },
+                    {
+                        frente: "Que operação famosa mostra que direções do espaço capturam relações?",
+                        verso: "Rei menos homem mais mulher se aproxima de rainha.",
+                    },
+                    {
+                        frente: "Os vetores de embedding são desenhados à mão?",
+                        verso: "Não. São aprendidos por modelos treinados para isso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma similaridade acima de 0,95 costuma indicar?",
+                        verso: "Quase duplicata: dá para deduplicar ou agrupar.",
+                    },
+                    {
+                        frente: "Para que servem os dois usos da similaridade?",
+                        verso: "Ordenar candidatos e cortar os fracos.",
+                    },
+                    {
+                        frente: "A distância euclidiana ordena os vizinhos diferente do cosseno?",
+                        verso: "Não. Na prática as três medidas concordam no ranking.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que benchmark público serve de norte para escolher modelo de embedding?",
+                        verso: "O MTEB.",
+                    },
+                    {
+                        frente: "O que a troca do modelo de embedding obriga a fazer?",
+                        verso: "Reindexar o corpus inteiro.",
+                    },
+                    {
+                        frente: "Quanto custa um modelo de embedding, em ordem de grandeza?",
+                        verso: "Frações de centavo por milhão de tokens.",
+                    },
+                    {
+                        frente: "Qual é a interface de uma API de embedding?",
+                        verso: "Envia texto ou lote de textos, recebe um vetor por texto.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde a busca semântica ganha da busca por palavra-chave?",
+                        verso: "Em sinônimos, paráfrases e erros de digitação.",
+                    },
+                    {
+                        frente: "Embedding gera texto?",
+                        verso: "Não. Ele só organiza, encontra e compara.",
+                    },
+                    {
+                        frente: "Que descoberta o agrupamento de tickets entrega sem categoria prévia?",
+                        verso: "Os temas que dominam o período, como a fatura.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o risco típico do modelo de embedding?",
+                        verso: "Devolver vizinhos ruins, se o modelo for fraco.",
+                    },
+                    {
+                        frente: "Qual é o risco típico do modelo de geração?",
+                        verso: "Alucinação fluente.",
+                    },
+                    {
+                        frente: "Qual dos dois motores é mais barato, embedding ou geração?",
+                        verso: "O de embedding, por ordens de grandeza.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "De que tamanho são as janelas de contexto em 2026?",
+                        verso: "De dezenas de milhares a centenas de milhares de tokens.",
+                    },
+                    {
+                        frente: "Uma base de código inteira cabe numa janela de contexto?",
+                        verso: "Não. Ela costuma ter milhões de tokens.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que poder o modelo sem estado dá à aplicação?",
+                        verso: "Editar o passado: resumir, filtrar e reordenar antes de enviar.",
+                    },
+                    {
+                        frente: "O que causa uma resposta cortada no meio?",
+                        verso: "O orçamento de saída se esgotou.",
+                    },
+                    {
+                        frente: "Qual é a regra de produto quando o contexto não coube?",
+                        verso: "Nunca degradar em silêncio: declarar o que foi analisado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que formato tem a curva de recuperação ao longo do contexto?",
+                        verso: "Um U: pontas boas, meio fraco.",
+                    },
+                    {
+                        frente: "Por que o meio do contexto perde força?",
+                        verso: "Os pesos da atenção se diluem e o meio fica sem âncoras.",
+                    },
+                    {
+                        frente: "Janela grande é convite para encher?",
+                        verso: "Não. Contexto enxuto vence contexto gigante e diluído.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três camadas um chat de produção maduro envia?",
+                        verso: "Fatos persistentes, resumo do passado e as últimas mensagens.",
+                    },
+                    {
+                        frente: "Qual é o custo do resumo progressivo?",
+                        verso: "Uma chamada extra de vez em quando.",
+                    },
+                    {
+                        frente: "Como a memória seletiva escolhe que fatos injetar?",
+                        verso: "Buscando os relevantes, muitas vezes por embedding.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quanto o cache de prompt costuma cobrar nas repetições?",
+                        verso: "Uma fração, tipicamente 10% ou menos.",
+                    },
+                    {
+                        frente: "Até onde o cache de prompt funciona numa chamada?",
+                        verso: "Do início até o primeiro ponto que muda.",
+                    },
+                    {
+                        frente: "Que três razões pesam contra jogar tudo numa janela gigante?",
+                        verso: "Custo, latência e a perda de recuperação no meio.",
+                    },
+                ],
+            },
+        },
     },
 };
