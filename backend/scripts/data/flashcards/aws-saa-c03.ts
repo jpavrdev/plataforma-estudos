@@ -732,5 +732,235 @@ export const awsSaaC03: CartasDaTrilha = {
                 ],
             },
         },
+        10: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que desacoplar com fila garante aos dois lados?",
+                        verso: "Cada um escala, falha e se recupera de forma independente.",
+                    },
+                    {
+                        frente: "O que uma fila absorve entre produtor e consumidor?",
+                        verso: "Os picos, sem derrubar quem está do outro lado.",
+                    },
+                    {
+                        frente: "Que garantia a fila FIFO acrescenta?",
+                        verso: "Ordem e ausência de duplicata.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantas vezes o produtor publica no fan-out?",
+                        verso: "Uma única vez.",
+                    },
+                    {
+                        frente: "Quem multiplica o evento para os interessados?",
+                        verso: "O SNS.",
+                    },
+                    {
+                        frente: "Em que ritmo cada assinante processa?",
+                        verso: "No seu próprio, sem depender dos outros.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o produtor precisa saber no barramento de eventos?",
+                        verso: "Nada sobre quem consome: ele apenas publica.",
+                    },
+                    {
+                        frente: "Quem decide o destino do evento?",
+                        verso: "As regras do EventBridge.",
+                    },
+                    {
+                        frente: "Com base em que a regra decide?",
+                        verso: "No conteúdo do próprio evento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para quantos consumidores o SQS entrega cada mensagem?",
+                        verso: "Para um só, que a processa.",
+                    },
+                    {
+                        frente: "O que o Kinesis Data Streams permite?",
+                        verso: "Vários consumidores lendo o mesmo fluxo.",
+                    },
+                    {
+                        frente: "O que o Firehose faz com o fluxo?",
+                        verso: "Entrega direto num destino, sem código de consumidor.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é orquestração, na imagem da aula?",
+                        verso: "Um maestro que conhece a partitura inteira.",
+                    },
+                    {
+                        frente: "O que é coreografia?",
+                        verso: "Cada músico reagindo ao que ouve dos outros.",
+                    },
+                    {
+                        frente: "O que o Step Functions implementa?",
+                        verso: "A orquestração, como máquina de estados.",
+                    },
+                ],
+            },
+        },
+        11: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Sobre o que a alta disponibilidade não é?",
+                        verso: "Sobre evitar falhas.",
+                    },
+                    {
+                        frente: "Sobre o que ela é?",
+                        verso: "Garantir que nenhuma falha isolada derrube o sistema.",
+                    },
+                    {
+                        frente: "Que arranjo mínimo sustenta isso na AWS?",
+                        verso: "Recursos em mais de uma zona de disponibilidade.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Existe uma estratégia de recuperação única e correta?",
+                        verso: "Não existe.",
+                    },
+                    {
+                        frente: "O que a estratégia certa equilibra?",
+                        verso: "O tempo e a perda aceitos com o custo que se pode pagar.",
+                    },
+                    {
+                        frente: "Qual é a estratégia mais barata e mais lenta?",
+                        verso: "Backup e restauração.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um sistema tolerante a falhas não tenta?",
+                        verso: "Impedir que erros aconteçam.",
+                    },
+                    {
+                        frente: "O que ele garante?",
+                        verso: "Que um erro isolado não vire falha em cascata.",
+                    },
+                    {
+                        frente: "Que padrão corta a cascata entre serviços?",
+                        verso: "O disjuntor, que para de chamar quem está falhando.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o RPO mede?",
+                        verso: "Quanto dado se aceita perder.",
+                    },
+                    {
+                        frente: "O que o RTO mede?",
+                        verso: "Quanto tempo se aceita ficar fora do ar.",
+                    },
+                    {
+                        frente: "O que reduzir os dois provoca?",
+                        verso: "Aumento de custo.",
+                    },
+                ],
+            },
+        },
+        12: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quando uma métrica vale alguma coisa?",
+                        verso: "Quando está ligada a uma ação.",
+                    },
+                    {
+                        frente: "O que é monitoramento sem alarme?",
+                        verso: "Um gráfico bonito.",
+                    },
+                    {
+                        frente: "O que o alarme faz ao disparar?",
+                        verso: "Aciona uma ação, como notificar ou escalar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o CloudTrail mostra?",
+                        verso: "Quem apertou o botão.",
+                    },
+                    {
+                        frente: "O que o Config mostra?",
+                        verso: "O que o botão mudou.",
+                    },
+                    {
+                        frente: "O que o X-Ray mostra?",
+                        verso: "Por que a resposta demorou a voltar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta que guia a automação operacional?",
+                        verso: "Se alguém ainda precisa entrar no servidor para aquilo funcionar.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta?",
+                        verso: "Se dá para automatizar.",
+                    },
+                    {
+                        frente: "Que serviço executa tarefas sem acesso direto à instância?",
+                        verso: "O Systems Manager.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que carga merece compromisso de longo prazo?",
+                        verso: "A que nunca muda.",
+                    },
+                    {
+                        frente: "Que carga merece instância spot?",
+                        verso: "A que tolera morrer no meio do processamento.",
+                    },
+                    {
+                        frente: "Que carga merece sob demanda?",
+                        verso: "A imprevisível, que ninguém sabe quando vai rodar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que ferramenta mostra para onde o gasto foi?",
+                        verso: "O Cost Explorer.",
+                    },
+                    {
+                        frente: "Que ferramenta avisa antes de estourar o orçamento?",
+                        verso: "O AWS Budgets.",
+                    },
+                    {
+                        frente: "O que as tags acrescentam ao custo?",
+                        verso: "A divisão do gasto por time, projeto ou ambiente.",
+                    },
+                ],
+            },
+        },
     },
 };
