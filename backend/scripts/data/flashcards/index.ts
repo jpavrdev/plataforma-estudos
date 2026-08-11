@@ -80,6 +80,7 @@ import { istqbCtfl } from "./istqb-ctfl.ts";
 import { isc2Cc } from "./isc2-cc.ts";
 import { css } from "./css.ts";
 import { typescript } from "./typescript.ts";
+import { react } from "./react.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -162,4 +163,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     isc2Cc,
     css,
     typescript,
+    react,
 ];
