@@ -84,6 +84,7 @@ import { react } from "./react.ts";
 import { php } from "./php.ts";
 import { laravel } from "./laravel.ts";
 import { ruby } from "./ruby.ts";
+import { rubyOnRails } from "./ruby-on-rails.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -170,4 +171,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     php,
     laravel,
     ruby,
+    rubyOnRails,
 ];
