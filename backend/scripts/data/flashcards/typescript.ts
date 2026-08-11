@@ -174,5 +174,169 @@ export const typescript: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma interface descreve?",
+                        verso: "O formato de um objeto.",
+                    },
+                    {
+                        frente: "Que vantagem a interface tem sobre o alias?",
+                        verso: "Pode ser reaberta e estendida por declaração.",
+                    },
+                    {
+                        frente: "O que o alias consegue nomear além de objetos?",
+                        verso: "Uniões, tuplas e tipos primitivos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a marca de opcional permite?",
+                        verso: "Que a propriedade não exista no objeto.",
+                    },
+                    {
+                        frente: "O que a marca de somente leitura impede?",
+                        verso: "Que a propriedade seja reatribuída depois.",
+                    },
+                    {
+                        frente: "O que uma assinatura de índice descreve?",
+                        verso: "Chaves que não se conhecem de antemão.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma interseção faz com dois tipos?",
+                        verso: "Exige tudo dos dois ao mesmo tempo.",
+                    },
+                    {
+                        frente: "O que a composição prefere à herança profunda?",
+                        verso: "Juntar peças pequenas de tipo.",
+                    },
+                    {
+                        frente: "Que problema uma interseção contraditória cria?",
+                        verso: "Um tipo impossível de satisfazer.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para que um generic serve?",
+                        verso: "Para ligar a entrada à saída de uma função.",
+                    },
+                    {
+                        frente: "Que sinal indica um generic desnecessário?",
+                        verso: "O parâmetro de tipo aparecer uma vez só na assinatura.",
+                    },
+                    {
+                        frente: "O que o generic evita repetir?",
+                        verso: "A mesma função escrita de novo para cada tipo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que uma restrição limita?",
+                        verso: "Que tipos podem entrar naquele parâmetro.",
+                    },
+                    {
+                        frente: "Que palavra introduz a restrição?",
+                        verso: "A de extensão do tipo.",
+                    },
+                    {
+                        frente: "Que ganho a restrição traz dentro da função?",
+                        verso: "Permite usar as propriedades garantidas pelo limite.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que os tipos utilitários fazem?",
+                        verso: "Derivam um tipo novo a partir de outro.",
+                    },
+                    {
+                        frente: "O que o utilitário de parcial faz?",
+                        verso: "Torna todas as propriedades opcionais.",
+                    },
+                    {
+                        frente: "O que o utilitário de escolha faz?",
+                        verso: "Seleciona apenas as propriedades indicadas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que forma um tipo condicional tem?",
+                        verso: "Se um tipo estende outro, então um; senão, outro.",
+                    },
+                    {
+                        frente: "O que ele permite decidir?",
+                        verso: "O tipo resultante, a partir do tipo de entrada.",
+                    },
+                    {
+                        frente: "Onde os condicionais costumam aparecer?",
+                        verso: "Dentro de utilitários e de bibliotecas.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um tipo mapeado percorre?",
+                        verso: "As chaves de outro tipo.",
+                    },
+                    {
+                        frente: "O que ele produz?",
+                        verso: "Um tipo novo, com cada chave transformada.",
+                    },
+                    {
+                        frente: "Que utilitários nascem dessa ideia?",
+                        verso: "Os de parcial, obrigatório e somente leitura.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um tipo de literal de template monta?",
+                        verso: "Uma string tipada, a partir de pedaços.",
+                    },
+                    {
+                        frente: "Que combinação ele costuma usar?",
+                        verso: "Uniões, que se multiplicam em todas as formas possíveis.",
+                    },
+                    {
+                        frente: "Para que ele é útil na prática?",
+                        verso: "Nomes de evento e chaves derivadas de outras.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Para quem o tipo existe?",
+                        verso: "Para ajudar quem escreve o código.",
+                    },
+                    {
+                        frente: "Que sinal indica que a tipagem passou do ponto?",
+                        verso: "O tipo virar o problema em vez da solução.",
+                    },
+                    {
+                        frente: "Qual é a resposta certa nesse caso?",
+                        verso: "Simplificar.",
+                    },
+                ],
+            },
+        },
     },
 };
