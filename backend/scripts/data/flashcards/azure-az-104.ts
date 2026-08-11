@@ -338,5 +338,251 @@ export const azureAz104: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que comando compila Bicep para JSON?",
+                        verso: "O de build do Bicep.",
+                    },
+                    {
+                        frente: "Que comando faz o caminho inverso?",
+                        verso: "O de decompile, de JSON para Bicep.",
+                    },
+                    {
+                        frente: "O que o template descreve?",
+                        verso: "A infraestrutura desejada, de forma declarativa.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como as famílias de série B funcionam?",
+                        verso: "Acumulam crédito de CPU e gastam nos picos.",
+                    },
+                    {
+                        frente: "O que acontece quando o crédito acaba?",
+                        verso: "O desempenho fica limitado à linha de base.",
+                    },
+                    {
+                        frente: "O que o tamanho da máquina define?",
+                        verso: "CPU, memória, discos e rede disponíveis.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantas instâncias o SLA de disponibilidade exige?",
+                        verso: "Duas ou mais no mesmo conjunto.",
+                    },
+                    {
+                        frente: "O que um conjunto com uma máquina só oferece?",
+                        verso: "Nenhuma proteção adicional.",
+                    },
+                    {
+                        frente: "O que um scale set faz?",
+                        verso: "Cria e remove instâncias iguais conforme a demanda.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Em que camada a geo-replicação do registro existe?",
+                        verso: "Só na Premium.",
+                    },
+                    {
+                        frente: "O que a geo-replicação mantém?",
+                        verso: "Réplicas em várias regiões, sob um nome de host só.",
+                    },
+                    {
+                        frente: "Que ganho ela traz?",
+                        verso: "Menos latência ao baixar a imagem em cada região.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "A partir de que plano existem slots de implantação?",
+                        verso: "Do Standard.",
+                    },
+                    {
+                        frente: "A partir de que plano existe escala automática?",
+                        verso: "Do Standard.",
+                    },
+                    {
+                        frente: "A partir de que plano existe domínio próprio com TLS?",
+                        verso: "Do Basic.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é o menor prefixo aceito numa sub-rede do Azure?",
+                        verso: "O de barra 29, com três endereços utilizáveis.",
+                    },
+                    {
+                        frente: "Qual é o maior prefixo aceito?",
+                        verso: "O de barra 2.",
+                    },
+                    {
+                        frente: "Por que prefixos menores não são aceitos?",
+                        verso: "Não sobram endereços utilizáveis depois dos reservados.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que topologia responde a serviços centrais compartilhados?",
+                        verso: "A de hub e spoke.",
+                    },
+                    {
+                        frente: "Com quem os spokes fazem peering?",
+                        verso: "Com o hub.",
+                    },
+                    {
+                        frente: "O que uma rota definida pelo usuário faz?",
+                        verso: "Sobrepõe a rota padrão do Azure.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o grupo de segurança de rede não filtra por padrão?",
+                        verso: "O tráfego entre recursos da mesma rede virtual.",
+                    },
+                    {
+                        frente: "Por que esse tráfego passa?",
+                        verso: "A regra padrão de entrada da rede virtual permite.",
+                    },
+                    {
+                        frente: "O que um grupo de segurança de aplicação agrupa?",
+                        verso: "Máquinas por papel, para usar nas regras.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que requisito aponta para private endpoint?",
+                        verso: "O serviço não poder ter endereço público.",
+                    },
+                    {
+                        frente: "O que o service endpoint faz?",
+                        verso: "Leva o tráfego da sub-rede ao serviço pela rede da Microsoft.",
+                    },
+                    {
+                        frente: "O que o Bastion oferece?",
+                        verso: "Acesso remoto pelo portal, sem expor porta na máquina.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que sinais apontam para balanceamento de camada 7?",
+                        verso: "Caminho de URL, cabeçalho de host, TLS ou firewall de aplicação.",
+                    },
+                    {
+                        frente: "Que serviço atende esses sinais?",
+                        verso: "O Application Gateway.",
+                    },
+                    {
+                        frente: "O que o balanceador de camada 4 distribui?",
+                        verso: "Conexões, sem olhar o conteúdo.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que métricas vêm de graça na máquina virtual?",
+                        verso: "CPU e disco.",
+                    },
+                    {
+                        frente: "Que métrica não vem de graça?",
+                        verso: "A de memória.",
+                    },
+                    {
+                        frente: "O que a memória exige para ser coletada?",
+                        verso: "O agente do Azure Monitor e uma regra de coleta.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que o grupo de ação existe separado da regra?",
+                        verso: "Para ser definido uma vez e reusado em várias regras.",
+                    },
+                    {
+                        frente: "O que um grupo de ação guarda?",
+                        verso: "Quem avisar e como, quando o alerta disparar.",
+                    },
+                    {
+                        frente: "Que linguagem consulta os logs?",
+                        verso: "A KQL.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que recurso descobre quais servidores conversam entre si?",
+                        verso: "O mapa de dependências.",
+                    },
+                    {
+                        frente: "Quando ele costuma ser usado?",
+                        verso: "Antes de uma migração.",
+                    },
+                    {
+                        frente: "O que o Network Watcher ajuda a diagnosticar?",
+                        verso: "Conectividade e regras que bloqueiam o tráfego.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o instant restore mantém?",
+                        verso: "Snapshots no próprio disco, por um a cinco dias.",
+                    },
+                    {
+                        frente: "Que ganho isso traz?",
+                        verso: "Restauração recente muito mais rápida.",
+                    },
+                    {
+                        frente: "Para onde o dado vai depois desse período?",
+                        verso: "Para o cofre de backup.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o plano de recuperação agrupa?",
+                        verso: "As máquinas que devem sofrer failover juntas.",
+                    },
+                    {
+                        frente: "Que controle ele permite entre os grupos?",
+                        verso: "Ordem, scripts e pausas manuais.",
+                    },
+                    {
+                        frente: "O que isso garante na retomada?",
+                        verso: "Que os serviços voltem na sequência certa.",
+                    },
+                ],
+            },
+        },
     },
 };
