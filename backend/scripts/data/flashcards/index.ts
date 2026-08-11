@@ -70,6 +70,7 @@ import { qualidadeEGovernancaDeDados } from "./qualidade-e-governanca-de-dados.t
 import { awsAiPractitioner } from "./aws-ai-practitioner.ts";
 import { awsDvaC02 } from "./aws-dva-c02.ts";
 import { awsSaaC03 } from "./aws-saa-c03.ts";
+import { azureAz900 } from "./azure-az-900.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -142,4 +143,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     awsAiPractitioner,
     awsDvaC02,
     awsSaaC03,
+    azureAz900,
 ];
