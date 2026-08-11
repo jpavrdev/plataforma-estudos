@@ -338,5 +338,251 @@ export const azureSc900: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois trabalhos o Defender for Cloud tem?",
+                        verso: "Gerir a postura e proteger as cargas em execução.",
+                    },
+                    {
+                        frente: "Como a gestão de postura age?",
+                        verso: "De forma proativa, antes do incidente.",
+                    },
+                    {
+                        frente: "Como a proteção de cargas age?",
+                        verso: "De forma reativa, detectando ameaça em execução.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De onde nascem as recomendações de postura?",
+                        verso: "Da comparação dos recursos com padrões de referência.",
+                    },
+                    {
+                        frente: "O que corrigir uma recomendação eleva?",
+                        verso: "O secure score.",
+                    },
+                    {
+                        frente: "O que o secure score resume?",
+                        verso: "A postura de segurança, numa métrica única.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que os planos do Defender ativam?",
+                        verso: "A proteção das cargas de trabalho.",
+                    },
+                    {
+                        frente: "O que cada plano gera ao detectar ameaça?",
+                        verso: "Alertas de segurança.",
+                    },
+                    {
+                        frente: "Que diferença separa alerta de recomendação?",
+                        verso: "O alerta aponta ameaça agora; a recomendação, uma fraqueza.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dois papéis o Microsoft Sentinel acumula?",
+                        verso: "SIEM e SOAR, na nuvem.",
+                    },
+                    {
+                        frente: "O que ele faz como SIEM?",
+                        verso: "Coleta e correlaciona eventos de toda a organização.",
+                    },
+                    {
+                        frente: "O que ele faz como SOAR?",
+                        verso: "Automatiza a resposta aos incidentes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que os conectores fazem no Sentinel?",
+                        verso: "Coletam os dados das fontes.",
+                    },
+                    {
+                        frente: "O que as regras de análise fazem?",
+                        verso: "Detectam e agrupam alertas em incidentes.",
+                    },
+                    {
+                        frente: "Para que serve a caça a ameaças no Sentinel?",
+                        verso: "Investigar além do que as regras já preveem.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que sinais o Defender XDR correlaciona?",
+                        verso: "E-mail, dispositivos, identidades e apps de nuvem.",
+                    },
+                    {
+                        frente: "O que ele faz com alertas relacionados?",
+                        verso: "Agrupa num único incidente.",
+                    },
+                    {
+                        frente: "Onde ele é operado?",
+                        verso: "No portal do Defender.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que os Anexos Seguros fazem?",
+                        verso: "Testam o arquivo numa área isolada.",
+                    },
+                    {
+                        frente: "O que os Links Seguros fazem?",
+                        verso: "Checam a URL no momento do clique.",
+                    },
+                    {
+                        frente: "Para que serve a simulação de ataque?",
+                        verso: "Treinar as pessoas contra phishing.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a proteção de próxima geração faz?",
+                        verso: "Barra malware no dispositivo.",
+                    },
+                    {
+                        frente: "O que a redução da superfície de ataque faz?",
+                        verso: "Fecha portas e comportamentos de risco.",
+                    },
+                    {
+                        frente: "O que o EDR faz?",
+                        verso: "Detecta e investiga o que passou pelas barreiras.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o Defender for Cloud Apps revela?",
+                        verso: "O shadow IT, com os aplicativos usados sem aprovação.",
+                    },
+                    {
+                        frente: "Que papel ele cumpre?",
+                        verso: "O de intermediário de acesso às aplicações em nuvem.",
+                    },
+                    {
+                        frente: "O que o Defender for Identity detecta?",
+                        verso: "Ataques às identidades do Active Directory local.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Para onde o Vulnerability Management olha?",
+                        verso: "Para dentro: acha e prioriza as suas vulnerabilidades.",
+                    },
+                    {
+                        frente: "Para onde o Threat Intelligence olha?",
+                        verso: "Para fora: perfila atacantes e seus indicadores.",
+                    },
+                    {
+                        frente: "Que decisão a priorização de vulnerabilidade apoia?",
+                        verso: "O que corrigir primeiro.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o Service Trust Portal traz?",
+                        verso: "A documentação de conformidade da própria Microsoft.",
+                    },
+                    {
+                        frente: "O que o portal do Purview administra?",
+                        verso: "A conformidade da sua organização.",
+                    },
+                    {
+                        frente: "Que confusão a prova cobra entre os dois portais?",
+                        verso: "Trocar a conformidade do fornecedor pela sua.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o compliance score reflete?",
+                        verso: "As ações da Microsoft e também as suas.",
+                    },
+                    {
+                        frente: "Como se ganha ponto nesse score?",
+                        verso: "Concluindo ações de melhoria.",
+                    },
+                    {
+                        frente: "Que tipos de ação de melhoria existem?",
+                        verso: "Preventivas, de detecção e de correção.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que classificar faz?",
+                        verso: "Identifica os dados sensíveis.",
+                    },
+                    {
+                        frente: "O que o rótulo de confidencialidade faz?",
+                        verso: "Protege: criptografa e marca o conteúdo.",
+                    },
+                    {
+                        frente: "O que a prevenção de perda de dados impede?",
+                        verso: "Que esses dados vazem.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde a política de retenção age?",
+                        verso: "Em locais inteiros, sem ação do usuário.",
+                    },
+                    {
+                        frente: "Onde o rótulo de retenção age?",
+                        verso: "Em itens, e pode declarar registros.",
+                    },
+                    {
+                        frente: "O que acontece com um registro regulatório?",
+                        verso: "Fica bloqueado, sem poder ser alterado nem removido.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Do que a gestão de risco interno cuida?",
+                        verso: "Das ameaças vindas de dentro.",
+                    },
+                    {
+                        frente: "O que o eDiscovery faz?",
+                        verso: "Preserva e exporta conteúdo para processos legais.",
+                    },
+                    {
+                        frente: "O que a auditoria registra?",
+                        verso: "Quem fez o quê, e quando.",
+                    },
+                ],
+            },
+        },
     },
 };
