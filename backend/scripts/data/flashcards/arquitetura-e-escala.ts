@@ -338,5 +338,251 @@ export const arquiteturaEEscala: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois problemas os microsserviços de fato resolvem?",
+                        verso: "Time grande demais para uma base só e escala desigual entre partes.",
+                    },
+                    {
+                        frente: "Que erro comum a aula atribui a copiar Netflix e Amazon?",
+                        verso: "Adotar a solução sem ter o problema que elas tinham.",
+                    },
+                    {
+                        frente: "Que terceira pergunta a aula faz sobre a estrutura do time?",
+                        verso: "Se ele opera mais pipeline, banco e observabilidade sem virar projeto.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três coisas dois serviços precisam fazer sozinhos?",
+                        verso: "Ser deployados, escalados e derrubados sem coordenar os outros.",
+                    },
+                    {
+                        frente: "O que nunca deve virar meta ao adotar microsserviços?",
+                        verso: "O número de serviços, que é consequência da divisão.",
+                    },
+                    {
+                        frente: "Que ganho de escala os microsserviços trazem sobre o monólito?",
+                        verso: "Cada serviço ganha réplicas por conta, sem escalar o sistema todo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Para onde os microsserviços movem a complexidade?",
+                        verso: "Da lógica dentro do processo para a conversa entre processos.",
+                    },
+                    {
+                        frente: "Que duas ferramentas do banco único somem entre serviços?",
+                        verso: "O JOIN entre tabelas e a transação única com commit.",
+                    },
+                    {
+                        frente: "Que infraestrutura cada serviço novo passa a exigir?",
+                        verso: "Pipeline, monitoramento, banco e forma de escalar próprios.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que contrato e formato o gRPC usa no lugar do JSON?",
+                        verso: "Contratos tipados em Protocol Buffers, num formato binário.",
+                    },
+                    {
+                        frente: "Que diferença separa o API Gateway do load balancer?",
+                        verso: "O gateway roteia entre serviços; o balanceador, entre réplicas iguais.",
+                    },
+                    {
+                        frente: "Que teste prático revela uma fronteira bem desenhada?",
+                        verso: "Uma mudança de negócio comum mexe num serviço só.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três coisas o monólito modular mantém únicas?",
+                        verso: "A aplicação, o deploy e o banco continuam sendo um só.",
+                    },
+                    {
+                        frente: "Que regra de acesso as tabelas de um módulo seguem?",
+                        verso: "Só o código do próprio módulo as acessa, nunca outro.",
+                    },
+                    {
+                        frente: "Por que extrair um serviço por vez vence a reescrita?",
+                        verso: "O sistema segue no ar e o dano fica contido num serviço.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que nome tem a lista de suposições sobre a rede confiável?",
+                        verso: "As falácias da computação distribuída.",
+                    },
+                    {
+                        frente: "Que duas perguntas a aula separa diante de uma falha?",
+                        verso: "Como evitar que ela ocorra e como conter quando ocorrer.",
+                    },
+                    {
+                        frente: "Como um processo único falha, comparado ao distribuído?",
+                        verso: "De um jeito só; o distribuído falha de dezenas parciais.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que problema o jitter resolve no retry?",
+                        verso: "Evita que réplicas que erraram juntas tentem de novo no mesmo instante.",
+                    },
+                    {
+                        frente: "Como o backoff exponencial espaça as tentativas?",
+                        verso: "Dobrando a espera, por exemplo 200ms, depois 400ms e 800ms.",
+                    },
+                    {
+                        frente: "Que erros merecem nova tentativa, e quais não merecem?",
+                        verso: "Timeout, conexão recusada e 503 merecem; o 400 e o 404 não.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três estados um circuit breaker percorre?",
+                        verso: "Fechado contando falhas, aberto e meio-aberto testando.",
+                    },
+                    {
+                        frente: "De onde vem o nome circuit breaker?",
+                        verso: "Do disjuntor elétrico, que desarma antes de queimar a fiação.",
+                    },
+                    {
+                        frente: "Que ganho o fail fast traz além de responder antes?",
+                        verso: "Libera recursos que ficariam presos esperando o timeout.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que dois UPDATEs a aula contrasta quanto a repetir?",
+                        verso: "Definir o status é seguro; somar ao saldo repete o efeito.",
+                    },
+                    {
+                        frente: "O que o servidor guarda junto de uma chave de idempotência?",
+                        verso: "O resultado já processado, devolvido se a chave repetir.",
+                    },
+                    {
+                        frente: "Onde vale degradar com dado velho, e onde não vale?",
+                        verso: "Vale na leitura; escrita e dinheiro devem falhar de forma clara.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a estratégia multi-AZ espalha, e contra o quê?",
+                        verso: "Réplicas por zonas separadas, contra uma zona inteira cair.",
+                    },
+                    {
+                        frente: "Quanto tempo por ano cada nível de nove admite fora do ar?",
+                        verso: "Cerca de 3,65 dias com dois noves e 53 minutos com quatro.",
+                    },
+                    {
+                        frente: "Por que subir um nove não é questão de configuração?",
+                        verso: "Exige mais réplicas, zonas, failover e operação para sustentar.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a sigla CDN significa, e que serviços a representam?",
+                        verso: "Content Delivery Network, como a Cloudflare e o CloudFront.",
+                    },
+                    {
+                        frente: "Que bifurcação a requisição encontra antes de tudo?",
+                        verso: "Se é arquivo estático ou chamada dinâmica para a API.",
+                    },
+                    {
+                        frente: "Que três válvulas de alívio a réplica usa para não travar?",
+                        verso: "O cache, a fila com workers e o banco com réplica de leitura.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que nome tem cada salto medido no distributed tracing?",
+                        verso: "Um span, com início, fim e duração próprios.",
+                    },
+                    {
+                        frente: "Que três ferramentas instrumentam tracing distribuído?",
+                        verso: "O OpenTelemetry, o Jaeger e o Zipkin.",
+                    },
+                    {
+                        frente: "Que documento deve existir antes de o alerta disparar?",
+                        verso: "O runbook, dizendo o que fazer quando aquele alerta soar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que ordem de evolução a aula sugere para a arquitetura?",
+                        verso: "Medir, cachear, tirar trabalho com fila e só então escalar.",
+                    },
+                    {
+                        frente: "O que uma peça adicionada cedo demais cobra do time?",
+                        verso: "Complexidade paga todo dia, sem benefício até o tráfego chegar.",
+                    },
+                    {
+                        frente: "Que custo próprio a fila cobra de quem a adota?",
+                        verso: "Idempotência e alguém de olho na fila que cresce.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que ajuste vem antes de subir réplicas atrás do balanceador?",
+                        verso: "Tornar a aplicação stateless, com sessão no Redis ou JWT.",
+                    },
+                    {
+                        frente: "Que leituras não cabem no cache e sobram para a réplica?",
+                        verso: "Relatórios e buscas variadas, que mudam a cada consulta.",
+                    },
+                    {
+                        frente: "Que passo a aula recusa como automático depois dessas peças?",
+                        verso: "Quebrar o monólito em serviços, que exige dor medida.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro caminhos a aula sugere depois do fim da trilha?",
+                        verso: "Construir do zero, aprofundar um tema, ler sistemas reais e contribuir.",
+                    },
+                    {
+                        frente: "Por que um mapa completo não basta para dominar o ofício?",
+                        verso: "O território muda: ferramenta e padrão de hoje serão trocados.",
+                    },
+                    {
+                        frente: "Que diferença separa projeto próprio de exercício guiado?",
+                        verso: "No próprio você decide o desenho inteiro, do banco à esteira.",
+                    },
+                ],
+            },
+        },
     },
 };
