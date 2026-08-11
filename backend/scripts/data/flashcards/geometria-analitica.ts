@@ -341,5 +341,251 @@ export const geometriaAnalitica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dados determinam um plano na forma vetorial?",
+                        verso: "Um ponto de apoio e duas direções independentes.",
+                    },
+                    {
+                        frente: "Quantos parâmetros a equação paramétrica do plano usa?",
+                        verso: "Dois, um para cada direção de deslize.",
+                    },
+                    {
+                        frente: "Que exigência as duas direções do plano têm?",
+                        verso: "Serem independentes, sem uma ser múltipla da outra.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o vetor normal resume?",
+                        verso: "O plano inteiro numa direção só, a que aponta para fora dele.",
+                    },
+                    {
+                        frente: "Onde o vetor normal aparece na equação geral do plano?",
+                        verso: "Nos coeficientes das três incógnitas.",
+                    },
+                    {
+                        frente: "Como obter o normal a partir das direções do plano?",
+                        verso: "Pelo produto vetorial entre as duas direções.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que comparação resolve a posição entre reta e plano?",
+                        verso: "A do vetor diretor da reta com o normal do plano.",
+                    },
+                    {
+                        frente: "O que o diretor ortogonal ao normal indica?",
+                        verso: "Reta paralela ao plano, ou contida nele.",
+                    },
+                    {
+                        frente: "O que o diretor paralelo ao normal indica?",
+                        verso: "Reta perpendicular ao plano.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três destinos dois planos podem ter?",
+                        verso: "Correr lado a lado, coincidir por completo ou se cruzar numa reta.",
+                    },
+                    {
+                        frente: "O que normais paralelas indicam sobre os planos?",
+                        verso: "Que são paralelos, ou então o mesmo plano.",
+                    },
+                    {
+                        frente: "O que separa planos paralelos de coincidentes?",
+                        verso: "Um ponto: se pertence aos dois, os planos coincidem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que nasce do encontro de dois planos?",
+                        verso: "Sempre uma reta.",
+                    },
+                    {
+                        frente: "Que conta dá a direção dessa reta?",
+                        verso: "O produto vetorial dos dois vetores normais.",
+                    },
+                    {
+                        frente: "Que dado falta depois de achar a direção?",
+                        verso: "Um ponto comum, obtido resolvendo o sistema.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por onde a distância de ponto a reta é medida?",
+                        verso: "Pela perpendicular, nunca por um caminho oblíquo.",
+                    },
+                    {
+                        frente: "Que conta dá a distância entre dois pontos?",
+                        verso: "O módulo do vetor que liga um ao outro.",
+                    },
+                    {
+                        frente: "Que dados a fórmula da distância no plano usa?",
+                        verso: "Os coeficientes da equação geral e as coordenadas do ponto.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que figura a distância de ponto a reta no espaço usa?",
+                        verso: "Um paralelogramo, cuja altura é a distância procurada.",
+                    },
+                    {
+                        frente: "Que divisão devolve essa altura?",
+                        verso: "A da área pela base.",
+                    },
+                    {
+                        frente: "Que produto calcula a área nesse caso?",
+                        verso: "O vetorial, entre o diretor e o vetor até o ponto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que substituir o ponto na equação do plano mede?",
+                        verso: "O quanto ele desobedece à equação.",
+                    },
+                    {
+                        frente: "Que divisão converte isso em distância?",
+                        verso: "A pela norma do vetor normal.",
+                    },
+                    {
+                        frente: "Que distância um ponto do próprio plano tem até ele?",
+                        verso: "Zero, porque a equação é satisfeita.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a perpendicular comum tem de único?",
+                        verso: "É a única reta em ângulo reto com as duas reversas.",
+                    },
+                    {
+                        frente: "O que o comprimento da perpendicular comum representa?",
+                        verso: "A distância entre as duas retas reversas.",
+                    },
+                    {
+                        frente: "Que produto aparece na distância entre reversas?",
+                        verso: "O misto, dividido pelo módulo do produto vetorial.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que vetores representam reta e plano na comparação?",
+                        verso: "O diretor para a reta e o normal para o plano.",
+                    },
+                    {
+                        frente: "Que operação cuida do ângulo entre eles?",
+                        verso: "O produto escalar, com os módulos no denominador.",
+                    },
+                    {
+                        frente: "Que ajuste o ângulo entre reta e plano exige?",
+                        verso: "Tomar o complemento do ângulo formado com a normal.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois dados decidem uma circunferência?",
+                        verso: "O centro e a distância até ele, o raio.",
+                    },
+                    {
+                        frente: "Que forma a equação reduzida da circunferência tem?",
+                        verso: "Soma dos quadrados das diferenças igual ao raio ao quadrado.",
+                    },
+                    {
+                        frente: "Que técnica revela a circunferência na equação geral?",
+                        verso: "Completar quadrados até achar centro e raio.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que soma a elipse mantém constante?",
+                        verso: "A das distâncias do ponto aos dois focos.",
+                    },
+                    {
+                        frente: "Que nome os dois pontos fixos da elipse recebem?",
+                        verso: "Focos.",
+                    },
+                    {
+                        frente: "Que eixo da elipse contém os focos?",
+                        verso: "O maior, chamado eixo focal.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois elementos disputam cada ponto da parábola?",
+                        verso: "O foco e a reta diretriz, em pé de igualdade.",
+                    },
+                    {
+                        frente: "Que igualdade define a parábola?",
+                        verso: "A distância ao foco igual à distância à diretriz.",
+                    },
+                    {
+                        frente: "Que reta divide a parábola ao meio?",
+                        verso: "O eixo de simetria, que passa pelo foco e pelo vértice.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que grandeza a hipérbole mantém constante?",
+                        verso: "A diferença das distâncias aos dois focos.",
+                    },
+                    {
+                        frente: "Que troca separa a hipérbole da elipse?",
+                        verso: "A soma das distâncias vira diferença entre elas.",
+                    },
+                    {
+                        frente: "Que retas a hipérbole persegue sem jamais tocar?",
+                        verso: "As assíntotas, que guiam os dois ramos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que passo a aula recomenda antes de resolver?",
+                        verso: "Classificar a cônica escondida na equação.",
+                    },
+                    {
+                        frente: "Que economia a classificação costuma trazer?",
+                        verso: "Poupar cerca de metade do trabalho de conta.",
+                    },
+                    {
+                        frente: "Que termos denunciam a cônica na equação geral?",
+                        verso: "Os quadráticos, pelos sinais e pelos coeficientes.",
+                    },
+                ],
+            },
+        },
     },
 };
