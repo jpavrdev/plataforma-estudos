@@ -338,5 +338,235 @@ export const uiUxDesign: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a usabilidade mede?",
+                        verso: "O quão fácil é usar uma interface.",
+                    },
+                    {
+                        frente: "Que três pilares a definição clássica traz?",
+                        verso: "Eficácia, eficiência e satisfação.",
+                    },
+                    {
+                        frente: "Que norma sustenta essa definição?",
+                        verso: "A norma de ergonomia da interação humano-computador.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantas heurísticas Nielsen propõe?",
+                        verso: "Dez.",
+                    },
+                    {
+                        frente: "O que a primeira heurística exige?",
+                        verso: "Visibilidade do estado do sistema.",
+                    },
+                    {
+                        frente: "O que a correspondência com o mundo real pede?",
+                        verso: "Falar a linguagem do usuário, não a do sistema.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a heurística de prevenção de erro prefere?",
+                        verso: "Evitar o erro antes de precisar avisar.",
+                    },
+                    {
+                        frente: "O que o reconhecimento em vez da lembrança pede?",
+                        verso: "Deixar as opções visíveis, sem exigir memória.",
+                    },
+                    {
+                        frente: "O que a última heurística trata?",
+                        verso: "Ajuda e documentação, quando forem necessárias.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quantos avaliadores a avaliação heurística usa?",
+                        verso: "De três a cinco.",
+                    },
+                    {
+                        frente: "Como eles percorrem a interface?",
+                        verso: "Sozinhos primeiro, comparando os achados depois.",
+                    },
+                    {
+                        frente: "O que essa avaliação dispensa?",
+                        verso: "Recrutar usuários reais.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quem realiza as tarefas no teste de usabilidade?",
+                        verso: "Pessoas reais.",
+                    },
+                    {
+                        frente: "O que se faz durante o teste?",
+                        verso: "Observa o comportamento.",
+                    },
+                    {
+                        frente: "O que não se faz?",
+                        verso: "Pedir opinião sobre a interface.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a acessibilidade digital busca garantir?",
+                        verso: "Que o produto possa ser usado por todas as pessoas.",
+                    },
+                    {
+                        frente: "Quem ela beneficia além de quem tem deficiência?",
+                        verso: "Quem está em situação temporária ou em contexto ruim.",
+                    },
+                    {
+                        frente: "Quando ela deve entrar no projeto?",
+                        verso: "Desde o começo, e não como ajuste final.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantos princípios a WCAG tem?",
+                        verso: "Quatro.",
+                    },
+                    {
+                        frente: "Que princípios são esses?",
+                        verso: "Perceptível, operável, compreensível e robusto.",
+                    },
+                    {
+                        frente: "O que o princípio operável exige?",
+                        verso: "Que tudo possa ser usado sem depender do mouse.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o contraste mede?",
+                        verso: "A diferença de luminosidade entre texto e fundo.",
+                    },
+                    {
+                        frente: "Que razão mirar no nível intermediário?",
+                        verso: "Quatro e meio para um.",
+                    },
+                    {
+                        frente: "O que a cor sozinha não pode fazer?",
+                        verso: "Ser o único indicador de estado ou de erro.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que teste rápido cobre boa parte da acessibilidade?",
+                        verso: "Chegar e acionar tudo usando só o teclado.",
+                    },
+                    {
+                        frente: "O que o foco visível permite?",
+                        verso: "Saber onde se está na página.",
+                    },
+                    {
+                        frente: "O que o leitor de tela precisa encontrar?",
+                        verso: "Texto alternativo, rótulo e estrutura semântica.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a fidelidade mede?",
+                        verso: "O quanto a representação se parece com o produto final.",
+                    },
+                    {
+                        frente: "O que a baixa fidelidade oferece?",
+                        verso: "Rapidez e custo baixo para descartar ideia.",
+                    },
+                    {
+                        frente: "O que a alta fidelidade permite testar?",
+                        verso: "A aparência e o comportamento quase reais.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que é um wireframe?",
+                        verso: "A planta baixa da tela, em baixa fidelidade.",
+                    },
+                    {
+                        frente: "De que ele é feito?",
+                        verso: "Retângulos, linhas e rótulos, em tons de cinza.",
+                    },
+                    {
+                        frente: "O que ele deixa de fora de propósito?",
+                        verso: "Cor, imagem e acabamento visual.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um protótipo transforma?",
+                        verso: "Telas soltas num produto que dá para experimentar.",
+                    },
+                    {
+                        frente: "Que imagem a aula usa para explicá-lo?",
+                        verso: "O test drive antes de fabricar o carro.",
+                    },
+                    {
+                        frente: "O que ele permite descobrir cedo?",
+                        verso: "Onde o fluxo trava, antes de escrever código.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o design deixa de ser no Figma?",
+                        verso: "Um arquivo que vai e volta por email.",
+                    },
+                    {
+                        frente: "No que ele se transforma?",
+                        verso: "Num espaço vivo e compartilhado.",
+                    },
+                    {
+                        frente: "O que o handoff entrega a quem desenvolve?",
+                        verso: "Medidas, estilos e arquivos direto do projeto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é um design system?",
+                        verso: "O conjunto de regras e peças compartilhadas do produto.",
+                    },
+                    {
+                        frente: "O que ele garante?",
+                        verso: "Que o produto inteiro fale a mesma língua visual.",
+                    },
+                    {
+                        frente: "O que ele economiza a cada tela nova?",
+                        verso: "Redecidir o que já tinha sido decidido.",
+                    },
+                ],
+            },
+        },
     },
 };
