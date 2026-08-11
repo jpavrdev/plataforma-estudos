@@ -62,6 +62,7 @@ import { segurancaEmNuvemEIdentidade } from "./seguranca-em-nuvem-e-identidade.t
 import { modelagemDeDadosEDataWarehousing } from "./modelagem-de-dados-e-data-warehousing.ts";
 import { etlEIngestaoDeDados } from "./etl-e-ingestao-de-dados.ts";
 import { orquestracaoDePipelines } from "./orquestracao-de-pipelines.ts";
+import { processamentoComSpark } from "./processamento-com-spark.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -126,4 +127,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     modelagemDeDadosEDataWarehousing,
     etlEIngestaoDeDados,
     orquestracaoDePipelines,
+    processamentoComSpark,
 ];
