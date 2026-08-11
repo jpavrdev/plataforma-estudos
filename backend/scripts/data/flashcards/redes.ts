@@ -338,5 +338,251 @@ export const redes: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a sigla DNS significa, por extenso?",
+                        verso: "Domain Name System, que traduz nomes em endereços IP.",
+                    },
+                    {
+                        frente: "Quando a consulta de DNS acontece num acesso?",
+                        verso: "Antes do primeiro pacote de dados, de forma silenciosa.",
+                    },
+                    {
+                        frente: "Que dois motivos justificam usar nome em vez de IP?",
+                        verso: "Nome se lembra fácil e o IP por trás pode mudar sem aviso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em que sentido um nome de domínio é lido na árvore?",
+                        verso: "Da direita para a esquerda, do mais geral ao mais específico.",
+                    },
+                    {
+                        frente: "Quantas identidades de servidor raiz existem?",
+                        verso: "Treze, de a até m, espalhadas em centenas de cópias.",
+                    },
+                    {
+                        frente: "Que registro materializa a delegação entre níveis?",
+                        verso: "O NS, que diz a partir daqui pergunte a estes servidores.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro campos todo registro de DNS tem?",
+                        verso: "O nome, o tipo, o TTL e o valor daquele registro.",
+                    },
+                    {
+                        frente: "Por que um mesmo nome pode ter registro A e AAAA?",
+                        verso: "Eles respondem perguntas diferentes: qual IPv4 e qual IPv6.",
+                    },
+                    {
+                        frente: "Para onde o registro MX aponta, e para onde não aponta?",
+                        verso: "Para um nome de servidor de email, nunca para um IP direto.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que nome tem o cliente pequeno de DNS da sua máquina?",
+                        verso: "Stub resolver, que joga a pergunta inteira ao recursivo.",
+                    },
+                    {
+                        frente: "Que resposta uma consulta iterativa aceita de volta?",
+                        verso: "A resposta, ou um encaminhamento a quem perguntar depois.",
+                    },
+                    {
+                        frente: "Que combinação o resolver recursivo faz entre os dois modos?",
+                        verso: "Recebe uma consulta recursiva e a resolve com várias iterativas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a sigla dig quer dizer, e onde ela é preferida?",
+                        verso: "Domain Information Groper, preferida no Linux pelo detalhe.",
+                    },
+                    {
+                        frente: "Que manobra de TTL acelera a propagação de uma troca?",
+                        verso: "Baixar o TTL horas antes e voltar a subir depois de estabilizar.",
+                    },
+                    {
+                        frente: "Que nome tem achar serviços pelo nome dentro de um cluster?",
+                        verso: "Service discovery, com um DNS interno resolvendo o IP atual.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três garantias o TLS entrega?",
+                        verso: "Confidencialidade, integridade e autenticidade da outra ponta.",
+                    },
+                    {
+                        frente: "O que o certificado amarra, e quem o assina?",
+                        verso: "Um domínio a uma chave pública, assinado por uma autoridade.",
+                    },
+                    {
+                        frente: "O que o TLS 1.3 enxugou em relação às versões anteriores?",
+                        verso: "O número de idas e voltas, deixando a conexão mais rápida.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que quatro tarefas o proxy reverso concentra?",
+                        verso: "Terminar TLS, rotear por host, esconder o backend e apoiar com cache.",
+                    },
+                    {
+                        frente: "Em que camada o roteamento por host ou caminho acontece?",
+                        verso: "Na de aplicação, que enxerga a requisição HTTP inteira.",
+                    },
+                    {
+                        frente: "Que valor de segurança esconder os backends traz?",
+                        verso: "Sem IP público, o atacante precisa passar pelo único exposto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três algoritmos de balanceamento a aula cita?",
+                        verso: "Rodízio, menos conexões e o ponderado por capacidade.",
+                    },
+                    {
+                        frente: "O que o balanceador de camada 4 enxerga, e o que não?",
+                        verso: "Só IP e porta; não abre o conteúdo nem enxerga o caminho.",
+                    },
+                    {
+                        frente: "Sem qual peça a tolerância a falhas não acontece?",
+                        verso: "O health check, que tira da rotação quem não responde.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que política padrão a aula recomenda no firewall?",
+                        verso: "Negar tudo por omissão e abrir só o que o serviço precisa.",
+                    },
+                    {
+                        frente: "Que trabalho extra o firewall stateless exige?",
+                        verso: "Uma regra explícita para o tráfego de retorno da conexão.",
+                    },
+                    {
+                        frente: "Que exposição cada serviço merece, no princípio do mínimo?",
+                        verso: "443 ao público, 22 só à rede de administração e o banco fechado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a sigla PoP significa numa CDN?",
+                        verso: "Ponto de presença: o servidor de borda perto do usuário.",
+                    },
+                    {
+                        frente: "Que tipo de conteúdo a CDN serve bem, e qual custa?",
+                        verso: "O estático vai bem; o dinâmico e personalizado é difícil.",
+                    },
+                    {
+                        frente: "Por que a borda é o lugar natural para conter um DDoS?",
+                        verso: "O volume se dilui entre os muitos PoPs, longe da origem.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a sigla VPC significa, por extenso?",
+                        verso: "Virtual Private Cloud: a rede virtual isolada na nuvem.",
+                    },
+                    {
+                        frente: "Que duas regras toda sub-rede da VPC precisa respeitar?",
+                        verso: "Caber no CIDR da VPC e não se sobrepor às outras sub-redes.",
+                    },
+                    {
+                        frente: "Em quantas zonas de disponibilidade uma sub-rede vive?",
+                        verso: "Em uma só; por isso se espalham sub-redes por zonas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantos internet gateways uma VPC comporta?",
+                        verso: "Um só, anexado à VPC e servindo os dois sentidos.",
+                    },
+                    {
+                        frente: "Onde o NAT gateway fica, e a quem ele serve?",
+                        verso: "Numa sub-rede pública, servindo a saída da privada.",
+                    },
+                    {
+                        frente: "Que rota toda route table já traz e não pode remover?",
+                        verso: "A local, que cobre o CIDR da VPC e liga as sub-redes.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que tipos de regra cada uma das duas camadas aceita?",
+                        verso: "O security group só allow; a network ACL aceita allow e deny.",
+                    },
+                    {
+                        frente: "Em que ordem as regras de uma network ACL são avaliadas?",
+                        verso: "Por número, e a primeira que casa decide o destino.",
+                    },
+                    {
+                        frente: "Que cuidado a network ACL exige que o security group dispensa?",
+                        verso: "Liberar as portas efêmeras do tráfego de volta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que arranjo muitas empresas adotam entre os dois caminhos?",
+                        verso: "Link dedicado na produção e uma VPN de reserva ao lado.",
+                    },
+                    {
+                        frente: "Quanto tempo cada opção leva para entrar no ar?",
+                        verso: "Horas na VPN e semanas no link dedicado, que é físico.",
+                    },
+                    {
+                        frente: "Por que a VPN site-to-site tem desempenho variável?",
+                        verso: "Ela depende da internet pública, que oscila em banda e latência.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a sigla BGP significa, por extenso?",
+                        verso: "Border Gateway Protocol, que troca rotas dinamicamente.",
+                    },
+                    {
+                        frente: "Que duas limitações o peering entre VPCs tem?",
+                        verso: "Não é transitivo e os blocos CIDR não podem se sobrepor.",
+                    },
+                    {
+                        frente: "A que fundamento cada peça da nuvem corresponde?",
+                        verso: "VPC é endereçamento, gateway é roteamento e grupo é firewall.",
+                    },
+                ],
+            },
+        },
     },
 };
