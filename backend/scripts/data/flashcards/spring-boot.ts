@@ -338,5 +338,251 @@ export const springBoot: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que um teste que quebra a cada refatoração protege?",
+                        verso: "Nada, e a equipe aprende a apagá-lo.",
+                    },
+                    {
+                        frente: "O que um dublê substitui no teste?",
+                        verso: "A dependência real, com comportamento combinado.",
+                    },
+                    {
+                        frente: "Que cuidado o uso de dublê exige?",
+                        verso: "Não acabar testando o dublê no lugar do código.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma fatia de teste carrega?",
+                        verso: "Só a parte do contexto que aquele teste precisa.",
+                    },
+                    {
+                        frente: "O que o contexto completo traz junto?",
+                        verso: "A aplicação inteira, e mais lentidão.",
+                    },
+                    {
+                        frente: "Quando o contexto completo compensa?",
+                        verso: "Quando o teste atravessa várias camadas.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Testcontainers sobe para o teste?",
+                        verso: "Um serviço real em contêiner, como o banco.",
+                    },
+                    {
+                        frente: "O que ele evita?",
+                        verso: "Testar contra um banco diferente do de produção.",
+                    },
+                    {
+                        frente: "O que acontece com o contêiner no fim?",
+                        verso: "É derrubado, deixando o ambiente limpo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quantos testes escrever por permissão?",
+                        verso: "Dois.",
+                    },
+                    {
+                        frente: "O que o primeiro confirma?",
+                        verso: "O acesso de quem pode.",
+                    },
+                    {
+                        frente: "O que o segundo confirma?",
+                        verso: "A negação de quem não pode.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o melhor momento para escrever um teste?",
+                        verso: "Logo depois de encontrar um bug.",
+                    },
+                    {
+                        frente: "O que esse teste faz pelo bug?",
+                        verso: "Documenta o caso e garante que ele não volta.",
+                    },
+                    {
+                        frente: "O que priorizar quando o tempo é curto?",
+                        verso: "As regras de negócio e os caminhos de erro.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o Actuator expõe?",
+                        verso: "Endpoints de saúde, métricas e informação da aplicação.",
+                    },
+                    {
+                        frente: "Que cuidado ele exige em produção?",
+                        verso: "Restringir quem pode acessar cada endpoint.",
+                    },
+                    {
+                        frente: "Para que o endpoint de saúde serve?",
+                        verso: "Para o orquestrador saber se a aplicação está viva.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três sinais a observabilidade reúne?",
+                        verso: "Métricas, logs e rastros.",
+                    },
+                    {
+                        frente: "O que o rastro acompanha?",
+                        verso: "Uma requisição atravessando os serviços.",
+                    },
+                    {
+                        frente: "O que o identificador de correlação permite?",
+                        verso: "Juntar os registros de uma mesma requisição.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que otimização mais cria bug estranho?",
+                        verso: "O cache.",
+                    },
+                    {
+                        frente: "O que fazer antes de cachear?",
+                        verso: "Medir.",
+                    },
+                    {
+                        frente: "Que causa costuma aparecer nessa medição?",
+                        verso: "Um índice faltando no banco.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O assíncrono é uma fila?",
+                        verso: "Não é.",
+                    },
+                    {
+                        frente: "Quando o trabalho precisa de fila com persistência?",
+                        verso: "Quando ele não pode se perder se o processo cair.",
+                    },
+                    {
+                        frente: "O que o agendamento resolve?",
+                        verso: "Rodar uma tarefa em horário definido.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o empacotamento produz?",
+                        verso: "Um artefato único, pronto para rodar.",
+                    },
+                    {
+                        frente: "O que uma imagem em camadas melhora?",
+                        verso: "O reaproveitamento entre builds.",
+                    },
+                    {
+                        frente: "O que a imagem precisa receber de fora?",
+                        verso: "A configuração e os segredos do ambiente.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que ordem seguir ao migrar de versão?",
+                        verso: "Primeiro a do framework, depois a da linguagem.",
+                    },
+                    {
+                        frente: "O que duas migrações juntas provocam?",
+                        verso: "Dobram a superfície de erro.",
+                    },
+                    {
+                        frente: "O que conferir depois de cada passo?",
+                        verso: "Que a suíte de testes continua verde.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que os registros trazem para o código?",
+                        verso: "Classes de dados com menos cerimônia.",
+                    },
+                    {
+                        frente: "O que o padrão de correspondência simplifica?",
+                        verso: "As checagens de tipo com conversão.",
+                    },
+                    {
+                        frente: "O que a inferência de variável local reduz?",
+                        verso: "A repetição do tipo dos dois lados.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que funcionalidade acende o alerta de requisição forjada?",
+                        verso: "Aquela em que o usuário informa a URL a ser buscada.",
+                    },
+                    {
+                        frente: "Que exemplos entram nessa categoria?",
+                        verso: "Importar de link, webhook e avatar por endereço.",
+                    },
+                    {
+                        frente: "Que defesa esse caso pede?",
+                        verso: "Restringir destino e protocolo antes de buscar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que camadas a divisão clássica tem?",
+                        verso: "Controller, serviço e repositório.",
+                    },
+                    {
+                        frente: "O que a camada de serviço concentra?",
+                        verso: "A regra de negócio.",
+                    },
+                    {
+                        frente: "Que direção a dependência precisa seguir?",
+                        verso: "De fora para dentro, sem volta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o projeto final consolida?",
+                        verso: "As decisões da trilha numa aplicação inteira.",
+                    },
+                    {
+                        frente: "Que hábito a trilha deixa?",
+                        verso: "Entender o que o framework configura por você.",
+                    },
+                    {
+                        frente: "Para onde seguir depois?",
+                        verso: "Para as partes do ecossistema que o seu projeto pedir.",
+                    },
+                ],
+            },
+        },
     },
 };
