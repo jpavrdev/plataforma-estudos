@@ -174,5 +174,169 @@ export const dataLakeELakehouse: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma tabela no lake cru realmente é?",
+                        verso: "Uma pasta com arquivos, e não uma unidade transacional.",
+                    },
+                    {
+                        frente: "O que nada impede no lake cru?",
+                        verso: "Dois escritores pisarem no trabalho um do outro.",
+                    },
+                    {
+                        frente: "Que leitura o lake cru permite no meio de uma escrita?",
+                        verso: "A inconsistente, com só parte dos arquivos novos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quanto custa mudar duas linhas numa partição enorme?",
+                        verso: "O mesmo que reescrever a partição inteira.",
+                    },
+                    {
+                        frente: "O que não existe num arquivo Parquet?",
+                        verso: "Update parcial de uma linha.",
+                    },
+                    {
+                        frente: "Que operação o lake cru exige para corrigir um dado?",
+                        verso: "Reescrever por inteiro os arquivos afetados.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que schema-on-read não é?",
+                        verso: "Ausência de schema.",
+                    },
+                    {
+                        frente: "O que ele é, então?",
+                        verso: "Ausência de fiscalização no momento da escrita.",
+                    },
+                    {
+                        frente: "Onde o schema existe quando ninguém verifica?",
+                        verso: "Na cabeça de quem projetou.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é um backup manual, na comparação da aula?",
+                        verso: "Uma cópia que alguém lembrou de fazer a tempo.",
+                    },
+                    {
+                        frente: "O que é versionamento de verdade?",
+                        verso: "Uma garantia estrutural, que não depende de lembrança.",
+                    },
+                    {
+                        frente: "O que falta no lake cru para desfazer uma escrita?",
+                        verso: "O registro das versões anteriores da tabela.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que não muda quando se adota um table format?",
+                        verso: "O lugar e o formato dos dados.",
+                    },
+                    {
+                        frente: "O que passa a existir com ele?",
+                        verso: "Controle transacional sobre quais arquivos formam a tabela.",
+                    },
+                    {
+                        frente: "O que define a tabela em cada momento?",
+                        verso: "O conjunto de arquivos registrado nos metadados.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O table format substitui o Parquet?",
+                        verso: "Não: ele organiza os mesmos arquivos colunares.",
+                    },
+                    {
+                        frente: "O que a camada de metadados transforma?",
+                        verso: "Uma pasta em tabela.",
+                    },
+                    {
+                        frente: "O que continua sendo o formato dos dados?",
+                        verso: "O Parquet, arquivo por arquivo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que define o estado de uma tabela Delta?",
+                        verso: "Os commits registrados no log, aplicados em ordem.",
+                    },
+                    {
+                        frente: "O que não define esse estado?",
+                        verso: "O que está na pasta naquele instante.",
+                    },
+                    {
+                        frente: "Onde o Delta guarda esse registro?",
+                        verso: "No log de transações, ao lado dos dados.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o particionamento é no Iceberg?",
+                        verso: "Um detalhe de organização por baixo.",
+                    },
+                    {
+                        frente: "O que ele deixa de ser?",
+                        verso: "Um contrato que quem consulta precisa repetir.",
+                    },
+                    {
+                        frente: "O que o Iceberg guarda a cada escrita?",
+                        verso: "Um snapshot da tabela naquele momento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quando o copy-on-write paga o custo de mesclar?",
+                        verso: "No momento da escrita.",
+                    },
+                    {
+                        frente: "Para quando o merge-on-read adia esse custo?",
+                        verso: "Para o momento da leitura.",
+                    },
+                    {
+                        frente: "Algum dos dois é superior?",
+                        verso: "Não: é uma troca entre escrita e leitura.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que importa saber antes de escolher o table format?",
+                        verso: "Que os três resolvem o mesmo problema central.",
+                    },
+                    {
+                        frente: "Qual é a escolha certa entre eles?",
+                        verso: "A que se encaixa no ambiente e nas ferramentas do time.",
+                    },
+                    {
+                        frente: "Qual não é o critério principal?",
+                        verso: "Qual deles é tecnicamente superior.",
+                    },
+                ],
+            },
+        },
     },
 };
