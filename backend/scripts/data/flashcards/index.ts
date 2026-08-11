@@ -73,6 +73,7 @@ import { awsSaaC03 } from "./aws-saa-c03.ts";
 import { azureAz900 } from "./azure-az-900.ts";
 import { azureAi900 } from "./azure-ai-900.ts";
 import { azureDp900 } from "./azure-dp-900.ts";
+import { azureAi901 } from "./azure-ai-901.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -148,4 +149,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     azureAz900,
     azureAi900,
     azureDp900,
+    azureAi901,
 ];
