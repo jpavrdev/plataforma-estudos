@@ -339,5 +339,251 @@ export const fundamentosDeCiberseguranca: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a defesa em profundidade empilha?",
+                        verso: "Várias camadas independentes de proteção.",
+                    },
+                    {
+                        frente: "De que princípio a defesa em profundidade parte?",
+                        verso: "De que qualquer uma das camadas pode falhar.",
+                    },
+                    {
+                        frente: "Que imagem a aula usa para a defesa em profundidade?",
+                        verso: "A do castelo com várias muralhas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o menor privilégio determina?",
+                        verso: "Dar só o acesso necessário para a tarefa.",
+                    },
+                    {
+                        frente: "O que a segregação de funções evita?",
+                        verso: "Que uma pessoa sozinha conclua um processo crítico.",
+                    },
+                    {
+                        frente: "O que o padrão seguro define?",
+                        verso: "Que o sistema já nasce fechado, e não aberto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantas etiquetas um controle carrega ao mesmo tempo?",
+                        verso: "Duas: a função e o tipo.",
+                    },
+                    {
+                        frente: "Que funções um controle pode ter?",
+                        verso: "Preventivo, detectivo, corretivo, dissuasivo e compensatório.",
+                    },
+                    {
+                        frente: "Que tipos classificam um controle?",
+                        verso: "Administrativo, técnico e físico.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o hardening faz com a superfície de ataque?",
+                        verso: "Encolhe: desliga, remove, fecha e restringe.",
+                    },
+                    {
+                        frente: "Que serviços o hardening manda desligar?",
+                        verso: "Os que não estão em uso.",
+                    },
+                    {
+                        frente: "Que ganho o hardening traz à defesa?",
+                        verso: "Menos pontos por onde alguém poderia entrar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que pilar a criptografia protege diretamente?",
+                        verso: "A confidencialidade.",
+                    },
+                    {
+                        frente: "Que dois estados do dado a criptografia cobre?",
+                        verso: "Em repouso e em trânsito.",
+                    },
+                    {
+                        frente: "O que a criptografia não resolve sozinha?",
+                        verso: "A gestão das chaves e o resto dos controles.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que a identidade virou o novo perímetro?",
+                        verso: "Com nuvem e trabalho remoto, o login virou a porta de entrada.",
+                    },
+                    {
+                        frente: "Que três funções o AAA reúne?",
+                        verso: "Autenticação, autorização e auditoria.",
+                    },
+                    {
+                        frente: "O que a auditoria registra?",
+                        verso: "Quem fez o quê, e quando.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a autenticação prova?",
+                        verso: "Quem você é.",
+                    },
+                    {
+                        frente: "O que a autorização decide?",
+                        verso: "O que você pode fazer.",
+                    },
+                    {
+                        frente: "Que ordem as duas seguem, sem exceção?",
+                        verso: "Primeiro a autenticação, só depois a autorização.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três fatores de autenticação existem?",
+                        verso: "Algo que se sabe, algo que se tem e algo que se é.",
+                    },
+                    {
+                        frente: "Que fator a biometria representa?",
+                        verso: "Algo que você é.",
+                    },
+                    {
+                        frente: "O que a MFA exige para valer de verdade?",
+                        verso: "Fatores de categorias diferentes, não dois do mesmo tipo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que qualidade importa mais numa senha?",
+                        verso: "O tamanho, acima da complexidade decorada.",
+                    },
+                    {
+                        frente: "Que ferramenta a aula recomenda para senhas?",
+                        verso: "O gerenciador de senhas.",
+                    },
+                    {
+                        frente: "Que tecnologia aponta para o futuro sem senha?",
+                        verso: "As passkeys.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que modelo concede acesso conforme o cargo?",
+                        verso: "O baseado em papéis.",
+                    },
+                    {
+                        frente: "Que modelo decide por atributos de contexto?",
+                        verso: "O baseado em atributos.",
+                    },
+                    {
+                        frente: "O que o menor privilégio evita na prática?",
+                        verso: "Que uma conta invadida alcance mais do que precisava.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois fatores compõem o risco?",
+                        verso: "A probabilidade e o impacto.",
+                    },
+                    {
+                        frente: "Que três elementos fazem o risco nascer?",
+                        verso: "Um ativo, uma ameaça e uma vulnerabilidade.",
+                    },
+                    {
+                        frente: "Por que priorizar riscos é obrigatório?",
+                        verso: "Não dá para proteger tudo com o mesmo esforço.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantas respostas ao risco existem?",
+                        verso: "Quatro respostas.",
+                    },
+                    {
+                        frente: "Que respostas ao risco a aula lista?",
+                        verso: "Mitigar, transferir, evitar e aceitar.",
+                    },
+                    {
+                        frente: "O que a transferência não transfere junto?",
+                        verso: "A reputação, que continua sendo sua.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantas fases a resposta a incidentes tem?",
+                        verso: "Seis fases, em ordem.",
+                    },
+                    {
+                        frente: "Que fases abrem a resposta a incidentes?",
+                        verso: "Preparação, identificação e contenção.",
+                    },
+                    {
+                        frente: "Que fases fecham a resposta a incidentes?",
+                        verso: "Erradicação, recuperação e lições aprendidas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para que servem os frameworks de segurança?",
+                        verso: "De mapa, com práticas já organizadas e testadas.",
+                    },
+                    {
+                        frente: "Que diferença separa framework de conformidade?",
+                        verso: "O framework orienta; a conformidade é exigida de fora.",
+                    },
+                    {
+                        frente: "Que ganho um framework traz à organização?",
+                        verso: "Uma linguagem comum para medir maturidade.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que áreas o mapa de carreira em segurança lista?",
+                        verso: "Red team, blue team, purple team, GRC, AppSec, nuvem e forense.",
+                    },
+                    {
+                        frente: "Que papel o purple team cumpre?",
+                        verso: "O de ponte entre a ofensiva e a defensiva.",
+                    },
+                    {
+                        frente: "Que sigla reúne governança, risco e conformidade?",
+                        verso: "GRC.",
+                    },
+                ],
+            },
+        },
     },
 };
