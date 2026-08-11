@@ -177,5 +177,169 @@ export const preCalculo: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que metáfora a aula usa para explicar função?",
+                        verso: "Uma máquina: entra um número e sai um único valor.",
+                    },
+                    {
+                        frente: "Que exigência a definição de função impõe à saída?",
+                        verso: "Uma só saída para cada entrada, sem ambiguidade.",
+                    },
+                    {
+                        frente: "Que dois conjuntos toda função declara?",
+                        verso: "O domínio das entradas e a imagem dos valores atingidos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que teste diz se um desenho é gráfico de função?",
+                        verso: "A reta vertical cruzando o desenho em um ponto só.",
+                    },
+                    {
+                        frente: "Que informação o gráfico entrega de um só olhar?",
+                        verso: "A história da função: onde sobe, desce e cruza os eixos.",
+                    },
+                    {
+                        frente: "Onde o gráfico corta o eixo vertical?",
+                        verso: "No valor da função quando a entrada vale zero.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que simetria uma função par apresenta?",
+                        verso: "Espelho no eixo vertical, com os dois lados iguais.",
+                    },
+                    {
+                        frente: "Que simetria caracteriza a função ímpar?",
+                        verso: "Giro de meia volta em torno da origem do plano.",
+                    },
+                    {
+                        frente: "O que crescer significa num intervalo?",
+                        verso: "Entrada maior devolvendo sempre saída maior ali.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que efeito o que está fora da função provoca?",
+                        verso: "Mexe na altura do gráfico, no sentido vertical.",
+                    },
+                    {
+                        frente: "Por que a mudança junto do x engana a intuição?",
+                        verso: "Ela desloca na horizontal ao contrário do sinal escrito.",
+                    },
+                    {
+                        frente: "Que transformação o sinal de menos na frente causa?",
+                        verso: "Reflete o gráfico em relação ao eixo horizontal.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que compor duas funções significa?",
+                        verso: "Encaixar uma na outra, usando a saída como entrada.",
+                    },
+                    {
+                        frente: "O que a função inversa faz com o caminho?",
+                        verso: "Desfaz e devolve ao ponto de partida original.",
+                    },
+                    {
+                        frente: "Que condição uma função precisa ter para inverter?",
+                        verso: "Ser injetora: nenhuma saída repetida entre entradas.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois dados determinam uma reta por completo?",
+                        verso: "A inclinação e um ponto por onde ela passa.",
+                    },
+                    {
+                        frente: "O que o coeficiente angular mede na reta?",
+                        verso: "Quanto a saída muda a cada unidade de entrada.",
+                    },
+                    {
+                        frente: "Onde o coeficiente linear aparece no gráfico?",
+                        verso: "No ponto em que a reta corta o eixo vertical.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em torno de que reta a parábola é simétrica?",
+                        verso: "Da vertical que passa pelo vértice da curva.",
+                    },
+                    {
+                        frente: "Que sinal do coeficiente principal abre para cima?",
+                        verso: "O positivo; o negativo vira a parábola para baixo.",
+                    },
+                    {
+                        frente: "Que ponto o vértice representa na parábola?",
+                        verso: "O extremo: mínimo se abre para cima, máximo se para baixo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que resolver uma inequação se resume, no fundo?",
+                        verso: "Ler o estudo do sinal e escolher os intervalos que servem.",
+                    },
+                    {
+                        frente: "Que pontos dividem a reta no estudo do sinal?",
+                        verso: "As raízes, onde a expressão troca de sinal.",
+                    },
+                    {
+                        frente: "Que cuidado o denominador impõe ao estudo?",
+                        verso: "A raiz dele nunca entra, porque anularia a fração.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que informação cada fator de um polinômio revela?",
+                        verso: "Uma raiz, o ponto em que o gráfico toca o eixo horizontal.",
+                    },
+                    {
+                        frente: "Que limite o grau impõe à quantidade de raízes?",
+                        verso: "No máximo tantas raízes reais quanto o grau do polinômio.",
+                    },
+                    {
+                        frente: "O que fatorar traduz, na linguagem da aula?",
+                        verso: "O polinômio para a linguagem das próprias raízes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que metáfora descreve o que é uma assíntota?",
+                        verso: "Um destino perseguido de perto e jamais alcançado.",
+                    },
+                    {
+                        frente: "Onde nasce a assíntota vertical de uma racional?",
+                        verso: "Na raiz do denominador que não some na simplificação.",
+                    },
+                    {
+                        frente: "Que valores o domínio de uma racional exclui?",
+                        verso: "Os que anulam o denominador da expressão.",
+                    },
+                ],
+            },
+        },
     },
 };
