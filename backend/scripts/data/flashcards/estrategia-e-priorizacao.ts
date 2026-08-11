@@ -338,5 +338,251 @@ export const estrategiaEPriorizacao: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os três limites de um framework de priorização?",
+                        verso: "Depende das entradas, não escolhe o conjunto e não assina a decisão.",
+                    },
+                    {
+                        frente: "Qual é o uso maduro do resultado de um framework?",
+                        verso: "Ver se a ordem contradiz o seu julgamento e investigar quem errou.",
+                    },
+                    {
+                        frente: "Por que score com casas decimais engana?",
+                        verso: "Herda a fragilidade das entradas e ainda ganha aparência de rigor.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que valores a escala de impacto do RICE usa?",
+                        verso: "Três massivo, dois alto, um médio, meio baixo e um quarto mínimo.",
+                    },
+                    {
+                        frente: "O que significa confiança de 50% no RICE?",
+                        verso: "Intuição informada, sem dado que sustente a estimativa.",
+                    },
+                    {
+                        frente: "Quando dois itens do RICE devem ser tratados como empate?",
+                        verso: "Quando o score difere só uns dez por cento entre eles.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que perfil de custo de atraso um rival ocupando o segmento cria?",
+                        verso: "Crescente: cada mês de espera custa mais que o anterior.",
+                    },
+                    {
+                        frente: "Qual é a pergunta de triagem que desarma a urgência de voz?",
+                        verso: "O que muda, em número, se isso sair daqui a três meses?",
+                    },
+                    {
+                        frente: "O custo de atraso precisa ser exato?",
+                        verso: "Não: precisa ser comparável entre os itens da fila.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quais são as quatro caixas do MoSCoW?",
+                        verso: "Obrigatório, importante, desejável e fora desta entrega.",
+                    },
+                    {
+                        frente: "Que nome tem o vício de fechar a discussão com um score?",
+                        verso: "Teatro de objetividade: o número encerra o debate.",
+                    },
+                    {
+                        frente: "Qual é o ciclo de vida de um item encantador no Kano?",
+                        verso: "Vira desempenho e depois vira básico, com o tempo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que recusar pelo score é mais fraco que recusar pelo critério?",
+                        verso: "Score muda com uma estimativa nova; o critério é a aposta assumida.",
+                    },
+                    {
+                        frente: "Qual é o erro comum na peça de marcar a revisita do não?",
+                        verso: "Prometer um algum dia sem data nenhuma.",
+                    },
+                    {
+                        frente: "Que três dívidas o registro da decisão de priorização paga?",
+                        verso: "Evita rediscutir, dá resposta com evidência e audita o seu critério.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os quatro papéis do mapa por decisão?",
+                        verso: "Quem decide, quem influencia, quem bloqueia e quem é informado.",
+                    },
+                    {
+                        frente: "Quantas pessoas decidem uma mesma decisão?",
+                        verso: "Uma: se existem três decisores, ninguém decide.",
+                    },
+                    {
+                        frente: "O que acontece numa reunião de decisão em que alguém se surpreende?",
+                        verso: "Ela não decide nada: agenda outra reunião.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que assimetria explica a opinião forte do executivo sobre detalhe?",
+                        verso: "Ele vê dez por cento do contexto e responde por cem do resultado.",
+                    },
+                    {
+                        frente: "Qual é a regra de ouro da gestão para cima?",
+                        verso: "Nunca surpreender: má notícia sai da sua boca, cedo.",
+                    },
+                    {
+                        frente: "O que fazer quando a decisão sai contra a sua recomendação?",
+                        verso: "Registrar o ponto uma vez e executar com energia total.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que um time sem nenhum conflito costuma indicar?",
+                        verso: "Que alguém desistiu de falar, não que há alinhamento.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre posição e interesse numa negociação?",
+                        verso: "Posição é o pedido; interesse é o que a pessoa quer alcançar.",
+                    },
+                    {
+                        frente: "Como escrever a versão da outra parte ao escalar?",
+                        verso: "De um jeito em que ela reconheceria a própria posição.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que cinco partes compõem a narrativa da estratégia?",
+                        verso: "O que acontece, por quê, o que escolhemos, o que muda e como saberemos.",
+                    },
+                    {
+                        frente: "Por que não vale trocar as palavras a cada apresentação?",
+                        verso: "A frase precisa se repetir até virar vocabulário comum.",
+                    },
+                    {
+                        frente: "Quanto custa evitar a área que vira opositora pelo processo?",
+                        verso: "Três conversas de meia hora, contra trimestres pra recuperar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quem formulou que somar gente a projeto atrasado atrasa mais?",
+                        verso: "Frederick Brooks, décadas atrás e ignorado até hoje.",
+                    },
+                    {
+                        frente: "Qual é a forma do não construtivo numa negociação?",
+                        verso: "Colocar as duas combinações possíveis e devolver a escolha.",
+                    },
+                    {
+                        frente: "Quando registrar o que foi combinado numa negociação?",
+                        verso: "No mesmo dia, em texto curto, com o que entra, o que sai e a data.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são as três alavancas pra dobrar receita recorrente?",
+                        verso: "Mais pagantes, ticket maior ou menos gente saindo.",
+                    },
+                    {
+                        frente: "Por que o autônomo custa menos pra adquirir no Financem?",
+                        verso: "Ele chega por indicação, não por mídia paga.",
+                    },
+                    {
+                        frente: "Quanto tempo de caixa e quantas pessoas o Financem tem?",
+                        verso: "Catorze meses de pista e um time de nove pessoas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que condição reabre a discussão do crédito no Financem?",
+                        verso: "A retenção D30 passar de quarenta e cinco por cento.",
+                    },
+                    {
+                        frente: "O que o diagnóstico do Financem proíbe, além de comprar tráfego?",
+                        verso: "Tratar a retenção como problema de interface.",
+                    },
+                    {
+                        frente: "Que três trabalhos um não com data faz de uma vez?",
+                        verso: "Protege o foco, a relação e a estratégia contra teimosia.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quais são as duas métricas de guarda do OKR do Financem?",
+                        verso: "NPS do segmento com piso de 45 e suporte abaixo de seis horas.",
+                    },
+                    {
+                        frente: "Como o uso semanal foi definido no KR do Financem?",
+                        verso: "Três semanas ativas em quatro, saindo de 21% para 35%.",
+                    },
+                    {
+                        frente: "Por que dobrar a receita não virou KR do time?",
+                        verso: "Metade depende de preço, canal e mercado, fora do controle dele.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é o único compromisso com data firme no roadmap do Financem?",
+                        verso: "A adequação à regra nova do carnê, que entra em vigor em julho.",
+                    },
+                    {
+                        frente: "Com que frequência a janela do tema do Now é revisada?",
+                        verso: "Na primeira segunda-feira de cada mês.",
+                    },
+                    {
+                        frente: "O que o recorte de vendas corta do roadmap do Financem?",
+                        verso: "As apostas do Later e qualquer data que não seja compromisso.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que cinco perguntas um leitor externo responde em cinco minutos?",
+                        verso: "Desafio, aposta, o que ficou de fora, como saberemos e o que derruba.",
+                    },
+                    {
+                        frente: "Qual é o risco declarado no one-pager do Financem?",
+                        verso: "O teste de maio ficar abaixo de trinta por cento.",
+                    },
+                    {
+                        frente: "Que sinal diz que o one-pager ainda não está pronto?",
+                        verso: "Alguma das cinco perguntas exigir reunião de explicação.",
+                    },
+                ],
+            },
+        },
     },
 };
