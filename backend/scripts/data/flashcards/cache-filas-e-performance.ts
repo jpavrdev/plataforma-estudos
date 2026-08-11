@@ -174,5 +174,169 @@ export const cacheFilasEPerformance: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que cinco usos comuns o Redis costuma cobrir?",
+                        verso: "Cache, sessão, contador, rate limit e fila de jobs.",
+                    },
+                    {
+                        frente: "Que porta o Redis escuta por padrão?",
+                        verso: "A 6379, geralmente subida por Docker em desenvolvimento.",
+                    },
+                    {
+                        frente: "Que relação o Redis tem com o banco relacional?",
+                        verso: "Não substitui: guarda um subconjunto pensado pra acesso repetido.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três coisas o ioredis entrega ao conectar no Redis?",
+                        verso: "Quase todos os comandos, Promises e reconexão automática.",
+                    },
+                    {
+                        frente: "Qual é o padrão de criação da instância do ioredis?",
+                        verso: "Uma vez só, num módulo próprio, importada onde precisar.",
+                    },
+                    {
+                        frente: "Por que reaproveitar a conexão importa tanto quanto no banco?",
+                        verso: "Manter aberta é bem mais barato que abrir uma nova por requisição.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre EXPIRE e TTL no Redis?",
+                        verso: "O EXPIRE define o tempo de vida; o TTL consulta quanto falta.",
+                    },
+                    {
+                        frente: "Que comando sustenta contador e rate limit no Redis?",
+                        verso: "O INCR, que soma um de forma atômica na chave.",
+                    },
+                    {
+                        frente: "O que o Redis guarda de fato num SET simples?",
+                        verso: "Sempre uma string; objeto vira texto inútil sem serializar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que quatro passos o cache-aside com Redis executa?",
+                        verso: "Monta a chave, tenta o get, parseia no hit e grava com EX no miss.",
+                    },
+                    {
+                        frente: "O que o cache-aside nunca deve guardar?",
+                        verso: "A ausência do dado: ele guarda o resultado bom, não o vazio.",
+                    },
+                    {
+                        frente: "Que cuidado a resposta de erro pede no cache-aside?",
+                        verso: "Não cachear: senão a rota erra até a chave expirar sozinha.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que parâmetro configura a política de descarte do Redis?",
+                        verso: "O maxmemory-policy, que decide o que sai quando a memória enche.",
+                    },
+                    {
+                        frente: "O que a política padrão do Redis faz quando a memória enche?",
+                        verso: "A noeviction recusa novas escritas em vez de descartar algo.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre allkeys-lru e volatile-lru?",
+                        verso: "A volatile só descarta entre as chaves que têm TTL definido.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "De quem é a frase sobre as duas coisas difíceis em computação?",
+                        verso: "De Phil Karlton: invalidar cache e nomear coisas.",
+                    },
+                    {
+                        frente: "Onde está o bug quando o cache serve preço velho?",
+                        verso: "Em ninguém ter avisado o Redis; ele fez o que foi mandado.",
+                    },
+                    {
+                        frente: "Quem constrói a ponte entre o UPDATE e o cache?",
+                        verso: "O código da aplicação: nenhuma ferramenta faz isso sozinha.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que vantagem o TTL puro tem sobre invalidar na escrita?",
+                        verso: "Menos código e nenhum risco de alguém esquecer de chamar o DEL.",
+                    },
+                    {
+                        frente: "Quando o TTL sozinho já basta como estratégia?",
+                        verso: "Quando um pouco de atraso não quebra nada no produto.",
+                    },
+                    {
+                        frente: "Que risco um TTL curto demais traz?",
+                        verso: "O cache quase não ajuda a poupar o banco, de tanto recarregar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quanto tempo o dado fica errado ao invalidar na escrita?",
+                        verso: "Milissegundos: só entre o commit no banco e o DEL no Redis.",
+                    },
+                    {
+                        frente: "Que nome tem escrever o valor novo no cache logo após o banco?",
+                        verso: "Write-through: escrever através do cache, sem passar por miss.",
+                    },
+                    {
+                        frente: "Que rota além do UPDATE também precisa invalidar?",
+                        verso: "A de exclusão, senão o registro apagado sobrevive no cache.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que cache por id é o caso fácil de invalidar?",
+                        verso: "A chave carrega o id, então o UPDATE sabe qual apagar.",
+                    },
+                    {
+                        frente: "O que faz a chave de lista se multiplicar tanto?",
+                        verso: "Cada combinação de filtro, ordenação e página vira uma nova.",
+                    },
+                    {
+                        frente: "Que estratégia sobra para chave de lista, na prática?",
+                        verso: "Só expirar: escolher um TTL curto o bastante pra doer pouco.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que opção do SET implementa o cadeado contra stampede?",
+                        verso: "A NX, que só grava se a chave ainda não existir.",
+                    },
+                    {
+                        frente: "Que paralelo o stampede tem com o rate limit?",
+                        verso: "O rate limit barra tráfego externo; aqui o pico é interno, no banco.",
+                    },
+                    {
+                        frente: "Que problema o jitter no TTL resolve exatamente?",
+                        verso: "Chaves que venceriam juntas passam a expirar espalhadas no tempo.",
+                    },
+                ],
+            },
+        },
     },
 };
