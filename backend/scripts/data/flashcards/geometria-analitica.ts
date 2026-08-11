@@ -177,5 +177,169 @@ export const geometriaAnalitica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o produto vetorial mede, ao contrário do escalar?",
+                        verso: "O quanto os dois vetores se abrem no espaço.",
+                    },
+                    {
+                        frente: "Que tipo de resultado o produto vetorial devolve?",
+                        verso: "Um vetor, perpendicular aos dois originais.",
+                    },
+                    {
+                        frente: "Que efeito trocar a ordem tem no produto vetorial?",
+                        verso: "Inverte o sentido do vetor resultado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que grandeza o módulo do produto vetorial representa?",
+                        verso: "A área do paralelogramo formado pelos dois vetores.",
+                    },
+                    {
+                        frente: "Que área o triângulo dos mesmos vetores tem?",
+                        verso: "Metade da área do paralelogramo.",
+                    },
+                    {
+                        frente: "Que produto vetorial dá zero?",
+                        verso: "O de vetores paralelos, que não abrem área nenhuma.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quantos vetores o produto misto envolve?",
+                        verso: "Três, resumidos num único número.",
+                    },
+                    {
+                        frente: "Que operações o produto misto encadeia?",
+                        verso: "Um produto vetorial seguido de um produto escalar.",
+                    },
+                    {
+                        frente: "Que conta calcula o produto misto direto?",
+                        verso: "O determinante da matriz com os três vetores.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que grandeza o módulo do produto misto dá?",
+                        verso: "O volume do paralelepípedo dos três vetores.",
+                    },
+                    {
+                        frente: "Que régua mede área e volume nessas contas?",
+                        verso: "O determinante.",
+                    },
+                    {
+                        frente: "Que volume o tetraedro dos três vetores tem?",
+                        verso: "Um sexto do volume do paralelepípedo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o produto misto zerado anuncia?",
+                        verso: "Coplanaridade: os três vetores cabem num mesmo plano.",
+                    },
+                    {
+                        frente: "Que volume três vetores coplanares formam?",
+                        verso: "Zero, com o espaço colapsando num plano.",
+                    },
+                    {
+                        frente: "Que teste verifica se quatro pontos são coplanares?",
+                        verso: "O produto misto dos vetores entre eles, conferindo se zera.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois dados determinam uma reta no espaço?",
+                        verso: "Um ponto de apoio e um vetor diretor.",
+                    },
+                    {
+                        frente: "O que o parâmetro representa na equação da reta?",
+                        verso: "O quanto se caminha na direção do vetor diretor.",
+                    },
+                    {
+                        frente: "Que rastro a reta descreve, na imagem da aula?",
+                        verso: "O de um ponto que caminha sempre na mesma direção.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que as equações simétricas eliminam?",
+                        verso: "O parâmetro, deixando só as coordenadas conversando.",
+                    },
+                    {
+                        frente: "Que impedimento a coordenada nula do diretor cria?",
+                        verso: "Ela não pode virar denominador na forma simétrica.",
+                    },
+                    {
+                        frente: "De onde saem os denominadores nas equações simétricas?",
+                        verso: "Das coordenadas do vetor diretor.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que duas setas toda reta do plano carrega?",
+                        verso: "A diretora, por dentro, e a normal, que a atravessa em ângulo reto.",
+                    },
+                    {
+                        frente: "Que relação liga o vetor normal ao diretor?",
+                        verso: "São perpendiculares: conhecer um é conhecer o outro.",
+                    },
+                    {
+                        frente: "Onde o vetor normal aparece na equação geral?",
+                        verso: "Nos coeficientes das incógnitas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que posições duas retas no espaço podem ter?",
+                        verso: "Paralelas, concorrentes, coincidentes ou reversas.",
+                    },
+                    {
+                        frente: "O que caracteriza duas retas reversas?",
+                        verso: "Nem se cruzam nem são paralelas, por morarem em planos distintos.",
+                    },
+                    {
+                        frente: "Que comparação abre o estudo da posição relativa?",
+                        verso: "A dos vetores diretores das duas retas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que pergunta a interseção de duas retas faz?",
+                        verso: "Em que instante os dois caminhos pisam no mesmo ponto.",
+                    },
+                    {
+                        frente: "Que cuidado o sistema da interseção exige?",
+                        verso: "Usar um parâmetro diferente para cada reta.",
+                    },
+                    {
+                        frente: "O que a ausência de solução no sistema indica?",
+                        verso: "Retas paralelas ou reversas, sem ponto em comum.",
+                    },
+                ],
+            },
+        },
     },
 };
