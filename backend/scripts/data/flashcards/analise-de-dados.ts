@@ -505,5 +505,87 @@ export const analiseDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois problemas as tabelas do exemplo já trazem?",
+                        verso: "Clientes sem pedido e um pedido com cliente inexistente.",
+                    },
+                    {
+                        frente: "A que operação de SQL o merge do pandas equivale?",
+                        verso: "Ao JOIN, com a mesma ideia de chave entre tabelas.",
+                    },
+                    {
+                        frente: "Que solução manual o merge substitui?",
+                        verso: "Um laço ou um map de dicionário ligando id e nome.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que quatro valores o parâmetro how aceita?",
+                        verso: "O inner, o left, o right e o outer.",
+                    },
+                    {
+                        frente: "O que o how igual a left faz com quem não casa?",
+                        verso: "Mantém a linha da esquerda e preenche a direita com NaN.",
+                    },
+                    {
+                        frente: "Que how mantém as linhas dos dois lados sem descartar?",
+                        verso: "O outer, casando o que casa e preenchendo o resto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que o axis igual a um alinha pelo índice?",
+                        verso: "O concat não tem chave: ele casa linhas pelo rótulo.",
+                    },
+                    {
+                        frente: "Que pergunta decide entre concat e merge?",
+                        verso: "Se as tabelas só se empilham ou se uma chave as relaciona.",
+                    },
+                    {
+                        frente: "Que caso o merge resolve e o concat não?",
+                        verso: "Várias linhas de uma tabela para uma linha da outra.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que cinco verbos compõem uma análise de ponta a ponta?",
+                        verso: "Carregar, limpar, transformar, agrupar e juntar.",
+                    },
+                    {
+                        frente: "Que ferramenta nova a aula de fluxo completo apresenta?",
+                        verso: "Nenhuma: são as anteriores trabalhando juntas.",
+                    },
+                    {
+                        frente: "Que dois defeitos o export do outro sistema trouxe?",
+                        verso: "Valores faltando e uma linha duplicada na tabela.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três direções a aula final sugere para seguir?",
+                        verso: "SQL e bancos, visualização de dados e machine learning.",
+                    },
+                    {
+                        frente: "Que forma de entrada todo modelo de aprendizado exige?",
+                        verso: "Uma tabela numérica e limpa, sem valores faltando.",
+                    },
+                    {
+                        frente: "Que vantagem o gráfico leva sobre a tabela de resultado?",
+                        verso: "Ele comunica o padrão bem mais rápido que os números.",
+                    },
+                ],
+            },
+        },
     },
 };
