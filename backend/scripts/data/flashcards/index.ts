@@ -58,6 +58,7 @@ import { fundamentosDeCiberseguranca } from "./fundamentos-de-ciberseguranca.ts"
 import { ameacasEAtaquesNaPratica } from "./ameacas-e-ataques-na-pratica.ts";
 import { defesaEOSoc } from "./defesa-e-o-soc.ts";
 import { pentestComMetodo } from "./pentest-com-metodo.ts";
+import { segurancaEmNuvemEIdentidade } from "./seguranca-em-nuvem-e-identidade.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -118,4 +119,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     ameacasEAtaquesNaPratica,
     defesaEOSoc,
     pentestComMetodo,
+    segurancaEmNuvemEIdentidade,
 ];
