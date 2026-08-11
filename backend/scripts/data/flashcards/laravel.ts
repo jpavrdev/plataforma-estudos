@@ -174,5 +174,169 @@ export const laravel: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a interpolação do Blade faz com a saída?",
+                        verso: "Escapa automaticamente antes de imprimir.",
+                    },
+                    {
+                        frente: "Quando usar a forma sem escape?",
+                        verso: "Só com conteúdo que você mesmo gerou.",
+                    },
+                    {
+                        frente: "O que as diretivas substituem no template?",
+                        verso: "As estruturas de controle escritas em PHP puro.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um layout define?",
+                        verso: "A moldura reaproveitada entre as páginas.",
+                    },
+                    {
+                        frente: "O que uma seção preenche?",
+                        verso: "O espaço que o layout deixou reservado.",
+                    },
+                    {
+                        frente: "O que um componente Blade encapsula?",
+                        verso: "Marcação e comportamento reutilizáveis.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o token de formulário protege contra?",
+                        verso: "Requisição forjada vinda de outro site.",
+                    },
+                    {
+                        frente: "O que acontece sem esse token num envio?",
+                        verso: "O framework recusa a requisição.",
+                    },
+                    {
+                        frente: "Como os erros de validação voltam para a tela?",
+                        verso: "Pela sessão, disponíveis na view.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que nunca fazer com o arquivo compilado?",
+                        verso: "Apontar para ele na mão.",
+                    },
+                    {
+                        frente: "O que a diretiva de assets resolve?",
+                        verso: "Escolhe o caminho certo em desenvolvimento e em produção.",
+                    },
+                    {
+                        frente: "O que o empacotador faz com os arquivos de front-end?",
+                        verso: "Compila, versiona e otimiza.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o Livewire mantém no servidor?",
+                        verso: "O estado do componente.",
+                    },
+                    {
+                        frente: "O que o Inertia usa no cliente?",
+                        verso: "Um framework de front-end, com as rotas do servidor.",
+                    },
+                    {
+                        frente: "Que pergunta escolhe entre os dois?",
+                        verso: "Quanto do front-end o time quer escrever em JavaScript.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma migration descreve?",
+                        verso: "A mudança no schema, em código versionado.",
+                    },
+                    {
+                        frente: "O que o método de reversão precisa fazer?",
+                        verso: "Desfazer exatamente o que a migration criou.",
+                    },
+                    {
+                        frente: "Que problema as migrations resolvem no time?",
+                        verso: "Todos chegam ao mesmo schema, na mesma ordem.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um model representa?",
+                        verso: "Uma tabela, e cada instância uma linha.",
+                    },
+                    {
+                        frente: "Que convenção o Eloquent usa para o nome da tabela?",
+                        verso: "O plural do nome do model.",
+                    },
+                    {
+                        frente: "O que a atribuição em massa exige declarar?",
+                        verso: "Quais campos podem ser preenchidos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que os atributos do PHP trazem ao model?",
+                        verso: "Declarar comportamento direto na propriedade.",
+                    },
+                    {
+                        frente: "O que eles substituem?",
+                        verso: "Configuração espalhada em arrays e métodos.",
+                    },
+                    {
+                        frente: "Que ganho isso traz na leitura?",
+                        verso: "A regra fica ao lado do campo que ela afeta.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um relacionamento de um para muitos declara?",
+                        verso: "Que o registro tem vários do outro lado.",
+                    },
+                    {
+                        frente: "O que o relacionamento inverso declara?",
+                        verso: "Que aquele registro pertence a outro.",
+                    },
+                    {
+                        frente: "O que um relacionamento muitos para muitos exige?",
+                        verso: "Uma tabela intermediária.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que uma factory gera?",
+                        verso: "Registros de teste com dados plausíveis.",
+                    },
+                    {
+                        frente: "O que o problema de consulta em cascata provoca?",
+                        verso: "Uma consulta extra por item da lista.",
+                    },
+                    {
+                        frente: "Que ajuste faz esse problema virar exceção em desenvolvimento?",
+                        verso: "Impedir o carregamento tardio no model.",
+                    },
+                ],
+            },
+        },
     },
 };
