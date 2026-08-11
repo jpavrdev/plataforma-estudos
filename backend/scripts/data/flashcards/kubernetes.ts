@@ -338,5 +338,251 @@ export const kubernetes: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que duas formas injetam um ConfigMap no container?",
+                        verso: "Como variáveis de ambiente ou como arquivos montados em volume.",
+                    },
+                    {
+                        frente: "Por que a variável de ambiente não acompanha a mudança?",
+                        verso: "Ela é lida na criação do Pod, e o Pod já rodando não relê.",
+                    },
+                    {
+                        frente: "Que forma de injeção serve a um arquivo de config inteiro?",
+                        verso: "O volume, em que cada chave vira um arquivo no diretório.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que codificação o Secret usa por padrão, e o que ela não é?",
+                        verso: "Base64, que é reversível e não é criptografia nenhuma.",
+                    },
+                    {
+                        frente: "Que quatro práticas protegem um Secret de verdade?",
+                        verso: "RBAC restrito, cifra em repouso, não commitar e preferir Secret.",
+                    },
+                    {
+                        frente: "O que significa ligar a criptografia em repouso?",
+                        verso: "O etcd deixa de guardar o valor do Secret em claro no disco.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que nível o volume é declarado, e onde é montado?",
+                        verso: "Declarado no Pod e montado em cada container que precisar.",
+                    },
+                    {
+                        frente: "Por que o volume sobrevive ao restart do container?",
+                        verso: "Ele pertence ao Pod, e não ao container que reiniciou.",
+                    },
+                    {
+                        frente: "Que dois problemas o hostPath traz?",
+                        verso: "Prende o Pod ao nó e abre uma porta de segurança.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que nome tem o casamento entre um PVC e um PV compatível?",
+                        verso: "Binding, feito pelo Kubernetes ao aparecer o pedido.",
+                    },
+                    {
+                        frente: "O que o Pod referencia, e o que ele nunca aponta direto?",
+                        verso: "Referencia o PVC; nunca aponta o PV nem o disco físico.",
+                    },
+                    {
+                        frente: "O que a StorageClass descreve, e o que ela habilita?",
+                        verso: "O tipo de storage; ela habilita o provisionamento dinâmico.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Em que ordem o StatefulSet sobe e derruba os Pods?",
+                        verso: "Sobe em ordem crescente e remove na ordem inversa.",
+                    },
+                    {
+                        frente: "Que campo dá um volume durável para cada réplica?",
+                        verso: "O volumeClaimTemplates, que gera um PVC por índice.",
+                    },
+                    {
+                        frente: "Que Service dá endereço próprio a cada Pod do conjunto?",
+                        verso: "O headless, que garante DNS estável por réplica.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três formas de checagem qualquer probe pode usar?",
+                        verso: "httpGet, tcpSocket e exec rodando um comando dentro.",
+                    },
+                    {
+                        frente: "Que faixa de resposta faz um httpGet passar?",
+                        verso: "A de 2xx ou 3xx; fora dela conta como falha.",
+                    },
+                    {
+                        frente: "Para que serve a startup probe numa aplicação lenta?",
+                        verso: "Segurar as outras duas até a aplicação terminar de iniciar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Em que unidades CPU e memória são medidas?",
+                        verso: "CPU em cores ou milicores; memória em bytes, com Mi e Gi.",
+                    },
+                    {
+                        frente: "Que diferença de natureza separa memória de CPU no limite?",
+                        verso: "Memória é incompressível e mata; CPU é compressível e atrasa.",
+                    },
+                    {
+                        frente: "Que prática comum evita surpresa de estouro de memória?",
+                        verso: "Igualar o request e o limit de memória no container.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que duas etapas o scheduler executa para escolher o nó?",
+                        verso: "Filtragem, que descarta, e pontuação, que escolhe a maior nota.",
+                    },
+                    {
+                        frente: "Que diferença separa tolerar de atrair, no agendamento?",
+                        verso: "Tolerar é permissão para o nó com taint; a afinidade atrai.",
+                    },
+                    {
+                        frente: "Como um Pod se qualifica como Burstable?",
+                        verso: "Tem request em algum container, mas não chega a Guaranteed.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que métricas o HPA aceita, além de CPU e memória?",
+                        verso: "Customizadas, como requisições por segundo da aplicação.",
+                    },
+                    {
+                        frente: "Quando o Cluster Autoscaler remove um nó?",
+                        verso: "Quando ele fica ocioso e seus Pods cabem em outros nós.",
+                    },
+                    {
+                        frente: "Como HPA e Cluster Autoscaler trabalham juntos?",
+                        verso: "O HPA pede réplicas, elas ficam pendentes e o outro cria o nó.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três comandos formam o kit de diagnóstico?",
+                        verso: "O describe, o logs com a saída anterior, e o get events.",
+                    },
+                    {
+                        frente: "Que lógica de investigação a aula recomenda?",
+                        verso: "Do geral ao específico: describe e events antes dos logs.",
+                    },
+                    {
+                        frente: "O que a palavra BackOff indica nos estados de erro?",
+                        verso: "Que o kubelet espera cada vez mais entre as tentativas.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três elementos toda permissão de RBAC combina?",
+                        verso: "O apiGroups, os resources e os verbs liberados.",
+                    },
+                    {
+                        frente: "Que sujeitos um binding pode ligar a um papel?",
+                        verso: "Usuário, grupo ou ServiceAccount do cluster.",
+                    },
+                    {
+                        frente: "O que um Role sozinho concede a alguém?",
+                        verso: "Nada: sem um binding ele só descreve permissões.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que ServiceAccount um Pod usa quando nenhuma é indicada?",
+                        verso: "A chamada default, do namespace onde ele roda.",
+                    },
+                    {
+                        frente: "Que três níveis os Pod Security Standards definem?",
+                        verso: "Privileged, sem restrição, Baseline e o rígido Restricted.",
+                    },
+                    {
+                        frente: "Que componente aplica esses níveis por namespace?",
+                        verso: "O Pod Security Admission, que audita ou rejeita o Pod.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro conceitos sustentam o Helm?",
+                        verso: "Chart, values, release e o repositório de charts.",
+                    },
+                    {
+                        frente: "Quantos releases um mesmo chart pode gerar?",
+                        verso: "Vários, um por ambiente, mudando só os values.",
+                    },
+                    {
+                        frente: "O que cada upgrade de um release cria?",
+                        verso: "Uma revisão, que o rollback consegue devolver depois.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que divisão de trabalho separa métrica de log?",
+                        verso: "A métrica aponta que algo está estranho; o log diz por quê.",
+                    },
+                    {
+                        frente: "Por que os logs de um cluster precisam ser agregados?",
+                        verso: "Ficam espalhados por muitos Pods de vida curta.",
+                    },
+                    {
+                        frente: "Que duas ferramentas fazem a reconciliação do GitOps?",
+                        verso: "O Argo CD e o Flux, observando o repositório Git.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que seis itens formam o checklist de produção?",
+                        verso: "Probes, recursos, RBAC, estratégia de rollout, Secrets e observação.",
+                    },
+                    {
+                        frente: "Que camada cuida de tráfego e telemetria sem tocar no código?",
+                        verso: "O service mesh, como o Istio ou o Linkerd.",
+                    },
+                    {
+                        frente: "Que duas certificações a aula cita, e o foco de cada uma?",
+                        verso: "A CKAD, para quem desenvolve, e a CKA, para quem administra.",
+                    },
+                ],
+            },
+        },
     },
 };
