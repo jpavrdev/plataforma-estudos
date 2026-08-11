@@ -22,6 +22,7 @@ import { fundamentosDeProduto } from "./fundamentos-de-produto.ts";
 import { discoveryEPesquisa } from "./discovery-e-pesquisa.ts";
 import { estrategiaEPriorizacao } from "./estrategia-e-priorizacao.ts";
 import { dadosParaProduto } from "./dados-para-produto.ts";
+import { produtoNaPratica } from "./produto-na-pratica.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -46,4 +47,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     discoveryEPesquisa,
     estrategiaEPriorizacao,
     dadosParaProduto,
+    produtoNaPratica,
 ];
