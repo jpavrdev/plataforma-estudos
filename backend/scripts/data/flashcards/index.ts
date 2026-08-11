@@ -67,6 +67,7 @@ import { dataLakeELakehouse } from "./data-lake-e-lakehouse.ts";
 import { streamingDeDados } from "./streaming-de-dados.ts";
 import { modernDataStack } from "./modern-data-stack.ts";
 import { qualidadeEGovernancaDeDados } from "./qualidade-e-governanca-de-dados.ts";
+import { awsAiPractitioner } from "./aws-ai-practitioner.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -136,4 +137,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     streamingDeDados,
     modernDataStack,
     qualidadeEGovernancaDeDados,
+    awsAiPractitioner,
 ];
