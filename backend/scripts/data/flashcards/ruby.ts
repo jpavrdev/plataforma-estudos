@@ -174,5 +174,169 @@ export const ruby: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Com que condição usar a negação invertida?",
+                        verso: "Só com condição simples.",
+                    },
+                    {
+                        frente: "No que ela vira com operadores lógicos?",
+                        verso: "Num quebra-cabeça para quem lê depois.",
+                    },
+                    {
+                        frente: "O que um condicional devolve em Ruby?",
+                        verso: "O valor da última expressão avaliada.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o case compara em cada cláusula?",
+                        verso: "Se o valor se encaixa naquele padrão.",
+                    },
+                    {
+                        frente: "O que o pattern matching consegue além de comparar?",
+                        verso: "Desestruturar arrays e hashes na própria condição.",
+                    },
+                    {
+                        frente: "O que acontece se nenhum padrão casar?",
+                        verso: "O ramo padrão responde, ou um erro é lançado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o Ruby prefere ao laço com índice?",
+                        verso: "O iterador, que percorre a coleção.",
+                    },
+                    {
+                        frente: "O que o iterador recebe?",
+                        verso: "Um bloco, executado para cada elemento.",
+                    },
+                    {
+                        frente: "Que ganho o iterador traz sobre o laço manual?",
+                        verso: "Menos controle de índice e menos erro de borda.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um bloco é, na prática?",
+                        verso: "Um trecho de código passado para um método.",
+                    },
+                    {
+                        frente: "O que o yield faz dentro do método?",
+                        verso: "Chama o bloco que foi passado.",
+                    },
+                    {
+                        frente: "O que o bloco explícito permite?",
+                        verso: "Guardar o bloco numa variável e repassá-lo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que conselho a aula dá na dúvida entre os dois?",
+                        verso: "Usar lambda.",
+                    },
+                    {
+                        frente: "O que o lambda faz com a quantidade de argumentos?",
+                        verso: "Exige o número exato.",
+                    },
+                    {
+                        frente: "Como o retorno se comporta no lambda?",
+                        verso: "Volta do próprio lambda, como se espera.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o mapeamento devolve?",
+                        verso: "Uma coleção nova, do mesmo tamanho.",
+                    },
+                    {
+                        frente: "O que a seleção devolve?",
+                        verso: "Só os elementos que passaram no teste.",
+                    },
+                    {
+                        frente: "O que a redução devolve?",
+                        verso: "Um valor único, acumulado a cada passo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um método devolve sem retorno explícito?",
+                        verso: "O valor da última expressão.",
+                    },
+                    {
+                        frente: "O que um argumento com valor padrão permite?",
+                        verso: "Chamar o método sem passar aquele valor.",
+                    },
+                    {
+                        frente: "O que o operador de espalhamento faz nos argumentos?",
+                        verso: "Recolhe os restantes num array.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Até quantos argumentos usar a forma posicional?",
+                        verso: "Até dois.",
+                    },
+                    {
+                        frente: "A partir de quantos usar os nomeados?",
+                        verso: "De três em diante.",
+                    },
+                    {
+                        frente: "O que compensa a digitação a mais?",
+                        verso: "O ganho de leitura na chamada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a interrogação no fim do nome indica?",
+                        verso: "Que o método devolve verdadeiro ou falso.",
+                    },
+                    {
+                        frente: "O que a exclamação indica?",
+                        verso: "A versão perigosa, que altera o objeto ou levanta erro.",
+                    },
+                    {
+                        frente: "O que essas convenções são?",
+                        verso: "Combinação da comunidade, e não regra da linguagem.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o encadeamento monta?",
+                        verso: "Uma sequência de transformações, uma alimentando a outra.",
+                    },
+                    {
+                        frente: "Que cuidado o encadeamento longo pede?",
+                        verso: "Quebrar em passos nomeados quando fica ilegível.",
+                    },
+                    {
+                        frente: "O que cada elo do encadeamento devolve?",
+                        verso: "Uma coleção nova, sem alterar a anterior.",
+                    },
+                ],
+            },
+        },
     },
 };
