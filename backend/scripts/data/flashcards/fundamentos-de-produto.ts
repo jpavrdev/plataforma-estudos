@@ -162,5 +162,177 @@ export const fundamentosDeProduto: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta cada cadeira do trio leva?",
+                        verso: "Produto se vale a pena, design se dá para entender, engenharia se dá para construir.",
+                    },
+                    {
+                        frente: "Que risco a cadeira de design ajuda a evitar?",
+                        verso: "Solução usável só por quem a criou.",
+                    },
+                    {
+                        frente: "Por que a cascata interna prejudica o time?",
+                        verso: "O contexto se perde e o risco só aparece tarde.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza um time organizado por jornada?",
+                        verso: "Cuida de um caminho do usuário de ponta a ponta.",
+                    },
+                    {
+                        frente: "Quem são os clientes de um time de plataforma?",
+                        verso: "Outros times da empresa, que dependem daquele serviço.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre time empoderado e feature team?",
+                        verso: "Um recebe problema e responde por resultado; o outro recebe escopo.",
+                    },
+                    {
+                        frente: "Qual é o ponto fraco do recorte por feature?",
+                        verso: "Perde o resultado de ponta a ponta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que justifica manter um ritual no calendário?",
+                        verso: "Ele produzir decisão ou alinhamento que o texto não daria.",
+                    },
+                    {
+                        frente: "Qual é o sinal de que o sync do trio virou teatro?",
+                        verso: "Vira relatório de status individual.",
+                    },
+                    {
+                        frente: "Qual é o sinal de que a review virou teatro?",
+                        verso: "Vira demo para impressionar diretor, sem ajuste.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é dívida técnica?",
+                        verso: "O custo futuro de um atalho técnico tomado hoje.",
+                    },
+                    {
+                        frente: "Como o PM deve tratar uma estimativa da engenharia?",
+                        verso: "Como leitura de incerteza, não como promessa fechada.",
+                    },
+                    {
+                        frente: "Que pergunta transforma um pedido de refatoração em decisão?",
+                        verso: "O que acontece com o negócio se não fizermos isso agora?",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que é pesquisa compartilhada entre PM e design?",
+                        verso: "Os dois acompanham as mesmas conversas com usuários.",
+                    },
+                    {
+                        frente: "Que crítica de design é útil para o time?",
+                        verso: "A que liga objetivo da tela, observação e pergunta aberta.",
+                    },
+                    {
+                        frente: "Como um PM atrapalha o design no início do problema?",
+                        verso: "Chegando com a tela pronta em vez do problema e do resultado.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o espaço do problema descreve?",
+                        verso: "Quem sofre, quando e a que custo hoje.",
+                    },
+                    {
+                        frente: "Qual é a armadilha da solução apaixonante?",
+                        verso: "Procurar um problema que justifique a ideia amada.",
+                    },
+                    {
+                        frente: "Por que a gambiarra do usuário é sinal valioso?",
+                        verso: "Mostra dor real que a pessoa já contorna sozinha.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a ideia de Jobs To Be Done propõe?",
+                        verso: "As pessoas contratam soluções para fazer um progresso.",
+                    },
+                    {
+                        frente: "Quais eram os concorrentes reais do milkshake?",
+                        verso: "Banana, rosquinha e barra de cereal no trajeto.",
+                    },
+                    {
+                        frente: "Por que a circunstância explica mais que a demografia?",
+                        verso: "A mesma pessoa contrata coisas diferentes em situações diferentes.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Para que serve uma persona?",
+                        verso: "Alinhar o time sobre quem está do outro lado.",
+                    },
+                    {
+                        frente: "O que é um segmento de usuários?",
+                        verso: "Recorte com comportamento e necessidade parecidos.",
+                    },
+                    {
+                        frente: "Qual é o sinal mais claro de persona decorativa?",
+                        verso: "Ela nunca ajudou o time a rejeitar nenhuma ideia.",
+                    },
+                    {
+                        frente: "Quantas personas uma persona útil costuma acompanhar?",
+                        verso: "Duas ou três, revisadas de tempos em tempos.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é a minoria barulhenta?",
+                        verso: "Grupo pequeno e ativo que parece consenso.",
+                    },
+                    {
+                        frente: "Por que preferência declarada vale pouco sozinha?",
+                        verso: "Responder é barato e mudar de comportamento é caro.",
+                    },
+                    {
+                        frente: "Que grupo fica invisível nos canais de feedback?",
+                        verso: "Quem tentou usar, não entendeu e desistiu calado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que são deficiências situacionais?",
+                        verso: "Limitações do contexto, como sol forte ou uma mão ocupada.",
+                    },
+                    {
+                        frente: "Que referência técnica orienta acessibilidade na web?",
+                        verso: "As diretrizes WCAG, padrão do setor.",
+                    },
+                    {
+                        frente: "Por que deixar acessibilidade para o fim sai caro?",
+                        verso: "Vira reforma de fluxos já construídos.",
+                    },
+                ],
+            },
+        },
     },
 };
