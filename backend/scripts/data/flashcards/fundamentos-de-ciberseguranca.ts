@@ -175,5 +175,169 @@ export const fundamentosDeCiberseguranca: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que tipo de termo malware é?",
+                        verso: "Guarda-chuva: vírus, worm e trojan são tipos dele.",
+                    },
+                    {
+                        frente: "Que analogia a aula usa para explicar malware?",
+                        verso: "A de animal, com cachorro e gato como tipos.",
+                    },
+                    {
+                        frente: "Que frase a aula considera imprecisa?",
+                        verso: "Dizer que pegou um vírus para qualquer infecção.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que pergunta separa vírus, worm e trojan?",
+                        verso: "Como cada um deles se propaga.",
+                    },
+                    {
+                        frente: "O que o worm faz sem ajuda de ninguém?",
+                        verso: "Anda sozinho pela rede.",
+                    },
+                    {
+                        frente: "Como o trojan chega até a vítima?",
+                        verso: "Disfarçado de programa legítimo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o ransomware faz com os dados?",
+                        verso: "Cifra e cobra resgate para devolver o acesso.",
+                    },
+                    {
+                        frente: "O que o spyware busca na máquina?",
+                        verso: "Informação, espionando em silêncio.",
+                    },
+                    {
+                        frente: "O que caracteriza um rootkit?",
+                        verso: "Esconder a presença do invasor no sistema.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o sniffing faz na rede?",
+                        verso: "Escuta o tráfego que passa por ela.",
+                    },
+                    {
+                        frente: "Que posição o atacante ocupa num ataque de intermediário?",
+                        verso: "No meio da conversa, entre as duas pontas.",
+                    },
+                    {
+                        frente: "O que o DDoS busca derrubar?",
+                        verso: "A disponibilidade, com tráfego vindo de muitas origens.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a força bruta tenta contra a senha?",
+                        verso: "Todas as combinações, uma a uma.",
+                    },
+                    {
+                        frente: "O que um ataque de dicionário usa?",
+                        verso: "Uma lista de senhas prováveis.",
+                    },
+                    {
+                        frente: "O que a injeção explora na aplicação?",
+                        verso: "A entrada do usuário interpretada como comando.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é o alvo da engenharia social?",
+                        verso: "A pessoa, e não a tecnologia.",
+                    },
+                    {
+                        frente: "Que gatilhos a engenharia social explora?",
+                        verso: "Confiança, emoção e hábito.",
+                    },
+                    {
+                        frente: "Que recurso o golpista sempre tenta criar?",
+                        verso: "Pressa, para a vítima agir antes de pensar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o phishing tenta induzir?",
+                        verso: "Entregar dados sensíveis ou clicar num link falso.",
+                    },
+                    {
+                        frente: "De que fonte a mensagem de phishing finge vir?",
+                        verso: "De uma fonte confiável, como banco, empresa ou colega.",
+                    },
+                    {
+                        frente: "Que variante do phishing mira uma pessoa específica?",
+                        verso: "O spear phishing.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que canal o vishing usa?",
+                        verso: "A chamada de voz.",
+                    },
+                    {
+                        frente: "Que canal o smishing usa?",
+                        verso: "A mensagem de texto no celular.",
+                    },
+                    {
+                        frente: "Que canais a aula cita além de e-mail e telefone?",
+                        verso: "As redes sociais e os aplicativos de mensagem.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o pretexting monta antes do pedido?",
+                        verso: "Uma história falsa que justifica o contato.",
+                    },
+                    {
+                        frente: "Que golpe usa um objeto largado de propósito?",
+                        verso: "A isca, como um pendrive esquecido.",
+                    },
+                    {
+                        frente: "O que a carona explora no acesso físico?",
+                        verso: "Entrar atrás de alguém autorizado pela porta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "De que o golpe depende, acima de qualquer checklist?",
+                        verso: "Da sua pressa.",
+                    },
+                    {
+                        frente: "Que defesa a aula considera a mais poderosa?",
+                        verso: "Desacelerar antes de agir.",
+                    },
+                    {
+                        frente: "Que objetivo aprender sobre golpes tem?",
+                        verso: "Deixar a pessoa atenta, e não paranoica.",
+                    },
+                ],
+            },
+        },
     },
 };
