@@ -174,5 +174,169 @@ export const dadosParaProduto: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que causa a queda de retenção entre o dia zero e o dia um?",
+                        verso: "Expectativa quebrada: o anúncio prometeu outra coisa.",
+                    },
+                    {
+                        frente: "Que remédio a queda a partir do sétimo dia pede?",
+                        verso: "Encontrar o gatilho recorrente: ali é problema de hábito.",
+                    },
+                    {
+                        frente: "O que significa uma curva de retenção que sobe desde o começo?",
+                        verso: "Quase sempre erro de coorte ou de definição de evento.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a leitura de uma coluna da tabela de coorte responde?",
+                        verso: "Se o produto está melhorando pra quem chega agora.",
+                    },
+                    {
+                        frente: "Por que a tabela de coorte sai triangular?",
+                        verso: "As coortes recentes ainda não viveram todos os meses.",
+                    },
+                    {
+                        frente: "Que recorte de coorte costuma revelar mais que a data?",
+                        verso: "O comportamento: quem conectou duas contas contra quem conectou uma.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Sobre que base a aula recomenda medir retenção?",
+                        verso: "Sobre os ativados: só quem chegou ao valor pode voltar.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre retenção de dia exato e por intervalo?",
+                        verso: "A de intervalo aceita uso em qualquer momento da janela.",
+                    },
+                    {
+                        frente: "Que janelas descrevem melhor um produto de ritmo semanal?",
+                        verso: "Semana 1, semana 4 e semana 12, no lugar de D1 e D7.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quanto da base some em um ano com churn de 5% ao mês?",
+                        verso: "Mais da metade, se ninguém entrar no lugar.",
+                    },
+                    {
+                        frente: "Que remédio técnico ataca o churn involuntário?",
+                        verso: "Nova tentativa de cobrança em dias diferentes e aviso antes.",
+                    },
+                    {
+                        frente: "Por que o valor de vida não pode ser tratado como caixa?",
+                        verso: "É projeção, e usar como dinheiro disponível já quebrou empresa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como a aula define o estado em risco?",
+                        verso: "Sem nenhum uso entre oito e vinte e nove dias.",
+                    },
+                    {
+                        frente: "Sobre quantas pessoas se calcula o custo por ressuscitado?",
+                        verso: "Sobre os 96 que ficaram, não sobre os 640 que voltaram.",
+                    },
+                    {
+                        frente: "Que razão descreve melhor um produto de uso semanal?",
+                        verso: "Semanais sobre mensais, no lugar de diários sobre mensais.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que acontece com a propriedade de evento depois do envio?",
+                        verso: "Fica congelada: descreve aquele acontecimento e não muda.",
+                    },
+                    {
+                        frente: "O que se perde quando a versão do app não viaja com o evento?",
+                        verso: "Descobrir que a queda de ontem começou numa build específica.",
+                    },
+                    {
+                        frente: "O que escrever antes de instrumentar um evento novo?",
+                        verso: "A pergunta que ele responde; sem ela, vira linha morta.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Por que o objeto vem antes da ação no nome do evento?",
+                        verso: "A ordem alfabética agrupa tudo que fala do mesmo assunto.",
+                    },
+                    {
+                        frente: "Que cinco verbos padronizam a taxonomia de eventos?",
+                        verso: "Visualizado, iniciado, concluído, falhou e cancelado.",
+                    },
+                    {
+                        frente: "Que campo do plano de eventos impede que ele vire inventário?",
+                        verso: "As perguntas que aquele evento serve para responder.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Quais são as cinco camadas de ferramenta de dados?",
+                        verso: "Coleta, analytics de produto, web analytics, armazém e exploração.",
+                    },
+                    {
+                        frente: "Que cinco critérios decidem a escolha de ferramenta?",
+                        verso: "Quem consulta, volume, portabilidade, conformidade e tempo de subida.",
+                    },
+                    {
+                        frente: "O que o critério de portabilidade pergunta?",
+                        verso: "Se você consegue exportar o dado bruto e levar o histórico.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quais três falhas respondem pela maioria dos dados quebrados?",
+                        verso: "Duplicação de envio, perda de evento e identidade não costurada.",
+                    },
+                    {
+                        frente: "Que duas causas produzem evento duplicado?",
+                        verso: "Nova tentativa sem chave de idempotência e disparo a cada redesenho.",
+                    },
+                    {
+                        frente: "Quando os dois históricos de uma pessoa precisam ser costurados?",
+                        verso: "No momento do login, unindo o anônimo ao usuário.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que cinco princípios da LGPD organizam a instrumentação?",
+                        verso: "Finalidade, minimização, transparência, prazo de guarda e direitos.",
+                    },
+                    {
+                        frente: "Que combinação identifica boa parte da população sem nome?",
+                        verso: "CEP, data de nascimento e gênero juntos.",
+                    },
+                    {
+                        frente: "O que precisa existir antes do primeiro pedido de exclusão?",
+                        verso: "O mapa de para onde cada evento viaja fora de casa.",
+                    },
+                ],
+            },
+        },
     },
 };
