@@ -338,5 +338,251 @@ export const streamingDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o event time marca?",
+                        verso: "O instante em que o fato aconteceu na origem.",
+                    },
+                    {
+                        frente: "O que o processing time marca?",
+                        verso: "O instante em que o pipeline viu o evento.",
+                    },
+                    {
+                        frente: "Qual dos dois a agregação de negócio costuma usar?",
+                        verso: "O event time.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas ordens diferentes existem em streaming?",
+                        verso: "A de chegada e a de acontecimento.",
+                    },
+                    {
+                        frente: "O que o pipeline precisa decidir?",
+                        verso: "O que fazer quando as duas ordens discordam.",
+                    },
+                    {
+                        frente: "O que causa o evento fora de ordem?",
+                        verso: "A rede, a partição e o caminho que cada evento fez.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o watermark não promete?",
+                        verso: "Que nenhum evento vai chegar atrasado.",
+                    },
+                    {
+                        frente: "O que o watermark define?",
+                        verso: "O ponto em que o pipeline para de esperar.",
+                    },
+                    {
+                        frente: "Que risco o watermark assume?",
+                        verso: "Não ver mais nada que chegar depois dele.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que define a janela certa?",
+                        verso: "A pergunta que a agregação precisa responder.",
+                    },
+                    {
+                        frente: "Que janela um relógio fixo pede?",
+                        verso: "Tumbling ou sliding.",
+                    },
+                    {
+                        frente: "Que janela um comportamento contínuo por chave pede?",
+                        verso: "A janela de sessão.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que toda agregação em streaming promete?",
+                        verso: "Guardar alguma coisa em memória até poder soltar.",
+                    },
+                    {
+                        frente: "Quem diz que chegou a hora de soltar?",
+                        verso: "O watermark.",
+                    },
+                    {
+                        frente: "Que risco o estado sem limite traz?",
+                        verso: "Crescer sem parar até estourar a memória.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o Structured Streaming não troca?",
+                        verso: "A API de DataFrame por uma nova.",
+                    },
+                    {
+                        frente: "O que ele faz com a mesma consulta?",
+                        verso: "Reaplica em fatias incrementais.",
+                    },
+                    {
+                        frente: "Que tabela o modelo imagina?",
+                        verso: "Uma que nunca termina de crescer.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a leitura em streaming substitui?",
+                        verso: "A leitura estática, passando a acompanhar a fonte.",
+                    },
+                    {
+                        frente: "O que a escrita em streaming exige a mais?",
+                        verso: "Um destino e um gatilho de disparo definidos.",
+                    },
+                    {
+                        frente: "O que a consulta faz depois de iniciada?",
+                        verso: "Continua rodando até ser parada.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que modo de saída é natural sem agregação?",
+                        verso: "O append.",
+                    },
+                    {
+                        frente: "Que pergunta decide o modo com agregação?",
+                        verso: "Se o destino aguenta a tabela inteira a cada ciclo.",
+                    },
+                    {
+                        frente: "O que o modo update entrega?",
+                        verso: "Só as linhas que mudaram no ciclo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o checkpoint transforma?",
+                        verso: "Uma consulta que reinicia do zero em uma que retoma.",
+                    },
+                    {
+                        frente: "O que o checkpoint não é?",
+                        verso: "Um detalhe operacional opcional.",
+                    },
+                    {
+                        frente: "O que ele guarda entre execuções?",
+                        verso: "O progresso e o estado da consulta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a função de janela diz?",
+                        verso: "Por qual intervalo agrupar.",
+                    },
+                    {
+                        frente: "O que o watermark diz, ao lado dela?",
+                        verso: "Até quando vale a pena esperar um atrasado.",
+                    },
+                    {
+                        frente: "O que acontece quando o intervalo fecha?",
+                        verso: "O resultado sai e o estado é liberado.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o Kafka carrega?",
+                        verso: "O evento enquanto ele está em trânsito.",
+                    },
+                    {
+                        frente: "O que o lakehouse guarda?",
+                        verso: "O evento depois que ele já aconteceu.",
+                    },
+                    {
+                        frente: "Que papel o Kafka cumpre na arquitetura?",
+                        verso: "O de espinha dorsal entre os sistemas.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "No que o Kafka Connect transforma a integração?",
+                        verso: "Em configuração.",
+                    },
+                    {
+                        frente: "O que já existe pronto nele?",
+                        verso: "O código de mover o dado.",
+                    },
+                    {
+                        frente: "O que resta descrever?",
+                        verso: "De onde vem e para onde vai.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma tabela é, na dualidade?",
+                        verso: "Um retrato de um stream num instante.",
+                    },
+                    {
+                        frente: "O que um stream é, na dualidade?",
+                        verso: "A tabela contada evento a evento.",
+                    },
+                    {
+                        frente: "O que essa dualidade permite?",
+                        verso: "Ir de um para o outro sem perder informação.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a dupla Kafka e Spark é nesta trilha?",
+                        verso: "A referência, e não a única resposta certa.",
+                    },
+                    {
+                        frente: "De que depende a ferramenta certa?",
+                        verso: "Do requisito, e não da popularidade.",
+                    },
+                    {
+                        frente: "Que alternativas a aula cita?",
+                        verso: "Flink, Kinesis e Pulsar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Streaming é o padrão sempre que existe um evento?",
+                        verso: "Não é.",
+                    },
+                    {
+                        frente: "Quando o streaming é a resposta certa?",
+                        verso: "Quando o tempo entre evento e decisão precisa ser curto.",
+                    },
+                    {
+                        frente: "Que sinais o monitoramento de streaming acompanha?",
+                        verso: "Atraso do consumidor, taxa de erro e tamanho do estado.",
+                    },
+                ],
+            },
+        },
     },
 };
