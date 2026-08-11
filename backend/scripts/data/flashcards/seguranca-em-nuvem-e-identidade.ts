@@ -175,5 +175,169 @@ export const segurancaEmNuvemEIdentidade: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que indica não conseguir nem assumir o papel?",
+                        verso: "Problema na política de confiança.",
+                    },
+                    {
+                        frente: "O que indica assumir o papel e receber negado?",
+                        verso: "Problema na política de permissão.",
+                    },
+                    {
+                        frente: "Que três peças compõem a leitura de uma política?",
+                        verso: "Quem pode assumir, o que ela permite e sobre qual recurso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a permissão excessiva nunca faz?",
+                        verso: "Quebrar alguma coisa.",
+                    },
+                    {
+                        frente: "Como a permissão excessiva se manifesta?",
+                        verso: "Uma vez só, e inteira.",
+                    },
+                    {
+                        frente: "Por que o curinga vira vício?",
+                        verso: "Resolve rápido e não incomoda ninguém depois.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que poder tem uma credencial administrativa fora da janela?",
+                        verso: "Nenhum poder.",
+                    },
+                    {
+                        frente: "Qual é o ganho inteiro da elevação sob demanda?",
+                        verso: "Esvaziar a credencial roubada fora da janela.",
+                    },
+                    {
+                        frente: "O que o acesso temporário exige em troca?",
+                        verso: "Um pedido, com prazo e registro.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que se contrata junto com o serviço do fornecedor?",
+                        verso: "A segurança interna dele.",
+                    },
+                    {
+                        frente: "Quando essa segurança costuma ser avaliada?",
+                        verso: "Uma vez, no começo do contrato.",
+                    },
+                    {
+                        frente: "Que acesso o fornecedor federado recebe?",
+                        verso: "O que a política de confiança permitir, e nada além.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que houve com o gestor que aprovou oitocentas linhas?",
+                        verso: "Recebeu um pedido impossível de responder com honestidade.",
+                    },
+                    {
+                        frente: "O que a revisão de acesso precisa produzir?",
+                        verso: "Evidência de que alguém olhou e decidiu.",
+                    },
+                    {
+                        frente: "Que tamanho a revisão precisa ter para funcionar?",
+                        verso: "Um que caiba na atenção de quem revisa.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "De onde o dado quase nunca vaza?",
+                        verso: "De onde estava bem protegido.",
+                    },
+                    {
+                        frente: "De onde ele costuma vazar?",
+                        verso: "Da cópia feita para um lugar com regra mais frouxa.",
+                    },
+                    {
+                        frente: "Que controle previne o repositório aberto?",
+                        verso: "O bloqueio de acesso público no nível da organização.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que filtrar a entrada atrapalha?",
+                        verso: "O primeiro passo do ataque.",
+                    },
+                    {
+                        frente: "O que filtrar a saída atrapalha?",
+                        verso: "Todos os passos seguintes.",
+                    },
+                    {
+                        frente: "Que etapas dependem da saída liberada?",
+                        verso: "O canal de controle e a exfiltração.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta certa sobre cifra?",
+                        verso: "Quem consegue pedir o dado decifrado.",
+                    },
+                    {
+                        frente: "Que registro precisa existir junto?",
+                        verso: "O de quem pediu o dado decifrado, e quando.",
+                    },
+                    {
+                        frente: "Que pergunta é insuficiente sozinha?",
+                        verso: "Se o dado está cifrado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que acontece com segredo apagado numa camada de cima?",
+                        verso: "Continua inteiro na camada de baixo.",
+                    },
+                    {
+                        frente: "O que a imagem guarda?",
+                        verso: "A história, e não só o resultado final.",
+                    },
+                    {
+                        frente: "Que cuidado a construção da imagem exige?",
+                        verso: "Nunca deixar o segredo entrar em camada nenhuma.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que condição a regra que bloqueia a entrega precisa ter?",
+                        verso: "O time precisa concordar com ela.",
+                    },
+                    {
+                        frente: "No que a regra sem acordo vira?",
+                        verso: "Numa negociação diária, e não num bloqueio.",
+                    },
+                    {
+                        frente: "O que a checagem no pipeline antecipa?",
+                        verso: "O erro de configuração, antes de virar ambiente.",
+                    },
+                ],
+            },
+        },
     },
 };
