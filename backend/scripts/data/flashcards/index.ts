@@ -35,6 +35,7 @@ import { kubernetes } from "./kubernetes.ts";
 import { arquiteturaEEscala } from "./arquitetura-e-escala.ts";
 import { estatisticaEProbabilidade } from "./estatistica-e-probabilidade.ts";
 import { analiseDeDados } from "./analise-de-dados.ts";
+import { sqlParaDados } from "./sql-para-dados.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -72,4 +73,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     arquiteturaEEscala,
     estatisticaEProbabilidade,
     analiseDeDados,
+    sqlParaDados,
 ];
