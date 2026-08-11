@@ -310,5 +310,155 @@ export const cpp: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que relação a herança modela entre as classes?",
+                        verso: "Um é um tipo de: o gato é um tipo de animal.",
+                    },
+                    {
+                        frente: "Que recurso de herança o C++ permite e outras não?",
+                        verso: "A múltipla, herdando de mais de uma base.",
+                    },
+                    {
+                        frente: "Que risco a herança múltipla traz junto?",
+                        verso: "Ambiguidades quando as bases têm o mesmo membro.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que palavra na derivada o compilador confere?",
+                        verso: "O override, marcando que sobrescreve um método virtual.",
+                    },
+                    {
+                        frente: "Sem o virtual, quando a versão chamada é decidida?",
+                        verso: "Em tempo de compilação, pelo tipo do ponteiro.",
+                    },
+                    {
+                        frente: "Que liberdade o polimorfismo dá a quem escreve o código?",
+                        verso: "Trabalhar com a base sem saber o tipo exato do objeto.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como um método virtual puro é declarado?",
+                        verso: "Sem corpo, recebendo igual a zero na declaração.",
+                    },
+                    {
+                        frente: "Que papel a classe abstrata cumpre para as derivadas?",
+                        verso: "Serve de contrato que elas são obrigadas a implementar.",
+                    },
+                    {
+                        frente: "O que falta ao deletar pela base sem destrutor virtual?",
+                        verso: "O destrutor da derivada não roda, e o recurso vaza.",
+                    },
+                ],
+            },
+        },
+        8: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a sigla STL quer dizer, por extenso?",
+                        verso: "Standard Template Library, com estruturas e algoritmos.",
+                    },
+                    {
+                        frente: "Que três formas de uso o vector oferece de imediato?",
+                        verso: "O push_back, o size e o acesso por índice.",
+                    },
+                    {
+                        frente: "Que padrão o vector segue ao gerenciar a memória?",
+                        verso: "O RAII, alocando e liberando sem new nem delete.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dois métodos delimitam a varredura por iterador?",
+                        verso: "O begin, no primeiro, e o end, marcando o fim.",
+                    },
+                    {
+                        frente: "Como o valor de um iterador é acessado?",
+                        verso: "Desreferenciando, do mesmo jeito que um ponteiro.",
+                    },
+                    {
+                        frente: "O que o range-based for esconde de quem escreve?",
+                        verso: "O iterador, fazendo o mesmo com menos código.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que declaração abre um template de função?",
+                        verso: "A palavra template com o tipo genérico entre sinais.",
+                    },
+                    {
+                        frente: "Que desempenho o template especializado mantém?",
+                        verso: "O de código escrito à mão para cada tipo usado.",
+                    },
+                    {
+                        frente: "Que parte da biblioteca padrão os templates sustentam?",
+                        verso: "A STL inteira, genérica e eficiente ao mesmo tempo.",
+                    },
+                ],
+            },
+        },
+        9: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que cabeçalho traz os smart pointers?",
+                        verso: "O memory, com o unique_ptr e o shared_ptr.",
+                    },
+                    {
+                        frente: "Que função cria um unique_ptr no C++ moderno?",
+                        verso: "O make_unique, com o valor inicial entre parênteses.",
+                    },
+                    {
+                        frente: "Quando o shared_ptr libera o recurso guardado?",
+                        verso: "Quando o último dono some, pela contagem de referências.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas formas de captura a lambda aceita?",
+                        verso: "Por cópia com o nome e por referência com o e comercial.",
+                    },
+                    {
+                        frente: "Que recurso o std::move oferece no C++ moderno?",
+                        verso: "Transferir recursos entre objetos em vez de copiar.",
+                    },
+                    {
+                        frente: "Onde as lambdas mais brilham na biblioteca?",
+                        verso: "Nos algoritmos da STL, como critério de ordenação.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que projetos pequenos a aula sugere para praticar?",
+                        verso: "Uma agenda com classes, uma calculadora e formas.",
+                    },
+                    {
+                        frente: "Que três caminhos naturais a aula aponta depois?",
+                        verso: "Aprofundar a STL, o movimento e áreas como jogos.",
+                    },
+                    {
+                        frente: "Que assunto avançado fecha a lista de próximos passos?",
+                        verso: "A semântica de movimento com as referências rvalue.",
+                    },
+                ],
+            },
+        },
     },
 };
