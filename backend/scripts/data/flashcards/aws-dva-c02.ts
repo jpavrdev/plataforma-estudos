@@ -470,5 +470,153 @@ export const awsDvaC02: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que seção é a única obrigatória num template do CloudFormation?",
+                        verso: "A de recursos.",
+                    },
+                    {
+                        frente: "O que um change set mostra antes de aplicar?",
+                        verso: "As alterações que a stack vai sofrer.",
+                    },
+                    {
+                        frente: "O que a função Ref costuma devolver?",
+                        verso: "O identificador ou o nome do recurso.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o SAM é, em relação ao CloudFormation?",
+                        verso: "Uma extensão para aplicações serverless.",
+                    },
+                    {
+                        frente: "Que linha liga um template ao SAM?",
+                        verso: "A de transform, apontando para a versão do SAM.",
+                    },
+                    {
+                        frente: "No que os recursos do SAM se expandem?",
+                        verso: "Em recursos comuns do CloudFormation.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que arquivo guia o CodeBuild?",
+                        verso: "O buildspec, com as fases da construção.",
+                    },
+                    {
+                        frente: "Que fases o buildspec organiza?",
+                        verso: "Install, pre_build, build e post_build.",
+                    },
+                    {
+                        frente: "Que arquivo o CodeDeploy usa?",
+                        verso: "O appspec, com os hooks do ciclo de implantação.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três coisas as estratégias de deploy equilibram?",
+                        verso: "Downtime, custo e risco.",
+                    },
+                    {
+                        frente: "O que o blue/green entrega?",
+                        verso: "Zero downtime e rollback instantâneo, a custo maior.",
+                    },
+                    {
+                        frente: "O que o canário faz com o tráfego?",
+                        verso: "Manda uma fatia pequena para a versão nova primeiro.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o ECR guarda?",
+                        verso: "As imagens de contêiner.",
+                    },
+                    {
+                        frente: "O que o Fargate dispensa no ECS?",
+                        verso: "Gerenciar os servidores por baixo.",
+                    },
+                    {
+                        frente: "O que o Elastic Beanstalk faz por quem desenvolve?",
+                        verso: "Provisiona e opera o ambiente a partir do código.",
+                    },
+                ],
+            },
+        },
+        8: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a retenção padrão de um log group?",
+                        verso: "Nunca expira, até alguém configurar.",
+                    },
+                    {
+                        frente: "O que identifica uma métrica de forma única?",
+                        verso: "O namespace, o nome e as dimensões.",
+                    },
+                    {
+                        frente: "O que o CloudWatch coleta além de logs?",
+                        verso: "Métricas e eventos dos serviços e da aplicação.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o Embedded Metric Format embute?",
+                        verso: "Métricas dentro de logs estruturados.",
+                    },
+                    {
+                        frente: "Quem transforma esse log em métrica?",
+                        verso: "O próprio CloudWatch, do lado dele.",
+                    },
+                    {
+                        frente: "Que custo o EMF evita numa função Lambda?",
+                        verso: "A chamada síncrona para publicar a métrica.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o X-Ray acompanha?",
+                        verso: "Uma requisição atravessando vários serviços.",
+                    },
+                    {
+                        frente: "Que diferença separa annotation de metadata?",
+                        verso: "A annotation é indexada e filtrável; a metadata não.",
+                    },
+                    {
+                        frente: "O que um segment representa?",
+                        verso: "Um serviço no caminho da requisição.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que um erro 4xx indica?",
+                        verso: "Erro do cliente, na própria requisição.",
+                    },
+                    {
+                        frente: "O que um erro 5xx indica?",
+                        verso: "Erro do servidor, muitas vezes transitório.",
+                    },
+                    {
+                        frente: "O que fazer diante de um 429?",
+                        verso: "Tentar de novo com backoff.",
+                    },
+                ],
+            },
+        },
     },
 };
