@@ -330,5 +330,215 @@ export const testesEQualidade: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como se sabe que a fase red terminou?",
+                        verso: "O teste falha ao rodar.",
+                    },
+                    {
+                        frente: "O que a fase green pede que se escreva?",
+                        verso: "O código mais simples possível para passar no teste.",
+                    },
+                    {
+                        frente: "Como se sabe que a fase refactor terminou?",
+                        verso: "Os testes continuam verdes.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que atitude o TDD pede diante de um requisito novo?",
+                        verso: "Escrever o teste do comportamento esperado e vê-lo falhar.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza uma função pura?",
+                        verso: "Mesma entrada sempre produz a mesma saída, sem efeito colateral.",
+                    },
+                    {
+                        frente: "Como código testável recebe suas dependências?",
+                        verso: "De fora, por parâmetro, em vez de criá-las dentro.",
+                    },
+                    {
+                        frente: "Que efeitos colaterais tornam uma função difícil de testar?",
+                        verso: "Ler relógio, gerar aleatório ou gravar arquivo no meio da lógica.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que torna bom o nome de um teste?",
+                        verso: "Dá para entender o que quebrou só de ler o nome.",
+                    },
+                    {
+                        frente: "Por que a ordem dos testes não deve importar?",
+                        verso: "Um teste não deveria depender do estado deixado por outro.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o F de FIRST representa?",
+                        verso: "Fast: a suíte roda em segundos, não em minutos.",
+                    },
+                    {
+                        frente: "O que significa um teste ser self-validating?",
+                        verso: "Ele mesmo decide se passou ou falhou, sem checagem manual.",
+                    },
+                    {
+                        frente: "O que o Repeatable do FIRST exige?",
+                        verso: "O mesmo teste dando o mesmo resultado em qualquer execução.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a cobertura de branches mede?",
+                        verso: "Quantos caminhos de decisão os testes exercitaram.",
+                    },
+                    {
+                        frente: "Que comando roda a suíte já com relatório de cobertura?",
+                        verso: "npx vitest run --coverage",
+                    },
+                    {
+                        frente: "Cem por cento de cobertura garante ausência de bug?",
+                        verso: "Não. Mede linha executada, não asserção feita.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Com o que o teste de ponta a ponta fala, diferente do de integração?",
+                        verso: "Com a interface, como um usuário faria.",
+                    },
+                    {
+                        frente: "Por que o teste de ponta a ponta fica no topo da pirâmide?",
+                        verso: "É lento, frágil a mudança de interface e caro de manter.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que caracteriza um teste flaky?",
+                        verso: "Passa em algumas execuções e falha em outras, sem mudar o código.",
+                    },
+                    {
+                        frente: "Como evitar flaky por dependência de tempo real?",
+                        verso: "Controlando o tempo com timers falsos, em vez de esperar de verdade.",
+                    },
+                    {
+                        frente: "Como evitar flaky por estado compartilhado?",
+                        verso: "Isolando com beforeEach ou afterEach, recriando o estado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que significa rodar os testes no CI?",
+                        verso: "A suíte roda a cada push ou pull request, sem depender de ninguém.",
+                    },
+                    {
+                        frente: "O que o required status check bloqueia?",
+                        verso: "O botão de merge, enquanto a suíte não passar.",
+                    },
+                    {
+                        frente: "Por que o CI precisa do run e não só do comando padrão?",
+                        verso: "Sem ele o Vitest entra em watch mode e o job não termina.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que critério decide se um fluxo merece teste de ponta a ponta?",
+                        verso: "Se a aplicação fica inutilizável para o usuário caso ele quebre.",
+                    },
+                    {
+                        frente: "Qual é a velocidade de cada nível, na suíte inteira?",
+                        verso: "Segundos no unitário, médio na integração, lento no ponta a ponta.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a regra eqeqeq cobra?",
+                        verso: "Trocar a comparação frouxa pela estrita, evitando coerção de tipo.",
+                    },
+                    {
+                        frente: "Qual é o objetivo principal de um linter?",
+                        verso: "Analisar o código sem executar, apontando padrão arriscado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre o que o ESLint e o Prettier resolvem?",
+                        verso: "ESLint aponta problema no código; Prettier ajusta o estilo visual.",
+                    },
+                    {
+                        frente: "O que o modo check do Prettier faz, diferente do write?",
+                        verso: "Só informa se algo está fora do padrão, sem alterar nada.",
+                    },
+                    {
+                        frente: "Quanto cada um consegue corrigir sozinho?",
+                        verso: "O Prettier corrige tudo; o ESLint, só o que é seguro corrigir.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que erro o TypeScript pega antes de o código rodar?",
+                        verso: "Passar um valor de tipo errado para quem espera outro.",
+                    },
+                    {
+                        frente: "O que o tsc com noEmit faz?",
+                        verso: "Verifica os tipos do projeto inteiro sem gerar arquivo de saída.",
+                    },
+                    {
+                        frente: "Que erro o tipo não pega e o teste pega?",
+                        verso: "Cálculo errado: o tipo continua certo, e a conta não.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que preocupação é do code review e não do lint nem do type-check?",
+                        verso: "Se o nome da função comunica o que ela realmente faz.",
+                    },
+                    {
+                        frente: "Qual é o problema de um comentário de review sem detalhe?",
+                        verso: "Não diz o que está errado nem por quê, então não orienta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que costuma rodar no pre-commit, antes de o código sair da máquina?",
+                        verso: "Um gate rápido e local: lint e formatação nos arquivos alterados.",
+                    },
+                ],
+            },
+        },
     },
 };
