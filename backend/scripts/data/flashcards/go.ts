@@ -160,5 +160,155 @@ export const go: CartasDaTrilha = {
                 ],
             },
         },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como abreviar dois parâmetros seguidos do mesmo tipo?",
+                        verso: "Escrevendo o tipo uma vez só, depois do último nome.",
+                    },
+                    {
+                        frente: "Que ordem a assinatura de uma função Go segue?",
+                        verso: "func, nome, parâmetros com tipo depois do nome, e o retorno.",
+                    },
+                    {
+                        frente: "Para que os múltiplos retornos são mais usados no dia a dia?",
+                        verso: "Devolver o resultado junto com um possível erro.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "No que os retornos nomeados se transformam dentro da função?",
+                        verso: "Em variáveis já declaradas, prontas para receber valor.",
+                    },
+                    {
+                        frente: "Com que moderação a aula recomenda usar retornos nomeados?",
+                        verso: "Com parcimônia: usados assim, deixam a intenção clara.",
+                    },
+                    {
+                        frente: "Que símbolo marca um parâmetro variádico na assinatura?",
+                        verso: "Três pontos antes do tipo do parâmetro.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que ordem vários defer da mesma função rodam?",
+                        verso: "Na inversa: o último agendado roda primeiro, como uma pilha.",
+                    },
+                    {
+                        frente: "O que o defer garante, aconteça o que acontecer no meio?",
+                        verso: "Que a chamada agendada roda quando a função retornar.",
+                    },
+                    {
+                        frente: "Que padrão flexível as funções como valores sustentam?",
+                        verso: "Passar uma função de comparação para ordenar uma lista.",
+                    },
+                ],
+            },
+        },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que dois arrays de tamanhos diferentes são tipos diferentes?",
+                        verso: "O tamanho do array faz parte do tipo dele.",
+                    },
+                    {
+                        frente: "O que a notação de fatia inclui e o que ela exclui?",
+                        verso: "Inclui o índice inicial e exclui o final.",
+                    },
+                    {
+                        frente: "Sobre o que um slice se apoia por baixo?",
+                        verso: "Sobre um array, que ele cobre com tamanho variável.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas formas criam um slice em Go?",
+                        verso: "O literal com chaves e a função make com tipo e tamanho.",
+                    },
+                    {
+                        frente: "O que acontece ao alterar uma fatia de um slice existente?",
+                        verso: "Pode alterar o original, porque os dois dividem o mesmo array.",
+                    },
+                    {
+                        frente: "Como obter uma cópia realmente independente de um slice?",
+                        verso: "Com a função copy, escrevendo num slice novo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois jeitos criam um map em Go?",
+                        verso: "A função make ou um literal com as chaves e valores.",
+                    },
+                    {
+                        frente: "Que ambiguidade o comma-ok resolve num map?",
+                        verso: "Distingue a chave que existe e vale zero da que não existe.",
+                    },
+                    {
+                        frente: "Como se acessa e se remove uma chave de um map?",
+                        verso: "Acessa com colchetes e remove com a função delete.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que palavra define um tipo novo agrupando campos?",
+                        verso: "O type seguido de struct, com os campos entre chaves.",
+                    },
+                    {
+                        frente: "Como se prefere criar um valor de struct?",
+                        verso: "Informando o nome de cada campo, e não só a ordem.",
+                    },
+                    {
+                        frente: "Que regra vale para a visibilidade dos campos de uma struct?",
+                        verso: "A mesma dos pacotes: maiúscula exporta, minúscula esconde.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde o receiver fica na declaração de um método?",
+                        verso: "Entre o func e o nome do método, entre parênteses.",
+                    },
+                    {
+                        frente: "O que um receiver de valor recebe, ao ser chamado?",
+                        verso: "Uma cópia: alterar campos ali não afeta o original.",
+                    },
+                    {
+                        frente: "O que um ponteiro guarda, em vez do valor?",
+                        verso: "O endereço da variável a que ele aponta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o embedding omite, ao declarar o tipo embutido?",
+                        verso: "O nome do campo: escreve-se só o tipo dentro da struct.",
+                    },
+                    {
+                        frente: "Como o Go monta comportamento, sem hierarquia de classes?",
+                        verso: "Combinando peças por composição, em vez de hierarquias rígidas.",
+                    },
+                    {
+                        frente: "Como se preenche o tipo embutido ao criar o valor externo?",
+                        verso: "Usando o nome do próprio tipo como se fosse o campo.",
+                    },
+                ],
+            },
+        },
     },
 };
