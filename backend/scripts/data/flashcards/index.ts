@@ -81,6 +81,7 @@ import { isc2Cc } from "./isc2-cc.ts";
 import { css } from "./css.ts";
 import { typescript } from "./typescript.ts";
 import { react } from "./react.ts";
+import { php } from "./php.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -164,4 +165,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     css,
     typescript,
     react,
+    php,
 ];
