@@ -175,5 +175,169 @@ export const machineLearningNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que fenômeno fora do ML explica o ganho do ensemble?",
+                        verso: "A sabedoria da multidão, documentada por Francis Galton.",
+                    },
+                    {
+                        frente: "Que duas condições a votação exige para ajudar?",
+                        verso: "Cada modelo melhor que o acaso e erros pouco correlacionados.",
+                    },
+                    {
+                        frente: "Por que cinquenta cópias idênticas não formam ensemble?",
+                        verso: "Elas preveem sempre a mesma coisa, sem diversidade.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que combinação de viés e variância a árvore livre tem?",
+                        verso: "Viés baixo e variância alta, ajustando-se a qualquer forma.",
+                    },
+                    {
+                        frente: "Que preço podar a árvore cobra em troca da estabilidade?",
+                        verso: "Mais viés: ela passa a errar até padrão real e simples.",
+                    },
+                    {
+                        frente: "Que virada o módulo faz com a instabilidade da árvore?",
+                        verso: "Aceita e usa a favor, treinando várias e agregando.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que duas palavras o nome bagging abrevia?",
+                        verso: "Bootstrap aggregating: a amostragem e a agregação.",
+                    },
+                    {
+                        frente: "Que nome os exemplos deixados de fora recebem?",
+                        verso: "Out-of-bag, cerca de 37%, úteis como validação grátis.",
+                    },
+                    {
+                        frente: "Como o bagging agrega em cada tipo de problema?",
+                        verso: "Voto da maioria na classificação e média na regressão.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quem propôs a random forest sobre o bagging?",
+                        verso: "Breiman, somando o sorteio de features a cada divisão.",
+                    },
+                    {
+                        frente: "Que problema o sorteio de features resolve nas árvores?",
+                        verso: "Uma feature forte dominaria a raiz de todas elas.",
+                    },
+                    {
+                        frente: "Que duas classes o scikit-learn oferece para a floresta?",
+                        verso: "O RandomForestClassifier e o RandomForestRegressor.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que cinco hiperparâmetros concentram o efeito na floresta?",
+                        verso: "n_estimators, max_depth, max_features e os dois mínimos.",
+                    },
+                    {
+                        frente: "Que argumento paraleliza o treino entre os núcleos?",
+                        verso: "O n_jobs igual a menos um, usando a CPU inteira.",
+                    },
+                    {
+                        frente: "Que limitação a floresta tem em problema de regressão?",
+                        verso: "Ela não extrapola além da faixa vista no treino.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Com que modelo o boosting costuma começar a sequência?",
+                        verso: "Um toco: árvore de profundidade um, fraca sozinha.",
+                    },
+                    {
+                        frente: "Que erro cada família de ensemble ataca primeiro?",
+                        verso: "O bagging reduz variância; o boosting reduz viés.",
+                    },
+                    {
+                        frente: "Por que o boosting treina mais devagar que a floresta?",
+                        verso: "A sequência não paraleliza: cada modelo espera o anterior.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que abordagem o AdaBoost usa, diferente do gradiente?",
+                        verso: "Repesar as amostras erradas em vez de prever o resíduo.",
+                    },
+                    {
+                        frente: "O que a segunda árvore do gradient boosting prevê?",
+                        verso: "O resíduo deixado pela previsão anterior, não o alvo.",
+                    },
+                    {
+                        frente: "Que previsão inicial simples abre a sequência?",
+                        verso: "Algo básico, como a média do alvo no treino.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que vantagem o XGBoost traz embutida desde 2014?",
+                        verso: "Regularização forte, muito testada e documentada.",
+                    },
+                    {
+                        frente: "Que comparação a aula faz com redes neurais profundas?",
+                        verso: "Em dado tabular, o boosting ajustado costuma vencer.",
+                    },
+                    {
+                        frente: "Que critério decide entre as três bibliotecas?",
+                        verso: "Testar mais de uma: não existe a certa de antemão.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que o boosting costuma vencer na métrica final?",
+                        verso: "Ele ataca o viés direto, corrigindo erro atrás de erro.",
+                    },
+                    {
+                        frente: "Que prática combina as duas famílias num projeto?",
+                        verso: "Treinar a floresta como piso e só então tentar boosting.",
+                    },
+                    {
+                        frente: "Que perfil de problema pede a tolerância da floresta?",
+                        verso: "O que precisa de resultado sólido rápido, com pouco ajuste.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que profundidade as árvores do boosting costumam ter?",
+                        verso: "Rasas, entre dois e cinco, aprendendo um pedaço do erro.",
+                    },
+                    {
+                        frente: "Que combinação de ajuste a aula considera mais segura?",
+                        verso: "Learning_rate baixo com muitas árvores no conjunto.",
+                    },
+                    {
+                        frente: "Que risco um learning_rate alto traz ao modelo?",
+                        verso: "Passar do ponto ótimo e decorar o conjunto de treino.",
+                    },
+                ],
+            },
+        },
     },
 };
