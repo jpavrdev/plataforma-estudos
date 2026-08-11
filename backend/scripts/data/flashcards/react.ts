@@ -338,5 +338,251 @@ export const react: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma action encapsula?",
+                        verso: "A função assíncrona disparada por um formulário.",
+                    },
+                    {
+                        frente: "O que o useActionState devolve junto do estado?",
+                        verso: "A ação embrulhada e o indicador de pendência.",
+                    },
+                    {
+                        frente: "Que trabalho manual ele dispensa?",
+                        verso: "Controlar carregamento e erro na mão.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde a atualização otimista vale a pena?",
+                        verso: "Onde a falha é rara e o custo dela é baixo.",
+                    },
+                    {
+                        frente: "Onde ela não vale?",
+                        verso: "Em transferência de dinheiro, que espera a confirmação.",
+                    },
+                    {
+                        frente: "O que ela mostra antes da resposta?",
+                        verso: "O resultado provável, já aplicado na tela.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o useFormStatus expõe?",
+                        verso: "O estado do envio do formulário mais próximo.",
+                    },
+                    {
+                        frente: "Onde ele precisa ser chamado?",
+                        verso: "Dentro de um componente filho do formulário.",
+                    },
+                    {
+                        frente: "Que uso típico ele tem?",
+                        verso: "Desabilitar o botão enquanto o envio acontece.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a função use permite ler?",
+                        verso: "Uma promessa ou um contexto, durante a renderização.",
+                    },
+                    {
+                        frente: "O que o Suspense mostra enquanto o dado não chega?",
+                        verso: "O conteúdo de espera declarado.",
+                    },
+                    {
+                        frente: "O que o Suspense evita escrever à mão?",
+                        verso: "O estado de carregamento espalhado pelos componentes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que mudou sobre tags de metadado na versão 19?",
+                        verso: "Podem ser declaradas no próprio componente.",
+                    },
+                    {
+                        frente: "Para onde o React as move?",
+                        verso: "Para o cabeçalho do documento.",
+                    },
+                    {
+                        frente: "Que trabalho isso dispensa?",
+                        verso: "Uma biblioteca só para mexer no cabeçalho.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Renderizar é o mesmo que atualizar o DOM?",
+                        verso: "Não é.",
+                    },
+                    {
+                        frente: "Onde mora a maior parte dos problemas de desempenho?",
+                        verso: "No trabalho pesado dentro da renderização.",
+                    },
+                    {
+                        frente: "O que dispara uma nova renderização?",
+                        verso: "Mudança de estado, de props ou de contexto.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que custos memorizar traz?",
+                        verso: "A comparação, a memória e mais código.",
+                    },
+                    {
+                        frente: "Quando memorizar vale a pena?",
+                        verso: "Quando o perfilador aponta aquele ponto como problema.",
+                    },
+                    {
+                        frente: "O que o useCallback preserva entre renderizações?",
+                        verso: "A identidade da função.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o React Compiler faz sozinho?",
+                        verso: "Aplica a memorização onde ela seria necessária.",
+                    },
+                    {
+                        frente: "Que trabalho ele tende a dispensar?",
+                        verso: "Espalhar memorização manual pelo código.",
+                    },
+                    {
+                        frente: "O que ele exige do código para funcionar?",
+                        verso: "Que as regras dos hooks sejam respeitadas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que uma transição marca?",
+                        verso: "Que aquela atualização pode esperar.",
+                    },
+                    {
+                        frente: "O que o React faz com atualizações urgentes?",
+                        verso: "Coloca na frente das que podem esperar.",
+                    },
+                    {
+                        frente: "O que o Activity permite com uma parte da árvore?",
+                        verso: "Manter o estado dela enquanto fica escondida.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o carregamento tardio adia?",
+                        verso: "O código de uma parte da tela, até ela ser usada.",
+                    },
+                    {
+                        frente: "O que uma lista grande exige para não travar?",
+                        verso: "Renderizar só o que aparece na janela.",
+                    },
+                    {
+                        frente: "O que a divisão de código melhora?",
+                        verso: "O tempo até a primeira tela útil.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Como as props de um componente são tipadas?",
+                        verso: "Por um tipo do objeto que ele recebe.",
+                    },
+                    {
+                        frente: "O que a tipagem ajuda a evitar no JSX?",
+                        verso: "Passar prop errada ou esquecer uma obrigatória.",
+                    },
+                    {
+                        frente: "Que retorno um componente tem?",
+                        verso: "Um elemento que o React sabe renderizar.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o roteador faz numa aplicação de página única?",
+                        verso: "Escolhe o componente conforme a URL.",
+                    },
+                    {
+                        frente: "O que a navegação por rota evita?",
+                        verso: "Recarregar a página inteira a cada clique.",
+                    },
+                    {
+                        frente: "O que uma rota aninhada permite?",
+                        verso: "Compartilhar um layout entre várias telas.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a Testing Library incentiva testar?",
+                        verso: "O que o usuário vê e faz, não o detalhe interno.",
+                    },
+                    {
+                        frente: "Por que seletor buscar o elemento?",
+                        verso: "Pelo papel e pelo texto acessível.",
+                    },
+                    {
+                        frente: "Que sinal indica teste frágil?",
+                        verso: "Depender da estrutura interna do componente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Onde um componente de servidor executa?",
+                        verso: "No servidor, antes de chegar ao navegador.",
+                    },
+                    {
+                        frente: "O que ele não pode usar?",
+                        verso: "Estado e efeitos do cliente.",
+                    },
+                    {
+                        frente: "Que ganho ele traz?",
+                        verso: "Menos código enviado ao navegador.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o build de produção faz com o código?",
+                        verso: "Minifica, divide e otimiza os arquivos.",
+                    },
+                    {
+                        frente: "O que conferir antes de publicar?",
+                        verso: "As variáveis de ambiente e o caminho base.",
+                    },
+                    {
+                        frente: "O que o projeto final consolida?",
+                        verso: "As decisões da trilha numa aplicação inteira.",
+                    },
+                ],
+            },
+        },
     },
 };
