@@ -66,6 +66,7 @@ import { processamentoComSpark } from "./processamento-com-spark.ts";
 import { dataLakeELakehouse } from "./data-lake-e-lakehouse.ts";
 import { streamingDeDados } from "./streaming-de-dados.ts";
 import { modernDataStack } from "./modern-data-stack.ts";
+import { qualidadeEGovernancaDeDados } from "./qualidade-e-governanca-de-dados.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -134,4 +135,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     dataLakeELakehouse,
     streamingDeDados,
     modernDataStack,
+    qualidadeEGovernancaDeDados,
 ];
