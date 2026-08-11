@@ -14,6 +14,7 @@ import { agentesDeIa } from "./agentes-de-ia.ts";
 import { llmsEmProducao } from "./llms-em-producao.ts";
 import { fundamentosDeQa } from "./fundamentos-de-qa.ts";
 import { testesEQualidade } from "./testes-e-qualidade.ts";
+import { testesE2e } from "./testes-e2e.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -30,4 +31,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     llmsEmProducao,
     fundamentosDeQa,
     testesEQualidade,
+    testesE2e,
 ];
