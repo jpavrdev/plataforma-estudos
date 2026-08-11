@@ -174,5 +174,169 @@ export const uiUxDesign: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que é uma affordance?",
+                        verso: "O que o objeto permite fazer.",
+                    },
+                    {
+                        frente: "O que é um signifier?",
+                        verso: "O sinal visível que anuncia isso e diz onde agir.",
+                    },
+                    {
+                        frente: "O que acontece quando falta esse sinal?",
+                        verso: "A ação existe, mas ninguém descobre.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que toda ação merece?",
+                        verso: "Uma reação da interface.",
+                    },
+                    {
+                        frente: "O que a pessoa conclui quando a interface fica muda?",
+                        verso: "Que não funcionou, ou que está quebrado.",
+                    },
+                    {
+                        frente: "Que tipo de espera exige aviso?",
+                        verso: "A que passa de alguns instantes.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o caminho feliz esconde?",
+                        verso: "Os outros estados que a tela pode ter.",
+                    },
+                    {
+                        frente: "Que estados precisam ser desenhados?",
+                        verso: "Vazio, carregando, erro e sucesso.",
+                    },
+                    {
+                        frente: "Que estado costuma ser esquecido?",
+                        verso: "O vazio, da primeira vez que a pessoa chega.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o mapeamento significa?",
+                        verso: "O controle apontar para o próprio efeito.",
+                    },
+                    {
+                        frente: "O que a consistência garante?",
+                        verso: "A interface se comportar sempre do mesmo jeito.",
+                    },
+                    {
+                        frente: "O que os dois fazem juntos?",
+                        verso: "Deixam a interface previsível.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a lei de Fitts relaciona?",
+                        verso: "O tempo de alcance com o tamanho e a distância do alvo.",
+                    },
+                    {
+                        frente: "O que a lei de Hick diz?",
+                        verso: "Mais opções, mais tempo para decidir.",
+                    },
+                    {
+                        frente: "O que a lei de Jakob lembra?",
+                        verso: "As pessoas passam a maior parte do tempo em outros sites.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a hierarquia visual faz?",
+                        verso: "Guia o olho, mostrando primeiro o mais importante.",
+                    },
+                    {
+                        frente: "Que recursos a constroem?",
+                        verso: "Tamanho, peso, cor, contraste e posição.",
+                    },
+                    {
+                        frente: "O que aparece por último nessa ordem?",
+                        verso: "O detalhe.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que famílias tipográficas a aula compara?",
+                        verso: "As serifadas e as sem serifa.",
+                    },
+                    {
+                        frente: "Qual delas é a mais comum na tela?",
+                        verso: "A sem serifa.",
+                    },
+                    {
+                        frente: "O que a escala tipográfica organiza?",
+                        verso: "Os tamanhos de texto, em degraus definidos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três atributos descrevem uma cor?",
+                        verso: "Matiz, saturação e brilho.",
+                    },
+                    {
+                        frente: "O que a harmonia complementar produz?",
+                        verso: "Contraste, com matizes opostos na roda.",
+                    },
+                    {
+                        frente: "O que a cor nunca deve ser sozinha?",
+                        verso: "O único jeito de transmitir uma informação.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o espaço em branco não é?",
+                        verso: "Desperdício.",
+                    },
+                    {
+                        frente: "O que ele dá à tela?",
+                        verso: "Respiro e destaque.",
+                    },
+                    {
+                        frente: "O que a proximidade comunica?",
+                        verso: "Que os elementos próximos pertencem ao mesmo grupo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que os princípios de Gestalt descrevem?",
+                        verso: "Como a mente agrupa o que vê.",
+                    },
+                    {
+                        frente: "Que frase resume a ideia?",
+                        verso: "O todo é diferente da soma das partes.",
+                    },
+                    {
+                        frente: "Que princípio agrupa pelo que é parecido?",
+                        verso: "O da similaridade.",
+                    },
+                ],
+            },
+        },
     },
 };
