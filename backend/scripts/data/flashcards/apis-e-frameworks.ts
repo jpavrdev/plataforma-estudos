@@ -174,5 +174,169 @@ export const apisEFrameworks: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os três parâmetros de um middleware, em ordem?",
+                        verso: "req, res e next, sempre nessa ordem.",
+                    },
+                    {
+                        frente: "O que um handler de rota é, no fundo?",
+                        verso: "Um caso particular de middleware que encerra em vez de chamar next.",
+                    },
+                    {
+                        frente: "Como um middleware pode encerrar o ciclo da requisição?",
+                        verso: "Respondendo com res, no lugar de chamar next e seguir o pipeline.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três formas existem de limitar o alcance de um middleware?",
+                        verso: "app.use global, app.use com prefixo ou passar antes do handler da rota.",
+                    },
+                    {
+                        frente: "O Express reordena middlewares para otimizar?",
+                        verso: "Não: executa na ordem exata do registro, de cima para baixo.",
+                    },
+                    {
+                        frente: "O que o app.use com prefixo faz com o caminho da requisição?",
+                        verso: "Só roda quando o caminho começa com aquele prefixo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Por que o Node não preenche o corpo da requisição sozinho?",
+                        verso: "Os dados chegam como fluxo de bytes brutos; alguém precisa fazer o parse.",
+                    },
+                    {
+                        frente: "Que middleware embutido serve arquivos de uma pasta por URL?",
+                        verso: "O express.static(pasta), sem precisar de rota por arquivo.",
+                    },
+                    {
+                        frente: "Que formato o express.urlencoded lê?",
+                        verso: "O application/x-www-form-urlencoded, de formulário HTML tradicional.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que evento do res avisa que a resposta terminou de ser enviada?",
+                        verso: "O finish, que permite logar status e tempo sem atrasar nada.",
+                    },
+                    {
+                        frente: "Por que todo res dentro de um middleware pede return na frente?",
+                        verso: "Sem ele o código segue e chama next mesmo depois de responder.",
+                    },
+                    {
+                        frente: "Que dois tipos de middleware próprio aparecem em quase toda API?",
+                        verso: "Os de log, para observar, e os de verificação, para barrar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Por que cors e helmet são chamados com parênteses no app.use?",
+                        verso: "Cada um devolve a função middleware que o app.use registra.",
+                    },
+                    {
+                        frente: "Por que a requisição pendurada não mostra erro no servidor?",
+                        verso: "Do ponto de vista do Express nada deu errado: ele só está esperando.",
+                    },
+                    {
+                        frente: "De que dois jeitos todo middleware precisa terminar?",
+                        verso: "Chamando next para seguir, ou enviando uma resposta e encerrando.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são as três portas de entrada de dados numa rota?",
+                        verso: "req.params, req.query e req.body, cada uma vindo de um lugar.",
+                    },
+                    {
+                        frente: "Qual das três portas não entrega tudo como string?",
+                        verso: "O req.body, cujo tipo depende do JSON que o cliente enviou.",
+                    },
+                    {
+                        frente: "De onde o req.params tira os valores?",
+                        verso: "Dos trechos nomeados no caminho da própria rota.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que problema o dado com tipo errado causa, se não quebra nada?",
+                        verso: "Corrompe em silêncio e o bug só aparece num relatório depois.",
+                    },
+                    {
+                        frente: "Por que espalhar req.body direto num objeto é arriscado?",
+                        verso: "Um campo que o cliente mandou sobrescreve o padrão que veio antes.",
+                    },
+                    {
+                        frente: "Que consequência um texto absurdamente longo traz sem validação?",
+                        verso: "Consumo desnecessário de memória e de banco de dados.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Com o que um schema do Zod costuma começar?",
+                        verso: "Com z.object, descrevendo cada campo esperado.",
+                    },
+                    {
+                        frente: "Que duas coisas o .parse() faz quando o dado bate?",
+                        verso: "Devolve o próprio dado já validado e segue a execução.",
+                    },
+                    {
+                        frente: "Que erro o Zod lança quando o dado não bate com o schema?",
+                        verso: "Um ZodError, que interrompe a execução da função na hora.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o safeParse devolve quando a validação passa?",
+                        verso: "Um objeto com success verdadeiro e o dado limpo em data.",
+                    },
+                    {
+                        frente: "Que ganho o middleware de validação reaproveitável traz?",
+                        verso: "Evita copiar o mesmo bloco de safeParse e 400 em cada rota.",
+                    },
+                    {
+                        frente: "Quando o .parse() ainda é a escolha melhor que o safeParse?",
+                        verso: "Com tratamento de erro centralizado, fora da rota.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre validar e sanitizar?",
+                        verso: "Validar pergunta se o dado serve; sanitizar melhora o formato dele.",
+                    },
+                    {
+                        frente: "Por que sanitizar dentro do schema é melhor que depois?",
+                        verso: "A limpeza acontece sempre, sem depender de alguém lembrar.",
+                    },
+                    {
+                        frente: "Que método do Zod aplica uma regra de limpeza mais específica?",
+                        verso: "O .transform(), que recebe o valor validado e devolve outro.",
+                    },
+                ],
+            },
+        },
     },
 };
