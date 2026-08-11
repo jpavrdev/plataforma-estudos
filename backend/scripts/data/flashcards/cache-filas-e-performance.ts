@@ -338,5 +338,251 @@ export const cacheFilasEPerformance: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que distinção separa o problema que a fila resolve do cache?",
+                        verso: "A rota precisa fazer algo novo, não só buscar o que já foi feito.",
+                    },
+                    {
+                        frente: "Que quatro trabalhos pesados aparecem dentro de uma rota?",
+                        verso: "Enviar email, gerar PDF, processar imagem e chamar API externa.",
+                    },
+                    {
+                        frente: "Por que o cache não resolve o envio de um email?",
+                        verso: "É uma ação única por usuário, não uma leitura que se repete.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quais são as três peças de uma arquitetura com fila?",
+                        verso: "O job, o produtor que enfileira e o consumidor que processa.",
+                    },
+                    {
+                        frente: "Onde a fila em si fica guardada?",
+                        verso: "No Redis, entre o momento de criar o job e o de processar.",
+                    },
+                    {
+                        frente: "Que analogia a aula usa para explicar a fila?",
+                        verso: "Tirar senha e sentar, em vez de esperar em pé no balcão.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o 202 promete, e o que ele não promete?",
+                        verso: "Promete o início do trabalho, nunca que ele já terminou.",
+                    },
+                    {
+                        frente: "Que tempo sobra na rota depois de enfileirar?",
+                        verso: "Só salvar no banco e colocar o job no Redis, questão de milissegundos.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre 201 e 202 na resposta?",
+                        verso: "O 201 diz que o recurso já existe; o 202, que ainda vai processar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o BullMQ usa por baixo para guardar os jobs?",
+                        verso: "O Redis, o mesmo que já serve de cache na aplicação.",
+                    },
+                    {
+                        frente: "O que o nome da fila liga na arquitetura?",
+                        verso: "O produtor ao consumidor: o worker só pega o que está na dela.",
+                    },
+                    {
+                        frente: "Por que separar filas por tipo de trabalho?",
+                        verso: "Fica claro o que cada uma faz e dá pra escalar cada uma diferente.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três ganhos a fila entrega?",
+                        verso: "O usuário não espera, o job resiste à queda e dá pra controlar a vazão.",
+                    },
+                    {
+                        frente: "Que três custos a fila cobra?",
+                        verso: "Mais peças no ar, resultado não imediato e mais um lugar pra depurar.",
+                    },
+                    {
+                        frente: "Que pergunta decide se vale a pena enfileirar algo?",
+                        verso: "Esse trabalho deixa a requisição lenta ou frágil de um jeito que se sente?",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quais são os cinco estados de um job no BullMQ?",
+                        verso: "waiting, delayed, active, completed e failed.",
+                    },
+                    {
+                        frente: "O que a separação entre API e worker protege?",
+                        verso: "Se um cai, o outro segue: os jobs ficam guardados no Redis.",
+                    },
+                    {
+                        frente: "Por que a concorrência funciona num processo Node só?",
+                        verso: "Enviar email é I/O: o processo espera a rede em vez de calcular.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Como o backoff exponential espaça as tentativas?",
+                        verso: "Dobrando a cada vez: um, dois, quatro e oito segundos.",
+                    },
+                    {
+                        frente: "Que opção configura o retry uma vez só, na criação da fila?",
+                        verso: "O defaultJobOptions, herdado por todo job daquela fila.",
+                    },
+                    {
+                        frente: "Por que falhar não é motivo pra desistir de um job?",
+                        verso: "A falha pode ser do serviço externo, e daria certo minutos depois.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que duas situações fazem um job rodar mais de uma vez?",
+                        verso: "O retry depois da falha e o worker que cai antes de confirmar.",
+                    },
+                    {
+                        frente: "Que operação é idempotente por natureza, entre as da aula?",
+                        verso: "Marcar o pedido como pago: repetir deixa no mesmo estado.",
+                    },
+                    {
+                        frente: "Como é a chave de idempotência no Redis?",
+                        verso: "Um SET com EX e NX antes de processar a parte arriscada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três informações o job em failed guarda pra investigar?",
+                        verso: "O failedReason, o stacktrace e quantas tentativas já foram feitas.",
+                    },
+                    {
+                        frente: "Que opção limita quantos jobs failed ficam guardados?",
+                        verso: "O removeOnFail, já que o padrão é manter todos no Redis.",
+                    },
+                    {
+                        frente: "Que duas decisões o time toma depois de corrigir a causa raiz?",
+                        verso: "Reprocessar os jobs ou descartar, se já não fazem mais sentido.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Em que estado um job com delay espera?",
+                        verso: "Em delayed, até o tempo passar e ele virar waiting.",
+                    },
+                    {
+                        frente: "Que vantagem o repeat tem sobre um cron tradicional?",
+                        verso: "A recorrência vive na fila, com os mesmos workers e visibilidade.",
+                    },
+                    {
+                        frente: "Que ferramenta comum mostra as filas do BullMQ num painel?",
+                        verso: "O bull-board, no lugar de um console de log manual.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pré-requisito a escala horizontal exige?",
+                        verso: "Aplicação sem estado local e um load balancer na frente.",
+                    },
+                    {
+                        frente: "Como o load balancer costuma distribuir as requisições?",
+                        verso: "Em rodízio, ou por alguma métrica de carga das instâncias.",
+                    },
+                    {
+                        frente: "Como o load balancer descobre que uma instância caiu?",
+                        verso: "Batendo periodicamente num endpoint de health check.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que nome tem a técnica que prende o cliente à mesma instância?",
+                        verso: "Sticky session, que amarra as requisições a um servidor só.",
+                    },
+                    {
+                        frente: "O que torna o JWT compatível com escala horizontal?",
+                        verso: "Ser auto-contido: qualquer instância verifica a assinatura sozinha.",
+                    },
+                    {
+                        frente: "Qual é a regra prática sobre estado compartilhado?",
+                        verso: "Não vai pra variável do processo; vai pro Redis, que todas veem.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três custos abrir uma conexão nova com o banco tem?",
+                        verso: "Handshake, autenticação e alocação de recurso do lado do banco.",
+                    },
+                    {
+                        frente: "O que a réplica de leitura resolve, sem duplicar a escrita?",
+                        verso: "Tira a carga das consultas pesadas do banco principal.",
+                    },
+                    {
+                        frente: "Por que o banco fica mais visível como gargalo ao escalar?",
+                        verso: "Não é uma instância batendo nele, são várias ao mesmo tempo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que três ferramentas protegem o sistema, além de escalar?",
+                        verso: "Rate limit, timeout e degradação elegante.",
+                    },
+                    {
+                        frente: "Que cascata a falta de timeout desencadeia sob carga?",
+                        verso: "O pool esgota, requisição nova não começa e tudo cai junto.",
+                    },
+                    {
+                        frente: "Que três formas de degradar com elegância existem?",
+                        verso: "Versão reduzida, dado de cache um pouco velho ou aviso claro.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que problema cada peça deixa para a próxima resolver?",
+                        verso: "Cache não ajuda no síncrono; fila só até uma instância aguentar.",
+                    },
+                    {
+                        frente: "Que efeito colateral a trilha inteira produziu no sistema?",
+                        verso: "Ele ficou mais complexo, com mais formas de quebrar sem perceber.",
+                    },
+                    {
+                        frente: "O que um teste automatizado não faz pelo sistema?",
+                        verso: "Deixá-lo mais rápido ou escalável: ele garante que não quebrou.",
+                    },
+                ],
+            },
+        },
     },
 };
