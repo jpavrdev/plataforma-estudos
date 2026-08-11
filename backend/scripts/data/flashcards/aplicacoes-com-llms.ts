@@ -192,5 +192,165 @@ export const aplicacoesComLlms: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o bloco de papel do system prompt responde?",
+                        verso: "Quem o assistente é e para quem trabalha.",
+                    },
+                    {
+                        frente: "Que dois inquilinos não devem morar no system prompt?",
+                        verso: "Dados voláteis e segredos.",
+                    },
+                    {
+                        frente: "Um system prompt precisa ser longo?",
+                        verso: "Não. Precisa ser inequívoco.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma regra boa precisa ter, além do alvo?",
+                        verso: "Uma saída para o caso proibido e prioridade no conflito.",
+                    },
+                    {
+                        frente: "Por que seja conciso vale menos que até quatro frases?",
+                        verso: "Regra vaga rende obediência vaga.",
+                    },
+                    {
+                        frente: "O que ancora uma regra crítica melhor que qualquer adjetivo?",
+                        verso: "Um mini exemplo no system: pergunta difícil e resposta modelo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que decisões definem a voz de um assistente?",
+                        verso: "Registro, energia, humor, identidade e vocabulário.",
+                    },
+                    {
+                        frente: "O que a decisão de energia da persona define?",
+                        verso: "Se a voz é entusiasta ou sóbria.",
+                    },
+                    {
+                        frente: "Persona que só funciona no dia bom é o quê?",
+                        verso: "Não é persona, é sorte.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Por que a recusa seca frustra o usuário?",
+                        verso: "Ela nega sem apontar caminho nenhum.",
+                    },
+                    {
+                        frente: "Que casos difíceis entram no conjunto de teste com prioridade máxima?",
+                        verso: "Fora de escopo, informação ausente, insistência e ação impossível.",
+                    },
+                    {
+                        frente: "Por que recusar bem é arquitetura e não cosmética?",
+                        verso: "Cada recusa desenhada é uma alucinação e um risco jurídico a menos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Onde o prompt deve viver para ter histórico e revisão?",
+                        verso: "No repositório, com diff e revisão de PR.",
+                    },
+                    {
+                        frente: "Que prática de código a revisão de par traz para o prompt?",
+                        verso: "Outra pessoa lê a mudança antes de ela subir.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Com bom prompt, que taxa de JSON válido se alcança?",
+                        verso: "A casa dos 95%.",
+                    },
+                    {
+                        frente: "Por que 95% de acerto não basta em produto?",
+                        verso: "Em dez mil chamadas por dia, são quinhentas quebradas.",
+                    },
+                    {
+                        frente: "Que valor fora da lista quebra a validação e o banco?",
+                        verso: "Enum inventado, como positivo com exclamação.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que biblioteca Python gera o JSON Schema a partir de uma classe?",
+                        verso: "Pydantic.",
+                    },
+                    {
+                        frente: "Para que serve um campo de escape como outro num enum?",
+                        verso: "Evitar que o modelo force o encaixe errado.",
+                    },
+                    {
+                        frente: "O schema também é código?",
+                        verso: "Sim. Versionado e testado como o prompt.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O modelo executa a função no function calling?",
+                        verso: "Não. Ele pede; quem executa é o seu código.",
+                    },
+                    {
+                        frente: "O que o modelo faz com o resultado da função?",
+                        verso: "Usa para formular a resposta final ao usuário.",
+                    },
+                    {
+                        frente: "Que tipo de ação pede confirmação antes de executar?",
+                        verso: "Ação com consequência, como cancelar ou pagar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que tipo de nome uma ferramenta deve ter?",
+                        verso: "Nome-verbo específico da intenção, como consultar_pedido.",
+                    },
+                    {
+                        frente: "Vinte micro-ferramentas sobrepostas causam o quê?",
+                        verso: "Disputa pela escolha; o certo é consolidar com fronteiras nítidas.",
+                    },
+                    {
+                        frente: "Como testar as declarações de ferramenta?",
+                        verso: "Com conversas de caso e a ferramenta certa esperada em cada uma.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quantas iterações de ferramenta costumam bastar como teto?",
+                        verso: "De três a cinco.",
+                    },
+                    {
+                        frente: "O resultado de uma ferramenta conta na janela de contexto?",
+                        verso: "Sim. Ele é contexto e gasta tokens.",
+                    },
+                    {
+                        frente: "Que quatro passos formam o ciclo do loop de ferramentas?",
+                        verso: "Perceber, decidir, agir e observar, até concluir.",
+                    },
+                ],
+            },
+        },
     },
 };
