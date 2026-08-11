@@ -502,5 +502,87 @@ export const apisEFrameworks: CartasDaTrilha = {
                 ],
             },
         },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro informações um log de requisição precisa ter?",
+                        verso: "Método e rota, status code, tempo de resposta e o timestamp.",
+                    },
+                    {
+                        frente: "Que diferença tem o formato common para o combined no morgan?",
+                        verso: "O common é igual, só que sem o user-agent.",
+                    },
+                    {
+                        frente: "Que formato do morgan serve a ambiente com pouco espaço em log?",
+                        verso: "O tiny: só método, rota, status e tamanho.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três defesas simples cobrem o básico de segurança?",
+                        verso: "Helmet nos cabeçalhos, rate limit e erro genérico pro cliente.",
+                    },
+                    {
+                        frente: "Que cabeçalho o helmet remove, e por quê?",
+                        verso: "O X-Powered-By, que entrega de graça qual framework está no ar.",
+                    },
+                    {
+                        frente: "Pelo que o rate limit costuma identificar a origem?",
+                        verso: "Pelo IP, contando as requisições dentro de uma janela de tempo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que exatamente o navegador bloqueia num erro de CORS?",
+                        verso: "A leitura da resposta; a requisição costuma chegar no servidor.",
+                    },
+                    {
+                        frente: "Que cabeçalho diz quais métodos valem numa chamada cross-origin?",
+                        verso: "O Access-Control-Allow-Methods, na resposta do servidor.",
+                    },
+                    {
+                        frente: "Com que método o navegador dispara o preflight?",
+                        verso: "Com OPTIONS, antes das requisições mais sensíveis.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que app.get de env devolve numa aplicação Express?",
+                        verso: "O valor de NODE_ENV, ou development quando ele não existe.",
+                    },
+                    {
+                        frente: "De onde vêm as variáveis de ambiente em produção?",
+                        verso: "Do ambiente do servidor ou do CI, nunca de um .env commitado.",
+                    },
+                    {
+                        frente: "Que diferença o reinício do servidor tem entre os dois ambientes?",
+                        verso: "Em dev recarrega sozinho com nodemon; em produção fica estável.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que combinação testa uma API Express de forma automatizada?",
+                        verso: "Um runner como Vitest ou Jest somado à biblioteca supertest.",
+                    },
+                    {
+                        frente: "Por que o supertest dispensa um servidor escutando de verdade?",
+                        verso: "Ele faz as requisições direto contra a aplicação Express.",
+                    },
+                    {
+                        frente: "Para que o teste manual continua valendo, mesmo com automação?",
+                        verso: "Pra explorar rota nova e reproduzir um bug relatado.",
+                    },
+                ],
+            },
+        },
     },
 };
