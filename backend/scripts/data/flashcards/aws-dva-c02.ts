@@ -240,5 +240,235 @@ export const awsDvaC02: CartasDaTrilha = {
                 ],
             },
         },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que integração exige que o Lambda devolva status e corpo?",
+                        verso: "A de proxy, chamada AWS_PROXY.",
+                    },
+                    {
+                        frente: "O que o API Gateway faz antes de encaminhar a requisição?",
+                        verso: "Aplica autorização e throttling.",
+                    },
+                    {
+                        frente: "O que a integração sem proxy exige a mais?",
+                        verso: "Mapeamento de request e de response.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três formas de autorização o API Gateway oferece?",
+                        verso: "IAM, Lambda authorizer e Cognito.",
+                    },
+                    {
+                        frente: "Qual é o limite de regime por região?",
+                        verso: "Dez mil requisições por segundo.",
+                    },
+                    {
+                        frente: "Que código HTTP o excedente recebe?",
+                        verso: "O código 429.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é o visibility timeout padrão de uma fila SQS?",
+                        verso: "Trinta segundos.",
+                    },
+                    {
+                        frente: "Qual é o máximo do visibility timeout?",
+                        verso: "Doze horas.",
+                    },
+                    {
+                        frente: "O que um visibility timeout curto demais provoca?",
+                        verso: "A mensagem reaparece antes do fim e é processada duas vezes.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que padrão o SNS implementa?",
+                        verso: "Publicação e assinatura, com fan-out de um para muitos.",
+                    },
+                    {
+                        frente: "O que a filter policy faz?",
+                        verso: "Entrega a cada assinante só o que casa com o filtro.",
+                    },
+                    {
+                        frente: "Que arranjo notifica vários sistemas do mesmo evento?",
+                        verso: "O fan-out do SNS para várias filas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o EventBridge faz com os eventos?",
+                        verso: "Roteia por regras para muitos destinos.",
+                    },
+                    {
+                        frente: "O que o Step Functions coordena?",
+                        verso: "Fluxos de trabalho, como uma máquina de estados.",
+                    },
+                    {
+                        frente: "Quando escolher Kinesis?",
+                        verso: "Quando vários consumidores leem o mesmo fluxo, com ordem e replay.",
+                    },
+                ],
+            },
+        },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que durabilidade todas as classes do S3 têm?",
+                        verso: "Onze noves.",
+                    },
+                    {
+                        frente: "O que muda entre as classes, então?",
+                        verso: "Disponibilidade, custo e tempo de recuperação.",
+                    },
+                    {
+                        frente: "Que consistência o S3 oferece desde 2020?",
+                        verso: "Forte, de leitura após escrita.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Qual é a duração mínima de Standard-IA e One Zone-IA?",
+                        verso: "Trinta dias.",
+                    },
+                    {
+                        frente: "Qual é a mínima do Glacier Instant e do Flexible?",
+                        verso: "Noventa dias.",
+                    },
+                    {
+                        frente: "Qual é a mínima do Deep Archive?",
+                        verso: "Cento e oitenta dias.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "De quem a presigned URL herda as permissões?",
+                        verso: "De quem a assinou.",
+                    },
+                    {
+                        frente: "Qual é a validade máxima de uma presigned URL?",
+                        verso: "Sete dias.",
+                    },
+                    {
+                        frente: "A partir de que tamanho o multipart upload é obrigatório?",
+                        verso: "Acima de 5 GB.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que cabeçalho identifica a criptografia gerida pelo S3?",
+                        verso: "O de server-side encryption com valor AES256.",
+                    },
+                    {
+                        frente: "Que valor de cabeçalho aponta para a criptografia com KMS?",
+                        verso: "O valor aws:kms.",
+                    },
+                    {
+                        frente: "Qual é a criptografia padrão do S3?",
+                        verso: "A do próprio serviço, com chaves dele.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que sempre vence na avaliação de políticas do IAM?",
+                        verso: "O deny explícito.",
+                    },
+                    {
+                        frente: "O que é um group no IAM?",
+                        verso: "Uma coleção de users, que não serve de principal.",
+                    },
+                    {
+                        frente: "O que uma role entrega?",
+                        verso: "Credenciais temporárias a quem a assume.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que operação está no coração do STS?",
+                        verso: "O AssumeRole.",
+                    },
+                    {
+                        frente: "Que política diz quem pode assumir a role?",
+                        verso: "A trust policy.",
+                    },
+                    {
+                        frente: "Que sinais na questão apontam para AssumeRole?",
+                        verso: "Credencial temporária, acesso entre contas ou permissão a serviço.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o User Pool do Cognito faz?",
+                        verso: "Autentica: é o diretório que emite os tokens.",
+                    },
+                    {
+                        frente: "O que o Identity Pool faz?",
+                        verso: "Entrega credenciais temporárias da AWS.",
+                    },
+                    {
+                        frente: "Que sinal aponta para o Identity Pool?",
+                        verso: "Acessar S3 ou DynamoDB direto pelo cliente.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o KMS gerencia?",
+                        verso: "As chaves, e não os dados.",
+                    },
+                    {
+                        frente: "O que a chave-mestra nunca faz?",
+                        verso: "Sair do KMS em texto claro.",
+                    },
+                    {
+                        frente: "Como funciona a envelope encryption?",
+                        verso: "A data key cifra o dado e é cifrada por uma chave do KMS.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que serviço tem rotação automática integrada com o RDS?",
+                        verso: "O Secrets Manager.",
+                    },
+                    {
+                        frente: "Que serviço guarda configuração hierárquica sem custo?",
+                        verso: "O Parameter Store.",
+                    },
+                    {
+                        frente: "Que prática os dois substituem?",
+                        verso: "Deixar o segredo escrito no código.",
+                    },
+                ],
+            },
+        },
     },
 };
