@@ -339,5 +339,251 @@ export const qualidadeEGovernancaDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a tecnologia faz com o dado?",
+                        verso: "Documenta o dado que existe.",
+                    },
+                    {
+                        frente: "O que a governança decide?",
+                        verso: "Quem tem autoridade para dizer o que o dado significa.",
+                    },
+                    {
+                        frente: "Que segunda decisão a governança toma?",
+                        verso: "Quem pode usar aquele dado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o data owner faz?",
+                        verso: "Responde pelo dado.",
+                    },
+                    {
+                        frente: "O que o data steward faz?",
+                        verso: "Cuida do dado no dia a dia.",
+                    },
+                    {
+                        frente: "Como a aula resume a diferença entre os dois?",
+                        verso: "Um decide, o outro garante que a decisão seja seguida.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é um conjunto de dados sem dono e sem documentação?",
+                        verso: "Só uma tabela que alguém lembrou de exportar.",
+                    },
+                    {
+                        frente: "O que faz de um dado um produto?",
+                        verso: "Ter dono, qualidade garantida e documentação.",
+                    },
+                    {
+                        frente: "Que ideia central o data mesh defende?",
+                        verso: "Tratar o dado como produto, com dono no domínio.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que classificar um dado decide?",
+                        verso: "Quem pode vê-lo e por quanto tempo ele deve existir.",
+                    },
+                    {
+                        frente: "Quando essa decisão precisa ser tomada?",
+                        verso: "Antes de qualquer incidente.",
+                    },
+                    {
+                        frente: "O que a classificação orienta depois?",
+                        verso: "Os controles de acesso e a retenção.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quando uma política de dados existe de verdade?",
+                        verso: "Quando alguém a segue sem precisar ser lembrado.",
+                    },
+                    {
+                        frente: "O que ela é até lá?",
+                        verso: "Só um documento.",
+                    },
+                    {
+                        frente: "O que a cultura acrescenta à política?",
+                        verso: "O hábito que dispensa a cobrança.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é a pergunta que define o dado pessoal?",
+                        verso: "Se ele permite chegar a uma pessoa específica.",
+                    },
+                    {
+                        frente: "Qual não é a pergunta?",
+                        verso: "O quão privado o dado parece.",
+                    },
+                    {
+                        frente: "O que a combinação de dados pode provocar?",
+                        verso: "Identificar alguém mesmo com campos inofensivos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que princípio da lei mais economiza dor de cabeça?",
+                        verso: "A minimização.",
+                    },
+                    {
+                        frente: "Por que a minimização economiza tanto?",
+                        verso: "O dado não coletado não precisa ser protegido nem apagado.",
+                    },
+                    {
+                        frente: "Que direitos o titular tem sobre os dados dele?",
+                        verso: "Acesso, correção, portabilidade e exclusão, entre outros.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que indica que o dado é apenas pseudonimizado?",
+                        verso: "Existir em algum lugar uma chave que devolve a identidade.",
+                    },
+                    {
+                        frente: "O que a lei diz sobre o dado pseudonimizado?",
+                        verso: "Continua valendo: ele ainda é dado pessoal.",
+                    },
+                    {
+                        frente: "O que a anonimização precisa garantir?",
+                        verso: "Que não existe caminho de volta até a pessoa.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o mascaramento protege?",
+                        verso: "Quem olha a tela.",
+                    },
+                    {
+                        frente: "O que criptografia e tokenização protegem?",
+                        verso: "O dado guardado.",
+                    },
+                    {
+                        frente: "Que erro confundir os dois provoca?",
+                        verso: "Deixar dado pessoal exposto achando que está seguro.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o dado pessoal mais seguro?",
+                        verso: "O que nunca foi coletado.",
+                    },
+                    {
+                        frente: "Qual é o segundo mais seguro?",
+                        verso: "O que foi protegido logo na entrada.",
+                    },
+                    {
+                        frente: "O que protege tarde demais?",
+                        verso: "Proteger depois que o dado já se espalhou.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o controle de acesso não decide?",
+                        verso: "Se alguém é confiável.",
+                    },
+                    {
+                        frente: "O que o controle de acesso decide?",
+                        verso: "Até onde vai o estrago se a confiança for quebrada.",
+                    },
+                    {
+                        frente: "Que princípio guia a concessão de acesso?",
+                        verso: "O menor privilégio necessário.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde termina a investigação sem trilha de auditoria?",
+                        verso: "Na frase de que não temos como saber.",
+                    },
+                    {
+                        frente: "O que a trilha de auditoria registra?",
+                        verso: "Quem acessou o quê, e quando.",
+                    },
+                    {
+                        frente: "Quando a trilha precisa já existir?",
+                        verso: "Antes do incidente, nunca depois.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que é barato num warehouse moderno?",
+                        verso: "Guardar o dado.",
+                    },
+                    {
+                        frente: "O que sai caro?",
+                        verso: "Consultar o dado do jeito errado.",
+                    },
+                    {
+                        frente: "Que dois custos o FinOps de dados separa?",
+                        verso: "O de armazenamento e o de processamento.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que hábito de consulta mais economiza?",
+                        verso: "Filtrar e pedir só as colunas necessárias.",
+                    },
+                    {
+                        frente: "Que estrutura reduz o dado varrido?",
+                        verso: "O particionamento alinhado ao filtro mais comum.",
+                    },
+                    {
+                        frente: "Que gasto passa despercebido no fim do mês?",
+                        verso: "O da consulta repetida por painéis automáticos.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que uma plataforma de dados confiável não é?",
+                        verso: "A que nunca falha.",
+                    },
+                    {
+                        frente: "O que ela é, então?",
+                        verso: "A que avisa antes de alguém confiar no número errado.",
+                    },
+                    {
+                        frente: "O que sustenta essa confiança no dia a dia?",
+                        verso: "Teste, observabilidade, linhagem e governança juntos.",
+                    },
+                ],
+            },
+        },
     },
 };
