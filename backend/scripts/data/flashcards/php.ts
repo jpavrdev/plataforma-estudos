@@ -338,5 +338,251 @@ export const php: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que uma classe define?",
+                        verso: "As propriedades e os métodos de um tipo de objeto.",
+                    },
+                    {
+                        frente: "O que a visibilidade controla?",
+                        verso: "Quem pode acessar aquela propriedade ou método.",
+                    },
+                    {
+                        frente: "Como um método acessa a própria instância?",
+                        verso: "Pela referência ao objeto atual.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o construtor promovido dispensa?",
+                        verso: "Declarar a propriedade e atribuir na mão.",
+                    },
+                    {
+                        frente: "O que validar no construtor e marcar somente leitura garante?",
+                        verso: "Se o objeto existe, ele é válido.",
+                    },
+                    {
+                        frente: "O que os métodos deixam de precisar fazer?",
+                        verso: "Checar de novo o que já foi validado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que uma classe abstrata não permite?",
+                        verso: "Ser instanciada diretamente.",
+                    },
+                    {
+                        frente: "O que uma interface declara?",
+                        verso: "Os métodos que quem a implementa precisa ter.",
+                    },
+                    {
+                        frente: "Quantas interfaces uma classe pode implementar?",
+                        verso: "Quantas precisar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Para onde a referência estática de escrita aponta?",
+                        verso: "Para a classe onde o código foi escrito.",
+                    },
+                    {
+                        frente: "Para onde a referência estática tardia aponta?",
+                        verso: "Para a classe que foi realmente chamada.",
+                    },
+                    {
+                        frente: "O que um trait resolve?",
+                        verso: "Reaproveitar código entre classes sem herança.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que um enum define?",
+                        verso: "Um conjunto fechado de casos possíveis.",
+                    },
+                    {
+                        frente: "O que um enum com valor permite?",
+                        verso: "Converter de e para o valor guardado.",
+                    },
+                    {
+                        frente: "Que ganho ele traz sobre constantes soltas?",
+                        verso: "O tipo passa a recusar valor fora do conjunto.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que erro na tela vaza em produção?",
+                        verso: "Caminho de arquivo, versão e às vezes credencial.",
+                    },
+                    {
+                        frente: "Qual é a regra para produção?",
+                        verso: "Log sempre, tela nunca.",
+                    },
+                    {
+                        frente: "O que fazer em desenvolvimento?",
+                        verso: "Mostrar tudo, para achar o problema rápido.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o bloco de tentativa envolve?",
+                        verso: "O código que pode lançar exceção.",
+                    },
+                    {
+                        frente: "O que o bloco final garante?",
+                        verso: "Que aquele trecho roda, com ou sem exceção.",
+                    },
+                    {
+                        frente: "Para que o bloco final costuma servir?",
+                        verso: "Liberar recurso, como arquivo ou conexão.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que exceção capturar?",
+                        verso: "A específica, que você sabe tratar.",
+                    },
+                    {
+                        frente: "O que fazer com o que você não sabe tratar?",
+                        verso: "Deixar subir.",
+                    },
+                    {
+                        frente: "Que problema um catch genérico cria?",
+                        verso: "Engole tudo e esconde bug.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o stack trace mostra?",
+                        verso: "O caminho de chamadas até o ponto do erro.",
+                    },
+                    {
+                        frente: "Por onde começar a ler o trace?",
+                        verso: "Pela linha mais próxima do erro.",
+                    },
+                    {
+                        frente: "Que ferramenta para a execução para inspecionar?",
+                        verso: "O depurador passo a passo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que as PSR padronizam?",
+                        verso: "Estilo de código e interfaces comuns do ecossistema.",
+                    },
+                    {
+                        frente: "O que um atributo acrescenta ao código?",
+                        verso: "Metadado legível por ferramentas.",
+                    },
+                    {
+                        frente: "Que ferramentas cuidam da qualidade?",
+                        verso: "Análise estática, formatador e testes.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quando os cabeçalhos precisam ser enviados?",
+                        verso: "Antes de qualquer saída.",
+                    },
+                    {
+                        frente: "O que um espaço em branco antes da abertura provoca?",
+                        verso: "Quebra o envio do cabeçalho.",
+                    },
+                    {
+                        frente: "O que o ciclo termina entregando?",
+                        verso: "A resposta ao navegador.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde a validação precisa acontecer, sempre?",
+                        verso: "No servidor.",
+                    },
+                    {
+                        frente: "O que a validação no navegador é?",
+                        verso: "Conveniência, e não segurança.",
+                    },
+                    {
+                        frente: "O que o token de formulário previne?",
+                        verso: "A requisição forjada vinda de outro site.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que mensagem de erro de login usar?",
+                        verso: "Apenas que o email ou a senha estão incorretos.",
+                    },
+                    {
+                        frente: "O que dizer qual dos dois errou entrega?",
+                        verso: "Quais emails existem no sistema.",
+                    },
+                    {
+                        frente: "O que fazer com a sessão logo após o login?",
+                        verso: "Regenerar o identificador.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que a consulta preparada separa?",
+                        verso: "O comando dos dados.",
+                    },
+                    {
+                        frente: "Que ataque isso previne?",
+                        verso: "A injeção de SQL.",
+                    },
+                    {
+                        frente: "O que nunca fazer com dado do usuário?",
+                        verso: "Concatenar direto na consulta.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o padrão de autoload liga?",
+                        verso: "O namespace ao caminho do arquivo.",
+                    },
+                    {
+                        frente: "O que ele dispensa?",
+                        verso: "Incluir cada arquivo à mão.",
+                    },
+                    {
+                        frente: "Quem gera esse carregamento no projeto?",
+                        verso: "O Composer, a partir da configuração.",
+                    },
+                ],
+            },
+        },
     },
 };
