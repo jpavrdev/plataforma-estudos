@@ -339,5 +339,251 @@ export const doModeloAoProduto: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que metáfora a aula usa para o modelo treinado?",
+                        verso: "Uma fotografia do mundo no momento em que foi tirada.",
+                    },
+                    {
+                        frente: "Que vantagem e que rigidez o retreino periódico tem?",
+                        verso: "É previsível no custo, mas o calendário ignora o desempenho.",
+                    },
+                    {
+                        frente: "Que duas condições o retreino por gatilho exige?",
+                        verso: "Monitoramento maduro e rótulo disponível rápido.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que sequência o script de retreino executa sozinho?",
+                        verso: "Busca o dado recente, aplica o preparo, treina e compara.",
+                    },
+                    {
+                        frente: "Onde está o valor real da automação do retreino?",
+                        verso: "Na previsibilidade: fevereiro faz o mesmo que janeiro.",
+                    },
+                    {
+                        frente: "Que risco uma pipeline automatizada ainda carrega?",
+                        verso: "Falhar em silêncio ou treinar com dado corrompido.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que registro mínimo o versionamento simples exige?",
+                        verso: "Um identificador no nome mais os metadados à parte.",
+                    },
+                    {
+                        frente: "Que ferramenta centraliza versões quando elas crescem?",
+                        verso: "O model registry, catálogo central dos modelos.",
+                    },
+                    {
+                        frente: "Por que versionar só o modelo deixa a lacuna aberta?",
+                        verso: "O mesmo código sobre dados diferentes gera modelos diferentes.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que primeiro filtro o modelo candidato precisa passar?",
+                        verso: "A comparação offline no mesmo conjunto de validação.",
+                    },
+                    {
+                        frente: "O que o shadow deployment faz com a previsão candidata?",
+                        verso: "Só registra: ninguém recebe nem decide com ela.",
+                    },
+                    {
+                        frente: "Que fatia do tráfego o teste A/B envia ao candidato?",
+                        verso: "Uma fração real, com o resto seguindo no modelo atual.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que decisão o rollback recusa tomar sob pressão?",
+                        verso: "Consertar às pressas o modelo novo que já está no ar.",
+                    },
+                    {
+                        frente: "Quando o critério de rollback deve ser definido?",
+                        verso: "Antes do incidente, nunca no meio da queda de métrica.",
+                    },
+                    {
+                        frente: "Que trabalho anterior torna o rollback possível?",
+                        verso: "O versionamento do modelo, dos metadados e do ambiente.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três portas de entrada o viés tem num modelo?",
+                        verso: "Os dados de treino, as features proxy e o rótulo subjetivo.",
+                    },
+                    {
+                        frente: "Que features costumam servir de proxy de atributo protegido?",
+                        verso: "O CEP, o nome e a escola de origem da pessoa.",
+                    },
+                    {
+                        frente: "Que dois casos reais a aula documenta?",
+                        verso: "A triagem de currículos da Amazon e o COMPAS nos tribunais.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que três definições de justiça a aula compara?",
+                        verso: "Paridade demográfica, igualdade de oportunidade e preditiva.",
+                    },
+                    {
+                        frente: "Que crítica a paridade demográfica recebe?",
+                        verso: "Ela ignora o mérito individual para igualar a proporção.",
+                    },
+                    {
+                        frente: "Quando as definições de justiça entram em conflito?",
+                        verso: "Quando a taxa real do evento difere entre os grupos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que direito a LGPD garante sobre decisão automatizada?",
+                        verso: "O de pedir revisão de decisão tomada só por automação.",
+                    },
+                    {
+                        frente: "Que componente de transparência o caso COMPAS tinha?",
+                        verso: "O método do escore era proprietário e não podia ser aberto.",
+                    },
+                    {
+                        frente: "Por que ter explicação não torna a decisão certa?",
+                        verso: "Ela pode revelar que uma proxy enviesada decidiu tudo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que lei e ano correspondem à LGPD brasileira?",
+                        verso: "A Lei 13.709, de 2018, sobre proteção de dados.",
+                    },
+                    {
+                        frente: "Que categoria mais delicada a lei define à parte?",
+                        verso: "O dado pessoal sensível, como saúde e origem racial.",
+                    },
+                    {
+                        frente: "Por que remover nome e CPF não anonimiza de verdade?",
+                        verso: "Colunas específicas restantes ainda reidentificam a pessoa.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que pergunta abre um projeto responsável?",
+                        verso: "Quem é afetado e o que acontece quando o modelo erra.",
+                    },
+                    {
+                        frente: "Que ponto cego times que decidem sozinhos criam?",
+                        verso: "Não ouvir quem vai ser avaliado pelo próprio modelo.",
+                    },
+                    {
+                        frente: "Que recusa a aula trata como a mais responsável?",
+                        verso: "Dizer não a um uso que discrimina ou vigia sem necessidade.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Quantos estágios o roadmap de Ciência de Dados tem?",
+                        verso: "Nove, da lógica de programação ao modelo em produção.",
+                    },
+                    {
+                        frente: "Que papel os dois primeiros estágios cumprem?",
+                        verso: "São a base de programação que sustenta todo o resto.",
+                    },
+                    {
+                        frente: "Que trio de estágios domina e comunica o dado?",
+                        verso: "Pandas, SQL e a visualização com análise exploratória.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que pergunta abre um projeto, e qual não abre?",
+                        verso: "O que a empresa precisa saber; nunca qual algoritmo usar.",
+                    },
+                    {
+                        frente: "Que passo decide se a análise vira ação de verdade?",
+                        verso: "A comunicação com quem vai agir a partir dela.",
+                    },
+                    {
+                        frente: "Que escolha nenhum ajuste de hiperparâmetro compensa?",
+                        verso: "Uma pergunta de negócio mal entendida desde o início.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que quatro especializações a aula apresenta?",
+                        verso: "Linguagem natural, visão, engenharia de dados e MLOps.",
+                    },
+                    {
+                        frente: "Que caminho segue quem gostou do Docker e do SQL?",
+                        verso: "A engenharia de dados, focada em pipeline e nuvem.",
+                    },
+                    {
+                        frente: "O que escolher uma especialização não significa?",
+                        verso: "Desistir do resto: o mapa inteiro continua disponível.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "De onde um bom projeto de portfólio deve nascer?",
+                        verso: "De uma pergunta real, não de um dataset bonito.",
+                    },
+                    {
+                        frente: "Que fontes de dado público a aula sugere?",
+                        verso: "O Kaggle e os portais de dado aberto do governo.",
+                    },
+                    {
+                        frente: "Como um portfólio cresce, segundo a aula?",
+                        verso: "Com prática regular, competição, leitura e contribuição.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que promessa a aula final se recusa a fazer?",
+                        verso: "Que o roadmap ensina tudo sobre ciência de dados.",
+                    },
+                    {
+                        frente: "Que dois próximos passos a aula deixa concretos?",
+                        verso: "Construir projeto de ponta a ponta e escolher onde cavar.",
+                    },
+                    {
+                        frente: "Que alternativa ao especializar a aula também aceita?",
+                        verso: "Seguir generalista por um tempo, sem escolher já.",
+                    },
+                ],
+            },
+        },
     },
 };
