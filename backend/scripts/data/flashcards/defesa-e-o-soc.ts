@@ -338,5 +338,251 @@ export const defesaEOSoc: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que ler antes de olhar a máquina?",
+                        verso: "A regra que disparou o alerta.",
+                    },
+                    {
+                        frente: "O que acontece se você não souber o que disparou?",
+                        verso: "Investiga o que chamou atenção, e não o alerta.",
+                    },
+                    {
+                        frente: "Que verdade sobre qualquer máquina a aula lembra?",
+                        verso: "Toda máquina tem alguma coisa estranha.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que um evento isolado quase nunca faz?",
+                        verso: "Decidir alguma coisa sozinho.",
+                    },
+                    {
+                        frente: "O que transforma dado solto em conclusão?",
+                        verso: "A vizinhança no tempo, o que veio antes e depois.",
+                    },
+                    {
+                        frente: "Que perguntas resolvem a maioria dos casos?",
+                        verso: "Quem, de onde, quando e o que aconteceu em volta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que fechar como falso positivo o inconclusivo apaga?",
+                        verso: "A evidência de que faltava coleta.",
+                    },
+                    {
+                        frente: "Que terceiro desfecho existe além dos dois positivos?",
+                        verso: "O benigno: aconteceu mesmo, e era legítimo.",
+                    },
+                    {
+                        frente: "Que desfecho o caso sem dado suficiente merece?",
+                        verso: "Inconclusivo, registrado como tal.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é escalonamento sem pedido explícito?",
+                        verso: "Batata quente.",
+                    },
+                    {
+                        frente: "O que dizer ao escalar um caso?",
+                        verso: "O que se quer: decisão, acesso ou segunda opinião.",
+                    },
+                    {
+                        frente: "Que registro o escalonamento exige?",
+                        verso: "O do que já foi verificado e do que ficou em aberto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Quem vale mais: quem conhece a casa ou a ferramenta?",
+                        verso: "Quem conhece a casa.",
+                    },
+                    {
+                        frente: "Quantas respostas certas o mesmo alerta pode ter?",
+                        verso: "Três, dependendo do contexto.",
+                    },
+                    {
+                        frente: "Que contexto muda a resposta a um alerta?",
+                        verso: "O dono do ativo, a criticidade e a janela de mudança.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que quem coordena o incidente precisa manter?",
+                        verso: "A visão do todo, o relógio e a comunicação.",
+                    },
+                    {
+                        frente: "Quem coordena precisa ser o mais técnico da sala?",
+                        verso: "Não precisa.",
+                    },
+                    {
+                        frente: "Para que serve essa coordenação?",
+                        verso: "Para que os técnicos possam ser técnicos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que desligar a máquina apaga?",
+                        verso: "A memória, onde boa parte do malware moderno vive.",
+                    },
+                    {
+                        frente: "Que contenção preserva a resposta?",
+                        verso: "Isolar da rede, sem desligar a máquina.",
+                    },
+                    {
+                        frente: "Quanto a contenção por isolamento contém?",
+                        verso: "Quase o mesmo, com a evidência preservada.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que credenciais trocar depois do incidente?",
+                        verso: "Todas que passaram pela máquina comprometida.",
+                    },
+                    {
+                        frente: "O que essa troca impede?",
+                        verso: "Que o invasor volte pela porta da frente na semana seguinte.",
+                    },
+                    {
+                        frente: "Que ordem erradicação e recuperação seguem?",
+                        verso: "Erradicar primeiro, recuperar depois.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que coordenar pelo correio comprometido entrega?",
+                        verso: "O plano ao invasor.",
+                    },
+                    {
+                        frente: "Quando o canal alternativo se combina?",
+                        verso: "Antes do incidente, nunca durante.",
+                    },
+                    {
+                        frente: "Que cuidado a comunicação externa exige?",
+                        verso: "Um porta-voz único, falando só de fato confirmado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que analisar sem culpa realmente pergunta?",
+                        verso: "Por que a ação errada pareceu certa naquele momento.",
+                    },
+                    {
+                        frente: "Para onde a resposta quase sempre aponta?",
+                        verso: "Para o sistema, que dá para consertar.",
+                    },
+                    {
+                        frente: "O que a análise pós-incidente precisa produzir?",
+                        verso: "Ações com dono e prazo, não apenas um relato.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que tamanho a visibilidade de quem só reage tem?",
+                        verso: "O da própria imaginação passada.",
+                    },
+                    {
+                        frente: "O que caçar permite olhar?",
+                        verso: "Além do que alguém já previu.",
+                    },
+                    {
+                        frente: "De onde a caça parte, se não do alerta?",
+                        verso: "De uma hipótese sobre o ambiente.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "A que escrever a hipótese obriga?",
+                        verso: "A declarar o que se considera normal.",
+                    },
+                    {
+                        frente: "O que já paga a caçada, mesmo sem invasor?",
+                        verso: "Descobrir que a suposição de normal estava errada.",
+                    },
+                    {
+                        frente: "Que forma uma boa hipótese tem?",
+                        verso: "Uma frase testável com o dado disponível.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que procurar, em vez do que é ruim?",
+                        verso: "O que é raro.",
+                    },
+                    {
+                        frente: "Como é a atividade legítima numa empresa?",
+                        verso: "Repetitiva.",
+                    },
+                    {
+                        frente: "Onde vale gastar os olhos na caçada?",
+                        verso: "Na cauda rara, longe do que se repete.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Todo achado vira alerta?",
+                        verso: "Não: alguns servem de contexto para outros alertas.",
+                    },
+                    {
+                        frente: "Que teste decide se o achado vira alerta?",
+                        verso: "Se a resposta for olhar e fechar, não é alerta.",
+                    },
+                    {
+                        frente: "Onde o achado que é contexto deve morar?",
+                        verso: "Dentro de outro alerta, enriquecendo a investigação.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual é o recurso mais escasso da defesa?",
+                        verso: "A atenção humana.",
+                    },
+                    {
+                        frente: "Para que serve quase tudo que a trilha ensinou?",
+                        verso: "Para gastar essa atenção no lugar certo.",
+                    },
+                    {
+                        frente: "Que hábito um time maduro cultiva?",
+                        verso: "Rever o que gera ruído, em vez de conviver com ele.",
+                    },
+                ],
+            },
+        },
     },
 };
