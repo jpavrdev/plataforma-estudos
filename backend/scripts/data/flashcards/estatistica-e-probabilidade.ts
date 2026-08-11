@@ -175,5 +175,169 @@ export const estatisticaEProbabilidade: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Por que as barras do histograma ficam coladas?",
+                        verso: "Elas representam faixas contínuas, não categorias soltas.",
+                    },
+                    {
+                        frente: "Que agrupamento os dados contínuos exigem na contagem?",
+                        verso: "Faixas de valores, porque cada valor exato quase não repete.",
+                    },
+                    {
+                        frente: "O que a frequência relativa mostra além da contagem?",
+                        verso: "A fatia do total que cada valor ocupa, em porcentagem.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que parte da distribuição dá nome à assimetria?",
+                        verso: "A cauda longa, nunca a altura ou a posição do pico.",
+                    },
+                    {
+                        frente: "Que três medidas coincidem numa simétrica de um pico só?",
+                        verso: "A média, a mediana e a moda dão o mesmo valor.",
+                    },
+                    {
+                        frente: "Como média e mediana se ordenam num skew negativo?",
+                        verso: "A média fica abaixo da mediana, puxada pela cauda.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que outro nome a distribuição normal recebe?",
+                        verso: "Curva do sino, ou bell curve, pelo formato dela.",
+                    },
+                    {
+                        frente: "Que outro nome a regra 68-95-99.7 carrega?",
+                        verso: "Regra empírica, válida para qualquer normal.",
+                    },
+                    {
+                        frente: "Que tipo de dado a aula cita como não normal?",
+                        verso: "A renda, que costuma ser assimétrica à direita.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que regra do IQR marca um valor como outlier?",
+                        verso: "Ficar abaixo de Q1 menos 1,5 IQR ou acima de Q3 mais 1,5.",
+                    },
+                    {
+                        frente: "Que corte de z-score também acusa um valor fora da curva?",
+                        verso: "Passar de 3 ou ficar abaixo de menos 3.",
+                    },
+                    {
+                        frente: "Que medida o outlier distorce ainda mais do que a média?",
+                        verso: "O desvio padrão, que no exemplo saltou mais de seis vezes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que o sinal do z-score diz sobre o valor?",
+                        verso: "Positivo fica acima da média; negativo, abaixo; zero é a média.",
+                    },
+                    {
+                        frente: "Que comparação impossível o z-score torna possível?",
+                        verso: "A de notas em escalas diferentes, na mesma régua.",
+                    },
+                    {
+                        frente: "Como a regra empírica se escreve em z-score?",
+                        verso: "68% entre menos 1 e 1, e 95% entre menos 2 e 2.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que duas visões de probabilidade a aula compara?",
+                        verso: "A frequentista, que observa repetindo, e a teórica, que conta.",
+                    },
+                    {
+                        frente: "O que um evento é, em relação ao espaço amostral?",
+                        verso: "Um subconjunto dele, com os resultados que interessam.",
+                    },
+                    {
+                        frente: "Que razão calcula a probabilidade teórica de um evento?",
+                        verso: "Resultados favoráveis divididos pelo total de possíveis.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que fórmula dá a probabilidade de um evento não ocorrer?",
+                        verso: "Um menos a probabilidade dele acontecer.",
+                    },
+                    {
+                        frente: "Por que a regra da adição desconta a sobreposição?",
+                        verso: "Sem isso, quem está nos dois grupos seria contado duas vezes.",
+                    },
+                    {
+                        frente: "Quanto vale a interseção de dois eventos exclusivos?",
+                        verso: "Zero, e por isso a soma direta já basta.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que expressão no enunciado denuncia evento dependente?",
+                        verso: "Tirar sem devolver, porque o conjunto muda depois.",
+                    },
+                    {
+                        frente: "Quanto vale tirar o mesmo número em dois dados?",
+                        verso: "Um trinta e seis avos, menos de três por cento.",
+                    },
+                    {
+                        frente: "Que conta o baralho exige ao tirar dois reis sem repor?",
+                        verso: "Quatro em 52 vezes três em 51, com o baralho reduzido.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que fórmula define a probabilidade condicional?",
+                        verso: "A da interseção dividida pela probabilidade do que se sabe.",
+                    },
+                    {
+                        frente: "Que dois nomes a crença recebe antes e depois da evidência?",
+                        verso: "A priori antes, a posteriori depois da atualização.",
+                    },
+                    {
+                        frente: "Que erro clássico troca dois valores condicionais?",
+                        verso: "Tomar a probabilidade de A dado B como a de B dado A.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que conta define o valor esperado de uma variável discreta?",
+                        verso: "A soma de cada valor multiplicado pela probabilidade dele.",
+                    },
+                    {
+                        frente: "Por que 3,5 não contradiz o valor esperado do dado?",
+                        verso: "Ele é a média de longo prazo, não um resultado possível.",
+                    },
+                    {
+                        frente: "Que distribuição o lançamento de um dado honesto segue?",
+                        verso: "A uniforme, com a mesma chance para cada face.",
+                    },
+                ],
+            },
+        },
     },
 };
