@@ -174,5 +174,169 @@ export const machineLearning: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que teste rápido reconhece um problema de regressão?",
+                        verso: "Olhar se o alvo é numérico e varia de forma contínua.",
+                    },
+                    {
+                        frente: "Que três coisas mudam entre regressão e classificação?",
+                        verso: "O algoritmo, a métrica de avaliação e a interpretação.",
+                    },
+                    {
+                        frente: "O que o modelo faz quando não existe relação real?",
+                        verso: "Ajusta a reta assim mesmo, sem nenhum erro no fit.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que leitura o intercepto tem, e quando ela não serve?",
+                        verso: "É o y quando x é zero, sem sentido prático em área nula.",
+                    },
+                    {
+                        frente: "Como se define o resíduo de cada ponto?",
+                        verso: "Pelo valor real menos o previsto pela reta ali.",
+                    },
+                    {
+                        frente: "Que distância os mínimos quadrados minimizam no gráfico?",
+                        verso: "A vertical de cada ponto até a reta, elevada ao quadrado.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que formato o X precisa ter, mesmo com uma variável?",
+                        verso: "Bidimensional: uma matriz de amostras por variáveis.",
+                    },
+                    {
+                        frente: "Que diferença de formato separa coef_ de intercept_?",
+                        verso: "O coef_ é um array por variável; o intercept_, um número.",
+                    },
+                    {
+                        frente: "Que cinco coisas se lê numa LinearRegression treinada?",
+                        verso: "O fit, o predict, o coef_, o intercept_ e o score.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que suposição a leitura de cada coeficiente carrega?",
+                        verso: "Que dá para variar uma feature segurando as outras fixas.",
+                    },
+                    {
+                        frente: "Por que coeficiente grande não indica variável importante?",
+                        verso: "As escalas diferem: um quarto não é um metro quadrado.",
+                    },
+                    {
+                        frente: "Que preparo o módulo 6 traz para igualar as escalas?",
+                        verso: "O StandardScaler, aplicado antes de treinar o modelo.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Em que unidade o MAE e o MSE se expressam?",
+                        verso: "O MAE na unidade do alvo; o MSE, nela ao quadrado.",
+                    },
+                    {
+                        frente: "Que fração o R quadrado informa sobre o modelo?",
+                        verso: "A da variação dos valores reais que ele consegue explicar.",
+                    },
+                    {
+                        frente: "Que detalhe um R quadrado alto ainda pode esconder?",
+                        verso: "Um caso isolado com erro grande dentro do conjunto.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois nomes a classe recebe além de categoria?",
+                        verso: "Rótulo e alvo, a coluna que o modelo aprende a prever.",
+                    },
+                    {
+                        frente: "Que quantidade de classes separa binária de multiclasse?",
+                        verso: "Duas na binária; três ou mais na multiclasse.",
+                    },
+                    {
+                        frente: "Que armadilha o desequilíbrio de classes cria?",
+                        verso: "O modelo preguiçoso acerta 99% sem achar fraude nenhuma.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "De onde vem o nome enganoso da regressão logística?",
+                        verso: "Da função logística, a sigmoide que ela aplica no fim.",
+                    },
+                    {
+                        frente: "Que limiar o scikit-learn aplica por padrão na decisão?",
+                        verso: "O de 0,5, movível quando um erro custa mais que o outro.",
+                    },
+                    {
+                        frente: "Que formato a fronteira da regressão logística tem?",
+                        verso: "Uma reta ou plano, por ser combinação linear das features.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Onde o k-NN concentra o trabalho pesado?",
+                        verso: "No predict, medindo a distância até cada exemplo guardado.",
+                    },
+                    {
+                        frente: "Que distância o k-NN usa entre dois exemplos?",
+                        verso: "A euclidiana, a mesma régua da raiz da soma dos quadrados.",
+                    },
+                    {
+                        frente: "Por que o k-NN exige features na mesma escala?",
+                        verso: "A feature de número maior domina sozinha a distância.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que critério de pureza a árvore usa por padrão?",
+                        verso: "A impureza de Gini, escolhendo a divisão mais separadora.",
+                    },
+                    {
+                        frente: "Que formato a fronteira de uma árvore desenha?",
+                        verso: "Degraus: retas perpendiculares aos eixos das features.",
+                    },
+                    {
+                        frente: "Que parâmetro contém o crescimento da árvore?",
+                        verso: "O max_depth, limitando a profundidade permitida.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que métrica o score devolve num classificador?",
+                        verso: "A acurácia, a fração de exemplos classificados certo.",
+                    },
+                    {
+                        frente: "Que três formatos de fronteira o módulo compara?",
+                        verso: "A reta, o contorno irregular e os degraus da árvore.",
+                    },
+                    {
+                        frente: "Por que 0,51 e 0,98 viram a mesma classe no predict?",
+                        verso: "O limiar decide sozinho e apaga a diferença de confiança.",
+                    },
+                ],
+            },
+        },
     },
 };
