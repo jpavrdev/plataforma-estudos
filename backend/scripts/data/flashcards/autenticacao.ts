@@ -174,5 +174,169 @@ export const autenticacao: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que forma tem o registro de sessão criado no login?",
+                        verso: "Algo como usuarioId 42, associado a um id de sessão único.",
+                    },
+                    {
+                        frente: "Que tipo de valor serve como id de sessão?",
+                        verso: "Aleatório e longo, tipo um UUID, impossível de adivinhar.",
+                    },
+                    {
+                        frente: "Que peça faz o id de sessão viajar sem código no front-end?",
+                        verso: "O cookie, que o navegador guarda e reenvia sozinho.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dois headers formam o par de ida e volta do cookie?",
+                        verso: "Set-Cookie na resposta e Cookie na requisição seguinte.",
+                    },
+                    {
+                        frente: "A que o cookie fica associado, além do domínio?",
+                        verso: "Opcionalmente a um caminho específico dentro do site.",
+                    },
+                    {
+                        frente: "Que problema o cookie de sessão sem atributos ainda tem?",
+                        verso: "Pode ser lido por JavaScript e enviado onde não deveria.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é a diferença entre SameSite Strict e Lax?",
+                        verso: "Strict só vai do próprio site; Lax ainda vai em clique de link.",
+                    },
+                    {
+                        frente: "Que atributos o cookie de sessão ideal combina?",
+                        verso: "HttpOnly, Secure e SameSite ao mesmo tempo.",
+                    },
+                    {
+                        frente: "Que risco os atributos Expires e Max-Age mitigam?",
+                        verso: "Uma sessão antiga continuar valendo por tempo indefinido.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que nome tem o armazenamento padrão do express-session?",
+                        verso: "MemoryStore, na memória do próprio processo Node.",
+                    },
+                    {
+                        frente: "Que recurso do Redis combina com o tempo de vida da sessão?",
+                        verso: "A expiração automática de chaves, que é nativa nele.",
+                    },
+                    {
+                        frente: "Que vantagem guardar sessão no banco de dados oferece?",
+                        verso: "Ele já existe no sistema e é fácil de consultar e auditar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que duas coisas um logout correto faz?",
+                        verso: "Apaga o registro no servidor e manda o navegador descartar o cookie.",
+                    },
+                    {
+                        frente: "Qual das duas partes do logout de fato revoga o acesso?",
+                        verso: "A invalidação no servidor; limpar no cliente só tira a referência.",
+                    },
+                    {
+                        frente: "O que complica escalar horizontalmente com sessão?",
+                        verso: "Toda instância precisa enxergar o mesmo estado de sessão.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Onde o cliente costuma guardar o token recebido no login?",
+                        verso: "No localStorage, numa variável ou no armazenamento seguro do app.",
+                    },
+                    {
+                        frente: "Que diferença de envio separa cookie de token?",
+                        verso: "O cookie vai sozinho; o token o código do cliente precisa anexar.",
+                    },
+                    {
+                        frente: "O que um servidor precisa saber para validar um token?",
+                        verso: "Só o segredo usado para assinar; nada mais é consultado.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a sigla JWT significa, e como se pronuncia?",
+                        verso: "JSON Web Token, pronunciado como a palavra jot em inglês.",
+                    },
+                    {
+                        frente: "O que o Base64url troca em relação ao Base64 comum?",
+                        verso: "Os caracteres mais e barra por hífen e underscore.",
+                    },
+                    {
+                        frente: "Que duas informações o header de um JWT carrega?",
+                        verso: "O algoritmo que assina e o tipo, que é sempre JWT.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que a claim sub identifica num JWT?",
+                        verso: "O subject: quem é o dono do token, em geral o id do usuário.",
+                    },
+                    {
+                        frente: "Em que unidade a claim iat registra o momento de emissão?",
+                        verso: "Em segundos desde 1970, o chamado Unix time.",
+                    },
+                    {
+                        frente: "Por que o payload de um JWT costuma ficar pequeno?",
+                        verso: "Ele viaja inteiro em toda requisição feita à API.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que duas garantias a assinatura de um JWT dá?",
+                        verso: "Autenticidade de quem emitiu e integridade do conteúdo.",
+                    },
+                    {
+                        frente: "Qual é a diferença entre HS256 e RS256?",
+                        verso: "HS256 usa um segredo único; RS256 usa um par de chaves.",
+                    },
+                    {
+                        frente: "Que nome de claim esta plataforma usa no lugar de sub?",
+                        verso: "userId; o JWT aceita qualquer nome fora dos poucos reservados.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que tipo de token a plataforma usa como refresh?",
+                        verso: "Um token opaco de vida longa, guardado e revogável no banco.",
+                    },
+                    {
+                        frente: "O que o JWT ganha ao não guardar estado, e o que perde?",
+                        verso: "Ganha escala sem estado compartilhado; perde revogação imediata.",
+                    },
+                    {
+                        frente: "Que uso típico cada abordagem costuma ter?",
+                        verso: "Sessão em aplicação web de um domínio só; token entre serviços.",
+                    },
+                ],
+            },
+        },
     },
 };
