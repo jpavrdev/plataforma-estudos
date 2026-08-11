@@ -83,6 +83,7 @@ import { typescript } from "./typescript.ts";
 import { react } from "./react.ts";
 import { php } from "./php.ts";
 import { laravel } from "./laravel.ts";
+import { ruby } from "./ruby.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -168,4 +169,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     react,
     php,
     laravel,
+    ruby,
 ];
