@@ -28,6 +28,7 @@ import { apisEFrameworks } from "./apis-e-frameworks.ts";
 import { autenticacao } from "./autenticacao.ts";
 import { cacheFilasEPerformance } from "./cache-filas-e-performance.ts";
 import { dockerEContainers } from "./docker-e-containers.ts";
+import { go } from "./go.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -58,4 +59,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     autenticacao,
     cacheFilasEPerformance,
     dockerEContainers,
+    go,
 ];
