@@ -160,5 +160,155 @@ export const cpp: CartasDaTrilha = {
                 ],
             },
         },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que tipo de retorno uma função sem devolução declara?",
+                        verso: "O void, dizendo que ela não entrega nenhum valor.",
+                    },
+                    {
+                        frente: "Que duas formas atendem à exigência de declarar antes?",
+                        verso: "Definir acima do main ou declarar um protótipo no topo.",
+                    },
+                    {
+                        frente: "Que custo a passagem por valor cobra em objeto grande?",
+                        verso: "A cópia inteira, que pesa no desempenho do programa.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que metáfora descreve o que uma referência é?",
+                        verso: "Um apelido para a própria variável de quem chamou.",
+                    },
+                    {
+                        frente: "Que forma idiomática passa objeto grande só de leitura?",
+                        verso: "A referência constante, sem cópia e sem permissão de mudar.",
+                    },
+                    {
+                        frente: "O que o compilador impede numa referência constante?",
+                        verso: "Qualquer alteração do objeto dentro da função.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que os parâmetros precisam diferir na sobrecarga?",
+                        verso: "No número ou no tipo, para o compilador escolher.",
+                    },
+                    {
+                        frente: "Onde os parâmetros com valor padrão devem ficar?",
+                        verso: "Por último, depois dos que não têm padrão.",
+                    },
+                    {
+                        frente: "Como o compilador decide qual sobrecarga chamar?",
+                        verso: "Pelos argumentos usados naquela chamada.",
+                    },
+                ],
+            },
+        },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que dois operadores fazem a ponte com o ponteiro?",
+                        verso: "O de endereço e o de desreferência do valor apontado.",
+                    },
+                    {
+                        frente: "O que acontece ao desreferenciar um ponteiro nulo?",
+                        verso: "Erro grave, que costuma travar o programa na hora.",
+                    },
+                    {
+                        frente: "Que valor o C++ moderno dá a um ponteiro sem destino?",
+                        verso: "O nullptr, deixando explícito que ele não aponta.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas regiões de memória o programa usa?",
+                        verso: "A stack das locais e a heap alocada sob seu controle.",
+                    },
+                    {
+                        frente: "Que regra a alocação na heap impõe ao programador?",
+                        verso: "Para cada new deve existir um delete correspondente.",
+                    },
+                    {
+                        frente: "Que vantagem a stack tem sobre a heap?",
+                        verso: "É rápida e libera as variáveis locais sozinha.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que efeito o vazamento tem num programa de vida longa?",
+                        verso: "Ele consome memória cada vez maior até o fim.",
+                    },
+                    {
+                        frente: "O que o ponteiro guarda depois de um delete?",
+                        verso: "O endereço antigo, que já não pertence a ele.",
+                    },
+                    {
+                        frente: "Que duas técnicas modernas dispensam new e delete?",
+                        verso: "Os smart pointers e o RAII, que liberam sozinhos.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três especificadores de acesso a classe tem?",
+                        verso: "O public, o private e o protected das subclasses.",
+                    },
+                    {
+                        frente: "Que diferença separa class de struct em C++?",
+                        verso: "O padrão de acesso: private na class, public na struct.",
+                    },
+                    {
+                        frente: "Que dois tipos de membro uma classe agrupa?",
+                        verso: "Os atributos com o dado e os métodos com o comportamento.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que duas marcas identificam um construtor?",
+                        verso: "O nome da classe e a ausência de tipo de retorno.",
+                    },
+                    {
+                        frente: "Em que dois momentos o destrutor pode rodar?",
+                        verso: "Ao sair de escopo na stack ou no delete da heap.",
+                    },
+                    {
+                        frente: "Que par de métodos sustenta o RAII?",
+                        verso: "O construtor que adquire e o destrutor que libera.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o const escrito depois do método promete?",
+                        verso: "Que ele não altera o objeto ao ser executado.",
+                    },
+                    {
+                        frente: "Que garantia o RAII mantém mesmo com erro no meio?",
+                        verso: "O destrutor roda e libera o recurso do mesmo jeito.",
+                    },
+                    {
+                        frente: "Que arranjo prático o encapsulamento produz na classe?",
+                        verso: "Atributo privado com método público impondo as regras.",
+                    },
+                ],
+            },
+        },
     },
 };
