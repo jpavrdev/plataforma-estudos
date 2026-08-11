@@ -40,6 +40,7 @@ import { visualizacaoDeDados } from "./visualizacao-de-dados.ts";
 import { machineLearning } from "./machine-learning.ts";
 import { machineLearningNaPratica } from "./machine-learning-na-pratica.ts";
 import { doModeloAoProduto } from "./do-modelo-ao-produto.ts";
+import { cpp } from "./cpp.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -82,4 +83,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     machineLearning,
     machineLearningNaPratica,
     doModeloAoProduto,
+    cpp,
 ];
