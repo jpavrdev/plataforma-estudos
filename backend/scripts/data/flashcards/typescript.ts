@@ -338,5 +338,251 @@ export const typescript: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a importação de tipo deixa explícito?",
+                        verso: "Que aquele símbolo some na compilação.",
+                    },
+                    {
+                        frente: "Que problema ela evita?",
+                        verso: "Manter um import vivo só por causa do tipo.",
+                    },
+                    {
+                        frente: "O que um módulo em TypeScript exporta?",
+                        verso: "Valores e também tipos.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Onde ficam os tipos de bibliotecas sem tipagem própria?",
+                        verso: "Em pacotes separados de declarações.",
+                    },
+                    {
+                        frente: "O que um arquivo de declaração descreve?",
+                        verso: "A forma de um código que não tem tipos.",
+                    },
+                    {
+                        frente: "Que sinal indica que a biblioteca já vem tipada?",
+                        verso: "Ela publica os próprios arquivos de declaração.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que regra a aula dá sobre validação?",
+                        verso: "Validar na borda e confiar no miolo.",
+                    },
+                    {
+                        frente: "Que sinal indica fronteira mal definida?",
+                        verso: "Verificação espalhada por todo o código.",
+                    },
+                    {
+                        frente: "O que um type guard devolve ao compilador?",
+                        verso: "A garantia de que o valor é daquele tipo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que o operador de satisfação confere?",
+                        verso: "Se o valor cabe no tipo, sem alargar a inferência.",
+                    },
+                    {
+                        frente: "O que ele preserva que a anotação perderia?",
+                        verso: "Os tipos literais inferidos do valor.",
+                    },
+                    {
+                        frente: "O que um campo privado numa classe impede?",
+                        verso: "Acesso de fora da própria classe.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que fazer quando o erro do compilador não faz sentido?",
+                        verso: "Reduzir o caso a três linhas.",
+                    },
+                    {
+                        frente: "O que costuma acontecer nessa redução?",
+                        verso: "O problema aparece antes de você terminar.",
+                    },
+                    {
+                        frente: "Por onde começar a ler um erro longo?",
+                        verso: "Pela última linha, que costuma trazer a causa.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o modo estrito liga de uma vez?",
+                        verso: "Um conjunto de checagens mais rígidas.",
+                    },
+                    {
+                        frente: "Que checagem obriga a tratar nulo e indefinido?",
+                        verso: "A de checagem estrita de nulos.",
+                    },
+                    {
+                        frente: "Como ligar o modo estrito num projeto antigo?",
+                        verso: "Uma flag por vez, em vez de tudo de uma vez.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que quase toda ferramenta moderna faz com os tipos?",
+                        verso: "Apaga sem verificar.",
+                    },
+                    {
+                        frente: "O que isso implica para a integração contínua?",
+                        verso: "Ela precisa rodar a checagem, ou ninguém está checando.",
+                    },
+                    {
+                        frente: "Que comando faz só a checagem?",
+                        verso: "O do compilador sem emitir arquivos.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que o lint pega que o compilador não pega?",
+                        verso: "Padrões de código e riscos de estilo.",
+                    },
+                    {
+                        frente: "O que o formatador resolve?",
+                        verso: "A discussão sobre formatação, aplicando uma regra só.",
+                    },
+                    {
+                        frente: "O que a integração contínua deve rodar junto?",
+                        verso: "Checagem de tipos, lint e testes.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "No que vira uma migração com prazo e sem plano?",
+                        verso: "Modo estrito desligado para sempre.",
+                    },
+                    {
+                        frente: "Que ritmo a aula recomenda?",
+                        verso: "Ligar uma flag por semana.",
+                    },
+                    {
+                        frente: "O que esse ritmo entrega melhor?",
+                        verso: "Mais resultado que uma reescrita que nunca termina.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Onde os tipos compartilhados devem morar?",
+                        verso: "Perto de quem os usa, e não num arquivo único gigante.",
+                    },
+                    {
+                        frente: "Que problema o arquivo único de tipos cria?",
+                        verso: "Vira um depósito que todo mundo importa por inteiro.",
+                    },
+                    {
+                        frente: "Que critério organiza os tipos num projeto grande?",
+                        verso: "O domínio a que eles pertencem.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Em que linguagem o compilador foi reescrito?",
+                        verso: "Em Go.",
+                    },
+                    {
+                        frente: "Que ganho essa reescrita busca?",
+                        verso: "Compilação e checagem bem mais rápidas.",
+                    },
+                    {
+                        frente: "O que muda na linguagem por causa disso?",
+                        verso: "Nada na sintaxe: o que muda é o desempenho.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que uma mudança de padrão pode quebrar?",
+                        verso: "Projetos que dependiam do comportamento antigo.",
+                    },
+                    {
+                        frente: "Onde conferir o que mudou entre versões?",
+                        verso: "Nas notas de versão do próprio TypeScript.",
+                    },
+                    {
+                        frente: "Que cuidado uma atualização de versão maior pede?",
+                        verso: "Rodar a checagem inteira antes de subir.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que custo atualizar por etapas tem?",
+                        verso: "Mais tempo de calendário.",
+                    },
+                    {
+                        frente: "Que custo ele evita?",
+                        verso: "Tempo de depuração.",
+                    },
+                    {
+                        frente: "Qual das duas moedas é a cara em projeto grande?",
+                        verso: "A do tempo de depuração.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que costuma deixar a checagem lenta?",
+                        verso: "Tipos muito complexos e projetos sem divisão.",
+                    },
+                    {
+                        frente: "Que recurso divide o trabalho do compilador?",
+                        verso: "As referências de projeto.",
+                    },
+                    {
+                        frente: "Que medida ajuda a achar o gargalo?",
+                        verso: "O diagnóstico estendido do próprio compilador.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a trilha deixa como método?",
+                        verso: "Tipar o que ajuda e validar o que vem de fora.",
+                    },
+                    {
+                        frente: "Que passo fecha o aprendizado?",
+                        verso: "Levar os tipos a um projeto real.",
+                    },
+                    {
+                        frente: "Para onde seguir depois da trilha?",
+                        verso: "Para os tipos avançados das bibliotecas que você usa.",
+                    },
+                ],
+            },
+        },
     },
 };
