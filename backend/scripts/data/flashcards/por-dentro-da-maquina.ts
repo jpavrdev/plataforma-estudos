@@ -339,5 +339,251 @@ export const porDentroDaMaquina: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro programas o comando de compilar esconde?",
+                        verso: "O pré-processador, o compilador, o montador e o linker.",
+                    },
+                    {
+                        frente: "Que três flags param o trem em cada estação?",
+                        verso: "O menos E, o menos S e o menos c do compilador.",
+                    },
+                    {
+                        frente: "Que diferença separa ligação estática de dinâmica?",
+                        verso: "A estática copia a biblioteca; a dinâmica só referencia.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que quatro seções todo executável carrega?",
+                        verso: "A text do código, a rodata, a data e a bss zerada.",
+                    },
+                    {
+                        frente: "Que dois comandos mostram o mapa de seções?",
+                        verso: "O size, com o resumo, e o readelf com o mapa completo.",
+                    },
+                    {
+                        frente: "Em que sentidos o heap e a pilha crescem?",
+                        verso: "O heap para endereços maiores e a pilha para menores.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Em que dois times a convenção divide os registradores?",
+                        verso: "Os que a chamada pode sujar e os que ela deve preservar.",
+                    },
+                    {
+                        frente: "Que três motivos tornam a convenção importante?",
+                        verso: "Depurar o backtrace, o custo da chamada e a interoperação.",
+                    },
+                    {
+                        frente: "Que otimização o compilador faz com chamada curta?",
+                        verso: "O inline, colando o corpo no lugar da chamada.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que faixa de custo separa a chamada comum da syscall?",
+                        verso: "Um ou dois nanossegundos contra cem a trezentos.",
+                    },
+                    {
+                        frente: "Que padrão amortiza o custo de atravessar a fronteira?",
+                        verso: "O buffer, levando mais dado em menos viagens.",
+                    },
+                    {
+                        frente: "Que mecanismo evita a travessia ao ler o relógio?",
+                        verso: "O vDSO, com código do kernel exposto ao usuário.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que efeito tem trocar a biblioteca sem recompilar?",
+                        verso: "O binário antigo lê offsets errados e corrompe em silêncio.",
+                    },
+                    {
+                        frente: "Por que o C++ precisa decorar o nome dos símbolos?",
+                        verso: "A sobrecarga exige símbolos distintos para cada tipo.",
+                    },
+                    {
+                        frente: "Que estratégia a glibc usa para binários antigos?",
+                        verso: "Símbolos versionados, mantidos por décadas.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro regras o protocolo de medição tem?",
+                        verso: "Aquecer, repetir, resumir com mediana e comparar com a base.",
+                    },
+                    {
+                        frente: "Que otimização pode fazer o benchmark medir nada?",
+                        verso: "A eliminação de código morto, se ninguém usa o resultado.",
+                    },
+                    {
+                        frente: "Que ferramentas aplicam o protocolo por você?",
+                        verso: "O hyperfine na linha e os frameworks de microbenchmark.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que diferença de tempo o array e a lista mostram?",
+                        verso: "Uns 10 milissegundos contra cerca de um segundo inteiro.",
+                    },
+                    {
+                        frente: "Que pergunta cada um responde, o Big-O e o hardware?",
+                        verso: "O Big-O diz como o custo cresce; o hardware, quanto cada passo.",
+                    },
+                    {
+                        frente: "Quando a busca linear vence a binária no relógio?",
+                        verso: "Em arrays pequenos, de até algumas dezenas de itens.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que dois impostos invisíveis dominam o perfil real?",
+                        verso: "O cache miss e a mispredição de desvio.",
+                    },
+                    {
+                        frente: "Que experimento clássico mostra a mispredição?",
+                        verso: "Somar acima de um limiar com o array desordenado.",
+                    },
+                    {
+                        frente: "Que sinal um IPC baixo dá sobre o núcleo?",
+                        verso: "Que ele está esperando, não calculando.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que largura cada família de SIMD oferece?",
+                        verso: "128 bits na mais antiga, 256 na seguinte e 512 na maior.",
+                    },
+                    {
+                        frente: "Que condição a autovetorização exige do laço?",
+                        verso: "Simplicidade, para o compilador enxergar o padrão.",
+                    },
+                    {
+                        frente: "O que o SIMD multiplica, e o que ele não resolve?",
+                        verso: "Multiplica conta; não resolve a espera por cache miss.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que limite a lei de Amdahl impõe ao ganho total?",
+                        verso: "A fatia acelerada: 10% do tempo dá no máximo 1,11 vez.",
+                    },
+                    {
+                        frente: "Que ordem de alavancas a otimização deve seguir?",
+                        verso: "Algoritmo e estrutura antes da micro-otimização.",
+                    },
+                    {
+                        frente: "Que metade da frase de Knuth costuma ser esquecida?",
+                        verso: "A que manda não abrir mão do três por cento crítico.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que magic number abre um arquivo PNG?",
+                        verso: "Os bytes 89 50 4E 47, no começo do arquivo.",
+                    },
+                    {
+                        frente: "Como o comando file identifica um formato?",
+                        verso: "Consultando um banco de magic numbers conhecidos.",
+                    },
+                    {
+                        frente: "Que hábito de leitura a coluna ASCII do dump dá?",
+                        verso: "Reconhecer o nome do formato de olho, sem converter.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que vantagem o registro de tamanho fixo entrega?",
+                        verso: "Endereçar qualquer um por aritmética, sem varrer o arquivo.",
+                    },
+                    {
+                        frente: "Como se calcula o offset absoluto de um campo?",
+                        verso: "Somando a base do registro ao offset interno dele.",
+                    },
+                    {
+                        frente: "Que valor 0x092E representa na leitura do sensor?",
+                        verso: "2350, lido como 23,50 graus pela escala do formato.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que cegueira a soma simples de bytes carrega?",
+                        verso: "A da ordem: trocar dois bytes mantém a soma igual.",
+                    },
+                    {
+                        frente: "Que matemática o CRC usa para verificar?",
+                        verso: "Divisão polinomial, guardando o resto como código.",
+                    },
+                    {
+                        frente: "Que ameaça nem o checksum nem o CRC cobrem?",
+                        verso: "O ataque, que recalcula o código depois de alterar.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que erro quebra todo leitor antigo de um formato?",
+                        verso: "Enfiar campo no meio, empurrando os offsets publicados.",
+                    },
+                    {
+                        frente: "Que duas direções a compatibilidade tem?",
+                        verso: "Para trás, com leitor novo, e para frente, com leitor velho.",
+                    },
+                    {
+                        frente: "Que estrutura o formato adota quando cresce de verdade?",
+                        verso: "A de chunks, com tipo e tamanho anunciados em cada bloco.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que releitura a trilha dá a um loop e a um if?",
+                        verso: "O loop vira padrão de acesso; o if, aposta do previsor.",
+                    },
+                    {
+                        frente: "Que exercícios curtos mantêm o modelo mental vivo?",
+                        verso: "Hexdump num arquivo e ler o assembly no Compiler Explorer.",
+                    },
+                    {
+                        frente: "Que metáfora a aula usa para o baixo nível?",
+                        verso: "Um óculos que se usa, não um lugar aonde se vai.",
+                    },
+                ],
+            },
+        },
     },
 };
