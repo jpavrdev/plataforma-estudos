@@ -175,5 +175,169 @@ export const qualidadeEGovernancaDeDados: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta o teste de dados responde?",
+                        verso: "Se o dado está do jeito que se esperava.",
+                    },
+                    {
+                        frente: "Que pergunta a observabilidade de dados responde?",
+                        verso: "Se o dado está diferente do normal, mesmo passando nos testes.",
+                    },
+                    {
+                        frente: "O que a observabilidade cobre que o teste não cobre?",
+                        verso: "O problema que ninguém previu.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que cinco pilares a observabilidade de dados tem?",
+                        verso: "Frescor, volume, schema, distribuição e linhagem.",
+                    },
+                    {
+                        frente: "O que os cinco pilares não substituem?",
+                        verso: "Nenhum teste.",
+                    },
+                    {
+                        frente: "Que superfície eles cobrem?",
+                        verso: "A tabela inteira, de forma contínua.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que duzentos alertas por semana produzem?",
+                        verso: "O mesmo efeito de não ter observabilidade nenhuma.",
+                    },
+                    {
+                        frente: "Por que esse efeito acontece?",
+                        verso: "Ninguém lê.",
+                    },
+                    {
+                        frente: "O que a detecção de anomalia compara?",
+                        verso: "O comportamento de agora com o histórico da tabela.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que custa mais caro: o dado errado ou o pipeline quebrado?",
+                        verso: "O dado errado que ninguém percebe.",
+                    },
+                    {
+                        frente: "Por que ele custa mais?",
+                        verso: "Vira decisão errada antes de virar incidente.",
+                    },
+                    {
+                        frente: "O que o data downtime mede?",
+                        verso: "O tempo em que o dado ficou errado, ausente ou parado.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a plataforma de observabilidade não substitui?",
+                        verso: "Nenhum teste escrito pelo time.",
+                    },
+                    {
+                        frente: "Que superfície ela cobre?",
+                        verso: "A que nenhum time teria tempo de testar tabela por tabela.",
+                    },
+                    {
+                        frente: "Que trabalho ela automatiza?",
+                        verso: "O monitoramento contínuo de cada tabela.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que o lineage não é?",
+                        verso: "Um diagrama bonito para reunião.",
+                    },
+                    {
+                        frente: "Que duas perguntas urgentes ele responde?",
+                        verso: "O que quebra se eu mudar isso, e de onde veio esse número.",
+                    },
+                    {
+                        frente: "Quando o lineage mais importa?",
+                        verso: "Na hora da mudança e na hora do incidente.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que o lineage de tabela diz?",
+                        verso: "Que duas tabelas se relacionam.",
+                    },
+                    {
+                        frente: "O que o lineage de coluna diz?",
+                        verso: "Qual pedaço de uma virou qual pedaço da outra.",
+                    },
+                    {
+                        frente: "Que pergunta só o lineage de coluna responde?",
+                        verso: "De onde veio exatamente aquele campo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que comparação a aula usa para o catálogo de dados?",
+                        verso: "A de buscador dos dados internos.",
+                    },
+                    {
+                        frente: "O que o catálogo não é?",
+                        verso: "Apenas uma lista de tabelas.",
+                    },
+                    {
+                        frente: "Que três coisas ele ajuda a fazer?",
+                        verso: "Descobrir que o dado existe, entendê-lo e saber quem cuida.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que é um glossário sem link para o dado físico?",
+                        verso: "Documentação.",
+                    },
+                    {
+                        frente: "No que ele vira quando ligado à implementação?",
+                        verso: "Garantia de que dois times falam da mesma coisa.",
+                    },
+                    {
+                        frente: "Que exemplo a aula usa para essa ambiguidade?",
+                        verso: "Cliente ativo, definido de dois jeitos diferentes.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Qual não é o critério para escolher a ferramenta?",
+                        verso: "Ser a mais nova ou a mais completa numa lista.",
+                    },
+                    {
+                        frente: "Qual é o critério real?",
+                        verso: "O encaixe com a stack e com o time que vai usar.",
+                    },
+                    {
+                        frente: "Que fator do ambiente pesa nessa escolha?",
+                        verso: "O quanto a stack já é centrada num fornecedor só.",
+                    },
+                ],
+            },
+        },
     },
 };
