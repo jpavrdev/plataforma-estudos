@@ -175,5 +175,169 @@ export const porDentroDaMaquina: CartasDaTrilha = {
                 ],
             },
         },
+        3: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que nome o program counter recebe no x86-64?",
+                        verso: "RIP, guardando o endereço da próxima instrução.",
+                    },
+                    {
+                        frente: "Que unidade cuida de cada uma das três etapas?",
+                        verso: "A busca lê a memória, o controle decodifica e a ULA executa.",
+                    },
+                    {
+                        frente: "Quanto dura um ciclo a três gigahertz?",
+                        verso: "Cerca de 0,33 nanossegundo, a régua de tudo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dois motivos limitam a quantidade de registradores?",
+                        verso: "A física da distância e o espaço de nomeá-los na instrução.",
+                    },
+                    {
+                        frente: "Quem decide quais variáveis moram em registrador?",
+                        verso: "O compilador, na alocação de registradores.",
+                    },
+                    {
+                        frente: "Por que função pequena roda desproporcionalmente rápido?",
+                        verso: "O miolo inteiro cabe em registradores, sem ir à memória.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que flags o CMP liga sem devolver valor?",
+                        verso: "As de zero e de negativo, lidas pelo salto seguinte.",
+                    },
+                    {
+                        frente: "Que disciplina o rastreio manual de assembly exige?",
+                        verso: "Uma linha por vez, anotando os registradores depois de cada.",
+                    },
+                    {
+                        frente: "Que cinco partes um for esconde em assembly?",
+                        verso: "Inicialização, corpo, incremento, comparação e salto atrás.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que cinco estágios o pipeline didático tem?",
+                        verso: "Busca, decodificação, execução, memória e escrita.",
+                    },
+                    {
+                        frente: "Que medida o pipeline melhora, e qual ele não muda?",
+                        verso: "Melhora a vazão; a latência de uma instrução segue igual.",
+                    },
+                    {
+                        frente: "Que taxa de acerto o previsor alcança em código típico?",
+                        verso: "Acima de 95%, deixando o desvio previsível quase de graça.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que diferença separa ISA de microarquitetura?",
+                        verso: "A ISA é o contrato; a microarquitetura, a implementação.",
+                    },
+                    {
+                        frente: "Que modelo de licença cada uma das três ISAs segue?",
+                        verso: "O x86 proprietário, o ARM licenciado e o terceiro aberto.",
+                    },
+                    {
+                        frente: "Que três critérios decidem uma ISA hoje?",
+                        verso: "Ecossistema de software, energia por operação e custo.",
+                    },
+                ],
+            },
+        },
+        4: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que tamanhos e latência a L1 e a L2 costumam ter?",
+                        verso: "A L1 com dezenas de KiB e 4 ciclos; a L2 maior, com 12.",
+                    },
+                    {
+                        frente: "Que duas localidades fazem a hierarquia funcionar?",
+                        verso: "A temporal do que acabou de ser usado e a espacial do vizinho.",
+                    },
+                    {
+                        frente: "Na escala humanizada, quanto a RAM demoraria?",
+                        verso: "Cinco minutos, se um ciclo durasse um segundo.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que operação aloca e libera espaço na pilha?",
+                        verso: "Uma subtração no topo, e a soma de volta ao retornar.",
+                    },
+                    {
+                        frente: "Por que a região da pilha vive quente na cache?",
+                        verso: "Toda chamada reutiliza o mesmo topo o tempo inteiro.",
+                    },
+                    {
+                        frente: "Que mecanismo detecta o estouro de pilha na hora?",
+                        verso: "A página de guarda, inacessível logo além do fim.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que três alocadores a aula nomeia?",
+                        verso: "O ptmalloc da glibc, o jemalloc e o tcmalloc.",
+                    },
+                    {
+                        frente: "Que faixa de custo o malloc percorre entre os caminhos?",
+                        verso: "Dezenas de nanossegundos no rápido e microssegundos no lento.",
+                    },
+                    {
+                        frente: "Que dois pecados capitais a memória manual permite?",
+                        verso: "O vazamento e o uso do ponteiro depois de liberado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quantos int de quatro bytes cabem numa linha de cache?",
+                        verso: "Dezesseis, então um miss abastece quinze acessos.",
+                    },
+                    {
+                        frente: "Que hardware acompanha o padrão sequencial de acesso?",
+                        verso: "O prefetcher, buscando a linha seguinte antes do pedido.",
+                    },
+                    {
+                        frente: "Em que ordem o C guarda uma matriz na memória?",
+                        verso: "Por linhas, com os vizinhos de coluna colados.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três ganhos a memória virtual compra?",
+                        verso: "Isolamento, permissão por página e flexibilidade de mapa.",
+                    },
+                    {
+                        frente: "Que diferença separa a falta menor da maior?",
+                        verso: "A menor só mapeia; a maior precisa ir buscar no disco.",
+                    },
+                    {
+                        frente: "Por que o primeiro toque na memória alocada custa mais?",
+                        verso: "Ele ainda dispara a falta que mapeia aquela página.",
+                    },
+                ],
+            },
+        },
     },
 };
