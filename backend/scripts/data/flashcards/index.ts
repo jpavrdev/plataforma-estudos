@@ -76,6 +76,7 @@ import { azureDp900 } from "./azure-dp-900.ts";
 import { azureAi901 } from "./azure-ai-901.ts";
 import { azureAz104 } from "./azure-az-104.ts";
 import { azureSc900 } from "./azure-sc-900.ts";
+import { istqbCtfl } from "./istqb-ctfl.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -154,4 +155,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     azureAi901,
     azureAz104,
     azureSc900,
+    istqbCtfl,
 ];
