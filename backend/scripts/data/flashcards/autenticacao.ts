@@ -338,5 +338,169 @@ export const autenticacao: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que quatro passos uma rota de cadastro executa?",
+                        verso: "Valida a entrada, checa o email único, gera o hash e salva no banco.",
+                    },
+                    {
+                        frente: "Que campos a resposta do cadastro deve trazer?",
+                        verso: "Só os públicos: id, nome e email, nunca o hash da senha.",
+                    },
+                    {
+                        frente: "Por que devolver o hash na resposta ajuda um atacante?",
+                        verso: "Ele quebra o hash offline, sem precisar da sua API no caminho.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que nome tem o vazamento evitado pela mensagem genérica?",
+                        verso: "Enumeração de usuários: descobrir quem está cadastrado.",
+                    },
+                    {
+                        frente: "O que o payload do token de login costuma carregar?",
+                        verso: "O sub com o id do usuário e, se for útil, o email.",
+                    },
+                    {
+                        frente: "Que status a rota de login usa nos dois casos de erro?",
+                        verso: "O 401 nos dois, com exatamente a mesma mensagem.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que cinco passos o middleware de autenticação executa?",
+                        verso: "Lê o header, confere o Bearer, extrai, verifica e popula antes do next.",
+                    },
+                    {
+                        frente: "Que três situações fazem o jwt.verify lançar erro?",
+                        verso: "Token adulterado, malformado ou já expirado.",
+                    },
+                    {
+                        frente: "O que o middleware da plataforma popula para as rotas?",
+                        verso: "O req.userId, pra rota não decodificar o token de novo.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que durações típicas cada um dos dois tokens tem?",
+                        verso: "Quinze minutos no access e algo como sete dias no refresh.",
+                    },
+                    {
+                        frente: "Onde cada um dos dois tokens costuma ficar guardado?",
+                        verso: "O access em memória no cliente; o refresh num cookie HttpOnly.",
+                    },
+                    {
+                        frente: "Que rota dedicada troca o refresh por um access novo?",
+                        verso: "A POST /refresh, que confere o refresh e emite outro access.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que três cuidados valem para qualquer API com JWT?",
+                        verso: "HTTPS sempre, expiração curta e saber que o logout não revoga.",
+                    },
+                    {
+                        frente: "Por que HTTPS não é opcional numa API com token?",
+                        verso: "Sem ele o token viaja em texto puro e pode ser capturado.",
+                    },
+                    {
+                        frente: "O que o logout com JWT puro realmente faz no cliente?",
+                        verso: "Só apaga o token guardado; o servidor não fica sabendo de nada.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que três perguntas correm antes de escrever uma rota protegida?",
+                        verso: "Quem está pedindo, o que está pedindo e se pode fazer aquilo.",
+                    },
+                    {
+                        frente: "Com que frequência cada uma das duas checagens roda?",
+                        verso: "Autenticação uma vez por requisição; autorização em cada ação sensível.",
+                    },
+                    {
+                        frente: "Por que autorização não se resolve num middleware só?",
+                        verso: "Cada recurso tem a sua regra própria de quem pode mexer nele.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a sigla RBAC quer dizer?",
+                        verso: "Role-Based Access Control: controle de acesso baseado em papéis.",
+                    },
+                    {
+                        frente: "Por que lista de permissão por usuário não escala?",
+                        verso: "Cada conta nova exige montar tudo de novo, e a falha vira brecha.",
+                    },
+                    {
+                        frente: "Como o exigirAdmin da plataforma descobre o papel?",
+                        verso: "Buscando na tabela de usuários a cada checagem, não no token.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que frase resume o 401 e qual resume o 403?",
+                        verso: "Não sei quem você é; e sei quem você é e mesmo assim não pode.",
+                    },
+                    {
+                        frente: "O que o cliente deve fazer diante de cada um dos dois?",
+                        verso: "No 401, logar de novo; no 403, pedir acesso ou aceitar o não.",
+                    },
+                    {
+                        frente: "Que forma mais genérica o exigirAdmin assume com vários papéis?",
+                        verso: "Algo como exigirPapel, recebendo o papel exigido por parâmetro.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é a razão prática do princípio do menor privilégio?",
+                        verso: "Redução de dano: uma conta vazada só faz o que aquele papel faz.",
+                    },
+                    {
+                        frente: "Em que papel um cadastro novo deve nascer?",
+                        verso: "No mais restrito, e a promoção é ação deliberada de um admin.",
+                    },
+                    {
+                        frente: "Como fica a regra combinada numa rota de edição?",
+                        verso: "Admin passa direto; o resto ainda precisa bater o dono do recurso.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que a sigla IDOR quer dizer, por extenso?",
+                        verso: "Insecure Direct Object Reference: referência direta insegura a objeto.",
+                    },
+                    {
+                        frente: "Por que devolver 404 no lugar de 403 na checagem de dono?",
+                        verso: "Esconde até a existência do recurso de quem não tem direito a ele.",
+                    },
+                    {
+                        frente: "Que status o id da URL tem, do ponto de vista do servidor?",
+                        verso: "É entrada do usuário, igual a campo de formulário ou header.",
+                    },
+                ],
+            },
+        },
     },
 };
