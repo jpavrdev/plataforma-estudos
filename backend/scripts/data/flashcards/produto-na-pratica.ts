@@ -338,5 +338,251 @@ export const produtoNaPratica: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que a IA não encolheu, apesar de baratear o artefato?",
+                        verso: "O custo de estar errado sobre o que importa.",
+                    },
+                    {
+                        frente: "Quem continua responsável pelo resumo de entrevista feito por IA?",
+                        verso: "Você, por conferir cada trecho no material original.",
+                    },
+                    {
+                        frente: "O que a empresa paga de verdade ao contratar um PM?",
+                        verso: "A responsabilidade pela escolha, que a ferramenta não assume.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Quantas mensagens o Financem acumulou num trimestre, e de onde?",
+                        verso: "Cerca de três mil, entre suporte, loja, pesquisa e comunidade.",
+                    },
+                    {
+                        frente: "Quantas mensagens sortear na amostragem de conferência?",
+                        verso: "Entre trinta e cinquenta, lidas à mão e comparadas.",
+                    },
+                    {
+                        frente: "Quando a classificação sai ruim, onde costuma estar o erro?",
+                        verso: "Na definição das categorias, e não no modelo.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que fidelidade a IA não acelera em nada?",
+                        verso: "A conversa com usuário e a prova técnica de escala.",
+                    },
+                    {
+                        frente: "Que tipo de protótipo era caro demais e ficou viável?",
+                        verso: "O de dado simulado com comportamento realista.",
+                    },
+                    {
+                        frente: "Por que protótipo feio pode render mais no discovery?",
+                        verso: "Ele recebe crítica útil; o bonito recebe elogio.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quanto basta escrever à mão antes de pedir a organização?",
+                        verso: "Seis linhas com o diagnóstico e a decisão, sem capricho.",
+                    },
+                    {
+                        frente: "O que fazer com o texto antes de mandar pra alguém?",
+                        verso: "Ler inteiro e reescrever ao menos uma parte com suas palavras.",
+                    },
+                    {
+                        frente: "Que combinado de time evita conversa desagradável depois?",
+                        verso: "Dizer que o rascunho saiu com apoio de IA, quando saiu.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Que quatro perguntas a empresa precisa responder sobre a ferramenta?",
+                        verso: "Se é aprovada, se treina com o dado, onde ele fica e a base legal.",
+                    },
+                    {
+                        frente: "O que remover antes de enviar conteúdo para ferramenta externa?",
+                        verso: "Nome, telefone, email, documento e endereço da pessoa.",
+                    },
+                    {
+                        frente: "Por que a opacidade da IA é um limite de trabalho?",
+                        verso: "Não dá pra saber a origem, então ela não vale como evidência.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "O que se espera da entrega de um APM ou Product Analyst?",
+                        verso: "Execução confiável, com dado apurado e aprendizado registrado.",
+                    },
+                    {
+                        frente: "Qual é a armadilha comum ao pensar no próximo nível?",
+                        verso: "Achar que ele é a versão mais rápida do trabalho de hoje.",
+                    },
+                    {
+                        frente: "Que custo real tem trocar de empresa por salário?",
+                        verso: "Recomeçar do zero a construção de confiança.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que dever de casa quem vem de negócio precisa fazer?",
+                        verso: "Vocabulário técnico e o hábito de duvidar do que o cliente pede.",
+                    },
+                    {
+                        frente: "Como criar valor visível antes de pedir a vaga de produto?",
+                        verso: "Ajudar em pesquisa, escrever o que ninguém escreveu e levar dado.",
+                    },
+                    {
+                        frente: "Que ajuste desconfortável pode vir na virada para produto?",
+                        verso: "Ajuste salarial, saindo de dev sênior para produto pleno.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Qual é o critério único por trás dos quatro tipos de case?",
+                        verso: "Querem ouvir como você pensa, não a resposta pronta.",
+                    },
+                    {
+                        frente: "Como treinar estimativa para entrevista?",
+                        verso: "Um número por dia em cinco minutos, com as premissas escritas.",
+                    },
+                    {
+                        frente: "Que três histórias ter prontas para a parte comportamental?",
+                        verso: "Um conflito, uma decisão que deu errado e uma virada com dado.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que regra resolve o sigilo ao contar um resultado?",
+                        verso: "Se não pode citar o número, cite o efeito e o método.",
+                    },
+                    {
+                        frente: "Que formato de página um case de portfólio precisa ter?",
+                        verso: "Uma página escaneável, com títulos que já contam a história.",
+                    },
+                    {
+                        frente: "Quantos cases valem mais num portfólio?",
+                        verso: "Dois bem escritos valem mais que oito descrições rasas.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que se mapeia entre os dias 31 e 60?",
+                        verso: "Onde está o dado, em que métrica confiar e quem decide o quê.",
+                    },
+                    {
+                        frente: "Que frase fecha portas mais rápido num começo de trabalho?",
+                        verso: "Na minha antiga empresa a gente fazia assim.",
+                    },
+                    {
+                        frente: "Por que não aceitar a métrica do painel sem investigar?",
+                        verso: "Muita empresa acompanha há anos um número que mede outra coisa.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que restrições a parte de contexto precisa citar?",
+                        verso: "Time, prazo, restrição técnica e restrição regulatória.",
+                    },
+                    {
+                        frente: "Que dois pontos a parte de aprendizado precisa entregar?",
+                        verso: "O que faria diferente e o que passou a fazer sempre.",
+                    },
+                    {
+                        frente: "Que erro frequente estraga a parte de resultado?",
+                        verso: "Mostrar só o que deu certo e omitir todo o resto.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "Que decisão difícil o case do Financem deixa visível?",
+                        verso: "Exigir a conexão de receita, que derrubou as contas criadas.",
+                    },
+                    {
+                        frente: "Por que a conexão obrigatória foi mantida mesmo assim?",
+                        verso: "O objetivo do ciclo era ativação, não número de cadastros.",
+                    },
+                    {
+                        frente: "Que canal o público estreito do Financem justificou?",
+                        verso: "Comunidade e contador, em vez de mídia paga.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Como a ativação do Financem é relatada com base e prazo?",
+                        verso: "De 24% para 38% em oito semanas, sobre 1.200 novos por mês.",
+                    },
+                    {
+                        frente: "O que não melhorou no período do case do Financem?",
+                        verso: "A retenção em trinta dias ficou praticamente parada.",
+                    },
+                    {
+                        frente: "Que erro de instrumentação o case admite?",
+                        verso: "A conciliação entrou tarde e custou duas semanas às cegas.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Que quatro frases compõem a versão de cinco minutos?",
+                        verso: "Problema e de quem, decisão e descarte, número e aprendizado.",
+                    },
+                    {
+                        frente: "O que a pergunta sobre metade do tempo testa?",
+                        verso: "Priorização de verdade: o que você cortaria primeiro.",
+                    },
+                    {
+                        frente: "Em que momento avisar que o case é fictício?",
+                        verso: "Na primeira frase, antes de qualquer número.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como a dúvida metódica aparece no dia a dia?",
+                        verso: "Testando a suposição mais arriscada antes de construir.",
+                    },
+                    {
+                        frente: "Que caminhos de aprofundamento a aula sugere?",
+                        verso: "Dados, pesquisa, lado técnico, negócio ou um domínio específico.",
+                    },
+                    {
+                        frente: "O que significa honestidade com número, na prática?",
+                        verso: "Não vender sorte como mérito nem esconder o que falhou.",
+                    },
+                ],
+            },
+        },
     },
 };
