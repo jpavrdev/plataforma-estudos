@@ -17,6 +17,7 @@ import { testesEQualidade } from "./testes-e-qualidade.ts";
 import { testesE2e } from "./testes-e2e.ts";
 import { bancoDeDadosESql } from "./banco-de-dados-e-sql.ts";
 import { cicdECloud } from "./cicd-e-cloud.ts";
+import { segurancaDeAplicacoesWeb } from "./seguranca-de-aplicacoes-web.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -36,4 +37,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     testesE2e,
     bancoDeDadosESql,
     cicdECloud,
+    segurancaDeAplicacoesWeb,
 ];
