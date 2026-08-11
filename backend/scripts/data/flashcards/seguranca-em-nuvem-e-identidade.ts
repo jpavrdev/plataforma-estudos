@@ -339,5 +339,251 @@ export const segurancaEmNuvemEIdentidade: CartasDaTrilha = {
                 ],
             },
         },
+        5: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Que pergunta fazer a um fornecedor de zero trust?",
+                        verso: "Qual princípio o produto implementa e o que fica descoberto.",
+                    },
+                    {
+                        frente: "Quem responde essa pergunta sem desconforto?",
+                        verso: "Quem vende arquitetura, e não produto isolado.",
+                    },
+                    {
+                        frente: "O que zero trust não é?",
+                        verso: "Um produto que se compra pronto.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "No que a política vira sem o estado do dispositivo?",
+                        verso: "Em identidade mais localização, e nada além.",
+                    },
+                    {
+                        frente: "O que verificar explicitamente exige?",
+                        verso: "Checar identidade, dispositivo e contexto a cada acesso.",
+                    },
+                    {
+                        frente: "O que a palavra zero trust anuncia?",
+                        verso: "Bem mais do que identidade e localização entregam.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "Que escolha sobra a quem só tem permitir e bloquear?",
+                        verso: "Travar o trabalho ou aceitar a exportação.",
+                    },
+                    {
+                        frente: "Onde mora o risco real, nesse espectro?",
+                        verso: "No meio, entre o permitir e o bloquear.",
+                    },
+                    {
+                        frente: "O que o acesso adaptativo acrescenta?",
+                        verso: "Resposta proporcional ao risco daquele acesso.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "O que detectar rápido sem poder agir garante?",
+                        verso: "Uma poltrona na primeira fila do próprio incidente.",
+                    },
+                    {
+                        frente: "O que assumir a violação muda no projeto?",
+                        verso: "Presume o invasor dentro e limita o estrago.",
+                    },
+                    {
+                        frente: "Que controles nascem dessa premissa?",
+                        verso: "Segmentação, sessão curta e capacidade de revogar.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que cada passo da adoção deveria remover?",
+                        verso: "Uma dor visível de alguém.",
+                    },
+                    {
+                        frente: "O que o programa que só acrescenta fricção consome?",
+                        verso: "O capital político, até parar.",
+                    },
+                    {
+                        frente: "Que ordem a adoção realista segue?",
+                        verso: "Começar por onde já dói, e não pelo mais elegante.",
+                    },
+                ],
+            },
+        },
+        6: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Em que o invasor que age por credencial nunca encosta?",
+                        verso: "Num servidor.",
+                    },
+                    {
+                        frente: "Quem fica cego no ataque mais comum de nuvem?",
+                        verso: "Quem só coleta registro de sistema operacional.",
+                    },
+                    {
+                        frente: "Que registro é indispensável em nuvem?",
+                        verso: "O do plano de controle.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que não vaza no golpe de consentimento?",
+                        verso: "A senha.",
+                    },
+                    {
+                        frente: "Por que trocar a senha não resolve nesse golpe?",
+                        verso: "A autorização concedida não depende dela.",
+                    },
+                    {
+                        frente: "O que precisa ser revogado nesse caso?",
+                        verso: "O consentimento dado à aplicação.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "O que recriar a frota inteira não resolve?",
+                        verso: "O invasor segue dentro, pelo que deixou no diretório.",
+                    },
+                    {
+                        frente: "Onde a persistência em nuvem costuma morar?",
+                        verso: "Na confiança que o invasor acrescentou no diretório.",
+                    },
+                    {
+                        frente: "Que rastro essa persistência não deixa?",
+                        verso: "Nenhum em máquina, porque não vive em máquina.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Qual é o reflexo certo diante de máquina suspeita?",
+                        verso: "Isolar e preservar, antes de qualquer outra coisa.",
+                    },
+                    {
+                        frente: "O que suspender antes de agir no ambiente elástico?",
+                        verso: "A escala automática.",
+                    },
+                    {
+                        frente: "Por que não encerrar a máquina suspeita?",
+                        verso: "Encerrar apaga a evidência junto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "O que acontece detectando em semanas e retendo por dias?",
+                        verso: "Você acha a ponta do fio e nunca a origem.",
+                    },
+                    {
+                        frente: "O que a retenção não é?",
+                        verso: "Um número administrativo.",
+                    },
+                    {
+                        frente: "Com o que a retenção precisa conversar?",
+                        verso: "Com o tempo real até a detecção.",
+                    },
+                ],
+            },
+        },
+        7: {
+            1: {
+                neutra: [
+                    {
+                        frente: "Qual é o achado mais comum e mais difícil de defender?",
+                        verso: "Dado de produção em ambiente de teste.",
+                    },
+                    {
+                        frente: "Que parte desse problema é a fácil?",
+                        verso: "A solução técnica.",
+                    },
+                    {
+                        frente: "O que costuma faltar nesse caso?",
+                        verso: "Alguém chamar o problema pelo nome.",
+                    },
+                ],
+            },
+            2: {
+                neutra: [
+                    {
+                        frente: "O que a conformidade prova?",
+                        verso: "Que você fez o que foi combinado.",
+                    },
+                    {
+                        frente: "O que é segurança, nessa distinção?",
+                        verso: "Ter escolhido bem o que combinar.",
+                    },
+                    {
+                        frente: "Os dois importam igualmente?",
+                        verso: "Importam, mas não são a mesma coisa.",
+                    },
+                ],
+            },
+            3: {
+                neutra: [
+                    {
+                        frente: "No que a auditoria vira quando o controle produz evidência?",
+                        verso: "Numa consulta.",
+                    },
+                    {
+                        frente: "No que ela vira quando o controle não produz?",
+                        verso: "Num projeto de três semanas, todo ano.",
+                    },
+                    {
+                        frente: "Que qualidade um bom controle tem?",
+                        verso: "Gera evidência ao funcionar, sem esforço extra.",
+                    },
+                ],
+            },
+            4: {
+                neutra: [
+                    {
+                        frente: "Quantas ferramentas novas aparecem nos primeiros passos?",
+                        verso: "Nenhuma.",
+                    },
+                    {
+                        frente: "Do que quase tudo ali é feito?",
+                        verso: "De organização e disciplina.",
+                    },
+                    {
+                        frente: "Por que isso assusta?",
+                        verso: "Porque não dá para comprar pronto.",
+                    },
+                ],
+            },
+            5: {
+                neutra: [
+                    {
+                        frente: "Como é o trabalho que mais reduz risco em nuvem?",
+                        verso: "O menos glamouroso que existe.",
+                    },
+                    {
+                        frente: "O que esse trabalho não rende?",
+                        verso: "Demonstração.",
+                    },
+                    {
+                        frente: "O que ele separa, no fim?",
+                        verso: "Um dia ruim de um trimestre ruim.",
+                    },
+                ],
+            },
+        },
     },
 };
