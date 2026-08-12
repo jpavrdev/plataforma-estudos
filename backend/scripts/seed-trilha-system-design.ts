@@ -2174,7 +2174,434 @@ const MODULO_5: Modulo = {
     ],
 };
 
-export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3, MODULO_4, MODULO_5];
+const MODULO_6: Modulo = {
+    titulo: "Módulo 6 - Estudos de caso",
+    aulas: [
+        {
+            titulo: "Encurtador de URL",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Encurtador de URL\n\nEste é o problema de abertura em quase todo material, e por um bom motivo: ele é pequeno o bastante para caber numa sessão inteira e grande o bastante para exercitar o roteiro completo. Vamos aplicá-lo na ordem do módulo 1, sem pular etapa.\n\n**Requisitos funcionais**, cortados: encurtar uma URL longa e devolver a curta; redirecionar a curta para a longa; opcionalmente permitir um apelido escolhido pelo usuário. Ficam de fora: contas, painel de estatísticas e expiração personalizada.\n\n**Não funcionais**: o redirecionamento precisa ser rápido, porque está no caminho do usuário; a leitura é muito mais frequente que a escrita; e um link não pode deixar de funcionar, o que empurra durabilidade para o topo.",
+                },
+                {
+                    type: "code",
+                    value: "Estimativa:\n\n  100.000.000 links criados por mes\n  100M / (30 x 100.000 s) = cerca de 35 escritas por segundo\n\n  Proporcao de leitura 100:1\n  35 x 100 = 3.500 redirecionamentos por segundo\n  com pico de 3x  = cerca de 10.000 por segundo\n\nArmazenamento:\n  500 bytes por registro (url longa + curta + metadados)\n  100M x 500 B = 50 GB por mes\n  50 GB x 12 x 5 anos = cerca de 3 TB em cinco anos",
+                },
+                {
+                    type: "text",
+                    value: "## O que a conta já decidiu\n\nTrês coisas, e vale dizê-las em voz alta. Trinta e cinco escritas por segundo é carga pequena: **um banco resolve**, sem sharding. Três terabytes em cinco anos também cabem numa instância grande com réplicas, então não há motivo para particionar. E 10 mil leituras por segundo de um dado que nunca muda é o caso perfeito de **cache**, com taxa de acerto altíssima esperada.\n\nRepare que a conta acabou de eliminar duas complexidades que muita gente desenha por reflexo. Esse é exatamente o uso da estimativa ensinado no módulo 2.",
+                },
+                {
+                    type: "text",
+                    value: '## Gerar o código curto\n\nEsta é a decisão central, e existem três caminhos. **Hash da URL longa**, cortando os primeiros caracteres: simples, mas colide, e tratar colisão exige verificar existência a cada criação. **Aleatório com verificação**: sorteia, checa se já existe, repete se preciso; a chance de colisão cresce conforme o espaço enche. E **contador convertido para base 62**, que é o caminho preferido: um número sempre crescente é convertido para os 62 caracteres possíveis, o que garante unicidade sem verificar nada.\n\nCom 7 caracteres em base 62 há 62 elevado a 7, cerca de 3,5 trilhões de combinações, o que cobre a escala estimada com folga enorme. O contador global vem do padrão do módulo 5: faixas pré-alocadas, cada instância pegando um bloco de identificadores de cada vez, ou um gerador estilo Snowflake. E como o contador é sequencial, os códigos ficam previsíveis, o que se resolve embaralhando os bits antes de converter, quando isso importa.',
+                },
+                {
+                    type: "table",
+                    value: '[["Decisão", "Escolha", "Por quê"], ["Geração do código", "Contador em base 62", "Único sem verificar colisão"], ["Banco", "Um só, com réplicas", "35 escritas por segundo não pedem sharding"], ["Cache", "Em memória, na frente da leitura", "Dado imutável e leitura 100x maior"], ["Redirecionamento", "301 ou 302", "302 preserva a passagem pelo servidor"], ["Camada de entrada", "Balanceador e CDN para estáticos", "Redirecionamento é dinâmico e curto"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Os dois aprofundamentos que costumam vir\n\nO primeiro é **301 ou 302**. O 301 é permanente e o navegador passa a nem consultar o servidor, o que é ótimo para latência e péssimo se você quiser contar cliques ou trocar o destino depois. O 302 mantém toda requisição passando por você. A resposta boa depende do requisito, e como cortamos estatísticas do escopo, 301 é defensável; se estatística voltasse ao escopo, 302 seria a escolha.\n\nO segundo é **o que acontece se o cache cair**. Com 10 mil leituras por segundo e taxa de acerto alta, o banco recebe centenas por segundo normalmente e receberia as 10 mil de uma vez numa avalanche. A resposta é a do módulo 2: aquecer o cache antes de receber tráfego, distribuir o vencimento das chaves para não expirarem juntas, e ter réplicas de leitura capazes de absorver o pico enquanto o cache se refaz.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** no encurtador, a conta mostra carga de escrita pequena e leitura alta de dado imutável, o que **elimina sharding** e **exige cache**. O código curto sai de um **contador em base 62**, que dispensa tratar colisão. Os aprofundamentos clássicos são **301 x 302** e a **avalanche** quando o cache esvazia.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Com cerca de 35 escritas por segundo e 3 TB em cinco anos, o que a estimativa já elimina?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A necessidade de particionar o banco de dados.", isCorrect: true },
+                        { text: "A necessidade de cache na frente da leitura.", isCorrect: false },
+                        { text: "A necessidade de réplicas para leitura e falha.", isCorrect: false },
+                        { text: "A necessidade de um balanceador na entrada.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que converter um contador para base 62 é preferível a sortear o código?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Garante unicidade sem precisar verificar colisão.", isCorrect: true },
+                        { text: "Gera códigos mais curtos para o mesmo espaço de valores.", isCorrect: false },
+                        { text: "Torna os códigos impossíveis de adivinhar por terceiros.", isCorrect: false },
+                        { text: "Dispensa qualquer forma de coordenação entre as instâncias.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a desvantagem de responder o redirecionamento com 301 permanente?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O navegador para de consultar o servidor nas vezes seguintes.", isCorrect: true },
+                        { text: "O redirecionamento fica mais lento do que aconteceria com o 302.", isCorrect: false },
+                        { text: "O código curto deixa de poder ser reaproveitado depois.", isCorrect: false },
+                        { text: "O cache do servidor perde efeito para aquele link.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o dado de um encurtador é um caso quase ideal para cache?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "É imutável e lido muitas vezes mais do que escrito.", isCorrect: true },
+                        { text: "É pequeno o suficiente para caber inteiro em memória.", isCorrect: false },
+                        { text: "Tem prazo de validade curto definido na criação do link.", isCorrect: false },
+                        { text: "É acessado sempre pelos mesmos usuários autenticados.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual medida reduz o risco de avalanche quando muitas chaves de cache vencem juntas?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Distribuir o vencimento das chaves ao longo do tempo.", isCorrect: true },
+                        { text: "Aumentar o tempo de vida de todas as chaves igualmente.", isCorrect: false },
+                        { text: "Reduzir o tamanho do cache para caber só o dado quente.", isCorrect: false },
+                        { text: "Gravar no cache apenas na leitura, e nunca na escrita.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Chat em tempo real",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Chat em tempo real\n\nO chat introduz um elemento que nenhum caso anterior tinha: o servidor precisa **empurrar** dado para o cliente, sem que ele peça. Isso quebra o modelo de requisição e resposta e é o coração da pergunta.\n\n**Funcionais**, cortados: mensagem um a um, grupo pequeno, histórico, e indicador de entregue e lido. Fora do escopo: chamada de vídeo, anexo grande e reações.\n\n**Não funcionais**: entrega em menos de um segundo; nenhuma mensagem pode ser perdida, o que coloca durabilidade acima de latência quando as duas brigam; e a ordem dentro de uma conversa precisa fazer sentido.",
+                },
+                {
+                    type: "text",
+                    value: "## Como o servidor empurra\n\nTrês opções aparecem. **Polling** é o cliente perguntando de tempos em tempos: simples e desperdiça muito, porque a maioria das perguntas volta vazia. **Long polling** é a requisição que fica aberta até haver novidade: funciona em qualquer infraestrutura e é a alternativa de compatibilidade. E **WebSocket** é uma conexão persistente e bidirecional, que é a escolha natural aqui, porque o tráfego vai nos dois sentidos e a latência precisa ser baixa.\n\nVale citar o parente: **eventos enviados pelo servidor** são unidirecionais e mais simples, ótimos para notificação e painel ao vivo, mas insuficientes para chat, onde o cliente também envia o tempo todo.",
+                },
+                {
+                    type: "text",
+                    value: '## O problema real: conexão com estado\n\nAqui está a virada da pergunta. Uma conexão persistente **prende o usuário a uma máquina específica**, que é exatamente o oposto da aplicação sem estado que o módulo 3 defendeu. Se Ana está conectada ao servidor 3 e Bruno ao servidor 17, como a mensagem de Bruno chega até Ana?\n\nA resposta tem duas partes. Primeiro, um **registro de presença**: uma tabela em cache que diz em qual servidor cada usuário está conectado, escrita quando a conexão abre e apagada quando fecha. Segundo, um **canal entre servidores**: o servidor 17 consulta o registro, descobre o servidor 3 e entrega a mensagem a ele, seja por chamada direta, seja publicando num tópico que o servidor 3 assina. O registro é a peça que costuma faltar nas respostas incompletas.',
+                },
+                {
+                    type: "code",
+                    value: "Caminho de uma mensagem:\n\n  Bruno --WebSocket--> servidor 17\n    1. servidor 17 grava a mensagem (durabilidade primeiro)\n    2. confirma para Bruno: enviada\n    3. consulta presenca: Ana esta no servidor 3?\n       sim -> entrega ao servidor 3 -> Ana recebe -> entregue\n       nao -> enfileira notificacao push\n    4. Ana abre a conversa -> marca como lida -> avisa Bruno",
+                },
+                {
+                    type: "text",
+                    value: '## Guardar mensagem e ordenar\n\nO padrão de acesso do chat é bem específico: escreve muito, lê quase sempre as mensagens recentes de uma conversa, e ordena por tempo. Isso aponta para particionar por **identificador da conversa**, com as mensagens ordenadas dentro do pedaço, de modo que abrir uma conversa toque um pedaço só. É o critério do módulo 4 aplicado direto.\n\nA ordem merece cuidado. Relógio de servidor não basta, porque servidores diferentes discordam em milissegundos. A saída usual é gerar o identificador da mensagem com um esquema ordenável por tempo, como o Snowflake do módulo 5, e ordenar por ele. Dentro de uma conversa isso resolve; entre conversas diferentes a ordem global não importa, e é bom dizer isso, porque mostra que você sabe onde a garantia é necessária e onde ela seria desperdício.',
+                },
+                {
+                    type: "text",
+                    value: '## Entregue, lido e o que acontece offline\n\nOs indicadores são, na prática, três eventos com destinos diferentes: **enviada** quando o servidor gravou, **entregue** quando o dispositivo do destinatário confirmou o recebimento, e **lida** quando ele abriu a conversa. Cada um viaja de volta para o remetente pelo mesmo caminho da mensagem original.\n\nSe o destinatário está offline, a presença não encontra servidor, e a mensagem fica guardada esperando. Entra uma **notificação push** por serviço externo, e a mensagem é entregue quando ele reconectar, o que faz do chat também um caso de sincronização: ao reconectar, o cliente pede tudo o que aconteceu depois do último identificador que ele já tem.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** chat exige o servidor **empurrar**, e a escolha natural é **WebSocket**. O problema real é a conexão com **estado**: resolve-se com um **registro de presença** dizendo em qual servidor cada usuário está, mais um canal entre servidores. Particione por **conversa** e ordene por identificador ordenável no tempo. Offline vira **push** mais sincronização a partir do último identificador conhecido.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que o WebSocket é a escolha natural para um chat, e não os eventos enviados pelo servidor?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O tráfego precisa ir nos dois sentidos.", isCorrect: true },
+                        { text: "Os eventos enviados pelo servidor não atravessam proxies.", isCorrect: false },
+                        { text: "O WebSocket garante a ordem das mensagens na conversa.", isCorrect: false },
+                        { text: "Os eventos enviados pelo servidor não sobrevivem a reconexões.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual problema a conexão persistente cria na arquitetura?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O usuário fica preso a uma máquina específica.", isCorrect: true },
+                        { text: "As mensagens deixam de poder ser gravadas em banco.", isCorrect: false },
+                        { text: "O balanceador perde a capacidade de fazer health check.", isCorrect: false },
+                        { text: "A ordem das mensagens passa a depender do relógio local.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual peça permite que um servidor entregue mensagem a um usuário conectado em outro?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Um registro de presença por usuário.", isCorrect: true },
+                        { text: "Um cache das mensagens recentes de cada conversa.", isCorrect: false },
+                        { text: "Um balanceador com sessão fixa por endereço de origem.", isCorrect: false },
+                        { text: "Um índice invertido sobre o conteúdo das mensagens.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que particionar as mensagens pelo identificador da conversa?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Abrir uma conversa passa a tocar um pedaço só.", isCorrect: true },
+                        { text: "As conversas têm todas o mesmo volume de mensagens.", isCorrect: false },
+                        { text: "Permite ordenar globalmente todas as mensagens do sistema.", isCorrect: false },
+                        { text: "Evita que uma conversa muito ativa gere ponto quente.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que não usar o relógio do servidor para ordenar as mensagens?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Servidores diferentes discordam em milissegundos.", isCorrect: true },
+                        { text: "O relógio não tem resolução suficiente para mensagens.", isCorrect: false },
+                        { text: "A gravação no banco acontece fora da ordem de chegada.", isCorrect: false },
+                        { text: "O cliente pode enviar mensagens com data adulterada.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Feed social",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Feed social\n\nO feed junta quase tudo o que a trilha viu. A decisão central, entre montar na leitura ou na escrita, já foi tratada no módulo 5; aqui ela entra como **uma** decisão dentro de um desenho completo, que é como ela aparece de verdade.\n\n**Funcionais**, cortados: publicar; ver o feed de quem eu sigo, ordenado; seguir e deixar de seguir. Fora: comentário, mensagem direta e busca.\n\n**Não funcionais**: o feed abre em menos de 200ms, porque é a primeira tela do aplicativo; a publicação pode demorar alguns segundos para aparecer no feed alheio, e essa frouxidão é o que torna o desenho viável; nada se perde.",
+                },
+                {
+                    type: "code",
+                    value: "Estimativa:\n\n  50.000.000 usuarios ativos por dia\n  x 20 aberturas de feed = 1.000.000.000 leituras por dia\n  1B / 100.000 = 10.000 leituras por segundo, pico 30.000\n\n  2.000.000 publicacoes por dia\n  2M / 100.000 = 20 escritas por segundo, pico 60\n\n  Proporcao de 500 leituras para cada escrita\n  Media de 200 seguidores por conta\n  Fan-out medio = 20 x 200 = 4.000 escritas por segundo em caixas",
+                },
+                {
+                    type: "text",
+                    value: '## O que a conta decide aqui\n\nA proporção de 500 para 1 é o argumento definitivo para **antecipar o trabalho na escrita**: vale gastar 4 mil escritas por segundo em caixas de entrada para transformar 30 mil leituras por segundo em consultas simples de lista pronta.\n\nE a mesma conta mostra por que a exceção existe. Com uma conta de 30 milhões de seguidores, uma única publicação geraria 30 milhões de escritas, o que a média de 4 mil por segundo esconde. Daí o híbrido: **push para contas comuns, pull para as grandes**, com o feed final sendo a mescla da caixa pronta com as poucas contas grandes que a pessoa segue.',
+                },
+                {
+                    type: "table",
+                    value: '[["Componente", "Escolha", "Justificativa"], ["Caixa de entrada", "Lista por usuário em cache, com referências", "Leitura vira busca de lista pronta"], ["Publicações", "Banco particionado por id da publicação", "Guarda o conteúdo uma vez só"], ["Grafo de seguidores", "Armazenamento próprio, otimizado por leitura", "Consultado a cada publicação"], ["Distribuição", "Fila e workers, fora da requisição", "Publicar não espera o fan-out terminar"], ["Mídia", "Blob storage servido por CDN", "Domina banda e não pode sair da aplicação"]]',
+                },
+                {
+                    type: "text",
+                    value: '## A caixa guarda referência, não conteúdo\n\nDetalhe que rende ponto: a caixa de entrada guarda apenas o **identificador** da publicação, e não o texto dela. Se guardasse o conteúdo, uma publicação com um milhão de seguidores existiria um milhão de vezes, e editar ou apagar exigiria varrer todas as cópias.\n\nGuardando referência, o conteúdo vive num lugar só. Ler o feed passa a ser: pegar a lista de identificadores, buscar as publicações correspondentes (quase sempre em cache, porque publicações recentes são lidas por muita gente ao mesmo tempo), e montar. Apagar uma publicação vira apagar um registro, e as caixas simplesmente deixam de encontrá-la.',
+                },
+                {
+                    type: "text",
+                    value: '## Publicar sem esperar o fan-out\n\nO caminho de escrita precisa ser curto. Quando alguém publica, o sistema grava a publicação, confirma para o usuário e **enfileira** o trabalho de distribuição. O usuário não espera as milhares de escritas de caixa, e o pico de distribuição é absorvido pela fila, exatamente como o módulo 3 descreveu.\n\nEsse desenho também dá a resposta para a falha: se um worker morrer no meio, a mensagem volta para a fila e outro reprocessa, o que significa que a caixa pode receber a mesma referência duas vezes. É por isso que o consumidor precisa ser **idempotente**, e uma lista que ignora identificador repetido resolve. Fecha o ciclo com o módulo 5.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** a proporção de **500 leituras para 1 escrita** justifica antecipar o trabalho na escrita, e o **híbrido** cobre as contas grandes. A caixa de entrada guarda **referência**, nunca conteúdo, para não duplicar nem complicar a exclusão. Publicar **confirma antes** do fan-out, que roda por fila, e por isso o consumidor precisa ser **idempotente**.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual número justifica antecipar o trabalho na escrita no feed?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A proporção de 500 leituras para cada escrita.", isCorrect: true },
+                        { text: "A média de 200 seguidores por conta do sistema.", isCorrect: false },
+                        { text: "O pico de 60 publicações por segundo estimado.", isCorrect: false },
+                        { text: "O limite de 200ms para abrir a primeira tela.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a caixa de entrada guarda referência em vez do conteúdo da publicação?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Para não duplicar o conteúdo em cada seguidor.", isCorrect: true },
+                        { text: "Para permitir ordenar a lista por data de publicação.", isCorrect: false },
+                        { text: "Para que a leitura do feed não precise de cache.", isCorrect: false },
+                        { text: "Para reduzir o número de escritas durante o fan-out.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece com o usuário que publica, no momento em que aperta o botão?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Recebe a confirmação antes de o fan-out terminar.", isCorrect: true },
+                        { text: "Espera a distribuição para todos os seguidores terminar.", isCorrect: false },
+                        { text: "Recebe a confirmação apenas quando o cache é atualizado.", isCorrect: false },
+                        { text: "Espera o índice de busca indexar a nova publicação.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o worker que distribui o fan-out precisa ser idempotente?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Uma falha faz a mensagem voltar para a fila e rodar de novo.", isCorrect: true },
+                        { text: "Vários workers acabam consumindo a mesma mensagem ao mesmo tempo.", isCorrect: false },
+                        { text: "A ordem de entrega das mensagens na fila não é garantida.", isCorrect: false },
+                        { text: "O usuário pode publicar o mesmo conteúdo mais de uma vez.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que apagar uma publicação fica simples nesse desenho?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O conteúdo existe em um lugar só.", isCorrect: true },
+                        { text: "As caixas de entrada são reconstruídas periodicamente.", isCorrect: false },
+                        { text: "O fan-out desfaz as escritas ao receber o evento de exclusão.", isCorrect: false },
+                        { text: "O cache expira as publicações apagadas em poucos segundos.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Upload e streaming de vídeo",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Upload e streaming de vídeo\n\nVídeo muda a natureza da conta. Nos casos anteriores, o dado era pequeno e a carga vinha do número de operações. Aqui uma única operação move centenas de megabytes, e a conta de **banda** passa a dominar tudo, como o módulo 2 antecipou.\n\n**Funcionais**, cortados: enviar um vídeo; assistir com qualidade adaptada à conexão; buscar por título. Fora: comentários, recomendação e transmissão ao vivo.\n\n**Não funcionais**: o vídeo começa a tocar em poucos segundos e não trava; o envio pode demorar minutos, e o processamento também; nenhum vídeo enviado se perde.",
+                },
+                {
+                    type: "text",
+                    value: "## O envio não passa pela sua aplicação\n\nO padrão do módulo 3 se aplica de forma óbvia: **URL assinada**, com o arquivo indo direto do cliente para o blob storage. Para arquivo grande, acrescenta-se o **envio em partes**: o cliente divide o vídeo em pedaços, envia cada um separadamente e pode retomar de onde parou se a conexão cair, sem recomeçar o arquivo inteiro.\n\nTerminado o envio, o cliente avisa a API, que grava o registro e **enfileira o processamento**. Nada disso acontece na requisição do usuário, porque transcodificar um vídeo leva minutos. O estado do vídeo passa a ser explícito, algo como enviado, processando, pronto ou falhou, e a interface mostra isso.",
+                },
+                {
+                    type: "text",
+                    value: '## Transcodificação, e por que ela é obrigatória\n\nO vídeo original serve para arquivar e não para assistir. Ele é convertido para várias resoluções e taxas de bits, e cada versão é quebrada em segmentos de poucos segundos, acompanhados de um arquivo de manifesto que lista o que existe.\n\nIsso viabiliza o **streaming com taxa adaptativa**: o player começa por uma qualidade baixa, mede a velocidade real e sobe ou desce de faixa entre um segmento e outro. Por isso o vídeo começa rápido e se ajusta quando a conexão piora, em vez de travar. É também o que permite servir tudo por CDN, já que segmentos são arquivos estáticos comuns, e é aí que a conta de banda deixa de ser problema seu.\n\nO trabalho de transcodificar é distribuído: o vídeo é dividido, cada pedaço vai para um worker diferente, e no fim os resultados são reunidos. Assim um vídeo de uma hora não fica preso a uma máquina por uma hora.',
+                },
+                {
+                    type: "table",
+                    value: '[["Etapa", "Onde acontece", "Por quê"], ["Envio", "Cliente para blob, por URL assinada e em partes", "Não ocupa a frota e permite retomar"], ["Registro", "API, rápido", "Só grava metadados e enfileira"], ["Transcodificação", "Workers, em paralelo por pedaço", "Leva minutos e não pode bloquear"], ["Distribuição", "CDN, segmentos e manifesto", "A banda sai da sua infraestrutura"], ["Reprodução", "Player escolhe a faixa por segmento", "Adapta à conexão sem travar"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Onde o dinheiro vai\n\nEste é o caso em que a pergunta de custo é mais reveladora, e vale trazê-la sem esperar. O armazenamento cresce muito, porque cada vídeo existe no original mais uma cópia por resolução, o que facilmente multiplica por cinco o tamanho. A alavanca é a do módulo 2: manter o original em classe de arquivo, já que ele quase nunca é lido, e guardar em acesso frequente só as versões realmente assistidas.\n\nMas o maior item costuma ser a **saída de dados**. É por isso que a taxa de acerto da CDN é a métrica financeira mais importante do sistema, e por isso conteúdo popular é empurrado para a borda antes do lançamento, no modelo push que o módulo 3 descreveu. E existe a cauda longa: vídeo raramente assistido não vale ocupar espaço na borda, e é servido da origem mesmo.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** vídeo é dominado pela conta de **banda**. O envio vai direto ao blob por **URL assinada e em partes**, e o processamento roda **fora da requisição**, em workers paralelos. A **transcodificação** em várias faixas e segmentos viabiliza a **taxa adaptativa** e permite servir tudo por **CDN**. O custo mora na **saída de dados**, e a taxa de acerto da borda é a métrica financeira central.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é a vantagem de enviar o vídeo em partes?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Permite retomar de onde parou se a conexão cair.", isCorrect: true },
+                        { text: "Reduz o tamanho total do arquivo que será transferido.", isCorrect: false },
+                        { text: "Dispensa a geração de uma URL assinada pela API.", isCorrect: false },
+                        { text: "Permite começar a transcodificação antes do envio acabar.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a transcodificação não acontece dentro da requisição de envio?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ela leva minutos e prenderia o usuário esperando.", isCorrect: true },
+                        { text: "Ela precisa do vídeo já disponível na CDN para rodar.", isCorrect: false },
+                        { text: "A API não tem permissão de leitura no blob storage.", isCorrect: false },
+                        { text: "O formato final depende da conexão de quem vai assistir.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que a divisão em segmentos com manifesto viabiliza?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Trocar de qualidade entre um segmento e o seguinte.", isCorrect: true },
+                        { text: "Reduzir o espaço ocupado pelas versões transcodificadas.", isCorrect: false },
+                        { text: "Enviar o vídeo em partes a partir do navegador do usuário.", isCorrect: false },
+                        { text: "Transcodificar cada trecho em um worker diferente e paralelo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual costuma ser o maior item de custo em um sistema de vídeo?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A saída de dados.", isCorrect: true },
+                        { text: "O armazenamento dos arquivos originais enviados.", isCorrect: false },
+                        { text: "A capacidade de processamento gasta na transcodificação.", isCorrect: false },
+                        { text: "As instâncias de aplicação que atendem as requisições.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a decisão correta para vídeos da cauda longa, raramente assistidos?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Servir da origem, sem ocupar espaço na borda.", isCorrect: true },
+                        { text: "Empurrar para a borda junto com o conteúdo popular.", isCorrect: false },
+                        { text: "Apagar as versões transcodificadas e manter o original.", isCorrect: false },
+                        { text: "Transcodificar apenas quando alguém pedir para assistir.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Localização em tempo real",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Localização em tempo real\n\nO último caso traz um tipo de dado que nenhum outro tinha: **posição no espaço**, que muda o tempo todo. Aplicativo de carona, entrega e mapa de amigos compartilham o mesmo problema, e ele tem uma pergunta central: como achar rapidamente os pontos próximos de uma coordenada.\n\n**Funcionais**, cortados: o motorista envia a posição periodicamente; o passageiro pede corrida e o sistema encontra motoristas próximos; o passageiro acompanha o carro se aproximando. Fora: pagamento, avaliação e rota otimizada.\n\n**Não funcionais**: a busca por próximos responde em poucas centenas de milissegundos; a posição pode estar alguns segundos desatualizada sem problema; e a escrita é muito frequente, o que inverte a proporção dos casos anteriores.",
+                },
+                {
+                    type: "code",
+                    value: "Estimativa:\n\n  1.000.000 motoristas ativos\n  posicao a cada 4 segundos\n  1.000.000 / 4 = 250.000 escritas por segundo\n\n  100.000 pedidos de corrida por hora\n  100.000 / 3.600 = cerca de 30 buscas por segundo\n\n  Escrita 8.000x maior que a leitura: o oposto do feed.",
+                },
+                {
+                    type: "text",
+                    value: "## A conta inverte o desenho\n\nEste é o melhor exemplo de como o número muda tudo. Duzentas e cinquenta mil escritas por segundo contra trinta leituras significa que o desenho precisa otimizar **escrita**, e que a posição não deve ir para um banco relacional com índice a manter a cada atualização.\n\nDuas consequências. Primeiro, a posição atual vive em **memória**, num armazenamento chave e valor, porque é dado volátil que só interessa agora. Segundo, o histórico, se for necessário, vai por caminho separado: os eventos entram numa fila e são gravados em lote num armazenamento próprio de série temporal, longe do caminho quente.",
+                },
+                {
+                    type: "text",
+                    value: '## Como buscar por proximidade\n\nA forma ingênua é calcular a distância de cada motorista até o passageiro e ficar com os mais perto. Com um milhão de motoristas, isso é um milhão de contas por busca. Não serve.\n\nA solução é **dividir o mapa em células** e transformar a busca por proximidade em busca por chave. Duas técnicas aparecem. **Geohash** codifica latitude e longitude numa string em que prefixos iguais significam proximidade: buscar vizinhos vira buscar quem compartilha o prefixo. Grade de células indexadas, como o esquema usado em aplicativos de carona, faz o mesmo com identificadores de célula hierárquicos. Em ambos, o motorista é guardado na chave da sua célula, e buscar próximos é ler a célula do passageiro e as células vizinhas.\n\nDois detalhes que rendem ponto. Precisa **ler as vizinhas** porque o passageiro pode estar na borda da célula, com o carro mais próximo do outro lado da linha. E o tamanho da célula é um **trade-off**: célula grande devolve muita gente e obriga a filtrar; célula pequena obriga a consultar mais células. Em região densa e em região vazia o tamanho ideal é diferente, e é por isso que existem esquemas com precisão variável.',
+                },
+                {
+                    type: "table",
+                    value: '[["Necessidade", "Escolha", "Por quê"], ["Posição atual", "Chave e valor em memória, por célula", "250 mil escritas por segundo"], ["Busca por próximos", "Célula do pedido mais vizinhas", "Evita calcular distância de todos"], ["Histórico de trajeto", "Fila e gravação em lote em série temporal", "Sai do caminho quente"], ["Acompanhar o carro", "Conexão persistente com o passageiro", "Atualização empurrada, como no chat"], ["Pareamento", "Serviço próprio, com estado da corrida", "Precisa de consistência forte"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O pareamento é o ponto de consistência forte\n\nQuase tudo aqui tolera dado velho: uma posição de três segundos atrás serve. Existe uma exceção, e reconhecê-la é o que fecha bem o caso: **o mesmo motorista não pode ser atribuído a duas corridas**.\n\nEsse passo precisa de consistência forte, e é resolvido com uma operação atômica de reserva, no espírito do módulo 4. O serviço tenta marcar o motorista como ocupado condicionalmente; se outro pedido chegou primeiro, a marcação falha e o sistema segue para o próximo candidato. É a mesma discussão da reserva de estoque na aula de CAP: aplicar consistência forte **na operação** que precisa, e deixar o resto do sistema relaxado.\n\nE o acompanhamento do carro reaproveita o chat: conexão persistente com o passageiro, recebendo as posições daquele motorista enquanto a corrida durar.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** localização inverte a proporção: **escrita domina**, então a posição atual vive **em memória** e o histórico sai por fila para série temporal. Busca por proximidade vira busca por **célula**, com geohash ou grade, sempre lendo as **vizinhas**, e o tamanho da célula é um trade-off. O **pareamento** é o único ponto de consistência forte, resolvido com reserva atômica.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Com 250 mil escritas de posição por segundo e 30 buscas, o que o desenho precisa otimizar?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "A escrita.", isCorrect: true },
+                        { text: "A leitura.", isCorrect: false },
+                        { text: "O espaço em disco.", isCorrect: false },
+                        { text: "A banda de saída.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que calcular a distância de todos os motoristas não funciona?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cada busca faria um cálculo por motorista ativo.", isCorrect: true },
+                        { text: "As posições estariam desatualizadas no momento do cálculo.", isCorrect: false },
+                        { text: "O cálculo de distância geográfica é impreciso em escala.", isCorrect: false },
+                        { text: "O banco não consegue guardar coordenadas com precisão.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a busca precisa consultar também as células vizinhas?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O ponto pode estar na borda da própria célula.", isCorrect: true },
+                        { text: "As células têm tamanhos diferentes conforme a densidade.", isCorrect: false },
+                        { text: "Os motoristas mudam de célula entre uma escrita e outra.", isCorrect: false },
+                        { text: "A célula do passageiro pode estar temporariamente vazia.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o trade-off no tamanho da célula?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Célula grande devolve gente demais, pequena exige mais buscas.", isCorrect: true },
+                        { text: "Célula grande consome mais memória e a pequena consome bem menos.", isCorrect: false },
+                        { text: "Célula grande atualiza mais devagar do que a célula pequena.", isCorrect: false },
+                        { text: "Célula grande perde precisão de coordenada ao codificar a chave.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual operação desse sistema exige consistência forte?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Atribuir o motorista a uma corrida.", isCorrect: true },
+                        { text: "Atualizar a posição atual do motorista.", isCorrect: false },
+                        { text: "Buscar os motoristas próximos ao passageiro.", isCorrect: false },
+                        { text: "Enviar a posição para o passageiro acompanhar.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3, MODULO_4, MODULO_5, MODULO_6];
 
 async function seed() {
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
