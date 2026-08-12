@@ -910,7 +910,424 @@ const MODULO_2: Modulo = {
     ],
 };
 
-export const MODULOS: Modulo[] = [MODULO_1, MODULO_2];
+const MODULO_3: Modulo = {
+    titulo: "Módulo 3 - Os blocos de construção",
+    aulas: [
+        {
+            titulo: "DNS e o caminho até o servidor",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# DNS e o caminho até o servidor\n\nTodo desenho começa com uma seta saindo do usuário, e quase todo mundo desenha essa seta chegando direto no balanceador. Entre um ponto e outro existe uma peça que resolve problemas de arquitetura reais, e que aparece com frequência nas perguntas de aprofundamento: o **DNS**.\n\nO DNS traduz nome em endereço, e essa é a parte que todo mundo sabe. O que interessa aqui é o que se pode fazer **durante** essa tradução, porque é o primeiro ponto do sistema em que dá para tomar decisão sobre para onde o usuário vai.",
+                },
+                {
+                    type: "quote",
+                    value: "O **DNS** resolve um nome em um ou mais endereços IP. A resposta vem com um **TTL**, o tempo que ela pode ficar guardada em cache pelo resolvedor e pelo cliente. Esse TTL é o que decide quanto tempo uma mudança leva para valer no mundo inteiro.",
+                },
+                {
+                    type: "text",
+                    value: "## O que dá para decidir na resolução\n\nComo o DNS pode responder coisas diferentes para clientes diferentes, ele vira uma ferramenta de roteamento global. Três usos aparecem sempre:\n\n**Balanceamento simples**, devolvendo vários endereços e alternando a ordem. É barato e funciona, mas não sabe se a máquina está viva. **Roteamento por proximidade**, devolvendo o endereço da região mais perto de quem perguntou, que é a base de servir usuário global com latência baixa. E **troca de destino em caso de falha**, apontando o nome para outra região quando a principal cai.\n\nO limite dos três é o mesmo: o TTL. Se a resposta ficou guardada por cinco minutos no resolvedor do usuário, a mudança leva até cinco minutos para chegar nele, e clientes que ignoram TTL podem demorar mais.",
+                },
+                {
+                    type: "table",
+                    value: '[["Estratégia de resolução", "Serve para", "Limite"], ["Alternar entre vários IPs", "Espalhar carga de forma grosseira", "Não enxerga máquina caída"], ["Responder pelo mais próximo", "Latência de usuário global", "Precisa de presença em várias regiões"], ["Apontar para outra região", "Sobreviver à queda de uma região", "Demora o TTL para propagar"], ["TTL curto (segundos)", "Trocar destino rápido", "Mais consultas e mais custo"], ["TTL longo (horas)", "Menos consulta e mais estabilidade", "Mudança demora a valer"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O TTL é um trade-off de verdade\n\nEssa é a decisão que vale trazer para a mesa, porque tem os dois lados bem definidos. TTL curto dá agilidade: numa queda, o tráfego migra em segundos. O preço é volume de consulta, custo e uma dependência maior do provedor de DNS estar sempre respondendo.\n\nTTL longo dá estabilidade e barateia, mas amarra: uma troca de destino demora a valer, e nesse intervalo parte dos usuários continua batendo no lugar errado. O padrão comum é TTL de 60 segundos para nomes que participam de failover, e TTL de horas para nomes estáticos, como o domínio de assets que já está atrás de CDN.',
+                },
+                {
+                    type: "text",
+                    value: '## Por que isso cai em System Design\n\nPorque a pergunta "como você faria failover entre regiões?" tem duas respostas possíveis, e as duas passam por aqui. Ou o failover é feito no DNS, trocando o endereço, e aí você precisa falar de TTL e de propagação. Ou é feito com **anycast**, em que o mesmo endereço IP é anunciado a partir de vários lugares e a própria rede leva o pacote para o mais próximo, o que troca instantaneamente sem depender de TTL.\n\nSaber que existem essas duas famílias, e que uma depende de cache de resolução e a outra de roteamento de rede, é o tipo de detalhe que separa uma resposta genérica de uma resposta informada.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** o **DNS** é o primeiro ponto onde se decide para onde o usuário vai, e serve para espalhar carga, aproximar por região e trocar de destino numa falha. O **TTL** governa tudo isso: curto dá agilidade e custa consultas, longo dá estabilidade e atrasa mudanças. Failover por DNS depende de propagação; por **anycast**, não.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "O que o TTL de uma resposta DNS determina?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Quanto tempo aquela resposta pode ficar em cache.", isCorrect: true },
+                        { text: "Quantos endereços IP a resposta pode conter.", isCorrect: false },
+                        { text: "O tempo máximo que o servidor tem para responder.", isCorrect: false },
+                        { text: "A prioridade entre os endereços devolvidos ao cliente.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a principal limitação de balancear carga alternando endereços no DNS?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ele não sabe se a máquina daquele endereço está viva.", isCorrect: true },
+                        { text: "Ele só funciona com no máximo dois endereços por nome.", isCorrect: false },
+                        { text: "Ele exige que todas as máquinas fiquem na mesma região.", isCorrect: false },
+                        { text: "Ele impede o uso de cache pelos resolvedores do caminho.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o preço de usar um TTL muito curto?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Mais consultas, mais custo e mais dependência do provedor.", isCorrect: true },
+                        { text: "Mais tempo para uma troca de destino entrar em vigor no mundo.", isCorrect: false },
+                        { text: "Perda da capacidade de responder por proximidade.", isCorrect: false },
+                        { text: "Impossibilidade de devolver mais de um endereço por nome.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a vantagem do anycast sobre o failover feito por DNS?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A troca não depende da expiração de cache de resolução.", isCorrect: true },
+                        { text: "O endereço IP passa a ser diferente em cada região atendida.", isCorrect: false },
+                        { text: "Dispensa a existência de presença em mais de uma região.", isCorrect: false },
+                        { text: "Elimina a necessidade de balanceador dentro de cada região.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para qual tipo de nome faz mais sentido usar TTL longo, de horas?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O domínio de assets estáticos atrás de CDN.", isCorrect: true },
+                        { text: "O nome da API que participa de failover entre regiões.", isCorrect: false },
+                        { text: "O nome do banco de dados primário da aplicação.", isCorrect: false },
+                        { text: "O nome usado durante uma migração de infraestrutura.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "CDN e o conteúdo na borda",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# CDN e o conteúdo na borda\n\nA conta de banda do módulo 2 já apontou para cá. A CDN é uma rede de servidores espalhados geograficamente que guarda cópia do seu conteúdo perto de quem consome. Ela resolve dois problemas ao mesmo tempo, e vale saber separá-los, porque só um deles costuma ser lembrado.\n\nO problema óbvio é **latência**: o byte não precisa atravessar o oceano. O problema silencioso, e normalmente o mais caro, é **banda e carga**: o mesmo arquivo sai milhares de vezes da borda e não da sua infraestrutura.",
+                },
+                {
+                    type: "text",
+                    value: "## Como o conteúdo chega lá\n\nExistem dois modelos, e a diferença entre eles é assunto frequente. No modelo **pull**, a borda não tem nada no começo. O primeiro usuário de cada região pede, a borda não tem, busca na sua origem, guarda e entrega. Os próximos são servidos localmente. É o modelo padrão, porque não exige trabalho de publicação e só ocupa espaço com o que é realmente pedido.\n\nNo modelo **push**, você envia o conteúdo para a borda antes de qualquer pedido. Faz sentido para arquivo grande e previsível, como o lançamento de um vídeo ou de uma atualização de aplicativo, quando você sabe que milhões vão pedir a mesma coisa no mesmo minuto e não quer que todos batam na origem ao mesmo tempo.",
+                },
+                {
+                    type: "table",
+                    value: '[["Aspecto", "Pull", "Push"], ["Quem popula a borda", "O primeiro pedido de cada região", "Você, antes do primeiro pedido"], ["Primeiro usuário", "Paga a latência da origem", "Já é servido pela borda"], ["Ocupação de espaço", "Só o que foi pedido", "Tudo o que foi enviado"], ["Melhor caso de uso", "Site e mídia em geral", "Lançamento previsto de arquivo grande"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Invalidação é o problema difícil\n\nColocar na borda é fácil. Tirar de lá é que dá trabalho, e é aqui que a pergunta de aprofundamento costuma cair. Se você publicou um arquivo com TTL de um dia e descobriu um erro nele, existem duas saídas.\n\nA primeira é **purgar**, pedindo à CDN que descarte aquele caminho. Funciona, mas leva algum tempo, tem custo e nem sempre é instantâneo em todas as bordas. A segunda, e a que se usa por padrão, é **versionar o nome**: em vez de publicar `app.js`, publica-se `app.a1b2c3.js`, com o hash do conteúdo no nome. Arquivo novo tem nome novo, então nunca há o que invalidar, e o TTL pode ser de um ano. A página que referencia esses arquivos é que fica com TTL curto.',
+                },
+                {
+                    type: "text",
+                    value: '## O que não deve ir para a borda\n\nA regra do módulo 2 se aplica: estático e repetido vai, personalizado não. Mas existe um caso intermediário que rende bons pontos: conteúdo **igual para muita gente, porém dinâmico**, como a página inicial de um portal de notícias.\n\nAí entra o cache de borda com TTL curto, de segundos. Guardar a home por dez segundos parece pouco, e num pico de 30 mil requisições por segundo significa que a origem recebe uma requisição a cada dez segundos em vez de 300 mil. É um dos melhores retornos por esforço que existem, e quase ninguém lembra de citar.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** a CDN resolve **latência** e, principalmente, **banda e carga**. No modelo **pull** a borda se popula sozinha no primeiro pedido; no **push** você envia antes, útil em lançamento previsto. A invalidação é o problema difícil, e a solução padrão é **versionar o nome do arquivo** em vez de purgar. Conteúdo dinâmico mas igual para todos ainda ganha muito com TTL de poucos segundos.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Além da latência, qual problema a CDN resolve e costuma ser o mais caro?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "A banda e a carga que sairiam da sua infraestrutura.", isCorrect: true },
+                        { text: "A consistência entre as réplicas do banco de dados.", isCorrect: false },
+                        { text: "A autenticação dos usuários antes de servir o conteúdo.", isCorrect: false },
+                        { text: "O armazenamento de longo prazo dos arquivos originais.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No modelo pull, quem paga a latência de buscar o conteúdo na origem?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O primeiro usuário a pedir em cada região.", isCorrect: true },
+                        { text: "Todos os usuários, até o TTL do arquivo expirar.", isCorrect: false },
+                        { text: "Nenhum, porque a borda é populada antes do primeiro pedido.", isCorrect: false },
+                        { text: "Apenas os usuários fora da região onde fica a origem.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a solução padrão para não precisar invalidar arquivos na borda?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Versionar o nome do arquivo com o hash do conteúdo.", isCorrect: true },
+                        { text: "Usar TTL de poucos segundos em todos os arquivos.", isCorrect: false },
+                        { text: "Purgar o caminho na CDN a cada nova publicação do arquivo.", isCorrect: false },
+                        { text: "Servir os arquivos direto da origem quando mudam.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "A home de um portal recebe 30 mil requisições por segundo e é igual para todos. Qual medida traz mais alívio?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Cachear na borda por alguns segundos.", isCorrect: true },
+                        { text: "Adicionar réplicas de leitura ao banco de dados.", isCorrect: false },
+                        { text: "Aumentar o número de instâncias da aplicação.", isCorrect: false },
+                        { text: "Comprimir a resposta antes de enviá-la ao cliente.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em qual situação o modelo push para a borda faz mais sentido?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Lançamento previsto de um arquivo grande e muito pedido.", isCorrect: true },
+                        { text: "Site com muitas páginas raramente acessadas.", isCorrect: false },
+                        { text: "Conteúdo personalizado por usuário já autenticado no sistema.", isCorrect: false },
+                        { text: "Arquivos que mudam várias vezes ao longo do dia.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Balanceador, proxy reverso e API gateway",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Balanceador, proxy reverso e API gateway\n\nEssas três peças aparecem em quase todo diagrama e são frequentemente confundidas, inclusive porque um mesmo produto pode desempenhar os três papéis. Vale separar por **função**, não por produto, que é o hábito que o módulo 1 recomendou.\n\nO **balanceador** distribui requisições entre instâncias iguais. O **proxy reverso** é a porta de entrada que fala com o mundo em nome dos serviços de trás, e cuida de coisas como terminação de TLS e compressão. O **API gateway** é um proxy reverso com regras de negócio de borda: autenticação, limitação de taxa, roteamento por rota e agregação.",
+                },
+                {
+                    type: "table",
+                    value: '[["Peça", "Função central", "Exemplo de responsabilidade"], ["Balanceador", "Escolher qual instância atende", "Round robin, menor número de conexões"], ["Proxy reverso", "Ser a porta de entrada", "Terminar TLS, comprimir, servir estático"], ["API gateway", "Aplicar regra de borda", "Autenticar, limitar taxa, rotear por caminho"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Camada 4 e camada 7\n\nA distinção que mais aparece em aprofundamento. Um balanceador de **camada 4** olha só endereço e porta: ele encaminha pacotes sem entender o que vai dentro. É rápido, barato e serve para qualquer protocolo, mas não sabe distinguir uma rota da outra.\n\nUm balanceador de **camada 7** entende HTTP: lê caminho, cabeçalho e cookie. Com isso pode mandar `/api` para um grupo e `/imagens` para outro, fazer lançamento gradual mandando 5% do tráfego para a versão nova, ou reencaminhar uma requisição que falhou. O preço é processar cada requisição, o que custa mais CPU e latência.",
+                },
+                {
+                    type: "text",
+                    value: "## Algoritmos de distribuição, e quando cada um importa\n\n**Round robin** alterna instâncias em ordem e é o padrão razoável quando todas as requisições custam parecido. **Menor número de conexões** manda para quem está menos ocupado, e é melhor quando o custo por requisição varia muito, como em uploads ou consultas pesadas. **Hash da origem** garante que o mesmo cliente caia sempre na mesma instância.\n\nEsse último merece cuidado, porque é o mecanismo por trás da sessão fixa. Ele resolve o problema de guardar estado na instância, mas cria outro: a instância vira insubstituível para aquele usuário, e cair significa perder a sessão dele. A resposta melhor quase sempre é tirar o estado da instância, colocando sessão em cache compartilhado, e voltar a poder distribuir livremente.",
+                },
+                {
+                    type: "text",
+                    value: '## Health check é o que faz o balanceador valer\n\nDistribuir carga é a parte fácil. O que realmente sustenta disponibilidade é o balanceador **parar de mandar tráfego** para uma instância doente. Ele faz isso batendo periodicamente num endpoint de saúde e tirando do grupo quem não responde.\n\nVale distinguir dois tipos, porque é detalhe que impressiona: o teste de **vivacidade** pergunta "o processo está de pé?", e o de **prontidão** pergunta "ele está apto a receber tráfego agora?". Um processo pode estar vivo e ainda não pronto, por exemplo enquanto carrega cache ou espera o banco. Sem essa separação, o balanceador manda tráfego para uma instância que sobe e derruba requisições nos primeiros segundos.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** separe por função: **balanceador** escolhe a instância, **proxy reverso** é a porta de entrada, **API gateway** aplica regra de borda. **Camada 4** é rápida e cega; **camada 7** entende HTTP e permite rotear e lançar gradualmente. Sessão fixa por hash resolve estado e cria dependência: melhor tirar o estado da instância. E é o **health check**, com vivacidade e prontidão separadas, que faz a peça valer.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é a função central de um API gateway que o distingue de um proxy reverso comum?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Aplicar regras de borda, como autenticar e limitar taxa.", isCorrect: true },
+                        { text: "Distribuir requisições entre instâncias iguais do serviço.", isCorrect: false },
+                        { text: "Terminar a conexão TLS antes de encaminhar ao serviço.", isCorrect: false },
+                        { text: "Guardar em cache as respostas mais pedidas pelos clientes.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que um balanceador de camada 7 permite que um de camada 4 não permite?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Rotear por caminho e enviar parte do tráfego a uma versão nova.", isCorrect: true },
+                        { text: "Distribuir a carga entre várias instâncias do mesmo serviço.", isCorrect: false },
+                        { text: "Retirar do grupo as instâncias que falham no health check periódico.", isCorrect: false },
+                        { text: "Funcionar com protocolos que não sejam baseados em HTTP.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quando o algoritmo de menor número de conexões é preferível ao round robin?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Quando o custo por requisição varia muito.", isCorrect: true },
+                        { text: "Quando todas as requisições custam praticamente o mesmo.", isCorrect: false },
+                        { text: "Quando é preciso manter o cliente na mesma instância.", isCorrect: false },
+                        { text: "Quando as instâncias estão em regiões geográficas diferentes.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o problema criado pela sessão fixa por hash da origem?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A instância vira insubstituível para aquele usuário.", isCorrect: true },
+                        { text: "A distribuição de carga passa a ignorar o health check.", isCorrect: false },
+                        { text: "O balanceador precisa operar obrigatoriamente na camada 4.", isCorrect: false },
+                        { text: "A sessão do usuário passa a trafegar em texto aberto.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a diferença entre o teste de vivacidade e o de prontidão?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Vivacidade diz se o processo está de pé; prontidão, se pode receber tráfego.", isCorrect: true },
+                        { text: "Vivacidade roda uma vez na subida; prontidão roda por toda a vida do processo.", isCorrect: false },
+                        { text: "Vivacidade é feita pelo balanceador; prontidão, pelo próprio serviço.", isCorrect: false },
+                        { text: "Vivacidade verifica a rede; prontidão verifica o banco de dados.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Blob storage e o dado no lugar certo",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Blob storage e o dado no lugar certo\n\nA conta de armazenamento do módulo 2 mostrou que mídia domina o volume. Ela também aponta para uma decisão que aparece em quase todo estudo de caso: **arquivo não vai no banco**. Vai num armazenamento de objetos, o blob storage, e o banco guarda apenas o endereço dele.\n\nA razão é estrutural. Banco relacional é caro por byte, é otimizado para consulta e transação, e replicar gigabytes de binário dentro dele degrada tudo o que ele faz bem. Blob storage é o contrário: barato por byte, servido por HTTP, integrado a CDN, e sem nenhuma pretensão de consultar o conteúdo.",
+                },
+                {
+                    type: "table",
+                    value: '[["Tipo de dado", "Onde guardar", "Por quê"], ["Entidade com relação e transação", "Banco relacional", "Consulta e integridade são o ponto"], ["Documento sem esquema fixo", "Banco de documentos", "Formato varia por registro"], ["Arquivo, imagem, vídeo", "Blob storage", "Barato por byte e servido por HTTP"], ["Dado quente de leitura repetida", "Cache em memória", "Latência de microssegundos"], ["Série temporal e métrica", "Banco de série temporal", "Escrita sequencial e agregação por janela"], ["Texto para busca livre", "Índice de busca", "Ranqueamento e busca por termo"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O padrão de upload que você deve conhecer\n\nExiste uma pergunta que aparece sempre que o sistema recebe arquivo: "o upload passa pela sua API?". A resposta ingênua é sim, e ela cria um problema, porque cada byte enviado ocupa uma instância da aplicação por todo o tempo do envio. Um vídeo de 500 MB numa conexão lenta prende um processo por minutos.\n\nO padrão correto é a **URL assinada**. O cliente pede à API permissão para enviar; a API valida quem é a pessoa, gera uma URL temporária e assinada para o blob storage, e devolve. O cliente envia o arquivo direto para o armazenamento, sem passar pela sua infraestrutura, e depois avisa a API que terminou. A API guarda o endereço e dispara o processamento. Sua frota nunca toca no arquivo.',
+                },
+                {
+                    type: "code",
+                    value: "Fluxo de upload com URL assinada:\n\n  1. cliente -> API      : quero enviar foto.jpg, 3 MB\n  2. API                 : valida usuario, cota e tipo do arquivo\n  3. API -> cliente      : URL assinada, valida por 10 minutos\n  4. cliente -> blob     : PUT do arquivo direto no armazenamento\n  5. cliente -> API      : terminei, id do objeto\n  6. API                 : grava o endereco e enfileira o processamento",
+                },
+                {
+                    type: "text",
+                    value: '## Classes de armazenamento e o dado que esfria\n\nBlob storage costuma oferecer classes com preços diferentes: acesso frequente, acesso raro e arquivo de longo prazo. A diferença de preço entre a mais quente e a mais fria é grande, e a contrapartida é o tempo e o custo para recuperar.\n\nIsso conecta direto com a alavanca de retenção do módulo 2. Em vez de apagar, muitas vezes a resposta certa é **mover**: original em acesso frequente por 30 dias, depois acesso raro, depois arquivo. Boa parte dos provedores faz isso por regra automática de ciclo de vida, e citar essa regra numa sessão mostra que você pensou em custo sem sacrificar o requisito de guardar.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** **arquivo vai para blob storage e o banco guarda o endereço**, porque banco é caro por byte e otimizado para consulta. Upload usa **URL assinada**, para o arquivo não atravessar a sua frota. E o dado que esfria **muda de classe** de armazenamento por regra de ciclo de vida, em vez de ser apagado.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que arquivos grandes não devem ser guardados dentro do banco relacional?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "O banco é caro por byte e otimizado para consulta.", isCorrect: true },
+                        { text: "O banco não consegue armazenar dados em formato binário.", isCorrect: false },
+                        { text: "Arquivos não podem ser replicados junto com as tabelas.", isCorrect: false },
+                        { text: "A CDN não consegue ler conteúdo servido pelo banco de dados.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o problema de fazer o upload de arquivos passar pela API da aplicação?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cada envio ocupa uma instância pelo tempo inteiro.", isCorrect: true },
+                        { text: "A API não consegue validar o tipo do arquivo enviado.", isCorrect: false },
+                        { text: "O arquivo chega sem o endereço final no armazenamento.", isCorrect: false },
+                        { text: "O cliente perde a possibilidade de retomar um envio interrompido.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No padrão de URL assinada, o que a API faz antes de gerar a URL?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Valida usuário, cota e tipo de arquivo.", isCorrect: true },
+                        { text: "Recebe o arquivo e o encaminha ao armazenamento.", isCorrect: false },
+                        { text: "Cria o registro definitivo do arquivo no banco de dados.", isCorrect: false },
+                        { text: "Reserva o espaço em disco necessário para o objeto novo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a alternativa a apagar o dado antigo quando o custo de armazenamento incomoda?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Mover para uma classe de armazenamento mais fria.", isCorrect: true },
+                        { text: "Comprimir os arquivos mantendo a mesma classe de acesso.", isCorrect: false },
+                        { text: "Replicar em menos regiões para reduzir as cópias pagas.", isCorrect: false },
+                        { text: "Transferir os arquivos para o disco das próprias instâncias.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para texto que precisa ser buscado por termo e ranqueado, qual é o lugar adequado?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Um índice de busca dedicado.", isCorrect: true },
+                        { text: "Um banco de série temporal com janelas de agregação.", isCorrect: false },
+                        { text: "O blob storage, com os documentos servidos por HTTP.", isCorrect: false },
+                        { text: "O cache em memória, pela latência de microssegundos.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Pub/sub e o desacoplamento por eventos",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Pub/sub e o desacoplamento por eventos\n\nO último bloco do módulo é o que muda a forma do diagrama, e não só o conteúdo de uma caixa. Até aqui, tudo foi uma requisição esperando resposta. Publicar e assinar quebra essa espera: quem produz o evento não sabe quem consome, não espera resposta, e não precisa nem saber se alguém está ouvindo.\n\nA diferença para uma fila comum vale ser dita com precisão, porque cai em aprofundamento. Numa **fila de trabalho**, cada mensagem é entregue a **um** consumidor, que a processa e a remove. Em **pub/sub**, cada mensagem é entregue a **todos** os assinantes daquele tópico, cada um com sua própria cópia e seu próprio ritmo.",
+                },
+                {
+                    type: "table",
+                    value: '[["Aspecto", "Fila de trabalho", "Pub/sub"], ["Quem recebe a mensagem", "Um consumidor", "Todos os assinantes"], ["Objetivo típico", "Distribuir trabalho", "Notificar que algo aconteceu"], ["Efeito de somar consumidores", "Processa mais rápido", "Cada novo assinante recebe tudo"], ["Nome da mensagem", "Tarefa a fazer", "Fato que já aconteceu"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O evento é um fato, e é isso que desacopla\n\nA mudança de vocabulário carrega a ideia inteira. Uma tarefa diz "envie o email de boas-vindas". Um evento diz "usuário se cadastrou". A primeira frase embute a decisão de quem manda; a segunda apenas relata.\n\nQuando o serviço de cadastro publica "usuário se cadastrou", ele deixa de ter opinião sobre o que acontece depois. Hoje três serviços ouvem esse fato: email, antifraude e analytics. Amanhã entra um quarto, de indicação de amigos, e o cadastro **não muda uma linha**. É esse o ganho real, e é ele que se cita numa sessão: acrescentar consumidor deixa de exigir mudança em quem produz.',
+                },
+                {
+                    type: "text",
+                    value: '## O preço que você precisa declarar\n\nDesacoplar não sai de graça, e um bom candidato traz os custos junto. **Rastrear fica mais difícil**: o fluxo deixa de ser uma pilha de chamadas e vira um encadeamento de eventos espalhados, o que torna correlação e observabilidade obrigatórias, não opcionais. **A ordem não é garantida**, a menos que se pague por ela com particionamento por chave. **A entrega costuma ser ao menos uma vez**, então o consumidor precisa ser idempotente, assunto do módulo 5.\n\nE existe um risco de projeto: transformar uma chamada que precisava de resposta imediata num evento assíncrono só porque eventos são elegantes. Se quem chamou precisa do resultado agora, use chamada síncrona. Publicar evento e ficar esperando a resposta chegar por outro caminho é reinventar a chamada síncrona com mais peças.',
+                },
+                {
+                    type: "text",
+                    value: '## Onde o pub/sub aparece nos estudos de caso\n\nVale guardar os usos recorrentes, porque eles se repetem no módulo 6. **Espalhar escrita para vários destinos**: uma publicação nova entra no banco, no índice de busca, no cache e no feed dos seguidores, e um evento único alimenta todos. **Absorver pico**, deixando a entrada rápida e o processamento no ritmo do consumidor. **Alimentar o mundo analítico** sem que o sistema de produção saiba que ele existe.\n\nUm detalhe que rende ponto: como cada assinante tem seu próprio ritmo, é normal que um esteja atrasado enquanto outro está em dia. Isso significa que consistência entre os destinos é **eventual** por construção, e dizer isso antes de alguém perguntar mostra que você entendeu o que acabou de desenhar.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** **fila** entrega a mensagem a **um** consumidor, **pub/sub** entrega a **todos** os assinantes. Publicar um **fato** em vez de uma ordem é o que desacopla: novo consumidor não exige mudança em quem produz. O preço é rastreamento mais difícil, ordem não garantida, entrega ao menos uma vez e consistência **eventual** entre os destinos.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é a diferença central entre uma fila de trabalho e um tópico pub/sub?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "A fila entrega a um consumidor e o tópico, a todos.", isCorrect: true },
+                        { text: "A fila garante a ordem e o tópico nunca consegue garanti-la.", isCorrect: false },
+                        { text: "A fila é síncrona e o tópico é sempre processado de forma assíncrona.", isCorrect: false },
+                        { text: "A fila guarda a mensagem em disco e o tópico apenas em memória.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: 'Por que publicar "usuário se cadastrou" desacopla mais do que enfileirar "envie o email"?',
+                    difficulty: "medio",
+                    options: [
+                        { text: "O produtor deixa de decidir o que acontece depois.", isCorrect: true },
+                        { text: "O evento é entregue com garantia de ordem entre consumidores.", isCorrect: false },
+                        { text: "A mensagem de fato ocupa menos espaço no broker de mensagens.", isCorrect: false },
+                        { text: "O consumidor passa a poder responder diretamente ao produtor.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Um quarto serviço passa a precisar reagir ao cadastro de usuários. O que muda no produtor?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Nada, ele apenas assina o mesmo tópico.", isCorrect: true },
+                        { text: "É preciso incluir o novo destino na publicação do evento.", isCorrect: false },
+                        { text: "É preciso criar um tópico novo para o serviço adicional.", isCorrect: false },
+                        { text: "É preciso aumentar o número de partições do tópico atual.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual custo do modelo de eventos exige que o consumidor seja idempotente?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A entrega costuma ser ao menos uma vez.", isCorrect: true },
+                        { text: "A ordem das mensagens não é garantida entre partições.", isCorrect: false },
+                        { text: "Cada assinante consome no seu próprio ritmo de processamento.", isCorrect: false },
+                        { text: "O rastreamento do fluxo exige correlação entre os eventos.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Quando transformar uma chamada síncrona em evento é a decisão errada?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Quando quem chamou precisa do resultado imediatamente.", isCorrect: true },
+                        { text: "Quando existe mais de um consumidor interessado no fato.", isCorrect: false },
+                        { text: "Quando o processamento posterior é demorado e pesado.", isCorrect: false },
+                        { text: "Quando a entrada precisa absorver picos de carga súbitos.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3];
 
 async function seed() {
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
