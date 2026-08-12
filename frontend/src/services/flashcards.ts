@@ -6,11 +6,14 @@ export interface Cartao {
   id: string;
   frente: string;
   verso: string;
-  origem: 'flashcard' | 'glossario';
+  origem: 'flashcard' | 'glossario' | 'entrevista';
   trilha: string | null;
   aula: string | null;
   trilhaId: string | null;
   aulaId: string | null;
+  /** Só em carta de entrevista, no lugar da trilha e da aula. */
+  topico?: string | null;
+  nivel?: string | null;
 }
 
 export interface ResumoFlashcards {

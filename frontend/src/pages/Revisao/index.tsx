@@ -5,6 +5,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
+import { ModoEntrevista } from '../../components/ModoEntrevista';
 import { Flame, Check, X } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as userMock } from '../../data/home';
@@ -77,6 +78,29 @@ function segundos(ms: number) {
   return s < 10 ? `${s.toFixed(1)}s` : `${Math.round(s)}s`;
 }
 
+const ROTULO_NIVEL: Record<string, string> = {
+  estagio: 'Estágio',
+  junior: 'Júnior',
+  pleno: 'Pleno',
+  senior: 'Sênior',
+};
+
+// De onde a carta veio, no topo da frente. Cada origem tem uma coisa diferente para
+// dizer: a de aula mostra a trilha, a de entrevista mostra o assunto.
+function tituloDaCarta(c: Cartao) {
+  if (c.origem === 'glossario') return 'Glossário';
+  if (c.origem === 'entrevista') return c.topico ?? 'Entrevista';
+  return c.trilha;
+}
+
+// O rodapé, que situa a carta sem entregar a resposta.
+function origemDaCarta(c: Cartao) {
+  if (c.origem === 'glossario') return 'Termo do glossário';
+  if (c.origem === 'entrevista')
+    return `Entrevista de ${(ROTULO_NIVEL[c.nivel ?? ''] ?? '').toLowerCase() || 'nível não informado'}`;
+  return c.aula;
+}
+
 function duracao(ms: number) {
   if (!ms) return '--';
   const min = Math.round(ms / 60000);
@@ -100,6 +124,9 @@ export function Revisao() {
   const [stats, setStats] = useState<Estatisticas | null>(null);
   const [historico, setHistorico] = useState<SessaoRevisao[]>([]);
   const [fracos, setFracos] = useState<PontoFraco[]>([]);
+  // Qual dos dois modos está aberto. Os dois compartilham baralho, agenda e
+  // estatísticas; o que muda é como o aluno escolhe o que entra na sessão.
+  const [modo, setModo] = useState<'dia' | 'entrevista'>('dia');
   // Trilhas escolhidas. Vazio significa o baralho inteiro, e é como a aba abre.
   const [selecao, setSelecao] = useState<Set<string>>(new Set());
   const [comGlossario, setComGlossario] = useState(false);
@@ -356,7 +383,11 @@ export function Revisao() {
     // que recarregar no meio de uma sessão de 10 traga 10 cartas novas. A lista de
     // respondidas é o que impede a carta que acabou de ser respondida de voltar no
     // F5: a fila não filtra mais por vencimento, então ela continua no baralho.
-    const bruto = localStorage.getItem(SESSAO);
+    //
+    // Só vale para a revisão do dia. A sessão salva descreve uma escolha de trilhas,
+    // e o modo entrevista não cabe nesse formato: escrever ali misturaria as duas e
+    // o F5 remontaria a fila errada. Ensaio interrompido volta para a escolha.
+    const bruto = modo === 'dia' ? localStorage.getItem(SESSAO) : null;
     if (bruto) {
       try {
         const sessao = JSON.parse(bruto);
@@ -467,18 +498,53 @@ export function Revisao() {
         <div className="rev-sala">
           <div className="rev-sala__head">
             <h1 className="rev-sala__titulo">
-              {trilhaId ? 'Revisão da trilha' : 'Revisão do dia'}
+              {trilhaId
+                ? 'Revisão da trilha'
+                : modo === 'entrevista'
+                  ? 'Modo entrevista'
+                  : 'Revisão do dia'}
             </h1>
             <p className="rev-sala__sub">
               {trilhaId
                 ? 'Todos os cartões desta trilha, embaralhados.'
-                : 'Cartões que voltam hoje. Cada acerto empurra o próximo encontro para mais longe.'}
+                : modo === 'entrevista'
+                  ? 'Perguntas de entrevista por nível e assunto. O que você responder aqui volta pela revisão do dia.'
+                  : 'Cartões que voltam hoje. Cada acerto empurra o próximo encontro para mais longe.'}
             </p>
           </div>
 
+          {/* Dois modos, e não duas páginas: eles compartilham baralho, agenda e
+              estatísticas, então trocar de aba não deveria parecer trocar de app. */}
+          {!trilhaId && fila === null && (
+            <div className="rev-modos" role="tablist" aria-label="Modo de revisão">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={modo === 'dia'}
+                className={`rev-modo${modo === 'dia' ? ' rev-modo--on' : ''}`}
+                onClick={() => setModo('dia')}
+              >
+                Revisão do dia
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={modo === 'entrevista'}
+                className={`rev-modo${modo === 'entrevista' ? ' rev-modo--on' : ''}`}
+                onClick={() => setModo('entrevista')}
+              >
+                Entrevista
+              </button>
+            </div>
+          )}
+
           {erro && <div className="rev-sala__erro">{erro}</div>}
 
-          {!trilhaId && baralhos && fila === null && escolhidos > 0 && (
+          {!trilhaId && modo === 'entrevista' && fila === null && (
+            <ModoEntrevista onComecar={iniciarSessao} />
+          )}
+
+          {!trilhaId && modo === 'dia' && baralhos && fila === null && escolhidos > 0 && (
             <div className="rev-sala__aviso">
               <div className="rev-sala__baralho" aria-hidden="true">
                 <span />
@@ -508,7 +574,7 @@ export function Revisao() {
           {/* Fila vazia não significa mais "está tudo em dia", e nem "você não
               estudou": a área pode ser escolhida sem ter feito a trilha. Sobrou o
               caso de o baralho estar vazio e nenhuma área ter sido marcada. */}
-          {!trilhaId && baralhos && fila === null && escolhidos === 0 && (
+          {!trilhaId && modo === 'dia' && baralhos && fila === null && escolhidos === 0 && (
             <div className="rev-sala__aviso">
               <span className="rev-sala__check">
                 <Check size={22} />
@@ -913,13 +979,9 @@ export function Revisao() {
                   aria-label={revelado ? 'Ver a pergunta' : 'Mostrar resposta'}
                 >
                   <div className="rev__face rev__face--frente">
-                    <span className="rev__origem">
-                      {atual.origem === 'glossario' ? 'Glossário' : atual.trilha}
-                    </span>
+                    <span className="rev__origem">{tituloDaCarta(atual)}</span>
                     <p className="rev__texto">{atual.frente}</p>
-                    <span className="rev__rodape">
-                      {atual.origem === 'glossario' ? 'Termo do glossário' : atual.aula}
-                    </span>
+                    <span className="rev__rodape">{origemDaCarta(atual)}</span>
                   </div>
                   <div className="rev__face rev__face--verso">
                     <span className="rev__origem">Resposta</span>
@@ -940,9 +1002,7 @@ export function Revisao() {
                         Reler {atual.aula}
                       </a>
                     ) : (
-                      <span className="rev__rodape">
-                        {atual.origem === 'glossario' ? 'Termo do glossário' : atual.aula}
-                      </span>
+                      <span className="rev__rodape">{origemDaCarta(atual)}</span>
                     )}
                   </div>
                 </div>
