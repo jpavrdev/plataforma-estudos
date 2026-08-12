@@ -156,6 +156,21 @@
   color: var(--accent);
 }
 
+/* A saída secundária do estado vazio é um link, e não um segundo botão: reusando a
+   pílula do seletor ela colava na de cima e as duas disputavam o clique. */
+.rev-sala__saida {
+  display: block;
+  width: fit-content;
+  margin: 18px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  border-bottom: 1px solid transparent;
+}
+.rev-sala__saida:hover {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}
+
 /* ---------- O modal da carta ---------- */
 
 .rev-modal {

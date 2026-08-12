@@ -53,6 +53,13 @@
     filter 0.15s ease,
     background 0.15s ease;
 }
+/* Sem isto um botão desabilitado fica idêntico a um habilitado, e clicar nele não
+   faz nada nem explica por quê. */
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+}
 .btn--block {
   width: 100%;
   height: 50px;

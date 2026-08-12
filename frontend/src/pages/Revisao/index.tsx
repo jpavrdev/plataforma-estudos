@@ -173,6 +173,9 @@ export function Revisao() {
       // queremos mostrar.
       if (!cartoes.length) {
         setVazio(true);
+        // O aviso mora dentro do painel de escolha. Começando pela sala, com o painel
+        // fechado, ele não seria visto e o clique pareceria não fazer nada.
+        setEscolhendo(true);
         return;
       }
       // A sessão fica guardada para sobreviver a um F5. As cartas não são guardadas:
@@ -300,6 +303,7 @@ export function Revisao() {
   function fecharEscolha() {
     setEscolhendo(false);
     setBusca('');
+    setVazio(false);
   }
 
   function alternarTrilha(id: string) {
@@ -524,8 +528,8 @@ export function Revisao() {
                   >
                     Escolher área
                   </button>
-                  <Link to="/trilhas" className="rev-sala__selecao">
-                    <span>Ou ir para as trilhas</span>
+                  <Link to="/trilhas" className="rev-sala__saida">
+                    Ou ir para as trilhas
                   </Link>
                 </>
               ) : (
@@ -852,12 +856,11 @@ export function Revisao() {
                 </p>
               )}
 
+              {/* O botão não é desabilitado quando a conta dá zero: quem marcou "todo
+                  o seu baralho" sem nunca ter estudado clicaria num botão morto, sem
+                  saber por quê. Clicando, o aviso acima diz o que fazer. */}
               <div className="rev-escolha__rodape">
-                <button
-                  className="btn btn--accent"
-                  onClick={() => void comecar()}
-                  disabled={escolhidos === 0}
-                >
+                <button className="btn btn--accent" onClick={() => void comecar()}>
                   Começar revisão
                 </button>
               </div>
