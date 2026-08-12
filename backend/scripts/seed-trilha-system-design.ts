@@ -1750,7 +1750,431 @@ const MODULO_4: Modulo = {
     ],
 };
 
-export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3, MODULO_4];
+const MODULO_5: Modulo = {
+    titulo: "Módulo 5 - Padrões que caem sempre",
+    aulas: [
+        {
+            titulo: "Rate limiter",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Rate limiter\n\nLimitar taxa aparece como pergunta inteira e como parte de quase todo estudo de caso. A função é simples de enunciar: permitir no máximo N operações por janela de tempo, para um cliente identificado. A dificuldade está em ser **exato, disponível e escalável ao mesmo tempo**, e é essa tensão que a pergunta explora.\n\nAntes do algoritmo, vale fixar duas decisões que mudam tudo: **por quem se limita** (endereço IP, chave de API, usuário, rota) e **o que acontece ao estourar** (recusar com 429, enfileirar, ou apenas degradar).",
+                },
+                {
+                    type: "table",
+                    value: '[["Algoritmo", "Como funciona", "Ponto forte", "Ponto fraco"], ["Janela fixa", "Conta por intervalo, zera ao virar", "Simples e barato", "Aceita o dobro na virada"], ["Janela deslizante por log", "Guarda o instante de cada evento", "Exato", "Guarda muito dado por cliente"], ["Janela deslizante por contagem", "Pondera a janela anterior", "Quase exato e barato", "Aproximação"], ["Balde de fichas", "Fichas repõem por segundo, gasta uma por chamada", "Permite rajada controlada", "Dois parâmetros para ajustar"], ["Balde furado", "Fila que esvazia a taxa constante", "Saída suave e constante", "Introduz espera"]]',
+                },
+                {
+                    type: "text",
+                    value: "## O problema da virada e a resposta padrão\n\nA janela fixa tem um defeito conhecido que vale saber explicar. Com limite de 100 por minuto, um cliente pode fazer 100 chamadas nos últimos segundos de um minuto e outras 100 nos primeiros segundos do minuto seguinte: 200 chamadas em poucos segundos, dentro da regra.\n\nA janela deslizante por contagem resolve barato: em vez de zerar, ela pondera a janela anterior pela fração do tempo que ainda pertence à janela atual. Se estamos a 25% do minuto novo, o contador considerado é 75% do minuto anterior mais o que já veio agora. Não é exato, o erro é pequeno, e o custo é apenas dois contadores por cliente, contra um registro por evento na versão por log.",
+                },
+                {
+                    type: "text",
+                    value: '## Balde de fichas, o mais usado\n\nO balde de fichas merece atenção porque é o mais adotado em API pública, e por um motivo de produto: ele separa a **taxa média** da **rajada permitida**. O balde tem capacidade máxima, digamos 100 fichas, e é reabastecido a uma taxa constante, digamos 10 fichas por segundo. Cada chamada consome uma ficha; sem ficha, recusa.\n\nQuem ficou parado acumula até 100 fichas e pode disparar 100 chamadas de uma vez, o que é ótimo para um cliente que sincroniza em lote. Passada a rajada, ele fica limitado às 10 por segundo da reposição. Essa é exatamente a política que a maioria das APIs quer: tolerar pico curto, sustentar média baixa.',
+                },
+                {
+                    type: "text",
+                    value: '## Distribuído, que é onde a pergunta fica interessante\n\nCom uma instância só, um contador em memória resolve. Com cinquenta instâncias atrás de um balanceador, cada uma vendo parte do tráfego, contar localmente permite ao cliente estourar o limite cinquenta vezes.\n\nA resposta padrão é um contador **compartilhado**, em cache em memória, incrementado de forma atômica. Isso acrescenta uma ida e volta de rede a cada requisição, e cria uma dependência: se o cache cair, é preciso decidir se o sistema recusa tudo ou libera tudo, e a escolha usual é **liberar**, porque um limitador indisponível não deveria derrubar o serviço inteiro. Para reduzir a conversa com o cache, usa-se distribuir a cota entre as instâncias, cada uma pedindo um bloco de permissões de cada vez, o que troca um pouco de exatidão por muito menos rede. E o contador compartilhado escala pelo mesmo caminho do módulo 4: particionado por chave de cliente, com hashing consistente.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** decida **por quem** se limita e **o que acontece ao estourar**. **Janela fixa** aceita o dobro na virada; a **deslizante por contagem** corrige isso barato. O **balde de fichas** é o mais usado porque separa taxa média de rajada. No distribuído, o contador precisa ser **compartilhado e atômico**, com um bloco de permissões por instância para poupar rede, e a decisão declarada de **liberar** quando o limitador cair.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é o defeito conhecido do algoritmo de janela fixa?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Permite quase o dobro do limite na virada da janela.", isCorrect: true },
+                        { text: "Precisa guardar o instante de cada requisição recebida.", isCorrect: false },
+                        { text: "Introduz espera nas requisições que chegam em rajada.", isCorrect: false },
+                        { text: "Exige dois parâmetros distintos para ser configurado.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o balde de fichas é o mais adotado em API pública?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Separa a taxa média da rajada permitida.", isCorrect: true },
+                        { text: "É o único que funciona de forma exata em ambiente distribuído.", isCorrect: false },
+                        { text: "Não precisa guardar estado algum sobre cada cliente atendido.", isCorrect: false },
+                        { text: "Garante saída constante, sem variação no ritmo de chamadas.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Um balde com capacidade 100 e reposição de 10 por segundo. O que um cliente parado há muito tempo consegue fazer?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Disparar 100 chamadas e depois ficar em 10 por segundo.", isCorrect: true },
+                        { text: "Disparar 10 chamadas e depois esperar a reposição seguinte.", isCorrect: false },
+                        { text: "Disparar 100 chamadas por segundo enquanto o balde durar.", isCorrect: false },
+                        { text: "Disparar 1.000 chamadas, somando a capacidade e a reposição.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que contar localmente em cada instância não funciona atrás de um balanceador?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "O cliente pode estourar o limite em cada instância.", isCorrect: true },
+                        { text: "As instâncias não conseguem identificar o mesmo cliente.", isCorrect: false },
+                        { text: "O contador local é perdido a cada nova requisição atendida.", isCorrect: false },
+                        { text: "O balanceador impede a leitura do endereço de origem real.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O cache que guarda os contadores compartilhados fica indisponível. Qual é a decisão usual?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Liberar as requisições, para não derrubar o serviço.", isCorrect: true },
+                        { text: "Recusar as requisições, para preservar a garantia do limite.", isCorrect: false },
+                        { text: "Enfileirar as requisições até o cache voltar a responder.", isCorrect: false },
+                        { text: "Voltar a contar localmente em cada uma das instâncias.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Gerar identificadores únicos em escala",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Gerar identificadores únicos em escala\n\nParece detalhe e não é. Assim que o dado é particionado, o autoincremento do banco deixa de servir, porque ele é único dentro de uma máquina e não entre várias. O sistema precisa de identificadores únicos gerados em qualquer nó, sem coordenação a cada chamada.\n\nE não basta serem únicos. A propriedade que costuma ser esquecida é a **ordenação**: identificadores que crescem com o tempo permitem ordenar por id, paginar por id e escrever de forma sequencial no índice, o que é muito mais rápido.",
+                },
+                {
+                    type: "table",
+                    value: '[["Estratégia", "Único", "Ordenável", "Precisa coordenar", "Tamanho"], ["Autoincremento do banco", "Só naquele banco", "Sim", "Sim, no banco", "8 bytes"], ["UUID versão 4", "Sim", "Não", "Não", "16 bytes"], ["UUID versão 7", "Sim", "Sim, por tempo", "Não", "16 bytes"], ["Snowflake", "Sim", "Sim, por tempo", "Só o id da máquina", "8 bytes"], ["Faixas pré-alocadas", "Sim", "Aproximadamente", "Sim, ao pegar faixa", "8 bytes"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Por que UUID aleatório atrapalha o banco\n\nO UUID versão 4 é aleatório, resolve unicidade sem coordenação nenhuma e é a escolha preguiçosa. O problema aparece no índice: como cada valor novo cai num ponto aleatório da árvore, as escritas ficam espalhadas por todo o índice, o que fragmenta páginas e piora o desempenho conforme a tabela cresce.\n\nIdentificadores que começam com o tempo resolvem isso: como cada valor novo é maior que o anterior, as inserções acontecem sempre no fim do índice, de forma sequencial e barata. É por isso que o UUID versão 7, que coloca o carimbo de tempo nos bits mais significativos, virou a recomendação prática quando se quer um identificador de 16 bytes sem infraestrutura extra.",
+                },
+                {
+                    type: "code",
+                    value: "Snowflake, 64 bits:\n\n  1 bit   sinal, sempre zero\n  41 bits carimbo de tempo em milissegundos desde uma epoca escolhida\n  10 bits identificador da maquina (ate 1024 maquinas)\n  12 bits sequencia dentro do mesmo milissegundo (ate 4096)\n\n  41 bits de milissegundos = cerca de 69 anos de faixa\n  1024 maquinas x 4096 por ms = 4 milhoes de ids por milissegundo",
+                },
+                {
+                    type: "text",
+                    value: '## Snowflake e os dois problemas dele\n\nO desenho é elegante: cada máquina gera sozinha, sem falar com ninguém, e o resultado cabe em 8 bytes e ordena por tempo. A coordenação existe uma vez só, para atribuir o identificador de máquina, e isso é feito na subida, normalmente por um serviço de configuração.\n\nOs dois problemas valem citar. O primeiro é o **relógio andando para trás**: se o servidor ajustar a hora e voltar alguns milissegundos, é possível gerar identificador repetido. A defesa usual é detectar e esperar até o relógio passar do último instante usado. O segundo é o **vazamento de informação**: como o tempo está no id, quem recebe dois identificadores consegue estimar quantos itens foram criados entre eles, o que é indesejado em recurso público. Quando isso importa, expõe-se um identificador externo diferente do interno.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** com dado particionado, o autoincremento não serve. Além de único, o identificador deve ser **ordenável no tempo**, porque isso torna a escrita no índice sequencial. **UUID v4** é aleatório e fragmenta o índice; **UUID v7** e **Snowflake** carregam o tempo nos bits altos. Snowflake cabe em 8 bytes e coordena só uma vez, com atenção ao **relógio para trás** e ao **vazamento** de volume.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que o autoincremento do banco deixa de servir quando o dado é particionado?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Ele é único apenas dentro daquela instância.", isCorrect: true },
+                        { text: "Ele deixa de ser ordenável quando existem vários pedaços.", isCorrect: false },
+                        { text: "Ele passa a exigir coordenação a cada nova inserção feita.", isCorrect: false },
+                        { text: "Ele ocupa espaço demais no índice de cada uma das partições.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o efeito de usar UUID aleatório como chave primária de uma tabela grande?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "As inserções se espalham e fragmentam o índice.", isCorrect: true },
+                        { text: "Os identificadores acabam colidindo conforme a tabela cresce.", isCorrect: false },
+                        { text: "As leituras por chave primária ficam significativamente lentas.", isCorrect: false },
+                        { text: "O banco passa a precisar coordenar a geração entre os nós.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o UUID versão 7 faz de diferente do versão 4?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Coloca o carimbo de tempo nos bits mais significativos.", isCorrect: true },
+                        { text: "Reduz o tamanho do identificador de 16 para 8 bytes.", isCorrect: false },
+                        { text: "Inclui o identificador da máquina que gerou aquele valor.", isCorrect: false },
+                        { text: "Elimina a aleatoriedade, tornando o valor previsível.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No Snowflake, para que servem os bits de sequência?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Distinguir ids gerados no mesmo milissegundo.", isCorrect: true },
+                        { text: "Identificar qual máquina do conjunto gerou o valor.", isCorrect: false },
+                        { text: "Ampliar a faixa de anos que o carimbo de tempo cobre.", isCorrect: false },
+                        { text: "Garantir que o identificador seja difícil de adivinhar.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o risco de expor publicamente identificadores que carregam o tempo?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Permitir estimar o volume criado entre dois deles.", isCorrect: true },
+                        { text: "Permitir descobrir em qual máquina o registro foi criado.", isCorrect: false },
+                        { text: "Permitir gerar identificadores válidos de outros registros.", isCorrect: false },
+                        { text: "Permitir alterar a ordem em que os registros são listados.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Busca e sugestão enquanto digita",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Busca e sugestão enquanto digita\n\nBusca aparece em quase todo sistema, e a primeira decisão é reconhecer que **o banco não é o lugar**. Procurar um termo dentro de um texto com o operador de semelhança do SQL obriga a varrer as linhas, porque o índice comum é ordenado por valor inteiro e não ajuda a achar palavra no meio.\n\nO que resolve é uma estrutura diferente, o **índice invertido**: em vez de mapear documento para o texto dele, mapeia cada termo para a lista de documentos onde ele aparece. Procurar duas palavras vira interseção de duas listas, operação rápida e barata.",
+                },
+                {
+                    type: "code",
+                    value: 'Documentos:\n  1: "curso de sistemas distribuidos"\n  2: "curso de banco de dados"\n  3: "sistemas operacionais"\n\nIndice invertido:\n  curso        -> [1, 2]\n  sistemas     -> [1, 3]\n  distribuidos -> [1]\n  banco        -> [2]\n  dados        -> [2]\n  operacionais -> [3]\n\nBusca por "curso sistemas" = intersecao de [1,2] e [1,3] = [1]',
+                },
+                {
+                    type: "text",
+                    value: '## O índice é uma cópia, e isso tem consequências\n\nO índice de busca vive fora do banco e é alimentado por ele, normalmente por evento, no padrão de pub/sub do módulo 3. Isso significa que ele é **eventualmente consistente** por construção: um item recém-criado pode não aparecer na busca por alguns segundos.\n\nDizer isso antes de perguntarem é ótimo, e a solução prática também: quando o requisito exige que o próprio usuário encontre o que acabou de criar, busca-se no índice e complementa-se com uma consulta direta ao banco pelos itens recentes daquele usuário. Vale também citar a reconstrução: como o índice é derivado, ele pode ser **jogado fora e refeito** a partir do banco, o que é uma propriedade valiosa quando o esquema de busca muda.',
+                },
+                {
+                    type: "text",
+                    value: "## Sugestão enquanto digita é outro problema\n\nA sugestão que aparece a cada tecla parece busca e não é. As diferenças mudam o desenho: o volume de requisições é muito maior, porque cada letra gera uma; a resposta precisa ser quase instantânea, na casa de dezenas de milissegundos; e o conjunto de respostas possíveis é pequeno e previsível, porque prefixos populares se repetem muito entre usuários.\n\nA estrutura clássica é a **trie**, uma árvore de prefixos em que cada caminho da raiz até um nó forma um prefixo e cada nó guarda as melhores sugestões que começam com ele. Assim, responder é caminhar poucas letras e devolver a lista já pronta, sem ranquear nada na hora. A trie inteira cabe em memória, e é atualizada em lote, de tempos em tempos, a partir do que as pessoas realmente buscaram.",
+                },
+                {
+                    type: "table",
+                    value: '[["Aspecto", "Busca completa", "Sugestão enquanto digita"], ["Estrutura", "Índice invertido", "Árvore de prefixos em memória"], ["Volume", "Uma por busca", "Uma por tecla digitada"], ["Latência aceitável", "Centenas de milissegundos", "Dezenas de milissegundos"], ["Atualização", "Por evento, quase em tempo real", "Em lote, de tempos em tempos"], ["Cacheável na borda", "Pouco, resultado varia", "Muito, prefixos se repetem"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Os cortes que sempre valem citar\n\nDois. O primeiro é **não sugerir com menos de duas ou três letras**, porque com uma letra o conjunto é enorme, a sugestão é inútil e o volume de requisições é o maior de todos. O segundo é **atrasar o disparo**, esperando algumas centenas de milissegundos sem digitação antes de consultar, o que reduz drasticamente o número de chamadas de quem digita rápido.\n\nEsses dois cortes são de front-end e derrubam a carga em uma ordem de grandeza, o que é exatamente o tipo de solução barata que a régua de custo valoriza. E como o resultado de um prefixo é igual para quase todo mundo, ele é um dos melhores candidatos a cache de borda que existem.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** busca textual pede **índice invertido**, não varredura no banco. Esse índice é uma **cópia derivada**, então é eventualmente consistente e pode ser refeito do zero. **Sugestão enquanto digita** é outro problema: **trie em memória** com as sugestões já prontas, atualizada em lote. Corte com **mínimo de letras** e **atraso no disparo**, e cacheie o prefixo na borda.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que o índice comum do banco não resolve busca por termo dentro de um texto?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ele é ordenado pelo valor inteiro, não pelas palavras.", isCorrect: true },
+                        { text: "Ele não aceita colunas de texto com tamanho variável.", isCorrect: false },
+                        { text: "Ele precisa ser reconstruído a cada nova inserção feita.", isCorrect: false },
+                        { text: "Ele só funciona quando a tabela cabe inteira em memória.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que um índice invertido mapeia?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Cada termo para a lista de documentos onde ele aparece.", isCorrect: true },
+                        { text: "Cada documento para a lista de termos que ele contém.", isCorrect: false },
+                        { text: "Cada prefixo para as sugestões que começam com ele.", isCorrect: false },
+                        { text: "Cada consulta para o resultado devolvido anteriormente.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual propriedade decorre de o índice de busca ser uma cópia derivada do banco?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ele pode ser descartado e reconstruído do zero.", isCorrect: true },
+                        { text: "Ele passa a exigir escrita síncrona junto com o banco.", isCorrect: false },
+                        { text: "Ele precisa usar a mesma chave de partição do banco.", isCorrect: false },
+                        { text: "Ele deixa de precisar de replicação para sobreviver a falhas.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual estrutura resolve sugestão enquanto digita e por quê?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Trie, porque guarda as sugestões já prontas por prefixo.", isCorrect: true },
+                        { text: "Índice invertido, porque intersecta as listas rapidamente.", isCorrect: false },
+                        { text: "Tabela hash, porque busca por chave em tempo constante.", isCorrect: false },
+                        { text: "Árvore balanceada, porque mantém as chaves em ordem.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quais cortes de front-end reduzem mais a carga de sugestão enquanto digita?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Exigir um mínimo de letras e atrasar o disparo.", isCorrect: true },
+                        { text: "Limitar a taxa por usuário e recusar o excedente.", isCorrect: false },
+                        { text: "Reduzir o número de sugestões devolvidas por consulta.", isCorrect: false },
+                        { text: "Comprimir a resposta e reaproveitar a conexão aberta.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Feed: montar na leitura ou na escrita",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Feed: montar na leitura ou na escrita\n\nO feed é o problema mais reaproveitável do System Design, porque a decisão que ele exige aparece em dezenas de outros lugares: **fazer o trabalho na hora do pedido ou antecipá-lo na hora da escrita**. Timeline de rede social, caixa de entrada, painel de notificações e lista de recomendações são todos a mesma pergunta.\n\nO contexto é o do módulo 2: leitura muitas ordens de grandeza mais frequente que escrita. Isso já sugere a resposta, e é justamente por isso que a exceção que vem depois é tão interessante.",
+                },
+                {
+                    type: "text",
+                    value: '## Puxar na leitura\n\nNo modelo **pull**, nada é preparado. Quando alguém abre o feed, o sistema descobre quem essa pessoa segue, busca as publicações recentes dessas contas, junta, ordena e devolve.\n\nA vantagem é a simplicidade: nada é duplicado, a escrita é trivial, e quem publica nunca gera trabalho proporcional ao número de seguidores. A desvantagem aparece na leitura: uma pessoa que segue 500 contas exige uma consulta que toca 500 conjuntos de dados, em plena requisição do usuário, toda vez que ela abre o aplicativo. Com dezenas de milhares de leituras por segundo, isso não se sustenta.',
+                },
+                {
+                    type: "text",
+                    value: '## Empurrar na escrita\n\nNo modelo **push**, também chamado de fan-out na escrita, o trabalho é antecipado. Quando alguém publica, o sistema copia a referência daquela publicação para a caixa de entrada de cada seguidor, que fica pré-montada. Ler o feed vira ler uma lista pronta, ordenada, com uma consulta simples.\n\nO custo migrou para a escrita, e o valor dele depende do número de seguidores. Publicar para 200 seguidores é barato. Publicar para 30 milhões significa 30 milhões de escritas por uma única ação, e ainda com a expectativa de que a publicação apareça em segundos. É o **problema da celebridade**, e é o ponto que a pergunta sempre explora.',
+                },
+                {
+                    type: "table",
+                    value: '[["Aspecto", "Pull (na leitura)", "Push (na escrita)"], ["Custo da escrita", "Constante", "Proporcional aos seguidores"], ["Custo da leitura", "Alto e repetido", "Baixo, lista pronta"], ["Espaço", "Sem duplicação", "Uma cópia por seguidor"], ["Conta com muitos seguidores", "Sem problema", "Explode a escrita"], ["Conta inativa", "Sem custo", "Escreve para quem nunca vai ler"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O híbrido, que é a resposta esperada\n\nA solução adotada na prática é misturar, separando as contas por tamanho. Contas comuns usam **push**: publicam e a referência é distribuída para as caixas de entrada dos seguidores. Contas muito grandes usam **pull**: nada é distribuído, e as publicações delas são buscadas na hora da leitura e mescladas com a caixa já pronta.\n\nAssim, ler um feed é ler a lista pré-montada e somar as poucas contas grandes que a pessoa segue, o que é rápido, e publicar como celebridade custa uma escrita só. O limiar entre os dois grupos é um parâmetro, não uma verdade, e vale dizer isso: pode ser dez mil seguidores, pode ser cem mil, e se ajusta observando o sistema.\n\nDuas otimizações completam a resposta: não distribuir para contas inativas há muito tempo, montando o feed delas sob demanda quando voltarem; e distribuir para seguidores em ordem de atividade, para que quem está online agora receba primeiro.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** feed é a escolha entre trabalhar na **leitura** ou antecipar na **escrita**. Pull é simples e cobra caro em toda leitura; push entrega leitura barata e explode no **problema da celebridade**. A resposta esperada é o **híbrido**: push para contas comuns, pull para as muito grandes, com o limiar como parâmetro ajustável, sem distribuir para inativos.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "No modelo pull, onde está o custo do feed?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Na leitura, que consulta todas as contas seguidas.", isCorrect: true },
+                        { text: "Na escrita, que copia a publicação para cada seguidor.", isCorrect: false },
+                        { text: "No espaço, por duplicar a publicação muitas vezes.", isCorrect: false },
+                        { text: "Na ordenação, que precisa ser refeita a cada publicação.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que é o problema da celebridade no fan-out na escrita?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Uma publicação vira milhões de escritas de uma vez.", isCorrect: true },
+                        { text: "A conta grande recebe publicações demais em seu próprio feed.", isCorrect: false },
+                        { text: "A ordenação do feed passa a favorecer as contas populares.", isCorrect: false },
+                        { text: "O cache do feed é invalidado sempre que a conta publica.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Como o modelo híbrido trata as contas com muitos seguidores?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Não distribui, e busca as publicações na leitura.", isCorrect: true },
+                        { text: "Distribui em segundo plano, ao longo das horas seguintes.", isCorrect: false },
+                        { text: "Distribui apenas para os seguidores mais engajados da conta.", isCorrect: false },
+                        { text: "Guarda a publicação em cache de borda e serve a partir dele.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a natureza do limiar que separa contas comuns de contas grandes?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "É um parâmetro ajustável pela observação do sistema.", isCorrect: true },
+                        { text: "É um valor fixo derivado do número total de usuários.", isCorrect: false },
+                        { text: "É definido pelo tamanho máximo da caixa de entrada.", isCorrect: false },
+                        { text: "É calculado a cada publicação, conforme a carga do momento.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual otimização evita trabalho inútil no fan-out na escrita?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Não distribuir para contas inativas há muito tempo.", isCorrect: true },
+                        { text: "Distribuir apenas as publicações com mais interações.", isCorrect: false },
+                        { text: "Limitar o tamanho da caixa de entrada de cada usuário.", isCorrect: false },
+                        { text: "Comprimir as referências guardadas em cada caixa de entrada.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Idempotência e o mito do exactly-once",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Idempotência e o mito do exactly-once\n\nEsta é a aula que amarra o módulo, porque o padrão dela aparece em todos os outros. A rede não é confiável: uma requisição pode chegar e a resposta se perder no caminho de volta. Do lado de quem chamou, os dois casos são indistinguíveis, e a reação natural é **tentar de novo**.\n\nDaí nasce o problema central dos sistemas distribuídos: a operação pode acontecer mais de uma vez. Se for uma cobrança, o cliente é cobrado duas vezes.",
+                },
+                {
+                    type: "quote",
+                    value: "Uma operação é **idempotente** quando executá-la várias vezes tem o mesmo efeito de executá-la uma vez. Não significa devolver sempre a mesma resposta, significa não produzir efeito adicional a cada repetição.",
+                },
+                {
+                    type: "text",
+                    value: '## Por que exactly-once não existe na entrega\n\nExistem três garantias de entrega possíveis. **No máximo uma vez**: manda e não repete, então pode perder. **Ao menos uma vez**: repete até confirmar, então pode duplicar. **Exatamente uma vez** seria não perder e não duplicar, e ela é impossível de garantir apenas com entrega, porque o remetente nunca consegue distinguir "a mensagem não chegou" de "chegou e a confirmação se perdeu".\n\nO que existe, e é o que os sistemas sérios oferecem, é **entrega ao menos uma vez somada a processamento idempotente**, que produz um efeito equivalente a exatamente uma vez. Dizer a frase nessa ordem, e não como se exactly-once fosse um recurso a ativar, é um bom sinal de maturidade numa sessão.',
+                },
+                {
+                    type: "table",
+                    value: '[["Operação", "É idempotente?", "Observação"], ["GET de um recurso", "Sim", "Só lê"], ["PUT com o estado completo", "Sim", "Grava o mesmo valor de novo"], ["DELETE de um id", "Sim", "Já apagado continua apagado"], ["POST criando recurso", "Não", "Cada chamada cria outro"], ["Incrementar um contador", "Não", "Cada chamada soma de novo"], ["Definir o saldo como um valor", "Sim", "Estado final não depende de repetições"]]',
+                },
+                {
+                    type: "text",
+                    value: '## A chave de idempotência\n\nO mecanismo padrão para tornar idempotente uma operação que não é, como criar um pagamento, é a **chave de idempotência**. Quem chama gera um identificador único para aquela intenção e o envia junto, normalmente num cabeçalho.\n\nO servidor guarda essa chave junto com o resultado. Na primeira vez, processa e grava. Se a mesma chave chegar de novo, ele não processa: devolve o resultado guardado. O detalhe que separa uma resposta boa é a **atomicidade**: gravar a chave e aplicar o efeito precisam acontecer na mesma transação, senão existe uma janela em que a cobrança foi feita e a chave não foi registrada, e a repetição cobra de novo. E vale lembrar que essas chaves têm prazo de validade, porque guardá-las para sempre custa espaço.',
+                },
+                {
+                    type: "code",
+                    value: "Fluxo com chave de idempotencia:\n\n  cliente -> POST /pagamentos\n             Idempotency-Key: 8f3a-91cd-...\n\n  servidor:\n    inicia transacao\n      SELECT resultado WHERE chave = '8f3a-91cd-...'\n      se existe        -> devolve o resultado guardado, fim\n      se nao existe    -> aplica o efeito\n                          grava chave + resultado\n    confirma transacao\n\n  Repeticao com a mesma chave devolve o mesmo resultado,\n  sem cobrar de novo.",
+                },
+                {
+                    type: "text",
+                    value: '## Onde mais isso aparece\n\nGuarde os três lugares, porque eles voltam no módulo 6. Em **consumidor de fila**, já que a entrega é ao menos uma vez: o consumidor registra os identificadores já processados e ignora repetição. Em **retentativa automática**, porque um cliente que repete com backoff precisa que o servidor tolere a repetição, senão o próprio mecanismo de resiliência vira fonte de duplicidade. E em **integração com terceiros**, onde a retentativa está fora do seu controle e a única defesa é a sua ponta ser idempotente.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** repetir é inevitável, porque quem chamou não distingue perda de requisição de perda de resposta. **Exactly-once não existe na entrega**: o que existe é **ao menos uma vez mais processamento idempotente**. A **chave de idempotência** torna idempotente o que não é, e gravar a chave junto com o efeito precisa ser **atômico**. O padrão volta em consumidor de fila, retentativa e integração externa.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "O que significa uma operação ser idempotente?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Repeti-la não produz efeito adicional.", isCorrect: true },
+                        { text: "Ela devolve exatamente a mesma resposta em toda chamada.", isCorrect: false },
+                        { text: "Ela só pode ser executada uma vez por cliente registrado.", isCorrect: false },
+                        { text: "Ela é aplicada dentro de uma transação do banco de dados.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a entrega exatamente uma vez não é possível de garantir?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O remetente não distingue perda de mensagem de perda da resposta.", isCorrect: true },
+                        { text: "As redes atuais não oferecem confirmação de entrega verdadeiramente confiável.", isCorrect: false },
+                        { text: "O receptor não consegue identificar mensagens já processadas.", isCorrect: false },
+                        { text: "A ordem das mensagens não é preservada entre as partições.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual destas operações não é naturalmente idempotente?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Incrementar um contador.", isCorrect: true },
+                        { text: "Apagar um recurso por id.", isCorrect: false },
+                        { text: "Definir o saldo como um valor.", isCorrect: false },
+                        { text: "Gravar o estado completo do recurso.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Ao usar chave de idempotência, o que precisa acontecer de forma atômica?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Gravar a chave e aplicar o efeito.", isCorrect: true },
+                        { text: "Gerar a chave e enviar a requisição ao servidor.", isCorrect: false },
+                        { text: "Consultar a chave e devolver a resposta ao cliente.", isCorrect: false },
+                        { text: "Expirar a chave e liberar o espaço que ela ocupava.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual combinação produz efeito equivalente a processar exatamente uma vez?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Entrega ao menos uma vez com processamento idempotente.", isCorrect: true },
+                        { text: "Entrega no máximo uma vez com confirmação do consumidor.", isCorrect: false },
+                        { text: "Entrega ordenada por partição com retentativa automática.", isCorrect: false },
+                        { text: "Entrega confirmada em transação distribuída entre serviços.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3, MODULO_4, MODULO_5];
 
 async function seed() {
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
