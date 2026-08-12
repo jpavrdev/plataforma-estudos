@@ -487,7 +487,430 @@ const MODULO_1: Modulo = {
     ],
 };
 
-export const MODULOS: Modulo[] = [MODULO_1];
+const MODULO_2: Modulo = {
+    titulo: "Módulo 2 - Estimativas de capacidade",
+    aulas: [
+        {
+            titulo: "Ordens de grandeza e os números que valem decorar",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Ordens de grandeza\n\nA conta de guardanapo assusta quem nunca fez, e é a parte mais simples da trilha, porque ninguém espera precisão. Espera-se **ordem de grandeza**: saber se o resultado dá mil ou um milhão, gigabyte ou petabyte. Errar por 20% não muda decisão nenhuma. Errar por mil vezes muda tudo, porque leva a comprar uma arquitetura que o problema não pede, ou a subestimar uma que ele exige.\n\nPor isso a regra número um é arredondar sem dó. Um dia tem 86.400 segundos, e todo mundo usa **100 mil**. Um mês tem 30 dias, um ano tem 365 e vira 400 quando conveniente. O erro que isso introduz é irrelevante perto da decisão que a conta vai apoiar.",
+                },
+                {
+                    type: "table",
+                    value: '[["Arredondamento", "Valor real", "O que usar"], ["Segundos por dia", "86.400", "100 mil"], ["Dias por mês", "30 ou 31", "30"], ["Dias por ano", "365", "400 quando facilitar"], ["Kilo, mega, giga, tera", "2^10, 2^20, 2^30, 2^40", "mil, milhão, bilhão, trilhão"], ["Caractere ASCII", "1 byte", "1 byte"], ["UUID", "16 bytes binário, 36 texto", "16 bytes"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Os números de latência que mudam decisão\n\nExiste uma tabela clássica de latências que vale carregar na cabeça, não para recitar, mas porque ela responde sozinha várias perguntas de desenho. O ponto não são os valores exatos: é a **distância entre eles**.\n\nLer da memória é da ordem de 100 nanossegundos. Ler de SSD é da ordem de 100 microssegundos, mil vezes mais. Uma ida e volta de rede no mesmo datacenter é da ordem de 500 microssegundos. Atravessar o Atlântico é da ordem de 150 milissegundos, cem mil vezes a leitura de memória. É por isso que cache em memória compensa tanto, e por isso que servir usuário europeu a partir de um datacenter na Virgínia é uma decisão de arquitetura, não um detalhe.",
+                },
+                {
+                    type: "table",
+                    value: '[["Operação", "Ordem de grandeza", "Comparando com memória"], ["Leitura de memória", "100 nanossegundos", "1x"], ["Leitura de SSD", "100 microssegundos", "1.000x"], ["Ida e volta no mesmo datacenter", "500 microssegundos", "5.000x"], ["Leitura de disco rígido", "10 milissegundos", "100.000x"], ["Ida e volta entre continentes", "150 milissegundos", "1.500.000x"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Média não descreve carga, e é aí que muita gente erra\n\nDividir o total do dia pelos 100 mil segundos dá a média, e nenhum sistema real vive na média. Existe hora de pico, e existe evento. Um app social brasileiro tem pico no início da noite; um sistema de ingressos tem pico de mil vezes a média no minuto em que a venda abre.\n\nA convenção prática é dimensionar o caminho crítico para o **pico**, usando um multiplicador declarado. Duas a três vezes a média cobre a variação diária normal. Dez vezes ou mais é evento, e evento não se resolve comprando máquina: se resolve com fila absorvendo a entrada, ou com limitação de taxa, ou com sala de espera. Dizer isso em voz alta na sessão vale mais do que a conta em si.",
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** o alvo é **ordem de grandeza**, não precisão, então arredonde: o dia tem **100 mil segundos**. Guarde a distância entre as latências (memória, SSD, rede local, disco, intercontinental), porque é ela que justifica cache e presença regional. E nunca dimensione pela média: declare um **multiplicador de pico**, lembrando que pico de dez vezes ou mais se resolve com fila e limitação, não com máquina maior.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual arredondamento é convenção na conta de guardanapo para os segundos de um dia?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "100 mil segundos.", isCorrect: true },
+                        { text: "86.400 segundos, sem arredondar.", isCorrect: false },
+                        { text: "50 mil segundos.", isCorrect: false },
+                        { text: "1 milhão de segundos.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a precisão importa pouco numa estimativa de capacidade?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Porque só a ordem de grandeza muda a decisão de desenho.", isCorrect: true },
+                        { text: "Porque o número real será medido depois, em produção.", isCorrect: false },
+                        { text: "Porque quem avalia não confere a aritmética apresentada.", isCorrect: false },
+                        { text: "Porque a carga varia demais para qualquer conta se sustentar.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Aproximadamente quantas vezes mais lenta que uma leitura de memória é uma ida e volta entre continentes?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Cerca de um milhão de vezes.", isCorrect: true },
+                        { text: "Cerca de mil vezes.", isCorrect: false },
+                        { text: "Cerca de cem vezes.", isCorrect: false },
+                        { text: "Cerca de dez bilhões de vezes.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual decisão de arquitetura a distância entre as latências justifica de forma mais direta?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cachear em memória e ficar perto do usuário.", isCorrect: true },
+                        { text: "Trocar o banco relacional por um não relacional.", isCorrect: false },
+                        { text: "Quebrar o monólito em serviços independentes.", isCorrect: false },
+                        { text: "Usar disco rígido no lugar de SSD por causa do custo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Um sistema de venda de ingressos espera pico de mil vezes a média no minuto de abertura. Qual é a resposta correta de desenho?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Absorver com fila, limitação de taxa e sala de espera.", isCorrect: true },
+                        { text: "Dimensionar as máquinas para o pico e mantê-las ligadas.", isCorrect: false },
+                        { text: "Escalar na horizontal automaticamente ao detectar a carga.", isCorrect: false },
+                        { text: "Servir a página de compra por CDN para aliviar o servidor.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Estimando requisições por segundo",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Estimando requisições por segundo\n\nRequisições por segundo, ou RPS, é o número que abre todas as outras contas. Ele diz quantas máquinas atendem a carga, se o banco aguenta sozinho, e se a leitura precisa de cache. E sai de uma cadeia curta e sempre igual: **usuários ativos por dia, ações por usuário, segundos do dia, multiplicador de pico**.\n\nO truque é enunciar cada elo em voz alta enquanto calcula. Quem escuta consegue corrigir uma suposição no meio, e o resultado passa a ser um número acordado, não um chute seu.",
+                },
+                {
+                    type: "code",
+                    value: "Cadeia da conta:\n\n  RPS medio = (usuarios ativos por dia x acoes por usuario) / 100.000\n  RPS de pico = RPS medio x multiplicador de pico\n\nExemplo, uma rede social:\n\n  50.000.000 usuarios ativos por dia\n  x 20 leituras de feed por usuario\n  = 1.000.000.000 leituras por dia\n\n  1.000.000.000 / 100.000 = 10.000 leituras por segundo (media)\n  10.000 x 3 (pico da noite)  = 30.000 leituras por segundo (pico)",
+                },
+                {
+                    type: "text",
+                    value: "## Separe leitura de escrita desde o começo\n\nEssa é a parte que mais rende na conversa. Quase todo sistema de consumo tem muito mais leitura do que escrita, e a proporção entre as duas é o que decide o desenho.\n\nNa mesma rede social: 50 milhões de pessoas leem 20 vezes por dia, mas talvez só 2 milhões publiquem, uma vez por dia. Isso dá 1 bilhão de leituras contra 2 milhões de escritas, uma proporção de **500 para 1**. Com essa proporção na mão, cache de leitura e réplicas deixam de ser opinião e viram consequência. Se a proporção fosse 2 para 1, como num sistema de coleta de eventos, o desenho seria outro: o gargalo estaria na escrita, e a conversa iria para particionamento e escrita em lote.",
+                },
+                {
+                    type: "table",
+                    value: '[["Proporção leitura/escrita", "Exemplo típico", "Para onde o desenho vai"], ["500 para 1", "Rede social, portal de notícia", "Cache agressivo, réplicas de leitura, CDN"], ["10 para 1", "Comércio eletrônico", "Cache do catálogo, banco primário para pedido"], ["2 para 1", "Coleta de eventos, telemetria", "Escrita em lote, particionamento, banco de série temporal"], ["1 para 10", "Ingestão de sensores", "Fila na entrada, escrita sequencial, agregação"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Do RPS para o número de máquinas\n\nCom o RPS de pico, dá para estimar a frota. Uma instância de aplicação bem comportada, com resposta rápida e sem trabalho pesado, atende de forma conservadora algo entre 1.000 e 5.000 requisições por segundo. Use mil para ficar seguro e declare a suposição.\n\n30 mil requisições por segundo dividido por mil dá 30 instâncias. Some folga para falha e para deploy, e vire 40. Esse número tem uma virtude enorme: torna concreta a conversa sobre custo, e mostra na hora se o desenho é razoável. Se a conta der 4.000 instâncias, alguma suposição está errada ou o desenho precisa mudar de estratégia, não de tamanho.",
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** RPS sai de **usuários ativos por dia x ações por usuário / 100 mil**, multiplicado pelo **pico**. Calcule **leitura e escrita separadamente**: a proporção entre elas é o que decide se o desenho vai para cache e réplica ou para particionamento e escrita em lote. Do RPS de pico saem as instâncias, assumindo mil requisições por segundo por instância, mais folga.",
+                },
+            ],
+            questions: [
+                {
+                    statement:
+                        "Um sistema tem 20 milhões de usuários ativos por dia, cada um fazendo 5 buscas. Qual é o RPS médio aproximado?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cerca de 1.000 por segundo.", isCorrect: true },
+                        { text: "Cerca de 100 por segundo.", isCorrect: false },
+                        { text: "Cerca de 10.000 por segundo.", isCorrect: false },
+                        { text: "Cerca de 100.000 por segundo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que calcular leitura e escrita separadamente muda o desenho?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A proporção entre elas aponta onde fica o gargalo.", isCorrect: true },
+                        { text: "A escrita sempre custa mais caro do que a leitura em nuvem.", isCorrect: false },
+                        { text: "Só a escrita precisa ser dimensionada para o horário de pico.", isCorrect: false },
+                        { text: "O banco cobra por operação e separa as duas na fatura mensal.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Um sistema de telemetria tem proporção de 1 leitura para 10 escritas. Para onde o desenho tende?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Fila na entrada, escrita sequencial e agregação.", isCorrect: true },
+                        { text: "Cache agressivo e réplicas de leitura na frente do banco.", isCorrect: false },
+                        { text: "CDN para servir o conteúdo mais requisitado na borda.", isCorrect: false },
+                        { text: "Índice de busca dedicado para acelerar as consultas.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Assumindo 1.000 requisições por segundo por instância, quantas instâncias atendem um pico de 30 mil?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Cerca de 30, mais folga para falha e deploy.", isCorrect: true },
+                        { text: "Cerca de 3, porque o pico dura pouco tempo.", isCorrect: false },
+                        { text: "Cerca de 300, contando a margem de segurança.", isCorrect: false },
+                        { text: "Cerca de 3.000, uma por cada dez requisições.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "A estimativa de frota resulta em 4.000 instâncias. Qual é a leitura correta desse número?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Alguma suposição está errada ou a estratégia precisa mudar.", isCorrect: true },
+                        { text: "O desenho está certo e o custo é inerente àquela escala.", isCorrect: false },
+                        { text: "Basta aumentar o tamanho de cada instância para reduzir a conta.", isCorrect: false },
+                        { text: "O multiplicador de pico deveria ter sido aplicado no final.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Estimando armazenamento",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Estimando armazenamento\n\nA conta de armazenamento responde perguntas que o RPS não responde: cabe num banco só? Precisa particionar? Quanto custa guardar isso por cinco anos? E ela tem uma característica que assusta na primeira vez: o resultado **acumula**. RPS é uma foto, armazenamento é um filme.\n\nA cadeia é igual à do RPS até certo ponto, e depois multiplica pelo tempo de retenção: **escritas por dia x tamanho de cada registro x dias guardados**.",
+                },
+                {
+                    type: "code",
+                    value: "Exemplo, o mesmo sistema de rede social:\n\n  2.000.000 publicacoes por dia\n  x 1 KB por publicacao (texto + metadados)\n  = 2 GB por dia\n\n  2 GB x 400 dias   = 800 GB por ano\n  800 GB x 5 anos   = 4 TB em cinco anos\n\nAgora com imagem, 20% das publicacoes com uma foto de 300 KB:\n\n  400.000 fotos por dia x 300 KB = 120 GB por dia\n  120 GB x 400 x 5               = 240 TB em cinco anos",
+                },
+                {
+                    type: "text",
+                    value: "## O tamanho do registro é onde mora o erro\n\nA parte que mais erra é o tamanho de cada linha. Uma publicação não é só o texto: tem identificador, autor, data, contadores, índices. A regra prática é somar os campos, arredondar para cima e declarar. Um registro de texto curto com metadados fica na casa de 1 KB. Um evento de telemetria fica na casa de 100 bytes a 1 KB. Uma linha de log fica na casa de 500 bytes.\n\nE existe um multiplicador que quase todo mundo esquece: **índice e réplica**. Índices costumam somar de 20% a 100% do tamanho dos dados. Replicação de três cópias triplica tudo. Quatro terabytes de dado viram doze terabytes de disco comprado, e é esse o número que vira custo.",
+                },
+                {
+                    type: "table",
+                    value: '[["Tipo de dado", "Tamanho típico por registro", "Observação"], ["Publicação de texto com metadados", "1 KB", "O texto é a menor parte"], ["Evento de telemetria", "100 bytes a 1 KB", "Muitos por segundo, cada um pequeno"], ["Linha de log", "500 bytes", "Retenção curta resolve o volume"], ["Foto comprimida", "200 a 500 KB", "Vai para blob, não para o banco"], ["Minuto de vídeo em 1080p", "50 MB", "Domina qualquer outra conta"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Retenção é decisão de produto, e é a alavanca mais forte\n\nQuando a conta de armazenamento dá um número desconfortável, a primeira reação costuma ser técnica: comprimir, particionar, trocar de banco. Existe uma alavanca mais barata antes dessas: **guardar menos tempo**.\n\nLog bruto de sete dias e agregado depois. Vídeo em resolução original por 30 dias e só a versão transcodificada depois. Dado quente no banco e dado frio movido para armazenamento de arquivo, que custa uma fração. Trazer essa possibilidade para a mesa mostra que você entende que armazenamento é decisão de produto e de custo, não só de tecnologia.",
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** armazenamento **acumula**: escritas por dia x tamanho do registro x dias de retenção. Some **índice e réplica** ao resultado, que facilmente triplicam o disco comprado. Mídia domina qualquer conta e vai para blob, não para o banco. E antes de otimizar tecnicamente, negocie **retenção**, que é a alavanca mais barata.",
+                },
+            ],
+            questions: [
+                {
+                    statement:
+                        "Um sistema grava 5 milhões de registros por dia, de 1 KB cada. Quanto isso acumula em um ano, aproximadamente?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cerca de 2 TB.", isCorrect: true },
+                        { text: "Cerca de 5 GB.", isCorrect: false },
+                        { text: "Cerca de 200 GB.", isCorrect: false },
+                        { text: "Cerca de 20 TB.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que costuma ficar de fora e faz a estimativa de disco ficar abaixo do real?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O espaço de índices e das réplicas.", isCorrect: true },
+                        { text: "O espaço ocupado pelo sistema operacional das máquinas.", isCorrect: false },
+                        { text: "O crescimento anual do número de usuários do produto.", isCorrect: false },
+                        { text: "O custo de transferência de dados entre regiões da nuvem.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que mídia costuma dominar a conta de armazenamento?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Um arquivo é ordens de grandeza maior que um registro.", isCorrect: true },
+                        { text: "Mídia precisa ser replicada mais vezes que dado estruturado.", isCorrect: false },
+                        { text: "Arquivos não podem ser comprimidos como texto pode.", isCorrect: false },
+                        { text: "O banco relacional guarda mídia de forma pouco eficiente.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "A estimativa de armazenamento deu um número alto demais. Qual é a alavanca mais barata a considerar primeiro?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Reduzir o tempo de retenção do dado.", isCorrect: true },
+                        { text: "Comprimir os registros antes de gravar no banco.", isCorrect: false },
+                        { text: "Particionar a tabela entre vários bancos menores.", isCorrect: false },
+                        { text: "Trocar o banco relacional por um de série temporal.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a diferença de natureza entre a conta de RPS e a de armazenamento?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "RPS é instantâneo e armazenamento acumula no tempo.", isCorrect: true },
+                        { text: "RPS depende do pico e armazenamento depende só da média.", isCorrect: false },
+                        { text: "RPS dimensiona o banco e armazenamento dimensiona a frota.", isCorrect: false },
+                        { text: "RPS é medido em produção e armazenamento só é estimado.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Banda e memória de cache",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Banda e memória de cache\n\nDuas contas fecham o conjunto. A de **banda** diz quanto dado atravessa a rede por segundo, e é ela que aponta quando a CDN deixa de ser luxo. A de **memória de cache** diz quanta RAM comprar para o cache fazer efeito, e é ela que impede a resposta preguiçosa de \"boto um Redis\".\n\nAs duas saem de números que você já calculou, então são rápidas. E as duas costumam ser esquecidas, o que faz delas uma boa forma de se destacar.",
+                },
+                {
+                    type: "code",
+                    value: "Banda = RPS x tamanho medio da resposta\n\n  Leitura de feed: 30.000 RPS de pico x 20 KB por resposta\n  = 600.000 KB/s = 600 MB/s = cerca de 4,8 Gbps de saida\n\nCom imagem servida pelo mesmo caminho:\n\n  30.000 RPS x 300 KB = 9.000 MB/s = cerca de 72 Gbps\n  Nesse patamar a imagem sai da aplicacao e vai para CDN.",
+                },
+                {
+                    type: "text",
+                    value: "## O limiar em que a CDN entra\n\nA conta acima mostra o ponto sem precisar de opinião. Servir texto a 4,8 Gbps é caro, mas cabe numa frota. Servir mídia a 72 Gbps a partir das suas máquinas é jogar dinheiro fora, porque aquele mesmo byte vai sair repetido para milhares de pessoas, sem nenhuma personalização.\n\nA regra que sai disso é simples e vale dizer em voz alta: **conteúdo estático e repetido sai pela borda; conteúdo personalizado sai pela aplicação**. A CDN não é só velocidade, é principalmente banda e custo. E ela muda a conta de frota também: tirar mídia do caminho pode reduzir o número de instâncias mais do que qualquer otimização de código.",
+                },
+                {
+                    type: "text",
+                    value: '## Quanta memória o cache precisa\n\nCache só ajuda se o que está nele for pedido de novo. A pergunta certa não é "quanto cabe", é "qual fatia do dado responde pela maior parte dos acessos". Na prática, a distribuição de acesso costuma ser bem desigual, e uma regra de bolso muito usada é a de que **20% do conteúdo responde por 80% dos acessos**.\n\nEntão a conta é: pegue o conjunto quente, some o tamanho dele, e essa é a memória alvo. Se são 100 milhões de publicações de 1 KB, o total é 100 GB; os 20% quentes são 20 GB, que cabem confortavelmente em memória distribuída. Se o conjunto quente desse 5 TB, cache em memória sairia caro e a conversa mudaria para cache em disco, ou para cachear só o resultado agregado em vez do dado bruto.',
+                },
+                {
+                    type: "table",
+                    value: '[["Conta", "Fórmula", "O que ela decide"], ["Banda de saída", "RPS x tamanho da resposta", "Se entra CDN e quanto custa a saída"], ["Memória de cache", "Tamanho do conjunto quente", "Se o cache cabe em RAM"], ["Taxa de acerto", "Acertos / total de buscas", "Se o cache está valendo a pena"], ["Carga aliviada", "RPS x taxa de acerto", "Quanto o banco deixa de receber"]]',
+                },
+                {
+                    type: "text",
+                    value: "## Termine sempre dizendo o que o cache alivia\n\nA conta só fica completa quando você fecha o ciclo. Com 30 mil leituras por segundo e uma taxa de acerto de 90%, o banco recebe 3 mil por segundo em vez de 30 mil. Esse número é o que decide se o banco primário aguenta sozinho ou se precisa de réplicas.\n\nE vale declarar a fragilidade junto: se a taxa de acerto cair, por exemplo depois de um deploy que limpou o cache, o banco recebe as 30 mil de uma vez. Esse é o cenário de **avalanche de cache**, e mencioná-lo mostra justamente o julgamento operacional que a régua atual cobra.",
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** **banda = RPS x tamanho da resposta**, e é ela que mostra o limiar em que mídia precisa sair pela **CDN**. A memória de cache sai do **conjunto quente**, não do dado total. Feche a conta dizendo quanto o cache **alivia** o banco, e cite a **avalanche** que acontece quando a taxa de acerto despenca.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Como se estima a banda de saída de um serviço?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Multiplicando o RPS pelo tamanho médio da resposta.", isCorrect: true },
+                        { text: "Multiplicando o número de usuários pelo tempo de sessão.", isCorrect: false },
+                        { text: "Dividindo o volume diário de dados pelos segundos do dia.", isCorrect: false },
+                        { text: "Somando o tamanho do banco ao tamanho do cache em memória.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual regra decide o que deve ser servido pela borda em vez de pela aplicação?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Conteúdo estático e repetido sai pela borda.", isCorrect: true },
+                        { text: "Todo conteúdo maior que 100 KB sai pela borda.", isCorrect: false },
+                        { text: "Conteúdo de leitura sai pela borda e escrita pela aplicação.", isCorrect: false },
+                        { text: "Conteúdo com mais de mil acessos por dia sai pela borda.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Sobre qual conjunto se dimensiona a memória de um cache?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Sobre o conjunto quente, a fatia mais acessada.", isCorrect: true },
+                        { text: "Sobre o total de dados guardados no banco primário.", isCorrect: false },
+                        { text: "Sobre o volume gravado por dia pela aplicação.", isCorrect: false },
+                        { text: "Sobre o pico de requisições por segundo do sistema.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Com 30 mil leituras por segundo e taxa de acerto de 90%, quantas chegam ao banco?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cerca de 3 mil por segundo.", isCorrect: true },
+                        { text: "Cerca de 27 mil por segundo.", isCorrect: false },
+                        { text: "Cerca de 300 por segundo.", isCorrect: false },
+                        { text: "Continuam 30 mil por segundo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece quando um deploy esvazia o cache de um sistema com alta taxa de acerto?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A carga inteira cai de uma vez sobre o banco.", isCorrect: true },
+                        { text: "A latência sobe, mas a carga no banco continua igual.", isCorrect: false },
+                        { text: "O cache se reconstrói antes de receber tráfego real.", isCorrect: false },
+                        { text: "A taxa de acerto se recupera sozinha em poucos segundos.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Do número ao desenho",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Do número ao desenho\n\nA conta não vale nada se ficar num canto do quadro. Ela existe para **eliminar alternativas**, e essa é a habilidade que fecha o módulo: olhar o resultado e dizer o que ele acabou de proibir ou de autorizar.\n\nExiste um punhado de limiares que se repetem, e conhecer a ordem de grandeza deles é o que permite ler o próprio número com segurança.",
+                },
+                {
+                    type: "table",
+                    value: '[["Resultado da conta", "O que ele autoriza ou exige"], ["Menos de 1.000 RPS", "Uma instância e um banco resolvem; não invente componente"], ["Dezenas de milhares de RPS de leitura", "Cache e réplicas de leitura viram obrigatórios"], ["Dezenas de milhares de RPS de escrita", "Particionamento e escrita em lote entram na mesa"], ["Menos de 1 TB de dado", "Cabe num banco só, sem sharding"], ["Dezenas de TB ou mais", "Sharding, arquivamento e retenção viram tema central"], ["Dezenas de Gbps de saída", "CDN deixa de ser opcional"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Use o número para dizer não\n\nO uso mais valioso da estimativa não é justificar o que você quer fazer, é **descartar** o que não precisa. "São 300 requisições por segundo e 40 GB de dado. Isso cabe numa instância e num Postgres com réplica. Não vou colocar fila nem sharding aqui, porque não há carga que justifique."\n\nEssa frase costuma valer mais do que um diagrama cheio. Ela mostra que você sabe que complexidade tem preço e que só se paga esse preço quando o número manda. É exatamente o contrário do erro de over-engineering visto no módulo 1.',
+                },
+                {
+                    type: "text",
+                    value: "## Quando o número muda, o desenho muda\n\nUm exercício que rende muito é refazer a conta com uma suposição diferente e ver o desenho se mexer. Pegue o mesmo sistema e multiplique os usuários por cem: o que quebra primeiro?\n\nQuase sempre a resposta é o banco, e quase sempre na leitura antes da escrita. Depois vem a banda, se houver mídia. Depois vem o tempo de reconstruir estado após uma falha. Saber essa ordem permite responder a pergunta que quase sempre vem no fim da sessão: \"e se crescer dez vezes?\". A resposta boa não é \"escalo horizontalmente\", é \"o primeiro a quebrar seria a leitura do banco, e o passo seria réplica mais cache; o segundo seria a saída de mídia, e o passo seria CDN\".",
+                },
+                {
+                    type: "text",
+                    value: '## Custo é parte da resposta, não um extra\n\nA régua de 2026 cobra custo explicitamente. Você não precisa saber a tabela de preços de cabeça, precisa saber **onde o dinheiro vai**: máquinas, armazenamento, saída de rede e serviços gerenciados. Saída de rede costuma ser a surpresa desagradável, porque é cobrada por byte que sai da nuvem, o que reforça de novo o argumento da CDN.\n\nUma frase de fechamento que funciona bem: "o desenho tem 40 instâncias, 12 TB replicados e mídia por CDN. O maior item de custo aqui é a saída de dado, então a primeira otimização de custo seria aumentar o tempo de cache na borda, não reduzir instâncias."',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** a conta serve para **eliminar alternativas**, e o uso mais valioso dela é **dizer não** ao componente que a carga não justifica. Conheça os limiares de ordem de grandeza. Saiba a ordem em que as coisas quebram quando a escala cresce, porque é a resposta para \"e se crescer dez vezes?\". E trate **custo** como parte do desenho, lembrando que saída de rede costuma ser o item que surpreende.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "A conta resultou em 300 RPS e 40 GB de dado. Qual é a conclusão de desenho correta?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Uma instância e um banco com réplica bastam.", isCorrect: true },
+                        { text: "Já vale particionar o banco para preparar o crescimento.", isCorrect: false },
+                        { text: "Convém colocar uma fila entre a aplicação e o banco.", isCorrect: false },
+                        { text: "É preciso cache distribuído para garantir a latência.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o uso mais valioso de uma estimativa numa sessão de design?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Descartar componentes que a carga não justifica.", isCorrect: true },
+                        { text: "Demonstrar domínio de aritmética sob pressão.", isCorrect: false },
+                        { text: "Justificar a escolha de tecnologia já decidida antes.", isCorrect: false },
+                        { text: "Definir o orçamento mensal do sistema em nuvem.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: 'Ao ser perguntado "e se crescer dez vezes?", qual resposta é mais forte?',
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Dizer o que quebra primeiro e o passo que resolve.", isCorrect: true },
+                        { text: "Afirmar que o desenho escala horizontalmente sem mudança.", isCorrect: false },
+                        { text: "Refazer todas as estimativas com os novos números na hora.", isCorrect: false },
+                        { text: "Apontar que a arquitetura já foi dimensionada com folga.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Em um sistema com muita mídia, qual costuma ser o item de custo que surpreende?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A saída de dados da nuvem.", isCorrect: true },
+                        { text: "O número de instâncias de aplicação em execução.", isCorrect: false },
+                        { text: "O armazenamento em disco dos arquivos originais.", isCorrect: false },
+                        { text: "As licenças dos serviços gerenciados contratados.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quando a escala de um sistema de consumo cresce muito, o que costuma quebrar primeiro?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A leitura do banco.", isCorrect: true },
+                        { text: "A escrita no banco primário.", isCorrect: false },
+                        { text: "A memória das instâncias de aplicação.", isCorrect: false },
+                        { text: "O tempo de resposta do balanceador de carga.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const MODULOS: Modulo[] = [MODULO_1, MODULO_2];
 
 async function seed() {
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
