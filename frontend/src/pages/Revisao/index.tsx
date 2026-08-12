@@ -104,6 +104,9 @@ export function Revisao() {
   const [selecao, setSelecao] = useState<Set<string>>(new Set());
   const [comGlossario, setComGlossario] = useState(false);
   const [escolhendo, setEscolhendo] = useState(false);
+  // Busca da lista de áreas. Some junto com o painel, para não sobrar filtro
+  // invisível na próxima vez que ele abrir.
+  const [busca, setBusca] = useState('');
   const [vazio, setVazio] = useState(false);
   // Quantas cartas a sessão entrega, como o aluno digitou. Vazio é "vai até acabar".
   const [limiteTexto, setLimiteTexto] = useState('');
@@ -170,13 +173,16 @@ export function Revisao() {
       // queremos mostrar.
       if (!cartoes.length) {
         setVazio(true);
+        // O aviso mora dentro do painel de escolha. Começando pela sala, com o painel
+        // fechado, ele não seria visto e o clique pareceria não fazer nada.
+        setEscolhendo(true);
         return;
       }
       // A sessão fica guardada para sobreviver a um F5. As cartas não são guardadas:
       // no retorno a fila é remontada do servidor e as já respondidas são tiradas
       // pela lista de "feitas".
       localStorage.setItem(SESSAO, JSON.stringify({ ...escolha, feitas: [] }));
-      setEscolhendo(false);
+      fecharEscolha();
       iniciarSessao(cartoes);
     } catch (err) {
       console.error('Falha ao montar a fila de revisão.', err);
@@ -294,6 +300,12 @@ export function Revisao() {
     return () => window.clearInterval(id);
   }, [atual?.id, modalAberto]);
 
+  function fecharEscolha() {
+    setEscolhendo(false);
+    setBusca('');
+    setVazio(false);
+  }
+
   function alternarTrilha(id: string) {
     setSelecao((antes) => {
       const nova = new Set(antes);
@@ -406,15 +418,19 @@ export function Revisao() {
         ...(baralhos?.trilhas ?? []).filter((t) => selecao.has(t.id)).map((t) => t.nome),
         ...(comGlossario ? ['Glossário'] : []),
       ].join(' + ');
-  // Quantas cartas a escolha atual tem, e não quantas venceram: a fila serve tudo
-  // que o aluno já estudou naquele conteúdo. Zero aqui significa que ele ainda não
-  // concluiu nenhuma aula do que marcou, e não que está em dia.
+  // Quantas cartas a escolha atual tem, e não quantas venceram: a fila serve o
+  // conteúdo inteiro. Sem escolha o número é o baralho do aluno; com uma área
+  // marcada é o tamanho dela, porque revisar área não depende de ter feito a trilha.
   const escolhidos = tudoMarcado
     ? (resumo?.total ?? 0)
     : (baralhos?.trilhas ?? [])
         .filter((t) => selecao.has(t.id))
-        .reduce((soma, t) => soma + t.total, 0) +
+        .reduce((soma, t) => soma + t.disponiveis, 0) +
       (comGlossario ? (baralhos?.glossario.total ?? 0) : 0);
+  // 87 áreas não cabem numa lista rolável sem busca.
+  const areas = (baralhos?.trilhas ?? []).filter((t) =>
+    busca.trim() ? t.nome.toLowerCase().includes(busca.trim().toLowerCase()) : true,
+  );
 
   return (
     <div className="home-shell">
@@ -455,7 +471,7 @@ export function Revisao() {
             </h1>
             <p className="rev-sala__sub">
               {trilhaId
-                ? 'Todos os cartões das aulas que você concluiu nesta trilha, na ordem em que estudou.'
+                ? 'Todos os cartões desta trilha, embaralhados.'
                 : 'Cartões que voltam hoje. Cada acerto empurra o próximo encontro para mais longe.'}
             </p>
           </div>
@@ -489,9 +505,9 @@ export function Revisao() {
             </div>
           )}
 
-          {/* Fila vazia agora só acontece por falta de aula concluída, e não por
-              estar em dia: a fila serve tudo que o aluno estudou. O texto muda
-              conforme o motivo: baralho inteiro sem carta, ou só a escolha atual. */}
+          {/* Fila vazia não significa mais "está tudo em dia", e nem "você não
+              estudou": a área pode ser escolhida sem ter feito a trilha. Sobrou o
+              caso de o baralho estar vazio e nenhuma área ter sido marcada. */}
           {!trilhaId && baralhos && fila === null && escolhidos === 0 && (
             <div className="rev-sala__aviso">
               <span className="rev-sala__check">
@@ -499,22 +515,27 @@ export function Revisao() {
               </span>
               {baralhoVazio ? (
                 <>
-                  <h3>Seu baralho começa na próxima aula</h3>
+                  <h3>Escolha uma área para começar</h3>
                   <p>
-                    As cartas nascem quando você conclui uma aula. Estude uma e ela já entra aqui
-                    para você rever nos próximos dias.
+                    Seu baralho ainda está vazio, mas você não precisa esperar: dá para revisar
+                    qualquer área agora, mesmo sem ter feito a trilha. Concluir uma aula também
+                    traz as cartas dela para cá sozinho.
                   </p>
-                  <Link to="/trilhas" className="btn btn--accent">
-                    Ir para as trilhas
+                  <button
+                    type="button"
+                    className="btn btn--accent"
+                    onClick={() => setEscolhendo(true)}
+                  >
+                    Escolher área
+                  </button>
+                  <Link to="/trilhas" className="rev-sala__saida">
+                    Ou ir para as trilhas
                   </Link>
                 </>
               ) : (
                 <>
                   <h3>Nada por aqui ainda</h3>
-                  <p>
-                    Você ainda não concluiu nenhuma aula do que escolheu. Troque o conteúdo ou
-                    estude uma aula dessa trilha para as cartas nascerem.
-                  </p>
+                  <p>Não há cartas no que você escolheu. Marque outra área.</p>
                   <button
                     type="button"
                     className="rev-sala__selecao"
@@ -738,22 +759,28 @@ export function Revisao() {
             role="dialog"
             aria-modal="true"
             aria-label="Escolher o que revisar"
-            onClick={() => setEscolhendo(false)}
+            onClick={fecharEscolha}
           >
             <div className="rev-escolha" onClick={(e) => e.stopPropagation()}>
               <div className="rev-escolha__topo">
                 <h2>O que você quer revisar</h2>
-                <button
-                  className="rev-escolha__x"
-                  onClick={() => setEscolhendo(false)}
-                  aria-label="Fechar"
-                >
+                <button className="rev-escolha__x" onClick={fecharEscolha} aria-label="Fechar">
                   <X size={16} />
                 </button>
               </div>
               <p className="rev-escolha__ajuda">
-                Marque mais de um para embaralhar tudo na mesma sessão.
+                Qualquer área, tenha você feito a trilha ou não. Marque mais de uma para
+                embaralhar tudo na mesma sessão.
               </p>
+
+              <input
+                className="rev-busca"
+                type="search"
+                autoComplete="off"
+                placeholder="Buscar área"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+              />
 
               <div className="rev-escolha__lista">
                 <button
@@ -765,7 +792,7 @@ export function Revisao() {
                   <span className="rev-item__nome">Todo o seu baralho</span>
                 </button>
 
-                {baralhos.trilhas.map((t) => {
+                {areas.map((t) => {
                   const marcado = selecao.has(t.id);
                   return (
                     <button
@@ -776,9 +803,16 @@ export function Revisao() {
                     >
                       <span className="rev-item__check">{marcado && <Check size={13} />}</span>
                       <span className="rev-item__nome">{t.nome}</span>
+                      {/* O tamanho da área, e quanto dela já é dele. Sem isso não dá
+                          para saber se marcar aquela linha rende 3 cartas ou 105. */}
+                      <span className="rev-item__n">
+                        {t.total ? `${t.total} de ${t.disponiveis}` : t.disponiveis}
+                      </span>
                     </button>
                   );
                 })}
+
+                {!areas.length && <p className="rev-escolha__ajuda">Nenhuma área com esse nome.</p>}
 
                 {baralhos.glossario.total > 0 && (
                   <button
@@ -816,18 +850,17 @@ export function Revisao() {
                   separando "não estudei nada ainda" de "escolhi o baralho errado". */}
               {vazio && (
                 <p className="rev-escolha__vazio">
-                  {baralhoVazio
-                    ? 'Você ainda não tem cartas. Elas nascem quando você conclui uma aula.'
+                  {tudoMarcado
+                    ? 'Seu baralho está vazio. Marque uma área para revisar mesmo sem ter feito a trilha.'
                     : 'Não há cartas no que você escolheu. Marque outro conteúdo.'}
                 </p>
               )}
 
+              {/* O botão não é desabilitado quando a conta dá zero: quem marcou "todo
+                  o seu baralho" sem nunca ter estudado clicaria num botão morto, sem
+                  saber por quê. Clicando, o aviso acima diz o que fazer. */}
               <div className="rev-escolha__rodape">
-                <button
-                  className="btn btn--accent"
-                  onClick={() => void comecar()}
-                  disabled={baralhoVazio}
-                >
+                <button className="btn btn--accent" onClick={() => void comecar()}>
                   Começar revisão
                 </button>
               </div>

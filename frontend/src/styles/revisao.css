@@ -156,6 +156,21 @@
   color: var(--accent);
 }
 
+/* A saída secundária do estado vazio é um link, e não um segundo botão: reusando a
+   pílula do seletor ela colava na de cima e as duas disputavam o clique. */
+.rev-sala__saida {
+  display: block;
+  width: fit-content;
+  margin: 18px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  border-bottom: 1px solid transparent;
+}
+.rev-sala__saida:hover {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}
+
 /* ---------- O modal da carta ---------- */
 
 .rev-modal {
@@ -540,8 +555,33 @@
   color: var(--muted);
 }
 
+.rev-busca {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 9px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.rev-busca::placeholder {
+  color: var(--muted);
+}
+.rev-busca:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* flex e min-height zero para a lista encolher dentro do teto do painel: com o
+   catálogo inteiro ela passou de meia dúzia de linhas para dezenas, e sem isso ela
+   empurraria o rodapé para fora em vez de rolar. */
 .rev-escolha__lista {
   display: flex;
+  flex: 1;
+  min-height: 0;
   flex-direction: column;
   gap: 6px;
   overflow-y: auto;
@@ -597,6 +637,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* O tamanho da área, discreto: quem escolhe olha o nome, o número é conferência. */
+.rev-item__n {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .rev-escolha__quantas {

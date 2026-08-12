@@ -14,8 +14,10 @@ import {
 import { and, eq } from "drizzle-orm";
 import {
     abrirCartoesDaAula,
+    baralhos,
     contarRevisaoDaTrilha,
     filaDoDia,
+    responder,
     revisaoDaTrilha,
 } from "../src/services/flashcard.service.ts";
 
@@ -121,7 +123,7 @@ describe("cartões em trilha com trilhos de linguagem", () => {
         await concluir(aluno.id, js.id);
         await concluir(aluno.id, py.id);
 
-        const cartoes = await revisaoDaTrilha(aluno.id, trilha.id);
+        const cartoes = await revisaoDaTrilha(trilha.id);
         const perguntas = cartoes.map((c) => c.frente);
 
         assert.equal(new Set(perguntas).size, perguntas.length, "pergunta repetida na revisão");
@@ -135,8 +137,8 @@ describe("cartões em trilha com trilhos de linguagem", () => {
         await concluir(aluno.id, js.id);
         await concluir(aluno.id, py.id);
 
-        const { total } = await contarRevisaoDaTrilha(aluno.id, trilha.id);
-        const cartoes = await revisaoDaTrilha(aluno.id, trilha.id);
+        const { total } = await contarRevisaoDaTrilha(trilha.id);
+        const cartoes = await revisaoDaTrilha(trilha.id);
 
         assert.equal(total, cartoes.length);
     });
@@ -216,7 +218,7 @@ describe("a fila serve a trilha inteira, e não só o que venceu", () => {
                 .where(eq(userCards.id, c.id));
 
         const sala = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
-        const daTrilha = await revisaoDaTrilha(aluno.id, trilha.id);
+        const daTrilha = await revisaoDaTrilha(trilha.id);
 
         assert.equal(sala.length, daTrilha.length);
         assert.deepEqual(
@@ -261,6 +263,124 @@ describe("a fila serve a trilha inteira, e não só o que venceu", () => {
     });
 });
 
+/**
+ * Uma trilha publicada com N cartas e ninguém matriculado: nenhum progresso,
+ * nenhuma carta em baralho. É o cenário da revisão livre.
+ */
+async function trilhaCrua(quantas: number, nome = "Área nova") {
+    const [trilha] = await db
+        .insert(trails)
+        .values({ name: nome, trailLevel: "iniciante", description: "x" })
+        .returning();
+    const [modulo] = await db
+        .insert(modules)
+        .values({ trailId: trilha.id, title: "M1", position: 1 })
+        .returning();
+    const [aula] = await db
+        .insert(lessons)
+        .values({
+            trailId: trilha.id,
+            moduleId: modulo.id,
+            title: "Aula",
+            position: 1,
+            published: true,
+        })
+        .returning();
+    await db.insert(flashcards).values(
+        Array.from({ length: quantas }, (_, i) => ({
+            lessonId: aula.id,
+            frente: `Crua ${i}?`,
+            verso: `Resposta ${i}`,
+            position: i,
+        })),
+    );
+    return { trilha, aula };
+}
+
+describe("revisar uma área sem ter feito a trilha", () => {
+    beforeEach(limparBanco);
+
+    test("a revisão da trilha entrega tudo mesmo sem nenhuma aula concluída", async () => {
+        const aluno = await novoAluno();
+        const { trilha } = await trilhaCrua(7);
+
+        const cartoes = await revisaoDaTrilha(trilha.id);
+
+        assert.equal(cartoes.length, 7);
+        assert.equal((await contarRevisaoDaTrilha(trilha.id)).total, 7);
+        // O baralho continua intocado: só responder é que abre carta.
+        const meu = await db.select().from(userCards).where(eq(userCards.userId, aluno.id));
+        assert.equal(meu.length, 0);
+    });
+
+    test("a sala serve a área escolhida mesmo sem progresso nela", async () => {
+        const aluno = await novoAluno();
+        const { trilha } = await trilhaCrua(5);
+
+        const fila = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
+
+        assert.equal(fila.length, 5);
+    });
+
+    test("a área escolhida mistura o que já é do aluno com o que falta", async () => {
+        const aluno = await novoAluno();
+        const { trilha, aula } = await trilhaCrua(6);
+        // Três cartas já no baralho; as outras três continuam só no catálogo.
+        const cartas = await db.select().from(flashcards).where(eq(flashcards.lessonId, aula.id));
+        await db.insert(userCards).values(
+            cartas.slice(0, 3).map((c) => ({
+                userId: aluno.id,
+                origem: "flashcard" as const,
+                origemId: c.id,
+                proximaRevisao: new Date(),
+            })),
+        );
+
+        const fila = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
+        const perguntas = fila.map((c) => c.frente);
+
+        assert.equal(perguntas.length, 6, "a fila tem de somar baralho e catálogo");
+        assert.equal(new Set(perguntas).size, 6, "carta do baralho não pode vir duplicada");
+    });
+
+    test("sem escolher área, a fila continua sendo só o baralho do aluno", async () => {
+        const aluno = await novoAluno();
+        await aulaCom(4, aluno.id);
+        await trilhaCrua(9, "Área que ele nunca viu");
+
+        const fila = await filaDoDia(aluno.id);
+
+        assert.equal(fila.length, 4, "o baralho inteiro não pode virar o catálogo inteiro");
+    });
+
+    test("responder carta de aula nunca estudada abre ela no baralho", async () => {
+        const aluno = await novoAluno();
+        const { aula } = await trilhaCrua(3);
+        const [carta] = await db.select().from(flashcards).where(eq(flashcards.lessonId, aula.id));
+
+        await responder(aluno.id, "flashcard", carta.id, "facil");
+
+        const [aberta] = await db
+            .select()
+            .from(userCards)
+            .where(and(eq(userCards.userId, aluno.id), eq(userCards.origemId, carta.id)));
+        assert.ok(aberta, "a carta tinha de entrar no baralho na primeira resposta");
+        assert.equal(aberta.repeticoes, 1);
+    });
+
+    test("a lista de áreas traz trilha que o aluno nunca abriu", async () => {
+        const aluno = await novoAluno();
+        const { trilha } = await trilhaCrua(11, "Zebra");
+
+        const { trilhas } = await baralhos(aluno.id);
+        const zebra = trilhas.find((t) => t.id === trilha.id);
+
+        assert.ok(zebra, "a área tinha de aparecer para escolher");
+        assert.equal(zebra.total, 0, "ele não tem carta dela no baralho");
+        assert.equal(zebra.disponiveis, 11, "e a área inteira está disponível");
+    });
+});
+
 describe("ordem da fila de revisão", () => {
     beforeEach(limparBanco);
 
@@ -300,7 +420,7 @@ describe("ordem da fila de revisão", () => {
 
         const ordens = new Set<string>();
         for (let i = 0; i < 6; i++) {
-            ordens.add((await revisaoDaTrilha(aluno.id, trilha.id)).map((c) => c.frente).join("|"));
+            ordens.add((await revisaoDaTrilha(trilha.id)).map((c) => c.frente).join("|"));
         }
 
         assert.ok(ordens.size > 1, "a revisão da trilha saiu na mesma ordem nas seis vezes");
