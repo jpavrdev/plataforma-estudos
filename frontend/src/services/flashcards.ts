@@ -23,7 +23,10 @@ export interface Baralho {
   id: string;
   nome: string;
   vencidos: number;
+  /** Cartas desta trilha que já estão no baralho do aluno. */
   total: number;
+  /** Tamanho da área: tudo que ela tem para revisar, tendo ele estudado ou não. */
+  disponiveis: number;
 }
 
 export interface Baralhos {
