@@ -5,12 +5,11 @@ import {
     cardReviews,
     cardReports,
     lessons,
-    lessonProgress,
     modules,
     trails,
     glossary,
 } from "../../schema.ts";
-import { and, asc, count, desc, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, lte, notInArray, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 
 /**
@@ -301,21 +300,70 @@ interface CartaoNaFila {
     aulaId: string | null;
 }
 
+/** O mínimo que a fila precisa saber de cada carta: quem ela é e quando vence. */
+interface NaFila {
+    origem: "flashcard" | "glossario";
+    origemId: string;
+    proximaRevisao: Date;
+    // Carta que ainda não existe no baralho, vinda direto do catálogo. Só serve de
+    // desempate na ordenação, para a carta com histórico ganhar da gêmea sem estado.
+    novo?: boolean;
+}
+
 /**
- * A fila do dia: cartões vencidos, do mais atrasado para o mais recente.
+ * As cartas do catálogo das trilhas escolhidas que ainda não estão no baralho.
+ *
+ * É o que permite revisar uma área inteira sem ter feito a trilha. Elas entram
+ * vencendo agora, que é o mesmo que o baralho faz com carta recém-aberta, e só
+ * viram linha em user_cards quando o aluno responde a primeira vez.
+ */
+async function novasDoCatalogo(
+    userId: string,
+    trilhas: string[],
+    limite: number,
+): Promise<NaFila[]> {
+    const jaNoBaralho = db
+        .select({ id: userCards.origemId })
+        .from(userCards)
+        .where(and(eq(userCards.userId, userId), eq(userCards.origem, "flashcard")));
+
+    const linhas = await db
+        .select({ id: flashcards.id })
+        .from(flashcards)
+        .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+        .where(
+            and(
+                inArray(lessons.trailId, trilhas),
+                eq(lessons.published, true),
+                notInArray(flashcards.id, jaNoBaralho),
+            ),
+        )
+        .limit(limite);
+
+    const agora = new Date();
+    return linhas.map((l) => ({
+        origem: "flashcard" as const,
+        origemId: l.id,
+        proximaRevisao: agora,
+        novo: true,
+    }));
+}
+
+/**
+ * A fila de revisão do conteúdo escolhido.
+ *
+ * Serve TUDO do conteúdo escolhido, e não só o que venceu hoje. A tela da trilha
+ * sempre funcionou assim, e ver "4 cartas" na sala de revisão e "116" no botão da
+ * trilha, para o mesmo conteúdo, é diferença que ninguém consegue explicar para
+ * quem está estudando. As duas fazem a mesma coisa, então entregam o mesmo número.
+ *
+ * Escolher uma trilha não exige tê-la estudado: o que o aluno ainda não tem no
+ * baralho entra do catálogo, como carta nova. Sem escolha, a fila continua sendo o
+ * baralho dele e nada mais, porque ali o pedido é "o meu", não "aquela área".
  *
  * Sem teto de sessão de propósito: quem quiser vara o baralho de uma vez, e quem não
  * quiser para na hora que cansar, que dá no mesmo. O limite alto que sobra é só uma
  * trava de payload, para um baralho gigante não virar uma resposta de megabytes.
- */
-/**
- * A fila de revisão do conteúdo escolhido.
- *
- * Serve TUDO que o aluno já estudou naquele conteúdo, e não só o que venceu hoje.
- * A tela da trilha sempre funcionou assim, e ver "4 cartas" na sala de revisão e
- * "116" no botão da trilha, para o mesmo conteúdo, é diferença que ninguém
- * consegue explicar para quem está estudando. As duas fazem a mesma coisa, então
- * entregam o mesmo número.
  *
  * O agendador não sai de cena, muda de papel: ele deixa de trancar o que aparece e
  * passa a mandar na PRIORIDADE. A ordem é do mais atrasado para o mais adiantado,
@@ -330,24 +378,29 @@ export async function filaDoDia(
     filtro?: { trilhas?: string[]; glossario?: boolean },
 ): Promise<CartaoNaFila[]> {
     const meus = eq(userCards.userId, userId);
+    const doBaralho = {
+        origem: userCards.origem,
+        origemId: userCards.origemId,
+        proximaRevisao: userCards.proximaRevisao,
+    };
 
     // Sem filtro a fila é o baralho inteiro. Com filtro, a seleção de trilhas e o
     // glossário são somados: dá para revisar duas trilhas juntas, ou só o glossário.
     const escolheu = filtro && (filtro.trilhas?.length || filtro.glossario);
-    let linhas;
+    let linhas: NaFila[];
     if (!escolheu) {
         linhas = await db
-            .select()
+            .select(doBaralho)
             .from(userCards)
             .where(meus)
             .orderBy(asc(userCards.proximaRevisao))
             .limit(limite);
     } else {
-        const partes = [];
+        const partes: Promise<NaFila[]>[] = [];
         if (filtro.trilhas?.length) {
             partes.push(
                 db
-                    .select({ uc: userCards })
+                    .select(doBaralho)
                     .from(userCards)
                     .innerJoin(
                         flashcards,
@@ -359,14 +412,14 @@ export async function filaDoDia(
                     .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
                     .where(and(meus, inArray(lessons.trailId, filtro.trilhas)))
                     .orderBy(asc(userCards.proximaRevisao))
-                    .limit(limite)
-                    .then((r) => r.map((x) => x.uc)),
+                    .limit(limite),
             );
+            partes.push(novasDoCatalogo(userId, filtro.trilhas, limite));
         }
         if (filtro.glossario) {
             partes.push(
                 db
-                    .select()
+                    .select(doBaralho)
                     .from(userCards)
                     .where(and(meus, eq(userCards.origem, "glossario")))
                     .orderBy(asc(userCards.proximaRevisao))
@@ -375,7 +428,11 @@ export async function filaDoDia(
         }
         linhas = (await Promise.all(partes))
             .flat()
-            .sort((a, b) => a.proximaRevisao.getTime() - b.proximaRevisao.getTime())
+            .sort(
+                (a, b) =>
+                    a.proximaRevisao.getTime() - b.proximaRevisao.getTime() ||
+                    Number(a.novo ?? false) - Number(b.novo ?? false),
+            )
             .slice(0, limite);
     }
     if (!linhas.length) return [];
@@ -497,9 +554,9 @@ export async function responder(
             ),
         );
 
-    // Sem estado o cartão pode ser novo de verdade (autorado depois de o aluno
-    // concluir a aula) ou de aula que ele nunca fez. O primeiro caso entra agora; o
-    // segundo é recusado, senão daria para pescar resposta de aula não estudada.
+    // Sem estado, o cartão entra no baralho agora. É por aqui que a revisão livre
+    // materializa a carta: ela é servida do catálogo e só vira linha de user_cards
+    // quando o aluno se avalia pela primeira vez.
     const estado = atual ?? (await abrirCartaoAvulso(userId, origem, origemId));
 
     const dias = diasDesde(estado.ultimaRevisao);
@@ -536,9 +593,12 @@ export async function responder(
 }
 
 /**
- * Abre um cartão solto no baralho, para o caso de ele ter sido autorado depois de o
- * aluno concluir a aula. Só vale para aula concluída, e termo de glossário nunca
- * passa por aqui porque não tem aula a conferir.
+ * Abre um cartão solto no baralho, na primeira vez que o aluno responde a ele.
+ *
+ * Cobre os dois caminhos que chegam sem linha em user_cards: o cartão autorado
+ * depois de a aula ter sido concluída, e a carta de área que o aluno escolheu
+ * revisar sem ter feito a trilha. Basta a aula estar publicada; termo de glossário
+ * nunca passa por aqui porque só nasce junto da aula que o cita.
  */
 async function abrirCartaoAvulso(
     userId: string,
@@ -551,12 +611,8 @@ async function abrirCartaoAvulso(
         .select({ frente: flashcards.frente, trailId: lessons.trailId })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
-        .innerJoin(
-            lessonProgress,
-            and(eq(lessonProgress.lessonId, lessons.id), eq(lessonProgress.userId, userId)),
-        )
-        .where(eq(flashcards.id, origemId));
-    if (!permitido) throw new AppError(404, "Cartão não encontrado no seu baralho.");
+        .where(and(eq(flashcards.id, origemId), eq(lessons.published, true)));
+    if (!permitido) throw new AppError(404, "Cartão não encontrado.");
 
     // Se a mesma pergunta já está aberta pelo outro trilho de linguagem, responder
     // aqui mexe naquele cartão em vez de abrir um segundo. Sem isso a gêmea
@@ -588,11 +644,16 @@ async function abrirCartaoAvulso(
 }
 
 /**
- * Revisão de uma trilha inteira, oferecida ao concluí-la. Diferente da fila do dia,
- * aqui não importa a data: o objetivo é passar pelo conteúdo todo de uma vez, e por
- * isso a ordem é a das aulas, não a do agendador.
+ * Revisão de uma trilha inteira, oferecida ao concluí-la e disponível a qualquer
+ * momento. Diferente da fila do dia, aqui não importa a data: o objetivo é passar
+ * pelo conteúdo todo de uma vez, e por isso a ordem é a das aulas, não a do
+ * agendador.
+ *
+ * Não exige progresso na trilha. Quem quiser revisar uma área que nunca estudou
+ * recebe o baralho inteiro dela, e cada carta entra no baralho pessoal quando for
+ * respondida.
  */
-export async function revisaoDaTrilha(userId: string, trailId: string) {
+export async function revisaoDaTrilha(trailId: string) {
     const cartoes = await db
         .select({
             id: flashcards.id,
@@ -604,15 +665,9 @@ export async function revisaoDaTrilha(userId: string, trailId: string) {
             trilhaId: trails.id,
         })
         .from(flashcards)
-        // O join com o progresso é o que garante a regra: só entra cartão de aula
-        // concluída, senão a revisão entregaria a resposta de aula não estudada.
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .innerJoin(modules, eq(modules.id, lessons.moduleId))
         .innerJoin(trails, eq(trails.id, lessons.trailId))
-        .innerJoin(
-            lessonProgress,
-            and(eq(lessonProgress.lessonId, lessons.id), eq(lessonProgress.userId, userId)),
-        )
         .where(and(eq(lessons.trailId, trailId), eq(lessons.published, true)))
         .orderBy(asc(modules.position), asc(lessons.position), asc(flashcards.position));
 
@@ -631,60 +686,96 @@ export async function revisaoDaTrilha(userId: string, trailId: string) {
     return embaralhar(unicos).map((c) => ({ ...c, origem: "flashcard" as const }));
 }
 
-/** Quantos cartões a trilha já liberou para este aluno. Alimenta a chamada de revisão. */
-export async function contarRevisaoDaTrilha(userId: string, trailId: string) {
+/** Quantos cartões a trilha tem para revisar. Alimenta a chamada de revisão. */
+export async function contarRevisaoDaTrilha(trailId: string) {
     const [linha] = await db
         // Conta pergunta distinta, e não linha, pelo mesmo motivo do dedup em
         // revisaoDaTrilha: senão o botão promete mais cartas do que vai mostrar.
         .select({ n: sql<number>`count(distinct ${flashcards.frente})` })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
-        .innerJoin(
-            lessonProgress,
-            and(eq(lessonProgress.lessonId, lessons.id), eq(lessonProgress.userId, userId)),
-        )
         .where(and(eq(lessons.trailId, trailId), eq(lessons.published, true)));
     return { total: Number(linha?.n ?? 0) };
 }
 
 /**
- * Os baralhos do aluno: uma linha por trilha que tem cartão dele, mais o glossário.
- * É a lista que a aba mostra para ele escolher o que revisar, sozinho ou misturado.
+ * As áreas que o aluno pode revisar: toda trilha publicada que tem carta, mais o
+ * glossário. É a lista que a aba mostra para ele escolher o que revisar, sozinho ou
+ * misturado.
+ *
+ * Vem o catálogo inteiro, e não só o que ele já estudou, porque escolher a área não
+ * depende mais de ter feito a trilha. Cada linha diz as duas coisas: `total` é o que
+ * ele já tem no baralho daquela trilha e `disponiveis` é o tamanho da área. Quem
+ * nunca abriu a trilha aparece com total zero e o baralho cheio esperando.
  */
 export async function baralhos(userId: string) {
     const agora = new Date();
     const vencido = sql<number>`count(*) filter (where ${userCards.proximaRevisao} <= ${agora})`;
 
-    const porTrilha = await db
-        .select({
-            trilhaId: trails.id,
-            nome: trails.name,
-            vencidos: vencido,
-            total: count(),
-        })
-        .from(userCards)
-        .innerJoin(
-            flashcards,
-            and(eq(userCards.origem, "flashcard"), eq(flashcards.id, userCards.origemId)),
-        )
-        .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
-        .innerJoin(trails, eq(trails.id, lessons.trailId))
-        .where(eq(userCards.userId, userId))
-        .groupBy(trails.id, trails.name)
-        .orderBy(trails.name);
+    const [porTrilha, catalogo, [gloss]] = await Promise.all([
+        db
+            .select({
+                trilhaId: trails.id,
+                nome: trails.name,
+                vencidos: vencido,
+                total: count(),
+            })
+            .from(userCards)
+            .innerJoin(
+                flashcards,
+                and(eq(userCards.origem, "flashcard"), eq(flashcards.id, userCards.origemId)),
+            )
+            .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+            .innerJoin(trails, eq(trails.id, lessons.trailId))
+            .where(eq(userCards.userId, userId))
+            .groupBy(trails.id, trails.name)
+            .orderBy(trails.name),
+        // Pergunta distinta, e não linha, pelo mesmo motivo de contarRevisaoDaTrilha:
+        // trilha com trilho de linguagem tem a mesma carta duas vezes.
+        db
+            .select({
+                trilhaId: trails.id,
+                nome: trails.name,
+                disponiveis: sql<number>`count(distinct ${flashcards.frente})`,
+            })
+            .from(flashcards)
+            .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
+            .innerJoin(trails, eq(trails.id, lessons.trailId))
+            .where(eq(lessons.published, true))
+            .groupBy(trails.id, trails.name)
+            .orderBy(trails.name),
+        db
+            .select({ vencidos: vencido, total: count() })
+            .from(userCards)
+            .where(and(eq(userCards.userId, userId), eq(userCards.origem, "glossario"))),
+    ]);
 
-    const [gloss] = await db
-        .select({ vencidos: vencido, total: count() })
-        .from(userCards)
-        .where(and(eq(userCards.userId, userId), eq(userCards.origem, "glossario")));
+    const meus = new Map(porTrilha.map((t) => [t.trilhaId, t]));
+    const trilhas = catalogo.map((c) => ({
+        id: c.trilhaId,
+        nome: c.nome,
+        vencidos: Number(meus.get(c.trilhaId)?.vencidos ?? 0),
+        total: Number(meus.get(c.trilhaId)?.total ?? 0),
+        disponiveis: Number(c.disponiveis),
+    }));
 
-    return {
-        trilhas: porTrilha.map((t) => ({
+    // Trilha despublicada some do catálogo mas pode ter deixado carta no baralho de
+    // alguém. Some no fim para o aluno ainda conseguir revisar o que já é dele.
+    const noCatalogo = new Set(trilhas.map((t) => t.id));
+    for (const t of porTrilha) {
+        if (noCatalogo.has(t.trilhaId)) continue;
+        trilhas.push({
             id: t.trilhaId,
             nome: t.nome,
             vencidos: Number(t.vencidos),
             total: Number(t.total),
-        })),
+            disponiveis: Number(t.total),
+        });
+    }
+    trilhas.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+
+    return {
+        trilhas,
         glossario: { vencidos: Number(gloss?.vencidos ?? 0), total: Number(gloss?.total ?? 0) },
     };
 }
@@ -923,8 +1014,12 @@ export async function historicoSessoes(userId: string, limite = 20) {
 }
 
 /**
- * Sinaliza uma carta com problema. Só vale para carta que está no baralho do aluno,
- * senão viraria porta para reportar conteúdo que ele nunca viu.
+ * Sinaliza uma carta com problema.
+ *
+ * Antes exigia a carta no baralho, o que virou trava boba com a revisão livre: na
+ * área que o aluno nunca estudou a carta só entra no baralho quando ele responde, e
+ * o erro que ele quer reportar costuma estar na primeira que aparece. Basta a carta
+ * existir; quem está vendo uma carta pode reportá-la.
  */
 export async function reportarCartao(
     userId: string,
@@ -932,17 +1027,14 @@ export async function reportarCartao(
     origemId: string,
     comentario?: string,
 ) {
-    const [tem] = await db
-        .select({ id: userCards.id })
-        .from(userCards)
-        .where(
-            and(
-                eq(userCards.userId, userId),
-                eq(userCards.origem, origem),
-                eq(userCards.origemId, origemId),
-            ),
-        );
-    if (!tem) throw new AppError(404, "Cartão não encontrado no seu baralho.");
+    const [existe] =
+        origem === "flashcard"
+            ? await db
+                  .select({ id: flashcards.id })
+                  .from(flashcards)
+                  .where(eq(flashcards.id, origemId))
+            : await db.select({ id: glossary.id }).from(glossary).where(eq(glossary.id, origemId));
+    if (!existe) throw new AppError(404, "Cartão não encontrado.");
 
     await db
         .insert(cardReports)

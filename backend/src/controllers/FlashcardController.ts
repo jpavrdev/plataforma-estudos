@@ -76,7 +76,7 @@ export const getPontosFracos = async (req: Request, res: Response, next: NextFun
 
 export const getRevisaoTrilha = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await revisaoDaTrilha(req.userId!, String(req.params.trailId)));
+        res.json(await revisaoDaTrilha(String(req.params.trailId)));
     } catch (err) {
         next(err);
     }
@@ -84,7 +84,7 @@ export const getRevisaoTrilha = async (req: Request, res: Response, next: NextFu
 
 export const getContagemTrilha = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await contarRevisaoDaTrilha(req.userId!, String(req.params.trailId)));
+        res.json(await contarRevisaoDaTrilha(String(req.params.trailId)));
     } catch (err) {
         next(err);
     }
