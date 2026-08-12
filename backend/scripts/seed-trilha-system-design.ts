@@ -1327,7 +1327,430 @@ const MODULO_3: Modulo = {
     ],
 };
 
-export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3];
+const MODULO_4: Modulo = {
+    titulo: "Módulo 4 - Dados distribuídos",
+    aulas: [
+        {
+            titulo: "Replicação: líder, seguidores e o atraso",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Replicação: líder, seguidores e o atraso\n\nGuardar o dado em mais de uma máquina resolve três coisas de uma vez: sobrevive à perda de uma delas, espalha a carga de leitura, e aproxima o dado de quem consome. O preço é uma pergunta que passa a existir para sempre: **as cópias estão iguais agora?**\n\nA resposta quase sempre é não, e a arquitetura inteira gira em torno de decidir o quanto esse \"não\" incomoda.",
+                },
+                {
+                    type: "text",
+                    value: "## Um líder e vários seguidores\n\nO arranjo mais comum, e o padrão em banco relacional, tem um **líder** que aceita escrita e **seguidores** que copiam o que ele fez e servem leitura. É simples de raciocinar: existe um lugar onde a verdade acontece primeiro, e a ordem das escritas é a ordem que o líder decidiu.\n\nA cópia pode ser feita de dois jeitos. **Assíncrona**: o líder confirma a escrita ao cliente assim que gravou, e os seguidores recebem depois. Rápido, mas se o líder morrer entre a confirmação e a cópia, aquela escrita se perde. **Síncrona**: o líder só confirma depois que ao menos um seguidor confirmou. Nada se perde, mas a escrita passa a custar uma ida e volta de rede a mais, e se o seguidor travar, a escrita trava junto.",
+                },
+                {
+                    type: "table",
+                    value: '[["Modo de replicação", "Latência de escrita", "Risco", "Uso típico"], ["Assíncrona", "Baixa", "Perder escritas na queda do líder", "Réplica de leitura, réplica em outra região"], ["Síncrona com um seguidor", "Média", "Escrita para se o seguidor travar", "Dado financeiro e crítico"], ["Semissíncrona", "Média", "Equilíbrio entre as duas", "Padrão de muitos bancos gerenciados"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O atraso e os três problemas que ele cria\n\nCom réplica assíncrona sempre existe um **atraso de replicação**, normalmente de milissegundos, ocasionalmente de segundos ou minutos quando o seguidor fica sobrecarregado. Esse atraso gera três sintomas com nome próprio, e citá-los é um bom sinal numa sessão.\n\n**Ler a própria escrita**: a pessoa comenta, a leitura seguinte cai num seguidor atrasado, e o comentário sumiu. **Leitura não monotônica**: duas leituras seguidas caem em seguidores diferentes e o dado parece voltar no tempo. **Prefixo consistente**: uma resposta aparece antes da pergunta, porque chegaram por caminhos com atrasos diferentes.\n\nA correção do primeiro é a mais cobrada, e é simples: leituras do próprio usuário sobre dado que ele acabou de escrever vão para o líder, ou são grudadas na mesma réplica por um tempo curto.',
+                },
+                {
+                    type: "text",
+                    value: '## Quando o líder cai\n\nA troca de líder é o momento mais delicado do arranjo. Alguém precisa perceber a queda, escolher um seguidor para promover e redirecionar as escritas. Cada uma dessas etapas tem armadilha.\n\nSe a escolha recair sobre um seguidor atrasado, as escritas que ele não recebeu **se perdem**. Se o líder antigo voltar sem saber que foi substituído, aparecem dois líderes aceitando escrita, o que se chama **cérebro dividido** e costuma corromper dado. E se o detector for apressado demais, uma lentidão passageira vira troca de líder desnecessária, com indisponibilidade de brinde. Por isso a promoção séria depende de quórum, assunto que fecha o módulo.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** o arranjo padrão é **um líder e vários seguidores**. Replicação **assíncrona** é rápida e pode perder escrita na queda do líder; **síncrona** não perde e amarra a escrita ao seguidor. O atraso produz **ler a própria escrita**, **leitura não monotônica** e problema de **prefixo**. A troca de líder tem risco de perda de escrita e de **cérebro dividido**.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é o risco da replicação assíncrona?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Perder escritas já confirmadas se o líder cair.", isCorrect: true },
+                        { text: "Travar a escrita quando um seguidor fica lento.", isCorrect: false },
+                        { text: "Impedir que os seguidores sirvam qualquer leitura.", isCorrect: false },
+                        { text: "Aumentar a latência de escrita em uma ida e volta.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Um usuário publica um comentário e, ao recarregar, não o vê. Qual sintoma de replicação é esse?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Falha em ler a própria escrita.", isCorrect: true },
+                        { text: "Leitura não monotônica entre requisições.", isCorrect: false },
+                        { text: "Quebra de prefixo consistente na ordem.", isCorrect: false },
+                        { text: "Cérebro dividido entre dois líderes ativos.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a correção usual para o usuário enxergar o que acabou de escrever?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Mandar essas leituras para o líder por um tempo.", isCorrect: true },
+                        { text: "Tornar toda a replicação síncrona no banco de dados.", isCorrect: false },
+                        { text: "Aumentar o número de seguidores disponíveis para leitura.", isCorrect: false },
+                        { text: "Invalidar o cache da aplicação a cada escrita realizada.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que caracteriza o cérebro dividido numa troca de líder?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Dois nós aceitando escrita ao mesmo tempo.", isCorrect: true },
+                        { text: "Um seguidor atrasado sendo promovido a líder novo.", isCorrect: false },
+                        { text: "O detector de falha promovendo um líder cedo demais.", isCorrect: false },
+                        { text: "As leituras continuarem sendo servidas pelo líder antigo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que um detector de falha apressado é um problema?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Transforma lentidão passageira em troca de líder.", isCorrect: true },
+                        { text: "Permite que o líder antigo continue aceitando escritas.", isCorrect: false },
+                        { text: "Impede que o seguidor mais atualizado seja escolhido.", isCorrect: false },
+                        { text: "Aumenta o atraso de replicação entre líder e seguidores.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Particionamento e a escolha da chave",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Particionamento e a escolha da chave\n\nReplicação resolve leitura e sobrevivência, e não resolve tamanho: se o dado não cabe numa máquina, copiá-lo não ajuda. Aí entra o **particionamento**, também chamado de sharding, que divide o conjunto em pedaços e coloca cada pedaço num lugar diferente.\n\nA decisão inteira se resume a uma escolha: **qual chave define o pedaço**. Ela parece técnica e é, na prática, a decisão mais difícil de reverter em todo o desenho, porque muda onde cada linha mora.",
+                },
+                {
+                    type: "table",
+                    value: '[["Estratégia", "Como divide", "Ganha", "Perde"], ["Por faixa", "Intervalos ordenados da chave", "Consulta por intervalo é eficiente", "Concentra carga na faixa da moda"], ["Por hash", "Hash da chave decide o pedaço", "Distribui bem a carga", "Consulta por intervalo vira varredura"], ["Por lista", "Valor explícito, como país", "Isolamento e residência de dado", "Pedaços de tamanhos desiguais"]]',
+                },
+                {
+                    type: "text",
+                    value: '## O ponto quente é o inimigo\n\nParticionar por faixa de data parece natural e costuma ser armadilha: como quase toda escrita é de hoje, um único pedaço recebe tudo enquanto os outros ficam ociosos. É o **ponto quente**, e ele derruba o ganho inteiro do particionamento.\n\nO mesmo vale para chaves com distribuição desigual. Particionar publicações por autor funciona bem até existir um autor com dez milhões de seguidores e cinquenta publicações por dia. A saída usual é compor a chave: em vez de só o autor, usar autor mais um sufixo, espalhando as linhas daquele autor por vários pedaços. O custo é que ler tudo daquele autor passa a exigir consultar todos os pedaços.',
+                },
+                {
+                    type: "text",
+                    value: '## O que o particionamento tira de você\n\nEsta é a parte que separa uma resposta madura. Ao dividir, você perde coisas que o banco em uma máquina dava de graça.\n\n**Transação entre pedaços** deixa de ser trivial: atualizar duas linhas que caíram em máquinas diferentes exige coordenação, e o padrão prático é evitar essa necessidade escolhendo a chave de forma que o que muda junto fique junto. **Junção** entre tabelas particionadas por chaves diferentes vira consulta distribuída, cara e lenta. **Unicidade global**, como garantir que não existam dois emails iguais, deixa de sair de um índice único e passa a exigir uma tabela de reserva ou um serviço à parte. E **consulta que não usa a chave** precisa perguntar a todos os pedaços, o padrão espalhar e juntar, que não escala bem.',
+                },
+                {
+                    type: "text",
+                    value: '## Como escolher a chave na prática\n\nO critério prático é olhar as consultas mais frequentes, não o modelo de dados. Pergunte: qual valor aparece na maioria das consultas? Se 90% das consultas filtram por usuário, a chave é o usuário, porque assim cada consulta toca um pedaço só.\n\nE existe uma resposta legítima que vale ter na manga: **não particionar ainda**. Se a conta do módulo 2 deu menos de um terabyte e alguns milhares de operações por segundo, uma instância verticalizada com réplicas resolve, e você economiza toda essa complexidade. Dizer isso, com o número na mão, costuma valer mais do que desenhar um esquema de sharding elaborado que ninguém pediu.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** particionar divide o dado quando ele não cabe numa máquina, e a decisão é **qual chave**. Faixa favorece consulta por intervalo e cria **ponto quente**; hash distribui e atrapalha intervalo. Particionar custa **transação entre pedaços**, junção, unicidade global e consulta fora da chave. Escolha a chave pelas **consultas mais frequentes**, e lembre que **não particionar ainda** é resposta válida.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual problema o particionamento resolve que a replicação não resolve?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "O dado não caber em uma única máquina.", isCorrect: true },
+                        { text: "A perda de dados quando um nó falha de forma permanente.", isCorrect: false },
+                        { text: "O excesso de leituras chegando ao banco primário.", isCorrect: false },
+                        { text: "A latência alta para usuários de outras regiões do mundo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que particionar por faixa de data costuma criar ponto quente?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Quase toda escrita é do período mais recente.", isCorrect: true },
+                        { text: "As faixas de data têm tamanhos naturalmente desiguais.", isCorrect: false },
+                        { text: "O hash da data não distribui bem entre os pedaços.", isCorrect: false },
+                        { text: "Consultas por intervalo precisam varrer todos os pedaços.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Um autor com milhões de seguidores concentra carga num pedaço. Qual é a saída usual e o custo dela?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Compor a chave com um sufixo, e ler tudo dele fica caro.", isCorrect: true },
+                        { text: "Trocar o particionamento por faixa, e perder distribuição.", isCorrect: false },
+                        { text: "Replicar o pedaço quente, e perder consistência na escrita.", isCorrect: false },
+                        { text: "Mover o autor para um banco próprio, e perder as junções.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que deixa de ser trivial depois de particionar o banco?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Transação envolvendo linhas de pedaços diferentes.", isCorrect: true },
+                        { text: "Consulta que filtra exatamente pela chave de partição.", isCorrect: false },
+                        { text: "Replicação de cada pedaço para seus próprios seguidores.", isCorrect: false },
+                        { text: "Escrita de linhas novas dentro de um mesmo pedaço.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual critério deve guiar a escolha da chave de partição?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O valor que aparece na maioria das consultas.", isCorrect: true },
+                        { text: "A coluna com maior número de valores distintos.", isCorrect: false },
+                        { text: "A chave primária já usada pelo modelo de dados.", isCorrect: false },
+                        { text: "O campo que mais cresce em tamanho ao longo do tempo.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Hashing consistente",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Hashing consistente\n\nEscolhida a chave, falta decidir **como o valor dela vira um destino**. A forma ingênua é o resto da divisão: `hash(chave) % numero_de_nos`. Funciona perfeitamente, distribui bem, é fácil de explicar. E quebra de um jeito espetacular no dia em que o número de nós muda.\n\nEsse é o problema que o hashing consistente resolve, e ele aparece em quase todo estudo de caso que envolve cache distribuído ou banco particionado.",
+                },
+                {
+                    type: "code",
+                    value: "Com resto da divisao, 4 nos:\n\n  hash(\"usuario-42\") = 1002  ->  1002 % 4 = no 2\n  hash(\"usuario-77\") = 2451  ->  2451 % 4 = no 3\n\nEntra o quinto no. Agora e % 5:\n\n  1002 % 5 = no 2   (continuou)\n  2451 % 5 = no 1   (mudou de lugar)\n\nNa pratica, cerca de 80% das chaves mudam de no.\nSe aquilo era um cache, 80% dele vira inutil de uma vez.",
+                },
+                {
+                    type: "text",
+                    value: "## O anel\n\nA ideia do hashing consistente é parar de calcular o destino a partir da **quantidade** de nós. Em vez disso, imagine o espaço de valores do hash como um círculo, de zero até o valor máximo. Cada nó recebe uma posição nesse círculo, também por hash do seu nome. Cada chave também recebe uma posição.\n\nA regra de destino passa a ser: a chave pertence ao **primeiro nó encontrado andando pelo círculo**, sempre no mesmo sentido. Como a posição de uma chave não depende de quantos nós existem, entrar ou sair um nó não mexe nas outras. Quando um nó entra, ele assume apenas as chaves que ficam entre ele e o nó anterior no círculo. Com dez nós, subir para onze move cerca de um décimo das chaves, e não quatro quintos.",
+                },
+                {
+                    type: "text",
+                    value: '## Nós virtuais\n\nO anel simples tem um defeito prático: com poucos nós, as posições sorteadas ficam desiguais e alguém acaba responsável por um pedaço bem maior do círculo. Além disso, quando um nó cai, **todo** o intervalo dele vai para um único vizinho, que pode não aguentar o dobro de carga.\n\nA correção é dar a cada nó físico muitas posições no círculo, chamadas **nós virtuais**. Em vez de uma posição, cada máquina recebe cem ou duzentas. Com isso a distribuição fica bem mais uniforme, e quando uma máquina cai, seus intervalos se espalham entre várias outras, em vez de cair todos no vizinho. É por isso que praticamente toda implementação real usa nós virtuais.',
+                },
+                {
+                    type: "table",
+                    value: '[["Abordagem", "Chaves movidas ao somar um nó", "Distribuição", "Falha de um nó"], ["Resto da divisão", "A grande maioria", "Uniforme", "Remapeia quase tudo"], ["Anel simples", "Cerca de 1/n", "Desigual com poucos nós", "Vizinho absorve tudo"], ["Anel com nós virtuais", "Cerca de 1/n", "Uniforme", "Carga se espalha entre vários"]]',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** `hash % n` remapeia quase todas as chaves quando `n` muda, o que esvazia um cache distribuído de uma vez. O **hashing consistente** coloca nós e chaves num círculo e associa a chave ao próximo nó, então entrar ou sair um nó move só cerca de **1/n** das chaves. **Nós virtuais** corrigem a distribuição desigual e espalham a carga de um nó que cai.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é o problema de decidir o destino com o resto da divisão pelo número de nós?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Mudar a quantidade de nós remapeia quase todas as chaves.", isCorrect: true },
+                        { text: "A distribuição das chaves entre os nós fica desigual.", isCorrect: false },
+                        { text: "O cálculo do destino fica lento conforme os nós aumentam.", isCorrect: false },
+                        { text: "Chaves parecidas acabam sempre caindo no mesmo destino.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "No anel do hashing consistente, a qual nó pertence uma chave?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ao primeiro nó encontrado andando pelo círculo.", isCorrect: true },
+                        { text: "Ao nó cuja posição estiver numericamente mais próxima.", isCorrect: false },
+                        { text: "Ao nó com menos chaves associadas naquele momento.", isCorrect: false },
+                        { text: "Ao nó definido pelo resto da divisão da posição dela.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Com 10 nós no anel, aproximadamente quantas chaves mudam de lugar ao entrar o décimo primeiro?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cerca de 10% delas.", isCorrect: true },
+                        { text: "Cerca de 90% delas.", isCorrect: false },
+                        { text: "Cerca de 50% delas.", isCorrect: false },
+                        { text: "Praticamente nenhuma.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual problema os nós virtuais resolvem no anel simples?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A distribuição desigual e a carga toda indo para um vizinho.", isCorrect: true },
+                        { text: "A necessidade de recalcular a posição das chaves existentes.", isCorrect: false },
+                        { text: "O custo de percorrer o círculo a cada busca de destino.", isCorrect: false },
+                        { text: "A perda de dados quando um nó sai do anel sem aviso.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o hashing consistente importa tanto para cache distribuído?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Um remapeamento amplo esvaziaria o cache de uma vez.", isCorrect: true },
+                        { text: "O cache não tem como replicar as chaves entre os nós.", isCorrect: false },
+                        { text: "As chaves de cache expiram e precisam mudar de destino.", isCorrect: false },
+                        { text: "O cache exige distribuição perfeitamente uniforme das chaves.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "CAP e PACELC",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# CAP e PACELC\n\nO teorema CAP é o conceito mais citado e mais mal citado de sistemas distribuídos. A versão popular, de que se escolhem dois entre consistência, disponibilidade e tolerância a partição, é enganosa, porque sugere que existe a opção de abrir mão da tolerância a partição.\n\nNão existe. Partição é a rede falhando entre os nós, e rede falha. Se o seu sistema tem mais de uma máquina, você é obrigado a tolerar partição. A escolha real é outra, e é bem mais estreita.",
+                },
+                {
+                    type: "quote",
+                    value: "O **CAP** diz que, **quando existe uma partição de rede**, um sistema distribuído precisa escolher entre **consistência** (todo mundo lê o dado mais recente) e **disponibilidade** (todo nó responde, mesmo que com dado velho). Fora da partição, o teorema não diz nada.",
+                },
+                {
+                    type: "text",
+                    value: "## O que cada escolha significa na prática\n\nImagine dois datacenters e o cabo entre eles rompido. Uma escrita chega no lado A.\n\nSe o sistema escolhe **consistência**, o lado A recusa a escrita, porque não consegue confirmar com o outro lado. O usuário vê erro, e nenhum dado fica divergente. É o comportamento que se quer para saldo bancário e reserva de assento: recusar é melhor do que vender a mesma poltrona duas vezes.\n\nSe escolhe **disponibilidade**, o lado A aceita a escrita, o lado B segue com a versão antiga, e quando o cabo voltar alguém precisa reconciliar as duas versões. É o comportamento que se quer para carrinho de compras, curtida e contador de visualização, onde recusar o pedido é pior do que resolver uma divergência depois.",
+                },
+                {
+                    type: "text",
+                    value: "## PACELC, que é o que falta no CAP\n\nO CAP só fala do que fazer durante a partição, que é um evento raro. E no resto do tempo, que é quase sempre? É essa a lacuna que o **PACELC** preenche, e citá-lo é um sinal de estar atualizado.\n\nA formulação é: **se há Partição (P), escolha entre Availability e Consistency (A ou C); senão (Else, E), escolha entre Latency e Consistency (L ou C)**. A segunda metade é a que descreve o dia a dia. Confirmar uma escrita em três réplicas espalhadas pelo mundo antes de responder dá consistência forte e custa centenas de milissegundos. Responder assim que a réplica local gravou é rápido e aceita que outra região leia dado velho por um instante. Nenhuma partição envolvida: é só o preço da luz percorrendo fibra.",
+                },
+                {
+                    type: "table",
+                    value: '[["Classificação PACELC", "Durante partição", "Fora de partição", "Exemplo de uso"], ["PC/EC", "Prefere consistência", "Prefere consistência", "Saldo, estoque, reserva"], ["PA/EL", "Prefere disponibilidade", "Prefere latência", "Carrinho, curtida, contador"], ["PC/EL", "Prefere consistência", "Prefere latência", "Sistemas com leitura relaxada e escrita rígida"], ["PA/EC", "Prefere disponibilidade", "Prefere consistência", "Combinação rara na prática"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Como usar isso numa sessão sem parecer decoreba\n\nO jeito ruim é anunciar "esse sistema é AP". O jeito bom é aplicar por **operação**, porque quase nenhum sistema real é uma coisa só. Num comércio eletrônico, navegar o catálogo pode ler dado de segundos atrás sem problema nenhum, enquanto a baixa de estoque no fechamento do pedido não pode.\n\nA frase que funciona é essa: "leitura de catálogo eu sirvo por réplica e cache, aceitando alguns segundos de atraso; a reserva de estoque eu faço no primário, com consistência forte, porque vender item inexistente custa mais caro do que uma latência um pouco maior naquele passo". Isso mostra que você entendeu o conceito como ferramenta de decisão, e não como classificação de banco.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** tolerar **partição** não é opcional, então o CAP é uma escolha entre **consistência e disponibilidade durante a partição**. O **PACELC** completa: fora da partição, a escolha é entre **latência e consistência**. Aplique por **operação**, e não ao sistema inteiro: catálogo pode ler dado velho, baixa de estoque não pode.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que dizer que se escolhem dois entre consistência, disponibilidade e partição é enganoso?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Tolerar partição não é opcional em um sistema distribuído.", isCorrect: true },
+                        { text: "Os três podem ser obtidos ao mesmo tempo com quórum.", isCorrect: false },
+                        { text: "A disponibilidade depende diretamente da consistência escolhida.", isCorrect: false },
+                        { text: "A partição só ocorre em sistemas espalhados por várias regiões.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Durante uma partição, um sistema que prefere consistência faz o quê com uma escrita que não pode ser confirmada?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Recusa a escrita.", isCorrect: true },
+                        { text: "Aceita e reconcilia as versões depois.", isCorrect: false },
+                        { text: "Aceita e replica apenas para os nós do mesmo lado.", isCorrect: false },
+                        { text: "Guarda a escrita em fila até a rede voltar a funcionar.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o PACELC acrescenta ao CAP?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A escolha entre latência e consistência fora da partição.", isCorrect: true },
+                        { text: "A garantia de que partições podem ser evitadas por projeto.", isCorrect: false },
+                        { text: "A definição formal do que conta como uma partição de rede.", isCorrect: false },
+                        { text: "A separação entre consistência de leitura e a de escrita.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement:
+                        "Um sistema prefere disponibilidade na partição e latência fora dela. Como ele é classificado?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "PA/EL.", isCorrect: true },
+                        { text: "PC/EC.", isCorrect: false },
+                        { text: "PC/EL.", isCorrect: false },
+                        { text: "PA/EC.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a forma mais forte de aplicar CAP e PACELC numa sessão de design?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Decidir por operação, e não para o sistema inteiro.", isCorrect: true },
+                        { text: "Classificar o banco escolhido e manter a escolha coerente.", isCorrect: false },
+                        { text: "Preferir consistência sempre, e relaxar só se houver queixa.", isCorrect: false },
+                        { text: "Escolher disponibilidade, já que indisponibilidade é o pior caso.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Quórum e modelos de consistência",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Quórum e modelos de consistência\n\nAs duas aulas anteriores falaram de escolhas. Esta fala de como se **implementa** a escolha, e do vocabulário para descrever o resultado com precisão. É a aula mais teórica do módulo, e a que mais rende em aprofundamento.\n\nO mecanismo central é o **quórum**: em vez de perguntar a todas as réplicas ou a apenas uma, pergunta-se a uma maioria, e a matemática garante o resto.",
+                },
+                {
+                    type: "code",
+                    value: "N = numero de replicas\nW = quantas precisam confirmar uma escrita\nR = quantas sao consultadas numa leitura\n\nSe W + R > N, leitura e escrita se sobrepoem em ao menos\numa replica, entao a leitura enxerga a escrita mais recente.\n\nCom N = 3:\n  W=3, R=1  -> escrita cara e lenta, leitura rapida\n  W=1, R=3  -> escrita rapida, leitura cara\n  W=2, R=2  -> equilibrado, o arranjo mais comum\n  W=1, R=1  -> rapido nos dois lados, sem garantia nenhuma",
+                },
+                {
+                    type: "text",
+                    value: "## O que o quórum resolve e o que não resolve\n\nCom `W + R > N`, sempre existe ao menos uma réplica em comum entre o conjunto que confirmou a escrita e o conjunto consultado na leitura. Como essa réplica tem a versão nova, a leitura consegue enxergá-la, desde que saiba comparar versões e escolher a mais recente.\n\nO que o quórum **não** resolve sozinho é a ordem de escritas concorrentes. Se duas pessoas escrevem valores diferentes na mesma chave ao mesmo tempo, e cada uma alcança um conjunto de réplicas, existem duas versões legítimas. Resolver isso exige carimbo de tempo com desempate, relógio vetorial ou um tipo de dado que saiba se fundir sozinho. E a estratégia mais simples, chamada última escrita vence, tem um defeito conhecido: ela **descarta** silenciosamente uma das escritas.",
+                },
+                {
+                    type: "table",
+                    value: '[["Modelo de consistência", "O que garante", "Custo"], ["Forte (linearizável)", "Toda leitura vê a última escrita confirmada", "Coordenação e latência alta"], ["Sequencial", "Todos veem as operações na mesma ordem", "Menor que a forte, ainda coordena"], ["Causal", "O que causou vem antes do efeito", "Barata e suficiente em muitos casos"], ["Ler a própria escrita", "Você vê o que acabou de gravar", "Roteamento de leitura, quase nada"], ["Eventual", "As réplicas convergem, um dia", "A mais barata e a mais confusa"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Consistência eventual não é ausência de garantia\n\nA expressão soa como desculpa, e não é. Ela promete uma coisa concreta: **na ausência de novas escritas, todas as réplicas convergem para o mesmo valor**. O que ela não promete é quando, nem que as leituras no meio do caminho façam sentido juntas.\n\nÉ por isso que os modelos intermediários existem e valem tanto. Consistência **causal** garante que, se uma mensagem responde a outra, ninguém vê a resposta antes da pergunta, e isso resolve a maior parte do desconforto de um sistema eventual sem pagar o preço da consistência forte. **Ler a própria escrita** custa quase nada e elimina o sintoma mais visível para o usuário. Em muitos desenhos, a resposta certa é eventual no geral, com essas duas garantias pontuais onde importam.',
+                },
+                {
+                    type: "text",
+                    value: '## Consenso, e por que ele é caro\n\nQuando o sistema precisa que todos concordem com **uma** decisão, como quem é o líder ou qual é a ordem oficial das operações, entra o consenso, com Raft e Paxos como algoritmos conhecidos. A ideia comum a eles é a mesma da maioria: uma decisão só vale quando mais da metade dos nós concorda, o que impede dois grupos separados de decidirem coisas contraditórias, resolvendo o cérebro dividido da primeira aula.\n\nO preço é ida e volta de rede em cada decisão, e a exigência de que a maioria esteja viva. Por isso ninguém usa consenso para tudo: usa-se para as decisões estruturais, como eleger líder e guardar configuração, e deixa-se o caminho de dado seguir por replicação e quórum, que são bem mais baratos.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** com **W + R > N** os conjuntos de escrita e leitura se sobrepõem e a leitura enxerga a escrita mais recente. Quórum não ordena escritas concorrentes, e **última escrita vence** descarta uma delas em silêncio. **Eventual** promete convergência, não prazo; **causal** e **ler a própria escrita** resolvem barato o que mais incomoda. **Consenso** é caro e fica para decisões estruturais, como eleger líder.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Com N igual a 3 réplicas, qual configuração garante que a leitura enxergue a escrita mais recente?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "W igual a 2 e R igual a 2.", isCorrect: true },
+                        { text: "W igual a 1 e R igual a 1.", isCorrect: false },
+                        { text: "W igual a 1 e R igual a 2.", isCorrect: false },
+                        { text: "W igual a 2 e R igual a 1.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que o quórum não resolve sozinho?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A ordem entre escritas concorrentes na mesma chave.", isCorrect: true },
+                        { text: "A sobreposição entre o conjunto de leitura e o de escrita.", isCorrect: false },
+                        { text: "A sobrevivência do sistema à queda de uma das réplicas.", isCorrect: false },
+                        { text: "A distribuição das réplicas entre regiões geográficas.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: 'Qual é o defeito conhecido da estratégia "última escrita vence"?',
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Ela descarta uma das escritas em silêncio.", isCorrect: true },
+                        { text: "Ela exige relógios sincronizados com precisão de microssegundos.", isCorrect: false },
+                        { text: "Ela impede que as réplicas convirjam para o mesmo valor.", isCorrect: false },
+                        { text: "Ela obriga o cliente a resolver o conflito manualmente.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que exatamente a consistência eventual promete?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Que as réplicas convergem se as escritas pararem.", isCorrect: true },
+                        { text: "Que toda leitura devolve a última escrita confirmada.", isCorrect: false },
+                        { text: "Que a convergência acontece dentro de um prazo definido.", isCorrect: false },
+                        { text: "Que as operações são vistas na mesma ordem por todos.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Para que se usa consenso, dado o custo dele?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Para decisões estruturais, como eleger o líder.", isCorrect: true },
+                        { text: "Para toda escrita que precisa de durabilidade garantida.", isCorrect: false },
+                        { text: "Para as leituras que exigem enxergar a escrita mais recente.", isCorrect: false },
+                        { text: "Para distribuir as chaves entre os nós de forma equilibrada.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3, MODULO_4];
 
 async function seed() {
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
