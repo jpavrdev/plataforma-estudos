@@ -2601,7 +2601,426 @@ const MODULO_6: Modulo = {
     ],
 };
 
-export const MODULOS: Modulo[] = [MODULO_1, MODULO_2, MODULO_3, MODULO_4, MODULO_5, MODULO_6];
+const MODULO_7: Modulo = {
+    titulo: "Módulo 7 - System Design de sistemas de IA",
+    aulas: [
+        {
+            titulo: "Servir um modelo: a API de inferência",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Servir um modelo: a API de inferência\n\nEm 2026, desenhar um sistema apoiado em modelo de linguagem virou parte comum da conversa de System Design, e é onde muita gente escorrega, porque tenta aplicar as intuições de uma API comum. Elas não valem, e vale entender exatamente por quê.\n\nUma requisição de API tradicional dura milissegundos, custa quase nada e devolve tudo de uma vez. Uma requisição de inferência dura segundos, custa uma fração de centavo que se multiplica rápido, ocupa um recurso escasso e caro enquanto roda, e devolve a resposta aos pedaços.",
+                },
+                {
+                    type: "table",
+                    value: '[["Característica", "API tradicional", "API de inferência"], ["Duração", "Milissegundos", "Segundos"], ["Custo por chamada", "Desprezível", "Proporcional ao texto processado"], ["Recurso ocupado", "CPU por instantes", "GPU pelo tempo todo da geração"], ["Formato da resposta", "Uma resposta completa", "Fluxo de pedaços"], ["Resultado", "Determinístico", "Varia entre chamadas iguais"]]',
+                },
+                {
+                    type: "text",
+                    value: '## A resposta vem em fluxo, e isso muda a arquitetura\n\nComo a geração é sequencial, esperar o texto inteiro para só então responder desperdiça a percepção de velocidade. O padrão é **transmitir os pedaços conforme saem**, e a métrica que o usuário sente deixa de ser o tempo total: passa a ser o **tempo até o primeiro pedaço**.\n\nIsso tem consequências de desenho concretas. A conexão fica aberta durante toda a geração, o que traz de volta o problema de estado do chat: aquela requisição está presa àquela instância. Timeouts precisam ser generosos, e proxies e balanceadores no caminho precisam estar configurados para não cortar nem acumular a resposta em buffer, o que anularia o efeito. E cancelar importa de verdade: se o usuário fechou a aba, continuar gerando é dinheiro queimado, então o cancelamento precisa chegar até quem está gerando.',
+                },
+                {
+                    type: "text",
+                    value: "## O cache muda de forma\n\nCachear resposta de modelo parece impossível, porque a mesma pergunta pode ser feita com palavras diferentes e a saída varia. Existem três níveis, e citá-los separadamente é o que mostra domínio.\n\n**Cache exato**: mesma entrada e mesmos parâmetros devolvem a resposta guardada. Simples e com taxa de acerto baixa em texto livre, alta em fluxo automatizado, que costuma repetir muito. **Cache semântico**: guarda a representação vetorial da pergunta e reaproveita a resposta quando uma nova pergunta é suficientemente parecida; o limiar de semelhança vira parâmetro delicado, porque errar para menos entrega resposta errada com cara de certa. E o **cache de prefixo**, que é o mais valioso e o menos lembrado: quando várias chamadas começam com o mesmo trecho longo, como uma instrução de sistema ou um documento, o processamento desse trecho é reaproveitado, o que reduz custo e latência sem nenhum risco de resposta trocada.",
+                },
+                {
+                    type: "text",
+                    value: '## Falha, degradação e o modelo de reserva\n\nO mesmo hábito do módulo 1 se aplica: o que o usuário vê quando essa peça cai? Provedores de modelo têm indisponibilidade e limite de taxa, e são dependência externa, então o desenho precisa responder.\n\nAs respostas usuais formam uma escada. **Retentativa com backoff** para erro passageiro, lembrando que repetir uma geração custa dinheiro de novo. **Modelo de reserva**, caindo para um modelo menor, mais barato ou de outro provedor, aceitando qualidade menor em vez de erro. **Degradação declarada**, entregando uma resposta não gerada, como um resultado de busca comum no lugar do resumo. E limite de taxa por usuário, do módulo 5, que aqui protege o orçamento e não só o servidor.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** inferência dura **segundos**, custa por texto processado e ocupa **GPU**. A resposta vai em **fluxo**, e a métrica é o **tempo até o primeiro pedaço**, o que exige timeout generoso, nada de buffer no caminho e **cancelamento** que chega até quem gera. O cache tem três formas: **exato**, **semântico** e de **prefixo**. E a falha tem escada: retentativa, **modelo de reserva** e degradação declarada.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual métrica o usuário realmente sente numa resposta transmitida em fluxo?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "O tempo até o primeiro pedaço.", isCorrect: true },
+                        { text: "O tempo total até a resposta terminar.", isCorrect: false },
+                        { text: "A quantidade de pedaços recebidos por segundo.", isCorrect: false },
+                        { text: "O tempo que a requisição espera antes de ser atendida.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que o cancelamento precisa chegar até quem está gerando?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Continuar gerando consome GPU e dinheiro à toa.", isCorrect: true },
+                        { text: "A conexão aberta impede novas requisições na instância.", isCorrect: false },
+                        { text: "A resposta parcial ficaria guardada no cache exato.", isCorrect: false },
+                        { text: "O modelo não consegue iniciar outra geração em paralelo.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual forma de cache reduz custo sem nenhum risco de devolver resposta trocada?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O cache de prefixo.", isCorrect: true },
+                        { text: "O cache semântico.", isCorrect: false },
+                        { text: "O cache exato de entrada.", isCorrect: false },
+                        { text: "O cache de borda na CDN.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o risco de baixar demais o limiar de semelhança do cache semântico?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Devolver uma resposta errada com aparência de certa.", isCorrect: true },
+                        { text: "Reduzir a taxa de acerto e perder o ganho de custo.", isCorrect: false },
+                        { text: "Aumentar o tempo de busca no armazenamento vetorial.", isCorrect: false },
+                        { text: "Ocupar memória demais guardando as representações.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O provedor do modelo fica indisponível. Qual resposta preserva o serviço com qualidade menor?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Cair para um modelo de reserva.", isCorrect: true },
+                        { text: "Repetir a chamada com backoff até obter sucesso.", isCorrect: false },
+                        { text: "Devolver erro e orientar o usuário a tentar mais tarde.", isCorrect: false },
+                        { text: "Enfileirar a requisição até o provedor voltar a responder.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Fila de GPU, lote e custo por token",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Fila de GPU, lote e custo por token\n\nSe o sistema chama um provedor externo, o custo é uma fatura. Se ele serve o próprio modelo, entra um recurso que nenhum caso anterior tinha: a **GPU**, que é cara, escassa e não escala como instância de aplicação. Subir mais dez máquinas em minutos é comum; conseguir mais dez GPUs pode não ser.\n\nEssa escassez inverte a lógica de dimensionamento. Em vez de crescer a frota conforme a fila cresce, o desenho precisa **aproveitar ao máximo** as GPUs que existem e controlar quem entra.",
+                },
+                {
+                    type: "text",
+                    value: '## Lote é o que torna a GPU eficiente\n\nProcessar uma requisição por vez desperdiça a GPU, porque ela é feita para operar sobre muitos dados em paralelo. Agrupar várias requisições num **lote** aumenta muito o total processado por segundo, ao custo de um pouco de espera para cada requisição individual.\n\nO agrupamento ingênuo espera encher o lote ou estourar um tempo limite, e tem um defeito: como cada geração termina num momento diferente, o lote fica preso ao mais lento. O agrupamento contínuo resolve, deixando requisições entrarem e saírem do lote enquanto ele roda, o que mantém a GPU ocupada o tempo todo. O trade-off que vale declarar é sempre o mesmo: **lote maior aumenta o total processado e piora a latência individual**, e onde ficar nessa régua depende do requisito.',
+                },
+                {
+                    type: "table",
+                    value: '[["Alavanca", "Efeito no total processado", "Efeito na latência", "Efeito no custo"], ["Aumentar o lote", "Sobe bastante", "Piora", "Cai por requisição"], ["Agrupamento contínuo", "Sobe", "Melhora ante o lote fixo", "Cai"], ["Modelo menor", "Sobe", "Melhora", "Cai bastante"], ["Encurtar o contexto", "Sobe", "Melhora", "Cai proporcionalmente"], ["Mais GPUs", "Sobe", "Melhora", "Sobe bastante"]]',
+                },
+                {
+                    type: "text",
+                    value: '## A fila com prioridade, e a admissão\n\nCom recurso escasso, a fila deixa de ser detalhe e vira a peça de controle. Nem toda requisição merece a mesma pressa: a que tem uma pessoa esperando na tela é urgente; a de um processamento em lote noturno pode esperar horas.\n\nO desenho comum tem **filas por classe de prioridade**, com o trabalho interativo à frente. E precisa de **controle de admissão**: quando a espera estimada passa de um limite, é melhor recusar na entrada, com uma mensagem honesta, do que aceitar uma requisição que vai expirar depois de ocupar recurso. É a mesma lógica da sala de espera do módulo 2, aplicada a um recurso que não pode simplesmente crescer.',
+                },
+                {
+                    type: "text",
+                    value: '## Custo por token e as alavancas honestas\n\nA unidade de custo é o **token**, o pedaço de texto que o modelo processa, e ele é cobrado nos dois sentidos: o que entra e o que sai. Isso torna o custo uma função direta do tamanho do contexto, e é por isso que as maiores economias vêm de reduzir entrada, não de negociar preço.\n\nAs alavancas, em ordem de retorno: **encurtar o contexto**, enviando só o necessário em vez de despejar documentos inteiros; **usar modelo menor** para as tarefas simples, reservando o grande para o que precisa; **cachear**, nas três formas da aula anterior; e **limitar por usuário**, para que um cliente não consuma o orçamento de todos. Falar em custo por token com essa naturalidade é exatamente o julgamento operacional que a régua de 2026 cobra.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** GPU é **escassa** e não escala como instância, então o desenho aproveita ao máximo e controla a entrada. **Lote** aumenta o total processado e piora a latência individual; o agrupamento **contínuo** melhora esse equilíbrio. Use **filas por prioridade** e **controle de admissão**. O custo é por **token**, nas duas direções, então encurtar contexto rende mais que qualquer outra alavanca.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que processar uma requisição por vez desperdiça a GPU?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ela foi feita para operar sobre muitos dados de uma vez.", isCorrect: true },
+                        { text: "O tempo de carregar o modelo acaba sendo pago a cada requisição.", isCorrect: false },
+                        { text: "A memória da GPU fica ociosa entre uma chamada e outra.", isCorrect: false },
+                        { text: "A comunicação com a CPU domina o tempo de processamento.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o trade-off central de aumentar o tamanho do lote?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Sobe o total processado e piora a latência individual.", isCorrect: true },
+                        { text: "Sobe o total processado e aumenta o custo por requisição.", isCorrect: false },
+                        { text: "Melhora a latência individual e reduz o total processado.", isCorrect: false },
+                        { text: "Reduz o uso de memória e exige mais GPUs disponíveis.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual defeito o agrupamento contínuo corrige em relação ao lote fixo?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "O lote inteiro ficar preso à requisição mais lenta.", isCorrect: true },
+                        { text: "O lote demorar a encher quando o tráfego está baixo.", isCorrect: false },
+                        { text: "As requisições longas consumirem memória demais na GPU.", isCorrect: false },
+                        { text: "As requisições urgentes ficarem atrás das de lote noturno.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Quando a espera estimada na fila passa do limite aceitável, qual é a decisão correta?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Recusar na entrada com uma mensagem honesta.", isCorrect: true },
+                        { text: "Aceitar e processar assim que houver GPU disponível.", isCorrect: false },
+                        { text: "Reduzir o tamanho do lote para acelerar o atendimento.", isCorrect: false },
+                        { text: "Mover as requisições para a fila de menor prioridade.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual alavanca costuma dar o maior retorno na redução de custo por token?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Encurtar o contexto enviado.", isCorrect: true },
+                        { text: "Negociar o preço por token com o provedor.", isCorrect: false },
+                        { text: "Aumentar o tamanho do lote de processamento.", isCorrect: false },
+                        { text: "Adicionar mais GPUs para reduzir a fila de espera.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "RAG em escala",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# RAG em escala\n\nO padrão mais comum em produto de IA é o de busca com geração, em que o sistema recupera trechos relevantes de uma base própria e os envia junto da pergunta, para o modelo responder com base neles. Do ponto de vista de System Design, o interessante é que **quase nada disso é sobre o modelo**: é sobre pipeline de dados, busca e cache, tudo assunto dos módulos anteriores.\n\nO desenho tem dois caminhos independentes, e separá-los é a primeira coisa a dizer: o caminho de **ingestão**, que é assíncrono e roda em lote, e o caminho de **consulta**, que é síncrono e está na frente do usuário.",
+                },
+                {
+                    type: "code",
+                    value: "Ingestao (assincrono, em lote):\n  documento -> extrair texto -> dividir em trechos\n            -> gerar vetor de cada trecho\n            -> gravar vetor + texto + metadados\n\nConsulta (sincrono, no caminho do usuario):\n  pergunta -> gerar vetor da pergunta\n           -> buscar os k trechos mais proximos\n           -> filtrar por permissao e reordenar\n           -> montar o contexto -> chamar o modelo -> transmitir",
+                },
+                {
+                    type: "text",
+                    value: '## O trecho e o armazenamento vetorial\n\nDuas decisões dominam a qualidade. A primeira é **como dividir o documento**: trecho grande carrega contexto e desperdiça orçamento de tokens; trecho pequeno é preciso e perde o que estava ao redor. A prática comum é dividir respeitando a estrutura do texto, com alguma sobreposição entre trechos vizinhos para não cortar uma ideia ao meio.\n\nA segunda é o **armazenamento vetorial**, que é um índice para busca por proximidade em muitas dimensões. Ele não faz busca exata: usa aproximação para responder rápido, e isso é um trade-off explícito entre precisão e latência, no mesmo espírito de tudo o que a trilha viu. Vale citar que ele é, como o índice de busca do módulo 5, uma **cópia derivada**: pode ser reconstruído dos documentos originais, o que é exatamente o que acontece quando se troca o modelo de geração de vetores e tudo precisa ser refeito.',
+                },
+                {
+                    type: "text",
+                    value: '## Busca híbrida e reordenação\n\nBusca só por vetor erra em casos previsíveis: código de produto, nome próprio, sigla e número, onde o que importa é a correspondência literal e não o sentido. Por isso o padrão maduro é **híbrido**: combinar a busca vetorial com a busca por termos do índice invertido, e fundir as duas listas.\n\nDepois vem a **reordenação**, um segundo passo que pega os primeiros resultados, digamos cinquenta, e os reavalia com um modelo mais caro e mais preciso, ficando com os cinco melhores. É a mesma ideia de funil que aparece em busca comum: um filtro barato reduz o universo, um filtro caro escolhe bem entre os poucos que sobraram. Fazer o caro em cima de tudo seria inviável.',
+                },
+                {
+                    type: "text",
+                    value: '## Permissão é o erro mais grave desse desenho\n\nEste é o ponto que mais reprova e o que mais vale lembrar. Se a base contém documentos com acesso restrito, o filtro de permissão precisa ser aplicado **na busca**, e não depois que o modelo já leu o conteúdo. Um trecho que a pessoa não podia ver, entregue ao modelo, pode reaparecer na resposta, e não existe correção depois disso.\n\nO desenho correto guarda a permissão como metadado ao lado do vetor e filtra durante a recuperação. Vale também dizer o efeito colateral honesto: filtrar por permissão reduz o conjunto e pode fazer a busca aproximada devolver menos resultados relevantes do que devolveria sem o filtro, o que às vezes obriga a buscar mais candidatos para compensar.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** separe **ingestão** assíncrona de **consulta** síncrona. A qualidade mora na **divisão em trechos** e na recuperação, com **busca híbrida** somando vetor e termo, e **reordenação** em funil. O armazenamento vetorial é uma **cópia derivada**, reconstruível. E o filtro de **permissão** vai na busca, nunca depois do modelo ler o trecho.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Quais são os dois caminhos independentes de um sistema de busca com geração?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "Ingestão assíncrona e consulta síncrona.", isCorrect: true },
+                        { text: "Busca vetorial e busca por termos literais.", isCorrect: false },
+                        { text: "Geração de vetores e geração de respostas.", isCorrect: false },
+                        { text: "Recuperação de trechos e reordenação deles.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que a busca puramente vetorial precisa ser combinada com busca por termos?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Ela erra em sigla, código de produto e nome próprio.", isCorrect: true },
+                        { text: "Ela é mais lenta do que a busca no índice invertido.", isCorrect: false },
+                        { text: "Ela não consegue aplicar filtros por metadados do trecho.", isCorrect: false },
+                        { text: "Ela exige que os documentos sejam reindexados com frequência.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a lógica do passo de reordenação?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Um filtro barato reduz o universo e um caro escolhe os melhores.", isCorrect: true },
+                        { text: "Um segundo modelo gera vetores bem mais precisos para os trechos.", isCorrect: false },
+                        { text: "Os resultados são ordenados por data para privilegiar o recente.", isCorrect: false },
+                        { text: "Os trechos são reagrupados para caber no orçamento de tokens.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Onde o filtro de permissão precisa ser aplicado, e por quê?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Na busca, porque depois o modelo já leu o trecho.", isCorrect: true },
+                        { text: "Na resposta, porque só ali se sabe o que foi usado.", isCorrect: false },
+                        { text: "Na ingestão, separando as bases por nível de acesso.", isCorrect: false },
+                        { text: "Na reordenação, que já avalia cada trecho recuperado.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que acontece quando se troca o modelo que gera os vetores?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Todo o índice vetorial precisa ser reconstruído.", isCorrect: true },
+                        { text: "Apenas as consultas passam a usar o modelo novo.", isCorrect: false },
+                        { text: "Os vetores antigos são convertidos para o novo formato.", isCorrect: false },
+                        { text: "A busca híbrida compensa a diferença entre os modelos.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Avaliação, guardrails e observabilidade",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Avaliação, guardrails e observabilidade\n\nEsta é a aula que mais separa quem já colocou IA em produção de quem só integrou uma API. O sistema tem uma propriedade que nenhum outro da trilha tinha: a mesma entrada pode produzir saídas diferentes, e nenhuma delas é obviamente errada. Não existe teste que retorne verde ou vermelho.\n\nIsso não significa desistir de qualidade. Significa trocar o teste que passa ou falha por um **conjunto de avaliação com nota**, e tratar essa nota como métrica de sistema, do mesmo jeito que latência e taxa de erro.",
+                },
+                {
+                    type: "text",
+                    value: '## O conjunto de avaliação é a peça central\n\nA prática é montar um conjunto de casos representativos, com a entrada e alguma referência do que se espera, e rodá-lo a cada mudança de instrução, de modelo ou de recuperação. A nota sai de comparação automática quando existe resposta certa, e de julgamento por outro modelo quando não existe, com uma amostra revisada por gente para confirmar que o julgamento faz sentido.\n\nO que muda no desenho é o gatilho: qualquer alteração no sistema, inclusive a troca de versão do modelo do provedor, precisa passar por essa avaliação antes de ir ao ar. É o equivalente da esteira de testes, e sem ele o sistema muda de comportamento sem ninguém perceber, porque o provedor atualizou o modelo por baixo.',
+                },
+                {
+                    type: "table",
+                    value: '[["Preocupação", "Onde entra", "Exemplo de controle"], ["Entrada maliciosa", "Antes do modelo", "Filtro de conteúdo e limite de tamanho"], ["Dado sensível na entrada", "Antes do modelo", "Detecção e mascaramento"], ["Saída inadequada", "Depois do modelo", "Classificador antes de exibir"], ["Resposta inventada", "Depois do modelo", "Exigir citação do trecho recuperado"], ["Custo fora de controle", "Na borda", "Limite de taxa e orçamento por usuário"], ["Qualidade caindo", "Contínuo", "Conjunto de avaliação e amostragem"]]',
+                },
+                {
+                    type: "text",
+                    value: '## Guardrails são componentes, não boas intenções\n\nNum diagrama, os controles precisam aparecer como caixas. Antes do modelo, um passo verifica a entrada: tamanho, conteúdo proibido e presença de dado pessoal que não deveria trafegar. Depois do modelo, outro passo verifica a saída antes de ela chegar ao usuário.\n\nO que vale dizer em voz alta é o custo: cada guardrail acrescenta latência e, se for feito por outro modelo, acrescenta custo por chamada. Por isso a escolha entre verificar tudo ou por amostragem é uma decisão de trade-off como qualquer outra, e depende do risco do domínio. Em saúde e finanças, verificar tudo; em um assistente de busca interno, amostrar pode bastar.',
+                },
+                {
+                    type: "text",
+                    value: '## Observabilidade muda de conteúdo\n\nRegistrar apenas código de status e tempo de resposta não serve aqui. O que precisa ser guardado por requisição é: a instrução usada e a versão dela, os trechos recuperados, o modelo e seus parâmetros, os tokens de entrada e de saída, o custo, a latência até o primeiro pedaço e o resultado dos guardrails. Sem isso, investigar uma resposta ruim é impossível, porque não dá para reproduzir o que aconteceu.\n\nDuas cautelas fecham o assunto. Registrar conteúdo de usuário tem implicação de privacidade, então retenção curta e mascaramento fazem parte do desenho, não são detalhe posterior. E vale instrumentar o **feedback** do usuário, o joinha para cima ou para baixo, porque ele é a fonte mais barata de casos novos para o conjunto de avaliação, fechando o ciclo.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** sem resposta única, o teste vira **conjunto de avaliação com nota**, rodado a cada mudança, inclusive quando o provedor troca o modelo. **Guardrails** são caixas no diagrama, antes e depois do modelo, e cobram latência e custo. A observabilidade guarda **instrução, trechos, modelo, tokens, custo e resultado dos controles**, com retenção curta, e o **feedback** do usuário alimenta a avaliação.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Por que o teste tradicional que passa ou falha não serve para um sistema com modelo de linguagem?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "A mesma entrada pode gerar saídas diferentes e válidas.", isCorrect: true },
+                        { text: "O tempo de resposta varia demais entre as execuções.", isCorrect: false },
+                        { text: "O custo de rodar a suíte inteira seria proibitivo.", isCorrect: false },
+                        { text: "O provedor não garante disponibilidade durante os testes.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual evento, além das mudanças do próprio time, deve disparar a avaliação?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "A troca de versão do modelo pelo provedor.", isCorrect: true },
+                        { text: "O aumento do volume de requisições recebidas.", isCorrect: false },
+                        { text: "A expiração das chaves guardadas no cache semântico.", isCorrect: false },
+                        { text: "A reconstrução periódica do índice vetorial da base.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é o custo de acrescentar guardrails ao caminho da requisição?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Latência e, se usarem outro modelo, custo por chamada.", isCorrect: true },
+                        { text: "Redução da qualidade das respostas geradas pelo modelo.", isCorrect: false },
+                        { text: "Perda da capacidade de transmitir a resposta em fluxo.", isCorrect: false },
+                        { text: "Aumento do número de tokens de entrada processados.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "O que precisa ser registrado para conseguir investigar uma resposta ruim depois?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "A instrução, os trechos recuperados e os parâmetros usados.", isCorrect: true },
+                        { text: "O código de status, a latência total e o tamanho da resposta.", isCorrect: false },
+                        { text: "O identificador do usuário e o horário exato da requisição.", isCorrect: false },
+                        { text: "A versão da aplicação e a instância que atendeu a chamada.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual é a fonte mais barata de casos novos para o conjunto de avaliação?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "O feedback dado pelos próprios usuários.", isCorrect: true },
+                        { text: "As respostas barradas pelos guardrails de saída.", isCorrect: false },
+                        { text: "As requisições com maior consumo de tokens do período.", isCorrect: false },
+                        { text: "Os casos gerados automaticamente por outro modelo.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+        {
+            titulo: "Fechando a trilha",
+            blocks: [
+                {
+                    type: "text",
+                    value: "# Fechando a trilha\n\nSete módulos atrás, a proposta era transformar um enunciado de cinco palavras num desenho defensável. O caminho passou por método, conta, blocos, dados distribuídos, padrões, casos e sistemas de IA. Vale olhar o conjunto de uma vez, porque o que fica não é a lista de componentes: é uma forma de pensar que se repete.\n\nSe você reler os cinco estudos de caso, vai notar que quase nenhum introduziu peça nova. Eles recombinaram o mesmo punhado de decisões em proporções diferentes, guiados pelos números de cada problema.",
+                },
+                {
+                    type: "table",
+                    value: '[["Pergunta", "Onde a trilha respondeu"], ["O que o sistema precisa fazer, e com qual qualidade", "Requisito funcional e não funcional, módulo 1"], ["Qual é o tamanho disso", "Estimativas, módulo 2"], ["Quais peças o número justifica", "Blocos de construção, módulo 3"], ["Onde o dado mora e o quanto ele pode divergir", "Dados distribuídos, módulo 4"], ["Quais problemas já têm solução conhecida", "Padrões, módulo 5"], ["Como tudo isso se combina", "Estudos de caso, módulo 6"], ["O que muda quando o sistema serve um modelo", "Sistemas de IA, módulo 7"]]',
+                },
+                {
+                    type: "text",
+                    value: '## As perguntas que sobrevivem a qualquer enunciado\n\nSe você levar poucas coisas daqui, leve estas seis, na ordem. **O que estou construindo e para quantos?** Corta escopo e fixa número. **Qual é a proporção entre leitura e escrita?** Decide se o desenho vai para cache e réplica ou para particionamento. **Esse dado pode estar desatualizado?** Decide consistência, e a resposta muda por operação. **O que acontece quando cada peça cai?** Traz réplica, timeout, retentativa e degradação. **Quanto isso custa?** Traz CDN, retenção, tamanho de instância e, em IA, token. E **o que eu deixei de fora?** Declara o limite do desenho antes que alguém aponte.\n\nEssas seis perguntas funcionam para um encurtador de URL, para um sistema de carona e para uma API de inferência. É por isso que elas são o resumo real da trilha.',
+                },
+                {
+                    type: "text",
+                    value: '## Praticar de verdade\n\nLer sobre desenho não ensina a desenhar, do mesmo jeito que ler sobre código não ensina a programar. O exercício que funciona é simples e desconfortável: escolha um sistema que você usa, dê a si mesmo 45 minutos e um cronômetro, e percorra o roteiro do módulo 1 do começo ao fim, falando em voz alta ou escrevendo. No fim, confira quantos dos erros do módulo 1 você cometeu.\n\nRepita com problemas de famílias diferentes, porque cada família treina um músculo: algo com muita leitura, algo com muita escrita, algo com mídia pesada, algo com tempo real e algo com IA. Cinco problemas bem trabalhados ensinam mais do que cinquenta lidos. E quando puder, faça com outra pessoa perguntando, porque a parte que a trilha não consegue treinar sozinha é justamente a de defender a escolha enquanto alguém questiona.',
+                },
+                {
+                    type: "text",
+                    value: '## Onde continuar\n\nO caminho natural depois daqui depende do que você quer aprofundar. Se o interesse é o back-end que sustenta esses desenhos, a trilha de **Arquitetura e Escala** cobre a evolução prática do sistema sob carga, com monólito, réplicas, filas e resiliência. Se o interesse é o dado, as trilhas de **banco de dados** e de **cache, filas e performance** aprofundam as peças que mais apareceram aqui. Se o interesse é operar o que foi desenhado, **containers**, **orquestração** e **CI/CD** são o outro lado da mesma moeda. E se o módulo 7 foi o que mais chamou, o roadmap de **Engenharia de IA** vai de fundamentos de modelos até levar aplicação com IA para produção.\n\nSeja qual for o caminho, o hábito que vale carregar é o mesmo que a trilha inteira treinou: antes de escolher a solução, saber o número, dizer o preço e admitir o que ficou de fora.',
+                },
+                {
+                    type: "quote",
+                    value: "**Recapitulando:** os casos recombinam sempre o mesmo punhado de decisões, guiados pelos números. Leve as seis perguntas: **o que e para quantos**, **proporção leitura e escrita**, **pode estar desatualizado**, **o que acontece quando cai**, **quanto custa** e **o que ficou de fora**. E pratique com cronômetro, em famílias diferentes de problema, de preferência com alguém questionando.",
+                },
+            ],
+            questions: [
+                {
+                    statement: "Qual é a observação central sobre os cinco estudos de caso da trilha?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Eles recombinam as mesmas decisões em proporções diferentes.", isCorrect: true },
+                        { text: "Cada um deles exigiu introduzir um componente novo no desenho.", isCorrect: false },
+                        { text: "Todos convergem para a mesma arquitetura de referência.", isCorrect: false },
+                        { text: "A diferença entre eles está na tecnologia escolhida no fim.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual pergunta decide se o desenho vai para cache e réplica ou para particionamento?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Qual é a proporção entre leitura e escrita?", isCorrect: true },
+                        { text: "Esse dado pode estar desatualizado?", isCorrect: false },
+                        { text: "O que acontece quando cada peça cai?", isCorrect: false },
+                        { text: "Quanto isso tudo custa por mês para operar?", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Por que praticar com cronômetro é recomendado?",
+                    difficulty: "facil",
+                    options: [
+                        { text: "O roteiro precisa caber no tempo real de uma sessão.", isCorrect: true },
+                        { text: "A pressa ajuda a evitar o excesso de componentes.", isCorrect: false },
+                        { text: "O tempo é o critério principal de avaliação da resposta.", isCorrect: false },
+                        { text: "Sem limite de tempo não é possível comparar dois desenhos.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual parte da habilidade a prática sozinha não consegue treinar?",
+                    difficulty: "medio",
+                    options: [
+                        { text: "Defender a escolha enquanto alguém questiona.", isCorrect: true },
+                        { text: "Fazer as estimativas de capacidade com rapidez.", isCorrect: false },
+                        { text: "Percorrer o roteiro completo dentro do tempo.", isCorrect: false },
+                        { text: "Reconhecer quais componentes o número justifica.", isCorrect: false },
+                    ],
+                },
+                {
+                    statement: "Qual hábito a trilha inteira treinou, independentemente do problema?",
+                    difficulty: "dificil",
+                    options: [
+                        { text: "Saber o número, dizer o preço e admitir o que ficou de fora.", isCorrect: true },
+                        { text: "Escolher sempre o componente mais simples que resolva o requisito.", isCorrect: false },
+                        { text: "Começar o desenho pelo banco e seguir para as bordas.", isCorrect: false },
+                        { text: "Preferir consistência forte e relaxar só quando necessário.", isCorrect: false },
+                    ],
+                },
+            ],
+        },
+    ],
+};
+
+export const MODULOS: Modulo[] = [
+    MODULO_1,
+    MODULO_2,
+    MODULO_3,
+    MODULO_4,
+    MODULO_5,
+    MODULO_6,
+    MODULO_7,
+];
 
 async function seed() {
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
