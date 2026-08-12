@@ -87,6 +87,7 @@ import { ruby } from "./ruby.ts";
 import { rubyOnRails } from "./ruby-on-rails.ts";
 import { springBoot } from "./spring-boot.ts";
 import { uiUxDesign } from "./ui-ux-design.ts";
+import { systemDesign } from "./system-design.ts";
 
 export const TRILHAS: CartasDaTrilha[] = [
     logicaDeProgramacao,
@@ -176,4 +177,5 @@ export const TRILHAS: CartasDaTrilha[] = [
     rubyOnRails,
     springBoot,
     uiUxDesign,
+    systemDesign,
 ];
