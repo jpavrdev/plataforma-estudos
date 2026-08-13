@@ -8,6 +8,8 @@ import {
     modules,
     trails,
     glossary,
+    interviewCards,
+    interviewTopics,
 } from "../../schema.ts";
 import { and, asc, count, desc, eq, inArray, isNotNull, lte, notInArray, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
@@ -43,6 +45,13 @@ import { AppError } from "../errors/AppError.ts";
  *    demais vale menos, pela mesma razão.
  */
 export type Resposta = "errei" | "dificil" | "intermediaria" | "facil";
+
+/**
+ * De onde a carta veio. O agendador não olha para isto: ele guarda estado por
+ * (origem, origemId) e trata as três iguais. Quem precisa distinguir é só quem lê o
+ * conteúdo da carta, porque cada origem mora numa tabela diferente.
+ */
+export type Origem = "flashcard" | "glossario" | "entrevista";
 
 // Revisar quando a chance de lembrar cair para 90%. Alvo mais alto significa
 // revisar mais vezes e esquecer menos; mais baixo, o contrário.
@@ -291,18 +300,23 @@ interface CartaoNaFila {
     id: string;
     frente: string;
     verso: string;
-    origem: "flashcard" | "glossario";
+    origem: Origem;
     trilha: string | null;
     aula: string | null;
     // De onde a carta saiu. Vai junto para o verso virar link e o aluno poder reler
     // a aula na hora em que descobriu que não lembra. Nulo em termo de glossário.
     trilhaId: string | null;
     aulaId: string | null;
+    // Só em carta de entrevista: o assunto e o nível que ela cobra. A carta de
+    // entrevista não tem trilha nem aula para onde voltar, e é isto que aparece no
+    // lugar delas.
+    topico: string | null;
+    nivel: string | null;
 }
 
 /** O mínimo que a fila precisa saber de cada carta: quem ela é e quando vence. */
 interface NaFila {
-    origem: "flashcard" | "glossario";
+    origem: Origem;
     origemId: string;
     proximaRevisao: Date;
     // Carta que ainda não existe no baralho, vinda direto do catálogo. Só serve de
@@ -454,7 +468,7 @@ export async function filaDoDia(
  *
  * Cartão de glossário passa direto: o id dele já é único por termo.
  */
-async function semGemeas<T extends { origem: "flashcard" | "glossario"; origemId: string }>(
+async function semGemeas<T extends { origem: Origem; origemId: string }>(
     linhas: T[],
 ): Promise<T[]> {
     const ids = linhas.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
@@ -479,7 +493,7 @@ async function semGemeas<T extends { origem: "flashcard" | "glossario"; origemId
 }
 
 async function montarCartoes(
-    linhas: { origem: "flashcard" | "glossario"; origemId: string }[],
+    linhas: { origem: Origem; origemId: string }[],
 ): Promise<CartaoNaFila[]> {
     const idsCard = linhas.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
     const idsGloss = linhas.filter((l) => l.origem === "glossario").map((l) => l.origemId);
@@ -506,6 +520,23 @@ async function montarCartoes(
               .from(glossary)
               .where(inArray(glossary.id, idsGloss))
         : [];
+    // Carta de entrevista que o aluno já abriu volta pela fila do dia como qualquer
+    // outra. O modo entrevista serve para escolher assunto e nível; depois de
+    // respondida uma vez, a carta é do baralho e a agenda manda nela.
+    const idsEntrevista = linhas.filter((l) => l.origem === "entrevista").map((l) => l.origemId);
+    const perguntas = idsEntrevista.length
+        ? await db
+              .select({
+                  id: interviewCards.id,
+                  frente: interviewCards.frente,
+                  verso: interviewCards.verso,
+                  nivel: interviewCards.nivel,
+                  topico: interviewTopics.nome,
+              })
+              .from(interviewCards)
+              .innerJoin(interviewTopics, eq(interviewTopics.id, interviewCards.topicoId))
+              .where(inArray(interviewCards.id, idsEntrevista))
+        : [];
 
     const porId = new Map<string, CartaoNaFila>();
     for (const c of cards)
@@ -518,6 +549,8 @@ async function montarCartoes(
             aula: c.aula,
             trilhaId: c.trilhaId,
             aulaId: c.aulaId,
+            topico: null,
+            nivel: null,
         });
     for (const t of termos)
         porId.set(t.id, {
@@ -529,6 +562,21 @@ async function montarCartoes(
             aula: null,
             trilhaId: null,
             aulaId: null,
+            topico: null,
+            nivel: null,
+        });
+    for (const p of perguntas)
+        porId.set(p.id, {
+            id: p.id,
+            frente: p.frente,
+            verso: p.verso,
+            origem: "entrevista",
+            trilha: null,
+            aula: null,
+            trilhaId: null,
+            aulaId: null,
+            topico: p.topico,
+            nivel: p.nivel,
         });
 
     // Mantém a ordem da fila, e descarta o que sumiu do catálogo.
@@ -538,7 +586,7 @@ async function montarCartoes(
 /** Registra a resposta e reagenda o cartão. */
 export async function responder(
     userId: string,
-    origem: "flashcard" | "glossario",
+    origem: Origem,
     origemId: string,
     resposta: Resposta,
     tempoMs?: number,
@@ -600,11 +648,22 @@ export async function responder(
  * revisar sem ter feito a trilha. Basta a aula estar publicada; termo de glossário
  * nunca passa por aqui porque só nasce junto da aula que o cita.
  */
-async function abrirCartaoAvulso(
-    userId: string,
-    origem: "flashcard" | "glossario",
-    origemId: string,
-) {
+async function abrirCartaoAvulso(userId: string, origem: Origem, origemId: string) {
+    // Carta de entrevista não tem gêmea nem trilho de linguagem: a pergunta existe
+    // uma vez só, num tópico só. Basta conferir que ela existe e abrir.
+    if (origem === "entrevista") {
+        const [existe] = await db
+            .select({ id: interviewCards.id })
+            .from(interviewCards)
+            .where(eq(interviewCards.id, origemId));
+        if (!existe) throw new AppError(404, "Cartão não encontrado.");
+        const [aberto] = await db
+            .insert(userCards)
+            .values({ userId, origem, origemId, proximaRevisao: new Date() })
+            .returning();
+        return aberto;
+    }
+
     if (origem !== "flashcard") throw new AppError(404, "Cartão não encontrado no seu baralho.");
 
     const [permitido] = await db
@@ -1023,7 +1082,7 @@ export async function historicoSessoes(userId: string, limite = 20) {
  */
 export async function reportarCartao(
     userId: string,
-    origem: "flashcard" | "glossario",
+    origem: Origem,
     origemId: string,
     comentario?: string,
 ) {
@@ -1033,7 +1092,15 @@ export async function reportarCartao(
                   .select({ id: flashcards.id })
                   .from(flashcards)
                   .where(eq(flashcards.id, origemId))
-            : await db.select({ id: glossary.id }).from(glossary).where(eq(glossary.id, origemId));
+            : origem === "entrevista"
+              ? await db
+                    .select({ id: interviewCards.id })
+                    .from(interviewCards)
+                    .where(eq(interviewCards.id, origemId))
+              : await db
+                    .select({ id: glossary.id })
+                    .from(glossary)
+                    .where(eq(glossary.id, origemId));
     if (!existe) throw new AppError(404, "Cartão não encontrado.");
 
     await db
