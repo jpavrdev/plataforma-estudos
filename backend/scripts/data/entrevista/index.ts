@@ -5,5 +5,6 @@ import { go } from "./go.ts";
 import { csharp } from "./csharp.ts";
 import { cpp } from "./cpp.ts";
 import { docker } from "./docker.ts";
+import { git } from "./git.ts";
 
-export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker];
+export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker, git];
