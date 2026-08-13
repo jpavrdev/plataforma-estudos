@@ -3,5 +3,6 @@
 import type { TopicoDeEntrevista } from "../../seed-entrevista.ts";
 import { go } from "./go.ts";
 import { csharp } from "./csharp.ts";
+import { cpp } from "./cpp.ts";
 
-export const TOPICOS: TopicoDeEntrevista[] = [go, csharp];
+export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp];
