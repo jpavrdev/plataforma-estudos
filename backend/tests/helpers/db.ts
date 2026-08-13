@@ -6,6 +6,6 @@ export async function limparBanco() {
     // CASCADE remove dependentes por FK; lista trails/lessons explicitamente
     // porque elas nao referenciam users e nao cairiam no cascade.
     await db.execute(
-        sql`TRUNCATE TABLE feature_flag_users, feature_flags, community_comments, community_likes, community_post_tags, community_posts, user_follows, subscriptions, certificates, roadmap_stage_completions, roadmap_stage_refs, roadmap_stages, roadmaps, comunicado_respostas, comunicados, challenge_submissions, challenge_tests, challenges, simulado_attempt_answers, simulado_attempt_questions, simulado_attempts, simulado_options, simulado_questions, simulados, question_answers, question_options, questions, card_reports, card_reviews, user_cards, flashcards, lessons_progress, lessons, modules, trails, tokens, users RESTART IDENTITY CASCADE`,
+        sql`TRUNCATE TABLE feature_flag_users, feature_flags, community_comments, community_likes, community_post_tags, community_posts, user_follows, subscriptions, certificates, roadmap_stage_completions, roadmap_stage_refs, roadmap_stages, roadmaps, comunicado_respostas, comunicados, challenge_submissions, challenge_tests, challenges, simulado_attempt_answers, simulado_attempt_questions, simulado_attempts, simulado_options, simulado_questions, simulados, question_answers, question_options, questions, card_reports, card_reviews, user_cards, interview_cards, interview_topics, flashcards, lessons_progress, lessons, modules, trails, tokens, users RESTART IDENTITY CASCADE`,
     );
 }

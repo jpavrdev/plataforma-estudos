@@ -407,6 +407,13 @@
       "when": 1786146593143,
       "tag": "0057_reporte_de_cartao",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1786554346900,
+      "tag": "0058_cartas_de_entrevista",
+      "breakpoints": true
     }
   ]
 }

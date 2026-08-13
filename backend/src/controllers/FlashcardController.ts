@@ -93,7 +93,7 @@ export const getContagemTrilha = async (req: Request, res: Response, next: NextF
 export const postReporte = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { origem, comentario } = req.body ?? {};
-        if (origem !== "flashcard" && origem !== "glossario")
+        if (origem !== "flashcard" && origem !== "glossario" && origem !== "entrevista")
             throw new AppError(400, "Origem inválida.");
         const texto =
             typeof comentario === "string" && comentario.trim()
@@ -108,7 +108,7 @@ export const postReporte = async (req: Request, res: Response, next: NextFunctio
 export const postResposta = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { origem, resposta, tempoMs } = req.body ?? {};
-        if (origem !== "flashcard" && origem !== "glossario")
+        if (origem !== "flashcard" && origem !== "glossario" && origem !== "entrevista")
             throw new AppError(400, "Origem inválida.");
         if (!RESPOSTAS.includes(resposta)) throw new AppError(400, "Resposta inválida.");
         const tempo = Number.isFinite(Number(tempoMs))

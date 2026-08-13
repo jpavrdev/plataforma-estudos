@@ -1082,3 +1082,220 @@
   font-size: 12px;
   color: #7fe0b4;
 }
+
+/* ---------- Modo entrevista ---------- */
+
+/* Alternador entre os dois modos. Discreto de propósito: eles compartilham
+   baralho e estatísticas, então trocar de aba não deveria parecer trocar de app. */
+.rev-modos {
+  display: flex;
+  gap: 6px;
+  width: fit-content;
+  margin: 0 auto 18px;
+  padding: 4px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.rev-modo {
+  padding: 7px 16px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.rev-modo:hover {
+  color: var(--text);
+}
+.rev-modo--on {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ent {
+  text-align: left;
+}
+.ent h3,
+.ent > p {
+  text-align: center;
+}
+
+/* Os quatro níveis lado a lado. Cada um mostra o que cobra, porque "pleno" sozinho
+   não diz nada para quem está escolhendo. */
+.ent-niveis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 20px 0 8px;
+}
+.ent-nivel {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 10px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.ent-nivel:hover {
+  border-color: var(--accent);
+}
+.ent-nivel--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ent-nivel b {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.ent-nivel span {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.ent-cumulativo {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.ent-topicos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+.ent-topico {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 11px 13px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.ent-topico:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.ent-topico:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ent-topico--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ent-topico__check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--on-accent);
+}
+.ent-topico--on .ent-topico__check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.ent-topico__nome {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ent-topico__n {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ent-quantas {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+.ent-quantas__opcoes {
+  display: flex;
+  gap: 6px;
+}
+.ent-quant {
+  min-width: 44px;
+  padding: 7px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.ent-quant--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.ent-vazio {
+  margin: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+.ent-erro {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--av-red) 12%, transparent);
+  color: var(--text);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .ent-niveis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

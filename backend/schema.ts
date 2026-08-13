@@ -677,7 +677,43 @@ export const flashcards = pgTable(
     (table) => [index("flashcards_lesson_id_idx").on(table.lessonId)],
 );
 
-export const cardOrigem = pgEnum("card_origem", ["flashcard", "glossario"]);
+// Assunto de entrevista. Tabela própria, e não a trilha: "comportamental" e "SQL
+// puro" não têm trilha correspondente, e não faz sentido criar trilha só para
+// existir tópico.
+export const interviewTopics = pgTable("interview_topics", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: varchar("slug", { length: 60 }).notNull().unique(),
+    nome: varchar("nome", { length: 80 }).notNull(),
+    position: integer("position").default(0).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const interviewLevel = pgEnum("interview_level", ["estagio", "junior", "pleno", "senior"]);
+
+// Pergunta de entrevista técnica. Fora da estrutura de trilhas de propósito: o que
+// cai numa entrevista não segue a ordem de nenhum currículo. O verso tem o mesmo
+// espaço do glossário porque é um esqueleto de resposta, com três ou quatro pontos,
+// e não uma definição de uma linha como no cartão de aula.
+export const interviewCards = pgTable(
+    "interview_cards",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        topicoId: uuid("topico_id")
+            .references(() => interviewTopics.id)
+            .notNull(),
+        nivel: interviewLevel("nivel").notNull(),
+        frente: text("frente").notNull(),
+        verso: varchar("verso", { length: 400 }).notNull(),
+        position: integer("position").default(0).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("interview_cards_topico_id_idx").on(table.topicoId),
+        index("interview_cards_nivel_idx").on(table.nivel),
+    ],
+);
+
+export const cardOrigem = pgEnum("card_origem", ["flashcard", "glossario", "entrevista"]);
 
 // Estado de memória de cada cartão para cada aluno, no modelo da curva do
 // esquecimento. Guarda só o necessário para calcular a próxima data: estabilidade,
