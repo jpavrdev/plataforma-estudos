@@ -365,3 +365,105 @@ describe("Trilha multi-linguagem", () => {
         assert.equal(det.body.stages[0].completed, true);
     });
 });
+
+// Bug relatado em producao: o aluno refazia o quiz e acertava tudo, mas ao recarregar
+// a aula o placar voltava ao da primeira tentativa, e a barra de dominio na aba de
+// progresso nunca subia. A causa era a resposta ser gravada uma vez so e nunca
+// atualizada. A regra agora tem duas metades, e cada teste cobre uma.
+describe("Refazer o quiz", () => {
+    async function respostasSalvas(token: string, lessonId: string) {
+        const aula = await get(`/lessons/${lessonId}`, token);
+        const qs = aula.body.questions as { answer: { isCorrect: boolean } | null }[];
+        return {
+            respondidas: qs.filter((q) => q.answer).length,
+            certas: qs.filter((q) => q.answer?.isCorrect).length,
+        };
+    }
+
+    // As linhas que ja contam como acerto, que e o que alimenta XP, ranking e dominio.
+    async function acertosGravados(email: string) {
+        const { db } = await import("../db.ts");
+        const { questionAnswers, users } = await import("../schema.ts");
+        const { and, eq, isNotNull } = await import("drizzle-orm");
+        const [u] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+        return db
+            .select()
+            .from(questionAnswers)
+            .where(and(eq(questionAnswers.userId, u.id), isNotNull(questionAnswers.acertouEm)));
+    }
+
+    test("a aula restaura a ultima tentativa, e nao a primeira", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const aluno = await criarUsuarioLogado();
+        const { lessonIds } = await montarTrilha(admin.token, 1);
+
+        await responderQuiz(aluno.token, lessonIds[0], 2);
+        assert.deepEqual(await respostasSalvas(aluno.token, lessonIds[0]), {
+            respondidas: 5,
+            certas: 2,
+        });
+
+        await responderQuiz(aluno.token, lessonIds[0], 5);
+        assert.deepEqual(
+            await respostasSalvas(aluno.token, lessonIds[0]),
+            { respondidas: 5, certas: 5 },
+            "depois de refazer e acertar tudo, o placar restaurado precisa ser 5 de 5",
+        );
+    });
+
+    // O acerto conquistado nao volta atras: ele e a base do XP, do ranking e do
+    // dominio, entao refazer e errar nao pode tirar nada de ninguem.
+    test("errar ao refazer nao apaga o acerto ja conquistado", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const aluno = await criarUsuarioLogado();
+        const { lessonIds } = await montarTrilha(admin.token, 1);
+
+        await responderQuiz(aluno.token, lessonIds[0], 5);
+        const antes = await acertosGravados(aluno.email);
+        assert.equal(antes.length, 5);
+
+        await responderQuiz(aluno.token, lessonIds[0], 0);
+        const depois = await acertosGravados(aluno.email);
+        assert.equal(depois.length, 5, "os cinco acertos continuam valendo para XP e ranking");
+
+        // Mas a aula mostra o que ele acabou de responder, que foi tudo errado.
+        assert.deepEqual(await respostasSalvas(aluno.token, lessonIds[0]), {
+            respondidas: 5,
+            certas: 0,
+        });
+    });
+
+    // O XP por questao e de uma vez so: a data do primeiro acerto nao se move, senao
+    // refazer a mesma questao todo dia encheria o grafico de atividade.
+    test("acertar de novo nao move a data do primeiro acerto", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const aluno = await criarUsuarioLogado();
+        const { lessonIds } = await montarTrilha(admin.token, 1);
+
+        await responderQuiz(aluno.token, lessonIds[0], 5);
+        const primeiro = (await acertosGravados(aluno.email))
+            .map((l) => l.acertouEm!.toISOString())
+            .sort();
+
+        await responderQuiz(aluno.token, lessonIds[0], 5);
+        const segundo = (await acertosGravados(aluno.email))
+            .map((l) => l.acertouEm!.toISOString())
+            .sort();
+
+        assert.deepEqual(segundo, primeiro);
+    });
+
+    // Errar primeiro e acertar depois precisa render o acerto, senao o aluno nunca
+    // fecha a trilha em 100% de dominio.
+    test("acertar depois de errar passa a contar como acerto", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const aluno = await criarUsuarioLogado();
+        const { lessonIds } = await montarTrilha(admin.token, 1);
+
+        await responderQuiz(aluno.token, lessonIds[0], 0);
+        assert.equal((await acertosGravados(aluno.email)).length, 0);
+
+        await responderQuiz(aluno.token, lessonIds[0], 5);
+        assert.equal((await acertosGravados(aluno.email)).length, 5);
+    });
+});

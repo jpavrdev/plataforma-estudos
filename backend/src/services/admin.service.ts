@@ -163,7 +163,7 @@ export async function usuariosCrm(
             la.ultima as ultima_atividade
         from users u
         left join (select user_id, count(*) n from lessons_progress group by user_id) ap on ap.user_id = u.id
-        left join (select user_id, count(*) n from question_answers where is_correct group by user_id) ac on ac.user_id = u.id
+        left join (select user_id, count(*) n from question_answers where acertou_em is not null group by user_id) ac on ac.user_id = u.id
         left join (
             select user_id, count(*) n, sum(xp_earned) xp
             from challenge_submissions where xp_earned > 0 group by user_id

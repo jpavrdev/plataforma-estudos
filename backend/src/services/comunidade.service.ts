@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gt, inArray, notInArray, sql, sum, isNotNull } from "drizzle-orm";
+import { and, count, desc, eq, gt, inArray, isNotNull, notInArray, sql, sum } from "drizzle-orm";
 import { db } from "../../db.ts";
 import {
     communityPosts,
@@ -34,7 +34,7 @@ export async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, n
             .select({ userId: questionAnswers.userId, n: count() })
             .from(questionAnswers)
             .where(
-                and(inArray(questionAnswers.userId, userIds), eq(questionAnswers.isCorrect, true)),
+                and(inArray(questionAnswers.userId, userIds), isNotNull(questionAnswers.acertouEm)),
             )
             .groupBy(questionAnswers.userId),
         db

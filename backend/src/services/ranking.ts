@@ -1,4 +1,4 @@
-import { sql, eq, and, count, sum, gte } from "drizzle-orm";
+import { sql, eq, and, count, sum, gte, isNotNull } from "drizzle-orm";
 import { db } from "../../db.ts";
 import {
     rankingSnapshots,
@@ -91,7 +91,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
         db
             .select({ userId: questionAnswers.userId, n: count() })
             .from(questionAnswers)
-            .where(eq(questionAnswers.isCorrect, true))
+            .where(isNotNull(questionAnswers.acertouEm))
             .groupBy(questionAnswers.userId),
         db
             .select({ userId: challengeSubmissions.userId, n: sum(challengeSubmissions.xpEarned) })
@@ -109,9 +109,12 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
                   .select({ userId: questionAnswers.userId, n: count() })
                   .from(questionAnswers)
                   .where(
+                      // Pela data do primeiro acerto, e não pela da última tentativa:
+                      // quem refez uma questão antiga não deve reaparecer no ranking
+                      // do período como se tivesse acertado agora.
                       and(
-                          eq(questionAnswers.isCorrect, true),
-                          gte(questionAnswers.answeredAt, desde),
+                          isNotNull(questionAnswers.acertouEm),
+                          gte(questionAnswers.acertouEm, desde),
                       ),
                   )
                   .groupBy(questionAnswers.userId)
