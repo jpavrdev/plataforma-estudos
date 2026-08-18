@@ -21,11 +21,9 @@ async function atividadePorDia(userId: string) {
                SUM(minutos)::int AS minutos,
                SUM(aulas)::int AS aulas
         FROM (
-            SELECT to_char(answered_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d,
-                   CASE WHEN is_correct THEN 10 ELSE 0 END AS xp,
-                   CASE WHEN is_correct THEN 1 ELSE 0 END AS exercicios,
-                   0 AS minutos, 0 AS aulas
-            FROM question_answers WHERE user_id = ${userId}
+            SELECT to_char(acertou_em AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d,
+                   10 AS xp, 1 AS exercicios, 0 AS minutos, 0 AS aulas
+            FROM question_answers WHERE user_id = ${userId} AND acertou_em IS NOT NULL
             UNION ALL
             SELECT to_char(lp.completed_at AT TIME ZONE ${TZ}, 'YYYY-MM-DD') AS d,
                    50 AS xp, 0 AS exercicios, COALESCE(l.duration_min, 12) AS minutos, 1 AS aulas
@@ -71,7 +69,7 @@ async function dominioPorTrilha(userId: string) {
     `);
     const acertos = await db.execute(sql`
         SELECT DISTINCT question_id AS qid FROM question_answers
-        WHERE user_id = ${userId} AND is_correct = true
+        WHERE user_id = ${userId} AND acertou_em IS NOT NULL
     `);
     const certas = new Set((acertos.rows as { qid: string }[]).map((r) => r.qid));
 

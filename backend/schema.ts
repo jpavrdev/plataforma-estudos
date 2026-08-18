@@ -245,11 +245,20 @@ export const questionAnswers = pgTable(
         questionId: uuid("question_id")
             .references(() => questions.id)
             .notNull(),
+        // A ÚLTIMA tentativa: o que o aluno marcou por último e se acertou. É o que a
+        // aula restaura ao ser reaberta, então precisa ser o estado atual e não o
+        // primeiro chute.
         selectedOptionId: uuid("selected_option_id")
             .references(() => questionOptions.id)
             .notNull(),
         isCorrect: boolean("is_correct").notNull(),
         answeredAt: timestamp("answered_at", { withTimezone: true }).defaultNow().notNull(),
+        // Quando acertou pela primeira vez, ou nulo se nunca acertou. Separado da
+        // última tentativa porque as duas perguntas são diferentes: "o que ele
+        // respondeu?" muda a cada tentativa, e "ele já dominou isto?" não volta atrás.
+        // Tudo que conta acerto (XP, ranking, domínio, estatísticas) usa esta coluna,
+        // e por isso refazer e errar não tira XP nem posição de ninguém.
+        acertouEm: timestamp("acertou_em", { withTimezone: true }),
     },
     (table) => [
         unique().on(table.userId, table.questionId),
