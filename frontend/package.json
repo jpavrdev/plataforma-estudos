@@ -20,7 +20,7 @@
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
     "axios": "^1.19.0",
-    "katex": "^0.18.1",
+    "katex": "^0.18.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.8",
     "react-easy-crop": "^6.2.3",
