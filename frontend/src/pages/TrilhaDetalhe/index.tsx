@@ -97,6 +97,20 @@ function Stars({ value, size = 16 }: { value: number; size?: number }) {
   );
 }
 
+// Por que o certificado não está disponível, na linguagem do aluno. O motivo
+// "progresso" só vira aviso depois que ele começou a trilha: antes disso é o óbvio,
+// e poluiria o card de quem está só olhando.
+function avisoDoCert(
+  motivo: NonNullable<CertificadoStatus['motivo']>,
+  comecado: boolean,
+): string | null {
+  if (motivo === 'manual')
+    return 'O certificado sai quando as aulas são concluídas com os quizzes.';
+  if (motivo === 'carga_horaria') return 'Esta trilha ainda não emite certificado.';
+  if (motivo === 'indisponivel') return 'A emissão de certificados está indisponível no momento.';
+  return comecado ? 'Conclua todas as aulas da trilha para liberar o certificado.' : null;
+}
+
 function formatNota(n: number | null | undefined): string {
   return (n ?? 0).toFixed(1).replace('.', ',');
 }
@@ -287,6 +301,7 @@ export function TrilhaDetalhe() {
   }
 
   const alunos = trilha?.studentsCount ?? 0;
+  const avisoCert = cert?.motivo ? avisoDoCert(cert.motivo, stats.comecado) : null;
   const inclui = trilha
     ? [
         { icon: <BookOpen size={15} />, label: `${stats.total} aulas em texto` },
@@ -459,11 +474,10 @@ export function TrilhaDetalhe() {
                         Baixar certificado
                       </button>
                     )}
-                    {cert?.motivo === 'manual' && (
-                      <p className="td-card__cert-hint">
-                        O certificado sai quando as aulas são concluídas com os quizzes.
-                      </p>
-                    )}
+                    {/* Todo motivo de não emitir precisa aparecer. Antes só o "manual"
+                        tinha aviso, e quem concluía uma trilha sem carga horária definida
+                        ficava sem botão e sem explicação nenhuma. */}
+                    {avisoCert && <p className="td-card__cert-hint">{avisoCert}</p>}
                     <hr className="rule" />
                     <div className="td-card__inc-title">Esta trilha inclui</div>
                     <div className="td-card__inc">
