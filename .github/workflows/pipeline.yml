@@ -52,7 +52,7 @@ jobs:
       - name: Instalar dependências
         run: npm ci
       - name: Typecheck
-        run: npx tsc --noEmit
+        run: npm run typecheck
       - name: Testes unitários
         run: npm run test:unit
       - name: Aplicar migrations no banco de teste

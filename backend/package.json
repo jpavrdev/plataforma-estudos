@@ -10,7 +10,8 @@
         "dev": "node --watch --env-file=.env index.ts",
         "lint": "eslint .",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "typecheck": "node_modules/ts7/bin/tsc --noEmit"
     },
     "keywords": [],
     "author": "",
@@ -52,6 +53,7 @@
         "eslint-config-prettier": "^10.1.8",
         "globals": "^17.7.0",
         "prettier": "^3.9.3",
+        "ts7": "npm:typescript@7.0.2",
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.62.0"
     }
