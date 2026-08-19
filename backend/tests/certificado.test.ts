@@ -245,6 +245,20 @@ describe("Certificado de conclusão", () => {
         assert.equal(tentativa.status, 409);
     });
 
+    // A tela da trilha usa o motivo para explicar ao aluno por que o certificado não
+    // aparece. Sem isso ela mostra um card mudo, que foi o que gerou o relato de
+    // "concluí a trilha e não consigo emitir".
+    test("quem ainda não concluiu recebe o motivo progresso", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { trailId, lessonIds } = await montarTrilha(admin.token);
+        const aluno = await criarUsuarioLogado();
+        await passarNoQuiz(aluno.token, lessonIds[0]);
+
+        const status = await get(`/trails/${trailId}/certificado`, aluno.token);
+        assert.equal(status.body.elegivel, false);
+        assert.equal(status.body.motivo, "progresso");
+    });
+
     test("trilha sem carga horária não emite", async () => {
         const admin = await criarUsuarioLogado(true);
         const { trailId, lessonIds } = await montarTrilha(admin.token, { horas: null });

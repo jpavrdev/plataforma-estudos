@@ -414,6 +414,13 @@
       "when": 1786554346900,
       "tag": "0058_cartas_de_entrevista",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1787006425442,
+      "tag": "0059_acertou_em",
+      "breakpoints": true
     }
   ]
 }

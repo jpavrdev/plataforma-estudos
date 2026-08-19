@@ -7,7 +7,7 @@ import {
     questionAnswers,
     lessonProgress,
 } from "../../schema.ts";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, sql } from "drizzle-orm";
 import type { z } from "zod";
 import type { submitQuizSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -53,21 +53,42 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
         if (corretaPorQuestao.get(resp.questionId) === resp.optionId) acertos++;
     }
 
-    // Registra cada resposta uma única vez. A primeira conta para o XP por questão
-    // (10 cada); como não sobrescreve, errar e refazer não rende XP depois.
+    // Cada questão tem uma linha por aluno, e ela guarda duas coisas diferentes.
+    //
+    // A ÚLTIMA tentativa (selected_option_id e is_correct) é sobrescrita a cada
+    // envio, porque é ela que a aula restaura quando o aluno volta. Sem isso, quem
+    // errava, refazia e acertava continuava vendo o placar do primeiro chute.
+    //
+    // O PRIMEIRO acerto (acertou_em) nunca é reescrito depois de gravado. É ele que
+    // vale para XP, ranking, domínio e estatísticas, então refazer e acertar rende
+    // os 10 XP uma vez só, e refazer e errar não tira XP nem posição de ninguém.
     const idsValidos = new Set(opts.map((o) => o.id));
     const qIdSet = new Set(qIds);
+    const agora = new Date();
     for (const resp of dados.answers) {
         if (!qIdSet.has(resp.questionId) || !idsValidos.has(resp.optionId)) continue;
+        const certa = corretaPorQuestao.get(resp.questionId) === resp.optionId;
         await db
             .insert(questionAnswers)
             .values({
                 userId,
                 questionId: resp.questionId,
                 selectedOptionId: resp.optionId,
-                isCorrect: corretaPorQuestao.get(resp.questionId) === resp.optionId,
+                isCorrect: certa,
+                answeredAt: agora,
+                acertouEm: certa ? agora : null,
             })
-            .onConflictDoNothing();
+            .onConflictDoUpdate({
+                target: [questionAnswers.userId, questionAnswers.questionId],
+                set: {
+                    selectedOptionId: resp.optionId,
+                    isCorrect: certa,
+                    answeredAt: agora,
+                    acertouEm: certa
+                        ? sql`coalesce(${questionAnswers.acertouEm}, ${agora})`
+                        : sql`${questionAnswers.acertouEm}`,
+                },
+            });
     }
 
     const total = qIds.length;
@@ -131,7 +152,9 @@ export async function conferirResposta(
     const [correta] = await db
         .select({ id: questionOptions.id })
         .from(questionOptions)
-        .where(and(eq(questionOptions.questionId, questionId), eq(questionOptions.isCorrect, true)));
+        .where(
+            and(eq(questionOptions.questionId, questionId), eq(questionOptions.isCorrect, true)),
+        );
     if (!correta) {
         throw new AppError(500, "Questão sem gabarito");
     }

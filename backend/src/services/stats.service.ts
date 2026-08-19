@@ -10,7 +10,7 @@ import {
     simulados,
     users,
 } from "../../schema.ts";
-import { eq, and, count, sum, gt } from "drizzle-orm";
+import { eq, and, count, sum, gt, isNotNull } from "drizzle-orm";
 import { calcularXp, nivelPorXp } from "../domain/xp.ts";
 
 // Estatísticas base do usuário: conta o progresso no banco e deriva XP e nível.
@@ -22,7 +22,7 @@ export async function calcularEstatisticas(userId: string) {
     const [acertos] = await db
         .select({ n: count() })
         .from(questionAnswers)
-        .where(and(eq(questionAnswers.userId, userId), eq(questionAnswers.isCorrect, true)));
+        .where(and(eq(questionAnswers.userId, userId), isNotNull(questionAnswers.acertouEm)));
     // XP dos desafios já vem somado (cada desafio vale diferente); conta os resolvidos à parte.
     const [desafios] = await db
         .select({ xp: sum(challengeSubmissions.xpEarned), n: count() })
