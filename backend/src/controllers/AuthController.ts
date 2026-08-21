@@ -13,7 +13,7 @@ import {
     getDummyHash,
 } from "../services/password.service.ts";
 import { db } from "../../db.ts";
-import { users, tokens } from "../../schema.ts";
+import { users, tokens, oauthAccounts } from "../../schema.ts";
 import { eq, and, isNull } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "../config/env.ts";
@@ -318,7 +318,8 @@ export const resendVerification = async (req: Request, res: Response, next: Next
 
         // Resposta genérica, para não revelar se o email tem conta ou já foi verificado.
         const resposta = {
-            mensagem: "Se houver uma conta pendente de confirmação com esse email, reenviamos o link.",
+            mensagem:
+                "Se houver uma conta pendente de confirmação com esse email, reenviamos o link.",
         };
 
         const [user] = await db
@@ -338,13 +339,29 @@ export const resendVerification = async (req: Request, res: Response, next: Next
     }
 };
 
+// Por qual provedor a conta entra hoje, só para o email falar a língua de quem lê
+// ("sua conta entra pelo Google"). Devolve nulo quando não há nenhum, e aí o texto
+// cai para a forma genérica.
+const NOME_PROVEDOR: Record<string, string> = { google: "Google", github: "GitHub" };
+
+async function provedorDe(userId: string): Promise<string | null> {
+    const [conta] = await db
+        .select({ provider: oauthAccounts.provider })
+        .from(oauthAccounts)
+        .where(eq(oauthAccounts.userId, userId))
+        .limit(1);
+    if (!conta) return null;
+    return NOME_PROVEDOR[conta.provider] ?? conta.provider;
+}
+
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = forgotPasswordSchema.parse(req.body);
 
         // Resposta sempre genérica, para não revelar se o email tem conta.
         const resposta = {
-            mensagem: "Se houver uma conta com esse email, enviamos um link para redefinir a senha.",
+            mensagem:
+                "Se houver uma conta com esse email, enviamos um link para redefinir a senha.",
         };
 
         const [user] = await db
@@ -352,10 +369,17 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
             .from(users)
             .where(eq(users.email, email));
 
-        // Só envia quando a conta existe e tem senha (login social não tem o que redefinir).
-        if (user && user.passwordHash) {
+        // Conta que entrou por login social não tem senha para redefinir, mas tem para
+        // CRIAR. Antes o pedido dela era descartado em silêncio: a pessoa recebia a
+        // mensagem de que o link foi enviado e nada chegava nunca. Agora o link sai
+        // igual, só com o texto certo para o caso dela.
+        if (user) {
             const token = await authService.gerarTokenResetSenha(user.id);
-            await emailService.enviarResetSenha(email, token);
+            if (user.passwordHash) {
+                await emailService.enviarResetSenha(email, token);
+            } else {
+                await emailService.enviarCriarSenha(email, token, await provedorDe(user.id));
+            }
         }
 
         res.json(resposta);
@@ -416,7 +440,8 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
 
         // Resposta genérica, para não revelar se o email tem conta.
         const resposta = {
-            mensagem: "Se houver uma conta com esse email, enviamos um código para redefinir a senha.",
+            mensagem:
+                "Se houver uma conta com esse email, enviamos um código para redefinir a senha.",
         };
 
         const [user] = await db
@@ -424,13 +449,17 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
             .from(users)
             .where(eq(users.email, email));
 
-        if (user && user.passwordHash) {
+        // Mesma correção do caminho por link: conta sem senha recebe o código para
+        // criar uma, em vez de o pedido morrer em silêncio.
+        if (user) {
             const otp = await authService.gerarOtpResetSenha(user.id);
             // WhatsApp só se tiver telefone; senão cai no email para o código não se perder.
             if (canal === "whatsapp" && user.phone) {
                 await whatsappService.enviarOtpReset(user.phone, otp);
-            } else {
+            } else if (user.passwordHash) {
                 await emailService.enviarOtpReset(email, otp);
+            } else {
+                await emailService.enviarOtpCriarSenha(email, otp, await provedorDe(user.id));
             }
         }
 
