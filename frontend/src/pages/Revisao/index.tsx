@@ -10,6 +10,7 @@ import { Flame, Check, X } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as userMock } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { lerPreferencia, gravarPreferencia } from '../../utils/preferencia';
 import {
   filaDoDia,
   obterBaralhos,
@@ -42,6 +43,38 @@ const SAIDA_MS = 300;
 
 // Onde a sessão em andamento fica guardada, para um F5 não perder o lugar.
 const SESSAO = 'ensina:revisao';
+
+// A escolha do baralho, guardada à parte da sessão. A sessão morre ao terminar; a
+// escolha não, senão a cada visita o aluno remarca as mesmas áreas e redigita a
+// mesma quantidade. Guarda também o modo, para a aba voltar onde ele estava.
+const ESCOLHA = 'ensina:revisao:escolha';
+
+interface EscolhaSalva {
+  modo: 'dia' | 'entrevista';
+  trilhas: string[];
+  glossario: boolean;
+  limite: string;
+}
+
+const ESCOLHA_PADRAO: EscolhaSalva = {
+  modo: 'dia',
+  trilhas: [],
+  glossario: false,
+  limite: '',
+};
+
+// O que vem do navegador é conferido antes de virar estado. Chave estranha é raro,
+// mas um `new Set` de um número derruba a aba inteira, e perder a escolha guardada
+// custa muito menos do que isso.
+function lerEscolha(): EscolhaSalva {
+  const salvo = lerPreferencia(ESCOLHA, ESCOLHA_PADRAO);
+  return {
+    modo: salvo.modo === 'entrevista' ? 'entrevista' : 'dia',
+    trilhas: Array.isArray(salvo.trilhas) ? salvo.trilhas.filter((t) => typeof t === 'string') : [],
+    glossario: Boolean(salvo.glossario),
+    limite: /^\d+$/.test(String(salvo.limite)) ? String(salvo.limite) : '',
+  };
+}
 
 // Teto do campo de quantidade. Acima disso não é sessão, é maratona, e o campo
 // precisa de um limite para não aceitar número absurdo digitado sem querer.
@@ -124,19 +157,24 @@ export function Revisao() {
   const [stats, setStats] = useState<Estatisticas | null>(null);
   const [historico, setHistorico] = useState<SessaoRevisao[]>([]);
   const [fracos, setFracos] = useState<PontoFraco[]>([]);
+  // A escolha da última visita, lida uma vez antes do primeiro render. Marcar o
+  // estado depois, por efeito, faria a aba abrir no padrão e se corrigir sozinha na
+  // frente do aluno.
+  const [salvo] = useState(lerEscolha);
   // Qual dos dois modos está aberto. Os dois compartilham baralho, agenda e
   // estatísticas; o que muda é como o aluno escolhe o que entra na sessão.
-  const [modo, setModo] = useState<'dia' | 'entrevista'>('dia');
-  // Trilhas escolhidas. Vazio significa o baralho inteiro, e é como a aba abre.
-  const [selecao, setSelecao] = useState<Set<string>>(new Set());
-  const [comGlossario, setComGlossario] = useState(false);
+  const [modo, setModo] = useState<'dia' | 'entrevista'>(salvo.modo);
+  // Trilhas escolhidas. Vazio significa o baralho inteiro, e é como a aba abre na
+  // primeira visita.
+  const [selecao, setSelecao] = useState<Set<string>>(() => new Set(salvo.trilhas));
+  const [comGlossario, setComGlossario] = useState(salvo.glossario);
   const [escolhendo, setEscolhendo] = useState(false);
   // Busca da lista de áreas. Some junto com o painel, para não sobrar filtro
   // invisível na próxima vez que ele abrir.
   const [busca, setBusca] = useState('');
   const [vazio, setVazio] = useState(false);
   // Quantas cartas a sessão entrega, como o aluno digitou. Vazio é "vai até acabar".
-  const [limiteTexto, setLimiteTexto] = useState('');
+  const [limiteTexto, setLimiteTexto] = useState(salvo.limite);
   // Nulo é "sessão não começou"; a fila só é buscada quando o aluno manda começar.
   const [fila, setFila] = useState<Cartao[] | null>(null);
   const [indice, setIndice] = useState(0);
@@ -158,6 +196,12 @@ export function Revisao() {
   const mostradaEm = useRef<number>(0);
 
   const limite = limiteTexto ? Math.min(Number(limiteTexto), MAX_POR_SESSAO) : null;
+
+  // Uma área guardada pode ter saído do ar desde a última visita. Ela some da conta e
+  // da fila, mas continua marcada no estado: enquanto o baralho não chega, esquecer a
+  // escolha seria pior do que esperar por ela.
+  const noBaralho = new Set((baralhos?.trilhas ?? []).map((t) => t.id));
+  const selecaoAtiva = baralhos ? new Set([...selecao].filter((id) => noBaralho.has(id))) : selecao;
 
   const carregarSala = useCallback(async () => {
     setErro('');
@@ -191,7 +235,7 @@ export function Revisao() {
   }, []);
 
   async function comecar() {
-    const escolha = { trilhas: [...selecao], glossario: comGlossario, limite };
+    const escolha = { trilhas: [...selecaoAtiva], glossario: comGlossario, limite };
     setVazio(false);
     try {
       const cartoes = await filaDoDia(escolha, limite);
@@ -227,6 +271,18 @@ export function Revisao() {
   useEffect(() => {
     void carregarSala();
   }, [carregarSala]);
+
+  // A escolha é anotada a cada mudança, e não no "Começar": sair da aba sem começar
+  // também é uma escolha feita, e refazê-la na visita seguinte é justamente o
+  // incômodo que estamos tirando.
+  useEffect(() => {
+    gravarPreferencia(ESCOLHA, {
+      modo,
+      trilhas: [...selecao],
+      glossario: comGlossario,
+      limite: limiteTexto,
+    });
+  }, [modo, selecao, comGlossario, limiteTexto]);
 
   // Recarregar a página no meio da revisão não pode jogar o aluno de volta para a
   // escolha. A sessão volta parada, com o botão de continuar, e não abre sozinha.
@@ -441,12 +497,12 @@ export function Revisao() {
   });
 
   const restantes = total - indice;
-  const tudoMarcado = selecao.size === 0 && !comGlossario;
+  const tudoMarcado = selecaoAtiva.size === 0 && !comGlossario;
   const baralhoVazio = (resumo?.total ?? 0) === 0;
   const descricaoSelecao = tudoMarcado
     ? 'Todo o seu baralho'
     : [
-        ...(baralhos?.trilhas ?? []).filter((t) => selecao.has(t.id)).map((t) => t.nome),
+        ...(baralhos?.trilhas ?? []).filter((t) => selecaoAtiva.has(t.id)).map((t) => t.nome),
         ...(comGlossario ? ['Glossário'] : []),
       ].join(' + ');
   // Quantas cartas a escolha atual tem, e não quantas venceram: a fila serve o
@@ -455,7 +511,7 @@ export function Revisao() {
   const escolhidos = tudoMarcado
     ? (resumo?.total ?? 0)
     : (baralhos?.trilhas ?? [])
-        .filter((t) => selecao.has(t.id))
+        .filter((t) => selecaoAtiva.has(t.id))
         .reduce((soma, t) => soma + t.disponiveis, 0) +
       (comGlossario ? (baralhos?.glossario.total ?? 0) : 0);
   // 87 áreas não cabem numa lista rolável sem busca.
