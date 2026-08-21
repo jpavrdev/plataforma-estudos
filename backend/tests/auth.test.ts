@@ -337,3 +337,111 @@ describe("GET /users (RBAC)", () => {
         assert.equal(res.status, 401);
     });
 });
+
+// Relato de produção: uma aluna que entrou pelo Google pediu para redefinir a senha,
+// recebeu a mensagem de que o link tinha sido enviado, e nada chegou nunca. O motivo
+// era o pedido ser descartado em silêncio quando a conta não tinha senha para
+// redefinir. Ela não queria redefinir: queria passar a ter uma.
+describe("Recuperação de senha em conta de login social", () => {
+    // Simula quem entrou por provedor: sem senha, e com a conta social vinculada.
+    async function contaSocial(provider = "google") {
+        const dados = novoUsuario();
+        await server.request("POST", "/register", { body: dados });
+        await verificarEmail(dados.email);
+        const { db } = await import("../db.ts");
+        const { users, oauthAccounts } = await import("../schema.ts");
+        const { eq } = await import("drizzle-orm");
+        const [u] = await db
+            .select({ id: users.id })
+            .from(users)
+            .where(eq(users.email, dados.email));
+        await db.update(users).set({ passwordHash: null }).where(eq(users.id, u.id));
+        await db.insert(oauthAccounts).values({ userId: u.id, provider, providerId: `id-${u.id}` });
+        return { id: u.id, email: dados.email };
+    }
+
+    async function tokensDe(userId: string, tipo: string) {
+        const { db } = await import("../db.ts");
+        const { tokens } = await import("../schema.ts");
+        const { and, eq } = await import("drizzle-orm");
+        return db
+            .select()
+            .from(tokens)
+            .where(and(eq(tokens.userId, userId), eq(tokens.type, tipo)));
+    }
+
+    test("pedido de conta sem senha passa a gerar o link, em vez de morrer calado", async () => {
+        const conta = await contaSocial();
+        assert.equal((await tokensDe(conta.id, "password_reset")).length, 0);
+
+        const res = await server.request("POST", "/forgot-password", {
+            body: { email: conta.email },
+        });
+        assert.equal(res.status, 200);
+        assert.equal(
+            (await tokensDe(conta.id, "password_reset")).length,
+            1,
+            "a conta sem senha precisa receber um link para criar uma",
+        );
+    });
+
+    test("o link cria a senha e libera o login por email", async () => {
+        const conta = await contaSocial();
+        const { authService } = await import("../src/services/auth.service.ts");
+        const token = await authService.gerarTokenResetSenha(conta.id);
+
+        const troca = await server.request("POST", "/reset-password", {
+            body: { token, password: "NovaSenha123!" },
+        });
+        assert.equal(troca.status, 200);
+
+        const login = await server.request("POST", "/login", {
+            body: { email: conta.email, password: "NovaSenha123!" },
+        });
+        assert.equal(login.status, 200);
+    });
+
+    // Criar senha não pode custar o acesso que ela já tinha.
+    test("criar a senha não desvincula a conta social", async () => {
+        const conta = await contaSocial();
+        const { authService } = await import("../src/services/auth.service.ts");
+        const token = await authService.gerarTokenResetSenha(conta.id);
+        await server.request("POST", "/reset-password", {
+            body: { token, password: "NovaSenha123!" },
+        });
+
+        const { db } = await import("../db.ts");
+        const { oauthAccounts } = await import("../schema.ts");
+        const { eq } = await import("drizzle-orm");
+        const vinculos = await db
+            .select()
+            .from(oauthAccounts)
+            .where(eq(oauthAccounts.userId, conta.id));
+        assert.equal(vinculos.length, 1);
+        assert.equal(vinculos[0].provider, "google");
+    });
+
+    test("o caminho do código de seis dígitos também atende conta sem senha", async () => {
+        const conta = await contaSocial();
+        const res = await server.request("POST", "/forgot-password-otp", {
+            body: { email: conta.email, canal: "email" },
+        });
+        assert.equal(res.status, 200);
+        assert.equal((await tokensDe(conta.id, "password_reset_otp")).length, 1);
+    });
+
+    // A resposta continua sem revelar se o email tem conta, que é o motivo de ela ser
+    // genérica. O que mudou foi só o que acontece por baixo.
+    test("email sem conta continua sem gerar token e com a mesma resposta", async () => {
+        const conta = await contaSocial();
+        const res = await server.request("POST", "/forgot-password", {
+            body: { email: `naoexiste_${Date.now()}@email.com` },
+        });
+        assert.equal(res.status, 200);
+
+        const comConta = await server.request("POST", "/forgot-password", {
+            body: { email: conta.email },
+        });
+        assert.deepEqual(res.body, comConta.body, "as duas respostas precisam ser iguais");
+    });
+});
