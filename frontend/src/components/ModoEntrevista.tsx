@@ -10,10 +10,34 @@ import {
   type TopicoEntrevista,
 } from '../services/entrevista';
 import type { Cartao } from '../services/flashcards';
+import { lerPreferencia, gravarPreferencia } from '../utils/preferencia';
 
 // Quantas perguntas por sessão. Ensaio de entrevista é curto de propósito: passar
 // de vinte perguntas de uma vez não é ensaio, é maratona.
 const OPCOES_QUANTIDADE = [5, 10, 20];
+
+// A combinação escolhida no último ensaio. Vive em chave própria, separada da
+// revisão do dia, porque são duas escolhas diferentes e o aluno alterna entre elas.
+const ESCOLHA = 'ensina:revisao:entrevista';
+
+interface EscolhaSalva {
+  nivel: Nivel;
+  topicos: string[];
+  quantas: number;
+}
+
+const ESCOLHA_PADRAO: EscolhaSalva = { nivel: 'junior', topicos: [], quantas: 10 };
+
+// Cada campo volta conferido: o nível vira classe de CSS e vai para a API, e a
+// quantidade precisa ser uma das três opções para o botão certo aparecer marcado.
+function lerEscolha(): EscolhaSalva {
+  const salvo = lerPreferencia(ESCOLHA, ESCOLHA_PADRAO);
+  return {
+    nivel: NIVEIS.some((n) => n.valor === salvo.nivel) ? salvo.nivel : ESCOLHA_PADRAO.nivel,
+    topicos: Array.isArray(salvo.topicos) ? salvo.topicos.filter((t) => typeof t === 'string') : [],
+    quantas: OPCOES_QUANTIDADE.includes(salvo.quantas) ? salvo.quantas : ESCOLHA_PADRAO.quantas,
+  };
+}
 
 interface Props {
   /** Entrega a fila pronta para a sala abrir a carta. */
@@ -29,11 +53,14 @@ interface Props {
  * estatísticas, porque a carta respondida aqui volta pela fila do dia.
  */
 export function ModoEntrevista({ onComecar }: Props) {
-  const [nivel, setNivel] = useState<Nivel>('junior');
+  // O painel some da tela ao trocar de modo, então o estado nasce do que ficou
+  // guardado: sem isso, ir ver a revisão do dia e voltar já apagava a escolha.
+  const [salvo] = useState(lerEscolha);
+  const [nivel, setNivel] = useState<Nivel>(salvo.nivel);
   const [topicos, setTopicos] = useState<TopicoEntrevista[]>([]);
-  const [escolhidos, setEscolhidos] = useState<Set<string>>(new Set());
+  const [escolhidos, setEscolhidos] = useState<Set<string>>(() => new Set(salvo.topicos));
   const [resumo, setResumo] = useState<ResumoEntrevista | null>(null);
-  const [quantas, setQuantas] = useState(10);
+  const [quantas, setQuantas] = useState(salvo.quantas);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
@@ -55,6 +82,12 @@ export function ModoEntrevista({ onComecar }: Props) {
   useEffect(() => {
     void carregar(nivel);
   }, [nivel, carregar]);
+
+  // Guarda a escolha inteira, inclusive assunto que não é do nível aberto agora:
+  // quem sobe para pleno e volta para júnior espera reencontrar o que tinha marcado.
+  useEffect(() => {
+    gravarPreferencia(ESCOLHA, { nivel, topicos: [...escolhidos], quantas });
+  }, [nivel, escolhidos, quantas]);
 
   // Trocar de nível não pode carregar assunto que sumiu da lista, porque um tópico
   // só de sênior deixa de existir ao voltar para estágio. A marcação é derivada em
