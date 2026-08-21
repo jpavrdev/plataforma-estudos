@@ -5,6 +5,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
+import { VisorImagem } from '../../components/VisorImagem';
 import {
   Flame,
   AtSign,
@@ -49,6 +50,10 @@ export function PerfilPublico() {
   const { user, isAuthenticated } = useAuth();
   const [perfil, setPerfil] = useState<PerfilPublicoData | null>(null);
   const [estado, setEstado] = useState<'carregando' | 'ok' | 'nao_encontrado'>('carregando');
+  // Qual imagem do perfil está ampliada, ou nulo com o visor fechado.
+  const [ampliada, setAmpliada] = useState<{ src: string; alt: string; redondo: boolean } | null>(
+    null,
+  );
   const [copiado, setCopiado] = useState(false);
   const [seguindo, setSeguindo] = useState<boolean | null>(null);
   const [salvandoSeguir, setSalvandoSeguir] = useState(false);
@@ -153,7 +158,7 @@ export function PerfilPublico() {
           <div className="pf">
             <div className="pf-card">
               <div
-                className="pf-banner"
+                className={`pf-banner${capaUrl ? ' pf-banner--ampliavel' : ''}`}
                 style={
                   capaUrl
                     ? {
@@ -163,6 +168,29 @@ export function PerfilPublico() {
                       }
                     : undefined
                 }
+                {...(capaUrl
+                  ? {
+                      role: 'button',
+                      tabIndex: 0,
+                      'aria-label': `Ver a capa de ${perfil.name}`,
+                      onClick: () =>
+                        setAmpliada({
+                          src: capaUrl,
+                          alt: `Capa de ${perfil.name}`,
+                          redondo: false,
+                        }),
+                      onKeyDown: (e: React.KeyboardEvent) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setAmpliada({
+                            src: capaUrl,
+                            alt: `Capa de ${perfil.name}`,
+                            redondo: false,
+                          });
+                        }
+                      },
+                    }
+                  : {})}
               >
                 {!capaUrl && (
                   <>
@@ -174,13 +202,36 @@ export function PerfilPublico() {
               <div className="pf-head">
                 <div className="pf-avatar-wrap">
                   <div
-                    className="pf-avatar"
+                    className={`pf-avatar${fotoUrl ? ' pf-avatar--ampliavel' : ''}`}
                     style={{
                       width: 104,
                       height: 104,
                       fontSize: 38,
                       border: '4px solid var(--surface)',
                     }}
+                    {...(fotoUrl
+                      ? {
+                          role: 'button',
+                          tabIndex: 0,
+                          'aria-label': `Ver a foto de ${perfil.name}`,
+                          onClick: () =>
+                            setAmpliada({
+                              src: fotoUrl,
+                              alt: `Foto de ${perfil.name}`,
+                              redondo: true,
+                            }),
+                          onKeyDown: (e: React.KeyboardEvent) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setAmpliada({
+                                src: fotoUrl,
+                                alt: `Foto de ${perfil.name}`,
+                                redondo: true,
+                              });
+                            }
+                          },
+                        }
+                      : {})}
                   >
                     {fotoUrl ? <img src={fotoUrl} alt={perfil.name} /> : getInitials(perfil.name)}
                   </div>
@@ -367,6 +418,15 @@ export function PerfilPublico() {
           </div>
         )}
       </div>
+
+      {ampliada && (
+        <VisorImagem
+          src={ampliada.src}
+          alt={ampliada.alt}
+          redondo={ampliada.redondo}
+          onFechar={() => setAmpliada(null)}
+        />
+      )}
     </div>
   );
 }

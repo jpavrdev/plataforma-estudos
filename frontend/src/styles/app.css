@@ -6218,3 +6218,89 @@ a.logo {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ---------- Visor de imagem do perfil ---------- */
+
+/* Ampliar a foto e a capa de outra pessoa, no gesto que o Twitter ensinou. Só
+   entra quando existe imagem: não há o que ampliar num gradiente nem em iniciais. */
+.pf-banner--ampliavel,
+.pf-avatar--ampliavel {
+  cursor: zoom-in;
+}
+.pf-avatar--ampliavel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* Na capa o anel vai para dentro: ela ocupa a largura do card, e por fora ele sai
+   cortado pela borda e vira um risco solto em vez de um contorno. */
+.pf-banner--ampliavel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
+.visor {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(6, 8, 15, 0.86);
+  cursor: zoom-out;
+  animation: visor-entra 0.16s ease both;
+}
+@keyframes visor-entra {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.visor__img {
+  max-width: min(760px, 100%);
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: var(--r-lg);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+/* O avatar é redondo no perfil, e ampliá-lo em quadrado quebraria o vínculo
+   visual com o que foi clicado. */
+.visor__img--redondo {
+  width: min(360px, 78vw);
+  height: min(360px, 78vw);
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.visor__fechar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+}
+.visor__fechar:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.visor__fechar:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visor {
+    animation: none;
+  }
+}
