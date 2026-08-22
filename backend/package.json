@@ -17,7 +17,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@anthropic-ai/sdk": "^0.116.0",
+        "@anthropic-ai/sdk": "^0.117.1",
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/ws": "^8.18.1",
