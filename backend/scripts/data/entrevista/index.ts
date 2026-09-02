@@ -7,5 +7,6 @@ import { cpp } from "./cpp.ts";
 import { docker } from "./docker.ts";
 import { git } from "./git.ts";
 import { java } from "./java.ts";
+import { react } from "./react.ts";
 
-export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker, git, java];
+export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker, git, java, react];
