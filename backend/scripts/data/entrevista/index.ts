@@ -9,5 +9,6 @@ import { git } from "./git.ts";
 import { java } from "./java.ts";
 import { react } from "./react.ts";
 import { node } from "./node.ts";
+import { typescript } from "./typescript.ts";
 
-export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker, git, java, react, node];
+export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker, git, java, react, node, typescript];
