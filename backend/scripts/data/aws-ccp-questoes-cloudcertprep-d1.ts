@@ -144,18 +144,6 @@ export const QUESTOES_CLOUDCERTPREP_D1: Questao[] = [
         ],
     },
     {
-        statement: "Qual das opções a seguir é um princípio de design de arquitetura da Nuvem AWS?",
-        explanation:
-            "Acoplamento fraco faz os componentes interagirem por interfaces bem definidas, para que cada um escale, mude ou falhe sem afetar os outros. Pontos únicos de falha são um antipadrão, o design monolítico dificulta escalar partes isoladas e a escalabilidade vertical fica limitada ao tamanho de um único recurso.",
-        topic: "Conceitos e arquitetura",
-        options: [
-            ["Implementar pontos únicos de falha", false],
-            ["Implementar o acoplamento fraco", true],
-            ["Implementar um design monolítico", false],
-            ["Implementar escalabilidade vertical", false],
-        ],
-    },
-    {
         statement:
             "Qual é uma vantagem de transferir a infraestrutura de um data center on-premises para a Nuvem AWS?",
         explanation:
@@ -745,6 +733,635 @@ export const QUESTOES_CLOUDCERTPREP_D1: Questao[] = [
             ["Locais de borda da AWS", false],
             ["Planos do AWS Support", false],
             ["Dispositivos AWS Snowball Edge", false],
+        ],
+    },
+    {
+        statement:
+            "Quais características da AWS tornam a nuvem econômica para uma carga de trabalho com demanda de usuários variável? (Selecione DUAS opções.)",
+        explanation:
+            "A elasticidade ajusta a capacidade à demanda e o pagamento conforme o uso cobra só pelo que foi consumido, então os vales de acesso não geram custo ocioso. Alta disponibilidade e confiabilidade tratam de resistir a falhas, e o modelo de responsabilidade compartilhada divide deveres de segurança; nenhum deles reduz custo.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Alta disponibilidade", false],
+            ["Modelo de responsabilidade compartilhada", false],
+            ["Elasticidade", true],
+            ["Pagamento conforme o uso", true],
+            ["Confiabilidade", false],
+        ],
+    },
+    {
+        statement:
+            "Ao arquitetar aplicações para a nuvem, qual das opções a seguir é um princípio de design fundamental?",
+        explanation:
+            "Elasticidade é um princípio central do design na nuvem: a capacidade cresce e diminui conforme a demanda, sem pagar por recursos ociosos. Usar a maior instância e provisionar para o pico são hábitos on-premises que geram desperdício, e o Scrum é um processo de desenvolvimento, não um princípio de arquitetura.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Usar sempre o maior tamanho de instância disponível", false],
+            ["Provisionar capacidade fixa para o pico de carga", false],
+            ["Adotar o Scrum como processo de desenvolvimento", false],
+            ["Implementar elasticidade para acompanhar a demanda", true],
+        ],
+    },
+    {
+        statement: "Qual das opções a seguir é um benefício de usar a Nuvem AWS?",
+        explanation:
+            "A AWS assume a operação da infraestrutura física, o que libera a empresa para investir tempo e dinheiro no que gera receita. A AWS não adota segurança permissiva (o padrão é o menor privilégio), e o cliente não controla o hardware de rede nem escolhe os fornecedores de hardware da nuvem.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Segurança permissiva que reduz o trabalho administrativo", false],
+            ["Poder se concentrar em atividades que geram receita", true],
+            ["Controle sobre o hardware de rede da nuvem", false],
+            ["Escolha de fornecedores específicos de hardware da nuvem", false],
+        ],
+    },
+    {
+        statement:
+            "Qual recurso da AWS um cliente deve aproveitar para obter alta disponibilidade em uma aplicação?",
+        explanation:
+            "Distribuir a aplicação em várias Zonas de Disponibilidade, que têm energia e rede independentes, mantém o serviço no ar se uma delas falhar. O Direct Connect é um link dedicado com o ambiente on-premises, a VPC é uma rede isolada e os data centers não são escolhidos diretamente pelo cliente.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["AWS Direct Connect", false],
+            ["Zonas de Disponibilidade", true],
+            ["Data centers da AWS", false],
+            ["Amazon Virtual Private Cloud (Amazon VPC)", false],
+        ],
+    },
+    {
+        statement: "Qual das opções a seguir é um princípio de design de arquitetura na nuvem?",
+        explanation:
+            "Acoplamento fraco faz os componentes conversarem por interfaces bem definidas, como filas e APIs, para que a falha ou a mudança de um não derrube os outros. Escalar só verticalmente e montar sistemas monolíticos vão contra as boas práticas, e escolher software comercial é decisão de compra, não princípio de arquitetura.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Escalar verticalmente em vez de horizontalmente", false],
+            ["Manter os componentes com acoplamento fraco", true],
+            ["Construir aplicações como sistemas monolíticos", false],
+            ["Usar software de banco de dados comercial", false],
+        ],
+    },
+    {
+        statement: "Quais são benefícios financeiros de usar a AWS? (Selecione DUAS opções.)",
+        explanation:
+            "Sem data center próprio, some o investimento em hardware e caem os gastos com energia, manutenção e operação da infraestrutura, o que reduz o TCO e as despesas operacionais. A nuvem diminui o CapEx em vez de aumentá-lo, e a AWS não oferece pagamento adiado nem linha de crédito (o AWS Activate dá créditos promocionais).",
+        topic: "Preços e faturamento",
+        options: [
+            ["Redução do custo total de propriedade (TCO)", true],
+            ["Aumento das despesas de capital (CapEx)", false],
+            ["Redução das despesas operacionais (OpEx)", true],
+            ["Planos de pagamento adiado para startups", false],
+            ["Linhas de crédito empresarial para startups", false],
+        ],
+    },
+    {
+        statement:
+            "Ao comparar o custo total de propriedade (TCO) da AWS com o de um ambiente on-premises, qual custo deve ser incluído?",
+        explanation:
+            "No on-premises, a empresa paga pela segurança física do data center (vigilância, controle de acesso, câmeras); na AWS esse custo fica com a AWS, por isso ele diferencia os dois cenários. Gestão de projetos, antivírus e desenvolvimento de software existem nos dois ambientes e não mudam a comparação.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Gestão dos projetos de TI", false],
+            ["Licenciamento de software antivírus", false],
+            ["Segurança física do data center", true],
+            ["Desenvolvimento de software", false],
+        ],
+    },
+    {
+        statement:
+            "Ao projetar aplicações na nuvem, qual prática é um princípio importante de arquitetura?",
+        explanation:
+            "Usar várias Zonas de Disponibilidade distribui a aplicação por locais isolados, e a falha de uma zona não derruba o sistema. Componentes fortemente acoplados propagam falhas, usar código aberto é escolha de licenciamento e provisionar capacidade extra contraria a elasticidade, que ajusta recursos conforme a demanda.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Usar várias Zonas de Disponibilidade", true],
+            ["Usar componentes fortemente acoplados", false],
+            ["Usar software de código aberto", false],
+            ["Provisionar capacidade extra", false],
+        ],
+    },
+    {
+        statement:
+            "Qual característica da AWS reduz o custo total de propriedade (TCO) do cliente?",
+        explanation:
+            "Com computação elástica, a capacidade acompanha a demanda e o cliente deixa de pagar por infraestrutura ociosa, o que reduz o TCO. Suportar vários sistemas operacionais não muda o custo, hardware dedicado costuma custar mais que o compartilhado e a criptografia protege dados sem reduzir custos.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Suporte a vários sistemas operacionais", false],
+            ["Hardware dedicado a um único cliente", false],
+            ["Computação elástica", true],
+            ["Criptografia dos dados", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa vai rearquitetar uma grande aplicação monolítica para a nuvem. Quais princípios de design são recomendados? (Selecione DUAS opções.)",
+        explanation:
+            "Ao quebrar um monólito, o acoplamento fraco evita que a falha de uma parte se propague e o design para escalabilidade deixa cada componente crescer de forma independente. Monitoramento manual e servidores fixos são antipadrões na nuvem, e depender de um componente central é justamente o problema do monólito.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Usar monitoramento manual", false],
+            ["Manter servidores fixos e permanentes", false],
+            ["Implementar acoplamento fraco", true],
+            ["Depender de um único componente central", false],
+            ["Projetar para escalabilidade", true],
+        ],
+    },
+    {
+        statement: "Como os clientes se beneficiam da enorme economia de escala da AWS?",
+        explanation:
+            "Com milhões de clientes, a AWS compra e opera em escala muito maior, reduz o custo por unidade e repassa parte da economia em reduções periódicas de preço. Aumentar e reduzir recursos é elasticidade, e novos tipos de instância ou hardware mais confiável são evolução do produto, não efeito direto da economia de escala.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Reduções periódicas de preço graças à eficiência operacional da AWS", true],
+            ["Novos tipos de instância do Amazon EC2 com o hardware mais recente", false],
+            ["A capacidade de aumentar e reduzir recursos quando necessário", false],
+            ["Maior confiabilidade no hardware subjacente das instâncias do Amazon EC2", false],
+        ],
+    },
+    {
+        statement:
+            "Quais opções são benefícios da Nuvem AWS em comparação com a infraestrutura tradicional? (Selecione DUAS opções.)",
+        explanation:
+            "Elasticidade ajusta recursos à demanda e agilidade permite provisionar e experimentar em minutos, sem longos ciclos de compra. A AWS oferece SLAs, não tempo de atividade ilimitado; colocation é hospedar servidores próprios em data center de terceiros; e despesas de capital são o que a nuvem substitui por custos variáveis.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Tempo de atividade ilimitado", false],
+            ["Elasticidade", true],
+            ["Agilidade", true],
+            ["Colocation", false],
+            ["Despesas de capital (CapEx)", false],
+        ],
+    },
+    {
+        statement:
+            "Ao comparar o custo total de propriedade (TCO) da Nuvem AWS com o de um ambiente on-premises, quais despesas devem ser consideradas? (Selecione DUAS opções.)",
+        explanation:
+            "Servidores físicos e hardware de armazenamento precisam ser comprados, mantidos e trocados no on-premises e deixam de existir na AWS, por isso pesam no TCO. Desenvolvimento de software, gestão de projetos e licenças de antivírus continuam iguais nos dois ambientes e não diferenciam a comparação.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Desenvolvimento de software", false],
+            ["Gestão de projetos", false],
+            ["Hardware de armazenamento", true],
+            ["Servidores físicos", true],
+            ["Licença de software antivírus", false],
+        ],
+    },
+    {
+        statement:
+            "Quais cenários representam o conceito de elasticidade na AWS? (Selecione DUAS opções.)",
+        explanation:
+            "Ajustar a quantidade de instâncias EC2 conforme o tráfego (escala horizontal) e redimensionar instâncias RDS conforme a necessidade (escala vertical) adaptam a capacidade à demanda. Direcionar tráfego para instâncias ociosas é balanceamento de carga, documentos de conformidade vêm do AWS Artifact e ambientes via código são infraestrutura como código.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Ajustar o número de instâncias do Amazon EC2 conforme o tráfego", true],
+            ["Redimensionar instâncias do Amazon RDS quando a demanda do negócio muda", true],
+            [
+                "Direcionar automaticamente o tráfego para as instâncias do Amazon EC2 menos utilizadas",
+                false,
+            ],
+            ["Usar documentos de conformidade da AWS para acelerar auditorias", false],
+            ["Criar e governar ambientes inteiros por meio de código", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa avalia migrar seu data center on-premises para a AWS. Quais fatores devem entrar na análise de custo total de propriedade (TCO)? (Selecione DUAS opções.)",
+        explanation:
+            "Energia elétrica e mão de obra para trocar servidores são custos do data center próprio que desaparecem na AWS, então entram no TCO. Disponibilidade de instâncias EC2 é um dado do lado da AWS, horas dos desenvolvedores não mudam com a hospedagem e capacidade do banco é questão de dimensionamento, não custo on-premises.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Disponibilidade de tipos de instância do Amazon EC2", false],
+            ["Consumo de energia elétrica do data center", true],
+            ["Mão de obra para substituir servidores antigos", true],
+            ["Horas de trabalho dos desenvolvedores de aplicações", false],
+            ["Capacidade do mecanismo de banco de dados", false],
+        ],
+    },
+    {
+        statement:
+            "Qual modelo de implantação permite ao cliente trocar totalmente as despesas de capital (CapEx) de TI por despesas operacionais (OpEx)?",
+        explanation:
+            "Na implantação em nuvem, toda a infraestrutura roda no provedor e o investimento inicial em hardware vira custo variável pelo uso. No on-premises o CapEx continua integral, no modelo híbrido parte dele permanece, e PaaS é um modelo de serviço (como IaaS e SaaS), não um modelo de implantação.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Implantação on-premises", false],
+            ["Implantação híbrida", false],
+            ["Implantação em nuvem", true],
+            ["Plataforma como serviço (PaaS)", false],
+        ],
+    },
+    {
+        statement:
+            "A aplicação web de uma empresa tem dependências rígidas entre seus componentes, e a falha de um deles derruba a aplicação inteira. Qual princípio de design da Nuvem AWS resolve esse problema?",
+        explanation:
+            "Desacoplar isola os componentes, que passam a se comunicar por interfaces como filas, e a falha de um não derruba os demais. Elasticidade ajusta capacidade à demanda, instâncias em paralelo melhoram desempenho e dobrar recursos só aumenta capacidade; nenhuma dessas opções remove a dependência rígida entre os componentes.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Implementar elasticidade, para a aplicação escalar conforme a demanda muda", false],
+            ["Executar várias instâncias EC2 em paralelo para obter melhor desempenho", false],
+            ["Desacoplar os componentes, para que cada um funcione mesmo se outro falhar", true],
+            ["Dobrar os recursos de computação do EC2 para aumentar a tolerância a falhas", false],
+        ],
+    },
+    {
+        statement:
+            "Qual das opções a seguir é um princípio de design do AWS Well-Architected Framework relacionado ao pilar Confiabilidade?",
+        explanation:
+            "Recuperar-se automaticamente de falhas é um dos princípios do pilar Confiabilidade, ao lado de testar procedimentos de recuperação e escalar horizontalmente. Adotar um modelo de consumo é princípio de Otimização de custos, base sólida de identidade é de Segurança, e implantar em uma única zona cria ponto único de falha.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Implantar em uma única Zona de Disponibilidade", false],
+            ["Recuperar-se automaticamente de falhas", true],
+            ["Adotar um modelo de consumo", false],
+            ["Implementar uma base sólida de identidade", false],
+        ],
+    },
+    {
+        statement:
+            "Qual é uma vantagem de usar a Nuvem AWS em vez de uma solução on-premises tradicional?",
+        explanation:
+            "Na AWS a capacidade é provisionada sob demanda e ajustada em minutos, então não é preciso comprar hardware com base em previsões. Contratos de hardware são coisa do modelo on-premises, os custos da nuvem variam com o uso e os relatórios do AWS Artifact apoiam auditorias, mas não livram o cliente delas.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Os usuários não precisam adivinhar a capacidade futura", true],
+            ["Os usuários aproveitam contratos de hardware já existentes", false],
+            ["Os usuários mantêm custos fixos, seja qual for o tráfego", false],
+            ["Os usuários evitam auditorias usando relatórios da AWS", false],
+        ],
+    },
+    {
+        statement:
+            "Por que uma empresa deveria escolher a AWS em vez de um data center tradicional?",
+        explanation:
+            "A AWS cobra pelo uso, sem contratos de longo prazo na maioria dos serviços, o que evita grandes investimentos iniciais. O cliente não controla o hardware subjacente, os locais de borda não existem em todos os países e há cotas de serviço por conta e Região, que podem ser aumentadas sob pedido.",
+        topic: "Preços e faturamento",
+        options: [
+            ["A AWS dá aos usuários controle total sobre os recursos subjacentes", false],
+            ["A AWS dispensa contratos de longo prazo e cobra pelo uso", true],
+            ["A AWS tem locais de borda em todos os países do mundo", false],
+            ["A AWS não impõe limite à quantidade de recursos criados", false],
+        ],
+    },
+    {
+        statement:
+            "Qual é a forma MAIS eficaz de a AWS reduzir os custos de computação de uma startup em crescimento?",
+        explanation:
+            "Com recursos sob demanda, a startup provisiona capacidade só nos picos e a libera depois, pagando apenas pelo que usa em vez de comprar hardware para a carga máxima. Automatizar ambientes de desenvolvimento ajuda na produtividade, CRM não tem relação com infraestrutura e um orçamento fixo limita gastos sem reduzir o custo.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Oferecer recursos sob demanda para os picos de uso", true],
+            ["Automatizar o provisionamento de ambientes de cada desenvolvedor", false],
+            ["Automatizar a gestão do relacionamento com clientes", false],
+            ["Aplicar um orçamento mensal fixo de computação", false],
+        ],
+    },
+    {
+        statement:
+            "Quais princípios são usados para arquitetar aplicações confiáveis na Nuvem AWS? (Selecione DUAS opções.)",
+        explanation:
+            "Recuperação automática de falhas é princípio do pilar Confiabilidade, e distribuir a carga em várias Zonas de Disponibilidade elimina pontos únicos de falha. O pilar pede mudanças por automação, e não manuais, e testes de recuperação e de pico em vez de carga moderada; restaurar backups on-premises cria dependência de infraestrutura local.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Projetar a recuperação automática em caso de falhas", true],
+            ["Distribuir a carga em várias Zonas de Disponibilidade", true],
+            ["Gerenciar mudanças manualmente, seguindo processos documentados", false],
+            ["Testar com demanda moderada para garantir a confiabilidade", false],
+            ["Restaurar os backups em um ambiente on-premises", false],
+        ],
+    },
+    {
+        statement: "Qual opção é um exemplo de alta disponibilidade na Nuvem AWS?",
+        explanation:
+            "Alta disponibilidade é manter a aplicação acessível mesmo quando um recurso falha, com redundância entre Zonas de Disponibilidade e failover automático. Suporte 24 horas é uma oferta dos planos de suporte, pagar sob demanda é modelo de preço e implantar em várias Regiões é alcance global, que sozinho não garante disponibilidade.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Consultar o suporte técnico da AWS a qualquer hora do dia ou da noite", false],
+            ["Manter a aplicação acessível mesmo se um recurso falhar", true],
+            ["Usar qualquer serviço da AWS pagando sob demanda", false],
+            ["Implantar em qualquer parte do mundo usando Regiões da AWS", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa está avaliando levar seus servidores para a Nuvem AWS. Quais vantagens ela terá ao hospedar a infraestrutura na AWS? (Selecione DUAS opções.)",
+        explanation:
+            "Na AWS não há compromisso nem investimento inicial, e os recursos são provisionados sob demanda em minutos. Pelo modelo de responsabilidade compartilhada, a segurança na nuvem é do cliente; o armazenamento é cobrado pelo uso, com cota gratuita só no nível gratuito; e o cliente não controla a infraestrutura física.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Não há compromissos nem investimentos iniciais", true],
+            ["A AWS gerencia toda a segurança na nuvem", false],
+            ["É possível provisionar recursos sob demanda", true],
+            ["Há armazenamento gratuito e ilimitado", false],
+            ["Os usuários têm controle sobre a infraestrutura física", false],
+        ],
+    },
+    {
+        statement:
+            "Quais benefícios a Nuvem AWS oferece a empresas com clientes em muitos países do mundo? (Selecione DUAS opções.)",
+        explanation:
+            "Implantar em várias Regiões aproxima a aplicação dos usuários, e os locais de borda do CloudFront entregam conteúdo perto deles; os dois reduzem a latência. O Translate traduz textos, mas não interfaces de terceiros por conta própria; o Comprehend analisa texto; e o Elastic Load Balancing distribui tráfego dentro de uma Região.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Implantar as aplicações em várias Regiões da AWS para reduzir a latência", true],
+            ["O Amazon Translate traduz automaticamente a interface de sites de terceiros", false],
+            ["O Amazon CloudFront tem locais de borda pelo mundo que reduzem a latência", true],
+            [
+                "O Amazon Comprehend cria aplicações que respondem a usuários em vários idiomas",
+                false,
+            ],
+            [
+                "O Elastic Load Balancing distribui o tráfego entre Regiões e reduz a latência",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Quando uma empresa provisiona servidores web em várias Regiões da AWS, o que está sendo aumentado?",
+        explanation:
+            "Com servidores web em mais de uma Região, a aplicação continua atendendo mesmo se uma Região inteira ficar indisponível, o que aumenta a disponibilidade. O acoplamento trata da dependência entre componentes, a segurança depende de configuração e controles, e a durabilidade se refere à preservação de dados armazenados.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["O acoplamento entre os componentes", false],
+            ["A disponibilidade da aplicação", true],
+            ["A segurança da aplicação", false],
+            ["A durabilidade dos dados", false],
+        ],
+    },
+    {
+        statement:
+            "Durante uma revisão de arquitetura, um arquiteto avalia uma carga de trabalho com base no AWS Well-Architected Framework. Quais opções correspondem a pilares desse framework? (Selecione DUAS opções.)",
+        explanation:
+            "O Well-Architected tem seis pilares: Excelência operacional, Segurança, Confiabilidade, Eficiência de desempenho, Otimização de custos e Sustentabilidade. Várias Zonas de Disponibilidade são estratégia de implantação, criptografia é prática dentro do pilar Segurança e alta disponibilidade é objetivo ligado ao pilar Confiabilidade.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Várias Zonas de Disponibilidade", false],
+            ["Eficiência de desempenho", true],
+            ["Segurança", true],
+            ["Criptografia", false],
+            ["Alta disponibilidade", false],
+        ],
+    },
+    {
+        statement: "O que a prática de infraestrutura como código permite fazer na Nuvem AWS?",
+        explanation:
+            "Com infraestrutura como código, os recursos são descritos em templates (como no AWS CloudFormation) e provisionados de forma automática, repetível e versionada. Hardware físico não migra por código, auditoria feita por terceiros é outra atividade e o código da aplicação continua sob responsabilidade do cliente.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Automatizar a migração de hardware on-premises para data centers da AWS", false],
+            ["Permitir que terceiros automatizem a auditoria da infraestrutura da AWS", false],
+            ["Entregar o código da aplicação para a AWS executar por conta própria", false],
+            ["Automatizar o provisionamento da infraestrutura a partir de templates", true],
+        ],
+    },
+    {
+        statement:
+            "Um sistema na Nuvem AWS foi projetado para suportar a falha de um ou mais componentes e continuar atendendo os usuários. Isso é um exemplo de quê?",
+        explanation:
+            "Seguir atendendo quando componentes falham, com redundância e failover automático, é alta disponibilidade (a ideia se aproxima de tolerância a falhas, que não está entre as opções). Elasticidade e escalabilidade ajustam ou ampliam a capacidade conforme a carga, e agilidade nos negócios é a rapidez para provisionar e lançar novidades.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Elasticidade", false],
+            ["Alta disponibilidade", true],
+            ["Escalabilidade", false],
+            ["Agilidade nos negócios", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa quer construir as cargas de trabalho de suas novas aplicações na Nuvem AWS em vez de usar recursos on-premises. Qual despesa pode ser reduzida com a Nuvem AWS?",
+        explanation:
+            "Na AWS a empresa não precisa comprar, instalar e cabear servidores e equipamentos de rede para as novas aplicações; paga só pelo consumo. Escrever código em Java ou Node.js, fazer testes de penetração e criar casos de teste para software de terceiros são custos de pessoas e processos que continuam iguais na nuvem.",
+        topic: "Preços e faturamento",
+        options: [
+            ["O custo de escrever código próprio em Java ou Node.js", false],
+            ["Testes de penetração (pentest) de segurança", false],
+            ["O hardware necessário para rodar as novas aplicações", true],
+            ["A escrita de casos de teste para aplicações de terceiros", false],
+        ],
+    },
+    {
+        statement: "O que significa um usuário implantar uma arquitetura de nuvem híbrida na AWS?",
+        explanation:
+            "Na nuvem híbrida, parte dos recursos continua no data center on-premises e parte roda na Nuvem AWS, conectadas por serviços como AWS Site-to-Site VPN ou AWS Direct Connect. Tudo on-premises ou tudo na AWS não é híbrido, e dividir entre on-premises e colocation não envolve nenhum provedor de nuvem.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Todos os recursos rodam em infraestrutura on-premises", false],
+            ["Parte dos recursos roda on-premises e parte em um centro de colocation", false],
+            ["Todos os recursos rodam na Nuvem AWS", false],
+            ["Parte dos recursos roda on-premises e parte na Nuvem AWS", true],
+        ],
+    },
+    {
+        statement:
+            "Uma startup compara a Nuvem AWS com a compra de servidores próprios. Quais vantagens a nuvem oferece nesse caso? (Selecione DUAS opções.)",
+        explanation:
+            "Com capacidade sob demanda, não é preciso prever a infraestrutura necessária, e provisionar em minutos acelera a chegada ao mercado. A cobrança da AWS varia com o uso, a nuvem reduz o investimento de capital antecipado em vez de aumentá-lo, e clientes não têm acesso físico aos data centers.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Custo mensal fixo, independente do uso", false],
+            ["Não precisar adivinhar a capacidade necessária", true],
+            ["Maior velocidade para chegar ao mercado", true],
+            ["Aumento da despesa de capital antecipada", false],
+            ["Acesso físico aos data centers onde a nuvem roda", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa vai comparar o custo de manter sua infraestrutura on-premises com o de uma arquitetura na nuvem. Quais custos devem entrar nesse cálculo de TCO? (Selecione DUAS opções.)",
+        explanation:
+            "No TCO entram os custos de infraestrutura que mudam entre os modelos: comprar e instalar servidores e administrar o ambiente (patches, backups, recuperação de falhas). Taxas de cartão, testes de penetração e campanhas de publicidade existem em qualquer hospedagem e não diferenciam on-premises de nuvem.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Taxas de processamento de cartão de crédito nas transações da aplicação", false],
+            ["Compra e instalação de servidores no data center on-premises", true],
+            ["Administração da infraestrutura, como patches, backups e recuperação", true],
+            ["Testes de penetração contratados de terceiros", false],
+            ["Custos de publicidade de uma campanha contínua em toda a empresa", false],
+        ],
+    },
+    {
+        statement: "Qual das opções é uma boa prática de design na Nuvem AWS?",
+        explanation:
+            "Projetar para alta disponibilidade, com redundância entre Zonas de Disponibilidade e failover automático, é boa prática na Nuvem AWS. Acoplamento forte faz falhas se propagarem, ponto único de falha é justamente o que o design deve eliminar e superprovisionar é hábito on-premises que a elasticidade substitui.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Acoplamento forte entre componentes", false],
+            ["Ponto único de falha", false],
+            ["Alta disponibilidade", true],
+            ["Superprovisionamento de recursos", false],
+        ],
+    },
+    {
+        statement:
+            "Por que a AWS é mais econômica que um data center tradicional para aplicações com carga de computação variável?",
+        explanation:
+            "Instâncias EC2 são iniciadas quando a carga sobe e encerradas quando cai, então paga-se só pelo tempo de uso em vez de manter hardware dimensionado para o pico. O EC2 não cobra valor mensal fixo, ter acesso administrativo não reduz custo e manter capacidade de pico o tempo todo é justamente o modelo caro do data center.",
+        topic: "Preços e faturamento",
+        options: [
+            ["O Amazon EC2 cobra um valor mensal fixo por instância", false],
+            ["Os clientes mantêm acesso administrativo total às instâncias EC2", false],
+            ["As instâncias do Amazon EC2 podem ser iniciadas sob demanda", true],
+            ["Os clientes podem manter sempre instâncias suficientes para o pico", false],
+        ],
+    },
+    {
+        statement: "Qual princípio de design está alinhado às boas práticas da Nuvem AWS?",
+        explanation:
+            "Distribuir a carga de computação entre vários recursos (escala horizontal) melhora desempenho e tolerância a falhas, sem ponto único de falha. Dependências fixas contrariam o acoplamento fraco, e concentrar tudo em uma instância ou em uma única Zona de Disponibilidade deixa a aplicação exposta a uma falha localizada.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Criar dependências fixas entre os componentes da aplicação", false],
+            ["Concentrar os serviços em uma única instância", false],
+            ["Implantar as aplicações em uma única Zona de Disponibilidade", false],
+            ["Distribuir a carga de computação entre vários recursos", true],
+        ],
+    },
+    {
+        statement:
+            "Um novo serviço na AWS precisa ter alta disponibilidade, mas uma exigência regulatória obriga todas as instâncias do Amazon EC2 a ficarem em uma única área geográfica. Segundo as boas práticas, qual distribuição mínima das instâncias atende aos dois requisitos?",
+        explanation:
+            "Zonas de Disponibilidade são locais isolados dentro de uma mesma Região, então usar duas delas protege contra a falha de uma zona sem sair da área geográfica. Duas Regiões violam a exigência regulatória, e sub-redes ou grupos de posicionamento dentro de uma única zona não resistem à falha dessa zona.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Duas Regiões da AWS, em áreas geográficas diferentes", false],
+            ["Duas Zonas de Disponibilidade dentro da mesma Região", true],
+            ["Duas sub-redes dentro da mesma Zona de Disponibilidade", false],
+            ["Dois grupos de posicionamento na mesma Zona de Disponibilidade", false],
+        ],
+    },
+    {
+        statement:
+            "Um usuário implanta uma instância de banco de dados do Amazon RDS em várias Zonas de Disponibilidade. Essa estratégia está ligada a qual pilar do AWS Well-Architected Framework?",
+        explanation:
+            "Com o RDS em várias Zonas de Disponibilidade, uma réplica em espera assume automaticamente se a zona principal falhar, o que atende ao foco do pilar Confiabilidade em recuperação e disponibilidade. Eficiência de desempenho trata do uso eficiente de recursos, Otimização de custos evita gastos desnecessários e Segurança protege dados e sistemas.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Eficiência de desempenho", false],
+            ["Confiabilidade", true],
+            ["Otimização de custos", false],
+            ["Segurança", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa que vende pela internet precisa entregar novas funcionalidades rapidamente e de forma iterativa, reduzindo o tempo até chegar ao mercado. Qual característica da Nuvem AWS oferece isso?",
+        explanation:
+            "Agilidade é poder provisionar recursos em minutos, experimentar e publicar mudanças com frequência, o que encurta o tempo até o mercado. Elasticidade ajusta capacidade à demanda, e alta disponibilidade e confiabilidade tratam de manter a aplicação funcionando diante de falhas; nenhuma delas acelera a entrega de funcionalidades.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Elasticidade", false],
+            ["Alta disponibilidade", false],
+            ["Agilidade", true],
+            ["Confiabilidade", false],
+        ],
+    },
+    {
+        statement:
+            "Quais medidas ajudam a rastrear mudanças nos recursos da AWS e a investigar a causa de falhas? (Selecione DUAS opções.)",
+        explanation:
+            "O AWS Config mantém o inventário e o histórico de configuração dos recursos, e o AWS CloudTrail registra as chamadas de API; juntos permitem rastrear mudanças e investigar a causa de falhas. Cotas não servem para bloquear mudanças, o Certificate Manager emite certificados SSL/TLS e o GuardDuty detecta ameaças, sem validar configurações.",
+        topic: "Ferramentas e suporte",
+        options: [
+            ["Usar o AWS Config para manter um inventário atualizado dos recursos da AWS", true],
+            ["Usar cotas de serviço para impedir que usuários criem ou alterem recursos", false],
+            ["Usar o AWS CloudTrail para registrar chamadas de API em logs auditáveis", true],
+            [
+                "Usar o AWS Certificate Manager para criar uma lista de permissões de serviços",
+                false,
+            ],
+            ["Usar o Amazon GuardDuty para validar mudanças de configuração nos recursos", false],
+        ],
+    },
+    {
+        statement:
+            "Uma carga de trabalho em lote leva 5 horas para terminar em uma instância do Amazon EC2. O volume de dados dobra todo mês, e o tempo de processamento cresce na mesma proporção. Qual é a melhor arquitetura na nuvem para atender a essa demanda sempre crescente?",
+        explanation:
+            "Com o volume dobrando todo mês, só a escala horizontal acompanha o crescimento: dividir o trabalho entre várias instâncias em paralelo mantém o tempo sob controle. Instância maior, outra família ou bare metal são escala vertical ou ajuste de perfil, que esbarram no limite de uma única máquina.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Executar a aplicação em uma instância EC2 de tamanho maior", false],
+            ["Trocar para uma família de instância EC2 própria para lotes", false],
+            ["Dividir o trabalho entre várias instâncias EC2 em paralelo", true],
+            ["Executar a aplicação em uma instância EC2 bare metal", false],
+        ],
+    },
+    {
+        statement: "Qual é o benefício da elasticidade na Nuvem AWS?",
+        explanation:
+            "A elasticidade adiciona capacidade nos picos e a remove nos períodos calmos, mantendo o desempenho estável sem intervenção manual. Distribuir tráfego entre Regiões é roteamento global, arquivar logs é gestão do ciclo de vida dos dados e a escolha dos serviços mais baratos continua sendo decisão do cliente.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            [
+                "Garantir que o tráfego web seja distribuído automaticamente entre várias Regiões",
+                false,
+            ],
+            ["Reduzir custos de armazenamento arquivando logs automaticamente", false],
+            ["Permitir que a AWS escolha automaticamente os serviços mais baratos", false],
+            ["Ajustar automaticamente a capacidade de computação para manter o desempenho", true],
+        ],
+    },
+    {
+        statement:
+            "Qual boa prática da Nuvem AWS aproveita diretamente a elasticidade e a agilidade da computação em nuvem?",
+        explanation:
+            "Escalar de forma dinâmica e preditiva usa a elasticidade (ajustar recursos à demanda) e a agilidade (reagir rápido a mudanças). Provisionar por picos teóricos gera ociosidade, data center com acesso físico é modelo on-premises, e acoplamento fraco é boa prática de resiliência, não de uso da elasticidade.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Provisionar capacidade com base no uso passado e em picos teóricos", false],
+            ["Escalar de forma dinâmica e preditiva para atender à demanda de uso", true],
+            ["Construir a aplicação e a infraestrutura em um data center com acesso físico", false],
+            ["Dividir a aplicação em componentes com acoplamento fraco", false],
+        ],
+    },
+    {
+        statement: "Qual método ajuda a otimizar os custos de quem está migrando para a Nuvem AWS?",
+        explanation:
+            "No modelo de pagamento conforme o uso, o cliente paga só pelos recursos consumidos, sem desperdício com capacidade ociosa. Comprar hardware antecipadamente e dimensionar para a carga máxima geram recursos parados, e o provisionamento manual reage devagar à demanda, ao contrário da escala automática.",
+        topic: "Preços e faturamento",
+        options: [
+            ["Pagar apenas pelos recursos usados", true],
+            ["Comprar hardware antes de precisar dele", false],
+            ["Provisionar recursos na nuvem manualmente", false],
+            ["Comprar para a carga máxima possível", false],
+        ],
+    },
+    {
+        statement:
+            "Qual é um dos princípios centrais ao projetar uma aplicação altamente disponível na Nuvem AWS?",
+        explanation:
+            "Presumir que qualquer componente pode falhar leva a projetar redundância, verificações de integridade e failover em todas as camadas. Serverless é uma opção válida, mas não obrigatória para alta disponibilidade, o Auto Scaling ajuda na escala sem ser exigido em toda aplicação, e código aberto é escolha de licenciamento.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Projetar com arquitetura sem servidor (serverless)", false],
+            ["Presumir que todos os componentes podem falhar", true],
+            ["Incluir o AWS Auto Scaling em todas as aplicações", false],
+            ["Desenvolver todos os componentes com código aberto", false],
+        ],
+    },
+    {
+        statement:
+            "Um profissional de nuvem está elaborando um plano de recuperação de desastres e pretende replicar dados entre diferentes áreas geográficas. Qual opção atende a esse requisito?",
+        explanation:
+            "Regiões são áreas geográficas separadas no mundo, então replicar dados entre elas protege contra desastres que atinjam uma localidade inteira. Contas são limites lógicos de gestão e faturamento, Zonas de Disponibilidade ficam dentro de uma mesma Região e locais de borda servem para entrega de conteúdo e cache.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Contas da AWS", false],
+            ["Regiões da AWS", true],
+            ["Zonas de Disponibilidade", false],
+            ["Locais de borda", false],
+        ],
+    },
+    {
+        statement:
+            "Uma empresa vai usar o Amazon EC2 para implantar uma aplicação comercial global, com o maior nível possível de redundância e tolerância a falhas. Como as instâncias do EC2 devem ser implantadas?",
+        explanation:
+            "Várias Zonas de Disponibilidade em duas Regiões protegem tanto contra a falha de uma zona quanto contra a indisponibilidade de uma Região inteira, o maior nível de redundância entre as opções. Uma única zona é ponto único de falha, várias interfaces de rede não trazem redundância de computação e uma só Região fica exposta a falhas regionais.",
+        topic: "Conceitos e arquitetura",
+        options: [
+            ["Em uma única Zona de Disponibilidade de uma Região da AWS", false],
+            ["Com várias interfaces de rede elásticas em sub-redes diferentes", false],
+            ["Em várias Zonas de Disponibilidade de uma Região da AWS", false],
+            ["Em várias Zonas de Disponibilidade de duas Regiões da AWS", true],
         ],
     },
     {
