@@ -4,6 +4,10 @@
 // categoria da resposta e a correta não pode ser a única opção mais longa,
 // nem a única mais curta por folga visível. Questões de múltipla escolha
 // terminam com "(Selecione DUAS opções.)".
+//
+// As questões autorais vêm primeiro; os lotes importados do cloudcertprep entram
+// depois, pelo índice aws-ccp-questoes-cloudcertprep.ts.
+import { QUESTOES_CLOUDCERTPREP } from "./aws-ccp-questoes-cloudcertprep.ts";
 
 export type Questao = {
     statement: string;
@@ -12,7 +16,7 @@ export type Questao = {
     options: [string, boolean][];
 };
 
-export const QUESTOES: Questao[] = [
+const AUTORAIS: Questao[] = [
     {
         statement: "Quais tarefas são responsabilidades da AWS? (Selecione DUAS opções.)",
         explanation:
@@ -3148,3 +3152,5 @@ export const QUESTOES: Questao[] = [
         ],
     },
 ];
+
+export const QUESTOES: Questao[] = [...AUTORAIS, ...QUESTOES_CLOUDCERTPREP];
