@@ -148,22 +148,22 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma cientista de dados quer treinar e implantar um modelo customizado de ML com controle sobre o algoritmo e a infraestrutura. Quais recursos do Amazon SageMaker apoiam DIRETAMENTE esse fluxo? (Selecione DUAS opções.)",
+            "Uma cientista de dados quer treinar e implantar um modelo customizado de ML com controle sobre o algoritmo e a infraestrutura. Quais recursos do Amazon SageMaker AI apoiam DIRETAMENTE esse fluxo? (Selecione DUAS opções.)",
         explanation:
-            "Treinar e implantar modelos customizados são funções de SageMaker Training e SageMaker Endpoints. Polly (voz), Connect (contact center) e Shield (proteção DDoS) não fazem parte desse fluxo de ML.",
+            "O treinamento do SageMaker AI executa o treino em infraestrutura gerenciada, e os endpoints do SageMaker AI hospedam o modelo para servir inferências. Polly (voz), Connect (contact center) e Shield (proteção DDoS) não fazem parte desse fluxo de ML.",
         topic: "Fundamentos de IA e ML",
         options: [
             [
-                "SageMaker Training, para treinar modelos em infraestrutura gerenciada e escalável",
+                "Treinamento do SageMaker AI, para treinar modelos em infraestrutura gerenciada e escalável",
                 true,
             ],
             [
-                "SageMaker Endpoints, para hospedar o modelo e servir inferências em tempo real",
+                "Endpoints do SageMaker AI, para hospedar o modelo e servir inferências em tempo real",
                 true,
             ],
             ["Amazon Polly, para converter os resultados do modelo em áudio de voz natural", false],
             [
-                "Amazon Connect, para distribuir chamadas telefônicas em uma central de atendimento",
+                "Amazon Connect, para distribuir as chamadas telefônicas recebidas em uma central de atendimento",
                 false,
             ],
             ["AWS Shield, para proteger a aplicação contra ataques de negação de serviço", false],
@@ -247,14 +247,14 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma startup precisa transcrever áudios de reuniões para texto rapidamente, sem treinar nenhum modelo. Qual serviço da AWS resolve isso com um modelo pré-treinado?",
+            "Uma startup precisa transcrever áudios de reuniões para texto rapidamente, sem treinar nem implantar nenhum modelo. Qual serviço da AWS resolve isso com um modelo pré-treinado?",
         explanation:
-            "Amazon Transcribe faz speech-to-text pronto para uso. Polly é o inverso (text-to-speech); Comprehend analisa texto escrito; SageMaker exigiria treinar um modelo próprio.",
+            "Amazon Transcribe faz speech-to-text pronto para uso. Polly é o inverso (text-to-speech); Comprehend analisa texto escrito; no SageMaker AI a equipe teria de implantar e operar um modelo próprio.",
         topic: "Fundamentos de IA e ML",
         options: [
             ["Amazon Transcribe, que converte fala em texto com um modelo já pronto", true],
             [
-                "Amazon SageMaker, no qual seria preciso treinar e implantar um modelo próprio",
+                "Amazon SageMaker AI, no qual a equipe teria de implantar e operar um modelo próprio",
                 false,
             ],
             ["Amazon Polly, que faz o caminho inverso, gerando voz a partir de texto", false],
@@ -470,31 +470,6 @@ const AUTORAIS: Questao[] = [
             ],
             [
                 "Limite de um único idioma por modelo, exigindo um modelo separado para cada língua",
-                false,
-            ],
-        ],
-    },
-    {
-        statement:
-            "Uma empresa quer um assistente de IA generativa que responda perguntas dos funcionários com base nos documentos internos, respeitando as permissões de acesso. Qual serviço da AWS é voltado a isso?",
-        explanation:
-            "Q Business é o assistente generativo para dados corporativos que respeita as permissões de acesso dos documentos. Q Developer foca em código, Lex constrói bots de fluxo definido e Kendra é busca corporativa, não assistente de respostas.",
-        topic: "IA generativa",
-        options: [
-            [
-                "Amazon Q Business, um assistente generativo conectado aos dados e às permissões da empresa",
-                true,
-            ],
-            [
-                "Amazon Q Developer, um assistente voltado a tarefas de programação e ao ciclo de desenvolvimento",
-                false,
-            ],
-            [
-                "Amazon Lex, um serviço para construir chatbots com intenções e fluxos definidos manualmente",
-                false,
-            ],
-            [
-                "Amazon Kendra, um serviço de busca corporativa que localiza documentos, sem gerar respostas",
                 false,
             ],
         ],
@@ -800,19 +775,6 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Qual recurso do Amazon Bedrock permite que um foundation model execute tarefas em várias etapas, chamando APIs e sistemas para concluir uma solicitação do usuário?",
-        explanation:
-            "Agents for Amazon Bedrock orquestram tarefas de múltiplas etapas, invocando APIs e fontes de dados. Guardrails filtra conteúdo; Textract extrai de documentos; Macie protege dados sensíveis.",
-        topic: "RAG e customização",
-        options: [
-            ["Agents for Amazon Bedrock, que orquestram ações e chamadas a sistemas", true],
-            ["Amazon Bedrock Guardrails, que restringem os temas e conteúdos das respostas", false],
-            ["Amazon Textract, que extrai texto e dados de documentos digitalizados", false],
-            ["Amazon Macie, que descobre e protege dados sensíveis armazenados no S3", false],
-        ],
-    },
-    {
-        statement:
             "Ao escolher um foundation model para um chatbot de alto volume e baixo custo, qual tradeoff a equipe deve considerar?",
         explanation:
             "O tradeoff real é capacidade contra custo e latência: modelos menores tendem a ser mais baratos e rápidos, com menos capacidade. O tamanho influencia os três fatores e nenhum dos lados vence em todas as tarefas.",
@@ -975,25 +937,6 @@ const AUTORAIS: Questao[] = [
             ],
             ["O tempo que o modelo leva para produzir cada resposta em produção", false],
             ["A quantidade de parâmetros ajustados durante o treino do modelo", false],
-        ],
-    },
-    {
-        statement:
-            "Qual serviço da AWS ajuda a detectar viés nos dados e no modelo e a explicar as previsões?",
-        explanation:
-            "Clarify examina dados e modelo em busca de viés e explica as previsões. Model Monitor observa desvios em produção, Ground Truth rotula dados e Feature Store organiza e serve features, sem análise de viés.",
-        topic: "IA responsável",
-        options: [
-            ["Amazon SageMaker Clarify, voltado à detecção de viés e à explicabilidade", true],
-            [
-                "Amazon SageMaker Model Monitor, voltado a acompanhar desvios do modelo em produção",
-                false,
-            ],
-            ["Amazon SageMaker Ground Truth, voltado à rotulagem de dados de treino", false],
-            [
-                "Amazon SageMaker Feature Store, voltado a armazenar e servir features aos modelos",
-                false,
-            ],
         ],
     },
     {
@@ -1268,20 +1211,6 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Depois de implantar um modelo em produção, quais recursos ajudam a monitorar a operação e a qualidade ao longo do tempo? (Selecione DUAS opções.)",
-        explanation:
-            "Amazon CloudWatch acompanha métricas e logs operacionais, e o SageMaker Model Monitor detecta desvios (drift) na qualidade do modelo. Polly gera voz, AWS Budgets controla gastos e Lex faz chatbots.",
-        topic: "Segurança e governança",
-        options: [
-            ["Amazon CloudWatch, para acompanhar métricas e logs operacionais", true],
-            ["Amazon SageMaker Model Monitor, para detectar desvios na qualidade do modelo", true],
-            ["Amazon Polly, para converter as previsões do modelo em áudio", false],
-            ["AWS Budgets, para definir alertas de gasto financeiro na conta", false],
-            ["Amazon Lex, para criar fluxos de conversa em chatbots", false],
-        ],
-    },
-    {
-        statement:
             "Para que as chamadas a um serviço de IA não trafeguem pela internet pública, mantendo o tráfego dentro da rede da AWS, qual recurso pode ser usado?",
         explanation:
             "PrivateLink cria o endpoint privado que mantém as chamadas dentro da rede da AWS. Internet Gateway é justamente a rota pública, peering liga VPCs entre si e Direct Connect conecta o data center do cliente à AWS, outro escopo.",
@@ -1303,11 +1232,11 @@ const AUTORAIS: Questao[] = [
         statement:
             "Uma empresa regulada precisa obter relatórios de conformidade e certificações da AWS (como ISO e SOC) para uma auditoria. Onde esses documentos ficam disponíveis?",
         explanation:
-            "Os relatórios e certificações da própria AWS, como ISO e SOC, ficam no AWS Artifact. Audit Manager coleta evidências do seu ambiente, Config avalia configurações de recursos e Organizations administra as contas.",
+            "Os relatórios e certificações da própria AWS, como ISO e SOC, ficam no AWS Artifact. CloudTrail registra as chamadas de API da conta, Config avalia configurações de recursos e Organizations administra as contas.",
         topic: "Segurança e governança",
         options: [
             ["AWS Artifact, o portal de relatórios de conformidade e certificações da AWS", true],
-            ["AWS Audit Manager, que coleta evidências das auditorias internas", false],
+            ["AWS CloudTrail, que registra as chamadas de API feitas nas contas", false],
             [
                 "AWS Config, que avalia continuamente a conformidade das configurações dos recursos",
                 false,
@@ -1610,15 +1539,15 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma equipe quer começar rapidamente a partir de modelos pré-treinados e soluções prontas dentro do Amazon SageMaker, com a possibilidade de ajustá-los às suas necessidades. Qual recurso atende a isso?",
+            "Uma equipe quer começar rapidamente a partir de modelos pré-treinados e soluções prontas dentro do Amazon SageMaker AI, com a possibilidade de ajustá-los às suas necessidades. Qual recurso atende a isso?",
         explanation:
-            "O SageMaker JumpStart oferece modelos pré-treinados e soluções prontas para acelerar o início de um projeto e permitir ajustes. O Canvas é voltado a modelos no-code, o Macie protege dados sensíveis e o Ground Truth cuida da rotulagem de dados.",
+            "O SageMaker JumpStart oferece modelos pré-treinados e soluções prontas para acelerar o início de um projeto e permitir ajustes. O Canvas é voltado a modelos no-code, o Macie protege dados sensíveis e o Pipelines orquestra fluxos de trabalho de ML.",
         topic: "Fundamentos de IA e ML",
         options: [
             ["Amazon SageMaker Canvas, para criar modelos em interface no-code", false],
             ["Amazon Macie, para descoberta de dados sensíveis", false],
             ["Amazon SageMaker JumpStart, hub de modelos e soluções prontas", true],
-            ["Amazon SageMaker Ground Truth, para rotulagem de dados de treino", false],
+            ["Amazon SageMaker Pipelines, para orquestrar fluxos de trabalho de ML", false],
         ],
     },
     {
@@ -1743,7 +1672,7 @@ const AUTORAIS: Questao[] = [
     {
         statement: "No Amazon Bedrock, o que é a família de modelos Amazon Titan?",
         explanation:
-            "O Amazon Titan é a família de foundation models desenvolvida pela AWS, disponível no Bedrock para geração de texto, embeddings e imagens. Não são instâncias de GPU, ferramenta de rotulagem nem serviço exclusivo de terceiros.",
+            "O Amazon Titan é a família de foundation models criada pela AWS; no Bedrock, os modelos Titan ativos hoje geram embeddings, como o Titan Text Embeddings V2 e o Titan Multimodal Embeddings G1. Não são instâncias de GPU, ferramenta de rotulagem nem serviço separado de terceiros.",
         topic: "IA generativa",
         options: [
             [
@@ -1751,7 +1680,7 @@ const AUTORAIS: Questao[] = [
                 false,
             ],
             [
-                "Foundation models criados pela própria AWS, oferecidos para tarefas como geração de texto e de embeddings",
+                "Foundation models criados pela própria AWS, usados no Bedrock para gerar embeddings de texto e de imagens",
                 true,
             ],
             [
@@ -1766,17 +1695,17 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma equipe de desenvolvimento quer um assistente de IA integrado ao ambiente de codificação que sugira trechos de código, explique funções e ajude a depurar. Qual serviço da AWS é o mais indicado?",
+            "Uma equipe de desenvolvimento quer um assistente de IA integrado ao ambiente de codificação que sugira trechos de código, explique funções e ajude a depurar. Qual ferramenta da AWS é a mais indicada?",
         explanation:
-            "O Amazon Q Developer é o assistente de IA generativa voltado a desenvolvedores, com sugestão e explicação de código e apoio à depuração. Q Business foca em dados corporativos, Comprehend em NLP e Polly em síntese de voz.",
+            "O Kiro é o ambiente de desenvolvimento agêntico da AWS, com chat, sugestões e geração de código e apoio à depuração. O Amazon Quick responde com base em dados corporativos, o Comprehend faz NLP e o Polly sintetiza voz.",
         topic: "IA generativa",
         options: [
             [
-                "Amazon Q Developer, o assistente para tarefas de código no ciclo de desenvolvimento",
+                "Kiro, o ambiente de desenvolvimento agêntico da AWS para tarefas de programação",
                 true,
             ],
             [
-                "Amazon Q Business, voltado a responder perguntas sobre documentos e dados corporativos internos",
+                "Amazon Quick, voltado a responder perguntas sobre documentos e dados corporativos internos",
                 false,
             ],
             [
@@ -1786,53 +1715,6 @@ const AUTORAIS: Questao[] = [
             [
                 "Amazon Polly, que converte texto em fala com vozes naturais em vários idiomas",
                 false,
-            ],
-        ],
-    },
-    {
-        statement:
-            "Uma pessoa iniciante quer experimentar e prototipar aplicativos de IA generativa em um ambiente pronto, sem escrever código nem provisionar infraestrutura. O que é o PartyRock, da AWS, nesse contexto?",
-        explanation:
-            "O PartyRock é um playground do Amazon Bedrock para construir e explorar apps de IA generativa sem código. Não é banco vetorial, serviço de treino distribuído nem ferramenta de linha de comando para deploy.",
-        topic: "IA generativa",
-        options: [
-            [
-                "Um banco de dados vetorial totalmente gerenciado usado para armazenar embeddings em aplicações de busca semântica de larga escala",
-                false,
-            ],
-            [
-                "Um serviço de treinamento distribuído que particiona grandes modelos entre várias GPUs automaticamente",
-                false,
-            ],
-            [
-                "Um playground no Amazon Bedrock para criar e experimentar apps de IA generativa sem código",
-                true,
-            ],
-            [
-                "Uma ferramenta de linha de comando para implantar modelos treinados em endpoints do SageMaker",
-                false,
-            ],
-        ],
-    },
-    {
-        statement:
-            "Uma cientista de dados quer acessar foundation models e soluções pré-construídas dentro do Amazon SageMaker para implantar e ajustar modelos rapidamente. Qual recurso oferece esse catálogo?",
-        explanation:
-            "O SageMaker JumpStart oferece um hub de foundation models e soluções pré-construídas para acelerar o deploy e o ajuste. Ground Truth faz rotulagem, Feature Store gerencia atributos e Clarify trata viés e explicabilidade.",
-        topic: "IA generativa",
-        options: [
-            [
-                "SageMaker Ground Truth, que gerencia fluxos de rotulagem de dados feita por revisores humanos ou de forma automatizada",
-                false,
-            ],
-            [
-                "SageMaker Feature Store, que armazena e serve atributos de ML de forma centralizada",
-                false,
-            ],
-            ["SageMaker Clarify, que analisa viés e explica as previsões dos modelos", false],
-            [
-                "SageMaker JumpStart, o hub de foundation models e soluções prontas para implantar",
-                true,
             ],
         ],
     },
@@ -2321,14 +2203,14 @@ const AUTORAIS: Questao[] = [
         statement:
             "Ao configurar uma Amazon Bedrock Knowledge Base, a equipe precisa escolher onde armazenar os vetores gerados a partir dos documentos. Qual opção lista serviços que podem servir como banco vetorial nesse cenário?",
         explanation:
-            "Bases de conhecimento do Bedrock podem usar bancos vetoriais como o OpenSearch Serverless e o Aurora PostgreSQL com a extensão pgvector para armazenar e buscar embeddings.",
+            "Bases de conhecimento do Bedrock podem usar bancos vetoriais como o OpenSearch Serverless e o Aurora PostgreSQL com a extensão pgvector para armazenar e buscar embeddings. Polly e Transcribe tratam voz, CloudFront e Route 53 cuidam de entrega e DNS, e o Quick Sight faz BI, sem servir de banco vetorial.",
         topic: "RAG e customização",
         options: [
             ["Amazon Polly e Amazon Transcribe", false],
             ["Amazon CloudFront e Amazon Route 53", false],
             ["Amazon OpenSearch Serverless e Aurora PostgreSQL com pgvector", true],
             [
-                "Amazon QuickSight conectado a um data warehouse Redshift, que indexa os vetores automaticamente para busca por similaridade",
+                "Amazon Quick Sight conectado a um data warehouse Redshift, que indexa os vetores automaticamente para busca por similaridade",
                 false,
             ],
         ],
@@ -2757,9 +2639,9 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Ao configurar um Agent for Amazon Bedrock para automatizar um processo, como a equipe define quais ações o agente pode executar, por exemplo chamar uma função que registra um pedido?",
+            "Ao criar um agente com o Amazon Bedrock AgentCore para automatizar um processo, como a equipe define quais ações o agente pode executar, por exemplo chamar uma função que registra um pedido?",
         explanation:
-            "Nos Agents for Amazon Bedrock, os action groups conectam o agente a funções (por exemplo, via Lambda), definindo as ações que ele pode executar.",
+            "No Amazon Bedrock AgentCore, as ações são ferramentas do agente: o AgentCore Gateway transforma APIs e funções do AWS Lambda em ferramentas compatíveis com MCP. A temperatura não ensina o agente a usar APIs, o banco vetorial só recupera contexto e o prompt negativo apenas restringe o comportamento.",
         topic: "Aplicações de foundation models",
         options: [
             [
@@ -2767,7 +2649,7 @@ const AUTORAIS: Questao[] = [
                 false,
             ],
             [
-                "Definindo action groups que associam o agente a funções, tipicamente via AWS Lambda",
+                "Definindo ferramentas para o agente, como uma função do AWS Lambda exposta pelo AgentCore Gateway",
                 true,
             ],
             [
@@ -2779,9 +2661,9 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Em que situação um agente (Agents for Amazon Bedrock) é mais adequado do que uma solução de RAG simples que apenas responde perguntas?",
+            "Em que situação um agente de IA, como os criados com o Amazon Bedrock AgentCore, é mais adequado do que uma solução de RAG simples que apenas responde perguntas?",
         explanation:
-            "Agentes se justificam quando a solução precisa agir e orquestrar várias etapas, como chamar APIs e sistemas; para apenas responder com base em documentos, o RAG basta.",
+            "Agentes se justificam quando a solução precisa agir e orquestrar várias etapas, como chamar APIs e sistemas; para apenas responder com base em documentos, o RAG basta. Resumir um texto curto, dispensar ações ou só gerar embeddings não pedem um agente.",
         topic: "Aplicações de foundation models",
         options: [
             [
@@ -2840,31 +2722,6 @@ const AUTORAIS: Questao[] = [
             [
                 "Transparência, que envolve comunicar de forma aberta como e quando a IA é usada",
                 true,
-            ],
-        ],
-    },
-    {
-        statement:
-            "Um banco usa um modelo para recomendar aprovação de crédito e precisa mostrar, para cada decisão, quais variáveis mais pesaram no resultado. Qual recurso ajuda a produzir essa atribuição de importância por previsão?",
-        explanation:
-            "O SageMaker Clarify fornece explicações de atributos baseadas em valores SHAP, indicando quanto cada variável contribuiu para uma previsão, o que apoia a explicabilidade.",
-        topic: "IA responsável",
-        options: [
-            [
-                "Amazon SageMaker Clarify, que calcula a contribuição de cada atributo para as previsões do modelo",
-                true,
-            ],
-            [
-                "Amazon SageMaker Model Monitor, voltado a detectar desvio de dados no ambiente de produção ao longo do tempo",
-                false,
-            ],
-            [
-                "Amazon Macie, que descobre e classifica dados sensíveis armazenados em buckets do Amazon S3",
-                false,
-            ],
-            [
-                "AWS CloudTrail, que registra as chamadas de API feitas na conta para fins de auditoria",
-                false,
             ],
         ],
     },
@@ -3027,31 +2884,6 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma empresa processa documentos com um modelo, mas quer que os casos em que o modelo tem baixa confiança sejam revisados por uma pessoa antes da decisão final. Qual serviço facilita esse fluxo de revisão humana?",
-        explanation:
-            "O Amazon A2I (Augmented AI) permite encaminhar previsões, por exemplo as de baixa confiança, para revisão humana antes da decisão final, implementando human-in-the-loop.",
-        topic: "IA responsável",
-        options: [
-            [
-                "Amazon Augmented AI (A2I), que integra revisão humana às previsões de modelos de machine learning",
-                true,
-            ],
-            [
-                "Amazon SageMaker Model Monitor, que acompanha a qualidade das previsões e detecta desvios ao longo do tempo",
-                false,
-            ],
-            [
-                "AWS Artifact, que fornece sob demanda relatórios de conformidade e certificações de segurança da AWS",
-                false,
-            ],
-            [
-                "Amazon Macie, que identifica e classifica automaticamente dados sensíveis armazenados no Amazon S3",
-                false,
-            ],
-        ],
-    },
-    {
-        statement:
             "Uma equipe precisa de um modelo cujas decisões possam ser entendidas diretamente pela sua própria estrutura, sem depender de ferramentas externas de explicação. Qual opção descreve um modelo intrinsecamente interpretável?",
         explanation:
             "Modelos como árvores de decisão simples e regressões lineares são intrinsecamente interpretáveis, pois sua estrutura revela como as entradas levam à saída, sem métodos de explicação posteriores.",
@@ -3102,9 +2934,9 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "O SageMaker Clarify revelou que um modelo de concessão de crédito favorece um grupo específico por causa de desequilíbrios no conjunto de treino. Qual é uma ação de mitigação apropriada?",
+            "Uma análise de viés revelou que um modelo de concessão de crédito favorece um grupo específico por causa de desequilíbrios no conjunto de treino. Qual é uma ação de mitigação apropriada?",
         explanation:
-            "Quando o viés vem de desequilíbrios nos dados, uma mitigação apropriada é rebalancear ou aumentar o conjunto de treino e reavaliar as métricas de viés, em vez de ignorar o achado.",
+            "Quando o viés vem de desequilíbrios nos dados, uma mitigação apropriada é rebalancear ou aumentar o conjunto de treino e reavaliar as métricas de viés. Esconder o relatório ou publicar sem mudanças ignora o problema, e aumentar os tokens não altera o que o modelo aprendeu.",
         topic: "IA responsável",
         options: [
             [
@@ -3154,7 +2986,7 @@ const AUTORAIS: Questao[] = [
         statement:
             "Uma empresa precisa garantir que os dados de treino no Amazon S3 e os artefatos de modelo fiquem criptografados em repouso, com controle sobre as chaves. Qual serviço atende a esse requisito?",
         explanation:
-            "O AWS KMS gerencia as chaves de criptografia usadas para proteger dados em repouso, como os conjuntos de treino no S3 e os artefatos de modelo.",
+            "O AWS KMS gerencia as chaves de criptografia usadas para proteger dados em repouso, como os conjuntos de treino no S3 e os artefatos de modelo. CloudWatch monitora métricas, Artifact fornece relatórios de conformidade e o Model Registry cataloga versões de modelos; nenhum deles gerencia chaves.",
         topic: "Segurança e governança",
         options: [
             [
@@ -3170,7 +3002,7 @@ const AUTORAIS: Questao[] = [
                 true,
             ],
             [
-                "Amazon Augmented AI, para incluir uma etapa de revisão humana nas previsões geradas pelos modelos já treinados",
+                "Amazon SageMaker Model Registry, para catalogar e versionar os artefatos de modelo gerados no treinamento",
                 false,
             ],
         ],
@@ -3272,31 +3104,6 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Meses após implantar um modelo, uma equipe percebe queda de desempenho porque a distribuição dos dados de entrada mudou em relação ao treino. Qual recurso ajuda a detectar automaticamente esse desvio (drift)?",
-        explanation:
-            "O SageMaker Model Monitor compara continuamente os dados e as previsões em produção com uma linha de base e emite alertas quando detecta desvio, indicando necessidade de retreino.",
-        topic: "Segurança e governança",
-        options: [
-            [
-                "AWS CloudTrail, que registra chamadas de API na conta, mas não avalia a distribuição estatística dos dados de entrada",
-                false,
-            ],
-            [
-                "AWS KMS, que gerencia chaves de criptografia, mas não acompanha mudanças na qualidade das previsões do modelo",
-                false,
-            ],
-            [
-                "AWS PrivateLink, que mantém o tráfego na rede privada, mas não mede o desempenho preditivo do modelo em produção",
-                false,
-            ],
-            [
-                "Amazon SageMaker Model Monitor, que compara os dados de produção com uma linha de base e alerta sobre desvios",
-                true,
-            ],
-        ],
-    },
-    {
-        statement:
             "Uma empresa usa um serviço gerenciado de IA da AWS. Segundo o modelo de responsabilidade compartilhada, qual tarefa é responsabilidade do cliente, e não da AWS?",
         explanation:
             "No modelo de responsabilidade compartilhada, a AWS cuida da segurança da nuvem (a infraestrutura física), enquanto o cliente é responsável pela segurança na nuvem, como IAM e a classificação e proteção dos seus dados.",
@@ -3370,7 +3177,7 @@ const AUTORAIS: Questao[] = [
         statement:
             "Depois de publicar um endpoint de inferência, a equipe de operações quer acompanhar quase em tempo real o número de invocações, a latência e a taxa de erros, com alarmes automáticos. Qual serviço é o mais indicado?",
         explanation:
-            "O Amazon CloudWatch coleta métricas operacionais como invocações, latência e erros de um endpoint e permite configurar alarmes automáticos sobre esses indicadores.",
+            "O Amazon CloudWatch coleta métricas operacionais como invocações, latência e erros de um endpoint e permite configurar alarmes automáticos sobre esses indicadores. Artifact fornece relatórios de conformidade, KMS gerencia chaves e CloudTrail registra chamadas de API para auditoria.",
         topic: "Segurança e governança",
         options: [
             [
@@ -3386,7 +3193,7 @@ const AUTORAIS: Questao[] = [
                 true,
             ],
             [
-                "Amazon A2I, que adiciona revisão humana às previsões, mas não monitora indicadores operacionais da infraestrutura",
+                "AWS CloudTrail, que registra as chamadas de API para auditoria, mas não calcula métricas de desempenho do endpoint",
                 false,
             ],
         ],
