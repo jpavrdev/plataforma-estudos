@@ -10,5 +10,17 @@ import { java } from "./java.ts";
 import { react } from "./react.ts";
 import { node } from "./node.ts";
 import { typescript } from "./typescript.ts";
+import { systemDesign } from "./system-design.ts";
 
-export const TOPICOS: TopicoDeEntrevista[] = [go, csharp, cpp, docker, git, java, react, node, typescript];
+export const TOPICOS: TopicoDeEntrevista[] = [
+    go,
+    csharp,
+    cpp,
+    docker,
+    git,
+    java,
+    react,
+    node,
+    typescript,
+    systemDesign,
+];
