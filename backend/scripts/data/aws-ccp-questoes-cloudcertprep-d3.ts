@@ -163,12 +163,12 @@ export const QUESTOES_CLOUDCERTPREP_D3: Questao[] = [
         statement:
             "Qual serviço da AWS permite executar consultas interativas com SQL padrão diretamente sobre dados armazenados no Amazon S3, pagando por consulta?",
         explanation:
-            "O Amazon Athena é um serviço de consultas interativas sem servidor que roda SQL padrão direto sobre os dados no S3, cobrando pelo volume lido em cada consulta. O AWS Glue prepara e transforma dados (ETL), o Amazon EMR executa frameworks de big data como Spark e Hadoop e o Amazon QuickSight cria painéis de BI.",
+            "O Amazon Athena é um serviço de consultas interativas sem servidor que roda SQL padrão direto sobre os dados no S3, cobrando pelo volume lido em cada consulta. O AWS Glue prepara e transforma dados (ETL), o Amazon EMR executa frameworks de big data como Spark e Hadoop e o Amazon Quick Sight cria painéis de BI.",
         topic: "Ferramentas e suporte",
         options: [
             ["AWS Glue", false],
             ["Amazon EMR", false],
-            ["Amazon QuickSight", false],
+            ["Amazon Quick Sight", false],
             ["Amazon Athena", true],
         ],
     },
