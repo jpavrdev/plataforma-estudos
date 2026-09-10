@@ -6,6 +6,10 @@
 // múltipla escolha terminam com "(Selecione DUAS opções.)" e têm cinco opções
 // com duas corretas.
 
+// As questões autorais vêm primeiro; os lotes importados do cloudcertprep entram
+// depois, pelo índice aif-c01-questoes-cloudcertprep.ts.
+import { QUESTOES_CLOUDCERTPREP } from "./aif-c01-questoes-cloudcertprep.ts";
+
 export type Questao = {
     statement: string;
     explanation: string;
@@ -13,7 +17,7 @@ export type Questao = {
     options: [string, boolean][];
 };
 
-export const QUESTOES: Questao[] = [
+const AUTORAIS: Questao[] = [
     {
         statement:
             "Uma equipe apresenta machine learning para a liderança. Qual afirmação define corretamente a relação entre inteligência artificial (IA), machine learning (ML) e deep learning?",
@@ -3458,3 +3462,5 @@ export const QUESTOES: Questao[] = [
         ],
     },
 ];
+
+export const QUESTOES: Questao[] = [...AUTORAIS, ...QUESTOES_CLOUDCERTPREP];
