@@ -187,11 +187,11 @@ export const QUESTOES_CLOUDCERTPREP_D2: Questao[] = [
         statement:
             "Quais serviços da AWS podem ser usados para reunir informações sobre a atividade de uma conta AWS? (Selecione DUAS opções.)",
         explanation:
-            "O AWS CloudTrail registra as chamadas de API e as ações feitas na conta, e o Amazon CloudWatch coleta métricas, logs e eventos dos recursos, permitindo acompanhar essa atividade e criar alertas. O CloudFront é uma CDN, o Cloud9 é um IDE na nuvem e o CloudHSM oferece módulos de segurança de hardware.",
+            "O AWS CloudTrail registra as chamadas de API e as ações feitas na conta, e o Amazon CloudWatch coleta métricas, logs e eventos dos recursos, permitindo acompanhar essa atividade e criar alertas. O CloudFront é uma CDN, o CloudFormation provisiona recursos a partir de modelos e o CloudHSM oferece módulos de segurança de hardware.",
         topic: "Segurança e identidade",
         options: [
             ["Amazon CloudFront", false],
-            ["AWS Cloud9", false],
+            ["AWS CloudFormation", false],
             ["AWS CloudTrail", true],
             ["AWS CloudHSM", false],
             ["Amazon CloudWatch", true],
@@ -566,11 +566,11 @@ export const QUESTOES_CLOUDCERTPREP_D2: Questao[] = [
     {
         statement: "Qual destes serviços ajuda as empresas a auditar a conformidade na AWS?",
         explanation:
-            "O AWS CloudTrail mantém o histórico de chamadas de API e eventos da conta, uma trilha de auditoria usada para comprovar conformidade e investigar incidentes. O CloudFront distribui conteúdo, o Migration Hub acompanha migrações e o CloudWatch monitora métricas e logs de operação, sem essa trilha de auditoria.",
+            "O AWS CloudTrail mantém o histórico de chamadas de API e eventos da conta, uma trilha de auditoria usada para comprovar conformidade e investigar incidentes. O CloudFront distribui conteúdo, o Lightsail oferece servidores virtuais simples e o CloudWatch monitora métricas e logs de operação, sem essa trilha de auditoria.",
         topic: "Segurança e identidade",
         options: [
             ["Amazon CloudFront", false],
-            ["AWS Migration Hub", false],
+            ["Amazon Lightsail", false],
             ["Amazon CloudWatch", false],
             ["AWS CloudTrail", true],
         ],

@@ -726,13 +726,13 @@ export const QUESTOES_CLOUDCERTPREP_D1: Questao[] = [
         statement:
             "A AWS oferece capacidade de recuperação de desastres ao permitir que os clientes distribuam sua infraestrutura entre diferentes [...]. Qual opção completa a frase?",
         explanation:
-            "Regiões são áreas geográficas separadas, então distribuir a infraestrutura entre elas mantém a aplicação operando mesmo se uma Região inteira ficar indisponível. Locais de borda servem para cache e entrega de conteúdo, planos de suporte dão acesso a atendimento técnico e dispositivos Snowball transferem dados fisicamente.",
+            "Regiões são áreas geográficas separadas, então distribuir a infraestrutura entre elas mantém a aplicação operando mesmo se uma Região inteira ficar indisponível. Locais de borda servem para cache e entrega de conteúdo, planos de suporte dão acesso a atendimento técnico e grupos de segurança controlam o tráfego das instâncias.",
         topic: "Conceitos e arquitetura",
         options: [
             ["Regiões geográficas da AWS", true],
             ["Locais de borda da AWS", false],
             ["Planos do AWS Support", false],
-            ["Dispositivos AWS Snowball Edge", false],
+            ["Grupos de segurança da VPC", false],
         ],
     },
     {
@@ -1905,26 +1905,13 @@ export const QUESTOES_CLOUDCERTPREP_D1: Questao[] = [
         statement:
             "Qual serviço da AWS automatiza a migração lift and shift de servidores on-premises ou de outras nuvens para a AWS?",
         explanation:
-            "O AWS Application Migration Service replica continuamente os servidores de origem e os converte e inicia como instâncias na AWS, automatizando o rehost. O AWS DMS migra bancos de dados, o Migration Hub acompanha o andamento das migrações e o AWS SCT converte esquemas de banco.",
+            "O AWS Application Migration Service replica continuamente os servidores de origem e os converte e inicia como instâncias na AWS, automatizando o rehost. O AWS DMS migra bancos de dados, o AWS DataSync transfere arquivos e objetos e o AWS SCT converte esquemas de banco.",
         topic: "Migração",
         options: [
             ["AWS Database Migration Service (AWS DMS)", false],
             ["AWS Application Migration Service", true],
-            ["AWS Migration Hub", false],
+            ["AWS DataSync", false],
             ["AWS Schema Conversion Tool (AWS SCT)", false],
-        ],
-    },
-    {
-        statement:
-            "Qual serviço da AWS oferece um local central para acompanhar o andamento de migrações de aplicações feitas com várias ferramentas de migração da AWS?",
-        explanation:
-            "O AWS Migration Hub reúne em um painel o status das migrações feitas com ferramentas como o Application Migration Service e o AWS DMS. O Application Migration Service executa a migração dos servidores, o CloudTrail registra chamadas de API e o AWS Config avalia configurações de recursos.",
-        topic: "Migração",
-        options: [
-            ["AWS Application Migration Service", false],
-            ["AWS CloudTrail", false],
-            ["AWS Migration Hub", true],
-            ["AWS Config", false],
         ],
     },
     {
@@ -1938,19 +1925,6 @@ export const QUESTOES_CLOUDCERTPREP_D1: Questao[] = [
             ["Replatform", false],
             ["Refactor", true],
             ["Relocate", false],
-        ],
-    },
-    {
-        statement:
-            "Uma empresa está migrando para a AWS e quer avaliar sua infraestrutura on-premises para entender as dependências e a utilização dos servidores. Qual serviço da AWS ela deve usar?",
-        explanation:
-            "O AWS Application Discovery Service coleta configuração, utilização e dependências de rede dos servidores on-premises para planejar a migração. O Migration Hub acompanha o andamento, o Application Migration Service executa a migração e o Trusted Advisor avalia ambientes que já estão na AWS.",
-        topic: "Migração",
-        options: [
-            ["AWS Migration Hub", false],
-            ["AWS Application Discovery Service", true],
-            ["AWS Application Migration Service", false],
-            ["AWS Trusted Advisor", false],
         ],
     },
     {
