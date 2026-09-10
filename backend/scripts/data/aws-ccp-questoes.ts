@@ -123,25 +123,13 @@ const AUTORAIS: Questao[] = [
         statement:
             "Qual ferramenta realiza ações de automação para serviços e aplicações da AWS por meio de scripts?",
         explanation:
-            "A AWS CLI automatiza e gerencia serviços via linha de comando/scripts. QLDB é banco ledger, Redshift é data warehouse e Snowball é transferência física de dados.",
+            "A AWS CLI automatiza e gerencia serviços via linha de comando/scripts. DynamoDB é banco NoSQL, Redshift é data warehouse e Storage Gateway conecta o armazenamento local à AWS.",
         topic: "Ferramentas e suporte",
         options: [
-            ["Amazon QLDB", false],
+            ["Amazon DynamoDB", false],
             ["Amazon Redshift Serverless", false],
             ["AWS Command Line Interface", true],
-            ["AWS Snowball", false],
-        ],
-    },
-    {
-        statement: "Qual serviço é usado para transferência até 100 PB de dados para a AWS?",
-        explanation:
-            "O Snowmobile move até ~100 PB por unidade (escala de exabytes). O Snowball move dezenas de TB. Neptune é banco de grafos, DeepRacer é ML e CloudFront é CDN.",
-        topic: "Armazenamento",
-        options: [
-            ["Amazon Neptune", false],
-            ["AWS Snowmobile", true],
-            ["AWS DeepRacer", false],
-            ["Amazon CloudFront", false],
+            ["AWS Storage Gateway", false],
         ],
     },
     {
@@ -259,10 +247,10 @@ const AUTORAIS: Questao[] = [
     {
         statement: "Qual serviço permite implantar e dimensionar rapidamente aplicações na AWS?",
         explanation:
-            "O Beanstalk (PaaS) faz deploy e escala automático (provisiona EC2, Load Balancer, Auto Scaling). Snowball é transferência de dados, Outposts é on-premises e CloudFront é CDN.",
+            "O Beanstalk (PaaS) faz deploy e escala automático (provisiona EC2, Load Balancer, Auto Scaling). DMS migra bancos de dados, Outposts é on-premises e CloudFront é CDN.",
         topic: "Computação",
         options: [
-            ["AWS Snowball", false],
+            ["AWS Database Migration Service", false],
             ["AWS Outposts", false],
             ["AWS Elastic Beanstalk", true],
             ["Amazon CloudFront (CDN)", false],
@@ -271,26 +259,13 @@ const AUTORAIS: Questao[] = [
     {
         statement: "Qual serviço executa aplicações em contêineres na AWS?",
         explanation:
-            "O EKS roda contêineres com Kubernetes. Aurora é banco, SageMaker é ML e Redshift é data warehouse.",
+            "O EKS roda contêineres com Kubernetes. Aurora é banco, SageMaker AI é ML e Redshift é data warehouse.",
         topic: "Computação",
         options: [
             ["Amazon EKS", true],
             ["Amazon Aurora", false],
-            ["Amazon SageMaker", false],
+            ["Amazon SageMaker AI", false],
             ["Amazon Redshift", false],
-        ],
-    },
-    {
-        statement:
-            "Qual serviço permite criar fluxos de trabalho necessários para a revisão humana das previsões de machine learning?",
-        explanation:
-            "O Amazon A2I (Augmented AI) é o serviço de human-in-the-loop. Aurora é banco, Lex faz chatbots e Textract extrai texto de documentos.",
-        topic: "Machine learning",
-        options: [
-            ["Amazon Augmented AI", true],
-            ["Amazon Aurora", false],
-            ["Amazon Lex", false],
-            ["Amazon Textract (OCR)", false],
         ],
     },
     {
@@ -371,26 +346,12 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Na storage class S3 Intelligent-Tiering, o Amazon S3 move objetos entre um nível de acesso frequente e um nível de acesso pouco frequente. Quais classes de armazenamento são usadas? (Selecione DUAS opções.)",
-        explanation:
-            "O Intelligent-Tiering move objetos entre o tier de acesso frequente (S3 Standard) e o de acesso infrequente (S3 Standard-IA). As demais são classes de arquivamento separadas.",
-        topic: "Armazenamento",
-        options: [
-            ["S3 One Zone - IA", false],
-            ["S3 Glacier Flexible Retrieval", false],
-            ["S3 Standard-IA", true],
-            ["S3 Standard", true],
-            ["S3 Glacier Deep Archive", false],
-        ],
-    },
-    {
-        statement:
             "Um desenvolvedor de aplicação deseja enviar e receber mensagens entre componentes distribuídos de aplicações. Qual serviço deve ser utilizado?",
         explanation:
-            "O SQS é o serviço de filas que desacopla componentes distribuídos. Snowball é transferência, ElastiCache é cache e Route 53 é DNS.",
+            "O SQS é o serviço de filas que desacopla componentes distribuídos. Outposts leva a infraestrutura da AWS para o local do cliente, ElastiCache é cache e Route 53 é DNS.",
         topic: "Computação",
         options: [
-            ["AWS Snowball", false],
+            ["AWS Outposts", false],
             ["Amazon ElastiCache", false],
             ["Amazon Route 53", false],
             ["Amazon SQS", true],
@@ -463,13 +424,13 @@ const AUTORAIS: Questao[] = [
         statement:
             "Uma empresa precisa de acesso ininterrupto por telefone, e-mail e chat. O tempo de resposta deverá ser inferior a uma hora se um sistema de produção tiver uma interrupção de serviço. Qual plano do AWS Support atende a esse requisito pelo MENOR custo?",
         explanation:
-            "Suporte 24/7 por telefone/chat e resposta menor que 1 h para produção inoperante começa no plano Business. Developer não tem telefone nem esse SLA; Enterprise atende mas custa mais.",
+            "Telefone, chat e e-mail 24/7 e resposta em menos de 1 hora para sistema de produção fora do ar começam no Business Support+, o plano pago de entrada. O Basic não tem suporte técnico; Enterprise Support e Unified Operations também atendem, mas custam mais.",
         topic: "Ferramentas e suporte",
         options: [
             ["AWS Basic Support", false],
-            ["AWS Developer Support", false],
-            ["AWS Business Support", true],
+            ["AWS Business Support+", true],
             ["AWS Enterprise Support", false],
+            ["AWS Unified Operations", false],
         ],
     },
     {
@@ -590,24 +551,24 @@ const AUTORAIS: Questao[] = [
         statement:
             "Qual produto da AWS pode criar um alarme que envia uma notificação quando um limite de faturamento é excedido?",
         explanation:
-            "Os billing alarms são criados no CloudWatch (métrica EstimatedCharges + notificação via SNS). CloudTrail apenas audita chamadas de API; Trusted Advisor recomenda; QuickSight é BI.",
+            "Os billing alarms são criados no CloudWatch (métrica EstimatedCharges + notificação via SNS). CloudTrail apenas audita chamadas de API; Trusted Advisor recomenda; Quick Sight é BI.",
         topic: "Preços e faturamento",
         options: [
             ["AWS Trusted Advisor", false],
             ["AWS CloudTrail", false],
             ["Amazon CloudWatch", true],
-            ["Amazon QuickSight", false],
+            ["Amazon Quick Sight", false],
         ],
     },
     {
         statement:
             "Qual produto da AWS fornece uma solução de armazenamento de arquivos compartilhado, simples e escalável para uso com servidores locais e instâncias Amazon EC2?",
         explanation:
-            "Palavra-chave: armazenamento de arquivos compartilhado (NFS, montável em várias instâncias). AMS é operações, Glacier é arquivamento e EBS é bloco anexado a uma única instância.",
+            "Palavra-chave: armazenamento de arquivos compartilhado (NFS, montável em várias instâncias). AMS é operações, S3 Glacier Deep Archive é classe de arquivamento e EBS é bloco anexado a uma única instância.",
         topic: "Armazenamento",
         options: [
             ["AWS Managed Services (AMS)", false],
-            ["Amazon S3 Glacier", false],
+            ["Amazon S3 Glacier Deep Archive", false],
             ["Amazon Elastic Block Store (Amazon EBS)", false],
             ["Amazon Elastic File System (Amazon EFS)", true],
         ],
@@ -703,7 +664,7 @@ const AUTORAIS: Questao[] = [
         statement:
             "Qual recurso da AWS permite testar diversos serviços sem custo, dentro de certos limites?",
         explanation:
-            "O AWS Free Tier oferece uso gratuito limitado (alguns por 12 meses, outros sempre grátis). Budgets, Cost Explorer e Pricing Calculator são ferramentas de custo, não de uso gratuito.",
+            "O AWS Free Tier dá uso gratuito limitado: contas novas recebem créditos e podem ficar no plano Free por até 6 meses, além das ofertas sempre gratuitas. Budgets, Cost Explorer e Pricing Calculator são ferramentas de custo, não de uso gratuito.",
         topic: "Preços e faturamento",
         options: [
             ["AWS Free Tier", true],
@@ -729,13 +690,13 @@ const AUTORAIS: Questao[] = [
         statement:
             "Qual serviço permite provisionar a infraestrutura da AWS como código, a partir de templates?",
         explanation:
-            "O CloudFormation provisiona recursos via templates (infraestrutura como código). CodeDeploy faz deploy de aplicações, Config avalia conformidade e OpsWorks é gestão de configuração com Chef/Puppet.",
+            "O CloudFormation provisiona recursos via templates (infraestrutura como código). CodeDeploy faz deploy de aplicações, Config avalia conformidade e Systems Manager gerencia e automatiza a operação de recursos já existentes.",
         topic: "Ferramentas e suporte",
         options: [
             ["AWS CloudFormation", true],
             ["AWS CodeDeploy", false],
             ["AWS Config", false],
-            ["AWS OpsWorks Stacks", false],
+            ["AWS Systems Manager", false],
         ],
     },
     {
@@ -854,15 +815,16 @@ const AUTORAIS: Questao[] = [
         ],
     },
     {
-        statement: "Qual plano do AWS Support inclui um Technical Account Manager (TAM) dedicado?",
+        statement:
+            "Qual é o plano do AWS Support de MENOR custo que inclui um Technical Account Manager (TAM) designado?",
         explanation:
-            "O TAM dedicado faz parte do plano Enterprise Support. Basic e Developer não têm TAM, e o Business também não tem um TAM dedicado.",
+            "O TAM designado começa no Enterprise Support, o plano de menor custo com esse recurso. O Unified Operations também tem TAM designado, mas custa mais, e o Basic e o Business Support+ não incluem TAM.",
         topic: "Ferramentas e suporte",
         options: [
             ["AWS Basic Support", false],
-            ["AWS Developer Support", false],
-            ["AWS Business Support", false],
+            ["AWS Business Support+", false],
             ["AWS Enterprise Support", true],
+            ["AWS Unified Operations", false],
         ],
     },
     {
@@ -889,19 +851,6 @@ const AUTORAIS: Questao[] = [
             ["Alta disponibilidade", false],
             ["Colocation", false],
             ["Capacidade fixa provisionada", false],
-        ],
-    },
-    {
-        statement:
-            "Uma empresa precisa transferir 80 TB de dados para a AWS sem depender da conexão de internet. Qual serviço usar?",
-        explanation:
-            "O AWS Snowball é um dispositivo físico para mover dezenas de TB offline. Transfer Acceleration e Direct Connect dependem da rede, e o CloudFront é uma CDN.",
-        topic: "Migração",
-        options: [
-            ["AWS Snowball Edge", true],
-            ["Amazon S3 Transfer Acceleration", false],
-            ["AWS Direct Connect", false],
-            ["Amazon CloudFront", false],
         ],
     },
     {
@@ -1727,7 +1676,7 @@ const AUTORAIS: Questao[] = [
         statement:
             "O que uma política de ciclo de vida (lifecycle) de um bucket do Amazon S3 permite automatizar?",
         explanation:
-            "As regras de ciclo de vida movem automaticamente os objetos para classes mais baratas (por exemplo, de Standard para Glacier) e/ou os expiram após um prazo definido, otimizando custos. Criptografia, replicação e cache em edge locations são funções de outros mecanismos (SSE, replicação e CloudFront).",
+            "As regras de ciclo de vida movem automaticamente os objetos para classes mais baratas (por exemplo, de S3 Standard para S3 Glacier Flexible Retrieval) e/ou os expiram após um prazo definido, otimizando custos. Criptografia, replicação e cache em edge locations são funções de outros mecanismos (SSE, replicação e CloudFront).",
         topic: "Armazenamento",
         options: [
             ["A replicação síncrona dos objetos para outra conta AWS", false],
@@ -1741,7 +1690,7 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma empresa tem arquivos de backup acessados apenas algumas vezes por mês, mas que exigem acesso rápido e alta disponibilidade em várias Zonas de Disponibilidade quando solicitados. Qual classe do Amazon S3 equilibra menor custo de armazenamento com esses requisitos?",
+            "Uma empresa tem arquivos de backup acessados apenas cerca de uma vez por mês, mas que exigem acesso rápido e alta disponibilidade em várias Zonas de Disponibilidade quando solicitados. Qual classe do Amazon S3 equilibra menor custo de armazenamento com esses requisitos?",
         explanation:
             "A S3 Standard-IA reduz o custo de armazenamento para dados de acesso pouco frequente, mantendo acesso em milissegundos e redundância em múltiplas AZs. A Standard é para acesso frequente, a One Zone-IA usa uma única AZ e a Glacier é voltada a arquivamento.",
         topic: "Armazenamento",
@@ -1797,13 +1746,13 @@ const AUTORAIS: Questao[] = [
         statement:
             "Várias instâncias EC2 Linux, distribuídas em diferentes Zonas de Disponibilidade, precisam ler e gravar simultaneamente no MESMO sistema de arquivos compartilhado, que deve crescer e diminuir automaticamente conforme os dados. Qual serviço atende a esse requisito?",
         explanation:
-            "O Amazon EFS é um sistema de arquivos elástico (NFS) que escala automaticamente e pode ser montado por muitas instâncias Linux ao mesmo tempo, em várias AZs. Um volume EBS se anexa a uma instância por vez, o instance store é efêmero e local, e o Glacier é para arquivamento de objetos.",
+            "O Amazon EFS é um sistema de arquivos elástico (NFS) que escala automaticamente e pode ser montado por muitas instâncias Linux ao mesmo tempo, em várias AZs. Um volume EBS se anexa a uma instância por vez, o instance store é efêmero e local, e a S3 Glacier Flexible Retrieval é uma classe de arquivamento de objetos.",
         topic: "Armazenamento",
         options: [
             ["Amazon Elastic Block Store (Amazon EBS)", false],
             ["Amazon Elastic File System (Amazon EFS)", true],
             ["Armazenamento de instância (instance store)", false],
-            ["Amazon S3 Glacier", false],
+            ["Amazon S3 Glacier Flexible Retrieval", false],
         ],
     },
     {
@@ -1823,32 +1772,13 @@ const AUTORAIS: Questao[] = [
         statement:
             "Uma empresa quer aposentar sua infraestrutura física de fitas de backup, mas continuar usando o software de backup atual e armazenar os backups na nuvem AWS. Qual solução é a mais adequada?",
         explanation:
-            "O Tape Gateway do AWS Storage Gateway apresenta uma biblioteca de fitas virtuais ao software de backup existente e guarda os dados no Amazon S3/Glacier, substituindo as fitas físicas. Snowmobile é transferência em escala de exabytes, FSx for Lustre é para HPC e o Transfer Acceleration apenas acelera uploads ao S3.",
+            "O Tape Gateway do AWS Storage Gateway apresenta uma biblioteca de fitas virtuais ao software de backup existente e arquiva os dados nas classes S3 Glacier Flexible Retrieval ou Deep Archive, substituindo as fitas físicas. O Elastic Disaster Recovery replica servidores para recuperação, o FSx for Lustre é para HPC e o Transfer Acceleration apenas acelera uploads ao S3.",
         topic: "Armazenamento",
         options: [
-            ["AWS Snowmobile", false],
+            ["AWS Elastic Disaster Recovery (AWS DRS)", false],
             ["AWS Storage Gateway (Tape Gateway)", true],
             ["Amazon FSx for Lustre", false],
             ["Amazon S3 Transfer Acceleration", false],
-        ],
-    },
-    {
-        statement:
-            "Qual afirmação descreve melhor a família de dispositivos AWS Snow (por exemplo, o AWS Snowball Edge)?",
-        explanation:
-            "A família Snow são dispositivos físicos e resistentes enviados ao cliente para transferir grandes volumes de dados de forma offline e executar computação de borda onde a rede é limitada ou inexistente. As demais opções descrevem, respectivamente, o Amazon RDS, o Amazon CloudFront e o Elastic Load Balancing.",
-        topic: "Armazenamento",
-        options: [
-            ["Um serviço totalmente gerenciado de banco de dados relacional", false],
-            [
-                "Dispositivos físicos resistentes para migrar grandes volumes de dados e computação de borda",
-                true,
-            ],
-            ["Uma rede global de entrega de conteúdo (CDN)", false],
-            [
-                "Um serviço de balanceamento de carga para instâncias Amazon EC2 em várias zonas de disponibilidade",
-                false,
-            ],
         ],
     },
     {
@@ -1972,12 +1902,12 @@ const AUTORAIS: Questao[] = [
         statement:
             "Uma empresa quer migrar seus bancos de dados on-premises para a AWS com o mínimo de tempo de inatividade, mantendo o banco de origem em operação durante a migração. Qual serviço da AWS deve ser utilizado?",
         explanation:
-            "O AWS Database Migration Service (DMS) migra bancos de dados para a AWS com mínimo tempo de inatividade, mantendo a origem em operação e suportando migrações homogêneas e heterogêneas. O RDS é um possível destino, o Snowball transfere dados em massa off-line e o CloudWatch faz monitoramento.",
+            "O AWS Database Migration Service (DMS) migra bancos de dados para a AWS com mínimo tempo de inatividade, mantendo a origem em operação e suportando migrações homogêneas e heterogêneas. O RDS é um possível destino, o SCT apenas converte esquemas e código de banco e o CloudWatch faz monitoramento.",
         topic: "Migração",
         options: [
             ["AWS Database Migration Service", true],
             ["Amazon RDS", false],
-            ["AWS Snowball", false],
+            ["AWS Schema Conversion Tool (AWS SCT)", false],
             ["Amazon CloudWatch com alarmes", false],
         ],
     },
@@ -2733,26 +2663,13 @@ const AUTORAIS: Questao[] = [
         statement:
             "Qual serviço oferece acesso sob demanda a relatórios de conformidade e segurança da própria AWS, como os relatórios SOC e as certificações PCI DSS, além de acordos legais como o BAA?",
         explanation:
-            "O AWS Artifact é o portal de autoatendimento para baixar relatórios de conformidade da AWS e revisar acordos legais. O Audit Manager audita o ambiente do cliente, o Config avalia configurações e o Trusted Advisor faz recomendações de boas práticas.",
+            "O AWS Artifact é o portal de autoatendimento para baixar relatórios de conformidade da AWS e revisar acordos legais. O Security Hub avalia a postura de segurança do ambiente do cliente, o Config avalia configurações e o Trusted Advisor faz recomendações de boas práticas.",
         topic: "Segurança e identidade",
         options: [
-            ["AWS Audit Manager", false],
+            ["AWS Security Hub", false],
             ["AWS Config", false],
             ["AWS Artifact", true],
             ["AWS Trusted Advisor", false],
-        ],
-    },
-    {
-        statement:
-            "Qual serviço automatiza a coleta contínua de evidências para simplificar auditorias e avaliar se os controles do ambiente do cliente estão em conformidade com frameworks como PCI DSS e GDPR?",
-        explanation:
-            "O AWS Audit Manager coleta evidências automaticamente e as mapeia para frameworks de conformidade, facilitando auditorias do ambiente do cliente. O Artifact apenas fornece os relatórios de conformidade da AWS, o Config avalia configurações e o CloudTrail registra chamadas de API.",
-        topic: "Segurança e identidade",
-        options: [
-            ["AWS Artifact", false],
-            ["AWS Audit Manager", true],
-            ["AWS Config", false],
-            ["AWS CloudTrail", false],
         ],
     },
     {
@@ -2888,10 +2805,10 @@ const AUTORAIS: Questao[] = [
         statement:
             "O AWS Free Tier (nível gratuito) é composto por diferentes tipos de ofertas gratuitas. Quais das opções a seguir são tipos de oferta do AWS Free Tier? (Selecione DUAS opções.)",
         explanation:
-            "O Free Tier possui três tipos de oferta: gratuito por 12 meses, sempre gratuito (Always Free) e testes gratuitos (free trials). As demais alternativas não existem no modelo do nível gratuito da AWS.",
+            "Hoje o Free Tier combina ofertas sempre gratuitas (Always Free), testes gratuitos de curto prazo em serviços selecionados (no plano pago) e créditos para contas novas; a oferta de 12 meses gratuitos era do modelo anterior, das contas criadas antes de 15/07/2025. As demais alternativas não existem no nível gratuito.",
         topic: "Preços e faturamento",
         options: [
-            ["12 meses gratuitos a partir da criação da conta", true],
+            ["Testes gratuitos de curto prazo (short-term trials)", true],
             ["Sempre gratuito (Always Free)", true],
             ["Gratuito pelos primeiros 5 anos", false],
             ["Uso ilimitado gratuito após o pagamento de uma taxa de ativação", false],
@@ -2919,9 +2836,9 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma equipe financeira precisa do conjunto MAIS detalhado e abrangente de dados de custo e uso da AWS, com itens de linha por serviço e granularidade horária, para carregar em ferramentas como Amazon Athena, Amazon Redshift ou Amazon QuickSight. Qual recurso atende a essa necessidade?",
+            "Uma equipe financeira precisa do conjunto MAIS detalhado e abrangente de dados de custo e uso da AWS, com itens de linha por serviço e granularidade horária, para carregar em ferramentas como Amazon Athena, Amazon Redshift ou Amazon Quick Sight. Qual recurso atende a essa necessidade?",
         explanation:
-            "O Cost and Usage Report (CUR) fornece os dados de faturamento mais granulares e completos, integráveis a Athena, Redshift e QuickSight. O Budgets foca em limites e alertas, o Pricing Calculator estima custos futuros e o painel resumido não oferece esse nível de detalhe.",
+            "O Cost and Usage Report (CUR), hoje na versão CUR 2.0 criada pelo AWS Data Exports, fornece os dados de faturamento mais granulares e completos, integráveis a Athena, Redshift e Quick Sight. O Budgets foca em limites e alertas, o Pricing Calculator estima custos futuros e o painel resumido não oferece esse nível de detalhe.",
         topic: "Preços e faturamento",
         options: [
             ["AWS Cost and Usage Report (CUR)", true],
@@ -2988,13 +2905,10 @@ const AUTORAIS: Questao[] = [
         statement:
             "O plano AWS Basic Support está disponível para todos os clientes da AWS sem custo adicional. Quais recursos estão incluídos no Basic Support? (Selecione DUAS opções.)",
         explanation:
-            "O Basic Support inclui documentação, whitepapers, o Support Center para questões de conta/cobrança, o Personal Health Dashboard e o conjunto core de verificações do Trusted Advisor. Suporte técnico 24/7, TAM e SLAs rápidos exigem planos pagos.",
+            "O Basic Support inclui documentação, whitepapers, o Support Center para questões de conta/cobrança, o AWS Health Dashboard e o conjunto core de verificações do Trusted Advisor. Suporte técnico 24/7, TAM e SLAs rápidos exigem planos pagos.",
         topic: "Ferramentas e suporte",
         options: [
-            [
-                "Acesso ao AWS Personal Health Dashboard (painel personalizado de saúde da conta)",
-                true,
-            ],
+            ["Acesso ao AWS Health Dashboard (visão personalizada da saúde da conta)", true],
             ["Um conjunto básico (core) de verificações do AWS Trusted Advisor", true],
             ["Acesso 24/7 a engenheiros de suporte da nuvem por telefone e chat", false],
             ["Um Technical Account Manager (TAM) designado", false],
@@ -3003,52 +2917,39 @@ const AUTORAIS: Questao[] = [
     },
     {
         statement:
-            "Uma startup está desenvolvendo e testando uma aplicação na AWS e deseja acesso a suporte técnico por e-mail em horário comercial pelo MENOR custo possível acima do Basic. Qual plano do AWS Support é o mais indicado?",
-        explanation:
-            "O plano Developer oferece contato por e-mail com o suporte em horário comercial pelo menor preço entre os planos pagos, ideal para ambientes de desenvolvimento e teste. Business e Enterprise custam mais e agregam telefone/chat 24/7, TAM e outros recursos.",
-        topic: "Ferramentas e suporte",
-        options: [
-            ["Developer", true],
-            ["Business", false],
-            ["Enterprise On-Ramp", false],
-            ["Enterprise", false],
-        ],
-    },
-    {
-        statement:
             "Uma empresa quer acesso ao conjunto COMPLETO de verificações do AWS Trusted Advisor (boas práticas em todas as categorias, incluindo otimização de custos e tolerância a falhas). Qual é o plano de suporte MÍNIMO necessário?",
         explanation:
-            "O conjunto completo de verificações do Trusted Advisor passa a estar disponível a partir do plano Business; Basic e Developer têm acesso apenas às verificações core. O Enterprise também as inclui, mas não é o plano mínimo exigido.",
+            "O conjunto completo de verificações do Trusted Advisor começa no Business Support+; o Basic tem apenas as verificações core. Enterprise Support e Unified Operations também o incluem, com o Trusted Advisor Priority, mas não são o plano mínimo.",
         topic: "Ferramentas e suporte",
         options: [
             ["Basic", false],
-            ["Business", true],
-            ["Developer", false],
-            ["Enterprise", false],
+            ["Business Support+", true],
+            ["Enterprise Support", false],
+            ["Unified Operations", false],
         ],
     },
     {
         statement:
             "Uma grande empresa deseja um contato técnico designado da AWS que atue de forma proativa, conduza revisões de arquitetura e ajude a otimizar continuamente o ambiente, servindo como principal ponto de contato técnico. O que descreve esse papel?",
         explanation:
-            "O Technical Account Manager (TAM), disponível nos planos Enterprise On-Ramp e Enterprise, é um contato técnico designado que oferece orientação proativa e ajuda a otimizar o ambiente. Trusted Advisor, Personal Health Dashboard e Support Center são ferramentas automatizadas, não uma pessoa dedicada.",
+            "O Technical Account Manager (TAM), disponível nos planos Enterprise Support e Unified Operations, é um contato técnico designado que oferece orientação proativa e ajuda a otimizar o ambiente. Trusted Advisor, AWS Health Dashboard e Support Center são ferramentas automatizadas, não uma pessoa dedicada.",
         topic: "Ferramentas e suporte",
         options: [
             ["Technical Account Manager (TAM)", true],
             ["AWS Trusted Advisor", false],
-            ["AWS Personal Health Dashboard", false],
-            ["AWS Support Center", false],
+            ["AWS Health Dashboard", false],
+            ["AWS Support Center (Central de Suporte)", false],
         ],
     },
     {
         statement:
             "Qual serviço oferece uma visão PERSONALIZADA do estado dos serviços da AWS e envia alertas sobre eventos que podem afetar especificamente os SEUS recursos, como uma manutenção programada em uma instância EC2 da sua conta?",
         explanation:
-            "O Personal Health Dashboard mostra uma visão personalizada e alertas relacionados aos recursos e à conta do próprio cliente. O Service Health Dashboard exibe o status geral e público dos serviços; o CloudWatch monitora métricas e o Trusted Advisor avalia boas práticas.",
+            "O AWS Health Dashboard, na página Your account health (antigo Personal Health Dashboard), mostra eventos que afetam os recursos da sua conta e envia alertas. A página Service health (antigo Service Health Dashboard) é pública e mostra o status geral; o CloudWatch monitora métricas e o Trusted Advisor avalia boas práticas.",
         topic: "Ferramentas e suporte",
         options: [
-            ["AWS Personal Health Dashboard (AWS Health Dashboard - sua conta)", true],
-            ["AWS Service Health Dashboard (status geral e público dos serviços)", false],
+            ["AWS Health Dashboard, página Your account health", true],
+            ["AWS Health Dashboard, página pública Service health", false],
             ["Amazon CloudWatch", false],
             ["AWS Trusted Advisor", false],
         ],
@@ -3129,26 +3030,26 @@ const AUTORAIS: Questao[] = [
         statement:
             "Um cliente com um plano de suporte pago precisa abrir e acompanhar um caso técnico com a AWS pelo Console de Gerenciamento. Qual recurso deve utilizar?",
         explanation:
-            "O AWS Support Center (Central de Suporte) é onde se abrem e acompanham casos de suporte técnico e de conta/cobrança no console. O Knowledge Center traz respostas às dúvidas mais frequentes, o Personal Health Dashboard mostra a saúde dos seus recursos e a Well-Architected Tool revisa cargas de trabalho.",
+            "O AWS Support Center (Central de Suporte) é onde se abrem e acompanham casos de suporte técnico e de conta/cobrança no console. O Knowledge Center traz respostas às dúvidas mais frequentes, o AWS Health Dashboard mostra a saúde dos seus recursos e a Well-Architected Tool revisa cargas de trabalho.",
         topic: "Ferramentas e suporte",
         options: [
             ["AWS Knowledge Center", false],
             ["AWS Support Center (Central de Suporte)", true],
-            ["AWS Personal Health Dashboard da conta", false],
+            ["AWS Health Dashboard (Your account health)", false],
             ["AWS Well-Architected Tool", false],
         ],
     },
     {
         statement:
-            "Uma empresa executa cargas de trabalho de produção críticas para o negócio e exige o MENOR tempo de resposta do AWS Support quando um sistema crítico fica indisponível (meta inferior a 15 minutos). Qual plano de suporte atende a esse requisito?",
+            "Uma empresa executa cargas de trabalho de produção críticas para o negócio e exige o MENOR tempo de resposta do AWS Support quando um sistema crítico fica indisponível (meta inferior a 5 minutos). Qual plano de suporte atende a esse requisito?",
         explanation:
-            "O plano Enterprise oferece o menor tempo de resposta, com meta inferior a 15 minutos para casos de sistemas críticos de negócio indisponíveis. O Enterprise On-Ramp tem meta de 30 minutos, o Business de 1 hora para produção indisponível, e o Developer não cobre sistemas de produção com essa urgência.",
+            "O Unified Operations tem o menor tempo de resposta: com sistema crítico para o negócio fora do ar, um Incident Management Engineer responde em menos de 5 minutos. O Enterprise Support tem meta de 15 minutos, o Business Support+ de 30 minutos, e o Basic não inclui suporte técnico.",
         topic: "Ferramentas e suporte",
         options: [
-            ["Enterprise", true],
-            ["Enterprise On-Ramp", false],
-            ["Business", false],
-            ["Developer", false],
+            ["Unified Operations", true],
+            ["Enterprise Support", false],
+            ["Business Support+", false],
+            ["Basic", false],
         ],
     },
 ];
