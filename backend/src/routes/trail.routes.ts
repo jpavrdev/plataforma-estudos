@@ -10,6 +10,7 @@ import {
     createQuestion,
     listTrails,
     getTrail,
+    getTrailEpub,
     submitTrailReview,
     getLesson,
     getMyTrails,
@@ -92,6 +93,8 @@ router.post("/lessons/:id/questions", autenticar, exigirAdmin, createQuestion);
 router.patch("/lessons/:id/published", autenticar, exigirAdmin, setLessonPublished);
 router.get("/trails", autenticar, listTrails);
 router.get("/trails/:id", autenticar, getTrail);
+// Livro da trilha em EPUB: mesma regra de acesso do conteúdo (basta estar logado).
+router.get("/trails/:id/epub", autenticar, getTrailEpub);
 router.post("/trails/:id/review", autenticar, submitTrailReview);
 router.get("/lessons/:id", autenticar, getLesson);
 

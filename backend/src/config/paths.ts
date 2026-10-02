@@ -7,3 +7,5 @@ export const AVATARS_DIR = path.join(UPLOADS_DIR, "avatars");
 export const COVERS_DIR = path.join(UPLOADS_DIR, "covers");
 export const FUNDOS_DIR = path.join(UPLOADS_DIR, "fundos");
 export const COMUNIDADE_DIR = path.join(UPLOADS_DIR, "comunidade");
+// Livros (EPUB) gerados a partir das trilhas, em cache com hash do conteúdo no nome.
+export const LIVROS_DIR = path.join(UPLOADS_DIR, "livros");

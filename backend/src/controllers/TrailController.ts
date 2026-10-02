@@ -21,6 +21,7 @@ import {
 import { resumoSemana } from "../services/streak.ts";
 import { rankingGlobal } from "../services/ranking.ts";
 import { atividadeRecente } from "../services/activity.service.ts";
+import { livroDaTrilha } from "../services/livro.service.ts";
 import { listarTags, criarTag, atualizarTag, excluirTag } from "../services/tag.service.ts";
 import {
     listarLinguagens,
@@ -344,6 +345,22 @@ export const getTrail = async (req: Request, res: Response, next: NextFunction) 
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
         res.json(await detalheDaTrilha(String(req.params.id), req.userId!, lang));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Livro da trilha em EPUB, para ler fora da plataforma. O arquivo sai do
+// conteúdo publicado e fica em cache por hash, então baixar de novo não
+// reprocessa a trilha inteira.
+export const getTrailEpub = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
+        const { buffer, nome } = await livroDaTrilha(String(req.params.id), lang);
+        res.setHeader("Content-Type", "application/epub+zip");
+        res.setHeader("Content-Disposition", `attachment; filename="${nome}"`);
+        res.setHeader("Content-Length", String(buffer.length));
+        res.send(buffer);
     } catch (err) {
         next(err);
     }
