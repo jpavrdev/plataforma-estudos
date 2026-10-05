@@ -125,6 +125,16 @@ export async function obterTrilha(trailId: string, lang?: string) {
   return data;
 }
 
+// Livro da trilha em EPUB. Vem como blob porque a rota exige o token no header,
+// então não dá para apontar um link direto para ela.
+export async function baixarEpubTrilha(trailId: string, lang?: string) {
+  const { data } = await api.get<Blob>(`/trails/${trailId}/epub`, {
+    responseType: 'blob',
+    params: lang ? { lang } : undefined,
+  });
+  return data;
+}
+
 export async function avaliarTrilha(trailId: string, stars: number, comment: string | null) {
   const { data } = await api.post<MyReview>(`/trails/${trailId}/review`, {
     stars,

@@ -39,6 +39,9 @@
 .td-card__price span { font-size: 14px; color: var(--muted); }
 .td-card__cta { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-family: inherit; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 32%, transparent); }
 .td-card__save { width: 100%; height: 46px; margin-top: 10px; border: 1px solid var(--border-strong); border-radius: 12px; background: transparent; color: var(--text); font-family: inherit; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.td-card__livro { width: 100%; height: 46px; margin-top: 10px; border: 1px solid var(--border-strong); border-radius: 12px; background: transparent; color: var(--text); font-family: inherit; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.td-card__livro:hover:not(:disabled) { border-color: var(--accent); }
+.td-card__livro:disabled { opacity: .6; cursor: progress; }
 .td-card__inc-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
 .td-card__inc { display: flex; flex-direction: column; gap: 11px; }
 .td-card__inc-item { display: flex; align-items: center; gap: 11px; font-size: 13.5px; }
