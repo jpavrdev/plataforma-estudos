@@ -11,6 +11,18 @@ import { trails, modules, lessons, questions } from "../schema.ts";
 import { eq, asc, inArray, count } from "drizzle-orm";
 
 const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[] }> = {
+    "Google Cloud Associate Cloud Engineer": {
+        whatYouLearn: [
+            "Organizar recursos em organização, pastas e projetos, com política e cota",
+            "IAM de verdade: papéis, herança, contas de serviço e credenciais de curta duração",
+            "Compute Engine, GKE, Cloud Run e funções: quando usar cada um e como implantar",
+            "Armazenamento, bancos, VPC, observabilidade e Terraform para operar a nuvem",
+        ],
+        prerequisites: [
+            "Linha de comando no Linux e noção de redes (IP, sub-rede, DNS)",
+            "Nenhuma experiência anterior com Google Cloud: a trilha começa pelos fundamentos",
+        ],
+    },
     "SQL para Dados": {
         whatYouLearn: [
             "SQL do zero com exemplos de análise, não de cadastro",
