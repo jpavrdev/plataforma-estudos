@@ -13,10 +13,10 @@ import { eq, asc, inArray, count } from "drizzle-orm";
 const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[] }> = {
     "Google Cloud Associate Cloud Engineer": {
         whatYouLearn: [
-            "Organizar recursos em organização, pastas e projetos, com política e cota",
-            "IAM de verdade: papéis, herança, contas de serviço e credenciais de curta duração",
-            "Compute Engine, GKE, Cloud Run e funções: quando usar cada um e como implantar",
-            "Armazenamento, bancos, VPC, observabilidade e Terraform para operar a nuvem",
+            "Hierarquia de recursos, projetos, política da organização e cotas",
+            "Faturamento: orçamento, alerta, exportação para o BigQuery e descontos",
+            "IAM, contas de serviço, Compute Engine, GKE e Cloud Run",
+            "Armazenamento, bancos, VPC e observabilidade, para o exame ACE",
         ],
         prerequisites: [
             "Linha de comando no Linux e noção de redes (IP, sub-rede, DNS)",

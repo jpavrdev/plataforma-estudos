@@ -4651,7 +4651,7 @@ const MODULO_6: Modulo = {
                             isCorrect: false,
                         },
                         {
-                            text: "Abre uma sessão de cliente pela proxy de autenticação local",
+                            text: "Abre uma sessão de cliente pelo proxy de autenticação do Cloud SQL",
                             isCorrect: true,
                         },
                         {
@@ -4859,11 +4859,11 @@ const MODULO_6: Modulo = {
                             isCorrect: false,
                         },
                         {
-                            text: "Apenas os bytes lidos, porque o armazenamento é gratuito",
+                            text: "Apenas os bytes processados, porque o armazenamento é gratuito",
                             isCorrect: false,
                         },
                         {
-                            text: "O armazenamento da tabela e os bytes lidos pela consulta",
+                            text: "O armazenamento da tabela e os bytes processados pela consulta",
                             isCorrect: true,
                         },
                         {
@@ -6113,7 +6113,7 @@ const MODULO_8: Modulo = {
                 },
                 {
                     statement:
-                        "Uma empresa precisa que o log de segurança do Google Cloud chegue ao SIEM que ela mantém no próprio datacenter. Qual destino de sink viabiliza essa integração?",
+                        "Uma empresa precisa que o log de segurança do Google Cloud chegue em tempo real ao SIEM que ela mantém no próprio datacenter. Qual destino de sink viabiliza essa integração?",
                     difficulty: "dificil",
                     options: [
                         {
@@ -6414,7 +6414,7 @@ const MODULO_8: Modulo = {
                 },
                 {
                     statement:
-                        "Um script de automação precisa rodar sempre contra o projeto de produção, independentemente de qual configuração esteja ativa na máquina de quem executa. Qual recurso garante isso?",
+                        "Um script de automação precisa rodar sempre contra o projeto de produção, independentemente de qual configuração esteja ativa na máquina de quem executa. Todas as máquinas já têm uma configuração nomeada de produção. Qual recurso garante isso?",
                     difficulty: "medio",
                     options: [
                         {
