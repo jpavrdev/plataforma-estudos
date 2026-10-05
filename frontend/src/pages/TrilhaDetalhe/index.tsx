@@ -21,7 +21,7 @@ import {
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
-import { obterTrilha, avaliarTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
+import { obterTrilha, avaliarTrilha, baixarEpubTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
 import {
   statusCertificado,
   emitirCertificado,
@@ -96,6 +96,10 @@ function Stars({ value, size = 16 }: { value: number; size?: number }) {
     </div>
   );
 }
+
+// Nome do arquivo do livro, a partir do nome da trilha.
+const nomeDeArquivo = (t: string) =>
+  t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'trilha';
 
 // Por que o certificado não está disponível, na linguagem do aluno. O motivo
 // "progresso" só vira aviso depois que ele começou a trilha: antes disso é o óbvio,
@@ -243,6 +247,30 @@ export function TrilhaDetalhe() {
       url: urlValidacao(code),
     });
     return `https://twitter.com/intent/tweet?${q.toString()}`;
+  }
+
+  const [baixandoLivro, setBaixandoLivro] = useState(false);
+  const [livroErro, setLivroErro] = useState<string | null>(null);
+
+  // O livro traz as aulas publicadas da trilha, na linguagem que está na tela.
+  async function baixarLivro() {
+    if (!trailId) return;
+    setBaixandoLivro(true);
+    setLivroErro(null);
+    try {
+      const blob = await baixarEpubTrilha(trailId, trilha?.activeLanguage ?? undefined);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${nomeDeArquivo(trilha?.name ?? 'trilha')}.epub`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Falha ao baixar o livro da trilha:', e);
+      setLivroErro('Não foi possível gerar o livro agora. Tente de novo em instantes.');
+    } finally {
+      setBaixandoLivro(false);
+    }
   }
 
   async function baixarCertificado(code: string) {
@@ -441,6 +469,16 @@ export function TrilhaDetalhe() {
                     <button className="td-card__cta" onClick={() => irPara(stats.alvo)} disabled={!stats.alvo}>
                       {stats.comecado ? 'Continuar trilha' : 'Começar trilha'}
                     </button>
+                    <button className="td-card__livro" onClick={baixarLivro} disabled={baixandoLivro}>
+                      <BookOpen size={15} /> {baixandoLivro ? 'Preparando o livro...' : 'Baixar livro (EPUB)'}
+                    </button>
+                    {livroErro ? (
+                      <p className="td-cert-erro">{livroErro}</p>
+                    ) : (
+                      <p className="td-card__cert-hint">
+                        As aulas em texto para ler offline, no Kindle ou em outro leitor.
+                      </p>
+                    )}
                     {cert?.emitido && (
                       <>
                         <button
