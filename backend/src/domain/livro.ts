@@ -124,11 +124,14 @@ ${opcoes}
             return `<p class="quiz-ans"><span class="quiz-num">Questão ${i + 1}.</span> Resposta: <span class="resp">${letras || "?"}</span>.${resolucao}</p>`;
         })
         .join("\n");
+    // A maioria das trilhas não tem resolução no quiz, e prometer comentário
+    // que não vem é pior que só chamar de gabarito.
+    const temResolucao = questoes.some((q) => !!q.explanation);
     return `<section class="quiz">
 <h2>Quiz da aula</h2>
 ${perguntas}
 <div class="quiz-gabarito">
-<h2>Gabarito comentado</h2>
+<h2>${temResolucao ? "Gabarito comentado" : "Gabarito"}</h2>
 ${gabarito}
 </div>
 </section>`;

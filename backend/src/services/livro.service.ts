@@ -27,7 +27,7 @@ import {
 } from "../domain/livro.ts";
 
 // Sobe quando o gerador muda, para os livros em cache serem refeitos.
-const VERSAO_GERADOR = 4;
+const VERSAO_GERADOR = 5;
 const EDITORA = "Ensina Dev";
 const NIVEIS: Record<string, string> = {
     iniciante: "Nível iniciante",

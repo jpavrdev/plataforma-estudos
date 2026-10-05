@@ -105,6 +105,14 @@ describe("quizParaXhtml", () => {
         assert.ok(html.includes("quiz-gabarito"));
         assert.match(html, /Resposta: <span class="resp">B<\/span>/);
         assert.ok(html.includes("Porque sim."));
+        assert.ok(html.includes("Gabarito comentado"));
+    });
+
+    test("não promete comentário quando a questão não tem resolução", () => {
+        const html = quizParaXhtml(questoes.map((q) => ({ ...q, explanation: null })));
+        assert.ok(html.includes("<h2>Gabarito</h2>"));
+        assert.ok(!html.includes("Gabarito comentado"));
+        assert.match(html, /Resposta: <span class="resp">B<\/span>/);
     });
 });
 
