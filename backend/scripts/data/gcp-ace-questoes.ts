@@ -1350,15 +1350,24 @@ export const QUESTOES: Questao[] = [
     },
     {
         statement:
-            "Uma empresa tem clusters do Kubernetes no Google Cloud, em outra nuvem e no próprio datacenter, e quer gerenciar configuração, política e malha de serviços de todos em um lugar só. Qual produto atende?",
+            "Uma empresa tem clusters do Kubernetes no Google Cloud, em outra nuvem e no próprio datacenter, e quer gerenciar configuração, política e malha de serviços de todos em um lugar só. Qual caminho atende?",
         explanation:
-            "O GKE Enterprise é a camada de gerenciamento multicluster do GKE, antes chamada de Anthos: os clusters, estejam no Google Cloud, em outra nuvem ou no datacenter, são registrados em uma frota e recebem configuração, política e malha de serviços de forma central. Autopilot é um modo de cluster.",
+            "A frota é o agrupamento lógico de clusters administrados juntos, e aceita cluster fora do Google Cloud, que entra pelo agente do Connect. Sobre ela rodam o Config Sync e o Cloud Service Mesh. As edições do GKE foram encerradas e esses recursos passaram a integrar a oferta única, então o GKE Enterprise que o guia do exame cita é esse conjunto.",
         topic: "Implantação",
         options: [
-            ["GKE Enterprise, com os clusters registrados em uma frota", true],
-            ["GKE Autopilot, com os clusters registrados em uma frota", false],
-            ["Cloud Service Mesh, com um cluster Standard por ambiente", false],
-            ["Config Connector, instalado como complemento em cada cluster", false],
+            [
+                "Registrar os clusters em uma frota e usar os recursos de frota do GKE, como o Config Sync",
+                true,
+            ],
+            [
+                "Criar um cluster Autopilot em cada ambiente e administrar os três pelo painel de cada um",
+                false,
+            ],
+            [
+                "Instalar o Config Connector como complemento em cada cluster e versionar os manifestos lá",
+                false,
+            ],
+            ["Criar um projeto por ambiente e padronizar tudo pela política da organização", false],
         ],
     },
     {
