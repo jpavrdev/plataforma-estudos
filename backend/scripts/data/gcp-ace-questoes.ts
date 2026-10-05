@@ -1445,9 +1445,9 @@ export const QUESTOES: Questao[] = [
     },
     {
         statement:
-            "Uma empresa quer que mensagens de um tópico do Pub/Sub cheguem a um serviço privado do Cloud Run por assinatura push autenticada. O que falta, além de criar a assinatura com --push-endpoint?",
+            "Uma empresa quer que mensagens de um tópico do Pub/Sub cheguem a um serviço privado do Cloud Run por assinatura push autenticada. Qual passo é indispensável, além de criar a assinatura com --push-endpoint?",
         explanation:
-            "Em push autenticado, a assinatura assina um token com a conta indicada em --push-auth-service-account, e essa conta precisa de roles/run.invoker no serviço do Cloud Run. O papel de publicador serve para enviar mensagens ao tópico, abrir o serviço a todos elimina a autenticação, e dead letter trata de falhas.",
+            "Em push autenticado, a assinatura assina um token com a conta indicada em --push-auth-service-account, e essa conta precisa de roles/run.invoker no serviço do Cloud Run. O agente de serviço do Pub/Sub também precisa de roles/iam.serviceAccountTokenCreator para assinar em nome dela. O papel de publicador serve para enviar mensagens ao tópico, abrir o serviço a todos elimina a autenticação, e dead letter trata de falhas.",
         topic: "Implantação",
         options: [
             [
@@ -1584,23 +1584,23 @@ export const QUESTOES: Questao[] = [
         statement:
             "Uma equipe quer implantar um pipeline que lê mensagens de um tópico do Pub/Sub e grava em uma tabela do BigQuery, usando um modelo pronto do Google e sem compilar código. Qual comando inicia o job?",
         explanation:
-            "Modelos clássicos do Dataflow são executados com gcloud dataflow jobs run, apontando --gcs-location para o modelo no Cloud Storage e passando os parâmetros do pipeline. Não existe jobs create nem --template-file nesse comando, e flex-template build apenas empacota um modelo novo em vez de iniciar o job.",
+            "O modelo pronto de Pub/Sub para BigQuery é publicado como Flex Template, e Flex Template se inicia com gcloud dataflow flex-template run, apontando --template-file-gcs-location para o caminho em gs://dataflow-templates. O comando de modelo clássico não aceita um Flex Template, flex-template build empacota um modelo novo em vez de iniciar o job, e jobs create não existe.",
         topic: "Implantação",
         options: [
             [
-                "gcloud dataflow jobs run fila-bq --gcs-location=gs://dataflow-templates/latest/PubSub_to_BigQuery --region=us-central1",
+                "gcloud dataflow flex-template run fila-bq --template-file-gcs-location=gs://dataflow-templates/latest/flex/PubSub_to_BigQuery_Flex --region=us-central1",
                 true,
             ],
             [
-                "gcloud dataflow jobs create fila-bq --gcs-location=gs://dataflow-templates/latest/PubSub_to_BigQuery --region=us-central1",
+                "gcloud dataflow jobs run fila-bq --gcs-location=gs://dataflow-templates/latest/flex/PubSub_to_BigQuery_Flex --region=us-central1",
                 false,
             ],
             [
-                "gcloud dataflow jobs run fila-bq --template-file=PubSub_to_BigQuery --region=us-central1",
+                "gcloud dataflow flex-template build fila-bq --template-file-gcs-location=gs://dataflow-templates/latest/flex/PubSub_to_BigQuery_Flex --region=us-central1",
                 false,
             ],
             [
-                "gcloud dataflow flex-template build fila-bq --image-gcr-path=gcr.io/loja/fila --region=us-central1",
+                "gcloud dataflow jobs create fila-bq --template-file=PubSub_to_BigQuery --region=us-central1",
                 false,
             ],
         ],
@@ -1924,7 +1924,7 @@ export const QUESTOES: Questao[] = [
         statement:
             "Uma equipe precisa trocar o tipo de máquina dos nós de um cluster do GKE em produção sem derrubar as cargas de trabalho. Qual caminho atende?",
         explanation:
-            "O tipo de máquina faz parte da configuração do node pool e não muda no lugar: a prática indicada é criar um pool novo, aplicar cordon e drain nos nós antigos para reagendar os pods e só então excluir o pool antigo. Mexer no grupo gerenciado por fora sai do controle do GKE.",
+            "A migração sem interrupção segue o caminho documentado: criar um node pool com o tipo novo, aplicar cordon e drain nos nós antigos para reagendar os pods e só então excluir o pool antigo. Não existe flag de tipo de máquina em gcloud container clusters update, recriar o cluster derruba tudo e mexer no grupo gerenciado por fora sai do controle do GKE.",
         topic: "Operação",
         options: [
             [
@@ -1932,7 +1932,7 @@ export const QUESTOES: Questao[] = [
                 true,
             ],
             [
-                "Rodar `gcloud container node-pools update` com a flag --machine-type e aguardar a troca em janela de manutenção",
+                "Rodar `gcloud container clusters update` com a flag --machine-type, que troca o tipo em todos os nós",
                 false,
             ],
             [
@@ -2488,7 +2488,7 @@ export const QUESTOES: Questao[] = [
         topic: "Acesso e segurança",
         options: [
             [
-                "Na organização, porque papel personalizado existe apenas no nível de projeto ou de organização",
+                "Na organização, de onde ele pode ser concedido em qualquer pasta ou projeto abaixo dela",
                 true,
             ],
             [
@@ -2496,7 +2496,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Na pasta e na organização, para que a herança do papel funcione nos dois sentidos",
+                "Na pasta e na organização, porque a concessão só vale se o papel existir nos dois níveis",
                 false,
             ],
             [
@@ -2758,15 +2758,15 @@ export const QUESTOES: Questao[] = [
         statement:
             "Uma função do Cloud Run roda com uma conta de serviço dedicada e precisa gravar objetos em um bucket. Onde o papel deve ser concedido?",
         explanation:
-            "O que a conta de serviço alcança vem dos papéis concedidos a ela nos recursos, com o membro no formato serviceAccount:email. Papéis concedidos na própria conta de serviço definem quem pode usá-la, não o que ela acessa, e Token Creator trata de credenciais de curta duração.",
+            "O que a conta de serviço alcança vem dos papéis concedidos a ela nos recursos, com o membro no formato serviceAccount:email, e para apenas gravar basta roles/storage.objectCreator. Papéis concedidos na própria conta de serviço definem quem pode usá-la, não o que ela acessa, e Token Creator trata de credenciais de curta duração.",
         topic: "Acesso e segurança",
         options: [
             [
-                "No bucket, com roles/storage.objectAdmin para a conta de serviço como membro serviceAccount:",
+                "No bucket, com roles/storage.objectCreator para a conta de serviço como membro serviceAccount:",
                 true,
             ],
             [
-                "Na própria conta de serviço, com roles/storage.objectAdmin concedido a ela mesma como membro",
+                "Na própria conta de serviço, com roles/storage.objectCreator concedido a ela mesma como membro",
                 false,
             ],
             [
@@ -2806,7 +2806,7 @@ export const QUESTOES: Questao[] = [
     },
     {
         statement:
-            "Uma pessoa de plantão precisa de acesso elevado por algumas horas para investigar um incidente, sem que a política do projeto seja alterada para ela. Qual abordagem o Google Cloud indica?",
+            "Uma pessoa de plantão precisa de acesso elevado por algumas horas para investigar um incidente, sem entrar como principal na política do projeto. Qual abordagem o Google Cloud indica?",
         explanation:
             "Impersonation entrega acesso elevado temporário sem mudar a política do usuário: com Service Account Token Creator na conta de serviço, ela gera credenciais de curta duração e usa a flag --impersonate-service-account. Service Account User serve para anexar a conta a recursos.",
         topic: "Acesso e segurança",
