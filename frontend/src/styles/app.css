@@ -966,6 +966,9 @@
   gap: 14px;
 }
 .trilha {
+  display: block;
+  color: inherit;
+  text-decoration: none;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
@@ -1497,6 +1500,7 @@
 }
 .continue-card__btn {
   position: relative;
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -2526,6 +2530,9 @@
   font-style: italic;
 }
 .track--clickable {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
   cursor: pointer;
   transition:
     border-color 0.15s ease,
@@ -2536,6 +2543,31 @@
 }
 .track--clickable:active {
   transform: translateY(1px);
+}
+/* Card com botões dentro (ler mais, editar): o link fica no nome e o ::after
+   estica a área de clique pelo card inteiro, sem aninhar botão dentro de <a>. */
+.track__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.track__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.track__link:focus-visible {
+  outline: none;
+}
+.track__link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.track--clickable .track__more,
+.track--clickable .track__tags a {
+  position: relative;
+  z-index: 1;
 }
 
 /* Conteudo da aula vindo de markdown */

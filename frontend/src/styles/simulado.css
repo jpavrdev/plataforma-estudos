@@ -1422,6 +1422,7 @@
 }
 .simc__btn {
   display: flex;
+  text-decoration: none;
   align-items: center;
   justify-content: center;
   gap: 8px;

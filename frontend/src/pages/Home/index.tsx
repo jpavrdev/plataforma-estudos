@@ -311,19 +311,17 @@ export function Home() {
                   {listaTrilhas.map((t) => {
                     const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
                     return (
-                      <div
+                      <Link
                         key={t.id}
+                        to={`/trilhas/${t.id}`}
                         className="trilha"
-                        role="button"
-                        tabIndex={0}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() =>
-                          mostrandoEmAndamento ? abrirTrilha(t.id) : navigate(`/trilhas/${t.id}`)
-                        }
-                        onKeyDown={(e) => {
-                          if (e.key !== 'Enter') return;
-                          if (mostrandoEmAndamento) abrirTrilha(t.id);
-                          else navigate(`/trilhas/${t.id}`);
+                        onClick={(e) => {
+                          // Em andamento, o clique simples pula direto para a próxima aula.
+                          // Ctrl/cmd/shift/botão do meio seguem o href e abrem a trilha em nova guia.
+                          if (!mostrandoEmAndamento || e.button !== 0) return;
+                          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                          e.preventDefault();
+                          abrirTrilha(t.id);
                         }}
                       >
                         <div className="trilha__head">
@@ -351,7 +349,7 @@ export function Home() {
                           </div>
                           <span className="progress__pct">{pct}%</span>
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

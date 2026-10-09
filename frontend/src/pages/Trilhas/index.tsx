@@ -278,16 +278,7 @@ export function Trilhas() {
               const completed = t.done >= t.lessons;
               const lv = tint[t.level];
               return (
-                <div
-                  key={t.id}
-                  className="track track--clickable"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => navigate(`/trilhas/${t.id}`)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') navigate(`/trilhas/${t.id}`);
-                  }}
-                >
+                <div key={t.id} className="track track--clickable">
                   <div className="track__head">
                     <span
                       className="track__icon"
@@ -299,7 +290,11 @@ export function Trilhas() {
                       {t.glyph}
                     </span>
                     <div className="track__meta">
-                      <div className="track__name">{t.name}</div>
+                      {/* Link de verdade (e não onClick no card) para o ctrl+clique e o
+                          "abrir em nova guia" funcionarem; o ::after estica o clique pelo card. */}
+                      <Link to={`/trilhas/${t.id}`} className="track__name track__link">
+                        {t.name}
+                      </Link>
                       <div className="track__row">
                         <span className="track__level" style={{ color: lv.fg, background: lv.bg }}>
                           {t.level}
@@ -334,7 +329,6 @@ export function Trilhas() {
                           to={`/estudio/${t.id}`}
                           className="chip--outline"
                           style={{ textDecoration: 'none' }}
-                          onClick={(e) => e.stopPropagation()}
                         >
                           Editar
                         </Link>
@@ -381,14 +375,7 @@ function TrilhaDesc({ children }: { children: string }) {
       </p>
       <div className="track__more-row">
         {(truncado || aberto) && (
-          <button
-            type="button"
-            className="track__more"
-            onClick={(e) => {
-              e.stopPropagation();
-              setAberto((v) => !v);
-            }}
-          >
+          <button type="button" className="track__more" onClick={() => setAberto((v) => !v)}>
             {aberto ? 'Ler menos' : 'Ler mais'}
           </button>
         )}
