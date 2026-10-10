@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from './SimTopbar';
 import { Search, Play, Info } from '../../components/Icons';
@@ -9,7 +9,6 @@ import { provedorDe, nomeLimpo, nivelClasse, ORDEM_PROV } from './provedores';
 type Melhor = { score: number; passed: boolean };
 
 export function Simulados() {
-  const navigate = useNavigate();
   const { dados, carregando } = useRequisicao(
     () =>
       Promise.all([listarSimulados(), historicoSimulados()]).then(([exams, historico]) => ({
@@ -148,7 +147,7 @@ export function Simulados() {
                       key={e.slug}
                       e={e}
                       melhor={melhorPorSlug[e.slug]}
-                      onAbrir={() => navigate(`/simulados/${e.slug}`)}
+                      href={`/simulados/${e.slug}`}
                     />
                   ))}
                 </div>
@@ -172,15 +171,7 @@ export function Simulados() {
   );
 }
 
-function CardSimulado({
-  e,
-  melhor,
-  onAbrir,
-}: {
-  e: SimuladoResumo;
-  melhor?: Melhor;
-  onAbrir: () => void;
-}) {
+function CardSimulado({ e, melhor, href }: { e: SimuladoResumo; melhor?: Melhor; href: string }) {
   const p = provedorDe(e.provider);
   const feito = !!melhor;
   const aprovado = melhor?.passed === true;
@@ -231,9 +222,9 @@ function CardSimulado({
           <div className="simc__notstarted">Não iniciado</div>
         )}
       </div>
-      <button className={`simc__btn${feito ? ' simc__btn--redo' : ''}`} onClick={onAbrir}>
+      <Link to={href} className={`simc__btn${feito ? ' simc__btn--redo' : ''}`}>
         <Play size={13} /> {feito ? 'Refazer' : 'Iniciar'}
-      </button>
+      </Link>
     </div>
   );
 }

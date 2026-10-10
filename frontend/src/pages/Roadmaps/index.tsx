@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
@@ -48,7 +48,6 @@ const CTA: Record<RoadmapResumo['status'], string> = {
 
 export function Roadmaps() {
   const { user: authUser } = useAuth();
-  const navigate = useNavigate();
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
@@ -142,12 +141,9 @@ export function Roadmaps() {
                   </span>
                 </div>
               </div>
-              <button
-                className="continue-card__btn"
-                onClick={() => navigate(`/roadmaps/${continuar.slug}`)}
-              >
+              <Link to={`/roadmaps/${continuar.slug}`} className="continue-card__btn">
                 <Play size={13} /> Continuar
-              </button>
+              </Link>
             </div>
           )}
 
@@ -183,19 +179,15 @@ export function Roadmaps() {
                   key={r.id}
                   className={`track track--clickable roadmap-card${r.premium ? ' track--locked' : ''}`}
                   style={{ ['--rm-hue']: hue } as CSSProperties}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => navigate(`/roadmaps/${r.slug}`)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') navigate(`/roadmaps/${r.slug}`);
-                  }}
                 >
                   <div className="track__head">
                     <span className="track__icon roadmap-card__icon">
                       {r.premium ? <Lock size={20} /> : glyph(r.name)}
                     </span>
                     <div className="track__meta">
-                      <div className="track__name">{r.name}</div>
+                      <Link to={`/roadmaps/${r.slug}`} className="track__name link-esticado">
+                        {r.name}
+                      </Link>
                       <div className="track__row">
                         <span className="track__level roadmap-card__level">
                           {NIVEL_LABEL[r.level]}

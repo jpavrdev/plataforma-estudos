@@ -139,6 +139,7 @@
 }
 .ch-daily__btn {
   position: relative;
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -310,6 +311,7 @@
   text-align: right;
 }
 .ch-row {
+  position: relative;
   cursor: pointer;
 }
 .ch-row:hover {
@@ -352,6 +354,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.ch-row .link-esticado::after {
+  border-radius: 0;
+}
+/* A .ch-table tem overflow: hidden e cortaria o anel de foco por fora. */
+.ch-row .link-esticado:focus-visible::after {
+  outline-offset: -2px;
 }
 .ch-row__name--done {
   color: var(--muted);

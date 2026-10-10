@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { DesTopbar } from './DesTopbar';
 import { Search, Play, ChevronLeft, ChevronRight } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
@@ -77,7 +77,6 @@ function StatusIcon({ status }: { status: StatusDesafio }) {
 }
 
 export function Desafios() {
-  const navigate = useNavigate();
   const { dados } = useRequisicao(() => Promise.all([getDesafioDoDia(), getDesafios()]), []);
   const daily = dados?.[0] ?? null;
   const lista = dados?.[1];
@@ -210,9 +209,9 @@ export function Desafios() {
                 {daily.solved ? ' · resolvido' : ' · resolva antes da meia-noite'}
               </div>
             </div>
-            <button className="ch-daily__btn" onClick={() => navigate(`/desafios/${daily.id}`)}>
+            <Link to={`/desafios/${daily.id}`} className="ch-daily__btn">
               <Play size={13} /> {daily.solved ? 'Revisar' : 'Resolver agora'}
-            </button>
+            </Link>
           </div>
         )}
 
@@ -265,7 +264,7 @@ export function Desafios() {
           </div>
 
           {shown.map((c) => (
-            <Row key={c.id} c={c} onOpen={() => navigate(`/desafios/${c.id}`)} />
+            <Row key={c.id} c={c} />
           ))}
 
           {shown.length === 0 && (
@@ -310,17 +309,20 @@ export function Desafios() {
   );
 }
 
-function Row({ c, onOpen }: { c: DesafioResumo; onOpen: () => void }) {
+function Row({ c }: { c: DesafioResumo }) {
   return (
-    <div className={`ch-row${c.isToday ? ' ch-row--daily' : ''}`} onClick={onOpen}>
+    <div className={`ch-row${c.isToday ? ' ch-row--daily' : ''}`}>
       <div>
         <StatusIcon status={c.status} />
       </div>
       <div className="ch-row__name-cell">
         {c.number != null && <span className="ch-row__id">{c.number}.</span>}
-        <span className={`ch-row__name${c.status === 'solved' ? ' ch-row__name--done' : ''}`}>
+        <Link
+          to={`/desafios/${c.id}`}
+          className={`ch-row__name link-esticado${c.status === 'solved' ? ' ch-row__name--done' : ''}`}
+        >
           {c.title}
-        </span>
+        </Link>
         {c.isToday && <span className="ch-row__today">HOJE</span>}
       </div>
       <div className="ch-row__topic">{c.topic ?? '—'}</div>
