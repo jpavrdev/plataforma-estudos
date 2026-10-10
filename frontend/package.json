@@ -24,7 +24,7 @@
     "katex": "^0.18.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.8",
-    "react-easy-crop": "^6.2.3",
+    "react-easy-crop": "^6.2.4",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.2",
     "rehype-katex": "^7.0.1",
