@@ -16,6 +16,10 @@
     box-shadow 0.16s ease,
     border-color 0.16s ease;
 }
+/* O overflow: hidden (por causa da faixa de cima) cortaria o anel de foco por fora. */
+.roadmap-card .link-esticado:focus-visible::after {
+  outline-offset: -2px;
+}
 .roadmap-card::before {
   content: '';
   position: absolute;

@@ -1422,6 +1422,7 @@
 }
 .simc__btn {
   display: flex;
+  text-decoration: none;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -1435,10 +1436,6 @@
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
-}
-.simc__btn:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 .simc__btn--redo {
   background: none;
