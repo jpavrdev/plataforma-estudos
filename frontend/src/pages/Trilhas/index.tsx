@@ -19,6 +19,7 @@ import {
   type Tag,
 } from '../../services/trails';
 import { getTrailLang } from '../../utils/trailLang';
+import { ehCliqueSimples } from '../../utils/cliqueSimples';
 
 type TrailComId = Trail & { id: string };
 
@@ -208,9 +209,18 @@ export function Trilhas() {
                   </span>
                 </div>
               </div>
-              <button className="continue-card__btn" onClick={() => abrirTrilha(continuar.id)}>
+              <Link
+                to={`/trilhas/${continuar.id}`}
+                className="continue-card__btn"
+                onClick={(e) => {
+                  // O clique simples vai direto para a aula atual; em nova guia abre a trilha.
+                  if (!ehCliqueSimples(e)) return;
+                  e.preventDefault();
+                  abrirTrilha(continuar.id);
+                }}
+              >
                 <Play size={13} /> Continuar aula
-              </button>
+              </Link>
             </div>
           )}
 
@@ -290,9 +300,7 @@ export function Trilhas() {
                       {t.glyph}
                     </span>
                     <div className="track__meta">
-                      {/* Link de verdade (e não onClick no card) para o ctrl+clique e o
-                          "abrir em nova guia" funcionarem; o ::after estica o clique pelo card. */}
-                      <Link to={`/trilhas/${t.id}`} className="track__name track__link">
+                      <Link to={`/trilhas/${t.id}`} className="track__name link-esticado">
                         {t.name}
                       </Link>
                       <div className="track__row">

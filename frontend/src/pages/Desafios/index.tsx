@@ -311,15 +311,18 @@ export function Desafios() {
 
 function Row({ c }: { c: DesafioResumo }) {
   return (
-    <Link to={`/desafios/${c.id}`} className={`ch-row${c.isToday ? ' ch-row--daily' : ''}`}>
+    <div className={`ch-row${c.isToday ? ' ch-row--daily' : ''}`}>
       <div>
         <StatusIcon status={c.status} />
       </div>
       <div className="ch-row__name-cell">
         {c.number != null && <span className="ch-row__id">{c.number}.</span>}
-        <span className={`ch-row__name${c.status === 'solved' ? ' ch-row__name--done' : ''}`}>
+        <Link
+          to={`/desafios/${c.id}`}
+          className={`ch-row__name link-esticado${c.status === 'solved' ? ' ch-row__name--done' : ''}`}
+        >
           {c.title}
-        </span>
+        </Link>
         {c.isToday && <span className="ch-row__today">HOJE</span>}
       </div>
       <div className="ch-row__topic">{c.topic ?? '—'}</div>
@@ -330,7 +333,7 @@ function Row({ c }: { c: DesafioResumo }) {
       </div>
       <div className="ch-row__accept">{c.acceptance == null ? '—' : `${c.acceptance}%`}</div>
       <div className="ch-row__xp">+{c.xp}</div>
-    </Link>
+    </div>
   );
 }
 

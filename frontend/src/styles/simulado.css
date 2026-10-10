@@ -1437,10 +1437,6 @@
   font-weight: 600;
   cursor: pointer;
 }
-.simc__btn:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
 .simc__btn--redo {
   background: none;
   border: 1px solid var(--border-strong);

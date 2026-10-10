@@ -175,9 +175,8 @@ export function Roadmaps() {
               const started = r.status !== 'nao_iniciado';
               const hue = LEVEL_HUE[r.level];
               return (
-                <Link
+                <div
                   key={r.id}
-                  to={`/roadmaps/${r.slug}`}
                   className={`track track--clickable roadmap-card${r.premium ? ' track--locked' : ''}`}
                   style={{ ['--rm-hue']: hue } as CSSProperties}
                 >
@@ -186,7 +185,9 @@ export function Roadmaps() {
                       {r.premium ? <Lock size={20} /> : glyph(r.name)}
                     </span>
                     <div className="track__meta">
-                      <div className="track__name">{r.name}</div>
+                      <Link to={`/roadmaps/${r.slug}`} className="track__name link-esticado">
+                        {r.name}
+                      </Link>
                       <div className="track__row">
                         <span className="track__level roadmap-card__level">
                           {NIVEL_LABEL[r.level]}
@@ -224,7 +225,7 @@ export function Roadmaps() {
                       {r.premium ? 'Desbloquear' : CTA[r.status]} <ChevronRight size={15} />
                     </span>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>

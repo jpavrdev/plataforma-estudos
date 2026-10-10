@@ -22,6 +22,7 @@ import {
   type StreakInfo,
 } from '../../services/trails';
 import { getTrailLang } from '../../utils/trailLang';
+import { ehCliqueSimples } from '../../utils/cliqueSimples';
 import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import type { Trail } from '../../data/trails';
 import { NAV_PRINCIPAL as NAV } from '../../data/nav';
@@ -214,15 +215,13 @@ export function Home() {
                     quiz no fim para fixar o que você acabou de ler.
                   </p>
                   <div className="inicio__acoes">
-                    <button
+                    <Link
                       className="inicio__btn"
-                      onClick={() => {
-                        fecharDestaque();
-                        navigate(`/trilhas/${trilhaInicial.id}`);
-                      }}
+                      to={`/trilhas/${trilhaInicial.id}`}
+                      onClick={fecharDestaque}
                     >
                       Ver a trilha e começar
-                    </button>
+                    </Link>
                     <Link className="link" to="/trilhas" onClick={fecharDestaque}>
                       Prefiro escolher outra trilha
                     </Link>
@@ -270,12 +269,9 @@ export function Home() {
                         <Stat value={`${desafioHoje.acceptance}%`} label="aceitação" />
                       )}
                       <div className="topbar__spacer" />
-                      <button
-                        className="btn btn--accent"
-                        onClick={() => navigate(`/desafios/${desafioHoje.id}`)}
-                      >
+                      <Link className="btn btn--accent" to={`/desafios/${desafioHoje.id}`}>
                         <Play size={13} /> {desafioHoje.solved ? 'Revisar' : 'Resolver agora'}
-                      </button>
+                      </Link>
                     </div>
                   </div>
                   <aside className="challenge__code">
@@ -311,19 +307,7 @@ export function Home() {
                   {listaTrilhas.map((t) => {
                     const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
                     return (
-                      <Link
-                        key={t.id}
-                        to={`/trilhas/${t.id}`}
-                        className="trilha"
-                        onClick={(e) => {
-                          // Em andamento, o clique simples pula direto para a próxima aula.
-                          // Ctrl/cmd/shift/botão do meio seguem o href e abrem a trilha em nova guia.
-                          if (!mostrandoEmAndamento || e.button !== 0) return;
-                          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-                          e.preventDefault();
-                          abrirTrilha(t.id);
-                        }}
-                      >
+                      <div key={t.id} className="trilha">
                         <div className="trilha__head">
                           <span
                             className="trilha__icon"
@@ -335,7 +319,20 @@ export function Home() {
                             {t.glyph}
                           </span>
                           <div className="trilha__meta">
-                            <div className="trilha__name">{t.name}</div>
+                            <Link
+                              to={`/trilhas/${t.id}`}
+                              className="trilha__name link-esticado"
+                              onClick={(e) => {
+                                // Em andamento, o clique simples pula direto para a próxima aula
+                                // (que só se conhece depois de buscar a trilha); ctrl+clique e
+                                // botão do meio seguem o href e abrem a trilha em nova guia.
+                                if (!mostrandoEmAndamento || !ehCliqueSimples(e)) return;
+                                e.preventDefault();
+                                abrirTrilha(t.id);
+                              }}
+                            >
+                              {t.name}
+                            </Link>
                             <div className="trilha__sub">
                               {t.done > 0
                                 ? `${t.done} de ${t.lessons} aulas`
@@ -349,7 +346,7 @@ export function Home() {
                           </div>
                           <span className="progress__pct">{pct}%</span>
                         </div>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>
