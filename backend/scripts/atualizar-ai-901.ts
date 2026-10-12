@@ -11,6 +11,10 @@
 //
 // Idempotente: rodar de novo sem mudanças no banco de questões não altera nada.
 //
+// Com --dry-run, só imprime o que faria e sai sem gravar nada. É assim que se
+// confere o estado de produção: rodar de verdade "só para ver" reescreve
+// alternativa e leva embora as respostas das tentativas.
+//
 // Rodar em dev:  node --env-file=.env scripts/atualizar-ai-901.ts
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend \
 //                  node --env-file=.env.prod scripts/atualizar-ai-901.ts
@@ -35,10 +39,13 @@ type QuestaoDb = {
     options: { text: string; isCorrect: boolean; position: number }[];
 };
 
-function igual(atual: QuestaoDb, seed: Questao): boolean {
-    if ((atual.explanation ?? "") !== seed.explanation) return false;
-    if ((atual.topic ?? "") !== seed.topic) return false;
-    if (atual.options.length !== seed.options.length) return false;
+// Diz o que mudou entre o que está gravado e o arquivo de dados, ou null
+// quando nada mudou. O motivo aparece no --dry-run, e é o que denuncia na hora
+// uma rodada que ia reescrever alternativa sem precisar.
+function diferenca(atual: QuestaoDb, seed: Questao): string | null {
+    if ((atual.explanation ?? "") !== seed.explanation) return "resolução";
+    if ((atual.topic ?? "") !== seed.topic) return "tópico";
+    if (atual.options.length !== seed.options.length) return "número de alternativas";
     // Compara por texto, e não pela position, porque a ordem gravada não é a
     // ordem de autoria: o scripts/embaralhar-alternativas.ts embaralha a
     // position para a correta não ficar sempre na frente. Comparar por position
@@ -47,7 +54,27 @@ function igual(atual: QuestaoDb, seed: Questao): boolean {
     const porTexto = (a: { text: string }, b: { text: string }) => (a.text < b.text ? -1 : 1);
     const atuais = [...atual.options].sort(porTexto);
     const doSeed = seed.options.map(([text, isCorrect]) => ({ text, isCorrect })).sort(porTexto);
-    return doSeed.every((o, i) => atuais[i].text === o.text && atuais[i].isCorrect === o.isCorrect);
+    const i = doSeed.findIndex(
+        (o, k) => atuais[k].text !== o.text || atuais[k].isCorrect !== o.isCorrect,
+    );
+    if (i < 0) return null;
+    return atuais[i].text === doSeed[i].text ? "gabarito de alternativa" : "texto de alternativa";
+}
+
+const SIMULAR = process.argv.includes("--dry-run");
+
+// Primeiras palavras do enunciado, para o --dry-run caber na tela.
+const resumo = (texto: string) =>
+    texto.length > 90 ? `${texto.slice(0, 90).trimEnd()}...` : texto;
+
+function imprimirPlano(
+    remover: { statement: string }[],
+    inserir: { statement: string }[],
+    alterar: { seed: { statement: string }; motivo: string }[],
+) {
+    for (const q of remover) console.log(`  remover: ${resumo(q.statement)}`);
+    for (const q of inserir) console.log(`  inserir: ${resumo(q.statement)}`);
+    for (const a of alterar) console.log(`  alterar (${a.motivo}): ${resumo(a.seed.statement)}`);
 }
 
 async function atualizar() {
@@ -76,13 +103,24 @@ async function atualizar() {
 
     const remover = questoesDb.filter((q) => !enunciadosSeed.has(q.statement));
     const inserir = QUESTOES.filter((q) => !porEnunciado.has(q.statement));
-    const alterar = QUESTOES.filter((q) => {
+    const alterar = QUESTOES.flatMap((q) => {
         const atual = porEnunciado.get(q.statement);
-        return atual && !igual(atual, q);
+        if (!atual) return [];
+        const motivo = diferenca(atual, q);
+        return motivo ? [{ seed: q, motivo }] : [];
     });
 
     if (!remover.length && !inserir.length && !alterar.length) {
         console.log(`Banco já está em dia (${questoesDb.length} questões).`);
+        return;
+    }
+
+    if (SIMULAR) {
+        console.log(
+            `Simulação: ${inserir.length} a inserir, ${alterar.length} a alterar, ${remover.length} a remover (${questoesDb.length} no banco hoje).`,
+        );
+        imprimirPlano(remover, inserir, alterar);
+        console.log("Nada foi gravado. Rode sem --dry-run para aplicar.");
         return;
     }
 
@@ -108,7 +146,7 @@ async function atualizar() {
             await tx.delete(simuladoQuestions).where(inArray(simuladoQuestions.id, idsRemover));
         }
 
-        for (const q of alterar) {
+        for (const { seed: q } of alterar) {
             const atual = porEnunciado.get(q.statement)!;
             await tx
                 .update(simuladoQuestions)
