@@ -10,12 +10,8 @@ import {
 } from "../../schema.ts";
 import { eq, and, sql, inArray, desc, isNull, isNotNull, count, ne } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
-import {
-    corrigirSimulado,
-    questaoCorreta,
-    resumoPorTema,
-    embaralharComSemente,
-} from "../domain/simulado.ts";
+import { corrigirSimulado, questaoCorreta, resumoPorTema } from "../domain/simulado.ts";
+import { embaralharComSemente } from "../domain/embaralhar.ts";
 
 function agrupar(pares: [string, string][]): Map<string, Set<string>> {
     const mapa = new Map<string, Set<string>>();

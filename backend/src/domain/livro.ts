@@ -3,6 +3,7 @@
 // disco nem zip, e é o que os testes cobrem.
 import MarkdownIt from "markdown-it";
 import katex from "katex";
+import { embaralharComSemente } from "./embaralhar.ts";
 
 export const LETRAS = "ABCDEFGHIJ";
 
@@ -94,10 +95,16 @@ export function tabelaParaXhtml(value: string): string {
     return `<table>\n<thead>\n<tr>${th}</tr>\n</thead>\n<tbody>\n${corpo}\n</tbody>\n</table>`;
 }
 
+// O e-book não tem backend para embaralhar a cada leitura, e o conteúdo é
+// autorado com a correta na frente, então sem isto o gabarito sai todo em A.
+// A semente é o enunciado: a mesma questão cai sempre na mesma ordem, e o
+// gabarito, que é montado da mesma lista, continua casando com as letras.
+const opcoesEmbaralhadas = (q: Questao) => embaralharComSemente(q.opcoes, q.statement);
+
 export function quizParaXhtml(questoes: Questao[]): string {
     const perguntas = questoes
         .map((q, i) => {
-            const opcoes = q.opcoes
+            const opcoes = opcoesEmbaralhadas(q)
                 .map((o, k) => {
                     const letra = `${LETRAS[k] ?? "?"}.`;
                     return /```|\n/.test(o.text)
@@ -116,7 +123,7 @@ ${opcoes}
         .join("\n");
     const gabarito = questoes
         .map((q, i) => {
-            const letras = q.opcoes
+            const letras = opcoesEmbaralhadas(q)
                 .map((o, k) => (o.isCorrect ? (LETRAS[k] ?? "?") : null))
                 .filter((l): l is string => !!l)
                 .join(", ");
