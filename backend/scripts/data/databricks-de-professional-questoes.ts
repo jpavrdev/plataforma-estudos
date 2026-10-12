@@ -780,25 +780,25 @@ export const QUESTOES: Questao[] = [
     },
     {
         statement:
-            "Uma tabela Delta representa uma hierarquia organizacional, em que cada funcionário referencia o id do seu gestor direto. Um engenheiro precisa calcular o nível hierárquico de cada funcionário a partir do CEO, sem um limite de profundidade conhecido de antemão. Diferente de alguns bancos relacionais tradicionais, o Databricks SQL não oferece o mesmo suporte consolidado a consultas com CTE recursiva autorreferenciada e profundidade variável em uma única instrução declarativa. Qual abordagem é o padrão recomendado no Spark para esse tipo de travessia hierárquica?",
+            "Uma tabela Delta representa uma hierarquia organizacional, em que cada funcionário referencia o id do seu gestor direto. Um engenheiro precisa calcular o nível de cada funcionário a partir do CEO, sem profundidade conhecida de antemão, em uma única instrução SQL. O que a documentação atual oferece para isso?",
         explanation:
-            "Como o mecanismo declarativo padrão do Spark SQL não cobre bem travessias recursivas de profundidade desconhecida da mesma forma que alguns bancos relacionais tradicionais, o padrão usado no Spark é implementar a recursão de forma imperativa: um loop em PySpark que junta a tabela ao resultado acumulado, incrementa o nível a cada iteração e para quando nenhuma linha nova é adicionada, ou seja, quando atinge um ponto fixo. Tratar a sintaxe de CTE recursiva como equivalente total à de bancos relacionais tradicionais não reflete o suporte real da plataforma. Repetir um CROSS JOIN um número fixo de vezes é uma abordagem cara e artificial, que não se adapta corretamente à profundidade real dos dados. E a hierarquia não chega pronta pré-achatada em uma única coluna array para se resolver com uma única função de ordem superior; a própria construção dessa coluna é que exige a travessia recursiva.",
+            "A documentação documenta `WITH RECURSIVE` a partir do Databricks Runtime 17.0, na forma caso base UNION ALL caso de passo, com nível máximo de recursão em cem por padrão e resultado limitado a um milhão de linhas, que o LIMIT da consulta pode sobrepor. O laço em PySpark era o caminho antes disso e ainda funciona, mas deixou de ser a única saída. As outras duas opções não lidam com profundidade desconhecida.",
         topic: "SQL avançado - recursão hierárquica",
         options: [
             [
-                "Um loop iterativo em PySpark que faz joins sucessivos entre a tabela e o resultado acumulado, parando quando nenhuma linha nova é adicionada",
+                "Uma CTE recursiva com `WITH RECURSIVE`, que usa `UNION ALL` e tem nível máximo padrão de cem",
                 true,
             ],
             [
-                "Uma única consulta com WITH RECURSIVE, com sintaxe e comportamento idênticos aos de bancos relacionais tradicionais como PostgreSQL",
+                "Um laço iterativo em PySpark com junções sucessivas, porque o SQL da plataforma não tem CTE recursiva",
                 false,
             ],
             [
-                "Um CROSS JOIN da tabela com ela mesma, repetido um número fixo de vezes igual ao número total de linhas, para cobrir qualquer profundidade possível",
+                "Uma função de ordem superior sobre array, aplicada à hierarquia já achatada em uma única linha",
                 false,
             ],
             [
-                "Uma única função de ordem superior aggregate aplicada a uma coluna do tipo ARRAY contendo toda a hierarquia pré-achatada em uma linha",
+                "Um `CROSS JOIN` da tabela com ela mesma, repetido tantas vezes quanto o número de linhas dela",
                 false,
             ],
         ],
