@@ -93,17 +93,21 @@ describe("quizParaXhtml", () => {
         },
     ];
 
+    // Letra impressa de cada opção, na ordem em que o quiz saiu.
+    const letraDe = (html: string, texto: string) =>
+        html.match(new RegExp(`([A-J])\\.</span> ${texto}`))?.[1];
+    const resposta = (html: string) => html.match(/Resposta: <span class="resp">([A-J, ]+)</)?.[1];
+
     test("numera as questões e as opções", () => {
         const html = quizParaXhtml(questoes);
         assert.ok(html.includes("Questão 1"));
-        assert.ok(html.includes("A.</span> errada"));
-        assert.ok(html.includes("B.</span> certa"));
+        assert.deepEqual([letraDe(html, "errada"), letraDe(html, "certa")].sort(), ["A", "B"]);
     });
 
     test("traz o gabarito com a letra correta e a resolução", () => {
         const html = quizParaXhtml(questoes);
         assert.ok(html.includes("quiz-gabarito"));
-        assert.match(html, /Resposta: <span class="resp">B<\/span>/);
+        assert.equal(resposta(html), letraDe(html, "certa"));
         assert.ok(html.includes("Porque sim."));
         assert.ok(html.includes("Gabarito comentado"));
     });
@@ -112,7 +116,40 @@ describe("quizParaXhtml", () => {
         const html = quizParaXhtml(questoes.map((q) => ({ ...q, explanation: null })));
         assert.ok(html.includes("<h2>Gabarito</h2>"));
         assert.ok(!html.includes("Gabarito comentado"));
-        assert.match(html, /Resposta: <span class="resp">B<\/span>/);
+        assert.equal(resposta(html), letraDe(html, "certa"));
+    });
+
+    // O conteúdo é autorado com a correta na frente e o e-book não tem backend
+    // para embaralhar a cada leitura, então o gabarito saía todo em A.
+    const quatroOpcoes = (n: number) => ({
+        statement: `Enunciado da questão ${n}?`,
+        explanation: null,
+        opcoes: [
+            { text: `certa ${n}`, isCorrect: true },
+            { text: `errada ${n} um`, isCorrect: false },
+            { text: `errada ${n} dois`, isCorrect: false },
+            { text: `errada ${n} três`, isCorrect: false },
+        ],
+    });
+
+    test("não deixa a resposta cair sempre em A", () => {
+        const html = quizParaXhtml(Array.from({ length: 12 }, (_, i) => quatroOpcoes(i)));
+        const letras = [...html.matchAll(/Resposta: <span class="resp">([A-J])</g)].map(
+            (m) => m[1],
+        );
+        assert.equal(letras.length, 12);
+        assert.ok(new Set(letras).size > 1, `gabarito preso em ${letras.join("")}`);
+    });
+
+    test("a letra do gabarito é a da opção correta impressa", () => {
+        for (let i = 0; i < 12; i++) {
+            const html = quizParaXhtml([quatroOpcoes(i)]);
+            assert.equal(resposta(html), letraDe(html, `certa ${i}`));
+        }
+    });
+
+    test("a mesma questão sai sempre na mesma ordem", () => {
+        assert.equal(quizParaXhtml([quatroOpcoes(7)]), quizParaXhtml([quatroOpcoes(7)]));
     });
 });
 
