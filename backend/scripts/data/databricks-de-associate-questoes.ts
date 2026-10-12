@@ -194,7 +194,7 @@ export const QUESTOES: Questao[] = [
         statement:
             "Uma organização com vários workspaces do Databricks quer administrar permissões de acesso a tabelas, registrar a linhagem dos dados e aplicar um único modelo de nomes no formato catálogo.esquema.tabela de forma centralizada, válida para todos os workspaces da conta. Qual componente da Databricks Data Intelligence Platform fornece isso?",
         explanation:
-            "O Unity Catalog é o sistema de governança unificado do Databricks: administra o namespace de três níveis (catálogo, esquema e tabela ou volume), controla permissões com GRANT, REVOKE e DENY, e registra a linhagem de dados de forma centralizada, compartilhada entre os workspaces vinculados à mesma conta. Lakeflow Jobs orquestra execuções, Databricks SQL executa consultas analíticas, e um cluster de all-purpose compute é apenas um recurso de computação interativo; nenhum dos três fornece o namespace e a governança centralizada descritos.",
+            "O Unity Catalog é o sistema de governança unificado do Databricks: administra o namespace de três níveis (catálogo, esquema e tabela ou volume), controla permissões com GRANT e REVOKE, e registra a linhagem de dados de forma centralizada, compartilhada entre os workspaces vinculados à mesma conta. Lakeflow Jobs orquestra execuções, Databricks SQL executa consultas analíticas, e um cluster de all-purpose compute é apenas um recurso de computação interativo; nenhum dos três fornece o namespace e a governança centralizada descritos.",
         topic: "Unity Catalog",
         options: [
             ["Unity Catalog", true],
@@ -374,22 +374,34 @@ export const QUESTOES: Questao[] = [
     },
     {
         statement:
-            "O grupo analistas_comercial recebeu SELECT no schema vendas.comercial, o que dá acesso de leitura a todas as tabelas do schema por herança. A empresa precisa impedir que um único integrante desse grupo, o usuário joao@empresa.com, consulte especificamente a tabela vendas.comercial.salarios, mantendo o acesso às demais tabelas do schema para ele e para o restante do grupo. Qual comando atende esse requisito com menos esforço?",
+            "O grupo analistas_comercial recebeu SELECT no schema vendas.comercial, o que dá acesso de leitura a todas as tabelas do schema por herança. A empresa precisa impedir que um único integrante desse grupo, o usuário joao@empresa.com, consulte especificamente a tabela vendas.comercial.salarios, mantendo o acesso às demais tabelas do schema para ele e para o restante do grupo. Qual caminho atende esse requisito no Unity Catalog?",
         explanation:
-            "DENY cria uma restrição explícita que sempre prevalece sobre qualquer GRANT herdado, mesmo vindo de um grupo, e pode ser aplicada exatamente no objeto que se quer bloquear, neste caso a tabela salarios, sem afetar o restante do schema nem os outros integrantes do grupo. Como o SELECT de joao vem por herança do grupo no nível do schema, e não de um grant direto na tabela, um REVOKE na tabela para ele não tem nenhum efeito. Um REVOKE no grupo, por sua vez, tiraria o acesso de todos os integrantes às demais tabelas do schema, não só da tabela sensível. Um DENY no nível do schema resolveria o bloqueio, mas impediria joao de acessar todas as tabelas ali, não apenas a tabela salarios.",
+            "O Unity Catalog não tem DENY: a referência de SQL diz que o comando não é suportado por ele e vale apenas para o catálogo hive_metastore. REVOKE também não resolve, porque não existe concessão direta na tabela para remover, e o acesso vem da herança do schema. Filtro de linha esconde linhas, não a tabela, e o usuário segue com SELECT. O caminho é tirar o privilégio do nível do schema e conceder por tabela, ou usar política de recusa do ABAC.",
         topic: "GRANT, REVOKE e DENY",
         options: [
-            ["REVOKE SELECT ON TABLE vendas.comercial.salarios FROM `joao@empresa.com`", false],
-            ["REVOKE SELECT ON SCHEMA vendas.comercial FROM analistas_comercial", false],
-            ["DENY SELECT ON SCHEMA vendas.comercial TO `joao@empresa.com`", false],
-            ["DENY SELECT ON TABLE vendas.comercial.salarios TO `joao@empresa.com`", true],
+            [
+                "Tirar o SELECT do grupo no schema e conceder SELECT tabela por tabela, menos em salarios",
+                true,
+            ],
+            [
+                "Aplicar DENY SELECT na tabela salarios para joao, porque a recusa prevalece sobre o grant herdado",
+                false,
+            ],
+            [
+                "Aplicar REVOKE SELECT na tabela salarios para joao, que remove dele o acesso herdado",
+                false,
+            ],
+            [
+                "Criar um filtro de linha em salarios que devolva falso para joao e esconda a tabela",
+                false,
+            ],
         ],
     },
     {
         statement:
             "Uma administradora concede USE CATALOG, USE SCHEMA e SELECT no catálogo analytics para o grupo bi_team, cobrindo o catálogo inteiro. Duas semanas depois, um engenheiro cria um novo schema chamado marketing dentro desse catálogo e carrega uma tabela campanhas nele, sem conceder nenhum privilégio adicional. O grupo bi_team consegue consultar analytics.marketing.campanhas assim que ela é criada?",
         explanation:
-            "No Unity Catalog, privilégios concedidos em um nível superior, como o catálogo, são herdados por todos os schemas e tabelas dentro dele, incluindo objetos criados depois do GRANT, a menos que um DENY mais específico bloqueie o acesso em um nível mais baixo. Como o grupo recebeu USE CATALOG, USE SCHEMA e SELECT sobre o catálogo inteiro, ele já consegue consultar a nova tabela sem nenhuma ação adicional. A herança não se limita a objetos preexistentes, e não é preciso repetir o GRANT a cada schema criado. Quem criou o objeto não interfere no acesso herdado que outros principals já possuíam.",
+            "No Unity Catalog, privilégios concedidos em um nível superior, como o catálogo, são herdados por todos os schemas e tabelas dentro dele, incluindo objetos criados depois do GRANT. Como o grupo recebeu USE CATALOG, USE SCHEMA e SELECT sobre o catálogo inteiro, ele já consegue consultar a nova tabela sem nenhuma ação adicional. A herança não se limita a objetos preexistentes, e não é preciso repetir o GRANT a cada schema criado. Quem criou o objeto não interfere no acesso herdado que outros principals já possuíam.",
         topic: "Herança de privilégios",
         options: [
             [
@@ -397,7 +409,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Sim, porque privilégios do catálogo são herdados por schemas e tabelas criados depois, salvo DENY mais específico.",
+                "Sim, porque privilégios do catálogo são herdados por schemas e tabelas criados depois, sem repetir o GRANT.",
                 true,
             ],
             [
@@ -414,7 +426,7 @@ export const QUESTOES: Questao[] = [
         statement:
             "A tabela clientes.perfil.cadastro tem a coluna cpf com dados sensíveis. A área de auditoria precisa continuar vendo o CPF completo, mas todos os demais usuários devem ver o valor mascarado. Qual abordagem do Unity Catalog aplica essa regra diretamente na tabela original, sem duplicar dados em uma view separada?",
         explanation:
-            "Column mask é o recurso do Unity Catalog em que uma function SQL, tipicamente usando is_account_group_member() para checar a identidade de quem consulta, é associada a uma coluna via ALTER TABLE ... ALTER COLUMN ... SET MASK. A mesma tabela passa a devolver o CPF completo para o grupo de auditoria e o valor mascarado para os demais, sem criar views adicionais. Row filter atua sobre linhas, não sobre o conteúdo de uma coluna. Negar SELECT para os demais grupos bloquearia o acesso à tabela inteira, não só ao CPF. GENERATED ALWAYS AS define como uma coluna é calculada na escrita dos dados, sem relação com controle de acesso na leitura.",
+            "Column mask é o recurso do Unity Catalog em que uma function SQL, tipicamente usando is_account_group_member() para checar a identidade de quem consulta, é associada a uma coluna via ALTER TABLE ... ALTER COLUMN ... SET MASK. A mesma tabela passa a devolver o CPF completo para o grupo de auditoria e o valor mascarado para os demais, sem criar views adicionais. Row filter atua sobre linhas, não sobre o conteúdo de uma coluna. Revogar o SELECT dos demais grupos bloquearia a tabela inteira, não só o CPF. GENERATED ALWAYS AS define como uma coluna é calculada na escrita dos dados, sem relação com controle de acesso na leitura.",
         topic: "Column masking",
         options: [
             [
@@ -422,7 +434,7 @@ export const QUESTOES: Questao[] = [
                 false,
             ],
             [
-                "Conceder SELECT na tabela apenas para o grupo de auditoria e aplicar DENY SELECT explícito para todos os demais grupos.",
+                "Conceder SELECT na tabela apenas ao grupo de auditoria e revogar o SELECT de todos os demais grupos.",
                 false,
             ],
             [
