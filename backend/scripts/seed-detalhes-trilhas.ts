@@ -11,6 +11,18 @@ import { trails, modules, lessons, questions } from "../schema.ts";
 import { eq, asc, inArray, count } from "drizzle-orm";
 
 const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[] }> = {
+    "Databricks Certified Data Engineer Professional": {
+        whatYouLearn: [
+            "PySpark e SQL avançados, com teste unitário de transformação",
+            "Structured Streaming com estado, marca de tempo e escrita idempotente",
+            "Delta Lake por dentro: log, concorrência, MERGE e Change Data Feed",
+            "Custo, segurança e deploy, para o exame Data Engineer Professional",
+        ],
+        prerequisites: [
+            "A trilha de Data Engineer Associate, ou experiência equivalente com a plataforma",
+            "Python e SQL no dia a dia, incluindo PySpark",
+        ],
+    },
     "Databricks Certified Data Engineer Associate": {
         whatYouLearn: [
             "A plataforma: lakehouse, compute, notebooks e Databricks SQL",
