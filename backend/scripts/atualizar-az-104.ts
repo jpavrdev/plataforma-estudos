@@ -41,11 +41,15 @@ function igual(atual: QuestaoDb, seed: Questao): boolean {
     if ((atual.explanation ?? "") !== seed.explanation) return false;
     if ((atual.topic ?? "") !== seed.topic) return false;
     if (atual.options.length !== seed.options.length) return false;
-    const ordenadas = [...atual.options].sort((a, b) => a.position - b.position);
-    return seed.options.every(
-        ([text, isCorrect], i) =>
-            ordenadas[i].text === text && ordenadas[i].isCorrect === isCorrect,
-    );
+    // Compara por texto, e não pela position, porque a ordem gravada não é a
+    // ordem de autoria: o scripts/embaralhar-alternativas.ts embaralha a
+    // position para a correta não ficar sempre na frente. Comparar por position
+    // dava questão "alterada" em toda rodada, e alternativa reescrita apaga as
+    // respostas que as tentativas deram nela.
+    const porTexto = (a: { text: string }, b: { text: string }) => (a.text < b.text ? -1 : 1);
+    const atuais = [...atual.options].sort(porTexto);
+    const doSeed = seed.options.map(([text, isCorrect]) => ({ text, isCorrect })).sort(porTexto);
+    return doSeed.every((o, i) => atuais[i].text === o.text && atuais[i].isCorrect === o.isCorrect);
 }
 
 async function atualizar() {
