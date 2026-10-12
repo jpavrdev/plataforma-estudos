@@ -780,25 +780,25 @@ export const QUESTOES: Questao[] = [
     },
     {
         statement:
-            "Uma tabela Delta representa uma hierarquia organizacional, em que cada funcionário referencia o id do seu gestor direto. Um engenheiro precisa calcular o nível hierárquico de cada funcionário a partir do CEO, sem um limite de profundidade conhecido de antemão. Diferente de alguns bancos relacionais tradicionais, o Databricks SQL não oferece o mesmo suporte consolidado a consultas com CTE recursiva autorreferenciada e profundidade variável em uma única instrução declarativa. Qual abordagem é o padrão recomendado no Spark para esse tipo de travessia hierárquica?",
+            "Uma tabela Delta representa uma hierarquia organizacional, em que cada funcionário referencia o id do seu gestor direto. Um engenheiro precisa calcular o nível de cada funcionário a partir do CEO, sem profundidade conhecida de antemão, em uma única instrução SQL. O que a documentação atual oferece para isso?",
         explanation:
-            "Como o mecanismo declarativo padrão do Spark SQL não cobre bem travessias recursivas de profundidade desconhecida da mesma forma que alguns bancos relacionais tradicionais, o padrão usado no Spark é implementar a recursão de forma imperativa: um loop em PySpark que junta a tabela ao resultado acumulado, incrementa o nível a cada iteração e para quando nenhuma linha nova é adicionada, ou seja, quando atinge um ponto fixo. Tratar a sintaxe de CTE recursiva como equivalente total à de bancos relacionais tradicionais não reflete o suporte real da plataforma. Repetir um CROSS JOIN um número fixo de vezes é uma abordagem cara e artificial, que não se adapta corretamente à profundidade real dos dados. E a hierarquia não chega pronta pré-achatada em uma única coluna array para se resolver com uma única função de ordem superior; a própria construção dessa coluna é que exige a travessia recursiva.",
+            "A documentação documenta `WITH RECURSIVE` a partir do Databricks Runtime 17.0, na forma caso base UNION ALL caso de passo, com nível máximo de recursão em cem por padrão e resultado limitado a um milhão de linhas, que o LIMIT da consulta pode sobrepor. O laço em PySpark era o caminho antes disso e ainda funciona, mas deixou de ser a única saída. As outras duas opções não lidam com profundidade desconhecida.",
         topic: "SQL avançado - recursão hierárquica",
         options: [
             [
-                "Um loop iterativo em PySpark que faz joins sucessivos entre a tabela e o resultado acumulado, parando quando nenhuma linha nova é adicionada",
+                "Uma CTE recursiva com `WITH RECURSIVE`, que usa `UNION ALL` e tem nível máximo padrão de cem",
                 true,
             ],
             [
-                "Uma única consulta com WITH RECURSIVE, com sintaxe e comportamento idênticos aos de bancos relacionais tradicionais como PostgreSQL",
+                "Um laço iterativo em PySpark com junções sucessivas, porque o SQL da plataforma não tem CTE recursiva",
                 false,
             ],
             [
-                "Um CROSS JOIN da tabela com ela mesma, repetido um número fixo de vezes igual ao número total de linhas, para cobrir qualquer profundidade possível",
+                "Uma função de ordem superior sobre array, aplicada à hierarquia já achatada em uma única linha",
                 false,
             ],
             [
-                "Uma única função de ordem superior aggregate aplicada a uma coluna do tipo ARRAY contendo toda a hierarquia pré-achatada em uma linha",
+                "Um `CROSS JOIN` da tabela com ela mesma, repetido tantas vezes quanto o número de linhas dela",
                 false,
             ],
         ],
@@ -3690,6 +3690,1011 @@ export const QUESTOES: Questao[] = [
             ],
             [
                 "Registrar cada arquivo como uma external table apontando para o caminho do objeto no storage e conceder SELECT, já que o Unity Catalog só aplica controle de acesso sobre objetos tabulares e trata qualquer arquivo como uma tabela de uma coluna",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma tabela tem a coluna `medidas ARRAY<INT>`, e em uma linha o valor é `array(1, NULL, 3)`, enquanto em outra é `array(2, NULL, 8)`. Um relatório de qualidade avalia `exists(medidas, x -> x % 2 == 0)` e `forall(medidas, x -> x % 2 == 0)` nas duas linhas. Quais DUAS afirmações descrevem corretamente o resultado? (Selecione DUAS opções.)",
+        explanation:
+            "A documentação mostra exists sobre array(1, NULL, 3) devolvendo NULL e forall sobre o mesmo array devolvendo false: um elemento falso já decide o forall, mas sem nenhum verdadeiro o exists fica indefinido. Em array(2, NULL, 8) o forall devolve NULL, e não true, e o exists devolve true, porque o 2 satisfaz o predicado.",
+        topic: "SQL - exists e forall com elemento nulo",
+        options: [
+            [
+                "Em `array(1, NULL, 3)`, exists devolve NULL, porque nenhum dos elementos é par e o nulo impede concluir que é false",
+                true,
+            ],
+            [
+                "Em `array(1, NULL, 3)`, forall devolve false, porque o elemento 1 já falha o predicado e um falso decide o resultado",
+                true,
+            ],
+            [
+                "Em `array(1, NULL, 3)`, exists devolve false, porque os elementos não nulos são ímpares e o nulo é descartado da avaliação",
+                false,
+            ],
+            [
+                "Em `array(2, NULL, 8)`, forall devolve true, porque os elementos não nulos passam e o nulo não chega a ser avaliado",
+                false,
+            ],
+            [
+                "Em `array(2, NULL, 8)`, exists devolve NULL, porque qualquer elemento nulo no array já torna o resultado indefinido",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um engenheiro ordena uma coluna `ARRAY<STRUCT<sku STRING, peso DOUBLE>>` com `array_sort` e um comparador escrito em `CASE WHEN` sobre o campo peso. O comparador cobre menor, maior e igual, mas não trata o par em que os dois pesos são nulos, e nessa combinação ele cai em um resultado nulo. O que acontece com a consulta?",
+        explanation:
+            "A documentação de array_sort diz que a função precisa devolver -1, 0 ou 1 e que o Databricks levanta COMPARATOR_RETURNS_NULL quando o comparador devolve NULL, como no exemplo array_sort(array(1, 2), (l, r) -> NULL). Nulo do comparador é erro, sem tratamento silencioso. Colocar nulos no fim vale para a ordenação sem comparador.",
+        topic: "SQL - array_sort com comparador que devolve nulo",
+        options: [
+            [
+                "A consulta falha com o erro `COMPARATOR_RETURNS_NULL`, porque o comparador precisa devolver -1, 0 ou 1",
+                true,
+            ],
+            [
+                "A consulta termina sem erro, e os elementos de peso nulo vão para o fim do array, como na ordenação padrão",
+                false,
+            ],
+            [
+                "O resultado nulo é lido como 0, os dois elementos empatam sem erro e a ordem original entre eles é mantida",
+                false,
+            ],
+            [
+                "O array daquela linha vira NULL, sem erro nenhum, porque o nulo do comparador se propaga para a saída",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Em uma tabela de pedidos, a coluna `precos` vale `array(10, 20, 30)` em uma linha, e a coluna `quantidades`, na mesma linha, vale `array(1, 2)`. A consulta executa `zip_with(precos, quantidades, (p, q) -> p * q)`. Qual é o resultado para essa linha?",
+        explanation:
+            "A documentação de zip_with diz que, se um array é mais curto, nulos são acrescentados no fim até igualar o comprimento do maior antes de aplicar a função. Sobram então três pares, 10 com 1, 20 com 2 e 30 com NULL, e a multiplicação com nulo devolve NULL. Não há truncamento no array mais curto nem erro de execução.",
+        topic: "SQL - zip_with com arrays de tamanhos diferentes",
+        options: [
+            [
+                "`[10, 40, NULL]`, porque o array mais curto recebe nulos no fim até igualar o maior antes da função ser aplicada",
+                true,
+            ],
+            [
+                "`[10, 40]`, porque a função para no tamanho do array mais curto e descarta o preço que ficou sem par na linha",
+                false,
+            ],
+            [
+                "`[10, 40, 30]`, porque o array mais curto é reutilizado desde o início e o terceiro preço volta a usar a quantidade 1",
+                false,
+            ],
+            [
+                "Erro de execução, porque `zip_with` exige que os dois arrays tenham o mesmo número de elementos dentro da linha",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma tabela bronze guarda a coluna `payload`, do tipo STRING, com um documento JSON por linha. O job da camada gold roda `SELECT payload:pedido.valor AS valor FROM bronze` e grava o resultado em uma tabela nova. A equipe esperava um DOUBLE, mas a coluna `valor` chegou ao destino como STRING. Qual é a explicação, com a correção que a documentação indica?",
+        explanation:
+            "A documentação do caminho JSON diz que o operador de dois pontos devolve STRING quando a expressão navegada é STRING, e VARIANT quando ela é VARIANT. Para tipos básicos o cast é feito com `::`, como no exemplo raw:store.bicycle.price::double, que devolve 19.95; tipos complexos como array e struct pedem from_json.",
+        topic: "SQL - operador de caminho JSON e cast",
+        options: [
+            [
+                "O operador de dois pontos devolve STRING ao navegar uma expressão STRING, então o cast é obrigatório, como em `payload:pedido.valor::double`",
+                true,
+            ],
+            [
+                "O operador devolve VARIANT, e a gravação reduziu o valor a STRING, então basta declarar a coluna como DOUBLE no schema da tabela de destino",
+                false,
+            ],
+            [
+                "O operador infere o tipo de cada campo do JSON, mas o número veio entre aspas na origem, então corrigir o JSON de entrada resolve o tipo",
+                false,
+            ],
+            [
+                "O operador devolve DOUBLE só quando o campo é numérico em todas as linhas, então é preciso usar `schema_of_json` para fixar o tipo na leitura",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Em um workspace com Databricks Runtime 14.3 LTS, um engenheiro escreve `SELECT explode(ids), explode(tags) FROM eventos` e a consulta falha com `UNSUPPORTED_GENERATOR.MULTI_GENERATOR`. Qual é a forma que a documentação indica hoje para expandir os dois arrays na mesma consulta?",
+        explanation:
+            "A documentação do explode diz que, na lista de seleção, não pode haver outro gerador na mesma lista, senão UNSUPPORTED_GENERATOR.MULTI_GENERATOR é levantado. Desde o Runtime 12.2 LTS a invocação na lista de seleção e no LATERAL VIEW está obsoleta, e a indicação é invocar explode como table_reference no FROM, uma chamada por array, o que devolve a combinação das duas expansões.",
+        topic: "SQL - mais de uma função geradora na lista de seleção",
+        options: [
+            [
+                "Invocar `explode` como table_reference no FROM, uma chamada para cada array, forma indicada desde o Runtime 12.2 LTS",
+                true,
+            ],
+            [
+                "Manter os dois `explode` na lista de seleção, com um alias para cada um, porque o limite vale só para geradores sem alias",
+                false,
+            ],
+            [
+                "Encadear dois `LATERAL VIEW explode`, que é a forma indicada quando a consulta precisa de mais de um gerador na saída",
+                false,
+            ],
+            [
+                "Trocar os dois por `posexplode`, porque o limite de um gerador por consulta se aplica apenas à função `explode`",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            'Um engenheiro define em Python a função `margem(receita, custo)`, que devolve um número fracionário, e a registra com `spark.udf.register("margem", margem)` para chamar a função em SQL, sem informar o tipo de retorno. O que vale para a coluna produzida por essa UDF nas consultas SQL?',
+        explanation:
+            "A documentação de UDF em Python diz que o tipo de retorno padrão do registro é StringType, e o exemplo seguinte passa LongType() de forma explícita para uma função numérica. Sem informar o tipo, a coluna sai como texto mesmo que a função devolva número. O Spark não infere o tipo por anotação nem pela primeira linha avaliada.",
+        topic: "UDF Python - tipo de retorno no registro",
+        options: [
+            [
+                "Ela sai como STRING, porque StringType é o tipo de retorno padrão do registro, e o tipo precisa ser declarado nele",
+                true,
+            ],
+            [
+                "Ela sai como DOUBLE, porque o Spark infere o tipo de retorno a partir do valor devolvido na primeira linha avaliada",
+                false,
+            ],
+            [
+                "Ela sai como DOUBLE, porque o Spark lê as anotações de tipo da função Python para definir o tipo de retorno da UDF",
+                false,
+            ],
+            [
+                "O registro falha na hora, porque informar o tipo de retorno é obrigatório em toda UDF Python registrada para o SQL",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma tabela Delta declara a coluna `dia DATE GENERATED ALWAYS AS (CAST(ts AS DATE))`. Um pipeline externo passa a listar todas as colunas no INSERT, inclusive `dia`, com o valor calculado na aplicação em outro fuso horário. O que acontece nas linhas em que o valor informado não bate com a expressão da coluna?",
+        explanation:
+            "A documentação de generated columns diz que, sem valor informado, o Delta calcula a coluna, e que, se o valor for informado, ele precisa satisfazer (<valor> <=> <expressão de geração>) IS TRUE, senão a gravação falha. Informar valor é permitido, e a verificação acontece na escrita, não em uma manutenção posterior da tabela.",
+        topic: "Delta Lake - valor explícito em coluna gerada",
+        options: [
+            [
+                "A gravação falha, porque o valor informado precisa satisfazer a condição `(<valor> <=> <expressão de geração>) IS TRUE`",
+                true,
+            ],
+            [
+                "A gravação ignora o valor informado e grava o resultado da própria expressão, então a divergência nunca interrompe a carga",
+                false,
+            ],
+            [
+                "A gravação é aceita, e a divergência só aparece no OPTIMIZE seguinte, que recalcula a coluna pela expressão declarada",
+                false,
+            ],
+            [
+                "A gravação falha em todas as linhas, porque listar uma coluna gerada na lista do INSERT é proibido, haja divergência ou não",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "A tabela alvo `dim_produto` tem as colunas key e value. A origem diária passou a trazer key, value e new_value, e o time roda `MERGE INTO dim_produto t USING atualizacoes s ON t.key = s.key WHEN MATCHED THEN UPDATE SET * WHEN NOT MATCHED THEN INSERT *` sem habilitar a evolução automática de schema. O que acontece nessa execução?",
+        explanation:
+            "A tabela de comportamento da documentação é explícita: sem evolução de schema, o schema do alvo permanece inalterado e apenas as colunas em comum, key e value, são atualizadas ou inseridas, de forma que a coluna extra da origem é descartada em silêncio. O erro de análise aparece no caso inverso, quando o alvo tem coluna que falta na origem. Evolução de schema precisa ser habilitada manualmente.",
+        topic: "MERGE - coluna extra na origem sem evolução de schema",
+        options: [
+            [
+                "A operação conclui, o schema do alvo permanece inalterado e apenas as colunas key e value são atualizadas ou inseridas.",
+                true,
+            ],
+            [
+                "A operação falha com erro de análise, porque a coluna new_value existe na origem e não existe no schema do alvo.",
+                false,
+            ],
+            [
+                "A operação conclui e a coluna new_value entra no alvo automaticamente, já que `INSERT *` propaga tudo o que vem da origem.",
+                false,
+            ],
+            [
+                "A operação conclui, mas as linhas inseridas recebem NULL em value, porque o alvo passa a casar as colunas por posição.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "O MERGE diário que atualiza a tabela `dim_cliente` passou a falhar com a mensagem de que várias linhas da origem casaram e tentaram modificar a mesma linha do alvo. Investigando o lote, o time descobre que alguns clientes aparecem com dois ou três eventos de atualização no mesmo arquivo de origem. Qual correção a documentação indica?",
+        explanation:
+            "A documentação diz que só uma linha da origem pode casar com uma dada linha do alvo, e que o MERGE pode falhar quando várias linhas da origem tentam atualizar as mesmas linhas, porque fica ambíguo qual delas deveria valer. A saída indicada é pré-processar a origem para eliminar a possibilidade de múltiplos casamentos. O caminho inverso é permitido: uma linha da origem pode atualizar várias do alvo.",
+        topic: "MERGE - várias linhas da origem para a mesma do alvo",
+        options: [
+            [
+                "Pré-processar a origem para que no máximo uma linha dela case com cada linha do alvo, por exemplo mantendo só o evento mais recente de cada chave.",
+                true,
+            ],
+            [
+                "Habilitar a evolução automática de schema na instrução de MERGE, porque é ela que consolida as linhas repetidas da origem antes da gravação no alvo.",
+                false,
+            ],
+            [
+                "Trocar a cláusula `WHEN MATCHED THEN UPDATE SET *` por `WHEN NOT MATCHED BY SOURCE THEN DELETE`, que tolera várias linhas da origem por linha do alvo.",
+                false,
+            ],
+            [
+                "Aumentar o número de partições de shuffle da execução, porque a mensagem indica conflito entre tarefas que gravam no mesmo arquivo de dados do alvo.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma equipe declarou `PRIMARY KEY (cliente_id)` na tabela `dim_cliente` do Unity Catalog esperando duas coisas: que o Databricks rejeite cargas com chave duplicada e que o otimizador aproveite a unicidade para dispensar DISTINCT e joins redundantes nos painéis. Qual afirmação descreve o comportamento real?",
+        explanation:
+            "Chave primária, chave estrangeira e unique são constraints informativos e não são impostos pelo Databricks, então garantir os dados continua sendo responsabilidade do time. O padrão é NORELY, e só com RELY o Databricks pode explorar a constraint para reescrever consultas, como dispensar um DISTINCT ou eliminar um join redundante, e essas otimizações exigem compute com Photon.",
+        topic: "Constraints informativos e a opção RELY",
+        options: [
+            [
+                "A chave primária é informativa e não é imposta, e o otimizador só reescreve consultas se a constraint tiver RELY, em compute com Photon.",
+                true,
+            ],
+            [
+                "A chave primária é imposta em toda escrita, e o otimizador aproveita essa garantia para reescrever consultas sem precisar de opção extra.",
+                false,
+            ],
+            [
+                "A chave primária é informativa, mas o otimizador já reescreve consultas por padrão, porque o padrão da declaração da constraint é RELY.",
+                false,
+            ],
+            [
+                "A chave primária é imposta apenas nas linhas novas, e o otimizador reescreve consultas só quando há estatísticas recentes de ANALYZE.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma equipe de plataforma compara dois foreign catalogs do Unity Catalog: um sobre um PostgreSQL operacional, via federação de consulta, e outro sobre um metastore do AWS Glue cujas tabelas vivem no S3, via federação de catálogo. Onde cada consulta é processada, segundo a documentação?",
+        explanation:
+            "A documentação separa os dois tipos de Lakehouse Federation pelo caminho da consulta: na federação de consulta, o Unity Catalog empurra a consulta ao banco externo por JDBC e ela roda tanto no Databricks quanto no compute remoto; na federação de catálogo, a leitura vai direto ao armazenamento de objetos e a consulta roda só no compute do Databricks. Nenhuma das duas aceita escrita.",
+        topic: "Federação de consulta x federação de catálogo",
+        options: [
+            [
+                "A federação de consulta empurra a consulta por JDBC e roda no Databricks e no compute remoto, e a federação de catálogo roda só no compute do Databricks.",
+                true,
+            ],
+            [
+                "As duas leem direto do armazenamento de objetos, e o compute do sistema de origem só é acionado para resolver os metadados das tabelas do foreign catalog.",
+                false,
+            ],
+            [
+                "A federação de consulta roda só no Databricks, que materializa o resultado em uma tabela Delta temporária, e a federação de catálogo roda só no compute remoto.",
+                false,
+            ],
+            [
+                "A federação de catálogo empurra a consulta para o metastore externo executar, e a federação de consulta baixa a tabela inteira para o Databricks antes de filtrar.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Antes de liberar um foreign catalog de PostgreSQL para o time de BI, um engenheiro quer saber quais operações chegam ao banco de origem e quais sobram para o compute do Databricks. Qual afirmação corresponde à lista de pushdowns que a documentação publica para o conector PostgreSQL?",
+        explanation:
+            "A tabela do conector PostgreSQL lista filtros, projeções, limit, offset, agregações, ordenação quando acompanha limit e TABLESAMPLE sem reposição como suportados em qualquer compute, enquanto funções de string, de data e matemáticas são parciais, só em expressões de filtro. Funções de janela aparecem como não suportadas, e join está em Public Preview com runtime mínimo.",
+        topic: "Pushdowns do conector PostgreSQL na federação",
+        options: [
+            [
+                "Filtros, projeções, limit, offset e agregações são empurrados em qualquer compute, e funções de janela não são empurradas.",
+                true,
+            ],
+            [
+                "Funções de string e de data são empurradas em qualquer posição da consulta, e só as agregações ficam no compute do Databricks.",
+                false,
+            ],
+            [
+                "Apenas filtros e projeções são empurrados, e limit, offset e agregações são sempre avaliados no Databricks após a leitura.",
+                false,
+            ],
+            [
+                "Join entre duas tabelas do foreign catalog é empurrado por padrão, e limit só é empurrado quando acompanha uma ordenação.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um Auto Loader ingere de um external location com file events habilitado e `cloudFiles.useManagedFileEvents` em true. O time quer garantia de reconciliação por listagem completa, para não perder arquivo por notificação extraviada, e pergunta o que precisa configurar. Quais DUAS afirmações a documentação sustenta? (Selecione DUAS opções.)",
+        explanation:
+            "O próprio serviço de file events faz listagens completas do external location para conferir que nada passou batido: a primeira começa quando os file events são habilitados e cada seguinte ocorre 24 horas depois da última varredura completa, desde que haja ao menos um stream consumindo. Por isso a documentação manda não usar cloudFiles.backfillInterval nesse modo.",
+        topic: "Auto Loader com file events - listagem completa periódica",
+        options: [
+            [
+                "O serviço de file events faz listagens completas do external location por conta própria, e cada listagem seguinte ocorre 24 horas depois da última varredura completa.",
+                true,
+            ],
+            [
+                "A opção `cloudFiles.backfillInterval` não deve ser usada quando `cloudFiles.useManagedFileEvents` está em true, porque a reconciliação já fica a cargo do serviço.",
+                true,
+            ],
+            [
+                "O stream precisa rodar pelo menos uma vez por hora e, se passar disso, a posição de leitura no cache expira e o Auto Loader reprocessa tudo o que já tinha ingerido antes.",
+                false,
+            ],
+            [
+                "Com file events o Auto Loader nunca recorre a listagem de diretório, nem na primeira execução do stream, porque a descoberta de arquivo vem toda das notificações.",
+                false,
+            ],
+            [
+                "É preciso combinar `cloudFiles.useIncrementalListing` com os file events, deixando a listagem incremental encarregada das varreduras completas periódicas do caminho.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Em um workspace com Databricks Runtime 16.4 LTS, um stream do Auto Loader roda com `cloudFiles.maxBytesPerTrigger` em `10g` e a pasta de entrada recebe arquivos de 3 GB cada. A equipe estranha ao ver, no log da consulta, um micro-batch que processou 12 GB e abre um incidente achando que a opção foi ignorada. Qual explicação corresponde à documentação?",
+        explanation:
+            "A documentação chama cloudFiles.maxBytesPerTrigger de máximo flexível e dá exatamente esse exemplo: com arquivos de 3 GB cada, o Databricks processa 12 GB em um micro-batch, porque um arquivo nunca é dividido entre micro-batches e é sempre processado por inteiro em um só. Com maxFilesPerTrigger, vale o menor dos dois limites. No Runtime 18.0 e acima a opção é configurada dinamicamente.",
+        topic: "Auto Loader - maxBytesPerTrigger como máximo flexível",
+        options: [
+            [
+                "O limite é flexível e nenhum arquivo é dividido entre micro-batches, então com arquivos de 3 GB cada o Databricks processa 12 GB em um lote.",
+                true,
+            ],
+            [
+                "O limite é rígido, porém vale por arquivo e não por lote, então cada arquivo de 3 GB rende um micro-batch e os 12 GB saem de quatro gatilhos.",
+                false,
+            ],
+            [
+                "O limite só tem efeito junto com `cloudFiles.maxFilesPerTrigger` e sozinho é ignorado, de modo que o lote cresce até o volume disponível no caminho.",
+                false,
+            ],
+            [
+                "O limite é rígido e o excedente vem do arquivo de dados resgatados, que é contado fora do orçamento de bytes definido para cada micro-batch do stream.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "A equipe de plataforma guarda a senha de um sistema externo como segredo governado pelo Unity Catalog, em seguranca.credenciais.senha_erp. A política da empresa exige que um analista consiga referenciar esse segredo a partir de um objeto do Unity Catalog sem nunca poder recuperar o valor em texto puro num notebook. Qual privilégio tem exatamente esse efeito?",
+        explanation:
+            "REFERENCE SECRET permite referenciar o segredo sem dar ao usuário acesso ao valor, e READ SECRET é o privilégio que libera recuperar o valor em notebook ou job. BROWSE não se aplica a segredo do Unity Catalog, e MANAGE trata de privilégios e ciclo de vida do objeto. A documentação ressalva que o privilégio exigido depende do objeto: criar ou atualizar uma connection que referencia um segredo pede READ SECRET.",
+        topic: "Unity Catalog - privilégio REFERENCE SECRET",
+        options: [
+            [
+                "REFERENCE SECRET no segredo, que permite referenciá-lo sem dar acesso ao valor",
+                true,
+            ],
+            [
+                "READ SECRET no segredo, que permite referenciá-lo e também recuperar o valor dele",
+                false,
+            ],
+            [
+                "BROWSE no catálogo pai, que torna o segredo utilizável sem expor o valor dele",
+                false,
+            ],
+            ["MANAGE no segredo, que permite usá-lo sem autorizar a leitura do valor dele", false],
+        ],
+    },
+    {
+        statement:
+            "Numa investigação, a área de segurança descobre que um service principal leu o valor de um segredo governado pelo Unity Catalog chamando a API REST, e não dbutils.secrets.get num notebook. A equipe quer saber se o valor saiu mascarado e se sobrou rastro dessa leitura. O que acontece nesse caso?",
+        explanation:
+            "Valores de segredo recuperados pela API REST do Unity Catalog não passam pela redação automática, que é um comportamento do dbutils, então voltam legíveis para quem chamou. O acesso continua rastreado: a tabela de sistema system.access.audit registra os eventos relacionados a segredos do Unity Catalog, e é por lá que a investigação identifica quem leu o quê.",
+        topic: "Unity Catalog secrets - leitura pela API REST",
+        options: [
+            [
+                "O valor volta sem mascaramento, porque a redação automática não cobre a API REST, e a leitura fica registrada em system.access.audit",
+                true,
+            ],
+            [
+                "O valor volta mascarado como [REDACTED], porque a redação é aplicada no serviço de segredos, e a leitura fica registrada em system.access.audit",
+                false,
+            ],
+            [
+                "O valor volta sem mascaramento, porque a redação não cobre a API REST, e nada é registrado, já que a auditoria cobre só o dbutils",
+                false,
+            ],
+            [
+                "A chamada é recusada, porque segredo governado só pode ser lido pelo dbutils, e a recusa fica registrada em system.access.audit",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um engenheiro criou a função seguranca.politicas.filtro_unidade e agora quer ligá-la à tabela vendas.core.pedidos com ALTER TABLE ... SET ROW FILTER, sem alterar o schema da tabela. Ele não é owner dessa tabela. Qual conjunto de privilégios a documentação exige para essa associação?",
+        explanation:
+            "Para associar a função a uma tabela que já existe, a documentação exige EXECUTE na função, USE SCHEMA no schema dela e USE CATALOG no catálogo pai e, do lado da tabela, ser o owner ou ter MANAGE e SELECT. MODIFY só entra quando o mesmo comando também muda o schema. Não existe privilégio APPLY ROW FILTER nem atalho via MANAGE ACCESS CONTROL no metastore.",
+        topic: "Row filter e column mask - privilégios para aplicar",
+        options: [
+            [
+                "EXECUTE na função, USE SCHEMA e USE CATALOG nos pais dela, e MANAGE mais SELECT na tabela",
+                true,
+            ],
+            [
+                "EXECUTE na função, USE SCHEMA e USE CATALOG nos pais dela, e MODIFY mais SELECT na tabela",
+                false,
+            ],
+            [
+                "OWN na função, USE SCHEMA e USE CATALOG nos pais dela, e APPLY ROW FILTER na tabela",
+                false,
+            ],
+            [
+                "EXECUTE na função, BROWSE no catálogo dela, e MANAGE ACCESS CONTROL no metastore",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma tabela do Unity Catalog passou a ter um row filter e um column mask de nível de tabela. A equipe já descobriu que um provedor de Delta Sharing aberto não consegue mais incluir essa tabela num share, e agora revisa as rotinas internas que dependem dela. Quais DUAS operações deixam de ser suportadas nessa tabela? (Selecione DUAS opções.)",
+        explanation:
+            "A documentação é explícita: time travel não é suportado em tabela com row filter ou column mask de nível de tabela, e deep clone e shallow clone também não. Compactação com OPTIMIZE, UPDATE e DELETE em tabela sem particionamento e leitura por SQL warehouse seguem funcionando. No compartilhamento, a restrição aparece do lado do provedor, que não consegue pôr a tabela num share aberto.",
+        topic: "Row filter e column mask - operações não suportadas",
+        options: [
+            ["Consultar versões anteriores da tabela por time travel, com VERSION AS OF", true],
+            ["Criar um shallow clone da tabela para montar um ambiente de teste isolado", true],
+            [
+                "Rodar OPTIMIZE para compactar os muitos arquivos pequenos que as escritas acumularam",
+                false,
+            ],
+            ["Rodar UPDATE e DELETE nas linhas da tabela, que não tem particionamento", false],
+            ["Consultar a tabela por um SQL warehouse serverless do mesmo workspace", false],
+        ],
+    },
+    {
+        statement:
+            "Um titular exerce o direito ao esquecimento sobre a tabela clientes.core.cadastro. Parte do time quer trocar CPF e email por um hash consistente, mantendo as linhas, e a outra parte quer apagar os dados pessoais. Qual caminho a documentação da Databricks aponta como a opção mais segura, e por quê?",
+        explanation:
+            "A documentação coloca a escolha entre apagar e obscurecer o dado e diz que a opção mais segura é o apagamento completo, porque na prática eliminar o risco de reidentificação exige excluir a PII. Pseudonimizar, mascarar ou apenas restringir acesso mantém o dado pessoal na tabela. Desenhar o modelo com chave artificial, como user_id em vez do email, é o que permite apagar a PII e preservar o resto.",
+        topic: "Direito ao esquecimento - obfuscação x apagamento",
+        options: [
+            [
+                "Apagar por completo a PII, porque eliminar o risco de reidentificação quase sempre exige a exclusão total do dado",
+                true,
+            ],
+            [
+                "Pseudonimizar com hash consistente, porque a doc trata o hash determinístico como equivalente ao apagamento do dado",
+                false,
+            ],
+            [
+                "Mascarar as colunas com column mask, porque a doc apresenta o mascaramento como a forma definitiva de atender o titular",
+                false,
+            ],
+            [
+                "Manter o dado e restringir o acesso por ABAC, porque a doc considera o controle de acesso suficiente para encerrar o pedido",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma task Spark ficou muito lenta num cluster compartilhado com modo de acesso Standard. O engenheiro abre a Spark UI, identifica o worker onde a task suspeita rodou e tenta chegar à saída log4j daquele executor, sem sucesso. Ele não é admin do workspace. O que explica o que ele está vendo?",
+        explanation:
+            "A documentação de depuração com a Spark UI é direta: logs de executor não ficam disponíveis em compute com modo de acesso Standard, e em modo Dedicated quem alcança é o usuário ou grupo dedicado mais os admins do workspace. Nesse mesmo modo Standard, o log do driver fica restrito aos admins do workspace, o que também não ajudaria esse engenheiro.",
+        topic: "Modo de acesso do compute e acesso aos logs",
+        options: [
+            [
+                "Log de executor não fica disponível em modo Standard; em modo Dedicated, o usuário dedicado e os admins alcançam",
+                true,
+            ],
+            [
+                "Log de executor exige CAN MANAGE no cluster em qualquer modo; em modo Dedicated, nem o usuário dedicado alcança",
+                false,
+            ],
+            [
+                "Log de executor só aparece depois que o compute é encerrado; em modo Dedicated, o usuário dedicado vê durante a execução",
+                false,
+            ],
+            [
+                "Log de executor fica na aba Output da execução do job em qualquer modo; em modo Dedicated, aparece também na Spark UI",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Para investigar falhas depois que o cluster já terminou, a equipe configura a entrega de logs do compute para um volume do Unity Catalog. Antes de prometer um prazo de análise ao time de plantão, o líder técnico quer saber com que frequência esses arquivos chegam ao destino. O que a documentação publica sobre essa entrega?",
+        explanation:
+            "A referência de configuração de compute diz que os logs são entregues a cada cinco minutos e arquivados a cada hora no destino escolhido, e que a Databricks segue entregando até o compute ser encerrado. No destino, os arquivos vão para uma subpasta nomeada com o cluster_id. Volume do Unity Catalog é a opção recomendada, e DBFS aparece como legado.",
+        topic: "Entrega de logs do compute para armazenamento",
+        options: [
+            [
+                "Os logs são entregues a cada cinco minutos e arquivados a cada hora no destino, até o compute ser encerrado",
+                true,
+            ],
+            [
+                "Os logs são entregues a cada hora e arquivados uma vez por dia no destino, até o compute ser encerrado",
+                false,
+            ],
+            [
+                "Os logs são entregues continuamente, em streaming, e consolidados num arquivo único quando o compute encerra",
+                false,
+            ],
+            [
+                "Os logs são entregues uma única vez, no encerramento do compute, quando a plataforma copia todo o diretório",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um engenheiro roda databricks bundle deploy --target prod a partir da branch hotfix-23, e o target do Declarative Automation Bundle declara mode production e fixa a branch main. O deploy para antes de criar qualquer recurso. O que o modo production valida nesse ponto, e como seguir sem trocar de branch?",
+        explanation:
+            "No modo production, o bundle valida que a branch atual do Git é igual à branch declarada no target, e essa validação pode ser sobreposta com --force no deploy. O modo também valida que as pipelines implantadas estão marcadas com development igual a false e não permite substituir cluster existente. Nada disso checa arquivo modificado na árvore de trabalho.",
+        topic: "Automation Bundles - validações do modo production",
+        options: [
+            [
+                "Valida que a branch atual é igual à declarada no target, e a checagem pode ser ignorada com --force no deploy",
+                true,
+            ],
+            [
+                "Valida que a branch atual é igual à declarada no target, e a checagem só cede se o bloco git sair do target",
+                false,
+            ],
+            [
+                "Valida que a árvore de trabalho não tem arquivo modificado, e a checagem pode ser ignorada com --force no deploy",
+                false,
+            ],
+            [
+                "Valida que o último commit local já existe no remoto, e a checagem cede ao passar a branch por uma variável no deploy",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um Declarative Automation Bundle define um job, uma pipeline e um endpoint de model serving, e o target prod declara run_as com um service principal. A implantação é feita pelo usuário pessoal de uma engenheira, que tem CAN_USE sobre esse service principal. O que essa diferença entre identidade de execução e identidade de implantação restringe?",
+        explanation:
+            "Quando a identidade de execução difere da de implantação, o bundle suporta apenas job e pipeline, e run_as não é suportado para endpoint de model serving em nenhum caso: declarar esse recurso num bundle com run_as configurado gera erro. Rodar sob service principal em produção exige que quem implanta seja o próprio service principal ou tenha CAN_USE sobre ele.",
+        topic: "Automation Bundles - run_as diferente de quem implanta",
+        options: [
+            [
+                "Só job e pipeline são suportados com run_as configurado, e o endpoint de model serving sempre faz o deploy falhar",
+                true,
+            ],
+            [
+                "Todos os recursos seguem suportados quando as identidades diferem, desde que o service principal tenha CAN MANAGE",
+                false,
+            ],
+            [
+                "Só o job é suportado quando as identidades diferem, porque pipeline sempre roda sob a identidade de quem implanta",
+                false,
+            ],
+            [
+                "Nenhum recurso é suportado quando as identidades diferem, e o run_as precisa virar o email da própria engenheira",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um engenheiro registra um StreamingQueryListener com spark.streams.addListener para publicar métricas em um sistema externo. Em uma consulta que está processando um micro-batch muito grande, o time fica 25 minutos sem receber nenhum evento do listener, nem de progresso nem de inatividade, embora a consulta continue trabalhando. Qual afirmação descreve o comportamento dos retornos de chamada?",
+        explanation:
+            "A documentação é explícita: onQueryProgress só é entregue no fim do batch e onQueryIdle só quando a origem não tem dados disponíveis, então durante um batch demorado nenhum dos dois aparece e a consulta segue saudável. onQueryStarted é chamado de forma síncrona com o start e não deve bloquear, e onQueryTerminated só dispara quando a consulta para, com ou sem erro.",
+        topic: "StreamingQueryListener - quando cada retorno dispara",
+        options: [
+            [
+                "onQueryProgress só chega no fim de cada micro-batch e onQueryIdle só quando a origem fica sem dados novos, então um batch longo pode ficar sem os dois.",
+                true,
+            ],
+            [
+                "onQueryProgress é entregue em intervalos fixos de um minuto enquanto o batch roda, então 25 minutos de silêncio indicam listener não registrado no cluster.",
+                false,
+            ],
+            [
+                "onQueryIdle dispara a cada micro-batch concluído sem linhas de entrada, então a ausência dele mostra que a consulta travou na escrita do sink Delta.",
+                false,
+            ],
+            [
+                "onQueryStarted é assíncrono e chega junto do primeiro relatório de progresso, então nada é publicado antes do segundo micro-batch terminar o commit.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Dois jobs de streaming rodam em produção: um lê arquivos novos com Auto Loader e o outro lê um tópico Kafka. O time quer um painel único de atraso, alimentado pelo relatório de progresso de cada consulta. Quais campos do objeto sources medem o atraso em cada caso?",
+        explanation:
+            "O atraso de origem de arquivo aparece em sources.metrics.numFilesOutstanding e numBytesOutstanding, que a documentação define como as métricas de backlog para Delta e Auto Loader. Em Kafka, o atraso sai de avgOffsetsBehindLatest, maxOffsetsBehindLatest e minOffsetsBehindLatest. Taxas medem vazão, e startOffset com endOffset dizem o que o batch consumiu.",
+        topic: "Relatório de progresso - atraso por tipo de origem",
+        options: [
+            [
+                "Em Auto Loader e Delta, numFilesOutstanding e numBytesOutstanding do objeto sources.metrics; em Kafka, maxOffsetsBehindLatest e avgOffsetsBehindLatest.",
+                true,
+            ],
+            [
+                "Nas duas origens, inputRowsPerSecond e processedRowsPerSecond de sources, cuja diferença acumulada é o atraso que o Spark reporta por micro-batch.",
+                false,
+            ],
+            [
+                "Em Auto Loader, o numInputRows do batch; em Kafka, a diferença entre startOffset e endOffset, que mede quanto ainda falta para alcançar o fim do tópico.",
+                false,
+            ],
+            [
+                "Nas duas origens, durationMs.triggerExecution e eventTime.watermark, que juntos indicam quantos segundos o processamento está atrás do tempo do evento.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma consulta faz join entre dois streams com 200 partições de shuffle e grava em uma tabela Delta. No relatório de progresso, sink.numOutputRows aparece como -1 e stateOperators.numStateStoreInstances aparece como 800, o que levou o time a abrir um incidente de perda de dados. Quais DUAS afirmações explicam esses números? (Selecione DUAS opções.)",
+        explanation:
+            "O sink Delta é classificado como DSv1 e o Spark não consegue inferir a contagem de saída, então o valor fixo -1 não significa escrita vazia. E numStateStoreInstances costuma igualar o número de partições, com a exceção do join entre streams, que inicializa quatro instâncias por partição. Nenhum dos dois números aponta perda de dados.",
+        topic: "Relatório de progresso - numOutputRows e state stores",
+        options: [
+            [
+                "No sink Delta o numOutputRows é sempre -1, porque o Spark não consegue inferir linhas de saída em sinks DSv1, classificação do sink Delta.",
+                true,
+            ],
+            [
+                "O join entre streams inicializa quatro instâncias de state store por partição, então 200 partições de shuffle chegam às 800 instâncias relatadas.",
+                true,
+            ],
+            [
+                "O valor -1 marca o micro-batch em que o watermark descartou todas as linhas tardias, por isso nada foi gravado na tabela Delta nessa rodada.",
+                false,
+            ],
+            [
+                "As instâncias são quatro vezes as partições porque o RocksDB mantém três réplicas de cada loja de estado, mais a primária, para tolerar falha de executor.",
+                false,
+            ],
+            [
+                "Para ter a contagem gravada, basta somar stateOperators.numRowsUpdated, que repete a cada batch exatamente as linhas entregues ao sink Delta.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Em Duration and streaming backlog thresholds, um Lakeflow Job com task de streaming lendo Kinesis foi configurado com a métrica Run duration, campo Warning em 30 minutos e campo Timeout em 60 minutos, além de um limite de 300 segundos na métrica de backlog. Qual afirmação descreve o comportamento desses três limites?",
+        explanation:
+            "O campo Warning define o tempo esperado de conclusão e apenas gera o evento que notifica job lento, sem interromper a execução. O campo Timeout define o tempo máximo: se o job não concluir nele, o status vai para Timed Out. O alerta de backlog compara o limite com a média da métrica em 10 minutos e, enquanto o atraso persistir, reenvia a cada 30 minutos.",
+        topic: "Lakeflow Jobs - Warning, Timeout e alerta de backlog",
+        options: [
+            [
+                "Passar do Warning gera evento de notificação e a execução segue; passar do Timeout deixa a execução em Timed Out; e o alerta de backlog usa a média de 10 minutos.",
+                true,
+            ],
+            [
+                "Passar do Warning cancela a execução para conter custo; passar do Timeout deixa a execução em Failed; e o alerta de backlog usa o valor instantâneo lido a cada minuto.",
+                false,
+            ],
+            [
+                "Passar do Warning gera evento de notificação e a execução segue; passar do Timeout deixa a execução em Failed; e o alerta de backlog usa o pico da última hora.",
+                false,
+            ],
+            [
+                "Passar do Warning dispara um retry imediato da task; passar do Timeout deixa a execução em Timed Out; e o alerta de backlog usa a média da execução inteira.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "O owner de uma streaming table de uma pipeline criou uma view sobre event_log(TABLE(vendas_stream)) e concedeu SELECT dessa view ao grupo de analistas, que continua recebendo erro de permissão ao consultar. Qual afirmação explica o erro e indica o caminho suportado para o grupo acompanhar o event log?",
+        explanation:
+            "A função event_log só pode ser chamada pelo owner da streaming table ou da materialized view, e a view criada sobre ela também só pode ser consultada por esse owner, ou seja, não dá para compartilhar. Para liberar um grupo, publique o event log em Unity Catalog pelas configurações da pipeline e conceda privilégio na tabela publicada, de preferência por uma view.",
+        topic: "event_log - restrição ao owner da streaming table",
+        options: [
+            [
+                "A função só pode ser chamada pelo owner da streaming table, e a view sobre ela também, então o grupo só lê se o event log for publicado em Unity Catalog.",
+                true,
+            ],
+            [
+                "O erro está no argumento, porque event_log aceita apenas o id da pipeline; recriando a view com esse id, a concessão de SELECT já passa a valer para o grupo.",
+                false,
+            ],
+            [
+                "Falta conceder EXECUTE na função event_log ao grupo, privilégio avaliado antes do SELECT da view e independente de quem é o owner da streaming table.",
+                false,
+            ],
+            [
+                "Basta o owner conceder SELECT na tabela escondida do event log, que aparece no Catalog Explorer, e o grupo passa a consultar os eventos sem usar a função.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um flow de uma pipeline Lakeflow consome dois streams Kinesis. No event log, details:flow_progress.metrics traz backlog_bytes em 90 GB e backlog_seconds em 240, e o time quer saber qual das duas origens está travando a atualização. Como interpretar esses dois campos?",
+        explanation:
+            "No objeto de métricas do flow, backlog_bytes, backlog_records e backlog_files são totais somados entre todas as origens, enquanto backlog_seconds é o máximo entre elas, porque tempo de espera não se soma. Para olhar origem por origem existe source_metrics, com source_name e o backlog de cada origem do flow.",
+        topic: "Event log - backlog total do flow e máximo entre as origens",
+        options: [
+            [
+                "backlog_bytes é o total somado das origens do flow e backlog_seconds é o máximo entre elas; o detalhe por origem fica em source_metrics, com source_name.",
+                true,
+            ],
+            [
+                "Os dois campos são somas das origens do flow, então dividir backlog_seconds pelo número de origens é o que estima o atraso médio de cada stream Kinesis.",
+                false,
+            ],
+            [
+                "Os dois campos trazem apenas a origem mais atrasada do flow, e as demais só aparecem em um evento flow_progress separado, emitido por origem em nível METRICS.",
+                false,
+            ],
+            [
+                "Os dois campos somam todas as origens da pipeline, não do flow, e a separação por origem existe apenas no objeto stream_progress do mesmo evento.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma streaming table tem três expectations: duas com ON VIOLATION DROP ROW e uma sem cláusula de violação. No event log, o time somou failed_records das três e chegou a 12 mil, número que não bate com a diferença de linhas entre origem e destino. Onde está a contagem de registros descartados?",
+        explanation:
+            "O objeto de qualidade do flow traz dropped_records, a contagem de registros descartados por falhar em uma ou mais expectations, e o array expectations, com name, dataset, passed_records e failed_records. A documentação avisa que failed_records só diz se a expectation foi atendida, não o que aconteceu com o registro.",
+        topic: "Event log - dropped_records x failed_records",
+        options: [
+            [
+                "Em details:flow_progress.data_quality.dropped_records, porque failed_records só registra que a expectation não foi atendida, sem dizer o destino da linha.",
+                true,
+            ],
+            [
+                "Na soma de failed_records apenas das expectations com ON VIOLATION DROP ROW, já que cada registro descartado entra uma única vez nessa contagem dentro do flow.",
+                false,
+            ],
+            [
+                "Em uma coluna de quarentena que a pipeline acrescenta à tabela de destino, com uma linha por registro descartado e o nome da expectation violada.",
+                false,
+            ],
+            [
+                "No evento data_quality do event log, emitido em nível METRICS ao fim da atualização, que separa linhas avisadas de linhas descartadas por dataset.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "A auditoria interna pede, para os últimos 10 meses, as consultas que mais derramaram dados para disco, o texto SQL de cada uma e os acessos de leitura a uma tabela de clientes. O time recebeu SELECT nas system tables, mas ninguém é admin de conta nem pertence ao grupo databricks_pii_access. O que esse time consegue entregar?",
+        explanation:
+            "A coluna spilled_local_bytes de system.query.history mede o volume gravado em disco durante a execução, e query history, table_lineage, audit e billing.usage têm 365 dias de retenção gratuita, então 10 meses cabem. Já statement_text vem como REDACTED fora de admin de conta ou do grupo databricks_pii_access.",
+        topic: "System Tables - retenção, spill e texto da consulta",
+        options: [
+            [
+                "O derramamento sai de spilled_local_bytes do query history e as leituras da table_lineage, janela dentro dos 365 dias de retenção, mas statement_text vem como REDACTED.",
+                true,
+            ],
+            [
+                "Nada dessa janela, porque query history e table_lineage guardam 90 dias, e histórico mais antigo só existe com entrega de logs configurada para um bucket próprio.",
+                false,
+            ],
+            [
+                "Tudo o que foi pedido, inclusive o texto completo das consultas, porque a ocultação de statement_text vale apenas para as consultas de jobs e de pipelines, não para as de warehouse.",
+                false,
+            ],
+            [
+                "O derramamento não tem coluna em system table, então o indicador por consulta é somar shuffle_read_bytes com written_bytes, e as leituras saem da linhagem de tabela.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma equipe de FinOps monta o custo mensal dos últimos 12 meses cruzando system.billing.usage com system.billing.list_prices, mas o join casa apenas a linha de preço com price_end_time nulo. Um dos SKUs teve mudança de preço em abril. Qual afirmação descreve o defeito e o papel das chaves de pricing?",
+        explanation:
+            "A tabela de preços grava uma linha por mudança de preço, com price_start_time e price_end_time delimitando a vigência e fim nulo no preço atual, então casar pelo fim nulo cobra o histórico inteiro pelo preço de hoje. Em pricing, default é o preço de lista publicado, promotional o promocional temporário e effective_list o preço efetivo do cálculo.",
+        topic: "System Tables - vigência do preço e chaves de pricing",
+        options: [
+            [
+                "Casar pelo fim nulo cobra o histórico pelo preço de hoje: o uso casa com a linha vigente no instante dele, com default no preço de lista e effective_list já com promoção.",
+                true,
+            ],
+            [
+                "O join está correto, porque list_prices guarda uma linha por SKU e por dia de uso; a chave a usar é promotional, a única com preço aplicável, já que default é referência interna.",
+                false,
+            ],
+            [
+                "O defeito é só de moeda, porque falta filtrar currency_code; em pricing, default traz o valor na moeda da conta e effective_list traz o mesmo valor convertido para dólar.",
+                false,
+            ],
+            [
+                "O cruzamento é dispensável, porque system.billing.usage já traz o custo monetário calculado, e list_prices serve apenas para simular reajustes futuros de cada SKU.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um job da camada silver faz `CAST(valor AS INT)` sobre uma coluna STRING, em que parte das linhas traz `123.0` e levanta CAST_INVALID_INPUT, e `CAST(total AS SMALLINT)` sobre uma coluna BIGINT, em que valores fora da faixa levantam CAST_OVERFLOW. O engenheiro troca todos os casts da consulta por `try_cast`, inclusive um que converte uma coluna `ARRAY<INT>` para INT. O que muda com a troca?",
+        explanation:
+            "A documentação chama try_cast de variante relaxada do cast: valor que não cabe no domínio do tipo alvo e valor malformado devolvem NULL em vez de erro de overflow ou de dado inválido. A tolerância para aí, porque par de tipos sem conversão válida ainda devolve DATATYPE_MISMATCH, e cast para campo STRUCT com NOT NULL ou para chave de MAP fica fora da tolerância.",
+        topic: "SQL - try_cast e o limite da tolerância",
+        options: [
+            [
+                "Overflow e formato inválido passam a devolver NULL, e a conversão de ARRAY<INT> para INT segue levantando erro DATATYPE_MISMATCH.",
+                true,
+            ],
+            [
+                "Overflow e formato inválido passam a devolver NULL, e a conversão de ARRAY<INT> para INT também devolve NULL, porque try_cast nunca falha.",
+                false,
+            ],
+            [
+                "Apenas o formato inválido passa a devolver NULL, e o overflow segue levantando CAST_OVERFLOW, porque o valor está fora do domínio do alvo.",
+                false,
+            ],
+            [
+                "Nada muda enquanto `spark.sql.ansi.enabled` estiver em true, porque nesse modo try_cast se comporta exatamente como o cast comum.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            'Um notebook recebe o nome da tabela por parâmetro de job e executa:\n\n```python\nspark.sql(\n  "SELECT * FROM :tabela WHERE dia = :dia",\n  args={"tabela": "vendas.silver.pedidos", "dia": "2026-10-01"},\n)\n```\n\nA chamada falha ao resolver a relação, e o time não quer concatenar string no Python por causa de injeção de SQL. O que a documentação indica para esse caso?',
+        explanation:
+            "A documentação de marcador de parâmetro diz que ele pode ser referenciado onde caberia um literal do tipo dele, e que para parametrizar nome de objeto existe a cláusula IDENTIFIER, que interpreta uma string constante como nome de relação, coluna, função, schema ou catálogo. É a forma indicada de parametrizar identificador sem abrir espaço para injeção.",
+        topic: "SQL - IDENTIFIER para parametrizar nome de objeto",
+        options: [
+            [
+                "Envolver o nome da tabela em `IDENTIFIER(:tabela)`, porque o marcador de parâmetro vale onde caberia um literal, e não como nome.",
+                true,
+            ],
+            [
+                "Trocar o marcador nomeado `:tabela` pelo posicional `?`, porque somente o nomeado fica restrito a literais e recusa nome de objeto.",
+                false,
+            ],
+            [
+                "Declarar a variável de sessão com DECLARE e SET VAR e citá-la direto no FROM, porque marcador de parâmetro só é aceito em comando DDL.",
+                false,
+            ],
+            [
+                "Montar o comando com EXECUTE IMMEDIATE e concatenação, porque a cláusula IDENTIFIER aceita apenas nome de coluna, nunca nome de relação.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma tabela bronze guarda eventos em uma coluna `evento VARIANT`, preenchida com `parse_json`. Ao modelar a silver, o time quer clusterizar pelo campo `conta.id` do documento e extrair `valor` como DOUBLE, sabendo que algumas linhas trazem texto nesse campo e outras não trazem o campo. Quais DUAS afirmações a documentação sustenta? (Selecione DUAS opções.)",
+        explanation:
+            "A documentação de consulta a dados variant diz que coluna VARIANT não pode ser chave de clustering, de particionamento nem de Z-order, e que o tipo não serve para comparação, agrupamento, ordenação e operação de conjunto. Já variant_get levanta INVALID_VARIANT_CAST quando o valor existe e não cabe no tipo pedido, enquanto try_variant_get devolve NULL.",
+        topic: "VARIANT - extração com variant_get e limites da coluna",
+        options: [
+            [
+                "Coluna VARIANT não serve como chave de clustering, de particionamento nem de Z-order, então o campo precisa virar coluna tipada.",
+                true,
+            ],
+            [
+                "Com o valor presente e incompatível, variant_get levanta INVALID_VARIANT_CAST, e try_variant_get devolve NULL no lugar do erro.",
+                true,
+            ],
+            [
+                "Caminho ausente faz variant_get levantar INVALID_VARIANT_CAST, e só try_variant_get devolve NULL para campo que não existe no documento.",
+                false,
+            ],
+            [
+                "Coluna VARIANT entra direto em GROUP BY e ORDER BY, porque a comparação usa a representação binária interna do valor armazenado.",
+                false,
+            ],
+            [
+                "Coluna VARIANT pode ser chave de clustering desde que a tabela tenha deletion vectors e Liquid Clustering habilitados na criação.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            'Uma UDTF em Python acumula estado nas chamadas de `eval` e emite, em `terminate`, uma linha de resumo por sensor. A classe foi registrada com `spark.udtf.register("resumo_sessao", ResumoSessao)`, e a tabela `leituras` tem as colunas `device_id` e `ts`. Qual chamada garante que cada instância da classe consuma todas as linhas de um `device_id`, na ordem de `ts`?',
+        explanation:
+            "A documentação de UDTF em Python diz que PARTITION BY depois do argumento TABLE garante que todas as linhas com a mesma combinação de valores sejam consumidas por exatamente uma instância da classe, e que o ORDER BY vem após essa cláusula para fixar a ordem dentro da partição. WITH SINGLE PARTITION joga todas as linhas em uma única instância.",
+        topic: "Python UDTF - PARTITION BY no argumento de tabela",
+        options: [
+            [
+                "`resumo_sessao(TABLE(leituras) PARTITION BY device_id ORDER BY ts)`, que entrega cada device a uma instância única, na ordem pedida.",
+                true,
+            ],
+            [
+                "`resumo_sessao(TABLE(leituras) ORDER BY device_id, ts)`, que basta porque a ordenação global já agrupa cada device na mesma instância.",
+                false,
+            ],
+            [
+                "`resumo_sessao(TABLE(SELECT * FROM leituras ORDER BY device_id, ts))`, porque a ordem da subconsulta define o consumo das instâncias.",
+                false,
+            ],
+            [
+                "`resumo_sessao(TABLE(leituras) WITH SINGLE PARTITION ORDER BY ts)`, que cria uma instância por device e ordena as linhas dentro dela.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma equipe de plataforma conta falhas por job dos últimos 30 dias com um GROUP BY sobre `system.lakeflow.job_run_timeline`. O total sai bem acima do que a interface de Jobs mostra, e boa parte das linhas tem `result_state` nulo, concentrada justamente nos jobs que rodam mais de três horas. O que explica os dois sintomas?",
+        explanation:
+            "A referência das system tables de jobs diz que cada linha de job_run_timeline registra até uma hora de execução, então execução longa aparece em várias linhas com o mesmo run_id, e que result_state é preenchido apenas na linha que representa o fim da execução, ficando nulo na fatia intermediária. Contar linha, e não run_id, infla o resultado.",
+        topic: "System Tables - job_run_timeline e result_state",
+        options: [
+            [
+                "Cada linha cobre até uma hora de execução, então execução longa vira várias linhas do mesmo run_id, e result_state só vem na linha final.",
+                true,
+            ],
+            [
+                "O result_state fica nulo enquanto a execução está em andamento, e a tabela tem latência de até 24 horas, então as linhas fecham no dia seguinte.",
+                false,
+            ],
+            [
+                "A tabela guarda uma linha por tentativa de task, então a contagem por job precisa sair de job_task_run_timeline, com distinct no run_id.",
+                false,
+            ],
+            [
+                "A tabela é SCD2 e guarda uma linha por mudança do job, então é preciso pegar a última por change_time e filtrar delete_time nulo.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Para dimensionar compute, o time pede um relatório de utilização de CPU e memória com detalhe por nó, cobrindo um cluster all-purpose, um cluster de job, um job serverless e um SQL warehouse. O analista pretende montar o relatório inteiro a partir de `system.compute.node_timeline`. O que essa tabela entrega?",
+        explanation:
+            "A referência das system tables de compute diz que node_timeline captura utilização no nível de nó com granularidade de minuto, uma linha por minuto por instância, com colunas como cpu_user_percent e mem_used_percent. As limitações conhecidas avisam que essas tabelas incluem apenas all-purpose e jobs compute, sem registro de serverless nem de SQL warehouse.",
+        topic: "System Tables - node_timeline e cobertura de compute",
+        options: [
+            [
+                "Métrica por minuto e por nó dos clusters all-purpose e de job, porque serverless e SQL warehouse não têm registro nessas tabelas.",
+                true,
+            ],
+            [
+                "Métrica por minuto e por nó dos quatro casos, porque a tabela cobre qualquer compute do workspace, inclusive serverless e warehouse.",
+                false,
+            ],
+            [
+                "Métrica por hora e por cluster dos quatro casos, porque o detalhe por nó vive em system.compute.clusters, junto do tipo de instância.",
+                false,
+            ],
+            [
+                "Métrica por minuto e por nó dos quatro casos, só a partir dos 10 minutos de vida do nó, porque antes disso o dado é agregado por cluster.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um time move uma consulta de monitoramento para um alerta do Databricks SQL. A consulta usa o parâmetro `:dias` para a janela de apuração e, no plano desenhado, os 300 alertas da equipe ficariam todos agendados para 01:30, repetindo de cinco em cinco minutos. O que a documentação diz sobre esses dois pontos do plano?",
+        explanation:
+            "A documentação de criação de alerta é explícita: alerta não suporta consulta com parâmetro. Nos limites, cada workspace tem por padrão 250 execuções ativas simultâneas e, sem slot livre, a execução agendada é ignorada e o alerta não avalia, por isso vale escalonar os horários. No alerta legado o parâmetro assumia o valor padrão do editor, o que não vale para o alerta atual.",
+        topic: "Alertas do Databricks SQL - parâmetro e limite de execuções",
+        options: [
+            [
+                "Alerta não aceita consulta com parâmetro, e o limite padrão de 250 execuções simultâneas faz a execução sem slot ser simplesmente ignorada.",
+                true,
+            ],
+            [
+                "Alerta aceita consulta com parâmetro que tenha valor padrão, e o limite de 250 execuções simultâneas enfileira o que não couber no momento.",
+                false,
+            ],
+            [
+                "Alerta não aceita consulta com parâmetro, e a condição só compara o primeiro valor do resultado, sem agregação sobre a coluna escolhida.",
+                false,
+            ],
+            [
+                "Alerta aceita consulta com parâmetro informado no agendamento, e a execução sem slot livre é remarcada para o minuto seguinte, sem perda.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um job crítico foi criado na interface e já roda em produção, com histórico e permissões. Para passar a gerenciá-lo por um Declarative Automation Bundle, a engenheira rodou `databricks bundle generate` para esse job e revisou o YAML gerado na pasta `resources`. O que ela precisa fazer para o próximo deploy atualizar o job existente em vez de criar outro?",
+        explanation:
+            "A documentação do bundle generate avisa que implantar a configuração gerada sem vincular cria um recurso novo em vez de atualizar o existente. A vinculação é feita com databricks bundle deployment bind, passando a chave do recurso e o ID do job, ou com a opção de bind no próprio generate, e o bind não recria dados.",
+        topic: "Automation Bundles - adotar recurso existente com bind",
+        options: [
+            [
+                "Vincular com `databricks bundle deployment bind`, passando a chave do recurso e o ID do job, ou gerar a configuração já com bind.",
+                true,
+            ],
+            [
+                "Rodar o deploy com a opção `--force`, que faz o bundle assumir o recurso já existente de mesmo nome em vez de criar um segundo job.",
+                false,
+            ],
+            [
+                "Rodar `databricks bundle sync` antes do deploy, que reconcilia o estado do bundle com os recursos que já existem naquele workspace.",
+                false,
+            ],
+            [
+                "Nada além do deploy, porque o bundle casa o recurso pelo nome do job e atualiza o que existe quando a chave do YAML é igual a esse nome.",
                 false,
             ],
         ],
