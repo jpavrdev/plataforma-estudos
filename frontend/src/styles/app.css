@@ -85,6 +85,13 @@
 .btn--ghost:hover {
   border-color: var(--accent);
 }
+/* O `flex: 1` do .btn--ghost é para as linhas de dois botões lado a lado (.auth__social,
+   rodapé de modal). Um botão --block ocupa a linha inteira sozinho: num container em
+   coluna com espaço livre (.auth__panel) aquele flex-grow esticava o botão até o fim do
+   painel. Precisa vir depois de .btn--ghost para vencer por ordem. */
+.btn--block {
+  flex: none;
+}
 .provider {
   width: 20px;
   height: 20px;
