@@ -2705,4 +2705,518 @@ export const QUESTOES: Questao[] = [
             ],
         ],
     },
+    {
+        statement:
+            "Uma equipe terminou uma prova de conceito implantada com Declarative Automation Bundles, nome atual dos Databricks Asset Bundles, e precisa limpar o workspace de desenvolvimento: os jobs, os pipelines e os artefatos que o pacote criou devem sair, e o comando vai rodar dentro de um script de limpeza, sem ninguém para responder prompt. O que a equipe deve fazer?",
+        explanation:
+            "O ciclo do pacote vai de `bundle init` e `bundle deploy` até `bundle destroy`, que apaga jobs, pipelines e artefatos implantados antes; por padrão ele pede confirmação, e `--auto-approve` dispensa o prompt. O `--force` do deploy ignora a checagem de branch Git e não apaga nada, e `deployment unbind` apenas solta o vínculo, deixando o recurso no workspace.",
+        topic: "Declarative Automation Bundles - bundle destroy",
+        options: [
+            [
+                "Rodar `databricks bundle deploy -t dev --force`, que reimplanta o pacote e limpa o que havia sido criado antes",
+                false,
+            ],
+            [
+                "Apagar os jobs e os pipelines pela interface do workspace, que é o caminho recomendado para encerrar um pacote",
+                false,
+            ],
+            [
+                "Rodar `databricks bundle destroy -t dev --auto-approve`, que apaga o que o pacote implantou sem pedir confirmação",
+                true,
+            ],
+            [
+                "Rodar `databricks bundle deployment unbind` em cada recurso do pacote, que apaga o recurso do workspace junto com o vínculo",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "O `databricks.yml` de um projeto define dois targets: `dev`, marcado com `default: true`, e `prod`. Uma pessoa da equipe roda `databricks bundle deploy` na raiz do projeto, sem informar a opção `-t`. Onde os recursos são implantados?",
+        explanation:
+            "Um e apenas um target pode receber `default: true`, e os comandos do pacote usam esse target quando `-t` é omitido, então o deploy vai para `dev`. O modo de produção não dá precedência a `prod`, cada deploy atinge um target por vez e, com um padrão declarado, o comando não exige `-t` na linha.",
+        topic: "Declarative Automation Bundles - target padrão",
+        options: [
+            ["Nos dois targets, porque o deploy sem `-t` percorre a lista inteira", false],
+            ["No target `dev`, porque é o target marcado como padrão no arquivo", true],
+            ["No target `prod`, porque o modo de produção tem precedência no deploy", false],
+            ["Em nenhum, porque o deploy só roda com a opção `-t` informada", false],
+        ],
+    },
+    {
+        statement:
+            "Um pacote declara a variável `catalogo` com `default: main` no bloco de variáveis do topo, o target `dev` sobrepõe essa variável com `dev_vendas`, existe um arquivo `.databricks/bundle/dev/variable-overrides.json` com o valor `hotfix` e a engenheira roda o deploy no target `dev` passando `--var catalogo=sandbox`. Qual valor o pacote usa?",
+        explanation:
+            "A ordem é `--var` na linha de comando, depois variável de ambiente com prefixo `BUNDLE_VAR_`, depois o arquivo `variable-overrides.json` do target, depois o bloco `variables` do target e por fim o `default` da definição. A CLI para no primeiro que tiver valor, então `--var` vence e o catálogo implantado é `sandbox`.",
+        topic: "Declarative Automation Bundles - precedência de variáveis",
+        options: [
+            [
+                "`hotfix`, porque o arquivo de sobreposição do target vence a linha de comando",
+                false,
+            ],
+            ["`dev_vendas`, porque o valor do target vence valores vindos de fora", false],
+            ["`main`, porque o `default` só cede lugar a uma variável de ambiente", false],
+            ["`sandbox`, porque a opção `--var` da linha de comando é a primeira da ordem", true],
+        ],
+    },
+    {
+        statement:
+            "Um pacote declara a variável `warehouse_id` com um bloco `lookup` que aponta para o SQL warehouse de nome `Analytics`, e as tasks SQL do job usam essa variável. Outra equipe cria no mesmo workspace um segundo SQL warehouse também chamado `Analytics`. O que acontece no próximo deploy do pacote?",
+        explanation:
+            "O `lookup` substitui o nome do objeto pelo ID dele, e a documentação é explícita: ocorre erro quando não existe objeto com aquele nome e também quando existe mais de um. Com dois warehouses chamados `Analytics` a resolução fica ambígua e o deploy falha, sem escolher por ordem de criação e sem cair no `default`.",
+        topic: "Declarative Automation Bundles - variável lookup",
+        options: [
+            [
+                "O deploy falha, porque o `lookup` não resolve um nome que casa com mais de um objeto",
+                true,
+            ],
+            [
+                "O deploy usa o warehouse mais antigo, porque o `lookup` resolve pela ordem de criação",
+                false,
+            ],
+            [
+                "O deploy usa o warehouse mais recente, porque o `lookup` sempre pega o ID mais novo",
+                false,
+            ],
+            ["O deploy segue com o `default` da variável, porque o `lookup` ficou ambíguo", false],
+        ],
+    },
+    {
+        statement:
+            "Uma engenheira apaga do `databricks.yml` a definição do job `relatorio_legado`, que esse mesmo pacote já havia implantado no target `prod`, faz commit e roda `databricks bundle deploy -t prod`. O que acontece com o job no workspace de produção?",
+        explanation:
+            "O pacote guarda estado no workspace e rastreia por ID o que criou, então o deploy cria o que falta, atualiza o que existe e remove o recurso que saiu da configuração, se ele já tinha sido implantado. O job não fica órfão nem pausado esperando limpeza manual, e não é preciso rodar `bundle destroy`.",
+        topic: "Automation Bundles - recurso removido da configuração",
+        options: [
+            [
+                "Ele continua no workspace e apenas deixa de receber atualização a cada deploy do pacote",
+                false,
+            ],
+            [
+                "Ele é removido do workspace, porque o deploy alinha o workspace à configuração atual",
+                true,
+            ],
+            ["Ele é removido apenas quando alguém roda `databricks bundle destroy -t prod`", false],
+            [
+                "Ele continua no workspace, com o agendamento pausado até alguém apagar o job à mão",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um administrador criou uma pasta Git de produção com Databricks Git folders, apontada para a branch `release`, e os jobs do workspace de produção rodam o código dela. Quais DUAS práticas seguem a recomendação da Databricks para operar essa pasta? (Selecione DUAS opções.)",
+        explanation:
+            "A recomendação é restringir a pasta Git de produção a acesso de execução para a maioria das pessoas e permitir edição só a administradores e service principals, além de atualizá-la por automação quando a PR entra na branch de implantação, com job agendado como alternativa. Pull manual antes de cada execução e conserto direto em produção quebram esse desenho, e uma cópia solta perde o controle de versão.",
+        topic: "Databricks Git folders - pasta de produção",
+        options: [
+            [
+                "Pedir que cada pessoa faça pull na pasta de produção antes de disparar o job, para não rodar código velho",
+                false,
+            ],
+            [
+                "Deixar a maioria das pessoas com acesso só de execução e reservar a edição a administradores e service principals",
+                true,
+            ],
+            [
+                "Dar edição na pasta a quem desenvolve, para que a correção de um job quebrado saia direto em produção",
+                false,
+            ],
+            [
+                "Atualizar a pasta por automação, com a CI puxando o commit novo quando a PR entra na branch de implantação",
+                true,
+            ],
+            [
+                "Trocar a pasta de produção por uma cópia dos notebooks em uma pasta comum do workspace, sem vínculo com o Git remoto",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma engenheira vai carregar 300 arquivos JSON novos de um volume para a tabela vendas_bronze com COPY INTO, mas antes quer confirmar que os arquivos podem ser interpretados e que o schema deles bate com o da tabela, sem gravar nenhuma linha. Qual é a forma nativa de fazer essa conferência?",
+        explanation:
+            "A cláusula VALIDATE valida os dados que entrariam na tabela sem gravar nada: confere se os dados podem ser interpretados, se o schema casa com o da tabela ou precisa evoluir, e se as constraints de nulidade e de check são atendidas, devolvendo uma prévia de até 50 linhas. O FAILFAST aborta na primeira falha de parsing, mas grava quando todos os registros passam; dryRun não existe; e o RESTORE TABLE age depois da gravação.",
+        topic: "COPY INTO - VALIDATE",
+        options: [
+            [
+                "Executar o COPY INTO com a cláusula VALIDATE, que confere os dados sem gravar na tabela de destino",
+                true,
+            ],
+            [
+                "Executar o COPY INTO com FORMAT_OPTIONS ('mode' = 'FAILFAST'), que para no primeiro registro malformado",
+                false,
+            ],
+            [
+                "Executar o COPY INTO com COPY_OPTIONS ('dryRun' = 'true'), que simula a carga e devolve o relatório",
+                false,
+            ],
+            [
+                "Executar o COPY INTO e, se algo vier errado, usar RESTORE TABLE para voltar à versão anterior",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um stream de Auto Loader recebe arquivos de tamanhos muito desiguais, de alguns kilobytes a 2 GB. Para conter o tamanho dos micro-lotes, a equipe define cloudFiles.maxFilesPerTrigger como 500 e cloudFiles.maxBytesPerTrigger como 10g no mesmo stream. Como os dois limites são aplicados juntos?",
+        explanation:
+            "Quando as duas opções estão definidas, a Databricks consome até o menor limite entre cloudFiles.maxFilesPerTrigger e cloudFiles.maxBytesPerTrigger, o que for atingido primeiro: 500 arquivos ou 10g fecham o micro-lote. Nenhum dos dois prevalece sobre o outro, e combinar os dois é suportado; o padrão de 1000 vale apenas para o limite de arquivos.",
+        topic: "Auto Loader - maxFilesPerTrigger x maxBytesPerTrigger",
+        options: [
+            [
+                "O micro-lote consome até o menor dos dois limites, fechando no que for atingido primeiro",
+                true,
+            ],
+            [
+                "O micro-lote consome até o maxBytesPerTrigger, porque o limite em bytes prevalece sobre o de arquivos",
+                false,
+            ],
+            [
+                "O micro-lote consome até o maxFilesPerTrigger, porque é o único dos dois limites com valor padrão",
+                false,
+            ],
+            [
+                "O stream falha ao iniciar, porque os dois limites não podem ser usados no mesmo leitor",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma ingestão com Auto Loader descobre milhões de arquivos por hora e o estado de arquivos guardado no checkpoint não para de crescer. A equipe decide expirar eventos antigos com cloudFiles.maxFileAge e quer usar o menor valor que a opção aceita. Qual configuração atende isso?",
+        explanation:
+            "O menor valor que se pode definir em cloudFiles.maxFileAge é 14 days, então 2 days, 7 days ou zero não são aceitos. A opção serve como controle de custo em volumes altos, e expirar eventos cedo demais causa ingestão duplicada ou arquivos ignorados, por isso a recomendação é um ajuste conservador, como 90 days.",
+        topic: "Auto Loader - maxFileAge",
+        options: [
+            [
+                "Definir cloudFiles.maxFileAge como 14 days, o menor valor que a opção aceita hoje",
+                true,
+            ],
+            [
+                "Definir cloudFiles.maxFileAge como 2 days, para o estado parar de crescer logo",
+                false,
+            ],
+            [
+                "Definir cloudFiles.maxFileAge como 7 days, alinhado ao reinício semanal do stream",
+                false,
+            ],
+            [
+                "Definir cloudFiles.maxFileAge como 0, que desliga o rastreio de arquivos antigos",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma carga diária lê arquivos JSON de um volume e cerca de 0,1% dos registros chegam truncados. O time quer que a leitura termine sem erro, que os registros bons entrem na tabela e que os corrompidos fiquem fora dela, gravados em um caminho próprio para auditoria. Qual configuração do leitor atende isso?",
+        explanation:
+            "No PERMISSIVE, que é o padrão, o registro corrompido iria para a coluna de corrupt record, dentro da própria tabela. A opção badRecordsPath grava a informação desses registros em arquivos no caminho indicado e tem precedência sobre essa coluna. DROPMALFORMED descarta as linhas sem guardar nada, e FAILFAST aborta a leitura no primeiro registro malformado.",
+        topic: "Leitura de JSON - registros corrompidos",
+        options: [
+            [
+                "Manter o mode em PERMISSIVE e definir badRecordsPath, que grava os registros ruins em arquivos à parte",
+                true,
+            ],
+            [
+                "Manter o mode em PERMISSIVE e definir columnNameOfCorruptRecord, que guarda o registro ruim em uma coluna",
+                false,
+            ],
+            [
+                "Trocar o mode para DROPMALFORMED, que descarta os registros ruins e deixa a leitura seguir até o fim",
+                false,
+            ],
+            [
+                "Trocar o mode para FAILFAST e definir columnNameOfCorruptRecord, que aborta a leitura e anota os erros",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Em uma auditoria de segurança, a equipe precisa explicar onde cada parte da plataforma Databricks roda. O workspace usa compute clássico para os jobs de produção e compute serverless para os painéis de BI. Quais DUAS afirmações descrevem corretamente essa divisão? (Selecione DUAS opções.)",
+        explanation:
+            "O plano de controle reúne os serviços de backend que a Databricks gerencia na conta Databricks, e a aplicação web do workspace fica nele. O plano de computação é onde os dados são processados: no clássico os recursos ficam na conta de nuvem da empresa, no serverless ficam na conta Databricks. Tabelas e volumes do Unity Catalog ficam no armazenamento de nuvem.",
+        topic: "Plano de controle x plano de computação",
+        options: [
+            [
+                "A aplicação web do workspace fica no plano de controle, entre os serviços que a Databricks gerencia",
+                true,
+            ],
+            [
+                "Com compute clássico, as máquinas que processam os dados ficam na conta de nuvem da própria empresa",
+                true,
+            ],
+            [
+                "O compute serverless roda dentro da rede virtual do workspace, na conta de nuvem da própria empresa",
+                false,
+            ],
+            [
+                "O plano de controle roda na conta de nuvem da empresa, que dimensiona as máquinas desses serviços",
+                false,
+            ],
+            [
+                "As tabelas e os volumes do Unity Catalog ficam armazenados dentro do plano de controle do workspace",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "O job consolida_vendas tem um trigger Scheduled que dispara a cada 15 minutos, mas em dias de pico uma execução chega a levar 25 minutos. O job foi criado pela interface do workspace este ano e ninguém mexeu nas configurações avançadas. O que acontece com a execução disparada enquanto a anterior ainda está rodando?",
+        explanation:
+            "O padrão de execuções concorrentes de todo job novo é 1, e o Databricks pula a execução quando o job já atingiu o máximo de execuções ativas. Como a fila vem habilitada por padrão nos jobs criados pela interface, a execução sobreposta fica aguardando por até 48 horas em vez de ser pulada, e começa quando a anterior libera a vaga.",
+        topic: "Lakeflow Jobs - execuções concorrentes e fila",
+        options: [
+            [
+                "Ela entra na fila, porque o padrão de execuções concorrentes é 1 e a fila já vem ligada nesse job",
+                true,
+            ],
+            [
+                "As duas rodam em paralelo, porque o padrão de execuções concorrentes de um job novo é ilimitado",
+                false,
+            ],
+            [
+                "A execução em andamento é cancelada, porque a grade do trigger Scheduled tem prioridade sobre ela",
+                false,
+            ],
+            [
+                "Ela é descartada em silêncio, porque a fila de execuções só existe em jobs de compute serverless",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um parceiro grava de uma vez um lote de cerca de 300 arquivos pequenos em um volume do Unity Catalog, e a gravação do lote inteiro leva perto de dois minutos. O job de ingestão já usa um trigger File arrival, mas a equipe quer que ele dispare uma única vez, depois que o último arquivo do lote tiver chegado. Qual configuração avançada do trigger resolve isso?",
+        explanation:
+            "Wait after last change in seconds é o amortecedor do File arrival: ele espera o tempo configurado após a chegada mais recente e cada arquivo novo reinicia a contagem, então a execução só começa com o lote inteiro no lugar. Minimum time between triggers apenas limita a frequência, e a primeira execução já sai no primeiro arquivo. File events tiram o limite de arquivos do caminho, sem agrupar lote.",
+        topic: "Lakeflow Jobs - File arrival (espera após a última mudança)",
+        options: [
+            [
+                "Minimum time between triggers in seconds igual a 60, que limita o job a uma execução por minuto",
+                false,
+            ],
+            [
+                "Wait after last change in seconds igual a 60, já que cada arquivo novo reinicia a espera do lote",
+                true,
+            ],
+            [
+                "Ativar file events na external location do volume, que junta o lote em um evento único de chegada",
+                false,
+            ],
+            [
+                "Trocar o trigger por um Scheduled de 5 em 5 minutos, que sempre encontra o lote já completo",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Três equipes mantêm os jobs ingest_raw, build_silver e publish_gold, cada um com dono próprio. A plataforma criou o job orquestra_diario com tasks do tipo Run Job apontando para os três, e alguém sugeriu dar a publish_gold uma task Run Job chamando orquestra_diario de volta, para fechar o ciclo. O que a documentação do Lakeflow Jobs diz desse desenho?",
+        explanation:
+            "A documentação diz que a Databricks não suporta jobs com dependência circular, em que tasks Run Job disparam umas às outras direta ou indiretamente, nem jobs que aninham mais de três tasks Run Job. A task Run Job repassa ao job filho os parâmetros configurados nela, sobrepondo os padrões do filho, e existe justamente para disparar outro job sem passar pela API.",
+        topic: "Lakeflow Jobs task tipo Run Job",
+        options: [
+            [
+                "O aninhamento é ilimitado, e o ciclo é cortado sozinho pelo limite de execuções concorrentes",
+                false,
+            ],
+            [
+                "Dependência circular não é suportada, nem o aninhamento de mais de três tasks do tipo Run Job",
+                true,
+            ],
+            [
+                "A task Run Job não repassa parâmetro ao job filho, então cada job segue com os próprios padrões",
+                false,
+            ],
+            [
+                "Não existe task que dispare outro job, orquestrar jobs exige chamar a API run-now num notebook",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma execução de um job de cinco tasks terminou com a task valida_opcional em falha. A task publica_gold, que depende dela e está configurada com Run if igual a All done, rodou e terminou com sucesso, e é a única task do job sem dependentes. Qual resultado essa execução recebe no histórico do job?",
+        explanation:
+            "O Databricks decide o resultado da execução pelas tasks folha, as que não têm dependentes. Como a única folha, publica_gold, terminou com sucesso e ainda assim houve falha em outra task, a execução fica como Succeeded with failures. Failed vale quando uma ou mais tasks folha falham, e Skipped quando a execução nem começa, como ao estourar o máximo de execuções concorrentes.",
+        topic: "Lakeflow Jobs - estados de execução",
+        options: [
+            [
+                "Failed, porque qualquer task que falha dentro de uma execução já marca o job inteiro como falho",
+                false,
+            ],
+            [
+                "Succeeded with failures, porque o resultado sai das tasks folha e a folha do job teve sucesso",
+                true,
+            ],
+            [
+                "Succeeded, sem nenhuma marca de falha, porque a última task da execução terminou com sucesso",
+                false,
+            ],
+            [
+                "Skipped, porque a condição Run if desviou a execução para um caminho diferente do planejado",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Em um job de oito tasks, seis estão configuradas para rodar no mesmo cluster de job compartilhado e as outras duas usam compute próprio. Quais afirmações sobre esse cluster compartilhado estão corretas? (Selecione DUAS opções.)",
+        explanation:
+            "O cluster compartilhado sobe quando a primeira task configurada para usá-lo começa e é encerrado depois que a última dessas tasks termina, e seu escopo é uma execução só, sem reúso por outro job ou outra execução do mesmo job. Bibliotecas não podem ser declaradas nessa configuração, vão em Dependent libraries da task, e as tasks dividem o mesmo driver.",
+        topic: "Lakeflow Jobs - cluster de job compartilhado",
+        options: [
+            [
+                "Ele sobe quando a primeira task que o usa começa e é encerrado quando a última delas termina",
+                true,
+            ],
+            [
+                "Bibliotecas são declaradas na configuração dele e passam a valer para as seis tasks de uma vez",
+                false,
+            ],
+            [
+                "Seu escopo é uma execução só, e nem outro job nem outra execução do mesmo job o reaproveita",
+                true,
+            ],
+            [
+                "As tasks que o compartilham rodam em drivers separados, o que isola por inteiro o estado delas",
+                false,
+            ],
+            [
+                "Ele é encerrado enquanto rodam as duas tasks de compute próprio e volta a subir depois delas",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma engenheira mantém uma tabela Delta no Unity Catalog atualizada por um job que roda MERGE INTO a cada 15 minutos. Preocupada com arquivos pequenos, ela pergunta se precisa ativar a escrita otimizada (optimized writes) e a compactação automática (auto compaction) na tabela antes de seguir. O que a documentação da Databricks afirma sobre essas duas funcionalidades nessa operação?",
+        explanation:
+            "A documentação é explícita: a compactação automática e a escrita otimizada estão sempre ativas em MERGE, UPDATE e DELETE, e não é possível desligá-las. As duas reduzem o problema de arquivos pequenos, mas não substituem o OPTIMIZE, que acima de 1 TB a Databricks recomenda agendar.",
+        topic: "Escrita otimizada e compactação automática",
+        options: [
+            [
+                "As duas já ficam sempre ativas em MERGE, UPDATE e DELETE, sem como desligar, então não há o que ativar na tabela.",
+                true,
+            ],
+            [
+                "Nenhuma das duas atua em MERGE, que reescreve arquivos inteiros, então só o OPTIMIZE agendado melhora o layout.",
+                false,
+            ],
+            [
+                "Só a compactação automática atua em MERGE, e a escrita otimizada exige a propriedade autoOptimize.optimizeWrite na tabela.",
+                false,
+            ],
+            [
+                "As duas vêm desligadas e precisam de spark.databricks.delta.optimizeWrite.enabled na sessão para valerem no MERGE.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Uma tabela Delta gerenciada pelo Unity Catalog tem hoje 800 GB e nunca recebeu a propriedade delta.targetFileSize. O time quer saber qual tamanho de arquivo a plataforma persegue nessa tabela e o que muda quando ela chegar a 12 TB. Qual descrição corresponde ao autotune de tamanho de arquivo por tamanho da tabela?",
+        explanation:
+            "O autotune usa arquivos menores em tabelas menores e maiores em tabelas grandes: 256 MB abaixo de 2,56 TB, crescimento linear de 256 MB até 1 GB na faixa de 2,56 TB a 10 TB, e 1 GB acima de 10 TB. Tabela que recebeu delta.targetFileSize fica fora do autotune e segue o valor fixo.",
+        topic: "Delta Lake - autotune do tamanho de arquivo",
+        options: [
+            [
+                "Alvo de 256 MB abaixo de 2,56 TB, subindo linearmente até 1 GB na faixa de 2,56 TB a 10 TB, e 1 GB fixo acima disso.",
+                true,
+            ],
+            [
+                "Alvo fixo de 128 MB em qualquer tamanho de tabela, porque esse é o valor que a escrita otimizada persegue ao gravar.",
+                false,
+            ],
+            [
+                "Alvo de 1 GB abaixo de 2,56 TB, caindo para 256 MB acima de 10 TB, para não espalhar a leitura em arquivos enormes.",
+                false,
+            ],
+            [
+                "Alvo de 256 MB em qualquer tamanho, e acima de 10 TB o autotune passa a exigir delta.targetFileSize definido na tabela.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Ao investigar um estágio lento na Spark UI, um engenheiro não encontra nenhuma estatística de spill e desce até a seção Summary Metrics da página do estágio. Qual comparação dessa seção aponta distorção de dados (skew) entre as tarefas, segundo a documentação da Databricks?",
+        explanation:
+            "Distorção é quando uma ou poucas tarefas demoram muito mais que as demais, o que piora a utilização do cluster. Na Summary Metrics o sinal é a duração Max bem acima do percentil 75, e a documentação dá a régua de 50% acima. Num estágio saudável o percentil 75 e o Max ficam praticamente iguais.",
+        topic: "Spark UI - distorção de dados no Summary Metrics",
+        options: [
+            [
+                "A duração Max muito acima do percentil 75, e a documentação trata 50% acima do percentil 75 como suspeita de skew.",
+                true,
+            ],
+            [
+                "A duração Max igual à do percentil 75, porque as duas só coincidem quando poucas tarefas respondem pelo estágio.",
+                false,
+            ],
+            [
+                "O percentil 25 de bytes lidos acima da mediana, porque isso mostra tarefas pequenas demais diante da média do estágio.",
+                false,
+            ],
+            [
+                "O tempo de coleta de lixo maior que o de computação, porque isso mostra tarefas carregando partições de tamanhos diferentes.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Antes de particionar uma tabela Delta de 400 GB pela coluna cliente_id, uma equipe decide conferir as recomendações de tamanho mínimo da documentação da Databricks. Quais DUAS afirmações refletem o que a documentação recomenda? (Selecione DUAS opções.)",
+        explanation:
+            "A documentação fixa dois pisos: tabela com menos de 1 TB não deve ser particionada, e cada partição deve conter ao menos 1 GB de dados, porque poucas partições grandes rendem mais que muitas pequenas. Entre 1 TB e 100 TB a orientação é usar liquid clustering em vez de particionar.",
+        topic: "Particionamento - tamanho mínimo recomendado",
+        options: [
+            [
+                "Tabela com menos de 1 TB de dados não deve ser particionada, e os 400 GB ficam abaixo desse piso de tamanho.",
+                true,
+            ],
+            [
+                "Cada partição deve conter pelo menos 1 GB de dados, pois poucas partições grandes rendem mais que muitas pequenas.",
+                true,
+            ],
+            [
+                "Entre 1 TB e 100 TB a orientação é particionar, e o liquid clustering fica reservado a tabelas acima de 100 TB.",
+                false,
+            ],
+            [
+                "O piso por partição é de 100 MB, valor que a documentação alinha ao tamanho alvo de arquivo usado pelo OPTIMIZE.",
+                false,
+            ],
+            [
+                "Tabela abaixo de 1 TB deve ser particionada por data, porque sem coluna de partição o Delta não pula arquivo nenhum.",
+                false,
+            ],
+        ],
+    },
+    {
+        statement:
+            "Um administrador quer cortar o custo de dois SQL warehouses que ficam ociosos entre as consultas dos painéis: um é serverless e o outro é pro. Ao abrir a configuração Auto Stop de cada um, quais valores ele encontra, segundo a documentação da Databricks?",
+        explanation:
+            "O Auto Stop para o warehouse após o período ocioso configurado, e o padrão varia por tipo: 45 minutos em warehouse pro e classic, com mínimo de 10 minutos, e 10 minutos em serverless, com mínimo de 5 minutos pela interface. Enquanto não para, warehouse ocioso segue acumulando DBU e custo de instância.",
+        topic: "SQL warehouse - Auto Stop",
+        options: [
+            [
+                "Padrão de 10 minutos no serverless e de 45 no pro, com mínimo de 5 minutos pela interface no serverless e de 10 no pro.",
+                true,
+            ],
+            [
+                "Padrão de 30 minutos nos dois, porque o Auto Stop não varia por tipo de warehouse, com mínimo de 15 minutos nos dois casos.",
+                false,
+            ],
+            [
+                "Padrão de 45 minutos no serverless e de 10 no pro, já que o serverless sobe rápido e pode esperar mais antes de parar.",
+                false,
+            ],
+            [
+                "Nenhum padrão no serverless, que não cobra tempo ocioso, e de 45 minutos no pro, o menor valor aceito nesse tipo.",
+                false,
+            ],
+        ],
+    },
 ];
