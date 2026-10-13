@@ -137,6 +137,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Ruby (classes, blocos e gems)", "Noções de HTTP e SQL"],
     },
+    "Matemática Básica": {
+        whatYouLearn: [
+            "Frações, decimais, porcentagem, razão e proporção",
+            "Potências, raízes, notação científica e estimativa",
+            "A passagem para a álgebra: expressões, equação e inequação do primeiro grau",
+            "Geometria plana, medidas, área, volume e leitura de tabelas e gráficos",
+        ],
+        prerequisites: ["Nenhum: a trilha começa das quatro operações"],
+    },
     "Estatística e Probabilidade": {
         whatYouLearn: [
             "Estatística descritiva: média, mediana, desvio e distribuições",
