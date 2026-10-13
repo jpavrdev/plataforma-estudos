@@ -3,8 +3,9 @@
 // scripts/solucoes/matematica-basica.json e entram por mesclarSolucoes. Idempotente: se a
 // trilha já tiver aulas, só atualiza as explicações.
 //
-// Depois do seed, rodar scripts/embaralhar-alternativas.ts, senão a alternativa
-// correta fica em position 1 em toda questão e o e-book sai com gabarito previsível.
+// As alternativas já saem embaralhadas do gerador, com semente no enunciado. Sem
+// isso a correta ficaria em position 1 em toda questão e o gabarito do e-book, que
+// não passa pelo backend, sairia todo em A.
 //
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-trilha-matematica-basica.ts
 import { db } from "../db.ts";
