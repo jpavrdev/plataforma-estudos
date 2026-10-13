@@ -376,6 +376,18 @@
   font-weight: 600;
   color: var(--muted);
 }
+.exam-bar__placar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--success);
+  background: var(--success-soft);
+  padding: 7px 12px;
+  border-radius: 10px;
+}
 .exam-bar__timer {
   display: flex;
   align-items: center;
@@ -502,6 +514,84 @@
 .exam-opt--on .exam-opt__label {
   color: var(--accent);
 }
+/* Modo de prática: a questão conferida mostra o gabarito e trava. */
+.exam-opt--ok {
+  background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+}
+.exam-opt--ok .exam-opt__badge {
+  background: var(--success);
+  color: #fff;
+}
+.exam-opt--ok .exam-opt__label {
+  color: var(--success);
+}
+.exam-opt--no {
+  background: color-mix(in srgb, var(--av-red) 10%, transparent);
+  border-color: color-mix(in srgb, var(--av-red) 45%, transparent);
+}
+.exam-opt--no .exam-opt__badge {
+  background: var(--av-red);
+  color: #fff;
+}
+.exam-opt--no .exam-opt__label {
+  color: var(--av-red);
+}
+.exam-opt--lock {
+  cursor: default;
+}
+.exam-opt__sua {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.exam-feedback {
+  display: flex;
+  gap: 11px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.exam-feedback--ok {
+  background: var(--success-soft);
+  border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
+}
+.exam-feedback--no {
+  background: color-mix(in srgb, var(--av-red) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--av-red) 35%, transparent);
+}
+.exam-feedback__icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.exam-feedback--ok .exam-feedback__icon {
+  background: var(--success);
+}
+.exam-feedback--no .exam-feedback__icon {
+  background: var(--av-red);
+}
+.exam-feedback__topic {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 9px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+}
 .exam-q__foot {
   display: flex;
   align-items: center;
@@ -517,6 +607,10 @@
 .exam-q__saved {
   font-size: 13px;
   color: var(--muted);
+}
+.exam-q__conferir {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .exam-side {
@@ -582,6 +676,16 @@
   color: #b7791f;
   border: 1px solid var(--amber);
 }
+.exam-nav__cell--ok {
+  background: var(--success);
+  color: #fff;
+  border: none;
+}
+.exam-nav__cell--no {
+  background: var(--av-red);
+  color: #fff;
+  border: none;
+}
 .exam-nav__cell--cur {
   background: var(--surface);
   color: var(--accent);
@@ -613,6 +717,12 @@
 .exam-nav__dot--flag {
   background: color-mix(in srgb, var(--amber) 26%, transparent);
   border: 1px solid var(--amber);
+}
+.exam-nav__dot--ok {
+  background: var(--success);
+}
+.exam-nav__dot--no {
+  background: var(--av-red);
 }
 .exam-nav__dot--none {
   background: var(--surface-2);
@@ -828,10 +938,45 @@
 .res-review__count {
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--av-red);
-  background: color-mix(in srgb, var(--av-red) 12%, transparent);
+  color: var(--muted);
+  background: var(--surface-2);
   padding: 4px 11px;
   border-radius: 8px;
+}
+.res-review__tabs {
+  display: flex;
+  gap: 8px;
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+}
+.res-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.res-tab--on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.res-tab__n {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--muted) 16%, transparent);
+}
+.res-tab--on .res-tab__n {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .res-wrongs {
   display: flex;
@@ -856,6 +1001,25 @@
   background: var(--surface-2);
   padding: 3px 10px;
   border-radius: 7px;
+}
+.res-wrong--ok {
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+}
+.res-wrong__verd {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 7px;
+}
+.res-wrong__verd--ok {
+  color: var(--success);
+  background: var(--success-soft);
+}
+.res-wrong__verd--no {
+  color: var(--av-red);
+  background: color-mix(in srgb, var(--av-red) 12%, transparent);
 }
 .res-wrong__domain {
   font-size: 12px;
@@ -1152,6 +1316,10 @@
   .exam-bar__sub,
   .exam-bar__prog {
     display: none;
+  }
+  .exam-bar__placar {
+    padding: 6px 10px;
+    font-size: 12px;
   }
   .exam-bar__timer {
     flex: none;
@@ -1708,6 +1876,39 @@
 .sim-montar__campo {
   display: grid;
   gap: 8px;
+}
+.sim-montar__modo {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.sim-montar__modo input {
+  accent-color: var(--accent);
+  margin-top: 3px;
+}
+.sim-montar__modo b {
+  display: block;
+  font-size: 14.5px;
+}
+.sim-montar__modo small {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.sim-montar__campo--off {
+  opacity: 0.55;
+}
+.sim-montar__nota {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
 }
 .sim-montar__linha {
   display: flex;

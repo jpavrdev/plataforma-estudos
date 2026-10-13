@@ -6,16 +6,19 @@ export function MontarModal({
   onIniciar,
   onCancel,
   loading = false,
+  praticaInicial = false,
 }: {
   opcoes: OpcoesSimulado;
   onIniciar: (montagem: MontagemTentativa) => void;
   onCancel: () => void;
   loading?: boolean;
+  praticaInicial?: boolean;
 }) {
   const [temas, setTemas] = useState<string[]>([]);
   const [qtd, setQtd] = useState(opcoes.oficial.questionCount);
   const [comTempo, setComTempo] = useState(true);
   const [minutos, setMinutos] = useState(opcoes.oficial.durationMinutes);
+  const [pratica, setPratica] = useState(praticaInicial);
 
   const disponiveis = temas.length
     ? opcoes.temas.filter((t) => temas.includes(t.nome)).reduce((s, t) => s + t.questoes, 0)
@@ -37,13 +40,29 @@ export function MontarModal({
       onClick={() => !loading && onCancel()}
     >
       <div className="sim-modal__card sim-modal__card--form" onClick={(ev) => ev.stopPropagation()}>
-        <h2 className="sim-modal__title">Monte do seu jeito</h2>
+        <h2 className="sim-modal__title">{pratica ? 'Modo de prática' : 'Monte do seu jeito'}</h2>
         <p className="sim-modal__text">
-          Escolha o tamanho, o tempo e os assuntos. A tentativa fica marcada como treino no seu
-          histórico.
+          {pratica
+            ? 'Escolha o tamanho e os assuntos. Você confere cada questão na hora, e a tentativa fica marcada como prática no seu histórico.'
+            : 'Escolha o tamanho, o tempo e os assuntos. A tentativa fica marcada como treino no seu histórico.'}
         </p>
 
         <div className="sim-montar__corpo">
+          <label className="sim-montar__modo">
+            <input
+              type="checkbox"
+              checked={pratica}
+              onChange={(e) => setPratica(e.target.checked)}
+            />
+            <span>
+              <b>Modo de prática</b>
+              <small>
+                Confira a resposta na hora, questão por questão, com a explicação. Sem cronômetro, e
+                a questão conferida não muda mais de resposta.
+              </small>
+            </span>
+          </label>
+
           <div className="sim-montar__campo">
             <div className="sim-montar__rotulo">
               <label htmlFor="mm-qtd">Quantidade de questões</label>
@@ -72,16 +91,18 @@ export function MontarModal({
             </div>
           </div>
 
-          <div className="sim-montar__campo">
+          <div className={`sim-montar__campo${pratica ? ' sim-montar__campo--off' : ''}`}>
             <label className="sim-montar__linha">
               <input
                 type="checkbox"
-                checked={comTempo}
+                checked={comTempo && !pratica}
+                disabled={pratica}
                 onChange={(e) => setComTempo(e.target.checked)}
               />
               <span>Com cronômetro</span>
             </label>
-            {comTempo && (
+            {pratica && <p className="sim-montar__nota">A prática não tem cronômetro.</p>}
+            {comTempo && !pratica && (
               <div className="sim-montar__rotulo">
                 <label htmlFor="mm-min">Tempo em minutos</label>
                 <input
@@ -136,13 +157,15 @@ export function MontarModal({
             onClick={() =>
               onIniciar({
                 questionCount: quantidade,
-                comTempo,
-                duracaoMinutos: comTempo ? Math.min(300, Math.max(1, minutos)) : undefined,
+                comTempo: pratica ? false : comTempo,
+                duracaoMinutos:
+                  comTempo && !pratica ? Math.min(300, Math.max(1, minutos)) : undefined,
                 topicos: temas,
+                pratica,
               })
             }
           >
-            {loading ? 'Aguarde...' : 'Iniciar treino'}
+            {loading ? 'Aguarde...' : pratica ? 'Iniciar prática' : 'Iniciar treino'}
           </button>
         </div>
       </div>

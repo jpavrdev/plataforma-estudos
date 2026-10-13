@@ -38,9 +38,22 @@ function formatarTempo(seg: number) {
   return m ? `${h}h ${m}min` : `${h}h`;
 }
 
+type Aba = 'erradas' | 'certas' | 'todas';
+const TITULOS: Record<Aba, string> = {
+  erradas: 'Onde você errou',
+  certas: 'O que você acertou',
+  todas: 'Todas as questões',
+};
+const SUBTITULOS: Record<Aba, string> = {
+  erradas: 'Estude estes tópicos com atenção: foram os que mais pesaram na sua nota.',
+  certas: 'O que você já domina. Vale conferir se acertou pelo motivo certo.',
+  todas: 'A prova inteira, na ordem em que você respondeu.',
+};
+
 export function Resultado({ dados }: { dados: TentativaEstado }) {
   const navigate = useNavigate();
   const [todas, setTodas] = useState(false);
+  const [aba, setAba] = useState<Aba | null>(null);
   const isPass = dados.passed === true;
   const score = dados.score ?? 0;
   const passPercent = dados.passPercent ?? 70;
@@ -56,6 +69,15 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
   const erradas = questions.filter(
     (q) => !acertou(q) && (!revisaoParcial || (q.selected ?? []).length > 0),
   );
+  const certas = questions.filter(acertou);
+  // A revisão abre onde há o que ver: quem gabaritou cai direto nos acertos.
+  const abaAtual: Aba = aba ?? (erradas.length > 0 ? 'erradas' : 'certas');
+  const revisaveis =
+    abaAtual === 'erradas'
+      ? erradas
+      : abaAtual === 'certas'
+        ? certas
+        : [...erradas, ...certas].sort((a, b) => a.position - b.position);
   const tempo = dados.elapsedSeconds != null ? formatarTempo(dados.elapsedSeconds) : null;
 
   const porTema = new Map<string, { acertos: number; total: number }>();
@@ -71,7 +93,11 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
     .sort((a, b) => a.pct - b.pct);
   const maisFragil = dominios[0];
 
-  const mostradas = todas ? erradas : erradas.slice(0, VISIVEIS);
+  const mostradas = todas ? revisaveis : revisaveis.slice(0, VISIVEIS);
+  function trocarAba(nova: Aba) {
+    setAba(nova);
+    setTodas(false);
+  }
   const ringOffset = Math.round(RING * (1 - score / 100));
   const heroBg = isPass
     ? 'linear-gradient(150deg, var(--success), color-mix(in srgb, var(--success) 52%, #06371f))'
@@ -197,68 +223,109 @@ export function Resultado({ dados }: { dados: TentativaEstado }) {
             </div>
           )}
 
-          {erradas.length > 0 && (
+          {erradas.length + certas.length > 0 && (
             <div className="card">
               <div className="res-review__head">
-                <div className="res-sec__title">Onde você errou</div>
+                <div className="res-sec__title">{TITULOS[abaAtual]}</div>
                 <div className="topbar__spacer" />
-                <span className="res-review__count">{erradas.length} questões erradas</span>
+                <span className="res-review__count">
+                  {revisaveis.length} {revisaveis.length === 1 ? 'questão' : 'questões'}
+                </span>
               </div>
-              <div className="res-sec__sub">
-                Estude estes tópicos com atenção: foram os que mais pesaram na sua nota.
+              <div className="res-sec__sub">{SUBTITULOS[abaAtual]}</div>
+              <div className="res-review__tabs">
+                <button
+                  className={`res-tab${abaAtual === 'erradas' ? ' res-tab--on' : ''}`}
+                  onClick={() => trocarAba('erradas')}
+                >
+                  Erradas <span className="res-tab__n">{erradas.length}</span>
+                </button>
+                <button
+                  className={`res-tab${abaAtual === 'certas' ? ' res-tab--on' : ''}`}
+                  onClick={() => trocarAba('certas')}
+                >
+                  Acertadas <span className="res-tab__n">{certas.length}</span>
+                </button>
+                <button
+                  className={`res-tab${abaAtual === 'todas' ? ' res-tab--on' : ''}`}
+                  onClick={() => trocarAba('todas')}
+                >
+                  Todas <span className="res-tab__n">{erradas.length + certas.length}</span>
+                </button>
               </div>
               <div className="res-wrongs">
-                {mostradas.map((q) => (
-                  <div key={q.id} className="res-wrong">
-                    <div className="res-wrong__meta">
-                      <span className="res-wrong__q">Q{q.position}</span>
-                      {q.topic && <span className="res-wrong__domain">{q.topic}</span>}
-                    </div>
-                    <div className="res-wrong__text">{q.statement}</div>
-                    <div className="res-wrong__answers">
-                      <div className="res-ans res-ans--wrong">
-                        <span className="res-ans__icon res-ans__icon--wrong">
-                          <X size={12} />
+                {mostradas.map((q) => {
+                  const ok = acertou(q);
+                  return (
+                    <div key={q.id} className={`res-wrong${ok ? ' res-wrong--ok' : ''}`}>
+                      <div className="res-wrong__meta">
+                        <span className="res-wrong__q">Q{q.position}</span>
+                        <span className={`res-wrong__verd res-wrong__verd--${ok ? 'ok' : 'no'}`}>
+                          {ok ? 'acertou' : 'errou'}
                         </span>
-                        <span className="res-ans__label">Sua resposta:</span>
-                        <span className="res-ans__val res-ans__val--wrong">
-                          {textos(q, q.selected ?? []) || 'em branco'}
-                        </span>
+                        {q.topic && <span className="res-wrong__domain">{q.topic}</span>}
                       </div>
-                      <div className="res-ans res-ans--right">
-                        <span className="res-ans__icon res-ans__icon--right">
-                          <Check size={12} />
-                        </span>
-                        <span className="res-ans__label">Correta:</span>
-                        <span className="res-ans__val res-ans__val--right">
-                          {textos(q, corretasDe(q))}
-                        </span>
+                      <div className="res-wrong__text">{q.statement}</div>
+                      <div className="res-wrong__answers">
+                        {ok ? (
+                          <div className="res-ans res-ans--right">
+                            <span className="res-ans__icon res-ans__icon--right">
+                              <Check size={12} />
+                            </span>
+                            <span className="res-ans__label">Sua resposta:</span>
+                            <span className="res-ans__val res-ans__val--right">
+                              {textos(q, q.selected ?? [])}
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="res-ans res-ans--wrong">
+                              <span className="res-ans__icon res-ans__icon--wrong">
+                                <X size={12} />
+                              </span>
+                              <span className="res-ans__label">Sua resposta:</span>
+                              <span className="res-ans__val res-ans__val--wrong">
+                                {textos(q, q.selected ?? []) || 'em branco'}
+                              </span>
+                            </div>
+                            <div className="res-ans res-ans--right">
+                              <span className="res-ans__icon res-ans__icon--right">
+                                <Check size={12} />
+                              </span>
+                              <span className="res-ans__label">Correta:</span>
+                              <span className="res-ans__val res-ans__val--right">
+                                {textos(q, corretasDe(q))}
+                              </span>
+                            </div>
+                          </>
+                        )}
                       </div>
-                    </div>
-                    {q.explanation && (
-                      <div className="res-why">
-                        <span className="res-why__icon">
-                          <Info size={17} />
-                        </span>
-                        <div>
-                          <b>Por que você errou:</b> {q.explanation}
+                      {q.explanation && (
+                        <div className="res-why">
+                          <span className="res-why__icon">
+                            <Info size={17} />
+                          </span>
+                          <div>
+                            <b>{ok ? 'Por que está certa:' : 'Por que você errou:'}</b>{' '}
+                            {q.explanation}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    {q.topic && (
-                      <div className="res-study">
-                        <span className="res-study__label">Estude:</span>
-                        <span className="res-study__chip">
-                          <BookOpen size={12} /> {q.topic}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      )}
+                      {!ok && q.topic && (
+                        <div className="res-study">
+                          <span className="res-study__label">Estude:</span>
+                          <span className="res-study__chip">
+                            <BookOpen size={12} /> {q.topic}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              {erradas.length > VISIVEIS && (
+              {revisaveis.length > VISIVEIS && (
                 <button className="res-more" onClick={() => setTodas((v) => !v)}>
-                  {todas ? 'Mostrar menos' : `Ver todas as ${erradas.length} questões erradas`}
+                  {todas ? 'Mostrar menos' : `Ver todas as ${revisaveis.length} questões`}
                 </button>
               )}
             </div>

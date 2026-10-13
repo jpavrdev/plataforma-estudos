@@ -11,6 +11,9 @@ export const iniciarTentativaSchema = z.object({
     comTempo: z.boolean().optional(),
     duracaoMinutos: z.int().min(1).max(300).optional(),
     topicos: z.array(z.string().trim().min(1).max(60)).max(30).optional(),
+    // Modo de prática: confere cada questão na hora. Ignora comTempo (prática
+    // nunca tem cronômetro).
+    pratica: z.boolean().optional(),
 });
 
 export const createSimuladoSchema = z.object({
