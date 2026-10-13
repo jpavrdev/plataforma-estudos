@@ -146,6 +146,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Python básico", "Matemática do ensino médio"],
     },
+    "Trigonometria": {
+        whatYouLearn: [
+            "Seno, cosseno e tangente no triângulo retângulo e nos arcos notáveis",
+            "Lei dos senos, lei dos cossenos e área pelo seno em triângulos quaisquer",
+            "Radiano, ciclo trigonométrico e as funções seno, cosseno e tangente",
+            "Identidades, equações e inequações, e a trigonometria que mede o inalcançável",
+        ],
+        prerequisites: [
+            "Álgebra básica: equação do primeiro grau e manipulação de frações",
+            "Geometria plana: triângulo, ângulo e o teorema de Pitágoras",
+        ],
+    },
     "Análise de Dados": {
         whatYouLearn: [
             "Manipular dados com NumPy e pandas",
