@@ -158,6 +158,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Noções de estatística descritiva",
         ],
     },
+    "Álgebra": {
+        whatYouLearn: [
+            "Produtos notáveis, fatoração e frações algébricas",
+            "Equações, sistemas e inequações, inclusive com módulo",
+            "Polinômios: divisão, teorema do resto e relações de Girard",
+            "Progressões, contagem, binômio de Newton e números complexos",
+        ],
+        prerequisites: [
+            "As quatro operações, potência e manipulação de frações",
+            "Nenhuma álgebra prévia: a trilha começa pela letra como padrão e incógnita",
+        ],
+    },
     "Visualização de Dados": {
         whatYouLearn: [
             "Escolher o gráfico certo para cada tipo de dado",
