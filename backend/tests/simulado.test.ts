@@ -268,6 +268,112 @@ describe("Simulado: responder, enviar e corrigir", () => {
     });
 });
 
+describe("Simulado: modo de prática", () => {
+    test("confere na hora, revela o gabarito e trava a resposta", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug, corretas } = await montarSimulado();
+
+        const attempt = await post(`/simulados/${slug}/attempts`, aluno.token, { pratica: true });
+        assert.equal(attempt.status, 201);
+        assert.equal(attempt.body.pratica, true);
+        // Prática é estudo, não prova: nunca tem cronômetro.
+        assert.equal(attempt.body.expiresAt, null);
+        assert.equal(attempt.body.remainingSeconds, null);
+
+        const q = attempt.body.questions[0];
+        const id = attempt.body.attemptId;
+        await put(`/simulado-attempts/${id}/answers/${q.id}`, aluno.token, {
+            optionIds: corretas[q.id],
+        });
+
+        const conferida = await post(
+            `/simulado-attempts/${id}/answers/${q.id}/conferir`,
+            aluno.token,
+        );
+        assert.equal(conferida.status, 200);
+        assert.equal(conferida.body.correta, true);
+        assert.deepEqual(conferida.body.corretas, corretas[q.id]);
+        assert.equal(conferida.body.explanation, "Porque sim.");
+
+        // Conferida não muda mais de resposta, senão a nota do fim seria ficção.
+        const remarcar = await put(`/simulado-attempts/${id}/answers/${q.id}`, aluno.token, {
+            optionIds: [],
+        });
+        assert.equal(remarcar.status, 409);
+
+        // O gabarito aparece só na questão conferida.
+        const estado = await get(`/simulado-attempts/${id}`, aluno.token);
+        const conferidaNoEstado = estado.body.questions.find((x: any) => x.id === q.id);
+        const outra = estado.body.questions.find((x: any) => x.id !== q.id);
+        assert.equal(conferidaNoEstado.revealed, true);
+        assert.ok(conferidaNoEstado.options.every((o: any) => "isCorrect" in o));
+        assert.equal(conferidaNoEstado.explanation, "Porque sim.");
+        assert.equal(outra.revealed, false);
+        assert.equal(
+            outra.options.some((o: any) => "isCorrect" in o),
+            false,
+        );
+        assert.equal("explanation" in outra, false);
+    });
+
+    test("não confere questão em branco", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug } = await montarSimulado();
+        const attempt = await post(`/simulados/${slug}/attempts`, aluno.token, { pratica: true });
+        const id = attempt.body.attemptId;
+        const q = attempt.body.questions[0];
+
+        const r = await post(`/simulado-attempts/${id}/answers/${q.id}/conferir`, aluno.token);
+        assert.equal(r.status, 409);
+
+        const estado = await get(`/simulado-attempts/${id}`, aluno.token);
+        assert.equal(
+            estado.body.questions.some((x: any) => x.options.some((o: any) => "isCorrect" in o)),
+            false,
+        );
+    });
+
+    test("tentativa normal não revela gabarito pelo conferir", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug, corretas } = await montarSimulado();
+        const attempt = await post(`/simulados/${slug}/attempts`, aluno.token);
+        const id = attempt.body.attemptId;
+        const q = attempt.body.questions[0];
+        await put(`/simulado-attempts/${id}/answers/${q.id}`, aluno.token, {
+            optionIds: corretas[q.id],
+        });
+
+        const r = await post(`/simulado-attempts/${id}/answers/${q.id}/conferir`, aluno.token);
+        assert.equal(r.status, 409);
+
+        const estado = await get(`/simulado-attempts/${id}`, aluno.token);
+        assert.equal(estado.body.pratica, false);
+        assert.equal(
+            estado.body.questions.some((x: any) => x.options.some((o: any) => "isCorrect" in o)),
+            false,
+        );
+    });
+
+    test("prática aparece como prática no histórico e ainda é pontuada", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug, corretas } = await montarSimulado();
+        const attempt = await post(`/simulados/${slug}/attempts`, aluno.token, { pratica: true });
+        const id = attempt.body.attemptId;
+        for (const q of attempt.body.questions) {
+            await put(`/simulado-attempts/${id}/answers/${q.id}`, aluno.token, {
+                optionIds: corretas[q.id],
+            });
+        }
+        const envio = await post(`/simulado-attempts/${id}/submit`, aluno.token);
+        assert.equal(envio.body.score, 100);
+
+        const hist = await get(`/me/simulado-attempts`, aluno.token);
+        assert.equal(hist.body[0].pratica, true);
+        assert.equal(hist.body[0].personalizado, true);
+        assert.equal(hist.body[0].comTempo, false);
+    });
+});
+
 describe("Simulado: CRUD admin", () => {
     const novoSimulado = (over: Record<string, unknown> = {}) => ({
         slug: `admin-${++seq}`,

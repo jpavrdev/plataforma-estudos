@@ -71,6 +71,7 @@ export type OpcoesTentativa = {
     comTempo?: boolean;
     duracaoMinutos?: number;
     topicos?: string[];
+    pratica?: boolean;
 };
 
 function aindaVale(attempt: { expiresAt: Date | null; startedAt: Date }, agora: Date) {
@@ -134,8 +135,11 @@ export async function iniciarTentativa(userId: string, slug: string, opcoes: Opc
         .orderBy(sql`random()`)
         .limit(quantidade);
 
+    // No modo de prática o aluno confere cada questão na hora e lê a explicação,
+    // então cronômetro só atrapalharia: prática é estudo, não prova.
+    const pratica = opcoes.pratica === true;
     // Sem duração escolhida, mantém o ritmo oficial: menos questões, menos minutos.
-    const comTempo = opcoes.comTempo ?? true;
+    const comTempo = pratica ? false : (opcoes.comTempo ?? true);
     const proporcional = Math.max(
         1,
         Math.round((simulado.durationMinutes * sorteadas.length) / simulado.questionCount),
@@ -143,6 +147,7 @@ export async function iniciarTentativa(userId: string, slug: string, opcoes: Opc
     const minutos = opcoes.duracaoMinutos ?? proporcional;
     const expiresAt = comTempo ? new Date(agora.getTime() + minutos * 60 * 1000) : null;
     const personalizado =
+        pratica ||
         !comTempo ||
         topicos !== null ||
         sorteadas.length !== simulado.questionCount ||
@@ -151,7 +156,14 @@ export async function iniciarTentativa(userId: string, slug: string, opcoes: Opc
     const attemptId = await db.transaction(async (tx) => {
         const [attempt] = await tx
             .insert(simuladoAttempts)
-            .values({ userId, simuladoId: simulado.id, expiresAt, personalizado, topicos })
+            .values({
+                userId,
+                simuladoId: simulado.id,
+                expiresAt,
+                personalizado,
+                pratica,
+                topicos,
+            })
             .returning({ id: simuladoAttempts.id });
         await tx.insert(simuladoAttemptQuestions).values(
             sorteadas.map((q, i) => ({
@@ -203,7 +215,8 @@ export async function opcoesDoSimulado(slug: string) {
     };
 }
 
-// O gabarito (isCorrect e a justificativa) só é revelado depois de enviar.
+// O gabarito (isCorrect e a justificativa) só é revelado depois de enviar, ou,
+// no modo de prática, nas questões que o aluno já conferiu.
 export async function estadoDaTentativa(userId: string, attemptId: string) {
     const [attempt] = await db
         .select()
@@ -229,6 +242,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         multiple: boolean;
         options: { id: string; text: string; position: number; isCorrect?: boolean }[];
         selected: string[];
+        revealed: boolean;
         topic?: string | null;
         explanation?: string | null;
     };
@@ -257,6 +271,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                 multiple: corretasSet.size > 1,
                 options,
                 selected: [...marcadasSet],
+                revealed: true,
                 topic: snap.topic,
                 explanation: snap.explanation,
             };
@@ -269,6 +284,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                 explanation: simuladoQuestions.explanation,
                 topic: simuladoQuestions.topic,
                 position: simuladoAttemptQuestions.position,
+                revealedAt: simuladoAttemptQuestions.revealedAt,
             })
             .from(simuladoAttemptQuestions)
             .innerJoin(
@@ -297,6 +313,8 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                 opcoes.filter((o) => o.questionId === q.id),
                 attemptId + q.id,
             );
+            // Na prática, a questão já conferida mostra o gabarito antes do envio.
+            const revelada = enviado || (attempt.pratica && q.revealedAt !== null);
             if (enviado) {
                 const corretasSet = new Set(
                     opcoesDaQuestao.filter((o) => o.isCorrect).map((o) => o.id),
@@ -318,10 +336,11 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                     id: o.id,
                     text: o.text,
                     position: o.position,
-                    ...(enviado ? { isCorrect: o.isCorrect } : {}),
+                    ...(revelada ? { isCorrect: o.isCorrect } : {}),
                 })),
                 selected: [...(marcadas.get(q.id) ?? [])],
-                ...(enviado ? { topic: q.topic, explanation: q.explanation } : {}),
+                revealed: revelada,
+                ...(revelada ? { topic: q.topic, explanation: q.explanation } : {}),
             };
         });
     }
@@ -343,6 +362,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         submitted: enviado,
         expiresAt: attempt.expiresAt,
         personalizado: attempt.personalizado,
+        pratica: attempt.pratica,
         topicos: attempt.topicos ?? null,
         remainingSeconds:
             restanteMs === null ? null : enviado ? 0 : Math.max(0, Math.floor(restanteMs / 1000)),
@@ -379,7 +399,10 @@ export async function salvarResposta(
         throw new AppError(409, "Tempo esgotado");
 
     const [pertence] = await db
-        .select({ id: simuladoAttemptQuestions.id })
+        .select({
+            id: simuladoAttemptQuestions.id,
+            revealedAt: simuladoAttemptQuestions.revealedAt,
+        })
         .from(simuladoAttemptQuestions)
         .where(
             and(
@@ -388,6 +411,7 @@ export async function salvarResposta(
             ),
         );
     if (!pertence) throw new AppError(404, "Questão não faz parte da tentativa");
+    if (pertence.revealedAt) throw new AppError(409, "Questão já conferida");
 
     // As opções precisam ser desta questão (não deixa marcar opção de outra).
     let validas: string[] = [];
@@ -423,6 +447,72 @@ export async function salvarResposta(
         }
     });
     return { ok: true };
+}
+
+// Modo de prática: confere uma questão na hora. Exige resposta marcada, porque
+// conferir em branco seria só ler o gabarito, e marca a questão como conferida,
+// o que trava a resposta: sem isso dava para conferir, corrigir e sair com 100%.
+export async function conferirQuestao(userId: string, attemptId: string, questionId: string) {
+    const [attempt] = await db
+        .select()
+        .from(simuladoAttempts)
+        .where(and(eq(simuladoAttempts.id, attemptId), eq(simuladoAttempts.userId, userId)));
+    if (!attempt) throw new AppError(404, "Tentativa não encontrada");
+    if (!attempt.pratica) throw new AppError(409, "Esta tentativa não é do modo de prática");
+    if (attempt.submittedAt) throw new AppError(409, "Simulado já enviado");
+
+    const [linha] = await db
+        .select({
+            id: simuladoAttemptQuestions.id,
+            revealedAt: simuladoAttemptQuestions.revealedAt,
+        })
+        .from(simuladoAttemptQuestions)
+        .where(
+            and(
+                eq(simuladoAttemptQuestions.attemptId, attemptId),
+                eq(simuladoAttemptQuestions.questionId, questionId),
+            ),
+        );
+    if (!linha) throw new AppError(404, "Questão não faz parte da tentativa");
+
+    const [questao] = await db
+        .select({ explanation: simuladoQuestions.explanation, topic: simuladoQuestions.topic })
+        .from(simuladoQuestions)
+        .where(eq(simuladoQuestions.id, questionId));
+    if (!questao) throw new AppError(404, "Questão não encontrada");
+
+    const respostas = await db
+        .select({ optionId: simuladoAttemptAnswers.optionId })
+        .from(simuladoAttemptAnswers)
+        .where(
+            and(
+                eq(simuladoAttemptAnswers.attemptId, attemptId),
+                eq(simuladoAttemptAnswers.questionId, questionId),
+            ),
+        );
+    if (respostas.length === 0) throw new AppError(409, "Responda a questão antes de conferir");
+
+    const opcoes = await db
+        .select({ id: simuladoOptions.id, isCorrect: simuladoOptions.isCorrect })
+        .from(simuladoOptions)
+        .where(eq(simuladoOptions.questionId, questionId));
+    const corretas = new Set(opcoes.filter((o) => o.isCorrect).map((o) => o.id));
+    const marcadas = new Set(respostas.map((r) => r.optionId));
+
+    if (!linha.revealedAt) {
+        await db
+            .update(simuladoAttemptQuestions)
+            .set({ revealedAt: new Date() })
+            .where(eq(simuladoAttemptQuestions.id, linha.id));
+    }
+
+    return {
+        questionId,
+        correta: questaoCorreta(marcadas, corretas),
+        corretas: [...corretas],
+        explanation: questao.explanation,
+        topic: questao.topic,
+    };
 }
 
 // Pontua só o que estava salvo, então envio após o prazo vale como auto-envio.
@@ -533,6 +623,7 @@ export async function historicoDoUsuario(userId: string) {
             score: simuladoAttempts.score,
             passed: simuladoAttempts.passed,
             personalizado: simuladoAttempts.personalizado,
+            pratica: simuladoAttempts.pratica,
             comTempo: sql<boolean>`${simuladoAttempts.expiresAt} is not null`,
             topicos: simuladoAttempts.topicos,
             questoes: sql<number>`coalesce(${questoesPorTentativa.total}, 0)::int`,

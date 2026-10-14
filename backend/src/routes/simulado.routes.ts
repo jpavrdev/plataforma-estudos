@@ -6,6 +6,7 @@ import {
     getAttemptOptions,
     getAttempt,
     saveAnswer,
+    checkAnswer,
     submitAttempt,
     getMyAttempts,
     adminListSimulados,
@@ -27,6 +28,7 @@ router.get("/simulados/:slug/opcoes", autenticar, getAttemptOptions);
 router.post("/simulados/:slug/attempts", autenticar, startAttempt);
 router.get("/simulado-attempts/:id", autenticar, getAttempt);
 router.put("/simulado-attempts/:id/answers/:questionId", autenticar, saveAnswer);
+router.post("/simulado-attempts/:id/answers/:questionId/conferir", autenticar, checkAnswer);
 router.post("/simulado-attempts/:id/submit", autenticar, submitAttempt);
 
 // Admin: CRUD de simulados e questões

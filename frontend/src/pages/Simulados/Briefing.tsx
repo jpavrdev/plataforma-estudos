@@ -41,6 +41,7 @@ export function SimuladoBriefing() {
   const [iniciando, setIniciando] = useState(false);
   const [confirmando, setConfirmando] = useState(false);
   const [montando, setMontando] = useState(false);
+  const [praticaInicial, setPraticaInicial] = useState(false);
   const [voltarPara, setVoltarPara] = useState<string | null>(null);
 
   async function iniciar(montagem?: MontagemTentativa) {
@@ -113,7 +114,7 @@ export function SimuladoBriefing() {
                     <Regra
                       icon={<BookOpen size={17} />}
                       t="Revisão ao final"
-                      d="Veja o que errou, o assunto de cada questão e o que revisar."
+                      d="Veja o que acertou, o que errou e o assunto de cada questão."
                     />
                   </div>
 
@@ -146,14 +147,26 @@ export function SimuladoBriefing() {
                           simulado é enviado automaticamente com as respostas marcadas até ali.
                         </div>
                       </div>
+                      <button className="sim-start" onClick={() => setConfirmando(true)}>
+                        <Play size={15} />{' '}
+                        {tentativas.length > 0 ? 'Refazer simulado' : 'Iniciar simulado'}
+                      </button>
                       <div className="sim-start__par">
-                        <button className="sim-start" onClick={() => setConfirmando(true)}>
-                          <Play size={15} />{' '}
-                          {tentativas.length > 0 ? 'Refazer simulado' : 'Iniciar simulado'}
+                        <button
+                          className="sim-start sim-start--alt"
+                          onClick={() => {
+                            setPraticaInicial(true);
+                            setMontando(true);
+                          }}
+                        >
+                          Modo de prática
                         </button>
                         <button
                           className="sim-start sim-start--alt"
-                          onClick={() => setMontando(true)}
+                          onClick={() => {
+                            setPraticaInicial(false);
+                            setMontando(true);
+                          }}
                         >
                           Monte do seu jeito
                         </button>
@@ -190,6 +203,7 @@ export function SimuladoBriefing() {
             <MontarModal
               opcoes={opcoes}
               loading={iniciando}
+              praticaInicial={praticaInicial}
               onCancel={() => setMontando(false)}
               onIniciar={(montagem) => iniciar(montagem)}
             />
@@ -257,8 +271,8 @@ function ItemTentativa({ a, onClick }: { a: TentativaHistorico; onClick: () => v
         <div className="sim-attempt__exam">{formatData(a.startedAt)}</div>
         {a.personalizado && (
           <div className="sim-attempt__tag">
-            treino · {a.questoes} questões
-            {!a.comTempo && ' · sem tempo'}
+            {a.pratica ? 'prática' : 'treino'} · {a.questoes} questões
+            {!a.comTempo && !a.pratica && ' · sem tempo'}
             {a.topicos && a.topicos.length > 0 && ` · ${a.topicos.length} assunto(s)`}
           </div>
         )}

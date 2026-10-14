@@ -13,6 +13,7 @@ import {
     opcoesDoSimulado,
     estadoDaTentativa,
     salvarResposta,
+    conferirQuestao,
     enviarTentativa,
     historicoDoUsuario,
     listarSimuladosAdmin,
@@ -68,6 +69,20 @@ export const saveAnswer = async (req: Request, res: Response, next: NextFunction
                 String(req.params.id),
                 String(req.params.questionId),
                 optionIds,
+            ),
+        );
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const checkAnswer = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(
+            await conferirQuestao(
+                req.userId!,
+                String(req.params.id),
+                String(req.params.questionId),
             ),
         );
     } catch (err) {
