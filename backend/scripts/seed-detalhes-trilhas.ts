@@ -137,6 +137,15 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Ruby (classes, blocos e gems)", "Noções de HTTP e SQL"],
     },
+    "Matemática Básica": {
+        whatYouLearn: [
+            "Frações, decimais, porcentagem, razão e proporção",
+            "Potências, raízes, notação científica e estimativa",
+            "A passagem para a álgebra: expressões, equação e inequação do primeiro grau",
+            "Geometria plana, medidas, área, volume e leitura de tabelas e gráficos",
+        ],
+        prerequisites: ["Nenhum: a trilha começa das quatro operações"],
+    },
     "Estatística e Probabilidade": {
         whatYouLearn: [
             "Estatística descritiva: média, mediana, desvio e distribuições",
@@ -145,6 +154,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Correlação e por que ela não é causalidade",
         ],
         prerequisites: ["Python básico", "Matemática do ensino médio"],
+    },
+    "Trigonometria": {
+        whatYouLearn: [
+            "Seno, cosseno e tangente no triângulo retângulo e nos arcos notáveis",
+            "Lei dos senos, lei dos cossenos e área pelo seno em triângulos quaisquer",
+            "Radiano, ciclo trigonométrico e as funções seno, cosseno e tangente",
+            "Identidades, equações e inequações, e a trigonometria que mede o inalcançável",
+        ],
+        prerequisites: [
+            "Álgebra básica: equação do primeiro grau e manipulação de frações",
+            "Geometria plana: triângulo, ângulo e o teorema de Pitágoras",
+        ],
     },
     "Análise de Dados": {
         whatYouLearn: [
@@ -156,6 +177,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         prerequisites: [
             "Python (estruturas de dados, funções)",
             "Noções de estatística descritiva",
+        ],
+    },
+    "Álgebra": {
+        whatYouLearn: [
+            "Produtos notáveis, fatoração e frações algébricas",
+            "Equações, sistemas e inequações, inclusive com módulo",
+            "Polinômios: divisão, teorema do resto e relações de Girard",
+            "Progressões, contagem, binômio de Newton e números complexos",
+        ],
+        prerequisites: [
+            "As quatro operações, potência e manipulação de frações",
+            "Nenhuma álgebra prévia: a trilha começa pela letra como padrão e incógnita",
         ],
     },
     "Visualização de Dados": {

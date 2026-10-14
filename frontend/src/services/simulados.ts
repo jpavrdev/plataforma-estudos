@@ -26,8 +26,10 @@ export interface QuestaoSimulado {
   multiple: boolean;
   options: OpcaoSimulado[];
   selected: string[];
-  topic?: string; // só depois de enviar
-  explanation?: string | null; // só depois de enviar
+  // No modo de prática a questão conferida já vem com gabarito e explicação.
+  revealed?: boolean;
+  topic?: string; // só depois de enviar (ou de conferir, na prática)
+  explanation?: string | null;
 }
 
 export interface TemaRevisar {
@@ -45,6 +47,7 @@ export interface TentativaEstado {
   expiresAt: string | null;
   remainingSeconds: number | null;
   personalizado?: boolean;
+  pratica?: boolean;
   topicos?: string[] | null;
   retomada?: boolean;
   score?: number;
@@ -70,6 +73,7 @@ export interface TentativaHistorico {
   score: number | null;
   passed: boolean | null;
   personalizado: boolean;
+  pratica: boolean;
   comTempo: boolean;
   topicos: string[] | null;
   questoes: number;
@@ -92,6 +96,16 @@ export interface MontagemTentativa {
   comTempo?: boolean;
   duracaoMinutos?: number;
   topicos?: string[];
+  pratica?: boolean;
+}
+
+// Resposta de conferir uma questão no modo de prática.
+export interface ConferenciaQuestao {
+  questionId: string;
+  correta: boolean;
+  corretas: string[];
+  explanation: string | null;
+  topic: string | null;
 }
 
 export async function listarSimulados() {
@@ -116,6 +130,14 @@ export async function obterTentativa(attemptId: string) {
 
 export async function salvarResposta(attemptId: string, questionId: string, optionIds: string[]) {
   await api.put(`/simulado-attempts/${attemptId}/answers/${questionId}`, { optionIds });
+}
+
+// Só vale no modo de prática, e trava a resposta daquela questão.
+export async function conferirQuestao(attemptId: string, questionId: string) {
+  const { data } = await api.post<ConferenciaQuestao>(
+    `/simulado-attempts/${attemptId}/answers/${questionId}/conferir`,
+  );
+  return data;
 }
 
 export async function enviarTentativa(attemptId: string) {

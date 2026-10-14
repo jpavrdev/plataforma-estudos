@@ -440,6 +440,9 @@ export const simuladoAttempts = pgTable(
         // Marca o treino montado pelo aluno, para não se confundir com a prova
         // completa no histórico.
         personalizado: boolean("personalizado").default(false).notNull(),
+    // Modo de prática: o aluno confere a resposta questão por questão, em vez de
+    // só no fim. Nunca tem cronômetro, porque ler a explicação leva tempo.
+    pratica: boolean("pratica").default(false).notNull(),
         topicos: jsonb("topicos").$type<string[]>(),
     },
     (table) => [
@@ -471,6 +474,9 @@ export const simuladoAttemptQuestions = pgTable(
         questionId: uuid("question_id").references(() => simuladoQuestions.id),
         position: integer("position").notNull(),
         snapshot: jsonb("snapshot").$type<SnapshotQuestaoRevisao>(),
+        // Quando o aluno conferiu o gabarito desta questão, no modo de prática.
+        // Conferida trava a resposta: sem isso a nota do fim não valeria nada.
+        revealedAt: timestamp("revealed_at", { withTimezone: true }),
     },
     (table) => [
         unique().on(table.attemptId, table.questionId),

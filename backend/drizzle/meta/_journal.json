@@ -421,6 +421,13 @@
       "when": 1787006425442,
       "tag": "0059_acertou_em",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1791918293549,
+      "tag": "0060_simulado_pratica",
+      "breakpoints": true
     }
   ]
 }
