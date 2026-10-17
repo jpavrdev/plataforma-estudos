@@ -22,7 +22,7 @@
     "@xterm/xterm": "^6.0.0",
     "axios": "^1.19.0",
     "katex": "^0.18.4",
-    "react": "^19.2.6",
+    "react": "^19.3.0",
     "react-dom": "^19.2.8",
     "react-easy-crop": "^6.2.4",
     "react-markdown": "^10.1.0",
@@ -34,7 +34,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.5.0",
-    "@types/react": "^19.2.18",
+    "@types/react": "^19.3.0",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "eslint": "^10.9.1",
