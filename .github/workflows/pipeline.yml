@@ -1,6 +1,7 @@
 name: Pipeline
 
-# Testa back e front; se passarem e for push na main, aplica migrations e faz deploy.
+# Testa back e front; se passarem e for push na main, aplica migrations e seeds de
+# conteúdo e faz deploy.
 on:
   push:
     branches: [develop, main]
@@ -87,9 +88,9 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           echo "76.13.174.73 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILDPyeTPCOu8dACmJrgFeI04EGjZkKVwN3lu5145uH8k" >> ~/.ssh/known_hosts
 
-      - name: Deploy no servidor
+      - name: Atualizar código e build das imagens
         run: |
-          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'DEPLOY'
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'PASSO'
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
             echo "==> Atualizando codigo (main)"
@@ -98,10 +99,34 @@ jobs:
             git reset --hard origin/main
             echo "==> Build das imagens (sem cache, para garantir bundle atualizado)"
             docker compose -f docker-compose.prod.yml build --no-cache
+          PASSO
+
+      # Migrations e seeds rodam num container da imagem nova, antes de o backend
+      # novo subir. Se um deles falhar, o deploy para e o backend antigo segue no ar.
+      - name: Aplicar migrations
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'PASSO'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
             echo "==> Subindo o banco"
             docker compose -f docker-compose.prod.yml up -d db
-            echo "==> Aplicando migrations (antes de subir o app novo)"
-            docker compose -f docker-compose.prod.yml run --rm -T backend npx drizzle-kit migrate </dev/null
+            echo "==> Aplicando migrations"
+            docker compose -f docker-compose.prod.yml run --rm --no-deps -T backend npx drizzle-kit migrate </dev/null
+          PASSO
+
+      - name: Aplicar seeds de conteúdo
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'PASSO'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            docker compose -f docker-compose.prod.yml run --rm --no-deps -T backend node scripts/aplicar-seeds-producao.ts </dev/null
+          PASSO
+
+      - name: Deploy no servidor
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'PASSO'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
             echo "==> Subindo backend e proxy (forcando recriacao p/ usar a imagem nova)"
             docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps backend caddy
             echo "==> Subindo o servico de labs (so recria se a imagem mudou, p/ nao derrubar sessao de aluno)"
@@ -109,7 +134,7 @@ jobs:
             echo "==> Limpando imagens antigas"
             docker image prune -f
             echo "==> Deploy concluido"
-          DEPLOY
+          PASSO
 
       - name: Verificar saúde do site
         run: |
