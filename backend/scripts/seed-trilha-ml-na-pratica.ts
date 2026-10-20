@@ -44,15 +44,15 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\n\ndf = pd.DataFrame({\n    'area_m2': [120, 45, 80, 200],\n    'quartos': [3, 1, 2, 4],\n    'ano_construcao': [2005, 2018, 2010, 1995]\n})\n\nano_atual = 2026\n\n# feature derivada: idade do imóvel em anos\ndf['idade_imovel'] = ano_atual - df['ano_construcao']\n\n# feature derivada: área média por cômodo\ndf['area_por_quarto'] = df['area_m2'] / df['quartos']\n\nprint(df[['area_m2', 'quartos', 'idade_imovel', 'area_por_quarto']])\n#    area_m2  quartos  idade_imovel  area_por_quarto\n# 0      120        3            21             40.0\n# 1       45        1             8             45.0\n# 2       80        2            16             40.0\n# 3      200        4            31             50.0"
+                        "value": "import pandas as pd\n\ndf = pd.DataFrame({\n    'area_m2': [120, 45, 80, 200],\n    'quartos': [3, 1, 2, 4],\n    'ano_construcao': [2005, 2018, 2010, 1995],\n    'ano_venda': [2026, 2024, 2019, 2026]\n})\n\n# feature derivada: idade do imóvel na data da venda\ndf['idade_imovel'] = df['ano_venda'] - df['ano_construcao']\n\n# feature derivada: área média por cômodo\ndf['area_por_quarto'] = df['area_m2'] / df['quartos']\n\nprint(df[['area_m2', 'quartos', 'idade_imovel', 'area_por_quarto']])\n#    area_m2  quartos  idade_imovel  area_por_quarto\n# 0      120        3            21             40.0\n# 1       45        1             6             45.0\n# 2       80        2             9             40.0\n# 3      200        4            31             50.0"
                     },
                     {
                         "type": "text",
-                        "value": "Repare que `idade_imovel` e `area_por_quarto` provavelmente têm uma relação mais direta com o preço do imóvel do que `ano_construcao` sozinho. Uma árvore de decisão até consegue aproximar essa mesma informação fazendo vários splits em `ano_construcao`, parecido com o jeito que ela lidava com o overfitting quando ficava funda demais na trilha de ML, mas entregar a feature já pronta poupa esse trabalho e ajuda o modelo a generalizar com menos dado de treino."
+                        "value": "Repare que `idade_imovel` e `area_por_quarto` provavelmente têm uma relação mais direta com o preço do imóvel do que as colunas cruas de onde saíram. Cada uma combina duas colunas: a idade na venda junta `ano_venda` e `ano_construcao`, e a área por quarto junta `area_m2` e `quartos`. Uma árvore de decisão até consegue aproximar essas contas fazendo vários splits nas colunas cruas, parecido com o jeito que ela lidava com o overfitting quando ficava funda demais na trilha de ML, mas entregar a feature já pronta poupa esse trabalho e ajuda o modelo a generalizar com menos dado de treino. O ganho vem da combinação: se a idade fosse calculada numa data fixa, igual pra todas as linhas (como `2026 - ano_construcao`), ela seria só `ano_construcao` com o sinal trocado, e a árvore faria exatamente os mesmos cortes (uma regressão linear também chegaria ao mesmo ajuste)."
                     },
                     {
                         "type": "table",
-                        "value": "[[\"Feature crua\", \"Feature derivada\", \"Por que ajuda\"], [\"ano_construcao\", \"idade_imovel\", \"Idade tem relação mais direta com o preço do que o ano em si\"], [\"data_da_venda\", \"dia_da_semana, mes, eh_feriado\", \"Deixa a sazonalidade explícita em vez de escondida num timestamp\"], [\"renda e numero_de_dependentes\", \"renda_per_capita\", \"Uma única razão capta a interação que duas colunas separadas escondem\"], [\"latitude e longitude\", \"distancia_ao_centro\", \"Coordenadas cruas quase não têm relação linear com preço, a distância tem\"]]"
+                        "value": "[[\"Feature crua\", \"Feature derivada\", \"Por que ajuda\"], [\"ano_construcao e ano_venda\", \"idade_imovel\", \"A idade na venda tem relação mais direta com o preço do que cada ano sozinho\"], [\"data_da_venda\", \"dia_da_semana, mes, eh_feriado\", \"Deixa a sazonalidade explícita em vez de escondida num timestamp\"], [\"renda e numero_de_dependentes\", \"renda_per_capita\", \"Uma única razão capta a interação que duas colunas separadas escondem\"], [\"latitude e longitude\", \"distancia_ao_centro\", \"Coordenadas cruas quase não têm relação linear com preço, a distância tem\"]]"
                     },
                     {
                         "type": "quote",
@@ -127,15 +127,15 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um time comparou duas random forests idênticas em hiperparâmetros: uma recebeu o timestamp bruto da data de nascimento (dias desde 1970) e outra recebeu a idade em anos já calculada. A segunda teve desempenho de validação melhor, mesmo os dois números vindo da mesma informação. Qual é a explicação mais provável?",
+                        "statement": "Um time comparou duas random forests idênticas em hiperparâmetros, numa base pequena de pedidos espalhados por vários anos: uma recebeu os timestamps brutos do nascimento do cliente e da data do pedido (dias desde 1970), e a outra recebeu a idade do cliente na data de cada pedido. A segunda teve desempenho de validação melhor, mesmo a idade sendo só a diferença entre as duas datas. Qual é a explicação mais provável?",
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A árvore precisa de muitos splits pra aproximar a idade a partir do timestamp bruto sozinha.",
+                                "text": "A árvore precisa de muitos splits pra aproximar a idade a partir dos dois timestamps brutos sozinha.",
                                 "isCorrect": true
                             },
                             {
-                                "text": "O timestamp bruto tem uma escala numérica inválida, então o scikit-learn rejeita essa coluna sozinho.",
+                                "text": "Os timestamps brutos têm uma escala numérica inválida, então o scikit-learn rejeita essas colunas sozinho.",
                                 "isCorrect": false
                             },
                             {
@@ -143,7 +143,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O timestamp bruto tem uma correlação negativa com o alvo, o que atrapalha qualquer modelo de árvore.",
+                                "text": "Os timestamps brutos têm uma correlação negativa com o alvo, o que atrapalha qualquer modelo de árvore.",
                                 "isCorrect": false
                             }
                         ]
@@ -193,11 +193,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Agregações por grupo e binning\n\nDuas outras formas de criar sinal:\n\n- **Agregação por grupo**: resumir um grupo em um número e trazer esse resumo pra cada linha. O gasto médio histórico daquele cliente, calculado com `groupby` e `transform`, vira uma feature nova em cada pedido dele. Isso captura \"esse cliente costuma gastar muito\" sem vazar o valor daquele pedido específico.\n- **Binning**: transformar uma variável contínua em faixas categóricas. Idade vira `18-25`, `26-35`, `36-50`, `50+`. Ajuda quando a relação com o alvo não é uma linha reta (crianças e idosos compram menos que adultos, por exemplo, e uma idade contínua sozinha confunde um modelo linear)."
+                        "value": "## Agregações por grupo e binning\n\nDuas outras formas de criar sinal:\n\n- **Agregação por grupo**: resumir um grupo em um número e trazer esse resumo pra cada linha. O gasto médio daquele cliente, calculado com `groupby` e `transform`, vira uma feature nova em cada pedido dele e captura \"esse cliente costuma gastar muito\". Só que `transform('mean')` usa todos os pedidos do cliente, inclusive o próprio pedido e os que vieram depois: na saída abaixo, a média do cliente 3 é o valor do único pedido dele. Se a feature vai ajudar a prever algo sobre o pedido, calcule o histórico só com os pedidos anteriores, como a coluna `media_anterior` do código, para não usar pedidos que ainda nem tinham acontecido.\n- **Binning**: transformar uma variável contínua em faixas categóricas. Idade vira `18-25`, `26-35`, `36-50`, `50+`. Ajuda quando a relação com o alvo não é uma linha reta (crianças e idosos compram menos que adultos, por exemplo, e uma idade contínua sozinha confunde um modelo linear)."
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\n\ndf = pd.DataFrame({\n    'cliente_id': [1, 1, 2, 2, 3],\n    'valor_pedido': [100, 300, 50, 60, 900],\n    'idade': [22, 22, 45, 45, 67]\n})\n\n# agregação: gasto médio histórico do cliente, repetido em cada linha dele\ndf['gasto_medio_cliente'] = df.groupby('cliente_id')['valor_pedido'].transform('mean')\n\n# binning: faixa etária em vez de idade contínua\ndf['faixa_etaria'] = pd.cut(\n    df['idade'],\n    bins=[0, 25, 35, 50, 120],\n    labels=['18-25', '26-35', '36-50', '50+']\n)\n\nprint(df[['cliente_id', 'valor_pedido', 'gasto_medio_cliente', 'faixa_etaria']])\n#    cliente_id  valor_pedido  gasto_medio_cliente faixa_etaria\n# 0           1           100                 200.0        18-25\n# 1           1           300                 200.0        18-25\n# 2           2            50                  55.0        36-50\n# 3           2            60                  55.0        36-50\n# 4           3           900                 900.0          50+"
+                        "value": "import pandas as pd\n\n# pedidos em ordem de data\ndf = pd.DataFrame({\n    'cliente_id': [1, 1, 2, 2, 3],\n    'valor_pedido': [100, 300, 50, 60, 900],\n    'idade': [22, 22, 45, 45, 67]\n})\n\n# agregação: média de todos os pedidos do cliente, repetida em cada linha dele\ndf['gasto_medio_cliente'] = df.groupby('cliente_id')['valor_pedido'].transform('mean')\n\n# histórico: média só dos pedidos anteriores do cliente (vazia no primeiro pedido)\ndf['media_anterior'] = df.groupby('cliente_id')['valor_pedido'].transform(\n    lambda s: s.shift().expanding().mean()\n)\n\n# binning: faixa etária em vez de idade contínua\ndf['faixa_etaria'] = pd.cut(\n    df['idade'],\n    bins=[0, 25, 35, 50, 120],\n    labels=['18-25', '26-35', '36-50', '50+']\n)\n\nprint(df[['cliente_id', 'valor_pedido', 'gasto_medio_cliente', 'media_anterior', 'faixa_etaria']])\n#    cliente_id  valor_pedido  gasto_medio_cliente  media_anterior faixa_etaria\n# 0           1           100                200.0             NaN        18-25\n# 1           1           300                200.0           100.0        18-25\n# 2           2            50                 55.0             NaN        36-50\n# 3           2            60                 55.0            50.0        36-50\n# 4           3           900                900.0             NaN          50+"
                     },
                     {
                         "type": "quote",
@@ -272,11 +272,11 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um cientista de dados calculou `gasto_medio_cliente` com `groupby().transform('mean')` sobre o treino inteiro, incluindo a própria linha prevista, e usou essa feature pra prever se aquele pedido específico é fraude. Qual é o risco dessa abordagem?",
+                        "statement": "Um cientista de dados calculou `taxa_fraude_cliente`, a média do rótulo `eh_fraude` por cliente, com `groupby().transform('mean')` sobre o treino inteiro, incluindo a própria linha prevista, e usou essa feature pra prever se aquele pedido específico é fraude. Qual é o risco dessa abordagem?",
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "A média inclui o valor do próprio pedido a prever, então carrega informação que só existe por causa do alvo.",
+                                "text": "A média inclui o rótulo do próprio pedido a prever, então carrega informação que só existe por causa do alvo.",
                                 "isCorrect": true
                             },
                             {
@@ -326,7 +326,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.preprocessing import StandardScaler, MinMaxScaler\nimport pandas as pd\n\ndf = pd.DataFrame({'renda_mensal': [1800, 3200, 25000, 4100, 2600]})\n\npadronizador = StandardScaler()\ndf['renda_padronizada'] = padronizador.fit_transform(df[['renda_mensal']])\n\nnormalizador = MinMaxScaler()\ndf['renda_normalizada'] = normalizador.fit_transform(df[['renda_mensal']])\n\nprint(df)\n#    renda_mensal  renda_padronizada  renda_normalizada\n# 0          1800            -0.6251             0.0000\n# 1          3200            -0.4672             0.0603\n# 2         25000             1.9928             1.0000\n# 3          4100            -0.3656             0.0991\n# 4          2600            -0.5349             0.0345"
+                        "value": "from sklearn.preprocessing import StandardScaler, MinMaxScaler\nimport pandas as pd\n\ndf = pd.DataFrame({'renda_mensal': [1800, 3200, 25000, 4100, 2600]})\n\npadronizador = StandardScaler()\ndf['renda_padronizada'] = padronizador.fit_transform(df[['renda_mensal']])\n\nnormalizador = MinMaxScaler()\ndf['renda_normalizada'] = normalizador.fit_transform(df[['renda_mensal']])\n\nprint(df.round(4))\n#    renda_mensal  renda_padronizada  renda_normalizada\n# 0          1800            -0.6251             0.0000\n# 1          3200            -0.4672             0.0603\n# 2         25000             1.9928             1.0000\n# 3          4100            -0.3656             0.0991\n# 4          2600            -0.5349             0.0345"
                     },
                     {
                         "type": "text",
@@ -417,7 +417,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um modelo foi treinado pra prever `log_preco` em vez de `preco`. Na hora de comparar a previsão com o preço real, o erro médio calculado ficou artificialmente pequeno e sem sentido prático. O que provavelmente foi esquecido?",
+                        "statement": "Um modelo foi treinado pra prever `log_preco` em vez de `preco`. Na hora de comparar a previsão com o preço real, o erro médio calculado ficou absurdamente grande, quase do tamanho do próprio preço. O que provavelmente foi esquecido?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -483,7 +483,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.feature_selection import SelectFromModel\n\nmodelo = RandomForestClassifier(n_estimators=200, random_state=42)\nseletor_modelo = SelectFromModel(modelo, threshold='median')\nX_selecionado_rf = seletor_modelo.fit_transform(X, y)\n\ncolunas_escolhidas_rf = X.columns[seletor_modelo.get_support()]\nprint(colunas_escolhidas_rf.tolist())\n# ['renda_mensal', 'tempo_no_site_seg']  -> só ficam as features acima da importância mediana"
+                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.feature_selection import SelectFromModel\n\nmodelo = RandomForestClassifier(n_estimators=200, random_state=42)\nseletor_modelo = SelectFromModel(modelo, threshold='median')\nX_selecionado_rf = seletor_modelo.fit_transform(X, y)\n\ncolunas_escolhidas_rf = X.columns[seletor_modelo.get_support()]\nprint(colunas_escolhidas_rf.tolist())\n# ['idade', 'renda_mensal']  -> só ficam as features acima da importância mediana (com só 6 linhas, a dupla nem é a mesma do SelectKBest)"
                     },
                     {
                         "type": "table",
@@ -616,7 +616,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import RandomForestClassifier\nimport pandas as pd\n\nX = pd.DataFrame({\n    'idade': [22, 35, 45, 28, 60, 33, 51, 40],\n    'renda_mensal': [2000, 5000, 8000, 3000, 12000, 4500, 9000, 6000],\n    'tempo_no_site_seg': [30, 200, 180, 45, 300, 90, 250, 120],\n    'cor_favorita_cod': [1, 3, 2, 1, 4, 2, 3, 1]  # provavelmente irrelevante\n})\ny = [0, 1, 1, 0, 1, 0, 1, 1]\n\nmodelo = RandomForestClassifier(n_estimators=300, random_state=42)\nmodelo.fit(X, y)\n\nimportancias = pd.Series(modelo.feature_importances_, index=X.columns)\nprint(importancias.sort_values(ascending=False))\n# renda_mensal          0.42\n# tempo_no_site_seg     0.35\n# idade                 0.19\n# cor_favorita_cod      0.04\n# dtype: float64"
+                        "value": "from sklearn.ensemble import RandomForestClassifier\nimport pandas as pd\n\nX = pd.DataFrame({\n    'idade': [22, 35, 45, 28, 60, 33, 51, 40],\n    'renda_mensal': [2000, 5000, 8000, 3000, 12000, 4500, 9000, 6000],\n    'tempo_no_site_seg': [30, 200, 180, 45, 300, 90, 250, 120],\n    'cor_favorita_cod': [1, 3, 2, 1, 4, 2, 3, 1]  # provavelmente irrelevante\n})\ny = [0, 1, 1, 0, 1, 0, 1, 1]\n\nmodelo = RandomForestClassifier(n_estimators=300, random_state=42)\nmodelo.fit(X, y)\n\nimportancias = pd.Series(modelo.feature_importances_, index=X.columns)\nprint(importancias.sort_values(ascending=False).round(2))\n# idade                0.33\n# renda_mensal         0.32\n# tempo_no_site_seg    0.31\n# cor_favorita_cod     0.04\n# dtype: float64"
                     },
                     {
                         "type": "text",
@@ -624,7 +624,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import GradientBoostingClassifier\nfrom sklearn.model_selection import train_test_split\nimport pandas as pd\n\nX = pd.DataFrame({\n    'dias_em_atraso_atual': [0, 45, 0, 60, 0, 5, 0, 90],\n    'renda_mensal': [3000, 2500, 8000, 2000, 9000, 4000, 7000, 1800],\n    'valor_total_multas': [0, 320, 0, 410, 0, 15, 0, 600]  # existe por causa do alvo\n})\ny = [0, 1, 0, 1, 0, 0, 0, 1]  # inadimplente\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.25, random_state=42, stratify=y\n)\n\nmodelo = GradientBoostingClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\n\nimportancias = pd.Series(modelo.feature_importances_, index=X.columns)\nprint(importancias.sort_values(ascending=False))\n# valor_total_multas       0.94   -> sinal de alerta, uma feature dominando quase tudo\n# dias_em_atraso_atual     0.05\n# renda_mensal             0.01\n\nprint(modelo.score(X_teste, y_teste))\n# 1.0   -> acurácia perfeita é suspeita, não motivo de comemoração"
+                        "value": "from sklearn.ensemble import GradientBoostingClassifier\nfrom sklearn.model_selection import train_test_split\nimport pandas as pd\n\nX = pd.DataFrame({\n    'dias_em_atraso_atual': [0, 45, 0, 60, 30, 5, 0, 90, 15, 0, 10, 0],\n    'renda_mensal': [3000, 2500, 8000, 2000, 2200, 4000, 7000, 1800, 2600, 9000, 6000, 3500],\n    'valor_total_multas': [0, 320, 0, 410, 0, 0, 0, 600, 0, 0, 90, 150]  # existe por causa do alvo\n})\ny = [0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1]  # inadimplente\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.25, random_state=42, stratify=y\n)\n\nmodelo = GradientBoostingClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\n\nimportancias = pd.Series(modelo.feature_importances_, index=X.columns)\nprint(importancias.sort_values(ascending=False))\n# valor_total_multas      1.0   -> sinal de alerta: uma feature concentra toda a importância\n# dias_em_atraso_atual    0.0\n# renda_mensal            0.0\n# dtype: float64\n\nprint(modelo.score(X_teste, y_teste))\n# 1.0   -> acurácia perfeita é suspeita, não motivo de comemoração"
                     },
                     {
                         "type": "text",
@@ -770,7 +770,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.linear_model import LinearRegression\nfrom sklearn.datasets import make_regression\n\nX, y = make_regression(n_samples=200, n_features=3, noise=10, random_state=42)\n\nmodelo = LinearRegression()\nmodelo.fit(X, y)\n\nprint(modelo.coef_)\n# [45.23 12.87 -3.41]  (aprendido a partir dos dados, ninguem escolheu)\n\nprint(modelo.intercept_)\n# 0.52  (tambem aprendido: nao e argumento do construtor)"
+                        "value": "from sklearn.linear_model import LinearRegression\nfrom sklearn.datasets import make_regression\n\nX, y = make_regression(n_samples=200, n_features=3, noise=10, random_state=42)\n\nmodelo = LinearRegression()\nmodelo.fit(X, y)\n\nprint(modelo.coef_.round(2))\n# [71.64 21.85 72.75]  (aprendido a partir dos dados, ninguem escolheu)\n\nprint(round(modelo.intercept_, 2))\n# -0.37  (tambem aprendido: nao e argumento do construtor)"
                     },
                     {
                         "type": "text",
@@ -923,7 +923,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "print(busca.best_params_)\n# {'max_depth': 5, 'min_samples_leaf': 5}\n\nprint(busca.best_score_)\n# 0.87\n\nmodelo_final = busca.best_estimator_\nprint(modelo_final.max_depth)\n# 5"
+                        "value": "print(busca.best_params_)\n# {'max_depth': 3, 'min_samples_leaf': 1}\n\nprint(busca.best_score_)\n# 0.932\n\nmodelo_final = busca.best_estimator_\nprint(modelo_final.max_depth)\n# 3"
                     },
                     {
                         "type": "text",
@@ -1060,7 +1060,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.model_selection import RandomizedSearchCV\nfrom sklearn.ensemble import RandomForestClassifier\nfrom scipy.stats import randint\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=500, n_features=8, random_state=42)\n\nparam_distributions = {\n    \"n_estimators\": randint(50, 500),\n    \"max_depth\": randint(2, 20),\n    \"min_samples_leaf\": randint(1, 20),\n}\n\nbusca = RandomizedSearchCV(\n    RandomForestClassifier(random_state=42),\n    param_distributions=param_distributions,\n    n_iter=30,\n    cv=5,\n    random_state=42,\n)\nbusca.fit(X, y)\n# so 30 combinacoes testadas, sorteadas dentro dos intervalos acima\n\nprint(busca.best_params_)\n# {'max_depth': 14, 'min_samples_leaf': 3, 'n_estimators': 267}"
+                        "value": "from sklearn.model_selection import RandomizedSearchCV\nfrom sklearn.ensemble import RandomForestClassifier\nfrom scipy.stats import randint\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=500, n_features=8, random_state=42)\n\nparam_distributions = {\n    \"n_estimators\": randint(50, 500),\n    \"max_depth\": randint(2, 20),\n    \"min_samples_leaf\": randint(1, 20),\n}\n\nbusca = RandomizedSearchCV(\n    RandomForestClassifier(random_state=42),\n    param_distributions=param_distributions,\n    n_iter=30,\n    cv=5,\n    random_state=42,\n)\nbusca.fit(X, y)\n# so 30 combinacoes testadas, sorteadas dentro dos intervalos acima\n\nprint(busca.best_params_)\n# {'max_depth': 16, 'min_samples_leaf': 3, 'n_estimators': 255}"
                     },
                     {
                         "type": "text",
@@ -1205,7 +1205,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.model_selection import train_test_split, GridSearchCV\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=1000, n_features=10, random_state=42)\n\n# separa o teste ANTES de qualquer busca\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\nparam_grid = {\"max_depth\": [4, 8, 12, None], \"n_estimators\": [100, 300]}\n\nbusca = GridSearchCV(\n    RandomForestClassifier(random_state=42), param_grid, cv=5\n)\nbusca.fit(X_treino, y_treino)  # o CV inteiro roda dentro do treino\n\nprint(busca.best_params_)\n# {'max_depth': 12, 'n_estimators': 300}\n\nprint(busca.best_score_)\n# 0.89  (media da validacao cruzada, ainda dentro do treino)\n\n# X_teste so aparece aqui, uma vez, no fim de tudo\nprint(busca.score(X_teste, y_teste))\n# 0.87  (estimativa honesta, em dado que a busca nunca viu)"
+                        "value": "from sklearn.model_selection import train_test_split, GridSearchCV\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=1000, n_features=10, random_state=42)\n\n# separa o teste ANTES de qualquer busca\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\nparam_grid = {\"max_depth\": [4, 8, 12, None], \"n_estimators\": [100, 300]}\n\nbusca = GridSearchCV(\n    RandomForestClassifier(random_state=42), param_grid, cv=5\n)\nbusca.fit(X_treino, y_treino)  # o CV inteiro roda dentro do treino\n\nprint(busca.best_params_)\n# {'max_depth': 8, 'n_estimators': 100}\n\nprint(round(busca.best_score_, 3))\n# 0.911  (media da validacao cruzada, ainda dentro do treino)\n\n# X_teste so aparece aqui, uma vez, no fim de tudo\nprint(busca.score(X_teste, y_teste))\n# 0.875  (estimativa honesta, em dado que a busca nunca viu)"
                     },
                     {
                         "type": "text",
@@ -1350,7 +1350,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.model_selection import validation_curve\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=500, n_features=10, random_state=42)\n\nprofundidades = range(1, 21)\n\nscores_treino, scores_val = validation_curve(\n    DecisionTreeClassifier(random_state=42),\n    X, y,\n    param_name=\"max_depth\",\n    param_range=profundidades,\n    cv=5,\n)\n\nmedia_treino = scores_treino.mean(axis=1)\nmedia_val = scores_val.mean(axis=1)\n\nfor prof, tr, val in zip(profundidades, media_treino, media_val):\n    print(prof, round(tr, 2), round(val, 2))\n# 1  0.71 0.70   (underfitting: os dois baixos e colados)\n# 6  0.94 0.89   (os dois sobem, ainda proximos)\n# 12 0.99 0.86   (treino quase perfeito, validacao ja caiu: overfitting)\n# 20 1.00 0.83   (treino decorado, validacao piorando mais ainda)"
+                        "value": "from sklearn.model_selection import validation_curve\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import make_classification\n\n# flip_y=0.2: 20% das linhas recebem um rotulo sorteado ao acaso (ruido)\nX, y = make_classification(\n    n_samples=1000, n_features=10, n_informative=4, flip_y=0.2, random_state=42\n)\n\nprofundidades = range(1, 21)\n\nscores_treino, scores_val = validation_curve(\n    DecisionTreeClassifier(random_state=42),\n    X, y,\n    param_name=\"max_depth\",\n    param_range=profundidades,\n    cv=5,\n)\n\nmedia_treino = scores_treino.mean(axis=1)\nmedia_val = scores_val.mean(axis=1)\n\nfor prof, tr, val in zip(profundidades, media_treino, media_val):\n    print(prof, f\"{tr:.2f}\", f\"{val:.2f}\")\n# trecho da saida (sao 20 linhas, uma por profundidade):\n# 1 0.67 0.67    (underfitting: os dois baixos e colados)\n# 4 0.83 0.80    (os dois sobem, ainda proximos)\n# 12 0.99 0.76   (treino quase perfeito, validacao ja caiu: overfitting)\n# 20 1.00 0.75   (treino decorado, validacao mais baixa ainda)"
                     },
                     {
                         "type": "text",
@@ -1500,7 +1500,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import numpy as np\n\nrng = np.random.default_rng(42)\n\ndef acerto_por_votacao(n_modelos, acuracia_individual, n_simulacoes=20000):\n    \"\"\"Simula n_modelos classificadores independentes, cada um certo\n    com probabilidade acuracia_individual, e agrega por voto da maioria.\"\"\"\n    acertos = rng.random((n_simulacoes, n_modelos)) < acuracia_individual\n    votos_certos = acertos.sum(axis=1) > (n_modelos / 2)\n    return votos_certos.mean()\n\nfor n in [1, 5, 15, 51, 101]:\n    print(n, round(acerto_por_votacao(n, 0.6), 3))\n\n# 1    0.6\n# 5    0.683\n# 15   0.755\n# 51   0.856\n# 101  0.911\n# cada modelo sozinho acerta so 60% das vezes, mas a votacao de 101\n# modelos independentes acerta mais de 91%"
+                        "value": "import numpy as np\n\nrng = np.random.default_rng(42)\n\ndef acerto_por_votacao(n_modelos, acuracia_individual, n_simulacoes=20000):\n    \"\"\"Simula n_modelos classificadores independentes, cada um certo\n    com probabilidade acuracia_individual, e agrega por voto da maioria.\"\"\"\n    acertos = rng.random((n_simulacoes, n_modelos)) < acuracia_individual\n    votos_certos = acertos.sum(axis=1) > (n_modelos / 2)\n    return votos_certos.mean()\n\nfor n in [1, 5, 15, 51, 101]:\n    print(n, round(acerto_por_votacao(n, 0.6), 3))\n\n# 1    0.597\n# 5    0.682\n# 15   0.791\n# 51   0.928\n# 101  0.979\n# cada modelo sozinho acerta so 60% das vezes, mas a votacao de 101\n# modelos independentes acerta quase 98%"
                     },
                     {
                         "type": "text",
@@ -1645,7 +1645,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split\nimport numpy as np\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nrng = np.random.default_rng(0)\nraizes = []\nacuracias = []\n\nfor _ in range(5):\n    idx = rng.choice(len(X_train), size=len(X_train), replace=True)\n    arvore = DecisionTreeClassifier(random_state=0)\n    arvore.fit(X_train.iloc[idx], y_train.iloc[idx])\n    raizes.append(X_train.columns[arvore.tree_.feature[0]])\n    acuracias.append(round(arvore.score(X_test, y_test), 3))\n\nprint(raizes)\n# ['worst perimeter', 'worst concave points', 'worst radius',\n#  'mean concave points', 'worst perimeter']\nprint(acuracias)\n# [0.912, 0.936, 0.924, 0.947, 0.918]\n# a raiz muda em quase toda amostra, e a acuracia oscila mais de\n# 3 pontos percentuais so por causa do reamostramento"
+                        "value": "from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split\nimport numpy as np\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nrng = np.random.default_rng(0)\nraizes = []\nacuracias = []\n\nfor _ in range(5):\n    idx = rng.choice(len(X_train), size=len(X_train), replace=True)\n    arvore = DecisionTreeClassifier(random_state=0)\n    arvore.fit(X_train.iloc[idx], y_train.iloc[idx])\n    raizes.append(X_train.columns[arvore.tree_.feature[0]])\n    acuracias.append(round(arvore.score(X_test, y_test), 3))\n\nprint(raizes)\n# ['worst concave points', 'worst perimeter', 'worst area',\n#  'worst concave points', 'mean concave points']\nprint(acuracias)\n# [0.912, 0.906, 0.947, 0.93, 0.936]\n# a raiz muda em quase toda amostra, e a acuracia oscila mais de\n# 3 pontos percentuais so por causa do reamostramento"
                     },
                     {
                         "type": "text",
@@ -1674,7 +1674,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Ela é limitada por construção a no máximo três níveis de profundidade possíveis",
+                                "text": "Ela escolhe o ponto de corte de cada divisão ao acaso, sem olhar a redução de impureza",
                                 "isCorrect": false
                             },
                             {
@@ -1790,7 +1790,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import BaggingClassifier\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split, cross_val_score\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\narvore_unica = DecisionTreeClassifier(random_state=42)\nbagging = BaggingClassifier(\n    estimator=DecisionTreeClassifier(random_state=42),\n    n_estimators=100,\n    oob_score=True,\n    random_state=42,\n)\n\nprint(cross_val_score(arvore_unica, X_train, y_train, cv=5).mean())\n# 0.917 (arvore unica, variancia alta entre os folds)\n\nbagging.fit(X_train, y_train)\nprint(bagging.oob_score_)\n# 0.960 (avaliado nos dados out-of-bag, sem tocar no teste)\nprint(bagging.score(X_test, y_test))\n# 0.953 (o bagging costuma superar a arvore unica, com menos\n# oscilacao entre execucoes diferentes)"
+                        "value": "from sklearn.ensemble import BaggingClassifier\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split, cross_val_score\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\narvore_unica = DecisionTreeClassifier(random_state=42)\nbagging = BaggingClassifier(\n    estimator=DecisionTreeClassifier(random_state=42),\n    n_estimators=100,\n    oob_score=True,\n    random_state=42,\n)\n\nprint(cross_val_score(arvore_unica, X_train, y_train, cv=5).mean())\n# 0.910 (arvore unica, variancia alta entre os folds)\n\nbagging.fit(X_train, y_train)\nprint(bagging.oob_score_)\n# 0.940 (avaliado nos dados out-of-bag, sem tocar no teste)\nprint(bagging.score(X_test, y_test))\n# 0.959 (o bagging costuma superar a arvore unica, com menos\n# oscilacao entre execucoes diferentes)"
                     },
                     {
                         "type": "table",
@@ -1927,11 +1927,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split, cross_val_score\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfloresta = RandomForestClassifier(\n    n_estimators=200,\n    max_features='sqrt',\n    random_state=42,\n    n_jobs=-1,\n)\n\nprint(cross_val_score(floresta, X_train, y_train, cv=5).mean())\n# 0.965 (media na validacao cruzada, mais alta e mais estavel entre os folds)\n\nfloresta.fit(X_train, y_train)\nprint(floresta.score(X_test, y_test))\n# 0.959\nprint(floresta.predict(X_test.iloc[:3]))\n# [1 0 1]\nprint(floresta.predict_proba(X_test.iloc[:3]))\n# [[0.02 0.98] [0.91 0.09] [0.05 0.95]]"
+                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_breast_cancer\nfrom sklearn.model_selection import train_test_split, cross_val_score\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfloresta = RandomForestClassifier(\n    n_estimators=200,\n    max_features='sqrt',\n    random_state=42,\n    n_jobs=-1,\n)\n\nprint(cross_val_score(floresta, X_train, y_train, cv=5).mean())\n# 0.952 (media na validacao cruzada, mais alta e mais estavel entre os folds)\n\nfloresta.fit(X_train, y_train)\nprint(floresta.score(X_test, y_test))\n# 0.971\nprint(floresta.predict(X_test.iloc[:3]))\n# [1 0 0]\nprint(floresta.predict_proba(X_test.iloc[:3]))\n# [[0.03 0.97]\n#  [1.   0.  ]\n#  [0.98 0.02]]"
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import RandomForestRegressor\nfrom sklearn.datasets import fetch_california_housing\nfrom sklearn.model_selection import train_test_split\n\nX, y = fetch_california_housing(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nregressor = RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1)\nregressor.fit(X_train, y_train)\n\nprint(regressor.score(X_test, y_test))\n# 0.807 (R2 no teste)\nprint(regressor.predict(X_test.iloc[:3]))\n# [1.62 1.02 3.45]\n# cada arvore da floresta preve um valor numerico, e o regressor\n# final devolve a media dessas previsoes"
+                        "value": "from sklearn.ensemble import RandomForestRegressor\nfrom sklearn.datasets import load_diabetes\nfrom sklearn.model_selection import train_test_split\n\nX, y = load_diabetes(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nregressor = RandomForestRegressor(n_estimators=200, random_state=42, n_jobs=-1)\nregressor.fit(X_train, y_train)\n\nprint(regressor.score(X_test, y_test))\n# 0.480 (R2 no teste; conjunto pequeno, de 442 pacientes, e com muito ruido)\nprint(regressor.predict(X_test.iloc[:3]))\n# [155.655 176.405 145.99 ]\n# cada arvore da floresta preve um valor numerico, e o regressor\n# final devolve a media dessas previsoes"
                     },
                     {
                         "type": "table",
@@ -1939,7 +1939,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Uma família, dois usos\n\nRepare que a mesma ideia serve tanto pra classificação (`RandomForestClassifier`) quanto pra regressão (`RandomForestRegressor`): a diferença está só em como as árvores da floresta agregam a previsão final, votação ou média das probabilidades num caso, média direta dos valores previstos no outro. A lógica de bagging mais aleatoriedade nas features é exatamente a mesma nos dois.\n\nNa próxima aula, o foco vira prático: quais hiperparâmetros realmente importam ajustar numa random forest, e por que ela costuma ser o primeiro modelo forte que um cientista de dados tenta antes de partir pra algo mais sofisticado."
+                        "value": "## Uma família, dois usos\n\nRepare que a mesma ideia serve tanto pra classificação (`RandomForestClassifier`) quanto pra regressão (`RandomForestRegressor`): a diferença está só em como as árvores da floresta agregam a previsão final, votação ou média das probabilidades num caso, média direta dos valores previstos no outro. A lógica de bagging mais aleatoriedade nas features é a mesma nos dois, com um detalhe de padrão: no scikit-learn 1.9, de 2026, o `RandomForestRegressor` usa `max_features=1.0` (todas as features em cada divisão), o que na prática é bagging de árvores, inclusive no exemplo acima; para ter o sorteio de features na regressão, passe um valor menor, como `max_features=0.3`.\n\nNa próxima aula, o foco vira prático: quais hiperparâmetros realmente importam ajustar numa random forest, e por que ela costuma ser o primeiro modelo forte que um cientista de dados tenta antes de partir pra algo mais sofisticado."
                     },
                     {
                         "type": "quote",
@@ -2030,7 +2030,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "fit e predict fazem exatamente a mesma coisa no RandomForestClassifier, por compatibilidade",
+                                "text": "fit treina as árvores em sequência, cada uma corrigindo a anterior; predict soma as respostas",
                                 "isCorrect": false
                             }
                         ]
@@ -2072,11 +2072,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import GridSearchCV, train_test_split\nfrom sklearn.datasets import load_breast_cancer\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\ngrade = {\n    'n_estimators': [100, 300],\n    'max_depth': [None, 8, 16],\n    'max_features': ['sqrt', 0.5],\n}\n\nbusca = GridSearchCV(\n    RandomForestClassifier(random_state=42),\n    param_grid=grade,\n    cv=5,\n    scoring='accuracy',\n    n_jobs=-1,\n)\nbusca.fit(X_train, y_train)\n\nprint(busca.best_params_)\n# {'max_depth': 8, 'max_features': 'sqrt', 'n_estimators': 300}\nprint(busca.best_score_)\n# 0.965 (media na validacao cruzada, dentro do treino)\nprint(busca.score(X_test, y_test))\n# 0.959 (avaliacao final, so agora tocando no teste)"
+                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import GridSearchCV, train_test_split\nfrom sklearn.datasets import load_breast_cancer\n\nX, y = load_breast_cancer(return_X_y=True, as_frame=True)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\ngrade = {\n    'n_estimators': [100, 300],\n    'max_depth': [None, 8, 16],\n    'max_features': ['sqrt', 0.5],\n}\n\nbusca = GridSearchCV(\n    RandomForestClassifier(random_state=42),\n    param_grid=grade,\n    cv=5,\n    scoring='accuracy',\n    n_jobs=-1,\n)\nbusca.fit(X_train, y_train)\n\nprint(busca.best_params_)\n# {'max_depth': None, 'max_features': 'sqrt', 'n_estimators': 300}\n# (None, 8 e 16 empataram na validacao; no empate, vale o primeiro da grade)\nprint(busca.best_score_)\n# 0.955 (media na validacao cruzada, dentro do treino)\nprint(busca.score(X_test, y_test))\n# 0.971 (avaliacao final, so agora tocando no teste)"
                     },
                     {
                         "type": "code",
-                        "value": "# continuando o exemplo anterior, com o melhor modelo encontrado pela busca\nfloresta_final = busca.best_estimator_\n\nimportancias = sorted(\n    zip(X.columns, floresta_final.feature_importances_),\n    key=lambda par: par[1],\n    reverse=True,\n)\n\nfor nome, importancia in importancias[:5]:\n    print(f'{nome}: {importancia:.3f}')\n\n# worst concave points: 0.142\n# worst perimeter: 0.129\n# worst radius: 0.108\n# mean concave points: 0.089\n# worst area: 0.081\n# quanto maior o numero, mais aquela feature contribuiu, em media,\n# pra reduzir a impureza nas divisoes de todas as arvores da floresta"
+                        "value": "# continuando o exemplo anterior, com o melhor modelo encontrado pela busca\nfloresta_final = busca.best_estimator_\n\nimportancias = sorted(\n    zip(X.columns, floresta_final.feature_importances_),\n    key=lambda par: par[1],\n    reverse=True,\n)\n\nfor nome, importancia in importancias[:5]:\n    print(f'{nome}: {importancia:.3f}')\n\n# worst concave points: 0.135\n# mean concave points: 0.129\n# worst area: 0.127\n# worst perimeter: 0.110\n# worst radius: 0.066\n# quanto maior o numero, mais aquela feature contribuiu, em media,\n# pra reduzir a impureza nas divisoes de todas as arvores da floresta"
                     },
                     {
                         "type": "text",
@@ -2175,7 +2175,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A ordem em que cada feature foi originalmente coletada na construção do conjunto de dados",
+                                "text": "A proporção de árvores da floresta em que cada feature foi escolhida para fazer a divisão da raiz",
                                 "isCorrect": false
                             }
                         ]
@@ -2500,7 +2500,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Por que elas dominam\n\nEssas bibliotecas ficaram famosas por um motivo simples: em bases de dados tabulares (linhas e colunas, o tipo mais comum em empresas), elas costumam entregar o melhor resultado com o menor esforço de preparo. Isso vem de otimizações como divisão de nós por histograma (mais rápida que testar cada valor possível), regularização embutida contra overfitting, suporte nativo a valores ausentes e, em alguns casos, treino em GPU.\n\nVale uma nota de honestidade aqui: mesmo com todo esse avanço, gradient boosting bem ajustado costuma superar redes neurais profundas em dados tabulares. Isso não quer dizer que deep learning seja ruim (você vai ver isso lá na frente, no módulo sobre redes neurais), só que, pra tabela de linhas e colunas, árvores em sequência costumam ganhar."
+                        "value": "## Por que elas dominam\n\nEssas bibliotecas ficaram famosas por um motivo simples: em bases de dados tabulares (linhas e colunas, o tipo mais comum em empresas), elas costumam entregar o melhor resultado com o menor esforço de preparo. Isso vem de otimizações como divisão de nós por histograma (mais rápida que testar cada valor possível), regularização embutida contra overfitting, suporte nativo a valores ausentes e, em alguns casos, treino em GPU.\n\nVale uma nota de honestidade aqui: em tabelas de tamanho médio, gradient boosting bem ajustado costuma superar redes neurais profundas treinadas do zero, como mostrou um estudo muito citado de 2022. O quadro vem mudando: em 2025, o benchmark TabArena viu redes feitas para tabela igualarem ou superarem o boosting quando ganham mais tempo de treino e ensembles, e modelos pré-treinados, como o TabPFN, liderarem em bases pequenas. Isso não quer dizer que deep learning seja ruim (você vai ver isso lá na frente, no módulo sobre redes neurais), só que, pra tabela de linhas e colunas, árvores em sequência continuam sendo um ponto de partida forte e barato."
                     },
                     {
                         "type": "table",
@@ -2613,11 +2613,11 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Em bases de dados tabulares, comuns na maioria dos problemas de negócio, por que gradient boosting bem ajustado costuma superar redes neurais profundas?",
+                        "statement": "Em bases de dados tabulares, comuns na maioria dos problemas de negócio, por que gradient boosting bem ajustado costuma superar redes neurais profundas treinadas do zero?",
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque árvores lidam bem com poucas amostras e features heterogêneas, sem exigir tanto dado",
+                                "text": "Porque árvores lidam bem com bases de tamanho médio e features heterogêneas, sem exigir tanto dado",
                                 "isCorrect": true
                             },
                             {
@@ -2625,7 +2625,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque gradient boosting sempre treina mais rápido que qualquer rede neural, em qualquer caso",
+                                "text": "Porque gradient boosting sempre treina mais rápido que qualquer rede neural profunda, em qualquer caso",
                                 "isCorrect": false
                             },
                             {
@@ -2863,7 +2863,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque árvores rasas treinam exatamente na mesma velocidade que árvores bem mais profundas e complexas",
+                                "text": "Porque árvores rasas treinam mais rápido, e o tempo de treino é o único motivo para limitar a profundidade",
                                 "isCorrect": false
                             },
                             {
@@ -3081,7 +3081,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.compose import ColumnTransformer\nfrom sklearn.preprocessing import StandardScaler, OneHotEncoder\n\ncolunas_numericas = ['idade', 'renda']\ncolunas_categoricas = ['cidade', 'plano']\n\npreparo = ColumnTransformer([\n    ('num', StandardScaler(), colunas_numericas),\n    ('cat', OneHotEncoder(handle_unknown='ignore'), colunas_categoricas)\n])\n\nX_treino_preparado = preparo.fit_transform(X_treino)\nprint(X_treino_preparado.shape)\n# (800, 7) -> 2 colunas numericas escaladas + 5 colunas do one-hot,\n# concatenadas lado a lado numa unica matriz"
+                        "value": "from sklearn.compose import ColumnTransformer\nfrom sklearn.preprocessing import StandardScaler, OneHotEncoder\n\ncolunas_numericas = ['idade', 'renda']\ncolunas_categoricas = ['cidade', 'plano']\n\npreparo = ColumnTransformer([\n    ('num', StandardScaler(), colunas_numericas),\n    ('cat', OneHotEncoder(handle_unknown='ignore'), colunas_categoricas)\n])\n\nX_treino_preparado = preparo.fit_transform(X_treino)\nprint(X_treino_preparado.shape)\n# (800, 7) -> 2 colunas numericas escaladas + 5 colunas do one-hot\n# (3 cidades + 2 planos), concatenadas lado a lado numa unica matriz"
                     },
                     {
                         "type": "text",
@@ -3089,7 +3089,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.pipeline import Pipeline\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.ensemble import RandomForestClassifier\n\npipeline_numerico = Pipeline([\n    ('imputer', SimpleImputer(strategy='median')),\n    ('scaler', StandardScaler())\n])\n\npipeline_categorico = Pipeline([\n    ('imputer', SimpleImputer(strategy='most_frequent')),\n    ('onehot', OneHotEncoder(handle_unknown='ignore'))\n])\n\npreparo = ColumnTransformer([\n    ('num', pipeline_numerico, colunas_numericas),\n    ('cat', pipeline_categorico, colunas_categoricas)\n])\n\npipeline_completo = Pipeline([\n    ('preparo', preparo),\n    ('modelo', RandomForestClassifier(random_state=42))\n])\n\npipeline_completo.fit(X_treino, y_treino)\nprint(pipeline_completo.score(X_teste, y_teste))\n# 0.88\n\nprint(preparo.get_feature_names_out())\n# ['num__idade' 'num__renda' 'cat__cidade_Rio de Janeiro'\n#  'cat__cidade_Sao Paulo' 'cat__plano_premium']\n# o prefixo antes de '__' mostra de qual branch cada coluna final veio"
+                        "value": "from sklearn.pipeline import Pipeline\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.ensemble import RandomForestClassifier\n\npipeline_numerico = Pipeline([\n    ('imputer', SimpleImputer(strategy='median')),\n    ('scaler', StandardScaler())\n])\n\npipeline_categorico = Pipeline([\n    ('imputer', SimpleImputer(strategy='most_frequent')),\n    ('onehot', OneHotEncoder(handle_unknown='ignore'))\n])\n\npreparo = ColumnTransformer([\n    ('num', pipeline_numerico, colunas_numericas),\n    ('cat', pipeline_categorico, colunas_categoricas)\n])\n\npipeline_completo = Pipeline([\n    ('preparo', preparo),\n    ('modelo', RandomForestClassifier(random_state=42))\n])\n\npipeline_completo.fit(X_treino, y_treino)\nprint(pipeline_completo.score(X_teste, y_teste))\n# 0.88\n\nprint(preparo.get_feature_names_out())\n# ['num__idade' 'num__renda' 'cat__cidade_Belo Horizonte'\n#  'cat__cidade_Rio de Janeiro' 'cat__cidade_Sao Paulo' 'cat__plano_basico'\n#  'cat__plano_premium']\n# as mesmas 7 colunas do shape (800, 7): 2 numericas + 3 cidades + 2 planos,\n# uma coluna por categoria; o prefixo antes de '__' mostra de qual branch\n# cada coluna final veio"
                     },
                     {
                         "type": "table",
@@ -3226,7 +3226,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.model_selection import GridSearchCV\n\n# pipeline_completo: o ColumnTransformer (branches 'num' e 'cat') + o modelo,\n# montados na aula anterior, com as etapas nomeadas 'preparo' e 'modelo'\n\ngrade_parametros = {\n    'preparo__num__imputer__strategy': ['mean', 'median'],\n    'modelo__n_estimators': [100, 300],\n    'modelo__max_depth': [None, 10, 20]\n}\n\nbusca = GridSearchCV(\n    pipeline_completo,\n    grade_parametros,\n    cv=5,\n    scoring='f1',\n    n_jobs=-1\n)\nbusca.fit(X_treino, y_treino)\n\nprint(busca.best_params_)\n# {'modelo__max_depth': 10, 'modelo__n_estimators': 300,\n#  'preparo__num__imputer__strategy': 'median'}\n\nprint(busca.best_score_)\n# 0.87 -> media da metrica escolhida nos folds de validacao, so com o treino\n\nmodelo_final = busca.best_estimator_\nprint(modelo_final.score(X_teste, y_teste))\n# 0.86 -> agora sim, avaliado no teste, que ficou fora do tuning inteiro"
+                        "value": "from sklearn.model_selection import GridSearchCV\n\n# pipeline_completo: o ColumnTransformer (branches 'num' e 'cat') + o modelo,\n# montados na aula anterior, com as etapas nomeadas 'preparo' e 'modelo'\n\ngrade_parametros = {\n    'preparo__num__imputer__strategy': ['mean', 'median'],\n    'modelo__n_estimators': [100, 300],\n    'modelo__max_depth': [None, 10, 20]\n}\n\nbusca = GridSearchCV(\n    pipeline_completo,\n    grade_parametros,\n    cv=5,\n    scoring='f1',\n    n_jobs=-1\n)\nbusca.fit(X_treino, y_treino)\n\nprint(busca.best_params_)\n# {'modelo__max_depth': 10, 'modelo__n_estimators': 300,\n#  'preparo__num__imputer__strategy': 'median'}\n\nprint(busca.best_score_)\n# 0.87 -> media da metrica escolhida nos folds de validacao, so com o treino\n\nmodelo_final = busca.best_estimator_\nprint(busca.score(X_teste, y_teste))\n# 0.86 -> agora sim, F1 no teste, que ficou fora do tuning inteiro: busca.score\n# mede o modelo_final com a mesma metrica da busca; modelo_final.score daria\n# a acuracia, outra metrica, que nao se compara com o 0.87 acima"
                     },
                     {
                         "type": "text",
@@ -3234,7 +3234,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\n\nresultados = pd.DataFrame(busca.cv_results_)\ncolunas = ['param_modelo__n_estimators', 'param_modelo__max_depth', 'mean_test_score']\n\nprint(resultados[colunas].sort_values('mean_test_score', ascending=False).head(3))\n#    param_modelo__n_estimators  param_modelo__max_depth  mean_test_score\n# 7                          300                       10             0.87\n# 6                          300                       10             0.86\n# 10                         300                       20             0.86\n\n# cuidado com o tamanho da grade: cada hiperparametro a mais MULTIPLICA\n# o numero de combinacoes, e cada combinacao roda 'cv' vezes inteiras\nprint(len(resultados))\n# 12 combinacoes (2 x 2 x 3) -> com cv=5, isso e 60 ajustes completos do pipeline"
+                        "value": "import pandas as pd\n\nresultados = pd.DataFrame(busca.cv_results_)\ncolunas = ['param_modelo__n_estimators', 'param_modelo__max_depth', 'mean_test_score']\n\nprint(resultados[colunas].sort_values('mean_test_score', ascending=False).head(3))\n#    param_modelo__n_estimators  param_modelo__max_depth  mean_test_score\n# 7                          300                       10             0.87\n# 6                          300                       10             0.86\n# 10                         300                       20             0.86\n\n# cuidado com o tamanho da grade: cada hiperparametro a mais MULTIPLICA\n# o numero de combinacoes, e cada combinacao roda 'cv' vezes inteiras\nprint(len(resultados))\n# 12 combinacoes (2 x 2 x 3) -> com cv=5, a validacao cruzada faz 60 ajustes\n# completos do pipeline; com o refit=True padrao, vem mais 1 no fim, o do\n# best_estimator_ com a melhor combinacao no treino inteiro"
                     },
                     {
                         "type": "table",
@@ -3291,7 +3291,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um param_grid combina 3 valores de um hiperparâmetro do preparo, 4 valores de um hiperparâmetro do modelo e 3 valores de outro hiperparâmetro do modelo, com cv=5. Quantos ajustes o GridSearchCV realiza no total?",
+                        "statement": "Um param_grid combina 3 valores de um hiperparâmetro do preparo, 4 valores de um hiperparâmetro do modelo e 3 valores de outro hiperparâmetro do modelo, com cv=5. Quantos ajustes a validação cruzada do GridSearchCV realiza no total?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -3508,7 +3508,7 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "# Salvando o modelo treinado com joblib\n\nDepois da aula passada, você tem em mãos `busca.best_estimator_`: um Pipeline inteiro (preparo com ColumnTransformer e modelo) já ajustado com os melhores hiperparâmetros encontrados pelo GridSearchCV, com `random_state` fixado em todo canto que precisava. Falta uma última pergunta prática: precisa retreinar esse pipeline inteiro toda vez que alguém for usar o modelo?\n\nA resposta é não, e é aí que entra o `joblib`, um pacote (que acompanha o scikit-learn, mas é independente dele) especializado em salvar em disco objetos Python que carregam muitos arrays do NumPy por dentro, exatamente o caso de um Pipeline treinado. Dá pra usar o `pickle` da biblioteca padrão pra mesma coisa, mas o `joblib` costuma ser mais rápido e gerar arquivos menores pra esse tipo de objeto, e é o que a própria documentação do scikit-learn recomenda."
+                        "value": "# Salvando o modelo treinado com joblib\n\nDepois da aula passada, você tem em mãos `busca.best_estimator_`: um Pipeline inteiro (preparo com ColumnTransformer e modelo) já ajustado com os melhores hiperparâmetros encontrados pelo GridSearchCV, com `random_state` fixado em todo canto que precisava. Falta uma última pergunta prática: precisa retreinar esse pipeline inteiro toda vez que alguém for usar o modelo?\n\nA resposta é não, e é aí que entra o `joblib`, um pacote (que acompanha o scikit-learn, mas é independente dele) especializado em salvar em disco objetos Python que carregam muitos arrays do NumPy por dentro, exatamente o caso de um Pipeline treinado. Dá pra usar o `pickle` da biblioteca padrão pra mesma coisa, mas o `joblib` lida melhor com esse tipo de objeto: grava os arrays em blocos, sem montar uma cópia inteira deles na memória, comprime o arquivo se você pedir (`compress=3`) e carrega os arrays direto do disco com `mmap_mode='r'`. Na documentação do scikit-learn 1.9, de 2026, ele aparece como mais eficiente que o `pickle` com modelos e arrays grandes."
                     },
                     {
                         "type": "code",
@@ -3524,7 +3524,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "# treino.py: o modulo inteiro resumido num fluxo so, do preparo ao arquivo salvo\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.preprocessing import StandardScaler, OneHotEncoder\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split, GridSearchCV\nimport joblib\n\nRANDOM_STATE = 42\ncolunas_numericas = ['idade', 'renda']\ncolunas_categoricas = ['cidade', 'plano']\n\npreparo = ColumnTransformer([\n    ('num', Pipeline([\n        ('imputer', SimpleImputer(strategy='median')),\n        ('scaler', StandardScaler())\n    ]), colunas_numericas),\n    ('cat', Pipeline([\n        ('imputer', SimpleImputer(strategy='most_frequent')),\n        ('onehot', OneHotEncoder(handle_unknown='ignore'))\n    ]), colunas_categoricas)\n])\n\npipeline_completo = Pipeline([\n    ('preparo', preparo),\n    ('modelo', RandomForestClassifier(random_state=RANDOM_STATE))\n])\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y\n)\n\nbusca = GridSearchCV(\n    pipeline_completo,\n    {'modelo__n_estimators': [100, 300], 'modelo__max_depth': [None, 10]},\n    cv=5,\n    scoring='f1'\n)\nbusca.fit(X_treino, y_treino)\n\nmodelo_final = busca.best_estimator_\nprint(modelo_final.score(X_teste, y_teste))\n# 0.88\n\njoblib.dump(modelo_final, 'modelos/modelo_v1.joblib')\n# ['modelos/modelo_v1.joblib'] -> pronto pra prever sem retreinar"
+                        "value": "# treino.py: o modulo inteiro resumido num fluxo so, do preparo ao arquivo salvo\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.compose import ColumnTransformer\nfrom sklearn.impute import SimpleImputer\nfrom sklearn.preprocessing import StandardScaler, OneHotEncoder\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split, GridSearchCV\nimport joblib\n\nRANDOM_STATE = 42\ncolunas_numericas = ['idade', 'renda']\ncolunas_categoricas = ['cidade', 'plano']\n\npreparo = ColumnTransformer([\n    ('num', Pipeline([\n        ('imputer', SimpleImputer(strategy='median')),\n        ('scaler', StandardScaler())\n    ]), colunas_numericas),\n    ('cat', Pipeline([\n        ('imputer', SimpleImputer(strategy='most_frequent')),\n        ('onehot', OneHotEncoder(handle_unknown='ignore'))\n    ]), colunas_categoricas)\n])\n\npipeline_completo = Pipeline([\n    ('preparo', preparo),\n    ('modelo', RandomForestClassifier(random_state=RANDOM_STATE))\n])\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.2, random_state=RANDOM_STATE, stratify=y\n)\n\nbusca = GridSearchCV(\n    pipeline_completo,\n    {'modelo__n_estimators': [100, 300], 'modelo__max_depth': [None, 10]},\n    cv=5,\n    scoring='f1'\n)\nbusca.fit(X_treino, y_treino)\n\nmodelo_final = busca.best_estimator_\nprint(busca.score(X_teste, y_teste))\n# 0.88 -> F1 no teste, a mesma metrica usada na busca\n\njoblib.dump(modelo_final, 'modelos/modelo_v1.joblib')\n# ['modelos/modelo_v1.joblib'] -> pronto pra prever sem retreinar"
                     },
                     {
                         "type": "text",
@@ -3666,7 +3666,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# dataset com 97% classe 0 e 3% classe 1 (ex.: falha rara de equipamento)\nX, y = make_classification(\n    n_samples=4000, n_features=12, weights=[0.97, 0.03], random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\nmodelo = RandomForestClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\ny_pred = modelo.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred, digits=2))\n#               precision    recall  f1-score   support\n#            0       0.97      1.00      0.99      1164\n#            1       0.83      0.14      0.24        36\n#\n#     accuracy                           0.97      1200\n\nprint(\"Acurácia:\", modelo.score(X_teste, y_teste))\n# Acurácia: 0.97"
+                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# dataset com 97% classe 0 e 3% classe 1 (ex.: falha rara de equipamento)\nX, y = make_classification(\n    n_samples=4000, n_features=12, weights=[0.97, 0.03], class_sep=0.5,\n    random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\n# min_samples_leaf=20: cada folha precisa de pelo menos 20 exemplos de treino\nmodelo = RandomForestClassifier(min_samples_leaf=20, random_state=42)\nmodelo.fit(X_treino, y_treino)\ny_pred = modelo.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred, digits=2))\n#               precision    recall  f1-score   support\n#\n#            0       0.97      1.00      0.99      1157\n#            1       1.00      0.28      0.44        43\n#\n#     accuracy                           0.97      1200\n#    macro avg       0.99      0.64      0.71      1200\n# weighted avg       0.97      0.97      0.97      1200\n\nprint(\"Acurácia:\", round(modelo.score(X_teste, y_teste), 3))\n# Acurácia: 0.974\n\n# acurácia de 97%, mas só 28% das falhas reais detectadas (recall da classe 1)"
                     },
                     {
                         "type": "text",
@@ -3674,7 +3674,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# mesmo X_treino/X_teste do exemplo anterior, agora com class_weight\nmodelo_balanceado = RandomForestClassifier(\n    class_weight=\"balanced\", random_state=42\n)\nmodelo_balanceado.fit(X_treino, y_treino)\ny_pred_bal = modelo_balanceado.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred_bal, digits=2))\n#               precision    recall  f1-score   support\n#            0       0.98      0.96      0.97      1164\n#            1       0.36      0.53      0.43        36\n#\n#     accuracy                           0.95      1200\n\n# 'balanced' pondera cada classe pelo inverso da sua frequência: errar na\n# classe rara passa a custar bem mais caro pro modelo durante o treino"
+                        "value": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# mesmo X_treino/X_teste do exemplo anterior, agora com class_weight\nmodelo_balanceado = RandomForestClassifier(\n    class_weight=\"balanced\", min_samples_leaf=20, random_state=42\n)\nmodelo_balanceado.fit(X_treino, y_treino)\ny_pred_bal = modelo_balanceado.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred_bal, digits=2))\n#               precision    recall  f1-score   support\n#\n#            0       0.99      0.97      0.98      1157\n#            1       0.44      0.67      0.53        43\n#\n#     accuracy                           0.96      1200\n#    macro avg       0.71      0.82      0.75      1200\n# weighted avg       0.97      0.96      0.96      1200\n\n# 'balanced' pondera cada classe pelo inverso da sua frequência: errar na\n# classe rara passa a custar bem mais caro pro modelo durante o treino.\n# O recall da classe 1 sobe de 0.28 para 0.67, ao custo de mais alarmes\n# falsos (a precisão dela cai de 1.00 para 0.44).\n# Com árvores crescidas até o fim (o padrão), cada folha fica pura e o peso\n# quase não muda a previsão; por isso os dois modelos usam min_samples_leaf=20"
                     },
                     {
                         "type": "table",
@@ -3753,7 +3753,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um dataset de crédito tem quase todas as features categóricas, com poucas colunas numéricas. Ao aplicar SMOTE diretamente nesse conjunto, qual risco é mais provável?",
+                        "statement": "Um dataset de crédito tem quase todas as features categóricas, já codificadas como números (one-hot ou código inteiro), e poucas features contínuas, como renda e idade. Ao aplicar SMOTE diretamente nesse conjunto, qual risco é mais provável?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -3769,7 +3769,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "SMOTE substitui automaticamente as colunas categóricas por codificação one-hot antes de gerar exemplos",
+                                "text": "SMOTE reconhece as colunas categóricas e sorteia uma categoria existente para cada exemplo novo",
                                 "isCorrect": false
                             }
                         ]
@@ -3815,7 +3815,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\nX, y = make_classification(n_samples=3000, n_features=15, random_state=42)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# modelo treinado com os rótulos originais\nmodelo_limpo = RandomForestClassifier(random_state=42)\nmodelo_limpo.fit(X_treino, y_treino)\nprint(\"Acurácia com rótulos corretos:\", modelo_limpo.score(X_teste, y_teste))\n# Acurácia com rótulos corretos: 0.92\n\n# simula 15% de rótulos errados só no treino (o teste continua confiável)\nrng = np.random.default_rng(42)\ny_treino_ruidoso = y_treino.copy()\nindices_embaralhados = rng.choice(\n    len(y_treino_ruidoso), size=int(0.15 * len(y_treino_ruidoso)), replace=False\n)\ny_treino_ruidoso[indices_embaralhados] = 1 - y_treino_ruidoso[indices_embaralhados]\n\nmodelo_ruidoso = RandomForestClassifier(random_state=42)\nmodelo_ruidoso.fit(X_treino, y_treino_ruidoso)\nprint(\"Acurácia com 15% de rótulos errados:\", modelo_ruidoso.score(X_teste, y_teste))\n# Acurácia com 15% de rótulos errados: 0.81"
+                        "value": "import numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\nX, y = make_classification(\n    n_samples=3000, n_features=15, n_informative=5, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# modelo treinado com os rótulos originais\nmodelo_limpo = RandomForestClassifier(random_state=42)\nmodelo_limpo.fit(X_treino, y_treino)\nprint(\"Acurácia com rótulos corretos:\", round(modelo_limpo.score(X_teste, y_teste), 3))\n# Acurácia com rótulos corretos: 0.872\n\n# 15% de rótulos errados só no treino (o teste continua confiável),\n# de dois jeitos: trocados ao acaso, ou todos no mesmo sentido\nrng = np.random.default_rng(42)\nn_erros = int(0.15 * len(y_treino))\n\ny_treino_ruidoso = y_treino.copy()\nindices = rng.choice(len(y_treino), size=n_erros, replace=False)\ny_treino_ruidoso[indices] = 1 - y_treino_ruidoso[indices]\n\n# positivos gravados como 0, como a conversão que falhou em disparar\ny_treino_enviesado = y_treino.copy()\nindices = rng.choice(np.flatnonzero(y_treino == 1), size=n_erros, replace=False)\ny_treino_enviesado[indices] = 0\n\nfor nome, rotulos in [(\"ao acaso\", y_treino_ruidoso), (\"num sentido só\", y_treino_enviesado)]:\n    modelo = RandomForestClassifier(random_state=42).fit(X_treino, rotulos)\n    print(f\"15% errados {nome}: acurácia {modelo.score(X_teste, y_teste):.3f}, \"\n          f\"prevê 1 em {modelo.predict(X_teste).mean():.0%} do teste\")\nprint(f\"No teste, a classe 1 é {y_teste.mean():.0%} dos casos\")\n# 15% errados ao acaso: acurácia 0.842, prevê 1 em 47% do teste\n# 15% errados num sentido só: acurácia 0.767, prevê 1 em 31% do teste\n# No teste, a classe 1 é 51% dos casos\n\n# mesma quantidade de erro, efeitos bem diferentes: o erro ao acaso custa\n# 3 pontos; o erro num sentido só custa mais de 10 e ensina o modelo a\n# prever a classe 1 bem menos do que ela acontece"
                     },
                     {
                         "type": "text",
@@ -3956,7 +3956,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import GradientBoostingClassifier\n\nX, y = make_classification(n_samples=1500, n_features=20, random_state=42)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfor n in [10, 50, 200, 500]:\n    modelo = GradientBoostingClassifier(\n        n_estimators=n, learning_rate=0.2, max_depth=3, random_state=42\n    )\n    modelo.fit(X_treino, y_treino)\n    print(\n        f\"n_estimators={n:>3} | treino={modelo.score(X_treino, y_treino):.2f} \"\n        f\"| teste={modelo.score(X_teste, y_teste):.2f}\"\n    )\n\n# n_estimators= 10 | treino=0.91 | teste=0.89\n# n_estimators= 50 | treino=0.98 | teste=0.90\n# n_estimators=200 | treino=1.00 | teste=0.88\n# n_estimators=500 | treino=1.00 | teste=0.86"
+                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import GradientBoostingClassifier\n\n# flip_y=0.2: 20% das linhas recebem rótulo sorteado, ruído que dá para decorar\nX, y = make_classification(\n    n_samples=1500, n_features=20, n_informative=3, flip_y=0.2, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfor n in [10, 50, 200, 500]:\n    modelo = GradientBoostingClassifier(\n        n_estimators=n, learning_rate=0.2, max_depth=3, random_state=42\n    )\n    modelo.fit(X_treino, y_treino)\n    print(\n        f\"n_estimators={n:>3} | treino={modelo.score(X_treino, y_treino):.2f} \"\n        f\"| teste={modelo.score(X_teste, y_teste):.2f}\"\n    )\n\n# n_estimators= 10 | treino=0.87 | teste=0.86\n# n_estimators= 50 | treino=0.93 | teste=0.84\n# n_estimators=200 | treino=1.00 | teste=0.84\n# n_estimators=500 | treino=1.00 | teste=0.83"
                     },
                     {
                         "type": "text",
@@ -3964,7 +3964,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.ensemble import GradientBoostingClassifier\n\n# reaproveitando X_treino, X_teste, y_treino, y_teste da célula anterior\n# para de adicionar árvores quando 10 rodadas seguidas não melhoram o\n# desempenho numa fatia de validação separada internamente\nmodelo_early_stop = GradientBoostingClassifier(\n    n_estimators=500,\n    learning_rate=0.2,\n    max_depth=3,\n    validation_fraction=0.15,\n    n_iter_no_change=10,\n    random_state=42,\n)\nmodelo_early_stop.fit(X_treino, y_treino)\n\nprint(\"Estágios (árvores) realmente usados:\", modelo_early_stop.estimators_.shape[0])\n# Estágios (árvores) realmente usados: 63\n\nprint(\"Score no teste:\", modelo_early_stop.score(X_teste, y_teste))\n# Score no teste: 0.91"
+                        "value": "from sklearn.ensemble import GradientBoostingClassifier\n\n# reaproveitando X_treino, X_teste, y_treino, y_teste da célula anterior\n# para de adicionar árvores quando 10 rodadas seguidas não melhoram o\n# desempenho numa fatia de validação separada internamente\nmodelo_early_stop = GradientBoostingClassifier(\n    n_estimators=500,\n    learning_rate=0.2,\n    max_depth=3,\n    validation_fraction=0.15,\n    n_iter_no_change=10,\n    random_state=42,\n)\nmodelo_early_stop.fit(X_treino, y_treino)\n\nprint(\"Estágios (árvores) realmente usados:\", modelo_early_stop.estimators_.shape[0])\n# Estágios (árvores) realmente usados: 41\n\nprint(\"Score no teste:\", round(modelo_early_stop.score(X_teste, y_teste), 2))\n# Score no teste: 0.85\n\n# 41 árvores em vez de 500, e um teste melhor que o das 500 (0.83)"
                     },
                     {
                         "type": "table",
@@ -4015,7 +4015,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O modelo escolhido tem, com certeza, um bug de implementação no scikit-learn",
+                                "text": "O refit do GridSearchCV treina o modelo final num só fold, por isso ele piora no teste",
                                 "isCorrect": false
                             }
                         ]
@@ -4081,7 +4081,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "As duas eliminam a necessidade de dividir os dados entre treino e teste",
+                                "text": "As duas corrigem um vazamento de dados que existia entre o conjunto de treino e o de teste",
                                 "isCorrect": false
                             }
                         ]
@@ -4101,7 +4101,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.inspection import permutation_importance\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.datasets import make_classification\nimport pandas as pd\n\nX, y = make_classification(n_samples=1000, n_features=6, random_state=42)\ncolunas = [f\"feature_{i}\" for i in range(6)]\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    pd.DataFrame(X, columns=colunas), y, test_size=0.3, random_state=42\n)\n\nmodelo = RandomForestClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\n\nresultado = permutation_importance(\n    modelo, X_teste, y_teste, n_repeats=10, random_state=42, scoring=\"accuracy\"\n)\n\nimportancias = pd.Series(resultado.importances_mean, index=colunas)\nprint(importancias.sort_values(ascending=False))\n# feature_1    0.142\n# feature_4    0.098\n# feature_0    0.061\n# feature_3    0.014\n# feature_2    0.003\n# feature_5   -0.002"
+                        "value": "from sklearn.inspection import permutation_importance\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.datasets import make_classification\nimport pandas as pd\n\nX, y = make_classification(n_samples=1000, n_features=6, random_state=42)\ncolunas = [f\"feature_{i}\" for i in range(6)]\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    pd.DataFrame(X, columns=colunas), y, test_size=0.3, random_state=42\n)\n\nmodelo = RandomForestClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\n\nresultado = permutation_importance(\n    modelo, X_teste, y_teste, n_repeats=10, random_state=42, scoring=\"accuracy\"\n)\n\nimportancias = pd.Series(resultado.importances_mean, index=colunas)\nprint(importancias.sort_values(ascending=False))\n# feature_5    0.362333\n# feature_3    0.069000\n# feature_1    0.041333\n# feature_2    0.004333\n# feature_4    0.003333\n# feature_0   -0.000333\n# dtype: float64"
                     },
                     {
                         "type": "text",
@@ -4254,7 +4254,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\n\n# problema simulado em que uma única feature já carrega quase toda a\n# informação (comum quando existe uma regra de negócio forte por trás)\nX, y = make_classification(\n    n_samples=1000, n_features=5, n_informative=1, n_redundant=0,\n    n_clusters_per_class=1, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# regra simples: um limiar na primeira feature\nregra_simples = (X_teste[:, 0] > 0).astype(int)\nprint(\"Acurácia da regra simples:\", accuracy_score(y_teste, regra_simples))\n# Acurácia da regra simples: 0.94\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\nprint(\"Acurácia da regressão logística:\", modelo.score(X_teste, y_teste))\n# Acurácia da regressão logística: 0.95\n\n# um ponto de acurácia a mais raramente paga a conta de manter um pipeline\n# de ML inteiro rodando no lugar de uma regra de uma linha"
+                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\n\n# problema simulado em que uma única feature já carrega quase toda a\n# informação (comum quando existe uma regra de negócio forte por trás);\n# shuffle=False deixa essa feature na coluna 0, a primeira\nX, y = make_classification(\n    n_samples=1000, n_features=5, n_informative=1, n_redundant=0,\n    n_clusters_per_class=1, shuffle=False, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# regra simples: um limiar na primeira feature\nregra_simples = (X_teste[:, 0] > 0).astype(int)\nprint(\"Acurácia da regra simples:\", round(accuracy_score(y_teste, regra_simples), 3))\n# Acurácia da regra simples: 0.933\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\nprint(\"Acurácia da regressão logística:\", round(modelo.score(X_teste, y_teste), 3))\n# Acurácia da regressão logística: 0.93\n\n# a regressão logística, vendo as 5 features, empata com a regra de uma\n# linha (um acerto de diferença em 300): aqui, manter um pipeline de ML\n# inteiro rodando no lugar da regra não compraria nada"
                     },
                     {
                         "type": "table",
@@ -4371,7 +4371,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A equipe não confia no scikit-learn, preferindo aguardar uma versão mais recente da biblioteca",
+                                "text": "Com revisão humana, o desempenho do modelo deixa de importar, porque o analista corrige os erros",
                                 "isCorrect": false
                             }
                         ]
@@ -4819,11 +4819,11 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "## Outro ferramental: treinar rede não é treinar com scikit-learn\n\nToda a trilha até aqui girou em torno do scikit-learn: `fit`, `predict`, `Pipeline`, `GridSearchCV`. Treinar uma rede neural de verdade, com muitas camadas e muitos pesos, geralmente pede outro ferramental, pensado pra fazer contas de matriz em larga escala e aproveitar GPU. Três nomes aparecem o tempo todo nesse mundo: TensorFlow, Keras e PyTorch.\n\nTensorFlow nasceu no Google e é bastante usado quando o destino final é produção, em times que já treinam e também servem redes grandes no dia a dia. PyTorch nasceu no que hoje é a Meta e é a escolha mais comum em pesquisa, por ser mais flexível de mexer por dentro, embora hoje apareça bastante em produção também. Keras é uma API de alto nível, criada pra tornar a montagem de uma rede mais legível, e hoje roda integrada ao TensorFlow."
+                        "value": "## Outro ferramental: treinar rede não é treinar com scikit-learn\n\nToda a trilha até aqui girou em torno do scikit-learn: `fit`, `predict`, `Pipeline`, `GridSearchCV`. Treinar uma rede neural de verdade, com muitas camadas e muitos pesos, geralmente pede outro ferramental, pensado pra fazer contas de matriz em larga escala e aproveitar GPU. Três nomes aparecem o tempo todo nesse mundo: TensorFlow, Keras e PyTorch.\n\nTensorFlow nasceu no Google e é bastante usado quando o destino final é produção, em times que já treinam e também servem redes grandes no dia a dia. PyTorch nasceu no que hoje é a Meta e é a escolha mais comum em pesquisa, por ser mais flexível de mexer por dentro, embora hoje apareça bastante em produção também. Keras é uma API de alto nível, criada pra tornar a montagem de uma rede mais legível. Desde o Keras 3, lançado em novembro de 2023, ela roda sobre TensorFlow, JAX ou PyTorch (o TensorFlow é o padrão), e do TensorFlow 2.16 em diante, de março de 2024, o `tf.keras` que vem com o TensorFlow já é o próprio Keras 3."
                     },
                     {
                         "type": "table",
-                        "value": "[[\"Ferramenta\", \"O que é\", \"Onde costuma aparecer\"], [\"TensorFlow\", \"Framework de deep learning do Google, pensado pra produção\", \"Times que treinam e também servem redes grandes\"], [\"Keras\", \"API de alto nível sobre o TensorFlow, fácil de ler e escrever\", \"Primeiro contato com deep learning, prototipagem rápida\"], [\"PyTorch\", \"Framework de deep learning flexível, popular em pesquisa\", \"Pesquisa acadêmica, e cada vez mais também produção\"]]"
+                        "value": "[[\"Ferramenta\", \"O que é\", \"Onde costuma aparecer\"], [\"TensorFlow\", \"Framework de deep learning do Google, pensado pra produção\", \"Times que treinam e também servem redes grandes\"], [\"Keras\", \"API de alto nível sobre TensorFlow, JAX ou PyTorch, fácil de ler e escrever\", \"Primeiro contato com deep learning, prototipagem rápida\"], [\"PyTorch\", \"Framework de deep learning flexível, popular em pesquisa\", \"Pesquisa acadêmica, e cada vez mais também produção\"]]"
                     },
                     {
                         "type": "text",
@@ -4831,7 +4831,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from tensorflow import keras\nfrom tensorflow.keras import layers\n\nmodelo = keras.Sequential([\n    layers.Dense(16, activation=\"relu\", input_shape=(X_treino.shape[1],)),  # camada oculta\n    layers.Dense(8, activation=\"relu\"),                                     # outra camada oculta\n    layers.Dense(1, activation=\"sigmoid\"),                                  # saída: classe binária\n])\n\nmodelo.compile(optimizer=\"adam\", loss=\"binary_crossentropy\", metrics=[\"accuracy\"])\nmodelo.fit(X_treino, y_treino, epochs=20, batch_size=32, validation_split=0.2)\n# validation_split reserva uma fatia do treino pra acompanhar o erro a cada época\n\nprevisoes = modelo.predict(X_teste)\n# de novo um predict() no final, como em qualquer modelo scikit-learn desta trilha"
+                        "value": "import keras  # Keras 3: roda sobre TensorFlow (o padrão), JAX ou PyTorch\nfrom keras import layers\n\nmodelo = keras.Sequential([\n    keras.Input(shape=(X_treino.shape[1],)),  # entrada: um valor por feature\n    layers.Dense(16, activation=\"relu\"),      # camada oculta\n    layers.Dense(8, activation=\"relu\"),       # outra camada oculta\n    layers.Dense(1, activation=\"sigmoid\"),    # saída: classe binária\n])\n\nmodelo.compile(optimizer=\"adam\", loss=\"binary_crossentropy\", metrics=[\"accuracy\"])\nmodelo.fit(X_treino, y_treino, epochs=20, batch_size=32, validation_split=0.2)\n# validation_split reserva uma fatia do treino pra acompanhar o erro a cada época\n\nprevisoes = modelo.predict(X_teste)\n# de novo um predict() no final, como em qualquer modelo scikit-learn desta trilha"
                     },
                     {
                         "type": "text",
@@ -4870,7 +4870,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "Uma API de alto nível, mais simples de ler e escrever, que roda sobre o TensorFlow",
+                                "text": "Uma API de alto nível para montar redes, que roda sobre TensorFlow, JAX ou PyTorch",
                                 "isCorrect": true
                             },
                             {
@@ -4882,7 +4882,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um algoritmo de ensemble, que combina várias redes neurais treinadas em paralelo",
+                                "text": "Um algoritmo de ensemble, que combina várias redes neurais treinadas ao mesmo tempo",
                                 "isCorrect": false
                             }
                         ]
@@ -4997,7 +4997,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Abandonar tudo que foi visto na trilha de Machine Learning anterior, do zero",
+                                "text": "Buscar sempre o modelo mais complexo disponível, porque complexidade traz qualidade",
                                 "isCorrect": false
                             },
                             {
