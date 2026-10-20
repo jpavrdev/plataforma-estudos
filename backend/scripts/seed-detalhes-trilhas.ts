@@ -272,6 +272,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["APIs e Frameworks", "Banco de dados"],
     },
+    "Mensageria com RabbitMQ": {
+        whatYouLearn: [
+            "Quando e por que desacoplar serviços com mensagens",
+            "Exchanges, filas, bindings e roteamento no RabbitMQ 4",
+            "Confirms, quorum queues, dead letter e retry com atraso",
+            "Idempotência, outbox, sagas e operação em produção",
+        ],
+        prerequisites: [
+            "C# com async/await e o básico de ASP.NET Core",
+            "Docker para subir o broker na própria máquina",
+        ],
+    },
     "Fundamentos de QA": {
         whatYouLearn: [
             "O papel de QA, os princípios e o processo de teste",
