@@ -19,6 +19,9 @@ const SEEDS = [
     "seed-trilha-mensageria-rabbitmq.ts",
     "seed-trilha-observabilidade.ts",
     "seed-trilha-aws-na-pratica.ts",
+    "seed-trilha-machine-learning.ts",
+    "seed-trilha-ml-na-pratica.ts",
+    "seed-trilha-do-modelo-ao-produto.ts",
     "seed-detalhes-trilhas.ts",
     "seed-conquistas-trilhas.ts",
 ];
