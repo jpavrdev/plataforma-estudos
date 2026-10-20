@@ -524,6 +524,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Noções de redes e sistemas ajudam",
         ],
     },
+    "AWS na Prática": {
+        whatYouLearn: [
+            "IAM, custo e infraestrutura como código com CDK em C#",
+            "Rede, contêineres no ECS e banco no RDS",
+            "Mensageria com Amazon MQ, SQS e EventBridge",
+            "Observabilidade, Lambda e entrega contínua com OIDC",
+        ],
+        prerequisites: [
+            "Uma API ASP.NET Core e noção de Docker",
+            "Noção de mensageria e de observabilidade ajuda, mas a trilha retoma o necessário",
+        ],
+    },
     "AWS AI Practitioner": {
         whatYouLearn: [
             "Fundamentos de IA, machine learning e deep learning",
