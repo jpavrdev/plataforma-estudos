@@ -341,6 +341,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Docker e containers", "Testes e qualidade"],
     },
+    "Observabilidade": {
+        whatYouLearn: [
+            "Logs estruturados, métricas e traces com OpenTelemetry",
+            "O Collector, Prometheus, Grafana, Loki e Tempo",
+            "SLI, SLO, error budget e alertas que exigem ação",
+            "Um roteiro para investigar latência e erro em produção",
+        ],
+        prerequisites: [
+            "Experiência com backend (os exemplos são em C# e .NET)",
+            "Docker para montar o laboratório",
+        ],
+    },
     "Arquitetura e Escala": {
         whatYouLearn: [
             "Escala vertical e horizontal, e o monólito com réplicas stateless",
