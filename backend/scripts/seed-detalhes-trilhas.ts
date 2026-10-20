@@ -101,6 +101,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Java (orientação a objetos, coleções e exceções)", "Noções de HTTP e SQL"],
     },
+    "C# e .NET": {
+        whatYouLearn: [
+            "C# moderno: tipos, records, pattern matching e o C# 14",
+            "Coleções, genéricos e LINQ sem armadilhas de desempenho",
+            "async/await e concorrência do jeito certo",
+            "Uma API ASP.NET Core com EF Core, PostgreSQL e testes de verdade",
+        ],
+        prerequisites: [
+            "Lógica de programação: variáveis, condicionais, laços e funções",
+            "Nenhum C# anterior: a trilha começa do primeiro programa",
+        ],
+    },
     PHP: {
         whatYouLearn: [
             "Sintaxe, tipos e strings do PHP 8.5",
@@ -272,6 +284,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["APIs e Frameworks", "Banco de dados"],
     },
+    "Mensageria com RabbitMQ": {
+        whatYouLearn: [
+            "Quando e por que desacoplar serviços com mensagens",
+            "Exchanges, filas, bindings e roteamento no RabbitMQ 4",
+            "Confirms, quorum queues, dead letter e retry com atraso",
+            "Idempotência, outbox, sagas e operação em produção",
+        ],
+        prerequisites: [
+            "C# com async/await e o básico de ASP.NET Core",
+            "Docker para subir o broker na própria máquina",
+        ],
+    },
     "Fundamentos de QA": {
         whatYouLearn: [
             "O papel de QA, os princípios e o processo de teste",
@@ -340,6 +364,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
             "Onde a aplicação roda na nuvem, com HTTPS e observabilidade",
         ],
         prerequisites: ["Docker e containers", "Testes e qualidade"],
+    },
+    "Observabilidade": {
+        whatYouLearn: [
+            "Logs estruturados, métricas e traces com OpenTelemetry",
+            "O Collector, Prometheus, Grafana, Loki e Tempo",
+            "SLI, SLO, error budget e alertas que exigem ação",
+            "Um roteiro para investigar latência e erro em produção",
+        ],
+        prerequisites: [
+            "Experiência com backend (os exemplos são em C# e .NET)",
+            "Docker para montar o laboratório",
+        ],
     },
     "Arquitetura e Escala": {
         whatYouLearn: [
@@ -486,6 +522,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         prerequisites: [
             "Cloud Practitioner (CLF-C02) ou equivalente",
             "Noções de redes e sistemas ajudam",
+        ],
+    },
+    "AWS na Prática": {
+        whatYouLearn: [
+            "IAM, custo e infraestrutura como código com CDK em C#",
+            "Rede, contêineres no ECS e banco no RDS",
+            "Mensageria com Amazon MQ, SQS e EventBridge",
+            "Observabilidade, Lambda e entrega contínua com OIDC",
+        ],
+        prerequisites: [
+            "Uma API ASP.NET Core e noção de Docker",
+            "Noção de mensageria e de observabilidade ajuda, mas a trilha retoma o necessário",
         ],
     },
     "AWS AI Practitioner": {
