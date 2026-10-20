@@ -3791,7 +3791,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Duas empresas clientes têm o mesmo total gasto e o mesmo tempo de casa em meses, mas perfis de consumo bem diferentes. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
+                        "statement": "Duas empresas clientes gastaram o mesmo total, 6 mil reais, mas uma é cliente há 3 meses e a outra há 36. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
                         "difficulty": "dificil",
                         "options": [
                             {

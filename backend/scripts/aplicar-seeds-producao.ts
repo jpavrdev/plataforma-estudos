@@ -22,6 +22,7 @@ const SEEDS = [
     "seed-trilha-machine-learning.ts",
     "seed-trilha-ml-na-pratica.ts",
     "seed-trilha-do-modelo-ao-produto.ts",
+    "aplicar-correcoes-conteudo.ts",
     "seed-detalhes-trilhas.ts",
     "seed-conquistas-trilhas.ts",
 ];
