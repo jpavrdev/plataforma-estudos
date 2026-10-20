@@ -101,6 +101,18 @@ const DETALHES: Record<string, { whatYouLearn: string[]; prerequisites: string[]
         ],
         prerequisites: ["Java (orientação a objetos, coleções e exceções)", "Noções de HTTP e SQL"],
     },
+    "C# e .NET": {
+        whatYouLearn: [
+            "C# moderno: tipos, records, pattern matching e o C# 14",
+            "Coleções, genéricos e LINQ sem armadilhas de desempenho",
+            "async/await e concorrência do jeito certo",
+            "Uma API ASP.NET Core com EF Core, PostgreSQL e testes de verdade",
+        ],
+        prerequisites: [
+            "Lógica de programação: variáveis, condicionais, laços e funções",
+            "Nenhum C# anterior: a trilha começa do primeiro programa",
+        ],
+    },
     PHP: {
         whatYouLearn: [
             "Sintaxe, tipos e strings do PHP 8.5",
