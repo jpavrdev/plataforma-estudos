@@ -8,10 +8,11 @@ import { Flame } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as homeUser } from '../../data/home';
 
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 
 export function DesTopbar() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const displayName = authUser?.name ?? homeUser.name;
 
   return (
@@ -19,7 +20,7 @@ export function DesTopbar() {
       <MobileMenu />
       <Logo variant="solid" size={20} to="/home" />
       <nav className="nav">
-        {NAV.map((item) => (
+        {nav.map((item) => (
           <Link
             key={item.to}
             to={item.to}

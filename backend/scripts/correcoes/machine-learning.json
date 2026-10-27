@@ -1,0 +1,337 @@
+{
+ "trilha": "Machine Learning",
+ "correcoes": [
+  {
+   "tipo": "enunciado",
+   "chave": "6.1.5",
+   "de": "Duas empresas clientes têm o mesmo total gasto e o mesmo tempo de casa em meses, mas perfis de consumo bem diferentes. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
+   "para": "Duas empresas clientes gastaram o mesmo total, 6 mil reais, mas uma é cliente há 3 meses e a outra há 36. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque..."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "1.1.5",
+   "de": "Porque o programa usa muito pouca memória do computador para armazenar as informações necessárias.",
+   "para": "Porque os rótulos da tabela vieram de pessoas, e em machine learning é o algoritmo que cria os rótulos."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "1.5.5",
+   "de": "O resultado de 99% no treino não é, sozinho, suficiente para decidir se o modelo é bom.",
+   "para": "O modelo é confiável, porque a nota que mede a qualidade dele é a do treino, onde chegou a 99%."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.2",
+   "de": "# 0     25           120                     0\n# 1     41           340                     1\n# 2     33           210                     1\n# 3     52           480                     1\n# 4     29            90                     0",
+   "para": "# 0     25           120                    0\n# 1     41           340                    1\n# 2     33           210                    1\n# 3     52           480                    1\n# 4     29            90                    0"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.5",
+   "de": "# 0    9\n# 1    1\n# Name: inadimplente, dtype: int64",
+   "para": "# inadimplente\n# 0    9\n# 1    1\n# Name: count, dtype: int64"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "2.2.4",
+   "de": "Os dados de treino e teste vão se sobrepor parcialmente entre uma execução e outra.",
+   "para": "Em cada execução, parte dos exemplos de teste também acaba entrando no conjunto de treino."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.5",
+   "de": "X_treino_val, y_treino_val, test_size=0.25, random_state=42",
+   "para": "X_treino_val, y_treino_val, test_size=0.25, random_state=641"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.5",
+   "de": "    print(k, modelo.score(X_val, y_val))\n# 1 0.90\n# 3 0.97\n# 5 0.97\n# 7 0.93          -> k=3 parece a melhor escolha, olhando so a validacao\n\n# So depois de decidir k, uma unica vez, olhamos o teste:\nmodelo_final = KNeighborsClassifier(n_neighbors=3)\nmodelo_final.fit(X_train, y_train)\nmodelo_final.score(X_test, y_test)\n# 0.93          -> avaliacao final, feita uma unica vez",
+   "para": "    print(k, round(modelo.score(X_val, y_val), 2))\n# 1 0.9\n# 3 0.97\n# 5 0.93\n# 7 0.93          -> k=3 parece a melhor escolha, olhando so a validacao\n\n# So depois de decidir k, uma unica vez, olhamos o teste:\nmodelo_final = KNeighborsClassifier(n_neighbors=3)\nmodelo_final.fit(X_train, y_train)\nround(modelo_final.score(X_test, y_test), 2)\n# 0.97          -> avaliacao final, feita uma unica vez"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.1.5",
+   "de": "Que o scikit-learn bloqueia o treino quando detecta uma variável irrelevante no conjunto.",
+   "para": "Que um fit sem erro já garante coeficientes corretos, e o problema só pode estar no predict."
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "3.2.3",
+   "de": "Você já viu correlação na trilha de Estatística. Qual é a relação entre correlação e a inclinação a da reta de regressão?",
+   "para": "Você já viu correlação na trilha de Estatística. Qual é a relação entre a correlação de x e y e o ajuste da reta de regressão?"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "3.5.4",
+   "de": "Uma seguradora está prevendo o valor de indenizações e quer penalizar bastante previsões muito abaixo do valor real, que geram prejuízo maior. Qual métrica combina melhor com essa prioridade?",
+   "para": "Uma seguradora está prevendo o valor de indenizações e quer penalizar bastante previsões muito longe do valor real, que geram prejuízo maior. Qual métrica combina melhor com essa prioridade?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.5.4",
+   "de": "R2, porque mede diretamente o prejuízo em reais causado por cada erro de previsão.",
+   "para": "R2, porque mede diretamente o prejuízo em reais causado por cada um dos erros de previsão."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "modelo_cm = LinearRegression()",
+   "para": "# tol=0: com a área em cm2, o tol padrão (1e-6) do scikit-learn 1.9 (2026) tiraria quartos\nmodelo_cm = LinearRegression(tol=0)"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.1.1",
+   "de": "A quantidade exata de linhas presentes nos dados de treino usados.",
+   "para": "Um grupo de exemplos parecidos entre si, formado sem olhar para os rótulos."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.1.5",
+   "de": "o problema deixa de ser classificação assim que envolve pessoas.",
+   "para": "o viés vem do algoritmo escolhido, e só trocar de algoritmo já resolveria."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.2.3",
+   "de": "maior ou igual a 0,5, o limiar padrão de decisão.",
+   "para": "maior que 0,5, que é o limiar padrão usado na decisão."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.4.2",
+   "de": "a feature cujo nome vem primeiro em ordem alfabética nos dados.",
+   "para": "uma pergunta que divida os exemplos em dois grupos de mesmo tamanho."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.5.3",
+   "de": "quando os dados de treino e teste têm exatamente o mesmo tamanho.",
+   "para": "quando se quer calcular a acurácia do modelo no conjunto de teste inteiro."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "4.1",
+   "de": "# não spam    3\n# spam        2\n# Name: classe, dtype: int64",
+   "para": "# classe\n# não spam    3\n# spam        2\n# Name: count, dtype: int64"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "4.2",
+   "de": "Probabilidade maior ou igual a 0,5 vira a classe positiva; menor que isso vira a classe negativa.",
+   "para": "Probabilidade acima de 0,5 vira a classe positiva; 0,5 ou menos, a negativa."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "4.2",
+   "de": "novos_alunos = pd.DataFrame({\"horas_estudo\": [2, 5.5, 9]})\n\nprint(modelo.predict(novos_alunos))\n# [0 1 1]\n\nprint(modelo.predict_proba(novos_alunos))\n# [[0.9  0.1 ]\n#  [0.42 0.58]\n#  [0.04 0.96]]",
+   "para": "novos_alunos = pd.DataFrame({\"horas_estudo\": [2, 5.8, 9]})\n\nprint(modelo.predict(novos_alunos))\n# [0 1 1]\n\nprint(modelo.predict_proba(novos_alunos).round(2))\n# [[0.98 0.02]\n#  [0.41 0.59]\n#  [0.02 0.98]]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "4.5",
+   "de": "print(modelo.predict_proba(novos_alunos))\n# [[0.85 0.15]\n#  [0.45 0.55]\n#  [0.06 0.94]]",
+   "para": "print(modelo.predict_proba(novos_alunos).round(2))\n# [[0.95 0.05]\n#  [0.49 0.51]\n#  [0.05 0.95]]"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.1.4",
+   "de": "Não, porque a acurácia do modelo bobo não pode ser calculada nesse cenário",
+   "para": "Não, porque um modelo bobo não serve de comparação pra um modelo real"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.1.5",
+   "de": "Quando o conjunto de dados tem muitas variáveis categóricas com categorias",
+   "para": "Quando o conjunto de teste é grande, com milhares de exemplos pra medir o acerto"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.2.3",
+   "de": "O verdadeiro positivo, porque identificar spam corretamente já é ruim",
+   "para": "Nenhum dos dois, porque 95,5% de acurácia mostra que o filtro já está bom"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "5.2.5",
+   "de": "Dada a matriz de confusão [[5, 1], [1, 3]], em que a linha e a coluna 0 são a classe negativa e a linha e a coluna 1 são a classe positiva, quantos falsos negativos o modelo cometeu?",
+   "para": "Dada a matriz de confusão [[6, 1], [3, 2]] devolvida pelo confusion_matrix do scikit-learn, em que as linhas são a classe real e as colunas a classe prevista, com 0 para a classe negativa e 1 para a positiva, quantos falsos negativos o modelo cometeu?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.2.5",
+   "de": "3 falsos negativos",
+   "para": "2 falsos negativos"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.2.5",
+   "de": "1 falso negativo",
+   "para": "3 falsos negativos"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.2.5",
+   "de": "4 falsos negativos",
+   "para": "1 falso negativo"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.1",
+   "de": "    weights=[0.99, 0.01],\n    random_state=42,\n)",
+   "para": "    weights=[0.99, 0.01],\n    flip_y=0,  # não troca rótulos ao acaso, então a proporção fica exata\n    random_state=42,\n)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.1",
+   "de": "# modelo bobo: sempre prevê a classe mais frequente",
+   "para": "print(\"Casos da classe rara no teste:\", y_teste.sum())\n# Casos da classe rara no teste: 15\n\n# modelo bobo: sempre prevê a classe mais frequente"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.1",
+   "de": "print(\"Acurácia do modelo bobo:\", accuracy_score(y_teste, pred_bobo))\n# Acurácia do modelo bobo: 0.99\n\nprint(\"Casos da classe rara encontrados pelo bobo:\", pred_bobo.sum())",
+   "para": "print(\"Acurácia do modelo bobo:\", round(accuracy_score(y_teste, pred_bobo), 3))\n# Acurácia do modelo bobo: 0.99\n\n# encontrado = previu 1 num exemplo que era mesmo da classe rara\nprint(\"Casos da classe rara encontrados pelo bobo:\", pred_bobo[y_teste == 1].sum())"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.1",
+   "de": "print(\"Acurácia do modelo real:\", accuracy_score(y_teste, pred))\n# Acurácia do modelo real: 0.985\n\nprint(\"Casos da classe rara encontrados pelo modelo real:\", pred.sum())\n# Casos da classe rara encontrados pelo modelo real: 7",
+   "para": "print(\"Acurácia do modelo real:\", round(accuracy_score(y_teste, pred), 3))\n# Acurácia do modelo real: 0.993\n\nprint(\"Casos da classe rara encontrados pelo modelo real:\", pred[y_teste == 1].sum())\n# Casos da classe rara encontrados pelo modelo real: 6"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.1",
+   "de": "[\"Regressão logística real\", \"0.985\", \"Sim, várias vezes\"]",
+   "para": "[\"Regressão logística real\", \"0.993\", \"Sim, 6 dos 15\"]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.3",
+   "de": "#     classe 0       0.94      0.98      0.96       540\n#     classe 1       0.78      0.55      0.65        60\n#\n#     accuracy                           0.94       600\n#    macro avg       0.86      0.77      0.81       600\n# weighted avg       0.92      0.94      0.93       600",
+   "para": "#     classe 0       0.94      0.98      0.96       539\n#     classe 1       0.69      0.48      0.56        61\n#\n#     accuracy                           0.93       600\n#    macro avg       0.82      0.73      0.76       600\n# weighted avg       0.92      0.93      0.92       600"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.4",
+   "de": "X, y = make_classification(n_samples=1000, n_features=10, random_state=42)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)",
+   "para": "# 5 features informativas e 3 grupos de pontos por classe: um padrão que uma\n# pergunta só (profundidade 1) não consegue separar\nX, y = make_classification(\n    n_samples=1000, n_features=10, n_informative=5, n_clusters_per_class=3, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.4",
+   "de": "# profundidade=1    | treino=0.78 | teste=0.76\n# profundidade=3    | treino=0.89 | teste=0.85\n# profundidade=5    | treino=0.94 | teste=0.86\n# profundidade=None | treino=1.00 | teste=0.81",
+   "para": "# profundidade=1 | treino=0.67 | teste=0.68\n# profundidade=3 | treino=0.82 | teste=0.83\n# profundidade=5 | treino=0.90 | teste=0.84\n# profundidade=None | treino=1.00 | teste=0.81"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.5",
+   "de": "# [0.85 0.82 0.87 0.84 0.86]",
+   "para": "# [0.87  0.855 0.85  0.83  0.875]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.5",
+   "de": "# Média: 0.85 | Desvio padrão: 0.02",
+   "para": "# Média: 0.86 | Desvio padrão: 0.02"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "6.5.5",
+   "de": "Um modelo teve acurácia de 98% no teste durante o desenvolvimento, mas caiu pra 70% em produção. O pipeline de preparo tinha sido ajustado no dataset inteiro, antes do split. Qual a explicação mais provável?",
+   "para": "Um modelo teve acurácia de 98% no teste durante o desenvolvimento, mas caiu pra 70% em produção. As features tinham sido escolhidas entre milhares de colunas candidatas, pelas mais correlacionadas com o alvo, olhando o dataset inteiro antes do split. Qual a explicação mais provável?"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.5",
+   "de": "É um dos erros mais comuns e mais silenciosos em projetos de ML: o código roda sem nenhum erro, as métricas costumam sair ótimas, e o modelo parece muito bom. Só que essa avaliação está mentindo. Na prática, com dados novos que o modelo nunca viu, o desempenho real costuma despencar.",
+   "para": "É um dos erros mais comuns e mais silenciosos em projetos de ML: o código roda sem nenhum erro, e a avaliação deixa de ser honesta sem dar nenhum sinal. O tamanho do estrago depende do que vazou. Quando vazam só estatísticas como média e desvio padrão, a métrica costuma mudar pouco, mas já não dá pra confiar nela. Quando o vazamento envolve o alvo, como escolher as features mais correlacionadas com o alvo olhando o dataset inteiro, ou usar uma coluna que só é preenchida depois do desfecho, a métrica pode sair excelente e o desempenho real despencar com dados novos que o modelo nunca viu."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.5",
+   "de": "# a métrica aqui pode parecer ótima, mas está inflada: o scaler\n# usou estatísticas calculadas com o próprio conjunto de teste",
+   "para": "# a métrica aqui não é uma avaliação honesta: o scaler usou\n# estatísticas calculadas com o próprio conjunto de teste (com um\n# scaler, o número costuma mudar pouco, mas o procedimento está errado)"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.1.3",
+   "de": "Porque nele não se usa nenhum dado numérico, só colunas de texto",
+   "para": "Porque o resultado muda a cada execução, então não existe um resultado a comparar"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.2.3",
+   "de": "Porque colunas em escalas diferentes não podem ficar juntas num mesmo DataFrame",
+   "para": "Porque sem escalar o k-means só demora mais a convergir, mas acaba formando os mesmos grupos"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.3.4",
+   "de": "Não necessariamente: o PCA preserva a maior parte da variância, mas parte da informação se perde",
+   "para": "Não necessariamente: os 2 componentes guardam só parte da variância, e o resto some do gráfico"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.4.2",
+   "de": "Porque o scikit-learn bloqueia a execução de detecção de anomalia sem revisão prévia",
+   "para": "Porque o k-means só aponta como anomalia os pontos que já tinham sido rotulados como fraude"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.1",
+   "de": "Preparar os dados, dividir em treino e teste, treinar, avaliar e só então usar o modelo",
+   "para": "Limpar os dados, dividir em treino e teste, treinar, avaliar e só então usar o modelo"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.1",
+   "de": "Treinar o modelo direto, coletar dados depois, e publicar sem dividir treino e teste",
+   "para": "Treinar o modelo direto, coletar os dados depois, e publicar sem dividir treino e teste"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.3",
+   "de": "# algo como [0.83, 0.11]\n# o 1º componente sozinho já explica cerca de 83% da variância dos dados originais\n# os 2 componentes juntos preservam perto de 94% da informação",
+   "para": "# [0.99061264 0.00730454]\n# o 1º componente sozinho já explica cerca de 99% da variância dos dados originais\n# (as 4 colunas sobem e descem juntas, então um eixo resume quase tudo)\n# os 2 componentes juntos preservam perto de 99,8% da informação"
+  }
+ ],
+ "finais": {
+  "aulas": {
+   "1.2": "08a52b8a75aa49c6b7ec00e67ca1ade40de02dc34368d9829b0677961355957d",
+   "1.5": "ea9085b256c6e86d9db0e01f7c8381655585db0f4030387ed99d8998b16309a1",
+   "2.5": "4f02295aa1f38c87bdf83848006e765917f4a5725935c3a7419c925f63333382",
+   "3.4": "8256b33132cf234517aedf262b3ece55648d485b82242d15745250200cdd90ab",
+   "4.1": "c2e51f1fe680aee065be7951a581a9f2e066881db08a2b6dcc5766b1268a131a",
+   "4.2": "7c91d52d73e0ee477ce42e82e29cda7b4a928ba61acc377b92c8593dd0dd0020",
+   "4.5": "d06938164227fdcd1eed2d69b4d7c369c6a4060ace5d0331b8027bcf39bd5849",
+   "5.1": "d9543d703a60d5964c242dbfe189fdb77e1eea776a1af38d93c366323402d519",
+   "5.3": "1679acab2db4b2971472f351d36fbd46134f9f04d364d1ea24e1c495e1772abd",
+   "5.4": "84b1b988ecaab9b3c7f3e256de125f7b919f3bc2e043df09a6ffe8f8b820176e",
+   "5.5": "65ce9c66a560bb15a397d6f9a664bc0e1565589aec31c80ac53ac6b51372c772",
+   "6.5": "2ada3b42449793ad767e2bcd03d476c461d95efebedad2374e7087947217f1e1",
+   "7.3": "da14252a3e17007ea6730af56e21c7fe45ea862aeceefdd1cffe86bfd7a31ee9"
+  },
+  "alternativas": {
+   "1.1.5": "f88e45dfb017481ecea50ce8e19412393cd66d9e2195e0b4c1fbb51bc0a80c4a",
+   "1.5.5": "23d239011c810287bfb77861d9627739ff5de9e80b5d50a53d130e033870427b",
+   "2.2.4": "58de8a30c7411d211491abb83e542c536edc751614c5b398eeee71da39593883",
+   "3.1.5": "0b8e544e8de9a60b48d1ebae8c5d8c68e661bf50462a769bf98c6d6f8571911e",
+   "3.5.4": "0fd7f4e73a5fdd24113b115a0632f3c5082cc4674945a058ccaea3fb47a95b6e",
+   "4.1.1": "605a6c7705116ba102fcbdbb6855bbcb40ee6b891252650f529d5565ab14f8c3",
+   "4.1.5": "b5ab9c7cca56449801011422c796e8e48aedfbd4c2891baa686ebeec17e5d0f9",
+   "4.2.3": "e3b5aa08ea52d84b41c677284f88a4fd856f73c5b29836c3a513c4ba03f7b198",
+   "4.4.2": "7b19ee6b06a36d620f487f3741dbdce2e32e1bc7918fd33b2fe3c43744061dff",
+   "4.5.3": "c51f828f29ab5596ee17013b545c0170cf3334a1821e2f8bd954e369d0694ab1",
+   "5.1.4": "6e104f54884f6661e4b08d21911c5d73bc977f263a813c9943f5dd82ba124322",
+   "5.1.5": "825fb5660807c779d85e3a3ece7ee858f38ef2ad0277233328a9fe5a3f0f5a12",
+   "5.2.3": "272025c37eb8a848e811c92faf20a4845a0bc80c31f734f29baaa53b42ec5527",
+   "5.2.5": "327df45b8b1dfd9c3cdeedad60256afdeac1e252a906abe48b30b9abe872fb1f",
+   "7.1.3": "13f1de29a84676e3be8ec10072e87f79e132d96a7e3714c0f0d3a41be14250e7",
+   "7.2.3": "215257c9efddc60c155fc865b0fc683ff19f7469a13164a5fcb6bcad32f9f9dd",
+   "7.3.4": "fefa05e81522a7672a9b2ff6c47c1d38665ce315bf11c41d8bfb69595fcc1766",
+   "7.4.2": "c24dd601565b045b77c80087ff020b540f0a3f4b03f6bb1f8c57cf771b3e3ba0",
+   "7.5.1": "c7240abe7408d3b7fd055fca338626d0a3f3214af3c71318bc70642a8eaab902"
+  }
+ }
+}

@@ -1,0 +1,451 @@
+{
+ "trilha": "Machine Learning na Prática",
+ "correcoes": [
+  {
+   "tipo": "enunciado",
+   "chave": "1.1.4",
+   "de": "Um time comparou duas random forests idênticas em hiperparâmetros: uma recebeu o timestamp bruto da data de nascimento (dias desde 1970) e outra recebeu a idade em anos já calculada. A segunda teve desempenho de validação melhor, mesmo os dois números vindo da mesma informação. Qual é a explicação mais provável?",
+   "para": "Um time comparou duas random forests idênticas em hiperparâmetros, numa base pequena de pedidos espalhados por vários anos: uma recebeu os timestamps brutos do nascimento do cliente e da data do pedido (dias desde 1970), e a outra recebeu a idade do cliente na data de cada pedido. A segunda teve desempenho de validação melhor, mesmo a idade sendo só a diferença entre as duas datas. Qual é a explicação mais provável?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "1.1.4",
+   "de": "A árvore precisa de muitos splits pra aproximar a idade a partir do timestamp bruto sozinha.",
+   "para": "A árvore precisa de muitos splits pra aproximar a idade a partir dos dois timestamps brutos sozinha."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "1.1.4",
+   "de": "O timestamp bruto tem uma escala numérica inválida, então o scikit-learn rejeita essa coluna sozinho.",
+   "para": "Os timestamps brutos têm uma escala numérica inválida, então o scikit-learn rejeita essas colunas sozinho."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "1.1.4",
+   "de": "O timestamp bruto tem uma correlação negativa com o alvo, o que atrapalha qualquer modelo de árvore.",
+   "para": "Os timestamps brutos têm uma correlação negativa com o alvo, o que atrapalha qualquer modelo de árvore."
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "1.2.4",
+   "de": "Um cientista de dados calculou `gasto_medio_cliente` com `groupby().transform('mean')` sobre o treino inteiro, incluindo a própria linha prevista, e usou essa feature pra prever se aquele pedido específico é fraude. Qual é o risco dessa abordagem?",
+   "para": "Um cientista de dados calculou `taxa_fraude_cliente`, a média do rótulo `eh_fraude` por cliente, com `groupby().transform('mean')` sobre o treino inteiro, incluindo a própria linha prevista, e usou essa feature pra prever se aquele pedido específico é fraude. Qual é o risco dessa abordagem?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "1.2.4",
+   "de": "A média inclui o valor do próprio pedido a prever, então carrega informação que só existe por causa do alvo.",
+   "para": "A média inclui o rótulo do próprio pedido a prever, então carrega informação que só existe por causa do alvo."
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "1.3.4",
+   "de": "Um modelo foi treinado pra prever `log_preco` em vez de `preco`. Na hora de comparar a previsão com o preço real, o erro médio calculado ficou artificialmente pequeno e sem sentido prático. O que provavelmente foi esquecido?",
+   "para": "Um modelo foi treinado pra prever `log_preco` em vez de `preco`. Na hora de comparar a previsão com o preço real, o erro médio calculado ficou absurdamente grande, quase do tamanho do próprio preço. O que provavelmente foi esquecido?"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.1",
+   "de": "import pandas as pd\n\ndf = pd.DataFrame({\n    'area_m2': [120, 45, 80, 200],\n    'quartos': [3, 1, 2, 4],\n    'ano_construcao': [2005, 2018, 2010, 1995]\n})\n\nano_atual = 2026\n\n# feature derivada: idade do imóvel em anos\ndf['idade_imovel'] = ano_atual - df['ano_construcao']\n\n# feature derivada: área média por cômodo\ndf['area_por_quarto'] = df['area_m2'] / df['quartos']\n\nprint(df[['area_m2', 'quartos', 'idade_imovel', 'area_por_quarto']])\n#    area_m2  quartos  idade_imovel  area_por_quarto\n# 0      120        3            21             40.0\n# 1       45        1             8             45.0\n# 2       80        2            16             40.0\n# 3      200        4            31             50.0",
+   "para": "import pandas as pd\n\ndf = pd.DataFrame({\n    'area_m2': [120, 45, 80, 200],\n    'quartos': [3, 1, 2, 4],\n    'ano_construcao': [2005, 2018, 2010, 1995],\n    'ano_venda': [2026, 2024, 2019, 2026]\n})\n\n# feature derivada: idade do imóvel na data da venda\ndf['idade_imovel'] = df['ano_venda'] - df['ano_construcao']\n\n# feature derivada: área média por cômodo\ndf['area_por_quarto'] = df['area_m2'] / df['quartos']\n\nprint(df[['area_m2', 'quartos', 'idade_imovel', 'area_por_quarto']])\n#    area_m2  quartos  idade_imovel  area_por_quarto\n# 0      120        3            21             40.0\n# 1       45        1             6             45.0\n# 2       80        2             9             40.0\n# 3      200        4            31             50.0"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.1",
+   "de": "Repare que `idade_imovel` e `area_por_quarto` provavelmente têm uma relação mais direta com o preço do imóvel do que `ano_construcao` sozinho. Uma árvore de decisão até consegue aproximar essa mesma informação fazendo vários splits em `ano_construcao`, parecido com o jeito que ela lidava com o overfitting quando ficava funda demais na trilha de ML, mas entregar a feature já pronta poupa esse trabalho e ajuda o modelo a generalizar com menos dado de treino.",
+   "para": "Repare que `idade_imovel` e `area_por_quarto` provavelmente têm uma relação mais direta com o preço do imóvel do que as colunas cruas de onde saíram. Cada uma combina duas colunas: a idade na venda junta `ano_venda` e `ano_construcao`, e a área por quarto junta `area_m2` e `quartos`. Uma árvore de decisão até consegue aproximar essas contas fazendo vários splits nas colunas cruas, parecido com o jeito que ela lidava com o overfitting quando ficava funda demais na trilha de ML, mas entregar a feature já pronta poupa esse trabalho e ajuda o modelo a generalizar com menos dado de treino. O ganho vem da combinação: se a idade fosse calculada numa data fixa, igual pra todas as linhas (como `2026 - ano_construcao`), ela seria só `ano_construcao` com o sinal trocado, e a árvore faria exatamente os mesmos cortes (uma regressão linear também chegaria ao mesmo ajuste)."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.1",
+   "de": "[\"ano_construcao\", \"idade_imovel\", \"Idade tem relação mais direta com o preço do que o ano em si\"]",
+   "para": "[\"ano_construcao e ano_venda\", \"idade_imovel\", \"A idade na venda tem relação mais direta com o preço do que cada ano sozinho\"]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.2",
+   "de": "O gasto médio histórico daquele cliente, calculado com `groupby` e `transform`, vira uma feature nova em cada pedido dele. Isso captura \"esse cliente costuma gastar muito\" sem vazar o valor daquele pedido específico.",
+   "para": "O gasto médio daquele cliente, calculado com `groupby` e `transform`, vira uma feature nova em cada pedido dele e captura \"esse cliente costuma gastar muito\". Só que `transform('mean')` usa todos os pedidos do cliente, inclusive o próprio pedido e os que vieram depois: na saída abaixo, a média do cliente 3 é o valor do único pedido dele. Se a feature vai ajudar a prever algo sobre o pedido, calcule o histórico só com os pedidos anteriores, como a coluna `media_anterior` do código, para não usar pedidos que ainda nem tinham acontecido."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.2",
+   "de": "import pandas as pd\n\ndf = pd.DataFrame({\n    'cliente_id': [1, 1, 2, 2, 3],\n    'valor_pedido': [100, 300, 50, 60, 900],\n    'idade': [22, 22, 45, 45, 67]\n})\n\n# agregação: gasto médio histórico do cliente, repetido em cada linha dele\ndf['gasto_medio_cliente'] = df.groupby('cliente_id')['valor_pedido'].transform('mean')\n\n# binning: faixa etária em vez de idade contínua\ndf['faixa_etaria'] = pd.cut(\n    df['idade'],\n    bins=[0, 25, 35, 50, 120],\n    labels=['18-25', '26-35', '36-50', '50+']\n)\n\nprint(df[['cliente_id', 'valor_pedido', 'gasto_medio_cliente', 'faixa_etaria']])\n#    cliente_id  valor_pedido  gasto_medio_cliente faixa_etaria\n# 0           1           100                 200.0        18-25\n# 1           1           300                 200.0        18-25\n# 2           2            50                  55.0        36-50\n# 3           2            60                  55.0        36-50\n# 4           3           900                 900.0          50+",
+   "para": "import pandas as pd\n\n# pedidos em ordem de data\ndf = pd.DataFrame({\n    'cliente_id': [1, 1, 2, 2, 3],\n    'valor_pedido': [100, 300, 50, 60, 900],\n    'idade': [22, 22, 45, 45, 67]\n})\n\n# agregação: média de todos os pedidos do cliente, repetida em cada linha dele\ndf['gasto_medio_cliente'] = df.groupby('cliente_id')['valor_pedido'].transform('mean')\n\n# histórico: média só dos pedidos anteriores do cliente (vazia no primeiro pedido)\ndf['media_anterior'] = df.groupby('cliente_id')['valor_pedido'].transform(\n    lambda s: s.shift().expanding().mean()\n)\n\n# binning: faixa etária em vez de idade contínua\ndf['faixa_etaria'] = pd.cut(\n    df['idade'],\n    bins=[0, 25, 35, 50, 120],\n    labels=['18-25', '26-35', '36-50', '50+']\n)\n\nprint(df[['cliente_id', 'valor_pedido', 'gasto_medio_cliente', 'media_anterior', 'faixa_etaria']])\n#    cliente_id  valor_pedido  gasto_medio_cliente  media_anterior faixa_etaria\n# 0           1           100                200.0             NaN        18-25\n# 1           1           300                200.0           100.0        18-25\n# 2           2            50                 55.0             NaN        36-50\n# 3           2            60                 55.0            50.0        36-50\n# 4           3           900                900.0             NaN          50+"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.3",
+   "de": "print(df)\n#    renda_mensal  renda_padronizada  renda_normalizada",
+   "para": "print(df.round(4))\n#    renda_mensal  renda_padronizada  renda_normalizada"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.4",
+   "de": "# ['renda_mensal', 'tempo_no_site_seg']  -> só ficam as features acima da importância mediana",
+   "para": "# ['idade', 'renda_mensal']  -> só ficam as features acima da importância mediana (com só 6 linhas, a dupla nem é a mesma do SelectKBest)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.5",
+   "de": "print(importancias.sort_values(ascending=False))\n# renda_mensal          0.42\n# tempo_no_site_seg     0.35\n# idade                 0.19\n# cor_favorita_cod      0.04\n# dtype: float64",
+   "para": "print(importancias.sort_values(ascending=False).round(2))\n# idade                0.33\n# renda_mensal         0.32\n# tempo_no_site_seg    0.31\n# cor_favorita_cod     0.04\n# dtype: float64"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "1.5",
+   "de": "from sklearn.ensemble import GradientBoostingClassifier\nfrom sklearn.model_selection import train_test_split\nimport pandas as pd\n\nX = pd.DataFrame({\n    'dias_em_atraso_atual': [0, 45, 0, 60, 0, 5, 0, 90],\n    'renda_mensal': [3000, 2500, 8000, 2000, 9000, 4000, 7000, 1800],\n    'valor_total_multas': [0, 320, 0, 410, 0, 15, 0, 600]  # existe por causa do alvo\n})\ny = [0, 1, 0, 1, 0, 0, 0, 1]  # inadimplente\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.25, random_state=42, stratify=y\n)\n\nmodelo = GradientBoostingClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\n\nimportancias = pd.Series(modelo.feature_importances_, index=X.columns)\nprint(importancias.sort_values(ascending=False))\n# valor_total_multas       0.94   -> sinal de alerta, uma feature dominando quase tudo\n# dias_em_atraso_atual     0.05\n# renda_mensal             0.01\n\nprint(modelo.score(X_teste, y_teste))\n# 1.0   -> acurácia perfeita é suspeita, não motivo de comemoração",
+   "para": "from sklearn.ensemble import GradientBoostingClassifier\nfrom sklearn.model_selection import train_test_split\nimport pandas as pd\n\nX = pd.DataFrame({\n    'dias_em_atraso_atual': [0, 45, 0, 60, 30, 5, 0, 90, 15, 0, 10, 0],\n    'renda_mensal': [3000, 2500, 8000, 2000, 2200, 4000, 7000, 1800, 2600, 9000, 6000, 3500],\n    'valor_total_multas': [0, 320, 0, 410, 0, 0, 0, 600, 0, 0, 90, 150]  # existe por causa do alvo\n})\ny = [0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1]  # inadimplente\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.25, random_state=42, stratify=y\n)\n\nmodelo = GradientBoostingClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\n\nimportancias = pd.Series(modelo.feature_importances_, index=X.columns)\nprint(importancias.sort_values(ascending=False))\n# valor_total_multas      1.0   -> sinal de alerta: uma feature concentra toda a importância\n# dias_em_atraso_atual    0.0\n# renda_mensal            0.0\n# dtype: float64\n\nprint(modelo.score(X_teste, y_teste))\n# 1.0   -> acurácia perfeita é suspeita, não motivo de comemoração"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.1",
+   "de": "print(modelo.coef_)\n# [45.23 12.87 -3.41]  (aprendido a partir dos dados, ninguem escolheu)\n\nprint(modelo.intercept_)\n# 0.52  (tambem aprendido: nao e argumento do construtor)",
+   "para": "print(modelo.coef_.round(2))\n# [71.64 21.85 72.75]  (aprendido a partir dos dados, ninguem escolheu)\n\nprint(round(modelo.intercept_, 2))\n# -0.37  (tambem aprendido: nao e argumento do construtor)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.2",
+   "de": "print(busca.best_params_)\n# {'max_depth': 5, 'min_samples_leaf': 5}\n\nprint(busca.best_score_)\n# 0.87\n\nmodelo_final = busca.best_estimator_\nprint(modelo_final.max_depth)\n# 5",
+   "para": "print(busca.best_params_)\n# {'max_depth': 3, 'min_samples_leaf': 1}\n\nprint(busca.best_score_)\n# 0.932\n\nmodelo_final = busca.best_estimator_\nprint(modelo_final.max_depth)\n# 3"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.3",
+   "de": "# {'max_depth': 14, 'min_samples_leaf': 3, 'n_estimators': 267}",
+   "para": "# {'max_depth': 16, 'min_samples_leaf': 3, 'n_estimators': 255}"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.4",
+   "de": "print(busca.best_params_)\n# {'max_depth': 12, 'n_estimators': 300}\n\nprint(busca.best_score_)\n# 0.89  (media da validacao cruzada, ainda dentro do treino)\n\n# X_teste so aparece aqui, uma vez, no fim de tudo\nprint(busca.score(X_teste, y_teste))\n# 0.87  (estimativa honesta, em dado que a busca nunca viu)",
+   "para": "print(busca.best_params_)\n# {'max_depth': 8, 'n_estimators': 100}\n\nprint(round(busca.best_score_, 3))\n# 0.911  (media da validacao cruzada, ainda dentro do treino)\n\n# X_teste so aparece aqui, uma vez, no fim de tudo\nprint(busca.score(X_teste, y_teste))\n# 0.875  (estimativa honesta, em dado que a busca nunca viu)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.5",
+   "de": "X, y = make_classification(n_samples=500, n_features=10, random_state=42)",
+   "para": "# flip_y=0.2: 20% das linhas recebem um rotulo sorteado ao acaso (ruido)\nX, y = make_classification(\n    n_samples=1000, n_features=10, n_informative=4, flip_y=0.2, random_state=42\n)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.5",
+   "de": "    print(prof, round(tr, 2), round(val, 2))\n# 1  0.71 0.70   (underfitting: os dois baixos e colados)\n# 6  0.94 0.89   (os dois sobem, ainda proximos)\n# 12 0.99 0.86   (treino quase perfeito, validacao ja caiu: overfitting)\n# 20 1.00 0.83   (treino decorado, validacao piorando mais ainda)",
+   "para": "    print(prof, f\"{tr:.2f}\", f\"{val:.2f}\")\n# trecho da saida (sao 20 linhas, uma por profundidade):\n# 1 0.67 0.67    (underfitting: os dois baixos e colados)\n# 4 0.83 0.80    (os dois sobem, ainda proximos)\n# 12 0.99 0.76   (treino quase perfeito, validacao ja caiu: overfitting)\n# 20 1.00 0.75   (treino decorado, validacao mais baixa ainda)"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.2.1",
+   "de": "Ela é limitada por construção a no máximo três níveis de profundidade possíveis",
+   "para": "Ela escolhe o ponto de corte de cada divisão ao acaso, sem olhar a redução de impureza"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.4.4",
+   "de": "fit e predict fazem exatamente a mesma coisa no RandomForestClassifier, por compatibilidade",
+   "para": "fit treina as árvores em sequência, cada uma corrigindo a anterior; predict soma as respostas"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.5.4",
+   "de": "A ordem em que cada feature foi originalmente coletada na construção do conjunto de dados",
+   "para": "A proporção de árvores da floresta em que cada feature foi escolhida para fazer a divisão da raiz"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.1",
+   "de": "# 1    0.6\n# 5    0.683\n# 15   0.755\n# 51   0.856\n# 101  0.911\n# cada modelo sozinho acerta so 60% das vezes, mas a votacao de 101\n# modelos independentes acerta mais de 91%",
+   "para": "# 1    0.597\n# 5    0.682\n# 15   0.791\n# 51   0.928\n# 101  0.979\n# cada modelo sozinho acerta so 60% das vezes, mas a votacao de 101\n# modelos independentes acerta quase 98%"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.2",
+   "de": "# ['worst perimeter', 'worst concave points', 'worst radius',\n#  'mean concave points', 'worst perimeter']\nprint(acuracias)\n# [0.912, 0.936, 0.924, 0.947, 0.918]",
+   "para": "# ['worst concave points', 'worst perimeter', 'worst area',\n#  'worst concave points', 'mean concave points']\nprint(acuracias)\n# [0.912, 0.906, 0.947, 0.93, 0.936]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "# 0.917 (arvore unica, variancia alta entre os folds)",
+   "para": "# 0.910 (arvore unica, variancia alta entre os folds)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "# 0.960 (avaliado nos dados out-of-bag, sem tocar no teste)",
+   "para": "# 0.940 (avaliado nos dados out-of-bag, sem tocar no teste)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "# 0.953 (o bagging costuma superar a arvore unica, com menos",
+   "para": "# 0.959 (o bagging costuma superar a arvore unica, com menos"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "# 0.965 (media na validacao cruzada, mais alta e mais estavel entre os folds)\n\nfloresta.fit(X_train, y_train)\nprint(floresta.score(X_test, y_test))\n# 0.959\nprint(floresta.predict(X_test.iloc[:3]))\n# [1 0 1]\nprint(floresta.predict_proba(X_test.iloc[:3]))\n# [[0.02 0.98] [0.91 0.09] [0.05 0.95]]",
+   "para": "# 0.952 (media na validacao cruzada, mais alta e mais estavel entre os folds)\n\nfloresta.fit(X_train, y_train)\nprint(floresta.score(X_test, y_test))\n# 0.971\nprint(floresta.predict(X_test.iloc[:3]))\n# [1 0 0]\nprint(floresta.predict_proba(X_test.iloc[:3]))\n# [[0.03 0.97]\n#  [1.   0.  ]\n#  [0.98 0.02]]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "from sklearn.datasets import fetch_california_housing",
+   "para": "from sklearn.datasets import load_diabetes"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "X, y = fetch_california_housing(return_X_y=True, as_frame=True)",
+   "para": "X, y = load_diabetes(return_X_y=True, as_frame=True)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "# 0.807 (R2 no teste)\nprint(regressor.predict(X_test.iloc[:3]))\n# [1.62 1.02 3.45]",
+   "para": "# 0.480 (R2 no teste; conjunto pequeno, de 442 pacientes, e com muito ruido)\nprint(regressor.predict(X_test.iloc[:3]))\n# [155.655 176.405 145.99 ]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "A lógica de bagging mais aleatoriedade nas features é exatamente a mesma nos dois.",
+   "para": "A lógica de bagging mais aleatoriedade nas features é a mesma nos dois, com um detalhe de padrão: no scikit-learn 1.9, de 2026, o `RandomForestRegressor` usa `max_features=1.0` (todas as features em cada divisão), o que na prática é bagging de árvores, inclusive no exemplo acima; para ter o sorteio de features na regressão, passe um valor menor, como `max_features=0.3`."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.5",
+   "de": "# {'max_depth': 8, 'max_features': 'sqrt', 'n_estimators': 300}\nprint(busca.best_score_)\n# 0.965 (media na validacao cruzada, dentro do treino)\nprint(busca.score(X_test, y_test))\n# 0.959 (avaliacao final, so agora tocando no teste)",
+   "para": "# {'max_depth': None, 'max_features': 'sqrt', 'n_estimators': 300}\n# (None, 8 e 16 empataram na validacao; no empate, vale o primeiro da grade)\nprint(busca.best_score_)\n# 0.955 (media na validacao cruzada, dentro do treino)\nprint(busca.score(X_test, y_test))\n# 0.971 (avaliacao final, so agora tocando no teste)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.5",
+   "de": "# worst concave points: 0.142\n# worst perimeter: 0.129\n# worst radius: 0.108\n# mean concave points: 0.089\n# worst area: 0.081",
+   "para": "# worst concave points: 0.135\n# mean concave points: 0.129\n# worst area: 0.127\n# worst perimeter: 0.110\n# worst radius: 0.066"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "4.3.5",
+   "de": "Em bases de dados tabulares, comuns na maioria dos problemas de negócio, por que gradient boosting bem ajustado costuma superar redes neurais profundas?",
+   "para": "Em bases de dados tabulares, comuns na maioria dos problemas de negócio, por que gradient boosting bem ajustado costuma superar redes neurais profundas treinadas do zero?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.3.5",
+   "de": "Porque árvores lidam bem com poucas amostras e features heterogêneas, sem exigir tanto dado",
+   "para": "Porque árvores lidam bem com bases de tamanho médio e features heterogêneas, sem exigir tanto dado"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.3.5",
+   "de": "Porque gradient boosting sempre treina mais rápido que qualquer rede neural, em qualquer caso",
+   "para": "Porque gradient boosting sempre treina mais rápido que qualquer rede neural profunda, em qualquer caso"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "4.3",
+   "de": "Vale uma nota de honestidade aqui: mesmo com todo esse avanço, gradient boosting bem ajustado costuma superar redes neurais profundas em dados tabulares. Isso não quer dizer que deep learning seja ruim (você vai ver isso lá na frente, no módulo sobre redes neurais), só que, pra tabela de linhas e colunas, árvores em sequência costumam ganhar.",
+   "para": "Vale uma nota de honestidade aqui: em tabelas de tamanho médio, gradient boosting bem ajustado costuma superar redes neurais profundas treinadas do zero, como mostrou um estudo muito citado de 2022. O quadro vem mudando: em 2025, o benchmark TabArena viu redes feitas para tabela igualarem ou superarem o boosting quando ganham mais tempo de treino e ensembles, e modelos pré-treinados, como o TabPFN, liderarem em bases pequenas. Isso não quer dizer que deep learning seja ruim (você vai ver isso lá na frente, no módulo sobre redes neurais), só que, pra tabela de linhas e colunas, árvores em sequência continuam sendo um ponto de partida forte e barato."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.5.3",
+   "de": "Porque árvores rasas treinam exatamente na mesma velocidade que árvores bem mais profundas e complexas",
+   "para": "Porque árvores rasas treinam mais rápido, e o tempo de treino é o único motivo para limitar a profundidade"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "5.3.3",
+   "de": "Um param_grid combina 3 valores de um hiperparâmetro do preparo, 4 valores de um hiperparâmetro do modelo e 3 valores de outro hiperparâmetro do modelo, com cv=5. Quantos ajustes o GridSearchCV realiza no total?",
+   "para": "Um param_grid combina 3 valores de um hiperparâmetro do preparo, 4 valores de um hiperparâmetro do modelo e 3 valores de outro hiperparâmetro do modelo, com cv=5. Quantos ajustes a validação cruzada do GridSearchCV realiza no total?"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.2",
+   "de": "# (800, 7) -> 2 colunas numericas escaladas + 5 colunas do one-hot,\n# concatenadas lado a lado numa unica matriz",
+   "para": "# (800, 7) -> 2 colunas numericas escaladas + 5 colunas do one-hot\n# (3 cidades + 2 planos), concatenadas lado a lado numa unica matriz"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.2",
+   "de": "# ['num__idade' 'num__renda' 'cat__cidade_Rio de Janeiro'\n#  'cat__cidade_Sao Paulo' 'cat__plano_premium']\n# o prefixo antes de '__' mostra de qual branch cada coluna final veio",
+   "para": "# ['num__idade' 'num__renda' 'cat__cidade_Belo Horizonte'\n#  'cat__cidade_Rio de Janeiro' 'cat__cidade_Sao Paulo' 'cat__plano_basico'\n#  'cat__plano_premium']\n# as mesmas 7 colunas do shape (800, 7): 2 numericas + 3 cidades + 2 planos,\n# uma coluna por categoria; o prefixo antes de '__' mostra de qual branch\n# cada coluna final veio"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.3",
+   "de": "print(modelo_final.score(X_teste, y_teste))\n# 0.86 -> agora sim, avaliado no teste, que ficou fora do tuning inteiro",
+   "para": "print(busca.score(X_teste, y_teste))\n# 0.86 -> agora sim, F1 no teste, que ficou fora do tuning inteiro: busca.score\n# mede o modelo_final com a mesma metrica da busca; modelo_final.score daria\n# a acuracia, outra metrica, que nao se compara com o 0.87 acima"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.3",
+   "de": "# 12 combinacoes (2 x 2 x 3) -> com cv=5, isso e 60 ajustes completos do pipeline",
+   "para": "# 12 combinacoes (2 x 2 x 3) -> com cv=5, a validacao cruzada faz 60 ajustes\n# completos do pipeline; com o refit=True padrao, vem mais 1 no fim, o do\n# best_estimator_ com a melhor combinacao no treino inteiro"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.5",
+   "de": "Dá pra usar o `pickle` da biblioteca padrão pra mesma coisa, mas o `joblib` costuma ser mais rápido e gerar arquivos menores pra esse tipo de objeto, e é o que a própria documentação do scikit-learn recomenda.",
+   "para": "Dá pra usar o `pickle` da biblioteca padrão pra mesma coisa, mas o `joblib` lida melhor com esse tipo de objeto: grava os arrays em blocos, sem montar uma cópia inteira deles na memória, comprime o arquivo se você pedir (`compress=3`) e carrega os arrays direto do disco com `mmap_mode='r'`. Na documentação do scikit-learn 1.9, de 2026, ele aparece como mais eficiente que o `pickle` com modelos e arrays grandes."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.5",
+   "de": "print(modelo_final.score(X_teste, y_teste))\n# 0.88\n",
+   "para": "print(busca.score(X_teste, y_teste))\n# 0.88 -> F1 no teste, a mesma metrica usada na busca\n"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "6.1.4",
+   "de": "Um dataset de crédito tem quase todas as features categóricas, com poucas colunas numéricas. Ao aplicar SMOTE diretamente nesse conjunto, qual risco é mais provável?",
+   "para": "Um dataset de crédito tem quase todas as features categóricas, já codificadas como números (one-hot ou código inteiro), e poucas features contínuas, como renda e idade. Ao aplicar SMOTE diretamente nesse conjunto, qual risco é mais provável?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.1.4",
+   "de": "SMOTE substitui automaticamente as colunas categóricas por codificação one-hot antes de gerar exemplos",
+   "para": "SMOTE reconhece as colunas categóricas e sorteia uma categoria existente para cada exemplo novo"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.3.2",
+   "de": "O modelo escolhido tem, com certeza, um bug de implementação no scikit-learn",
+   "para": "O refit do GridSearchCV treina o modelo final num só fold, por isso ele piora no teste"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.3.5",
+   "de": "As duas eliminam a necessidade de dividir os dados entre treino e teste",
+   "para": "As duas corrigem um vazamento de dados que existia entre o conjunto de treino e o de teste"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.5.5",
+   "de": "A equipe não confia no scikit-learn, preferindo aguardar uma versão mais recente da biblioteca",
+   "para": "Com revisão humana, o desempenho do modelo deixa de importar, porque o analista corrige os erros"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.1",
+   "de": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# dataset com 97% classe 0 e 3% classe 1 (ex.: falha rara de equipamento)\nX, y = make_classification(\n    n_samples=4000, n_features=12, weights=[0.97, 0.03], random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\nmodelo = RandomForestClassifier(random_state=42)\nmodelo.fit(X_treino, y_treino)\ny_pred = modelo.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred, digits=2))\n#               precision    recall  f1-score   support\n#            0       0.97      1.00      0.99      1164\n#            1       0.83      0.14      0.24        36\n#\n#     accuracy                           0.97      1200\n\nprint(\"Acurácia:\", modelo.score(X_teste, y_teste))\n# Acurácia: 0.97",
+   "para": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# dataset com 97% classe 0 e 3% classe 1 (ex.: falha rara de equipamento)\nX, y = make_classification(\n    n_samples=4000, n_features=12, weights=[0.97, 0.03], class_sep=0.5,\n    random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\n# min_samples_leaf=20: cada folha precisa de pelo menos 20 exemplos de treino\nmodelo = RandomForestClassifier(min_samples_leaf=20, random_state=42)\nmodelo.fit(X_treino, y_treino)\ny_pred = modelo.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred, digits=2))\n#               precision    recall  f1-score   support\n#\n#            0       0.97      1.00      0.99      1157\n#            1       1.00      0.28      0.44        43\n#\n#     accuracy                           0.97      1200\n#    macro avg       0.99      0.64      0.71      1200\n# weighted avg       0.97      0.97      0.97      1200\n\nprint(\"Acurácia:\", round(modelo.score(X_teste, y_teste), 3))\n# Acurácia: 0.974\n\n# acurácia de 97%, mas só 28% das falhas reais detectadas (recall da classe 1)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.1",
+   "de": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# mesmo X_treino/X_teste do exemplo anterior, agora com class_weight\nmodelo_balanceado = RandomForestClassifier(\n    class_weight=\"balanced\", random_state=42\n)\nmodelo_balanceado.fit(X_treino, y_treino)\ny_pred_bal = modelo_balanceado.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred_bal, digits=2))\n#               precision    recall  f1-score   support\n#            0       0.98      0.96      0.97      1164\n#            1       0.36      0.53      0.43        36\n#\n#     accuracy                           0.95      1200\n\n# 'balanced' pondera cada classe pelo inverso da sua frequência: errar na\n# classe rara passa a custar bem mais caro pro modelo durante o treino",
+   "para": "from sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\n\n# mesmo X_treino/X_teste do exemplo anterior, agora com class_weight\nmodelo_balanceado = RandomForestClassifier(\n    class_weight=\"balanced\", min_samples_leaf=20, random_state=42\n)\nmodelo_balanceado.fit(X_treino, y_treino)\ny_pred_bal = modelo_balanceado.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred_bal, digits=2))\n#               precision    recall  f1-score   support\n#\n#            0       0.99      0.97      0.98      1157\n#            1       0.44      0.67      0.53        43\n#\n#     accuracy                           0.96      1200\n#    macro avg       0.71      0.82      0.75      1200\n# weighted avg       0.97      0.96      0.96      1200\n\n# 'balanced' pondera cada classe pelo inverso da sua frequência: errar na\n# classe rara passa a custar bem mais caro pro modelo durante o treino.\n# O recall da classe 1 sobe de 0.28 para 0.67, ao custo de mais alarmes\n# falsos (a precisão dela cai de 1.00 para 0.44).\n# Com árvores crescidas até o fim (o padrão), cada folha fica pura e o peso\n# quase não muda a previsão; por isso os dois modelos usam min_samples_leaf=20"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.2",
+   "de": "import numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\nX, y = make_classification(n_samples=3000, n_features=15, random_state=42)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# modelo treinado com os rótulos originais\nmodelo_limpo = RandomForestClassifier(random_state=42)\nmodelo_limpo.fit(X_treino, y_treino)\nprint(\"Acurácia com rótulos corretos:\", modelo_limpo.score(X_teste, y_teste))\n# Acurácia com rótulos corretos: 0.92\n\n# simula 15% de rótulos errados só no treino (o teste continua confiável)\nrng = np.random.default_rng(42)\ny_treino_ruidoso = y_treino.copy()\nindices_embaralhados = rng.choice(\n    len(y_treino_ruidoso), size=int(0.15 * len(y_treino_ruidoso)), replace=False\n)\ny_treino_ruidoso[indices_embaralhados] = 1 - y_treino_ruidoso[indices_embaralhados]\n\nmodelo_ruidoso = RandomForestClassifier(random_state=42)\nmodelo_ruidoso.fit(X_treino, y_treino_ruidoso)\nprint(\"Acurácia com 15% de rótulos errados:\", modelo_ruidoso.score(X_teste, y_teste))\n# Acurácia com 15% de rótulos errados: 0.81",
+   "para": "import numpy as np\nfrom sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\nX, y = make_classification(\n    n_samples=3000, n_features=15, n_informative=5, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# modelo treinado com os rótulos originais\nmodelo_limpo = RandomForestClassifier(random_state=42)\nmodelo_limpo.fit(X_treino, y_treino)\nprint(\"Acurácia com rótulos corretos:\", round(modelo_limpo.score(X_teste, y_teste), 3))\n# Acurácia com rótulos corretos: 0.872\n\n# 15% de rótulos errados só no treino (o teste continua confiável),\n# de dois jeitos: trocados ao acaso, ou todos no mesmo sentido\nrng = np.random.default_rng(42)\nn_erros = int(0.15 * len(y_treino))\n\ny_treino_ruidoso = y_treino.copy()\nindices = rng.choice(len(y_treino), size=n_erros, replace=False)\ny_treino_ruidoso[indices] = 1 - y_treino_ruidoso[indices]\n\n# positivos gravados como 0, como a conversão que falhou em disparar\ny_treino_enviesado = y_treino.copy()\nindices = rng.choice(np.flatnonzero(y_treino == 1), size=n_erros, replace=False)\ny_treino_enviesado[indices] = 0\n\nfor nome, rotulos in [(\"ao acaso\", y_treino_ruidoso), (\"num sentido só\", y_treino_enviesado)]:\n    modelo = RandomForestClassifier(random_state=42).fit(X_treino, rotulos)\n    print(f\"15% errados {nome}: acurácia {modelo.score(X_teste, y_teste):.3f}, \"\n          f\"prevê 1 em {modelo.predict(X_teste).mean():.0%} do teste\")\nprint(f\"No teste, a classe 1 é {y_teste.mean():.0%} dos casos\")\n# 15% errados ao acaso: acurácia 0.842, prevê 1 em 47% do teste\n# 15% errados num sentido só: acurácia 0.767, prevê 1 em 31% do teste\n# No teste, a classe 1 é 51% dos casos\n\n# mesma quantidade de erro, efeitos bem diferentes: o erro ao acaso custa\n# 3 pontos; o erro num sentido só custa mais de 10 e ensina o modelo a\n# prever a classe 1 bem menos do que ela acontece"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.3",
+   "de": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import GradientBoostingClassifier\n\nX, y = make_classification(n_samples=1500, n_features=20, random_state=42)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfor n in [10, 50, 200, 500]:\n    modelo = GradientBoostingClassifier(\n        n_estimators=n, learning_rate=0.2, max_depth=3, random_state=42\n    )\n    modelo.fit(X_treino, y_treino)\n    print(\n        f\"n_estimators={n:>3} | treino={modelo.score(X_treino, y_treino):.2f} \"\n        f\"| teste={modelo.score(X_teste, y_teste):.2f}\"\n    )\n\n# n_estimators= 10 | treino=0.91 | teste=0.89\n# n_estimators= 50 | treino=0.98 | teste=0.90\n# n_estimators=200 | treino=1.00 | teste=0.88\n# n_estimators=500 | treino=1.00 | teste=0.86",
+   "para": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import GradientBoostingClassifier\n\n# flip_y=0.2: 20% das linhas recebem rótulo sorteado, ruído que dá para decorar\nX, y = make_classification(\n    n_samples=1500, n_features=20, n_informative=3, flip_y=0.2, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfor n in [10, 50, 200, 500]:\n    modelo = GradientBoostingClassifier(\n        n_estimators=n, learning_rate=0.2, max_depth=3, random_state=42\n    )\n    modelo.fit(X_treino, y_treino)\n    print(\n        f\"n_estimators={n:>3} | treino={modelo.score(X_treino, y_treino):.2f} \"\n        f\"| teste={modelo.score(X_teste, y_teste):.2f}\"\n    )\n\n# n_estimators= 10 | treino=0.87 | teste=0.86\n# n_estimators= 50 | treino=0.93 | teste=0.84\n# n_estimators=200 | treino=1.00 | teste=0.84\n# n_estimators=500 | treino=1.00 | teste=0.83"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.3",
+   "de": "from sklearn.ensemble import GradientBoostingClassifier\n\n# reaproveitando X_treino, X_teste, y_treino, y_teste da célula anterior\n# para de adicionar árvores quando 10 rodadas seguidas não melhoram o\n# desempenho numa fatia de validação separada internamente\nmodelo_early_stop = GradientBoostingClassifier(\n    n_estimators=500,\n    learning_rate=0.2,\n    max_depth=3,\n    validation_fraction=0.15,\n    n_iter_no_change=10,\n    random_state=42,\n)\nmodelo_early_stop.fit(X_treino, y_treino)\n\nprint(\"Estágios (árvores) realmente usados:\", modelo_early_stop.estimators_.shape[0])\n# Estágios (árvores) realmente usados: 63\n\nprint(\"Score no teste:\", modelo_early_stop.score(X_teste, y_teste))\n# Score no teste: 0.91",
+   "para": "from sklearn.ensemble import GradientBoostingClassifier\n\n# reaproveitando X_treino, X_teste, y_treino, y_teste da célula anterior\n# para de adicionar árvores quando 10 rodadas seguidas não melhoram o\n# desempenho numa fatia de validação separada internamente\nmodelo_early_stop = GradientBoostingClassifier(\n    n_estimators=500,\n    learning_rate=0.2,\n    max_depth=3,\n    validation_fraction=0.15,\n    n_iter_no_change=10,\n    random_state=42,\n)\nmodelo_early_stop.fit(X_treino, y_treino)\n\nprint(\"Estágios (árvores) realmente usados:\", modelo_early_stop.estimators_.shape[0])\n# Estágios (árvores) realmente usados: 41\n\nprint(\"Score no teste:\", round(modelo_early_stop.score(X_teste, y_teste), 2))\n# Score no teste: 0.85\n\n# 41 árvores em vez de 500, e um teste melhor que o das 500 (0.83)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "# feature_1    0.142\n# feature_4    0.098\n# feature_0    0.061\n# feature_3    0.014\n# feature_2    0.003\n# feature_5   -0.002",
+   "para": "# feature_5    0.362333\n# feature_3    0.069000\n# feature_1    0.041333\n# feature_2    0.004333\n# feature_4    0.003333\n# feature_0   -0.000333\n# dtype: float64"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.5",
+   "de": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\n\n# problema simulado em que uma única feature já carrega quase toda a\n# informação (comum quando existe uma regra de negócio forte por trás)\nX, y = make_classification(\n    n_samples=1000, n_features=5, n_informative=1, n_redundant=0,\n    n_clusters_per_class=1, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# regra simples: um limiar na primeira feature\nregra_simples = (X_teste[:, 0] > 0).astype(int)\nprint(\"Acurácia da regra simples:\", accuracy_score(y_teste, regra_simples))\n# Acurácia da regra simples: 0.94\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\nprint(\"Acurácia da regressão logística:\", modelo.score(X_teste, y_teste))\n# Acurácia da regressão logística: 0.95\n\n# um ponto de acurácia a mais raramente paga a conta de manter um pipeline\n# de ML inteiro rodando no lugar de uma regra de uma linha",
+   "para": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\n\n# problema simulado em que uma única feature já carrega quase toda a\n# informação (comum quando existe uma regra de negócio forte por trás);\n# shuffle=False deixa essa feature na coluna 0, a primeira\nX, y = make_classification(\n    n_samples=1000, n_features=5, n_informative=1, n_redundant=0,\n    n_clusters_per_class=1, shuffle=False, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\n# regra simples: um limiar na primeira feature\nregra_simples = (X_teste[:, 0] > 0).astype(int)\nprint(\"Acurácia da regra simples:\", round(accuracy_score(y_teste, regra_simples), 3))\n# Acurácia da regra simples: 0.933\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\nprint(\"Acurácia da regressão logística:\", round(modelo.score(X_teste, y_teste), 3))\n# Acurácia da regressão logística: 0.93\n\n# a regressão logística, vendo as 5 features, empata com a regra de uma\n# linha (um acerto de diferença em 300): aqui, manter um pipeline de ML\n# inteiro rodando no lugar da regra não compraria nada"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.4.2",
+   "de": "Uma API de alto nível, mais simples de ler e escrever, que roda sobre o TensorFlow",
+   "para": "Uma API de alto nível para montar redes, que roda sobre TensorFlow, JAX ou PyTorch"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.4.2",
+   "de": "Um algoritmo de ensemble, que combina várias redes neurais treinadas em paralelo",
+   "para": "Um algoritmo de ensemble, que combina várias redes neurais treinadas ao mesmo tempo"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.1",
+   "de": "Abandonar tudo que foi visto na trilha de Machine Learning anterior, do zero",
+   "para": "Buscar sempre o modelo mais complexo disponível, porque complexidade traz qualidade"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.4",
+   "de": "Keras é uma API de alto nível, criada pra tornar a montagem de uma rede mais legível, e hoje roda integrada ao TensorFlow.",
+   "para": "Keras é uma API de alto nível, criada pra tornar a montagem de uma rede mais legível. Desde o Keras 3, lançado em novembro de 2023, ela roda sobre TensorFlow, JAX ou PyTorch (o TensorFlow é o padrão), e do TensorFlow 2.16 em diante, de março de 2024, o `tf.keras` que vem com o TensorFlow já é o próprio Keras 3."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.4",
+   "de": "API de alto nível sobre o TensorFlow, fácil de ler e escrever",
+   "para": "API de alto nível sobre TensorFlow, JAX ou PyTorch, fácil de ler e escrever"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.4",
+   "de": "from tensorflow import keras\nfrom tensorflow.keras import layers\n\nmodelo = keras.Sequential([\n    layers.Dense(16, activation=\"relu\", input_shape=(X_treino.shape[1],)),  # camada oculta\n    layers.Dense(8, activation=\"relu\"),                                     # outra camada oculta\n    layers.Dense(1, activation=\"sigmoid\"),                                  # saída: classe binária\n])",
+   "para": "import keras  # Keras 3: roda sobre TensorFlow (o padrão), JAX ou PyTorch\nfrom keras import layers\n\nmodelo = keras.Sequential([\n    keras.Input(shape=(X_treino.shape[1],)),  # entrada: um valor por feature\n    layers.Dense(16, activation=\"relu\"),      # camada oculta\n    layers.Dense(8, activation=\"relu\"),       # outra camada oculta\n    layers.Dense(1, activation=\"sigmoid\"),    # saída: classe binária\n])"
+  }
+ ],
+ "finais": {
+  "aulas": {
+   "1.1": "657940787ecce35c848f11a4a6e9653b8eccf3f48682d2712664e1d897a8bb55",
+   "1.2": "878b8fc091c3319c1b5f2e140d435b70d9bb3e54a048bce00e47c6049d73398f",
+   "1.3": "a35299cdcc300686d5c07356c53e638e5f2e4710025b66f9cdb77815d0e155cd",
+   "1.4": "ccd3c1d18c3816b315be4a1382ef44ad04ceece69cfc17a17b00691c5e5088f4",
+   "1.5": "35e0664206eb6b7cb7877e7ef9e7b3bd516dfc13dd22db5628b0cfc91f10ce45",
+   "2.1": "392a1995e2398a07e0d5978ea270b21c6c41488ea9f334dd7529f947f982d0a6",
+   "2.2": "4e8ca29d056e3277297b141e4f19ae8a9c468bf2585fe82afbcaf33b6c4545e5",
+   "2.3": "c485286b71b0321c90e31a31bca107d2e87ab713ef3e29e3c7aeb865417a266e",
+   "2.4": "4eba8f6842c9cd3f481ed4d267d5e21acdb0943ccca95886f8c7ae9d48743f7b",
+   "2.5": "b954abf8444c36e4ebf070b35b74bd935e20985209d3a2e8055f9a6a0202147f",
+   "3.1": "52dcb5af7378e726e73163e4abf6d1a870ca35a825c99d0110283f099de5cec5",
+   "3.2": "61ce8ac1b2cec89c81e8e2c853caec61943a539f021c4a6cd76b6a65d53272b9",
+   "3.3": "80c6ddd327a7471aeed766a8160f37efa0bb2164579d29e156123375d81728a2",
+   "3.4": "5cfe64e7d88886b596433d9ce5b1b8e5dcde7bac5d2386159d51c66369b182c6",
+   "3.5": "d35951112e8ced8c80ba40da8f398c1986afb3756e4c8297922f6b0ed08e2af2",
+   "4.3": "b0cb2907816b88150a029bdaeee87982fd4d40cd537e2d353d991690c2a95dfd",
+   "5.2": "f51834ba8c3d5e23e6ed074b7d02f6a495124e19a4bb0110082769cdaa5659ad",
+   "5.3": "ac394a35699f94f207ca3b43f6215c4756aeb8193a46677e7d4e0c5db9e8afa4",
+   "5.5": "dfc684dbfadc527876f548ffe07ad6db7d105aef0da0f9b55e3abec451e85142",
+   "6.1": "8bda7a10d354f9a79ec594f0dbe445e3b0845085c6fd6cf044d33e56960b1884",
+   "6.2": "97959646331362296d3ce916a900842a96fa86323a5c8c065ac6629f84530573",
+   "6.3": "526f7269c7c6b5919c3962a3e704d924d74ae5485ad028fd8163674a90e8efd5",
+   "6.4": "6022e463bcd4fca64a5419fa4a801d157376ccc9f250b24d9a633a4cbb4ebcc4",
+   "6.5": "77cca852b71bc86d9b08d2829847da4ded0bab3a150430236a173b5f86192685",
+   "7.4": "54170cd3f21a36f550284e16c7b33ccfffc5accdfc0a12d8f1250f28810b78e8"
+  },
+  "alternativas": {
+   "1.1.4": "2df79b4bb8fbbd42f6bc9d3c699f590ac29fae2439e436925d0db649f8dc1656",
+   "1.2.4": "0d89c051601a9c80b6fa6258be4e022e908cae84f74e42a428fb7337b2b5944e",
+   "3.2.1": "97a68156d41a3b2cf458418735809014ad9e2671becdfde025ce516b72ede4cc",
+   "3.4.4": "b5373d6b51406ffc94c6172ef5e9a16863a5005c3d365c4036dcad23fd2d22ed",
+   "3.5.4": "51789fca85bb516fd2c8663aa7adcf037bf3cb128d0f1d7627b62c319ee754cc",
+   "4.3.5": "3765dd11259be894273cc7f5b0dfb8f868bb4c4b54fa52c6f89e84e81e8cdf8f",
+   "4.5.3": "1909fb04972685d6c843784fb4b5b5b2fd74760f86ce2c2ec4c9f4f0571b379e",
+   "6.1.4": "ed09d66743761bf56463ff1962effba7c6e31ec2a5b0332a0233ca29bbf8ad5e",
+   "6.3.2": "36da02efa57dbb35389ed37d4e7d060be6df3e62c58b31266fa8c5f647aab497",
+   "6.3.5": "c19d2be0a5a83d883e6f0cccc4121c82205e88a97494cbf554852de3c4840ee0",
+   "6.5.5": "122da7bc02d5d763fd771a4e4c9387d37910e48b0a0c95c24900755c49853de8",
+   "7.4.2": "1750ca3a90aae4472f02abed057cab32bb276e64df027a07debfff0dcb872b86",
+   "7.5.1": "8b8fc7aeec1c18ddd7787775eb6067f9fc967dd4601f1c74ff59c4155308ff58"
+  }
+ }
+}

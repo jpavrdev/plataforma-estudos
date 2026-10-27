@@ -58,6 +58,8 @@ const envSchema = z.object({
     CERT_RAZAO_SOCIAL: z.string().optional(),
     CERT_CNPJ: z.string().optional(),
     CERT_RESPONSAVEL: z.string().optional(),
+    // Token do monitor externo para ler /health/dependencias. Sem ele, a rota não existe.
+    MONITOR_TOKEN: z.string().min(32, "MONITOR_TOKEN deve ter ao menos 32 caracteres.").optional(),
 });
 
 // Valida os dados e lança erro se tiver algo errado.

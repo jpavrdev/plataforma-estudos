@@ -13,7 +13,9 @@ import {
     jsonb,
     type AnyPgColumn,
     numeric,
+    smallint,
 } from "drizzle-orm/pg-core";
+import type { Contatos } from "./src/domain/contatos.ts";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
@@ -1104,5 +1106,44 @@ export const featureFlagUsers = pgTable(
     (table) => [
         unique().on(table.flagId, table.userId),
         index("feature_flag_users_user_id_idx").on(table.userId),
+    ],
+);
+
+// Sorteio para os alunos, com período de inscrição. Quem sorteia é o admin,
+// depois do fim; sorteado_em preenchido torna o resultado definitivo.
+export const sorteios = pgTable("sorteios", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    titulo: varchar("titulo", { length: 120 }).notNull(),
+    descricao: text("descricao").notNull(),
+    inicio: timestamp("inicio", { withTimezone: true }).notNull(),
+    fim: timestamp("fim", { withTimezone: true }).notNull(),
+    sorteadoEm: timestamp("sorteado_em", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Inscrição de um aluno num sorteio. No ato do sorteio os contatos de quem não
+// ganhou são apagados (minimização, LGPD), mas a linha fica: registra quem
+// participou e quando.
+export const sorteioParticipacoes = pgTable(
+    "sorteio_participacoes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        sorteioId: uuid("sorteio_id")
+            .references(() => sorteios.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        contatos: jsonb("contatos").$type<Contatos>(),
+        // Colocação de 1 a 3, só nos ganhadores.
+        posicao: smallint("posicao"),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.sorteioId, table.userId),
+        unique().on(table.sorteioId, table.posicao),
+        index("sorteio_participacoes_user_id_idx").on(table.userId),
     ],
 );

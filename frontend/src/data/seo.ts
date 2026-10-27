@@ -63,6 +63,7 @@ const ROTAS: Record<string, MetaPagina> = {
   '/perfil': { titulo: 'Meu perfil | Ensina Dev', indexar: false },
   '/curriculo': { titulo: 'Currículo | Ensina Dev', indexar: false },
   '/apoie': { titulo: 'Apoie o projeto | Ensina Dev', indexar: false },
+  '/sorteio': { titulo: 'Sorteio | Ensina Dev', indexar: false },
   '/configuracoes': { titulo: 'Configurações | Ensina Dev', indexar: false },
   '/:username': { titulo: 'Perfil | Ensina Dev', indexar: false },
 };

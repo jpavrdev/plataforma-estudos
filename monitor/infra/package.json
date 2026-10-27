@@ -1,0 +1,25 @@
+{
+    "name": "monitor-infra",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Infraestrutura do monitor externo em AWS CDK",
+    "engines": {
+        "node": ">=24"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "test": "node --test --test-concurrency=1 'src/**/*.test.ts'",
+        "synth": "cdk synth"
+    },
+    "dependencies": {
+        "aws-cdk-lib": "^2.274.0",
+        "constructs": "^10.8.1"
+    },
+    "devDependencies": {
+        "@types/node": "^24.19.2",
+        "aws-cdk": "^2.1146.1",
+        "esbuild": "^0.28.2",
+        "typescript": "^7.0.2"
+    }
+}

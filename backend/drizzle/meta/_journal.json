@@ -428,6 +428,13 @@
       "when": 1791918293549,
       "tag": "0060_simulado_pratica",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1793105630911,
+      "tag": "0061_sorteios",
+      "breakpoints": true
     }
   ]
 }

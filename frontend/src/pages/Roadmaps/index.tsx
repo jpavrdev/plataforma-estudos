@@ -8,7 +8,7 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, ChevronRight, Lock, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { listarRoadmaps, type RoadmapResumo, type Nivel } from '../../services/roadmaps';
 
 const NIVEL_LABEL: Record<Nivel, string> = {
@@ -48,6 +48,7 @@ const CTA: Record<RoadmapResumo['status'], string> = {
 
 export function Roadmaps() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
@@ -78,7 +79,7 @@ export function Roadmaps() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

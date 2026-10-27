@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type ReactNode } from 'react';
+import { useState, type ChangeEvent, type HTMLAttributes, type ReactNode } from 'react';
 import { Eye, EyeOff } from './Icons';
 
 interface FormFieldProps {
@@ -8,6 +8,8 @@ interface FormFieldProps {
   type?: string;
   placeholder?: string;
   autoComplete?: string;
+  inputMode?: HTMLAttributes<HTMLInputElement>['inputMode'];
+  onBlur?: () => void;
   required?: boolean;
   /** Conteúdo opcional à direita do label (ex.: link "Esqueceu a senha?"). */
   labelAddon?: ReactNode;
@@ -24,6 +26,8 @@ export function FormField({
   type = 'text',
   placeholder,
   autoComplete,
+  inputMode,
+  onBlur,
   required = false,
   labelAddon,
   error,
@@ -51,7 +55,9 @@ export function FormField({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           autoComplete={autoComplete}
+          inputMode={inputMode}
           required={required}
           aria-invalid={error ? true : undefined}
         />

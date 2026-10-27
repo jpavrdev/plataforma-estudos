@@ -18,7 +18,7 @@ import {
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import {
   obterProgresso,
   definirMetaSemanal,
@@ -75,6 +75,7 @@ function deltaPercentual(atual: number, anterior: number | null): string | null 
 
 export function Progresso() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const navigate = useNavigate();
   const [periodo, setPeriodo] = useState<PeriodoProgresso>('30');
   const [dados, setDados] = useState<ProgressoData | null>(null);
@@ -220,7 +221,7 @@ export function Progresso() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link key={item.to} to={item.to} className="nav__item">
                 {item.label}
               </Link>

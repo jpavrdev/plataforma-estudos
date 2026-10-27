@@ -1,10 +1,12 @@
 // Seed da trilha Machine Learning (avancado), estagio 7 do roadmap de Ciencia de Dados.
-// Idempotente e nao destrutivo: se a trilha ja tiver aulas, nao faz nada.
+// Idempotente e nao destrutivo: se a trilha ja tiver aulas, so preenche as
+// resolucoes de scripts/solucoes/machine-learning.json.
 //
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-trilha-machine-learning.ts
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
+import { backfillExplicacoes, mesclarSolucoes } from "./backfill-explicacoes.ts";
 
 const NOME = "Machine Learning";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "avancado";
@@ -14,6 +16,7 @@ const DESCRICAO =
 type Bloco = { type: "text" | "code" | "quote" | "table"; value: string };
 type Questao = {
     statement: string;
+    explanation?: string;
     difficulty: "facil" | "medio" | "dificil";
     options: { text: string; isCorrect: boolean }[];
 };
@@ -162,7 +165,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o programa usa muito pouca memória do computador para armazenar as informações necessárias.",
+                                "text": "Porque os rótulos da tabela vieram de pessoas, e em machine learning é o algoritmo que cria os rótulos.",
                                 "isCorrect": false
                             }
                         ]
@@ -190,7 +193,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\n\n# Dados de clientes de um e-commerce\nclientes = pd.DataFrame({\n    \"idade\": [25, 41, 33, 52, 29],\n    \"gasto_mensal\": [120, 340, 210, 480, 90],\n    \"comprou_categoria_x\": [0, 1, 1, 1, 0]  # rótulo: 1 = comprou, 0 = não comprou\n})\n\nprint(clientes)\n#    idade  gasto_mensal  comprou_categoria_x\n# 0     25           120                     0\n# 1     41           340                     1\n# 2     33           210                     1\n# 3     52           480                     1\n# 4     29            90                     0\n\n# Com a coluna \"comprou_categoria_x\" como alvo, isso é supervisionado:\n# o modelo aprenderia a prever esse rótulo para clientes novos.\n# Sem essa coluna, os mesmos dados serviriam para não-supervisionado:\n# por exemplo, agrupar clientes parecidos sem saber os grupos de antemão."
+                        "value": "import pandas as pd\n\n# Dados de clientes de um e-commerce\nclientes = pd.DataFrame({\n    \"idade\": [25, 41, 33, 52, 29],\n    \"gasto_mensal\": [120, 340, 210, 480, 90],\n    \"comprou_categoria_x\": [0, 1, 1, 1, 0]  # rótulo: 1 = comprou, 0 = não comprou\n})\n\nprint(clientes)\n#    idade  gasto_mensal  comprou_categoria_x\n# 0     25           120                    0\n# 1     41           340                    1\n# 2     33           210                    1\n# 3     52           480                    1\n# 4     29            90                    0\n\n# Com a coluna \"comprou_categoria_x\" como alvo, isso é supervisionado:\n# o modelo aprenderia a prever esse rótulo para clientes novos.\n# Sem essa coluna, os mesmos dados serviriam para não-supervisionado:\n# por exemplo, agrupar clientes parecidos sem saber os grupos de antemão."
                     },
                     {
                         "type": "table",
@@ -621,7 +624,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\n\n# Base de clientes para prever inadimplência, com poucas amostras da classe minoritária\nclientes = pd.DataFrame({\n    \"renda\": [3200, 5400, 2100, 7800, 3900, 4600, 2900, 6100, 3300, 5000],\n    \"inadimplente\": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]  # só 1 em 10 é inadimplente\n})\n\nprint(clientes[\"inadimplente\"].value_counts())\n# 0    9\n# 1    1\n# Name: inadimplente, dtype: int64\n\n# Um modelo \"preguiçoso\", que sempre prevê 0 (não inadimplente), já acerta 90% das vezes\n# sem ter aprendido nada de útil sobre quem realmente é inadimplente.\n# Dados representativos (e a métrica de avaliação certa, tema do Módulo 5) importam\n# muito mais do que só treinar um modelo qualquer e olhar a acurácia isolada."
+                        "value": "import pandas as pd\n\n# Base de clientes para prever inadimplência, com poucas amostras da classe minoritária\nclientes = pd.DataFrame({\n    \"renda\": [3200, 5400, 2100, 7800, 3900, 4600, 2900, 6100, 3300, 5000],\n    \"inadimplente\": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]  # só 1 em 10 é inadimplente\n})\n\nprint(clientes[\"inadimplente\"].value_counts())\n# inadimplente\n# 0    9\n# 1    1\n# Name: count, dtype: int64\n\n# Um modelo \"preguiçoso\", que sempre prevê 0 (não inadimplente), já acerta 90% das vezes\n# sem ter aprendido nada de útil sobre quem realmente é inadimplente.\n# Dados representativos (e a métrica de avaliação certa, tema do Módulo 5) importam\n# muito mais do que só treinar um modelo qualquer e olhar a acurácia isolada."
                     },
                     {
                         "type": "table",
@@ -738,7 +741,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O resultado de 99% no treino não é, sozinho, suficiente para decidir se o modelo é bom.",
+                                "text": "O modelo é confiável, porque a nota que mede a qualidade dele é a do treino, onde chegou a 99%.",
                                 "isCorrect": false
                             },
                             {
@@ -1011,7 +1014,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Os dados de treino e teste vão se sobrepor parcialmente entre uma execução e outra.",
+                                "text": "Em cada execução, parte dos exemplos de teste também acaba entrando no conjunto de treino.",
                                 "isCorrect": false
                             }
                         ]
@@ -1343,11 +1346,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.model_selection import train_test_split\n\n# 1o split: separa o teste, que so sera usado no final\nX_treino_val, X_test, y_treino_val, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\n# 2o split: do que sobrou, separa treino e validacao\nX_train, X_val, y_train, y_val = train_test_split(\n    X_treino_val, y_treino_val, test_size=0.25, random_state=42\n)\n\nlen(X_train), len(X_val), len(X_test)\n# (90, 30, 30)          -> de 150 exemplos: 60% treino, 20% validacao, 20% teste"
+                        "value": "from sklearn.model_selection import train_test_split\n\n# 1o split: separa o teste, que so sera usado no final\nX_treino_val, X_test, y_treino_val, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\n# 2o split: do que sobrou, separa treino e validacao\nX_train, X_val, y_train, y_val = train_test_split(\n    X_treino_val, y_treino_val, test_size=0.25, random_state=641\n)\n\nlen(X_train), len(X_val), len(X_test)\n# (90, 30, 30)          -> de 150 exemplos: 60% treino, 20% validacao, 20% teste"
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.neighbors import KNeighborsClassifier\n\nfor k in [1, 3, 5, 7]:\n    modelo = KNeighborsClassifier(n_neighbors=k)\n    modelo.fit(X_train, y_train)\n    print(k, modelo.score(X_val, y_val))\n# 1 0.90\n# 3 0.97\n# 5 0.97\n# 7 0.93          -> k=3 parece a melhor escolha, olhando so a validacao\n\n# So depois de decidir k, uma unica vez, olhamos o teste:\nmodelo_final = KNeighborsClassifier(n_neighbors=3)\nmodelo_final.fit(X_train, y_train)\nmodelo_final.score(X_test, y_test)\n# 0.93          -> avaliacao final, feita uma unica vez"
+                        "value": "from sklearn.neighbors import KNeighborsClassifier\n\nfor k in [1, 3, 5, 7]:\n    modelo = KNeighborsClassifier(n_neighbors=k)\n    modelo.fit(X_train, y_train)\n    print(k, round(modelo.score(X_val, y_val), 2))\n# 1 0.9\n# 3 0.97\n# 5 0.93\n# 7 0.93          -> k=3 parece a melhor escolha, olhando so a validacao\n\n# So depois de decidir k, uma unica vez, olhamos o teste:\nmodelo_final = KNeighborsClassifier(n_neighbors=3)\nmodelo_final.fit(X_train, y_train)\nround(modelo_final.score(X_test, y_test), 2)\n# 0.97          -> avaliacao final, feita uma unica vez"
                     },
                     {
                         "type": "table",
@@ -1614,7 +1617,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Que o scikit-learn bloqueia o treino quando detecta uma variável irrelevante no conjunto.",
+                                "text": "Que um fit sem erro já garante coeficientes corretos, e o problema só pode estar no predict.",
                                 "isCorrect": false
                             },
                             {
@@ -1703,7 +1706,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Você já viu correlação na trilha de Estatística. Qual é a relação entre correlação e a inclinação a da reta de regressão?",
+                        "statement": "Você já viu correlação na trilha de Estatística. Qual é a relação entre a correlação de x e y e o ajuste da reta de regressão?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1940,7 +1943,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "imoveis[\"area_cm2\"] = imoveis[\"area_m2\"] * 10000\n\nX2 = imoveis[[\"area_cm2\", \"quartos\", \"idade_anos\"]]\nmodelo_cm = LinearRegression()\nmodelo_cm.fit(X2, y)\n\nfor nome, coeficiente in zip(X2.columns, modelo_cm.coef_):\n    print(f\"{nome}: {float(coeficiente):.6f}\")\n# area_cm2: 0.000400\n# quartos: 15.000000\n# idade_anos: -2.000000\n\nprint(round(float(modelo_cm.intercept_), 2))\n# 50.0\n\n# só o coeficiente da variável reescalada mudou (proporcionalmente à mudança de unidade);\n# quartos, idade_anos e o intercepto continuam idênticos, e as previsões também não mudam"
+                        "value": "imoveis[\"area_cm2\"] = imoveis[\"area_m2\"] * 10000\n\nX2 = imoveis[[\"area_cm2\", \"quartos\", \"idade_anos\"]]\n# tol=0: com a área em cm2, o tol padrão (1e-6) do scikit-learn 1.9 (2026) tiraria quartos\nmodelo_cm = LinearRegression(tol=0)\nmodelo_cm.fit(X2, y)\n\nfor nome, coeficiente in zip(X2.columns, modelo_cm.coef_):\n    print(f\"{nome}: {float(coeficiente):.6f}\")\n# area_cm2: 0.000400\n# quartos: 15.000000\n# idade_anos: -2.000000\n\nprint(round(float(modelo_cm.intercept_), 2))\n# 50.0\n\n# só o coeficiente da variável reescalada mudou (proporcionalmente à mudança de unidade);\n# quartos, idade_anos e o intercepto continuam idênticos, e as previsões também não mudam"
                     },
                     {
                         "type": "quote",
@@ -2160,7 +2163,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Uma seguradora está prevendo o valor de indenizações e quer penalizar bastante previsões muito abaixo do valor real, que geram prejuízo maior. Qual métrica combina melhor com essa prioridade?",
+                        "statement": "Uma seguradora está prevendo o valor de indenizações e quer penalizar bastante previsões muito longe do valor real, que geram prejuízo maior. Qual métrica combina melhor com essa prioridade?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -2172,7 +2175,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "R2, porque mede diretamente o prejuízo em reais causado por cada erro de previsão.",
+                                "text": "R2, porque mede diretamente o prejuízo em reais causado por cada um dos erros de previsão.",
                                 "isCorrect": false
                             },
                             {
@@ -2231,7 +2234,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\n\nemails = pd.DataFrame({\n    \"tamanho_kb\": [12, 340, 8, 220, 15],\n    \"tem_link\": [1, 1, 0, 1, 0],\n    \"classe\": [\"spam\", \"não spam\", \"não spam\", \"spam\", \"não spam\"],\n})\n\nprint(emails[\"classe\"].value_counts())\n# não spam    3\n# spam        2\n# Name: classe, dtype: int64"
+                        "value": "import pandas as pd\n\nemails = pd.DataFrame({\n    \"tamanho_kb\": [12, 340, 8, 220, 15],\n    \"tem_link\": [1, 1, 0, 1, 0],\n    \"classe\": [\"spam\", \"não spam\", \"não spam\", \"spam\", \"não spam\"],\n})\n\nprint(emails[\"classe\"].value_counts())\n# classe\n# não spam    3\n# spam        2\n# Name: count, dtype: int64"
                     },
                     {
                         "type": "text",
@@ -2256,7 +2259,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade exata de linhas presentes nos dados de treino usados.",
+                                "text": "Um grupo de exemplos parecidos entre si, formado sem olhar para os rótulos.",
                                 "isCorrect": false
                             },
                             {
@@ -2344,7 +2347,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "o problema deixa de ser classificação assim que envolve pessoas.",
+                                "text": "o viés vem do algoritmo escolhido, e só trocar de algoritmo já resolveria.",
                                 "isCorrect": false
                             },
                             {
@@ -2368,11 +2371,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Da probabilidade à classe: o limiar\n\nUma probabilidade sozinha não é uma decisão. Pra transformar os 0,82 ou 0,15 que saem da sigmoide numa classe (\"sim\" ou \"não\"), o scikit-learn aplica um **limiar** (`threshold`): por padrão, 0,5. Probabilidade maior ou igual a 0,5 vira a classe positiva; menor que isso vira a classe negativa.\n\nEsse limiar não é uma lei da física, é só um padrão razoável. O módulo 5 mostra situações (como exames médicos, em que deixar passar um doente é pior do que assustar um saudável à toa) em que faz sentido mover esse limiar pra 0,2 ou 0,3, tornando o modelo mais \"desconfiado\"."
+                        "value": "## Da probabilidade à classe: o limiar\n\nUma probabilidade sozinha não é uma decisão. Pra transformar os 0,82 ou 0,15 que saem da sigmoide numa classe (\"sim\" ou \"não\"), o scikit-learn aplica um **limiar** (`threshold`): por padrão, 0,5. Probabilidade acima de 0,5 vira a classe positiva; 0,5 ou menos, a negativa.\n\nEsse limiar não é uma lei da física, é só um padrão razoável. O módulo 5 mostra situações (como exames médicos, em que deixar passar um doente é pior do que assustar um saudável à toa) em que faz sentido mover esse limiar pra 0,2 ou 0,3, tornando o modelo mais \"desconfiado\"."
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.linear_model import LogisticRegression\nimport pandas as pd\n\ndados = pd.DataFrame({\n    \"horas_estudo\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],\n    \"aprovado\":     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1],\n})\n\nX = dados[[\"horas_estudo\"]]\ny = dados[\"aprovado\"]\n\nmodelo = LogisticRegression()\nmodelo.fit(X, y)\n\nnovos_alunos = pd.DataFrame({\"horas_estudo\": [2, 5.5, 9]})\n\nprint(modelo.predict(novos_alunos))\n# [0 1 1]\n\nprint(modelo.predict_proba(novos_alunos))\n# [[0.9  0.1 ]\n#  [0.42 0.58]\n#  [0.04 0.96]]"
+                        "value": "from sklearn.linear_model import LogisticRegression\nimport pandas as pd\n\ndados = pd.DataFrame({\n    \"horas_estudo\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],\n    \"aprovado\":     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1],\n})\n\nX = dados[[\"horas_estudo\"]]\ny = dados[\"aprovado\"]\n\nmodelo = LogisticRegression()\nmodelo.fit(X, y)\n\nnovos_alunos = pd.DataFrame({\"horas_estudo\": [2, 5.8, 9]})\n\nprint(modelo.predict(novos_alunos))\n# [0 1 1]\n\nprint(modelo.predict_proba(novos_alunos).round(2))\n# [[0.98 0.02]\n#  [0.41 0.59]\n#  [0.02 0.98]]"
                     },
                     {
                         "type": "text",
@@ -2433,7 +2436,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "maior ou igual a 0,5, o limiar padrão de decisão.",
+                                "text": "maior que 0,5, que é o limiar padrão usado na decisão.",
                                 "isCorrect": true
                             },
                             {
@@ -2709,7 +2712,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "a feature cujo nome vem primeiro em ordem alfabética nos dados.",
+                                "text": "uma pergunta que divida os exemplos em dois grupos de mesmo tamanho.",
                                 "isCorrect": false
                             },
                             {
@@ -2799,7 +2802,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nimport pandas as pd\n\ndados = pd.DataFrame({\n    \"horas_estudo\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1.5, 8.5],\n    \"aprovado\":     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1],\n})\n\nX = dados[[\"horas_estudo\"]]\ny = dados[\"aprovado\"]\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.25, random_state=42\n)\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\n\nprint(modelo.score(X_teste, y_teste))\n# 1.0\n\nprint(modelo.classes_)\n# [0 1]\n\nnovos_alunos = pd.DataFrame({\"horas_estudo\": [3, 5.5, 8]})\nprint(modelo.predict(novos_alunos))\n# [0 1 1]\n\nprint(modelo.predict_proba(novos_alunos))\n# [[0.85 0.15]\n#  [0.45 0.55]\n#  [0.06 0.94]]"
+                        "value": "from sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nimport pandas as pd\n\ndados = pd.DataFrame({\n    \"horas_estudo\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1.5, 8.5],\n    \"aprovado\":     [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1],\n})\n\nX = dados[[\"horas_estudo\"]]\ny = dados[\"aprovado\"]\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.25, random_state=42\n)\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\n\nprint(modelo.score(X_teste, y_teste))\n# 1.0\n\nprint(modelo.classes_)\n# [0 1]\n\nnovos_alunos = pd.DataFrame({\"horas_estudo\": [3, 5.5, 8]})\nprint(modelo.predict(novos_alunos))\n# [0 1 1]\n\nprint(modelo.predict_proba(novos_alunos).round(2))\n# [[0.95 0.05]\n#  [0.49 0.51]\n#  [0.05 0.95]]"
                     },
                     {
                         "type": "table",
@@ -2876,7 +2879,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "quando os dados de treino e teste têm exatamente o mesmo tamanho.",
+                                "text": "quando se quer calcular a acurácia do modelo no conjunto de teste inteiro.",
                                 "isCorrect": false
                             },
                             {
@@ -2949,11 +2952,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.dummy import DummyClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\n\n# dataset desbalanceado: 99% classe 0 (\"não é fraude\"), 1% classe 1 (\"é fraude\")\nX, y = make_classification(\n    n_samples=5000,\n    n_features=10,\n    weights=[0.99, 0.01],\n    random_state=42,\n)\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\n# modelo bobo: sempre prevê a classe mais frequente\nbobo = DummyClassifier(strategy=\"most_frequent\")\nbobo.fit(X_treino, y_treino)\npred_bobo = bobo.predict(X_teste)\n\nprint(\"Acurácia do modelo bobo:\", accuracy_score(y_teste, pred_bobo))\n# Acurácia do modelo bobo: 0.99\n\nprint(\"Casos da classe rara encontrados pelo bobo:\", pred_bobo.sum())\n# Casos da classe rara encontrados pelo bobo: 0\n\n# agora um modelo de verdade\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\npred = modelo.predict(X_teste)\n\nprint(\"Acurácia do modelo real:\", accuracy_score(y_teste, pred))\n# Acurácia do modelo real: 0.985\n\nprint(\"Casos da classe rara encontrados pelo modelo real:\", pred.sum())\n# Casos da classe rara encontrados pelo modelo real: 7"
+                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.dummy import DummyClassifier\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import accuracy_score\n\n# dataset desbalanceado: 99% classe 0 (\"não é fraude\"), 1% classe 1 (\"é fraude\")\nX, y = make_classification(\n    n_samples=5000,\n    n_features=10,\n    weights=[0.99, 0.01],\n    flip_y=0,  # não troca rótulos ao acaso, então a proporção fica exata\n    random_state=42,\n)\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\nprint(\"Casos da classe rara no teste:\", y_teste.sum())\n# Casos da classe rara no teste: 15\n\n# modelo bobo: sempre prevê a classe mais frequente\nbobo = DummyClassifier(strategy=\"most_frequent\")\nbobo.fit(X_treino, y_treino)\npred_bobo = bobo.predict(X_teste)\n\nprint(\"Acurácia do modelo bobo:\", round(accuracy_score(y_teste, pred_bobo), 3))\n# Acurácia do modelo bobo: 0.99\n\n# encontrado = previu 1 num exemplo que era mesmo da classe rara\nprint(\"Casos da classe rara encontrados pelo bobo:\", pred_bobo[y_teste == 1].sum())\n# Casos da classe rara encontrados pelo bobo: 0\n\n# agora um modelo de verdade\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\npred = modelo.predict(X_teste)\n\nprint(\"Acurácia do modelo real:\", round(accuracy_score(y_teste, pred), 3))\n# Acurácia do modelo real: 0.993\n\nprint(\"Casos da classe rara encontrados pelo modelo real:\", pred[y_teste == 1].sum())\n# Casos da classe rara encontrados pelo modelo real: 6"
                     },
                     {
                         "type": "table",
-                        "value": "[[\"Modelo\", \"Acurácia\", \"Encontrou algum caso da classe rara?\"], [\"Bobo (sempre prevê a maioria)\", \"0.99\", \"Não, nenhum\"], [\"Regressão logística real\", \"0.985\", \"Sim, várias vezes\"]]"
+                        "value": "[[\"Modelo\", \"Acurácia\", \"Encontrou algum caso da classe rara?\"], [\"Bobo (sempre prevê a maioria)\", \"0.99\", \"Não, nenhum\"], [\"Regressão logística real\", \"0.993\", \"Sim, 6 dos 15\"]]"
                     },
                     {
                         "type": "text",
@@ -3052,7 +3055,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Não, porque a acurácia do modelo bobo não pode ser calculada nesse cenário",
+                                "text": "Não, porque um modelo bobo não serve de comparação pra um modelo real",
                                 "isCorrect": false
                             }
                         ]
@@ -3074,7 +3077,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Quando o conjunto de dados tem muitas variáveis categóricas com categorias",
+                                "text": "Quando o conjunto de teste é grande, com milhares de exemplos pra medir o acerto",
                                 "isCorrect": false
                             }
                         ]
@@ -3171,7 +3174,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O verdadeiro positivo, porque identificar spam corretamente já é ruim",
+                                "text": "Nenhum dos dois, porque 95,5% de acurácia mostra que o filtro já está bom",
                                 "isCorrect": false
                             },
                             {
@@ -3203,15 +3206,15 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Dada a matriz de confusão [[5, 1], [1, 3]], em que a linha e a coluna 0 são a classe negativa e a linha e a coluna 1 são a classe positiva, quantos falsos negativos o modelo cometeu?",
+                        "statement": "Dada a matriz de confusão [[6, 1], [3, 2]] devolvida pelo confusion_matrix do scikit-learn, em que as linhas são a classe real e as colunas a classe prevista, com 0 para a classe negativa e 1 para a positiva, quantos falsos negativos o modelo cometeu?",
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "1 falso negativo",
+                                "text": "3 falsos negativos",
                                 "isCorrect": true
                             },
                             {
-                                "text": "3 falsos negativos",
+                                "text": "2 falsos negativos",
                                 "isCorrect": false
                             },
                             {
@@ -3219,7 +3222,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "4 falsos negativos",
+                                "text": "1 falso negativo",
                                 "isCorrect": false
                             }
                         ]
@@ -3247,7 +3250,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import classification_report\n\nX, y = make_classification(\n    n_samples=2000, n_features=10, weights=[0.9, 0.1], random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\ny_pred = modelo.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred, target_names=[\"classe 0\", \"classe 1\"]))\n#               precision    recall  f1-score   support\n#\n#     classe 0       0.94      0.98      0.96       540\n#     classe 1       0.78      0.55      0.65        60\n#\n#     accuracy                           0.94       600\n#    macro avg       0.86      0.77      0.81       600\n# weighted avg       0.92      0.94      0.93       600"
+                        "value": "from sklearn.datasets import make_classification\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.metrics import classification_report\n\nX, y = make_classification(\n    n_samples=2000, n_features=10, weights=[0.9, 0.1], random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, stratify=y, random_state=42\n)\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\ny_pred = modelo.predict(X_teste)\n\nprint(classification_report(y_teste, y_pred, target_names=[\"classe 0\", \"classe 1\"]))\n#               precision    recall  f1-score   support\n#\n#     classe 0       0.94      0.98      0.96       539\n#     classe 1       0.69      0.48      0.56        61\n#\n#     accuracy                           0.93       600\n#    macro avg       0.82      0.73      0.76       600\n# weighted avg       0.92      0.93      0.92       600"
                     },
                     {
                         "type": "text",
@@ -3392,7 +3395,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=1000, n_features=10, random_state=42)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfor profundidade in [1, 3, 5, None]:\n    arvore = DecisionTreeClassifier(max_depth=profundidade, random_state=42)\n    arvore.fit(X_treino, y_treino)\n    score_treino = arvore.score(X_treino, y_treino)\n    score_teste = arvore.score(X_teste, y_teste)\n    print(f\"profundidade={profundidade} | treino={score_treino:.2f} | teste={score_teste:.2f}\")\n\n# profundidade=1    | treino=0.78 | teste=0.76\n# profundidade=3    | treino=0.89 | teste=0.85\n# profundidade=5    | treino=0.94 | teste=0.86\n# profundidade=None | treino=1.00 | teste=0.81"
+                        "value": "from sklearn.tree import DecisionTreeClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.datasets import make_classification\n\n# 5 features informativas e 3 grupos de pontos por classe: um padrão que uma\n# pergunta só (profundidade 1) não consegue separar\nX, y = make_classification(\n    n_samples=1000, n_features=10, n_informative=5, n_clusters_per_class=3, random_state=42\n)\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X, y, test_size=0.3, random_state=42\n)\n\nfor profundidade in [1, 3, 5, None]:\n    arvore = DecisionTreeClassifier(max_depth=profundidade, random_state=42)\n    arvore.fit(X_treino, y_treino)\n    score_treino = arvore.score(X_treino, y_treino)\n    score_teste = arvore.score(X_teste, y_teste)\n    print(f\"profundidade={profundidade} | treino={score_treino:.2f} | teste={score_teste:.2f}\")\n\n# profundidade=1 | treino=0.67 | teste=0.68\n# profundidade=3 | treino=0.82 | teste=0.83\n# profundidade=5 | treino=0.90 | teste=0.84\n# profundidade=None | treino=1.00 | teste=0.81"
                     },
                     {
                         "type": "table",
@@ -3529,7 +3532,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.model_selection import cross_val_score\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=1000, n_features=10, random_state=42)\n\nmodelo = LogisticRegression()\nscores = cross_val_score(modelo, X, y, cv=5)\n\nprint(scores)\n# [0.85 0.82 0.87 0.84 0.86]\n\nprint(f\"Média: {scores.mean():.2f} | Desvio padrão: {scores.std():.2f}\")\n# Média: 0.85 | Desvio padrão: 0.02"
+                        "value": "from sklearn.model_selection import cross_val_score\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.datasets import make_classification\n\nX, y = make_classification(n_samples=1000, n_features=10, random_state=42)\n\nmodelo = LogisticRegression()\nscores = cross_val_score(modelo, X, y, cv=5)\n\nprint(scores)\n# [0.87  0.855 0.85  0.83  0.875]\n\nprint(f\"Média: {scores.mean():.2f} | Desvio padrão: {scores.std():.2f}\")\n# Média: 0.86 | Desvio padrão: 0.02"
                     },
                     {
                         "type": "table",
@@ -3788,7 +3791,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Duas empresas clientes têm o mesmo total gasto e o mesmo tempo de casa em meses, mas perfis de consumo bem diferentes. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
+                        "statement": "Duas empresas clientes gastaram o mesmo total, 6 mil reais, mas uma é cliente há 3 meses e a outra há 36. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -4251,11 +4254,11 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "## O que é vazamento de dados (data leakage)\n\nAo longo deste módulo, uma regra apareceu em toda aula: escale, codifique e impute usando só o conjunto de treino, depois aplique essa mesma transformação no teste. Chegou a hora de nomear por que essa regra existe, e ela não é surpresa nova: é uma extensão direta daquele cuidado do módulo 2 de nunca avaliar o modelo com um dado que ele, ou qualquer etapa antes dele, já viu de alguma forma. Quando alguma informação do conjunto de teste (ou do futuro, em dados organizados no tempo) influencia o treinamento, isso se chama vazamento de dados, ou data leakage.\n\nÉ um dos erros mais comuns e mais silenciosos em projetos de ML: o código roda sem nenhum erro, as métricas costumam sair ótimas, e o modelo parece muito bom. Só que essa avaliação está mentindo. Na prática, com dados novos que o modelo nunca viu, o desempenho real costuma despencar.\n\n## Como o vazamento acontece na prática\n\nO caso mais comum é exatamente o que as aulas anteriores vinham evitando: calcular média, desvio padrão, mínimo, máximo ou categoria mais frequente usando o dataset inteiro, antes de separar treino e teste. Quando isso acontece, a estatística usada pra transformar os dados já \"viu\" uma amostra do conjunto de teste, e o teste deixa de simular dados realmente novos."
+                        "value": "## O que é vazamento de dados (data leakage)\n\nAo longo deste módulo, uma regra apareceu em toda aula: escale, codifique e impute usando só o conjunto de treino, depois aplique essa mesma transformação no teste. Chegou a hora de nomear por que essa regra existe, e ela não é surpresa nova: é uma extensão direta daquele cuidado do módulo 2 de nunca avaliar o modelo com um dado que ele, ou qualquer etapa antes dele, já viu de alguma forma. Quando alguma informação do conjunto de teste (ou do futuro, em dados organizados no tempo) influencia o treinamento, isso se chama vazamento de dados, ou data leakage.\n\nÉ um dos erros mais comuns e mais silenciosos em projetos de ML: o código roda sem nenhum erro, e a avaliação deixa de ser honesta sem dar nenhum sinal. O tamanho do estrago depende do que vazou. Quando vazam só estatísticas como média e desvio padrão, a métrica costuma mudar pouco, mas já não dá pra confiar nela. Quando o vazamento envolve o alvo, como escolher as features mais correlacionadas com o alvo olhando o dataset inteiro, ou usar uma coluna que só é preenchida depois do desfecho, a métrica pode sair excelente e o desempenho real despencar com dados novos que o modelo nunca viu.\n\n## Como o vazamento acontece na prática\n\nO caso mais comum é exatamente o que as aulas anteriores vinham evitando: calcular média, desvio padrão, mínimo, máximo ou categoria mais frequente usando o dataset inteiro, antes de separar treino e teste. Quando isso acontece, a estatística usada pra transformar os dados já \"viu\" uma amostra do conjunto de teste, e o teste deixa de simular dados realmente novos."
                     },
                     {
                         "type": "code",
-                        "value": "# X (features) e y (alvo) já preparados, como nos módulos anteriores\n\n# ERRADO: ajusta o scaler com o dataset inteiro, antes do split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\n\nscaler = StandardScaler()\nX_escalado = scaler.fit_transform(X)  # viu treino E teste juntos aqui\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X_escalado, y, test_size=0.2, random_state=42\n)\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\nprint(modelo.score(X_teste, y_teste))\n# a métrica aqui pode parecer ótima, mas está inflada: o scaler\n# usou estatísticas calculadas com o próprio conjunto de teste"
+                        "value": "# X (features) e y (alvo) já preparados, como nos módulos anteriores\n\n# ERRADO: ajusta o scaler com o dataset inteiro, antes do split\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LogisticRegression\n\nscaler = StandardScaler()\nX_escalado = scaler.fit_transform(X)  # viu treino E teste juntos aqui\n\nX_treino, X_teste, y_treino, y_teste = train_test_split(\n    X_escalado, y, test_size=0.2, random_state=42\n)\n\nmodelo = LogisticRegression()\nmodelo.fit(X_treino, y_treino)\nprint(modelo.score(X_teste, y_teste))\n# a métrica aqui não é uma avaliação honesta: o scaler usou\n# estatísticas calculadas com o próprio conjunto de teste (com um\n# scaler, o número costuma mudar pouco, mas o procedimento está errado)"
                     },
                     {
                         "type": "code",
@@ -4368,7 +4371,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um modelo teve acurácia de 98% no teste durante o desenvolvimento, mas caiu pra 70% em produção. O pipeline de preparo tinha sido ajustado no dataset inteiro, antes do split. Qual a explicação mais provável?",
+                        "statement": "Um modelo teve acurácia de 98% no teste durante o desenvolvimento, mas caiu pra 70% em produção. As features tinham sido escolhidas entre milhares de colunas candidatas, pelas mais correlacionadas com o alvo, olhando o dataset inteiro antes do split. Qual a explicação mais provável?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -4482,7 +4485,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque nele não se usa nenhum dado numérico, só colunas de texto",
+                                "text": "Porque o resultado muda a cada execução, então não existe um resultado a comparar",
                                 "isCorrect": false
                             },
                             {
@@ -4627,7 +4630,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque colunas em escalas diferentes não podem ficar juntas num mesmo DataFrame",
+                                "text": "Porque sem escalar o k-means só demora mais a convergir, mas acaba formando os mesmos grupos",
                                 "isCorrect": false
                             }
                         ]
@@ -4695,7 +4698,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\nimport pandas as pd\n\ndados = pd.DataFrame({\n    \"idade\": [23, 45, 31, 52, 28, 40],\n    \"renda_mensal\": [2500, 9000, 4200, 11000, 3100, 8500],\n    \"anos_estudo\": [12, 18, 15, 20, 13, 17],\n    \"gasto_mensal\": [1900, 5200, 2800, 6100, 2200, 4900],\n})\n\nX_escalado = StandardScaler().fit_transform(dados)\n\npca = PCA(n_components=2)\nX_reduzido = pca.fit_transform(X_escalado)\n\nprint(X_reduzido.shape)\n# (6, 2) -> as 4 colunas originais viraram 2 componentes principais\n\nprint(pca.explained_variance_ratio_)\n# algo como [0.83, 0.11]\n# o 1º componente sozinho já explica cerca de 83% da variância dos dados originais\n# os 2 componentes juntos preservam perto de 94% da informação"
+                        "value": "from sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\nimport pandas as pd\n\ndados = pd.DataFrame({\n    \"idade\": [23, 45, 31, 52, 28, 40],\n    \"renda_mensal\": [2500, 9000, 4200, 11000, 3100, 8500],\n    \"anos_estudo\": [12, 18, 15, 20, 13, 17],\n    \"gasto_mensal\": [1900, 5200, 2800, 6100, 2200, 4900],\n})\n\nX_escalado = StandardScaler().fit_transform(dados)\n\npca = PCA(n_components=2)\nX_reduzido = pca.fit_transform(X_escalado)\n\nprint(X_reduzido.shape)\n# (6, 2) -> as 4 colunas originais viraram 2 componentes principais\n\nprint(pca.explained_variance_ratio_)\n# [0.99061264 0.00730454]\n# o 1º componente sozinho já explica cerca de 99% da variância dos dados originais\n# (as 4 colunas sobem e descem juntas, então um eixo resume quase tudo)\n# os 2 componentes juntos preservam perto de 99,8% da informação"
                     },
                     {
                         "type": "text",
@@ -4778,7 +4781,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Não necessariamente: o PCA preserva a maior parte da variância, mas parte da informação se perde",
+                                "text": "Não necessariamente: os 2 componentes guardam só parte da variância, e o resto some do gráfico",
                                 "isCorrect": true
                             },
                             {
@@ -4891,7 +4894,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque o scikit-learn bloqueia a execução de detecção de anomalia sem revisão prévia",
+                                "text": "Porque o k-means só aponta como anomalia os pontos que já tinham sido rotulados como fraude",
                                 "isCorrect": false
                             }
                         ]
@@ -5002,11 +5005,11 @@ const MODULOS: Modulo[] = [
                         "difficulty": "facil",
                         "options": [
                             {
-                                "text": "Preparar os dados, dividir em treino e teste, treinar, avaliar e só então usar o modelo",
+                                "text": "Limpar os dados, dividir em treino e teste, treinar, avaliar e só então usar o modelo",
                                 "isCorrect": true
                             },
                             {
-                                "text": "Treinar o modelo direto, coletar dados depois, e publicar sem dividir treino e teste",
+                                "text": "Treinar o modelo direto, coletar os dados depois, e publicar sem dividir treino e teste",
                                 "isCorrect": false
                             },
                             {
@@ -5114,6 +5117,7 @@ const MODULOS: Modulo[] = [
 ];
 
 async function seed() {
+    mesclarSolucoes(MODULOS, "machine-learning");
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
     if (!trilha) {
         [trilha] = await db
@@ -5125,7 +5129,8 @@ async function seed() {
 
     const existentes = await db.select().from(lessons).where(eq(lessons.trailId, trilha.id));
     if (existentes.length > 0) {
-        console.log("Trilha " + NOME + " ja tem " + existentes.length + " aulas. Nada a fazer.");
+        const n = await backfillExplicacoes(trilha.id, MODULOS);
+        console.log("Trilha " + NOME + " já existe; " + n + " explicações atualizadas.");
         return;
     }
 
@@ -5158,6 +5163,7 @@ async function seed() {
                     .values({
                         lessonId: lesson.id,
                         statement: q.statement,
+                        explanation: q.explanation ?? null,
                         difficulty: q.difficulty,
                         position: qi + 1,
                     })
