@@ -31,12 +31,13 @@ import {
 } from '../../services/roadmaps';
 import { contarRevisaoDaTrilha } from '../../services/flashcards';
 
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 
 export function Aula() {
   const { trailId, lessonId } = useParams();
   const navigate = useNavigate();
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const displayName = authUser?.name ?? user.name;
 
   const [trilha, setTrilha] = useState<TrailDetail | null>(null);
@@ -132,7 +133,7 @@ export function Aula() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

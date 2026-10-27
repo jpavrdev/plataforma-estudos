@@ -7,7 +7,7 @@ import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Check, X, Alert, Info, Zap, DocLines, Redo, Star } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import {
   analisarCurriculo,
   listarAnalises,
@@ -90,6 +90,7 @@ function Anel({ score }: { score: number }) {
 
 export function Curriculo() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const [status, setStatus] = useState<StatusCurriculo | null>(null);
   const [historico, setHistorico] = useState<ResumoAnalise[]>([]);
   const [analise, setAnalise] = useState<Analise | null>(null);
@@ -194,7 +195,7 @@ export function Curriculo() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link key={item.to} to={item.to} className="nav__item">
                 {item.label}
               </Link>

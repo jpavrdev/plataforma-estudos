@@ -7,4 +7,4 @@
 export const CONTATO_LEGAL = 'contato@ensinadev.com.br';
 
 /** Data da última revisão dos dois documentos, no formato exibido na página. */
-export const ATUALIZADO_EM = '8 de agosto de 2026';
+export const ATUALIZADO_EM = '27 de outubro de 2026';

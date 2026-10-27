@@ -54,6 +54,11 @@ export function Privacidade() {
           <strong>Ao analisar um currículo:</strong> o arquivo que você envia e a descrição da vaga.
           Veja a seção 5, que trata desse caso separadamente.
         </li>
+        <li>
+          <strong>Ao participar de um sorteio:</strong> os canais em que você quer ser avisado
+          (WhatsApp, Instagram ou email) e o contato em cada um: número, @ ou endereço. O principal
+          é obrigatório e o secundário, opcional. A inscrição fica ligada à sua conta.
+        </li>
       </ul>
 
       <h3>2.2. O que nasce do seu uso</h3>
@@ -102,6 +107,11 @@ export function Privacidade() {
         <li>
           <strong>Enviar código de verificação por WhatsApp</strong>: consentimento, art. 7, I. Só
           usamos se você tiver cadastrado um telefone e escolhido esse canal.
+        </li>
+        <li>
+          <strong>Avisar quem for sorteado</strong> nos sorteios da plataforma: consentimento, art.
+          7, I. Você escolhe participar e por onde quer ser avisado. A inscrição não muda depois de
+          confirmada, e o consentimento pode ser revogado pelo canal da seção 10.
         </li>
         <li>
           <strong>Enviar emails da plataforma</strong> (verificação de email, recuperação de senha):
@@ -214,6 +224,11 @@ export function Privacidade() {
           pagamentos recebidos.
         </li>
         <li>Currículos enviados: descartados logo após a análise, como explicado na seção 5.</li>
+        <li>
+          Contatos informados em sorteios: os de quem não foi sorteado são apagados no ato do
+          sorteio, e da inscrição fica só o registro de que a pessoa participou e quando. Os dos
+          ganhadores são apagados quando o sorteio é excluído, e as inscrições saem junto.
+        </li>
         <li>
           Certificados já emitidos: mantidos enquanto forem válidos, porque a página de validação
           precisa continuar respondendo a quem for conferir.

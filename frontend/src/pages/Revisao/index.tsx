@@ -9,7 +9,7 @@ import { ModoEntrevista } from '../../components/ModoEntrevista';
 import { Flame, Check, X } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as userMock } from '../../data/home';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { lerPreferencia, gravarPreferencia } from '../../utils/preferencia';
 import {
   filaDoDia,
@@ -146,6 +146,7 @@ function duracao(ms: number) {
 
 export function Revisao() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const [params] = useSearchParams();
   const trilhaId = params.get('trilha');
 
@@ -526,7 +527,7 @@ export function Revisao() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

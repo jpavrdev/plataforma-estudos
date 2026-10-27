@@ -5,6 +5,7 @@ export function ConfirmModal({
   title,
   children,
   confirmLabel,
+  cancelLabel = 'Cancelar',
   onConfirm,
   onCancel,
   loading = false,
@@ -12,6 +13,7 @@ export function ConfirmModal({
   title: string;
   children: ReactNode;
   confirmLabel: string;
+  cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
   loading?: boolean;
@@ -35,7 +37,7 @@ export function ConfirmModal({
             onClick={onCancel}
             disabled={loading}
           >
-            Cancelar
+            {cancelLabel}
           </button>
           <button
             className="sim-modal__btn sim-modal__btn--primary"

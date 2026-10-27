@@ -47,7 +47,7 @@ import {
 } from '../../services/trails';
 import { urlImagem } from '../../utils/urlImagem';
 
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 
 // Só carrega o recortador quando o usuário vai trocar foto ou capa.
 const ImageCropper = lazy(() => import('../../components/ImageCropper'));
@@ -106,6 +106,7 @@ function lerArquivo(file: File): Promise<string> {
 
 export function Perfil() {
   const { user: authUser, atualizarUsuario } = useAuth();
+  const nav = useNavPrincipal();
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState<PerfilData | null>(null);
   const [xp, setXp] = useState({ xp: 0, level: 1, lessonsCompleted: 0, questionsCorrect: 0 });
@@ -333,7 +334,7 @@ export function Perfil() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link key={item.to} to={item.to} className="nav__item">
                 {item.label}
               </Link>

@@ -20,7 +20,7 @@ import {
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { obterTrilha, avaliarTrilha, baixarEpubTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
 import {
   statusCertificado,
@@ -122,6 +122,7 @@ function formatNota(n: number | null | undefined): string {
 export function TrilhaDetalhe() {
   const { trailId } = useParams();
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const navigate = useNavigate();
 
   const displayName = authUser?.name ?? user.name;
@@ -345,7 +346,7 @@ export function TrilhaDetalhe() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
