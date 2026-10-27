@@ -206,7 +206,7 @@ async function aplicar() {
                     aplicadas += cadeia.length;
                 }
             } catch (e) {
-                throw new Error(`${trilha}, ${alvo.replace("|", " ")}: ${(e as Error).message}`);
+                throw new Error(`${trilha}, ${alvo.replace(/\|/g, " ")}: ${(e as Error).message}`);
             }
         }
         await db.transaction(async (tx) => {
