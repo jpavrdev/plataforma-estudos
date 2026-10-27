@@ -45,7 +45,7 @@
     "prettier": "^3.9.9",
     "ts7": "npm:typescript@7.0.2",
     "typescript": "~6.0.2",
-    "typescript-eslint": "^8.71.2",
+    "typescript-eslint": "^8.72.0",
     "vite": "^8.2.2"
   }
 }
