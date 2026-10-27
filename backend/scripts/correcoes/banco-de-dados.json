@@ -1,0 +1,17 @@
+{
+ "trilha": "Banco de Dados",
+ "correcoes": [
+  {
+   "tipo": "bloco",
+   "aula": "2.2",
+   "de": "- = igual\n- <> (ou !=) diferente\n- > maior que\n- < menor que\n- >= maior ou igual\n- <= maior ou igual",
+   "para": "- `=` igual\n- `<>` (ou `!=`) diferente\n- `>` maior que\n- `<` menor que\n- `>=` maior ou igual\n- `<=` menor ou igual"
+  }
+ ],
+ "finais": {
+  "aulas": {
+   "2.2": "4c6dcb5023f6b2837955106361e869d67417e9a5fd49f82b433fd02b40eb22e8"
+  },
+  "alternativas": {}
+ }
+}
