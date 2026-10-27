@@ -12,7 +12,7 @@ import { getInitials } from '../../utils/initials';
 import { user as homeUser } from '../../data/home';
 import { obterRanking, type RankingResposta, type RankingPeriodo } from '../../services/trails';
 
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 const CORES = ['#5B8DEF', '#E0655A', '#2E9E6B', '#E0A82E', '#8B5CF6'];
 const MEDAL: Record<number, string> = { 1: 'var(--gold)', 2: 'var(--silver)', 3: 'var(--bronze)' };
 const PODIO: Record<number, { size: number; font: number; pedestal: number }> = {
@@ -58,6 +58,7 @@ function Delta({ delta }: { delta: number }) {
 
 export function Ranking() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const [period, setPeriod] = useState<RankingPeriodo>('all');
   const { dados: resp, carregando } = useRequisicao(() => obterRanking(period), [period]);
   const dados: RankingResposta = resp ?? { me: null, rows: [] };
@@ -79,7 +80,7 @@ export function Ranking() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

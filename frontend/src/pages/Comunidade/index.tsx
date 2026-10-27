@@ -26,7 +26,7 @@ import { getInitials } from '../../utils/initials';
 import { tempoRelativo } from '../../utils/tempo';
 import { urlImagem } from '../../utils/urlImagem';
 import { comprimirImagem, lerArquivoComoDataUrl } from '../../utils/comprimirImagem';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import {
   obterFeed,
@@ -104,6 +104,7 @@ function AvatarPessoa({
 
 export function Comunidade() {
   const { user } = useAuth();
+  const nav = useNavPrincipal();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
 
@@ -219,7 +220,7 @@ export function Comunidade() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

@@ -1,4 +1,5 @@
 // Itens da navegação principal, compartilhados por todas as abas para não divergirem.
+// As telas leem pelo useNavPrincipal, que acrescenta o sorteio quando há um aberto.
 export const NAV_PRINCIPAL = [
   { label: 'Início', to: '/home' },
   { label: 'Roadmaps', to: '/roadmaps' },
@@ -11,6 +12,8 @@ export const NAV_PRINCIPAL = [
   { label: 'Apoiar', to: '/apoie' },
 ];
 
+export const NAV_SORTEIO = { label: 'Sorteio', to: '/sorteio' };
+
 export const NAV_ESTUDIO = [
   { label: 'Trilhas', to: '/estudio' },
   { label: 'Roadmaps', to: '/estudio/roadmaps' },
@@ -18,6 +21,7 @@ export const NAV_ESTUDIO = [
   { label: 'Simulados', to: '/estudio/simulados' },
   { label: 'Desafios', to: '/estudio/desafios' },
   { label: 'Comunicados', to: '/estudio/comunicados' },
+  { label: 'Sorteios', to: '/estudio/sorteios' },
   { label: 'Assinaturas', to: '/estudio/assinaturas' },
   { label: 'Voltar ao app', to: '/home' },
 ];

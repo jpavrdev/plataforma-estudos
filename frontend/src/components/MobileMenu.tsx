@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './Logo';
 import { X } from './Icons';
-
-import { NAV_PRINCIPAL as NAV } from '../data/nav';
+import { useNavPrincipal } from '../hooks/useNavPrincipal';
 
 // Hambúrguer + drawer lateral, visíveis só no telefone (controlados por CSS).
-export function MobileMenu({ items = NAV }: { items?: { to: string; label: string }[] }) {
+export function MobileMenu({ items }: { items?: { to: string; label: string }[] }) {
+  const navPrincipal = useNavPrincipal();
+  const itens = items ?? navPrincipal;
   const [aberto, setAberto] = useState(false);
   const { pathname } = useLocation();
   const fechar = () => setAberto(false);
   const casa = (to: string) => pathname === to || pathname.startsWith(to + '/');
-  const ativo = items
+  const ativo = itens
     .filter((i) => casa(i.to))
     .reduce((melhor, i) => (i.to.length > melhor.length ? i.to : melhor), '');
 
@@ -43,7 +44,7 @@ export function MobileMenu({ items = NAV }: { items?: { to: string; label: strin
                 <X size={20} />
               </button>
             </div>
-            {items.map((item) => (
+            {itens.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

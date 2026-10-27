@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useSeo } from './hooks/useSeo';
 import { ToastProvider } from './contexts/ToastContext';
+import { SorteioProvider } from './contexts/SorteioContext';
 import { Landing } from './pages/Landing';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { BottomNav } from './components/BottomNav';
@@ -66,6 +67,12 @@ const DesafiosAdmin = lazy(() =>
 const ComunicadosAdmin = lazy(() =>
   import('./pages/ComunicadosAdmin').then((m) => ({ default: m.ComunicadosAdmin })),
 );
+const SorteiosAdmin = lazy(() =>
+  import('./pages/SorteiosAdmin').then((m) => ({ default: m.SorteiosAdmin })),
+);
+const SorteioAdminDetalhe = lazy(() =>
+  import('./pages/SorteiosAdmin/Detalhe').then((m) => ({ default: m.SorteioAdminDetalhe })),
+);
 const AssinaturasAdmin = lazy(() =>
   import('./pages/AssinaturasAdmin').then((m) => ({ default: m.AssinaturasAdmin })),
 );
@@ -100,6 +107,7 @@ const Comunidade = lazy(() =>
 );
 const Apoie = lazy(() => import('./pages/Apoie').then((m) => ({ default: m.Apoie })));
 const Curriculo = lazy(() => import('./pages/Curriculo').then((m) => ({ default: m.Curriculo })));
+const Sorteio = lazy(() => import('./pages/Sorteio').then((m) => ({ default: m.Sorteio })));
 const CompletarPerfil = lazy(() =>
   import('./pages/CompletarPerfil').then((m) => ({ default: m.CompletarPerfil })),
 );
@@ -289,6 +297,22 @@ function AppRoutes() {
             }
           />
           <Route
+            path="/estudio/sorteios"
+            element={
+              <AdminRoute>
+                <SorteiosAdmin />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/estudio/sorteios/:id"
+            element={
+              <AdminRoute>
+                <SorteioAdminDetalhe />
+              </AdminRoute>
+            }
+          />
+          <Route
             path="/estudio/assinaturas"
             element={
               <AdminRoute>
@@ -424,6 +448,14 @@ function AppRoutes() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/sorteio"
+            element={
+              <PrivateRoute>
+                <Sorteio />
+              </PrivateRoute>
+            }
+          />
           {/* Perfil compartilhável: /username. Fica por último; rotas fixas têm prioridade. */}
           <Route path="/:username" element={<PerfilPorUsername />} />
         </Routes>
@@ -439,7 +471,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          <AppRoutes />
+          <SorteioProvider>
+            <AppRoutes />
+          </SorteioProvider>
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -25,7 +25,7 @@ import { getTrailLang } from '../../utils/trailLang';
 import { ehCliqueSimples } from '../../utils/cliqueSimples';
 import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import type { Trail } from '../../data/trails';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 
 const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
 
@@ -72,6 +72,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 export function Home() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
@@ -176,7 +177,7 @@ export function Home() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item, i) => (
+            {nav.map((item, i) => (
               <Link
                 key={item.to}
                 to={item.to}
