@@ -895,7 +895,7 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "## WHERE: filtrando linhas\n\nAté agora você viu como escolher colunas. Mas raramente você quer todas as linhas de uma tabela: você quer as tarefas de um projeto específico, os pedidos de hoje, os produtos com estoque baixo. É isso que o WHERE faz: ele filtra as linhas antes de te devolver o resultado.\n\nOs operadores de comparação são os mesmos que você já usa em qualquer linguagem de programação:\n\n- = igual\n- <> (ou !=) diferente\n- > maior que\n- < menor que\n- >= maior ou igual\n- <= maior ou igual\n\nVamos aplicar isso na tabela tarefas:"
+                        "value": "## WHERE: filtrando linhas\n\nAté agora você viu como escolher colunas. Mas raramente você quer todas as linhas de uma tabela: você quer as tarefas de um projeto específico, os pedidos de hoje, os produtos com estoque baixo. É isso que o WHERE faz: ele filtra as linhas antes de te devolver o resultado.\n\nOs operadores de comparação são os mesmos que você já usa em qualquer linguagem de programação:\n\n- `=` igual\n- `<>` (ou `!=`) diferente\n- `>` maior que\n- `<` menor que\n- `>=` maior ou igual\n- `<=` menor ou igual\n\nVamos aplicar isso na tabela tarefas:"
                     },
                     {
                         "type": "code",
