@@ -145,7 +145,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Um modelo de aprovação de crédito passa a recusar clientes bons por causa de um bug sutil no jeito de montar as features, mas isso só aparece depois que o modelo vai pra produção. Por que um bug assim costuma escapar da fase de notebook?",
+                        "statement": "Um modelo de aprovação de crédito passa a recusar clientes bons por causa de um bug sutil no jeito de montar as features, mas isso só aparece depois que o modelo vai pra produção. Por que um bug assim costuma demorar mais a ser percebido em produção do que seria no notebook?",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -673,7 +673,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Numa startup pequena, a mesma pessoa treina o modelo, sobe a API e acompanha o monitoramento básico. Isso mostra que, nesse caso, os três papéis desta aula...",
+                        "statement": "Numa startup pequena, a mesma pessoa monta os pipelines que levam os dados pro banco, treina o modelo, sobe a API e acompanha o monitoramento básico. Isso mostra que, nesse caso, os três papéis desta aula...",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1044,11 +1044,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from flask import Flask, request, jsonify\nimport joblib\nimport pandas as pd\n\napp = Flask(__name__)\n\n# carregado uma vez, quando o processo do servidor sobe\nmodelo = joblib.load(\"modelo_v1.joblib\")\n\n\n@app.route(\"/predict\", methods=[\"POST\"])\ndef predict():\n    dados = request.get_json()\n    entrada = pd.DataFrame([dados])\n    previsao = modelo.predict(entrada)\n    return jsonify({\"previsao\": float(previsao[0])})\n\n\nif __name__ == \"__main__\":\n    app.run(port=5000)"
+                        "value": "from flask import Flask, request, jsonify\nimport joblib\nimport pandas as pd\n\napp = Flask(__name__)\n\n# carregado uma vez, quando o processo do servidor sobe\nmodelo = joblib.load(\"modelo_v1.joblib\")\n\n\n@app.route(\"/predict\", methods=[\"POST\"])\ndef predict():\n    dados = request.get_json()\n    # as colunas do treino, na ordem do treino\n    entrada = pd.DataFrame([dados])[list(modelo.feature_names_in_)]\n    previsao = modelo.predict(entrada)\n    return jsonify({\"previsao\": float(previsao[0])})\n\n\nif __name__ == \"__main__\":\n    app.run(port=5000)"
                     },
                     {
                         "type": "text",
-                        "value": "## Entendendo o endpoint\n\nCada peça do exemplo tem um papel: `app = Flask(__name__)` cria a aplicação; `modelo = joblib.load(...)` roda fora da função `predict`, então acontece uma vez só (a ideia da aula passada); o decorador `@app.route(\"/predict\", methods=[\"POST\"])` diz que essa função responde a pedidos `POST` no caminho `/predict`; `request.get_json()` lê o corpo da requisição e devolve um dicionário Python.\n\nEsse dicionário vira um `pd.DataFrame` de uma linha só antes de chegar em `modelo.predict`, porque o `Pipeline` foi treinado esperando um formato tabular, com nomes de coluna, e não um dicionário solto. É o mesmo tipo de entrada que ele viu durante o treino, isso volta com mais detalhe na aula 5."
+                        "value": "## Entendendo o endpoint\n\nCada peça do exemplo tem um papel: `app = Flask(__name__)` cria a aplicação; `modelo = joblib.load(...)` roda fora da função `predict`, então acontece uma vez só (a ideia da aula passada); o decorador `@app.route(\"/predict\", methods=[\"POST\"])` diz que essa função responde a pedidos `POST` no caminho `/predict`; `request.get_json()` lê o corpo da requisição e devolve um dicionário Python.\n\nEsse dicionário vira um `pd.DataFrame` de uma linha só antes de chegar em `modelo.predict`, porque o `Pipeline` foi treinado esperando um formato tabular, com nomes de coluna, e não um dicionário solto. É o mesmo tipo de entrada que ele viu durante o treino, isso volta com mais detalhe na aula 5.\n\nO `[list(modelo.feature_names_in_)]` logo depois escolhe as colunas que o modelo viu no treino, na mesma ordem. Sem ele, um JSON com os mesmos campos em outra ordem já quebraria: um pipeline como o da aula 1, que começa pelo `StandardScaler`, confere os nomes das colunas contra os do treino, inclusive a ordem, e recusa a entrada. Essa seleção tem dois efeitos que vale conhecer. Um campo a mais no JSON é descartado sem aviso, o mesmo que o Pydantic faz por padrão no exemplo FastAPI, logo abaixo. E um campo que falta continua dando erro, agora já na seleção (um `KeyError`), antes de chegar no `predict`. Por isso não vale trocar essa linha por `pd.DataFrame([dados], columns=...)`: essa forma preenche o campo que falta com `NaN` sem reclamar, e o erro só aparece mais adiante, ou nem aparece, se o pipeline tiver um imputer."
                     },
                     {
                         "type": "text",
@@ -1147,7 +1147,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O Flask não é capaz de expor rotas do tipo POST, então não serve pra receber dados via JSON.",
+                                "text": "O FastAPI carrega o modelo uma única vez, enquanto o Flask relê o arquivo joblib a cada requisição.",
                                 "isCorrect": false
                             },
                             {
@@ -1161,7 +1161,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "O Pipeline provavelmente lança um erro, porque falta uma coluna que o modelo espera encontrar.",
+                                "text": "O código provavelmente lança um erro, porque falta uma coluna que o modelo espera encontrar.",
                                 "isCorrect": true
                             },
                             {
@@ -1346,7 +1346,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "# arriscado: recalcular o preparo na mão, torcendo pra bater com o que o treino fez\nentrada = pd.DataFrame([dados])\nentrada[\"renda_normalizada\"] = (entrada[\"renda\"] - 5000) / 1500  # de onde vieram esses números?\nprevisao = modelo_treinado_sem_pipeline.predict(entrada)\n\n# mais seguro: reusar o mesmo Pipeline (preparo + modelo) salvo com joblib\npipeline = joblib.load(\"modelo_v1.joblib\")\nprevisao = pipeline.predict(pd.DataFrame([dados]))  # o preparo já está embutido no objeto"
+                        "value": "# arriscado: recalcular o preparo na mão, torcendo pra bater com o que o treino fez\nentrada = pd.DataFrame([dados])\nentrada[\"renda_normalizada\"] = (entrada[\"renda\"] - 5000) / 1500  # de onde vieram esses números?\nprevisao = modelo_treinado_sem_pipeline.predict(entrada)\n\n# mais seguro: reusar o mesmo Pipeline (preparo + modelo) salvo com joblib\npipeline = joblib.load(\"modelo_v1.joblib\")\n# as colunas do treino, na ordem do treino (como na aula 3)\nentrada = pd.DataFrame([dados])[list(pipeline.feature_names_in_)]\nprevisao = pipeline.predict(entrada)  # o preparo já está embutido no objeto"
                     },
                     {
                         "type": "text",
@@ -1488,11 +1488,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Fixar as versões das bibliotecas\n\nA solução é declarar exatamente quais bibliotecas o projeto usa, e em qual versão, num arquivo `requirements.txt`. Em vez de \"eu tenho scikit-learn instalado\", o projeto passa a dizer \"este projeto precisa do scikit-learn 1.3.2, nem uma versão a mais nem a menos\". Qualquer máquina, seja um servidor, um container ou o notebook de outro colega, instala exatamente o que foi usado no treino."
+                        "value": "## Fixar as versões das bibliotecas\n\nA solução é declarar exatamente quais bibliotecas o projeto usa, e em qual versão, num arquivo `requirements.txt`. Em vez de \"eu tenho scikit-learn instalado\", o projeto passa a dizer \"este projeto precisa do scikit-learn 1.3.2, nem uma versão a mais nem a menos\". Qualquer máquina, seja um servidor, um container ou o notebook de outro colega, instala exatamente o que foi usado no treino. Na hora de limpar a saída do `pip freeze`, mantenha também o que o scikit-learn instala por baixo, como o scipy, que entra nas contas do modelo."
                     },
                     {
                         "type": "code",
-                        "value": "# requirements.txt\n# gerado a partir do ambiente que treinou o modelo, com:\n#   pip freeze > requirements.txt\n# e depois limpo pra manter só o que o projeto realmente usa\n\nscikit-learn==1.3.2\npandas==2.1.1\nnumpy==1.26.0\njoblib==1.3.2\nflask==3.0.0\n\n# instalar exatamente essas versoes em outra maquina:\n# pip install -r requirements.txt"
+                        "value": "# requirements.txt\n# gerado a partir do ambiente que treinou o modelo, com:\n#   pip freeze > requirements.txt\n# e depois limpo pra manter só o que o projeto usa, sem cortar o que\n# o scikit-learn instala por baixo (scipy e threadpoolctl): sem versão\n# fixa, essas dependências mudam de uma máquina pra outra\n\nscikit-learn==1.3.2\nscipy==1.11.3\nthreadpoolctl==3.2.0\npandas==2.1.1\nnumpy==1.26.0\njoblib==1.3.2\nflask==3.0.0\n\n# instalar exatamente essas versoes em outra maquina:\n# pip install -r requirements.txt"
                     },
                     {
                         "type": "text",
@@ -1766,15 +1766,15 @@ const MODULOS: Modulo[] = [
                 "blocks": [
                     {
                         "type": "text",
-                        "value": "## A receita que gera a imagem\n\nO Dockerfile é o arquivo de texto que descreve, passo a passo, como construir a imagem: qual sistema usar de base, o que copiar pra dentro, o que instalar, e o que rodar quando o container subir. Ele é a receita; a imagem é o prato pronto. Pra um modelo, essa receita é curta: partir de uma imagem com Python já instalado, copiar o código e o modelo, instalar o `requirements.txt`, e apontar qual comando sobe a API."
+                        "value": "## A receita que gera a imagem\n\nO Dockerfile é o arquivo de texto que descreve, passo a passo, como construir a imagem: qual sistema usar de base, o que copiar pra dentro, o que instalar, e o que rodar quando o container subir. Ele é a receita; a imagem é o prato pronto. Pra um modelo, essa receita é curta: partir de uma imagem com Python já instalado, copiar o código e o modelo, instalar o `requirements.txt`, e apontar qual comando sobe a API.\n\nAntes, um ajuste no `app.py` do módulo anterior. Ele termina em `app.run(port=5000)`, e o Flask, por padrão, escuta só em 127.0.0.1: dentro do container, esse endereço atende só o próprio container, não os pedidos que chegam de fora. Pra API receber o que chega pela porta publicada, a última linha passa a ser `app.run(host=\"0.0.0.0\", port=8000)`, na porta que o Dockerfile abaixo usa."
                     },
                     {
                         "type": "code",
-                        "value": "# Dockerfile\n\nFROM python:3.11-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY app.py .\nCOPY modelo.joblib .\n\nEXPOSE 8000\n\nCMD [\"python\", \"app.py\"]"
+                        "value": "# Dockerfile\n\nFROM python:3.11-slim\n\nWORKDIR /app\n\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nCOPY app.py .\nCOPY modelo_v1.joblib .\n\nEXPOSE 8000\n\n# na versão FastAPI do módulo anterior, a linha de baixo vira:\n# CMD [\"uvicorn\", \"app:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\nCMD [\"python\", \"app.py\"]"
                     },
                     {
                         "type": "text",
-                        "value": "## Linha por linha\n\n`FROM python:3.11-slim` parte de uma imagem oficial já com o Python 3.11 instalado (a variante slim é mais enxuta, com só o essencial do sistema). `WORKDIR /app` define a pasta de trabalho dentro do container. As linhas de `COPY` e o `RUN pip install` trazem o `requirements.txt` pra dentro da imagem e instalam as bibliotecas antes de copiar o código, pra aproveitar cache do Docker em builds futuros. Depois, `COPY app.py .` e `COPY modelo.joblib .` trazem o código da API e o modelo salvo com `joblib` no módulo anterior. `EXPOSE 8000` documenta a porta que a API usa, e `CMD` é o comando executado quando o container inicia."
+                        "value": "## Linha por linha\n\n`FROM python:3.11-slim` parte de uma imagem oficial já com o Python 3.11 instalado (a variante slim é mais enxuta, com só o essencial do sistema). `WORKDIR /app` define a pasta de trabalho dentro do container. As linhas de `COPY` e o `RUN pip install` trazem o `requirements.txt` pra dentro da imagem e instalam as bibliotecas antes de copiar o código, pra aproveitar cache do Docker em builds futuros. Depois, `COPY app.py .` e `COPY modelo_v1.joblib .` trazem o código da API (já com o ajuste do `app.run`) e o modelo salvo com `joblib` no módulo anterior, com o mesmo nome que o `app.py` carrega. `EXPOSE 8000` documenta a porta que a API usa, mas não publica nada: quem publica é o `-p` do `docker run`, logo abaixo. E `CMD` é o comando executado quando o container inicia. Na versão FastAPI do módulo anterior, o `app.py` não sobe servidor sozinho: o `CMD` passa a chamar o uvicorn, como no comentário do Dockerfile, e o `requirements.txt` ganha `fastapi` e `uvicorn` no lugar do `flask`, com as versões que o `pip freeze` mostrar."
                     },
                     {
                         "type": "text",
@@ -1782,11 +1782,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "# construir a imagem, com uma tag pra identificar a versao\ndocker build -t modelo-previsao:1.0 .\n\n# rodar um container a partir da imagem, publicando a porta 8000\ndocker run -p 8000:8000 modelo-previsao:1.0\n\n# testar o endpoint de previsao do container rodando\ncurl -X POST http://localhost:8000/prever -H \"Content-Type: application/json\" -d '{\"features\": [5.1, 3.5, 1.4, 0.2]}'"
+                        "value": "# construir a imagem, com uma tag pra identificar a versao\ndocker build -t modelo-previsao:1.0 .\n\n# rodar um container a partir da imagem, publicando a porta 8000\ndocker run -p 8000:8000 modelo-previsao:1.0\n\n# testar o endpoint de previsao do container rodando\ncurl -X POST http://localhost:8000/predict -H \"Content-Type: application/json\" -d '{\"idade\": 35, \"renda\": 4200.0, \"tempo_de_casa\": 2}'"
                     },
                     {
                         "type": "text",
-                        "value": "## Cuidado com o tamanho da imagem\n\nImagens de modelo tendem a crescer: bibliotecas como scikit-learn, pandas e numpy já pesam sozinhas, e é fácil copiar arquivo demais pra dentro do container (o notebook de treino, os dados brutos e o histórico de experimentos não precisam ir junto). Usar uma imagem base enxuta como a slim, copiar só o que a API precisa pra rodar, e manter um arquivo `.dockerignore` (o equivalente do `.gitignore` pro build) ajuda a manter a imagem menor e o build mais rápido."
+                        "value": "## Cuidado com o tamanho da imagem\n\nImagens de modelo tendem a crescer: bibliotecas como scikit-learn, pandas e numpy já pesam sozinhas, e é fácil copiar arquivo demais pra dentro do container (o notebook de treino, os dados brutos e o histórico de experimentos não precisam ir junto). Usar uma imagem base enxuta como a slim, copiar só o que a API precisa pra rodar, e manter um arquivo `.dockerignore` (parecido com o `.gitignore`, mas com os padrões contados a partir da raiz do projeto: `*.ipynb` só pega os notebooks da raiz, e `**/*.ipynb` pega os de qualquer pasta) ajuda a manter a imagem menor e o build mais rápido."
                     },
                     {
                         "type": "quote",
@@ -1839,11 +1839,11 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Depois de um docker build sem erros, o comando docker run -p 8000:8000 minha-imagem sobe, mas o endpoint não responde em localhost:8000. O Dockerfile tem EXPOSE 8000 e a API sobe na porta 8000 dentro do container. O que mais provavelmente está errado?",
+                        "statement": "Depois de um docker build sem erros, o comando docker run minha-imagem sobe, mas o endpoint não responde em localhost:8000. O Dockerfile tem EXPOSE 8000 e a API sobe na porta 8000 dentro do container. O que mais provavelmente está errado?",
                         "difficulty": "medio",
                         "options": [
                             {
-                                "text": "A porta não foi publicada corretamente no comando, ou a API não subiu de fato dentro do container.",
+                                "text": "Faltou publicar a porta com -p 8000:8000 no docker run, já que o EXPOSE só documenta a porta.",
                                 "isCorrect": true
                             },
                             {
@@ -1919,11 +1919,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Um serviço gerenciado de nuvem\n\nProvedores de nuvem oferecem serviços pensados pra rodar modelos sem administrar servidor diretamente: o SageMaker (AWS), o Vertex AI (Google Cloud) e o Azure Machine Learning são exemplos, cada um com seu jeito de receber a imagem do modelo, subir o serviço e cuidar de escalar conforme o tráfego. A plataforma cuida de boa parte da infraestrutura; em troca, o time abre mão de parte do controle e costuma pagar mais por pedido do que numa VPS pura."
+                        "value": "## Um serviço gerenciado de nuvem\n\nProvedores de nuvem oferecem serviços pensados pra rodar modelos sem administrar servidor diretamente: o Amazon SageMaker AI (AWS), o Gemini Enterprise Agent Platform (Google Cloud) e o Azure Machine Learning são exemplos, cada um com seu jeito de receber a imagem do modelo, subir o serviço e cuidar de escalar conforme o tráfego. A plataforma cuida de boa parte da infraestrutura; em troca, o time abre mão de parte do controle e costuma pagar mais por pedido do que numa VPS pura. Os nomes mudam rápido: o SageMaker AI se chamava só SageMaker até dezembro de 2024, e o Vertex AI passou a fazer parte do Gemini Enterprise Agent Platform em abril de 2026 (nomes conferidos em outubro de 2026)."
                     },
                     {
                         "type": "text",
-                        "value": "## Serverless: uma função sob demanda\n\nNo modelo serverless (o AWS Lambda, o Google Cloud Functions e o Azure Functions são exemplos), o código sobe como uma função que só roda quando chega um pedido, e o provedor liga e desliga os recursos automaticamente. Pra um modelo, isso significa pagar só pelas previsões realmente feitas, sem manter nada ligado o tempo todo esperando tráfego. A troca vem no tempo de resposta do primeiro pedido depois de um período parado (o chamado \"cold start\"), e em limites de tamanho que podem esbarrar em modelos grandes."
+                        "value": "## Serverless: uma função sob demanda\n\nNo modelo serverless (o AWS Lambda, as funções do Cloud Run e o Azure Functions são exemplos; até agosto de 2024, as funções do Cloud Run se chamavam Google Cloud Functions), o código sobe como uma função que só roda quando chega um pedido, e o provedor liga e desliga os recursos automaticamente. Pra um modelo, isso significa pagar só pelas previsões realmente feitas, sem manter nada ligado o tempo todo esperando tráfego. A troca vem no tempo de resposta do primeiro pedido depois de um período parado (o chamado \"cold start\"), e em limites de tamanho que podem esbarrar em modelos grandes."
                     },
                     {
                         "type": "table",
@@ -1956,13 +1956,13 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O código roda só localmente, na máquina do cientista de dados, sem nunca subir pra produção.",
+                                "text": "O código roda no aparelho de quem faz o pedido, já que serverless quer dizer não ter servidor nenhum.",
                                 "isCorrect": false
                             }
                         ]
                     },
                     {
-                        "statement": "Qual a principal diferença de responsabilidade entre rodar o modelo numa VPS e rodar num serviço gerenciado de nuvem, como o SageMaker ou o Vertex AI?",
+                        "statement": "Qual a principal diferença de responsabilidade entre rodar o modelo numa VPS e rodar num serviço gerenciado de nuvem, como o Amazon SageMaker AI ou o Gemini Enterprise Agent Platform (nomes que o SageMaker e o Vertex AI ganharam em dezembro de 2024 e em abril de 2026)?",
                         "difficulty": "medio",
                         "options": [
                             {
@@ -1974,7 +1974,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Na VPS não é possível usar Docker; o serviço gerenciado exige que o modelo esteja containerizado.",
+                                "text": "Na VPS não é possível usar Docker; o serviço gerenciado só aceita o modelo se ele já vier containerizado.",
                                 "isCorrect": false
                             },
                             {
@@ -2010,7 +2010,7 @@ const MODULOS: Modulo[] = [
                         "difficulty": "dificil",
                         "options": [
                             {
-                                "text": "Porque o cold start após períodos ociosos pode somar latência justo quando a resposta rápida mais importa.",
+                                "text": "Porque cada ambiente novo, criado ao escalar ou ao reciclar os antigos, soma o atraso do cold start.",
                                 "isCorrect": true
                             },
                             {
@@ -2159,7 +2159,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque nenhum modelo de machine learning consegue, de fato, ser servido por uma API em produção real.",
+                                "text": "Porque todo deploy exige retreinar o modelo dentro do servidor de produção antes de liberar o endpoint.",
                                 "isCorrect": false
                             },
                             {
@@ -2222,7 +2222,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\nfrom sklearn.metrics import accuracy_score\n\n# logs_producao.csv guarda a previsao, o rotulo real (quando chega) e a data\nlogs = pd.read_csv(\"logs_producao.csv\", parse_dates=[\"data\"])\n\n# agrupa por mes e calcula a acuracia em cada janela de tempo\nlogs[\"mes\"] = logs[\"data\"].dt.to_period(\"M\")\n\nfor mes, grupo in logs.groupby(\"mes\"):\n    acc = accuracy_score(grupo[\"rotulo_real\"], grupo[\"previsao\"])\n    print(f\"{mes}: acuracia = {acc:.3f}\")\n\n# uma acuracia caindo mes a mes, sem nenhum deploy novo no meio,\n# e o sinal mais direto de que o modelo esta degradando"
+                        "value": "import pandas as pd\nfrom sklearn.metrics import accuracy_score\n\n# logs_producao.csv guarda a previsao, o rotulo real (quando chega) e a data\nlogs = pd.read_csv(\"logs_producao.csv\", parse_dates=[\"data\"])\n\n# so entram as linhas cujo rotulo ja chegou: um NaN em\n# rotulo_real faria o accuracy_score levantar erro\nlogs = logs.dropna(subset=[\"rotulo_real\"])\n\n# agrupa por mes e calcula a acuracia em cada janela de tempo\nlogs[\"mes\"] = logs[\"data\"].dt.to_period(\"M\")\n\nfor mes, grupo in logs.groupby(\"mes\"):\n    acc = accuracy_score(grupo[\"rotulo_real\"], grupo[\"previsao\"])\n    print(f\"{mes}: acuracia = {acc:.3f}\")\n\n# uma acuracia caindo mes a mes, sem nenhum deploy novo no meio,\n# e o sinal mais direto de que o modelo esta degradando"
                     },
                     {
                         "type": "text",
@@ -2436,7 +2436,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aumentar o número de árvores do modelo para melhorar a acurácia geral",
+                                "text": "Comparar a correlação entre a idade e o alvo no treino e na produção",
                                 "isCorrect": false
                             },
                             {
@@ -2458,7 +2458,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Um bug recente no pipeline que calcula as features antes da previsão",
+                                "text": "Um bug recente no código que junta cada previsão ao seu rótulo real",
                                 "isCorrect": false
                             },
                             {
@@ -2686,7 +2686,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A quantidade de linhas do arquivo requirements.txt usado no ambiente",
+                                "text": "A acurácia do modelo em produção, recalculada a cada nova previsão",
                                 "isCorrect": false
                             }
                         ]
@@ -2774,7 +2774,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Reduzir o limite de decisão do modelo até a proporção voltar ao normal",
+                                "text": "Aumentar o limite de decisão do modelo até a proporção voltar aos 2%",
                                 "isCorrect": false
                             }
                         ]
@@ -2831,7 +2831,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "O dashboard é pago, o alerta é sempre uma ferramenta gratuita e open source",
+                                "text": "O dashboard compara com o histórico, o alerta olha só o valor atual, sem referência",
                                 "isCorrect": false
                             }
                         ]
@@ -3085,7 +3085,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## O que uma pipeline de retreino faz\n\nAutomatizar o retreino significa escrever, uma vez, um script que executa toda a sequência sozinho: buscar os dados mais recentes numa fonte definida (um banco, um data warehouse, um arquivo), aplicar exatamente o mesmo preparo usado no treino original, treinar o modelo, avaliar num conjunto separado e, só então, salvar um novo artefato.\n\nAqui é onde aquele Pipeline do scikit-learn, usado lá atrás pra empacotar pré-processamento e modelo num objeto só e evitar vazar dado de teste no treino, paga o investimento de novo: como o preparo já está encapsulado junto do modelo, o script de retreino não precisa reescrever nenhuma etapa de transformação. Ele só chama `fit` de novo, com dado novo."
+                        "value": "## O que uma pipeline de retreino faz\n\nAutomatizar o retreino significa escrever, uma vez, um script que executa toda a sequência sozinho: buscar os dados mais recentes numa fonte definida (um banco, um data warehouse, um arquivo), aplicar exatamente o mesmo preparo usado no treino original, treinar o modelo, avaliar num conjunto separado e, só então, salvar um novo artefato.\n\nAqui é onde aquele Pipeline do scikit-learn, usado lá atrás pra empacotar pré-processamento e modelo num objeto só e evitar vazar dado de teste no treino, paga o investimento de novo: como o preparo já está encapsulado junto do modelo, o script de retreino não precisa reescrever nenhuma etapa de transformação. Ele só chama `fit` de novo, com dado novo, numa cópia sem treino do Pipeline feita com `clone`: chamar `fit` direto no objeto carregado treinaria o próprio modelo atual por cima, e ele sumiria da memória antes da comparação com o candidato."
                     },
                     {
                         "type": "text",
@@ -3093,7 +3093,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import joblib\nimport pandas as pd\nfrom datetime import date\nfrom sklearn.metrics import f1_score\n\n# Carrega o Pipeline atual (preparo + modelo, salvo no ciclo anterior)\npipeline_atual = joblib.load(\"modelo_atual.joblib\")\n\n# Busca os dados novos e separa treino/validação\ndados_novos = pd.read_parquet(\"dados_recentes.parquet\")\nX = dados_novos.drop(columns=[\"cancelou\"])\ny = dados_novos[\"cancelou\"]\ncorte = int(len(dados_novos) * 0.8)\nX_treino, X_val = X[:corte], X[corte:]\ny_treino, y_val = y[:corte], y[corte:]\n\n# Reexecuta o MESMO fluxo: o Pipeline cuida do preparo e do treino juntos\ncandidato = pipeline_atual.fit(X_treino, y_treino)\n\n# Avalia o candidato antes de cogitar substituir o modelo em produção\nscore = f1_score(y_val, candidato.predict(X_val))\nversao = date.today().isoformat()\njoblib.dump(candidato, f\"modelo_candidato_{versao}.joblib\")\nprint(f\"Candidato {versao} treinado, f1 = {score:.3f}\")"
+                        "value": "import joblib\nimport pandas as pd\nfrom datetime import date\nfrom sklearn.base import clone\nfrom sklearn.metrics import f1_score\n\n# Carrega o Pipeline atual (preparo + modelo, salvo no ciclo anterior)\npipeline_atual = joblib.load(\"modelo_atual.joblib\")\n\n# Busca os dados novos e separa treino/validação\ndados_novos = pd.read_parquet(\"dados_recentes.parquet\")\nX = dados_novos.drop(columns=[\"cancelou\"])\ny = dados_novos[\"cancelou\"]\ncorte = int(len(dados_novos) * 0.8)\nX_treino, X_val = X[:corte], X[corte:]\ny_treino, y_val = y[:corte], y[corte:]\n\n# Reexecuta o MESMO fluxo numa cópia sem treino (clone): o Pipeline cuida do\n# preparo e do treino juntos, e o modelo atual fica intacto pra comparação\ncandidato = clone(pipeline_atual).fit(X_treino, y_treino)\n\n# Avalia candidato e atual no mesmo conjunto antes de cogitar a troca\nscore = f1_score(y_val, candidato.predict(X_val))\nscore_atual = f1_score(y_val, pipeline_atual.predict(X_val))\nversao = date.today().isoformat()\njoblib.dump(candidato, f\"modelo_candidato_{versao}.joblib\")\nprint(f\"Candidato {versao} treinado, f1 = {score:.3f} (atual: {score_atual:.3f})\")"
                     },
                     {
                         "type": "text",
@@ -3238,11 +3238,11 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import joblib\nimport json\nfrom datetime import datetime\n\nversao = datetime.now().strftime(\"%Y%m%d-%H%M\")\ncaminho_modelo = f\"modelos/churn_{versao}.joblib\"\njoblib.dump(candidato, caminho_modelo)\n\nmetadados = {\n    \"versao\": versao,\n    \"dados_treino\": \"dados_recentes.parquet\",\n    \"linhas_treino\": len(X_treino),\n    \"f1_validacao\": round(score, 3),\n    \"treinado_em\": datetime.now().isoformat(),\n}\nwith open(f\"modelos/churn_{versao}.json\", \"w\") as f:\n    json.dump(metadados, f, indent=2)\n\n# Com um model registry (o MLflow é um exemplo comum), esse cadastro\n# fica centralizado em vez de espalhado em arquivos e pastas:\n# mlflow.sklearn.log_model(candidato, \"modelo\")\n# mlflow.log_metric(\"f1_validacao\", score)"
+                        "value": "import joblib\nimport json\nfrom datetime import datetime\n\nversao = datetime.now().strftime(\"%Y%m%d-%H%M\")\ncaminho_modelo = f\"modelos/churn_{versao}.joblib\"\njoblib.dump(candidato, caminho_modelo)\n\nmetadados = {\n    \"versao\": versao,\n    \"dados_treino\": \"dados_recentes.parquet\",\n    \"linhas_treino\": len(X_treino),\n    \"f1_validacao\": round(score, 3),\n    \"treinado_em\": datetime.now().isoformat(),\n}\nwith open(f\"modelos/churn_{versao}.json\", \"w\") as f:\n    json.dump(metadados, f, indent=2)\n\n# Com um model registry (o MLflow é um exemplo comum), esse cadastro\n# fica centralizado em vez de espalhado em arquivos e pastas:\n# mlflow.sklearn.log_model(candidato, name=\"modelo\", registered_model_name=\"churn\")\n# mlflow.log_metric(\"f1_validacao\", score)\n# Cada registro vira uma versão nova de \"churn\"; depois de validada (aula 4),\n# promover é mover o alias pra ela:\n# MlflowClient().set_registered_model_alias(\"churn\", \"champion\", versao_aprovada)"
                     },
                     {
                         "type": "text",
-                        "value": "## Model registry: centralizar em vez de espalhar\n\nQuando o número de modelos, versões e projetos cresce, manter tudo em arquivos e planilhas de metadados fica difícil de sustentar. Um model registry é uma ferramenta feita pra isso: um catálogo central de versões de modelo, com suas métricas, seus parâmetros, os artefatos gerados e um estágio explícito (em teste, em produção, arquivado). O MLflow é um exemplo bastante usado: além de registrar experimentos de treino, ele mantém esse catálogo de versões e permite mover um modelo de um estágio pro outro sem precisar caçar arquivo em pasta nenhuma."
+                        "value": "## Model registry: centralizar em vez de espalhar\n\nQuando o número de modelos, versões e projetos cresce, manter tudo em arquivos e planilhas de metadados fica difícil de sustentar. Um model registry é uma ferramenta feita pra isso: um catálogo central de versões de modelo, com suas métricas, seus parâmetros, os artefatos gerados e um estágio explícito (em teste, em produção, arquivado). O MLflow é um exemplo bastante usado: além de registrar experimentos de treino, ele mantém esse catálogo de versões e permite mudar o estágio de uma versão sem precisar caçar arquivo em pasta nenhuma. No MLflow atual (3.17, de outubro de 2026), o estágio é marcado com aliases e tags: um alias como `champion` é um nome que aponta pra uma versão (quem serve o modelo carrega `models:/churn@champion`), promover outra versão é mover o alias pra ela, e as tags anotam cada versão (se passou na validação, por exemplo). Os estágios fixos que o MLflow usava antes (Staging, Production, Archived) estão descontinuados desde a versão 2.9.0, de dezembro de 2023, e a documentação avisa que vão ser removidos numa versão futura."
                     },
                     {
                         "type": "text",
@@ -3289,7 +3289,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "A API de previsão para de responder até que os dados voltem a ser versionados junto.",
+                                "text": "Nenhuma, porque o arquivo do modelo já guarda tudo o que é preciso para reproduzi-lo.",
                                 "isCorrect": false
                             },
                             {
@@ -3412,7 +3412,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque colocar um modelo sem validar é tecnicamente impossível de configurar numa API.",
+                                "text": "Porque o candidato só termina de aprender os padrões de produção durante a validação.",
                                 "isCorrect": false
                             },
                             {
@@ -3532,7 +3532,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "def decidir_promocao(metrica_atual, metrica_candidato, limiar_minimo=0.02):\n    # Só promove se a melhora for maior que um limiar mínimo definido\n    melhora = metrica_candidato - metrica_atual\n    if melhora >= limiar_minimo:\n        return \"promover\"\n    return \"manter_atual\"\n\n\ndef checar_rollback(metrica_pos_deploy, metrica_baseline, queda_maxima=0.03):\n    # Critério definido ANTES do incidente, não decidido durante ele\n    queda = metrica_baseline - metrica_pos_deploy\n    if queda >= queda_maxima:\n        return \"rollback\"\n    return \"seguir_monitorando\""
+                        "value": "def decidir_promocao(metrica_atual, metrica_candidato, limiar_minimo=0.02):\n    # Só promove se a melhora for de pelo menos um limiar mínimo definido.\n    # O round evita que 0.82 - 0.80 vire 0.0199999... e escape do limiar\n    melhora = round(metrica_candidato - metrica_atual, 6)\n    if melhora >= limiar_minimo:\n        return \"promover\"\n    return \"manter_atual\"\n\n\ndef checar_rollback(metrica_pos_deploy, metrica_baseline, queda_maxima=0.03):\n    # Critério definido ANTES do incidente, não decidido durante ele\n    queda = round(metrica_baseline - metrica_pos_deploy, 6)\n    if queda >= queda_maxima:\n        return \"rollback\"\n    return \"seguir_monitorando\""
                     },
                     {
                         "type": "text",
@@ -3892,7 +3892,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque a acurácia é uma métrica que só existe pra problemas de regressão, não pra classificação binária comum.",
+                                "text": "Porque a acurácia só conta os acertos da classe positiva e deixa de fora os acertos da classe negativa.",
                                 "isCorrect": false
                             },
                             {
@@ -3900,7 +3900,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque a acurácia não pode ser calculada quando a base de dados contém mais de um grupo protegido junto.",
+                                "text": "Porque a acurácia só revela diferença entre grupos quando o atributo protegido entra como feature do modelo.",
                                 "isCorrect": false
                             }
                         ]
@@ -3944,7 +3944,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Basta reduzir o threshold de decisão pra zero que as taxas de falso positivo dos dois grupos vão se igualar automaticamente.",
+                                "text": "Basta usar o mesmo threshold de decisão para os dois grupos que as taxas de falso positivo deles vão se igualar automaticamente.",
                                 "isCorrect": false
                             }
                         ]
@@ -3968,7 +3968,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "from fastapi import FastAPI\nfrom pydantic import BaseModel\nimport joblib\nimport pandas as pd\nimport shap\n\napp = FastAPI()\nmodelo = joblib.load('modelo_credito.pkl')\nexplicador = shap.TreeExplainer(modelo)\n\nclass PedidoCredito(BaseModel):\n    renda_mensal: float\n    idade: int\n    tempo_de_emprego_anos: float\n\n@app.post('/prever')\ndef prever(pedido: PedidoCredito):\n    entrada = pd.DataFrame([pedido.dict()])\n    probabilidade = modelo.predict_proba(entrada)[0][1]\n\n    valores_shap = explicador.shap_values(entrada)\n    contribuicoes = pd.Series(valores_shap[0], index=entrada.columns)\n    principais_motivos = contribuicoes.reindex(\n        contribuicoes.abs().sort_values(ascending=False).index\n    ).head(3)\n\n    return {\n        'probabilidade_inadimplencia': float(probabilidade),\n        'principais_fatores': principais_motivos.to_dict()\n    }\n# a API do Modulo 2 devolve a previsao; aqui ela devolve\n# tambem o motivo, pronta pra sustentar o direito a explicacao"
+                        "value": "from fastapi import FastAPI\nfrom pydantic import BaseModel\nimport joblib\nimport pandas as pd\nimport shap\n\napp = FastAPI()\nmodelo = joblib.load('modelo_credito.pkl')\nexplicador = shap.TreeExplainer(modelo)\n\nclass PedidoCredito(BaseModel):\n    renda_mensal: float\n    idade: int\n    tempo_de_emprego_anos: float\n\n@app.post('/prever')\ndef prever(pedido: PedidoCredito):\n    entrada = pd.DataFrame([pedido.model_dump()])\n    probabilidade = modelo.predict_proba(entrada)[0][1]\n\n    valores_shap = explicador.shap_values(entrada)\n    contribuicoes = pd.Series(valores_shap[0], index=entrada.columns)\n    principais_motivos = contribuicoes.reindex(\n        contribuicoes.abs().sort_values(ascending=False).index\n    ).head(3)\n\n    return {\n        'probabilidade_inadimplencia': float(probabilidade),\n        'principais_fatores': principais_motivos.to_dict()\n    }\n# a API do Modulo 2 devolve a previsao; aqui ela devolve\n# tambem o motivo, pronta pra sustentar o direito a explicacao"
                     },
                     {
                         "type": "table",
@@ -4105,7 +4105,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## A LGPD, em resumo\n\nNo Brasil, quem regula o tratamento de dados pessoais é a **LGPD** (Lei Geral de Proteção de Dados, Lei 13.709/2018). Ela parte de alguns princípios que valem tanto pra um sistema comum quanto pra um pipeline de machine learning: **finalidade** (usar o dado só pro propósito informado), **necessidade** (coletar o mínimo possível pra cumprir esse propósito, o princípio da minimização), **consentimento** (a pessoa autorizou aquele uso) e **transparência** (a pessoa sabe o que está sendo feito com o dado dela). Quem fornece o dado é o **titular**, que tem direitos como acessar, corrigir e até apagar o que foi coletado sobre ele; a **ANPD** (Autoridade Nacional de Proteção de Dados) fiscaliza o cumprimento da lei.\n\nA lei também define uma categoria mais delicada, o **dado pessoal sensível** (origem racial ou étnica, convicção religiosa, opinião política, filiação sindical, dado de saúde, dado genético ou biométrico, orientação sexual). Não por acaso, é quase a mesma lista de atributos protegidos que aparece na conversa sobre viés e fairness deste módulo: usar esse tipo de dado, direta ou indiretamente, num modelo pede cuidado redobrado, tanto ético quanto legal."
+                        "value": "## A LGPD, em resumo\n\nNo Brasil, quem regula o tratamento de dados pessoais é a **LGPD** (Lei Geral de Proteção de Dados, Lei 13.709/2018). Ela parte de alguns princípios que valem tanto pra um sistema comum quanto pra um pipeline de machine learning: **finalidade** (usar o dado só pro propósito informado), **necessidade** (coletar o mínimo possível pra cumprir esse propósito, o princípio da minimização), **transparência** (a pessoa sabe o que está sendo feito com o dado dela) e **não discriminação** (o dado não pode ser tratado pra fins discriminatórios ilícitos ou abusivos). Além de seguir os princípios, todo tratamento precisa de uma **base legal**: o art. 7º lista dez, e o **consentimento** (a pessoa autorizou aquele uso) é só uma delas; a execução de um contrato, o cumprimento de uma obrigação legal, a proteção do crédito e o legítimo interesse são outras. O **titular** é a pessoa a quem os dados se referem, e tem direitos como acessar, corrigir e até apagar o que foi coletado sobre ele; a **ANPD** (Agência Nacional de Proteção de Dados, nome que vale desde a Medida Provisória 1.317, de setembro de 2025, convertida na Lei 15.352, de fevereiro de 2026) fiscaliza o cumprimento da lei.\n\nA lei também define uma categoria mais delicada, o **dado pessoal sensível** (pelo art. 5º, II: origem racial ou étnica, convicção religiosa, opinião política, filiação a sindicato ou a organização de caráter religioso, filosófico ou político, dado referente à saúde ou à vida sexual, dado genético ou biométrico). Não por acaso, é quase a mesma lista de atributos protegidos que aparece na conversa sobre viés e fairness deste módulo: usar esse tipo de dado, direta ou indiretamente, num modelo pede cuidado redobrado, tanto ético quanto legal."
                     },
                     {
                         "type": "text",
@@ -4117,7 +4117,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "import pandas as pd\nimport hashlib\n\nclientes = pd.DataFrame({\n    'cpf': ['111.222.333-44', '555.666.777-88'],\n    'nome': ['Maria Silva', 'Joao Souza'],\n    'data_nascimento': ['1990-04-12', '1985-11-30'],\n    'renda_mensal': [4200, 6800]\n})\n\ndef pseudonimizar(valor):\n    # hash irreversivel sem a entrada original, mas o mesmo cpf\n    # sempre gera o mesmo codigo, permitindo rastreio interno\n    return hashlib.sha256(valor.encode()).hexdigest()[:12]\n\nclientes['id_pseudonimo'] = clientes['cpf'].apply(pseudonimizar)\n\n# minimizacao: faixa etaria em vez de data de nascimento exata,\n# sem nome e sem cpf no dataset que vai treinar o modelo\nclientes['ano_nascimento'] = pd.to_datetime(clientes['data_nascimento']).dt.year\nclientes['faixa_etaria'] = pd.cut(\n    2026 - clientes['ano_nascimento'],\n    bins=[0, 25, 40, 60, 120],\n    labels=['ate_25', '26_a_40', '41_a_60', '60_mais']\n)\n\ndataset_treino = clientes[['id_pseudonimo', 'faixa_etaria', 'renda_mensal']]\nprint(dataset_treino)\n#   id_pseudonimo faixa_etaria  renda_mensal\n# 0  a1b2c3d4e5f6      26_a_40          4200\n# 1  9f8e7d6c5b4a      41_a_60          6800"
+                        "value": "import pandas as pd\nimport hashlib\nimport hmac\n\nclientes = pd.DataFrame({\n    'cpf': ['111.222.333-44', '555.666.777-88'],\n    'nome': ['Maria Silva', 'Joao Souza'],\n    'data_nascimento': ['1990-04-12', '1985-11-30'],\n    'renda_mensal': [4200, 6800]\n})\n\n# a chave fica fora do dataset (num cofre de segredos, por exemplo);\n# aqui ela aparece no codigo so pro exemplo rodar\nCHAVE_SECRETA = b'chave-de-exemplo-guardada-a-parte'\n\ndef pseudonimizar(valor):\n    # hmac com chave: o mesmo cpf sempre gera o mesmo codigo, o que\n    # permite rastreio interno, e so quem tem a chave consegue religar\n    # o codigo ao cpf. um sha256 simples, sem chave, nao serve: da pra\n    # testar todos os cpfs possiveis (1 bilhao) em cerca de uma hora\n    return hmac.new(CHAVE_SECRETA, valor.encode(), hashlib.sha256).hexdigest()[:12]\n\nclientes['id_pseudonimo'] = clientes['cpf'].apply(pseudonimizar)\n\n# minimizacao: faixa etaria em vez de data de nascimento exata,\n# sem nome e sem cpf no dataset que vai treinar o modelo\nclientes['ano_nascimento'] = pd.to_datetime(clientes['data_nascimento']).dt.year\nclientes['faixa_etaria'] = pd.cut(\n    2026 - clientes['ano_nascimento'],\n    bins=[0, 25, 40, 60, 120],\n    labels=['ate_25', '26_a_40', '41_a_60', '60_mais']\n)\n\ndataset_treino = clientes[['id_pseudonimo', 'faixa_etaria', 'renda_mensal']]\nprint(dataset_treino)\n#   id_pseudonimo faixa_etaria  renda_mensal\n# 0  a89bccb9c8b6      26_a_40          4200\n# 1  eb3b8d2e1d9b      41_a_60          6800"
                     },
                     {
                         "type": "table",
@@ -4186,7 +4186,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque nenhuma técnica de anonimização consegue remover nomes e CPFs de um conjunto de dados estruturado como planilha.",
+                                "text": "Porque, para a LGPD, um dado anonimizado continua sendo dado pessoal mesmo quando ninguém consegue mais revertê-lo.",
                                 "isCorrect": false
                             },
                             {
@@ -4266,7 +4266,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "table",
-                        "value": "[[\"Princípio\", \"O que significa na prática\"], [\"Justiça (fairness)\", \"Medir e reduzir a disparidade de erro e de resultado entre os grupos afetados pelo modelo\"], [\"Transparência\", \"Ser capaz de explicar os critérios e os motivos por trás de uma decisão automatizada\"], [\"Privacidade\", \"Coletar e usar só o dado pessoal necessário, com consentimento e proteção adequada\"], [\"Responsabilização\", \"Existir alguém, ou uma equipe, que responde pelas decisões do modelo em produção\"], [\"Segurança e robustez\", \"O modelo se comportar de forma previsível, inclusive diante de dado inesperado\"]]"
+                        "value": "[[\"Princípio\", \"O que significa na prática\"], [\"Justiça (fairness)\", \"Medir e reduzir a disparidade de erro e de resultado entre os grupos afetados pelo modelo\"], [\"Transparência\", \"Ser capaz de explicar os critérios e os motivos por trás de uma decisão automatizada\"], [\"Privacidade\", \"Coletar e usar só o dado pessoal necessário, com base legal e proteção adequada\"], [\"Responsabilização\", \"Existir alguém, ou uma equipe, que responde pelas decisões do modelo em produção\"], [\"Segurança e robustez\", \"O modelo se comportar de forma previsível, inclusive diante de dado inesperado\"]]"
                     },
                     {
                         "type": "quote",
@@ -4416,7 +4416,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "code",
-                        "value": "# um jeito (bem resumido) de ver o roadmap inteiro numa função só\nimport pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nimport joblib\n\n# SQL e bancos de dados: os dados moram num banco relacional, não numa planilha pronta\nconsulta = \"\"\"\n    SELECT c.idade, c.renda_mensal, p.categoria, p.comprou\n    FROM clientes c\n    JOIN pedidos p ON p.cliente_id = c.id\n\"\"\"\ndados = pd.read_sql(consulta, conexao)  # conexao: a conexão com o banco, já aberta\n\n# pandas: domar o que a consulta trouxe\ndados = dados.dropna()\ndados = pd.get_dummies(dados, columns=[\"categoria\"])\n\n# machine learning e ML na prática: modelar\nX = dados.drop(columns=\"comprou\")\ny = dados[\"comprou\"]\nmodelo = LogisticRegression()\nmodelo.fit(X, y)\n\n# Do Modelo ao Produto: entregar\njoblib.dump(modelo, \"modelo_treinado.pkl\")\n# a partir daqui, uma API carrega esse arquivo e serve previsão pra quem precisar\nprint(\"pipeline completo: do SELECT ao modelo salvo\")"
+                        "value": "# um jeito (bem resumido) de ver o roadmap inteiro numa função só\nimport pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nimport joblib\n\n# SQL e bancos de dados: os dados moram num banco relacional, não numa planilha pronta\nconsulta = \"\"\"\n    SELECT c.idade, c.renda_mensal, p.categoria, p.comprou\n    FROM clientes c\n    JOIN pedidos p ON p.cliente_id = c.id\n\"\"\"\ndados = pd.read_sql(consulta, conexao)  # conexao: a conexão com o banco, já aberta\n\n# pandas: domar o que a consulta trouxe\ndados = dados.dropna()\ndados = pd.get_dummies(dados, columns=[\"categoria\"])\n\n# machine learning e ML na prática: modelar, com a escala e o modelo num pipeline só\nX = dados.drop(columns=\"comprou\")\ny = dados[\"comprou\"]\nmodelo = make_pipeline(StandardScaler(), LogisticRegression())\nmodelo.fit(X, y)\n\n# Do Modelo ao Produto: entregar\njoblib.dump(modelo, \"modelo_treinado.pkl\")\n# a partir daqui, uma API carrega esse arquivo e serve previsão pra quem precisar\nprint(\"pipeline completo: do SELECT ao modelo salvo\")"
                     },
                     {
                         "type": "quote",
@@ -4622,7 +4622,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque todo modelo correto tecnicamente já garante uma acurácia perfeita",
+                                "text": "Porque foi treinado com scikit-learn, e não com uma biblioteca de deep learning",
                                 "isCorrect": false
                             },
                             {
@@ -4698,7 +4698,7 @@ const MODULOS: Modulo[] = [
                     },
                     {
                         "type": "text",
-                        "value": "## Engenharia de dados e dados em nuvem\n\nSe o que te empolgou mais nesta trilha foi a parte de infraestrutura (o SQL da trilha de Banco de Dados, o Docker do Módulo 3 desta trilha), engenharia de dados é o caminho que foca nisso: construir os pipelines que movem dado bruto de um sistema pra outro, em escala, com ferramentas como o Apache Airflow pra orquestrar e o Apache Spark pra processar volume grande. Andando junto, dados em nuvem aprofunda os serviços de um provedor como AWS, Google Cloud ou Azure (armazenamento, processamento distribuído, e serviços gerenciados de machine learning como o SageMaker, o Vertex AI ou o Azure Machine Learning), o que muda a escala do que dá pra construir sozinho."
+                        "value": "## Engenharia de dados e dados em nuvem\n\nSe o que te empolgou mais na jornada foi a parte de infraestrutura (as consultas da trilha SQL para Dados, o Docker do Módulo 3 desta trilha), engenharia de dados é o caminho que foca nisso: construir os pipelines que movem dado bruto de um sistema pra outro, em escala, com ferramentas como o Apache Airflow pra orquestrar e o Apache Spark pra processar volume grande. Andando junto, dados em nuvem aprofunda os serviços de um provedor como AWS, Google Cloud ou Azure (armazenamento, processamento distribuído, e serviços gerenciados de machine learning como o SageMaker, o Vertex AI ou o Azure Machine Learning), o que muda a escala do que dá pra construir sozinho."
                     },
                     {
                         "type": "text",
@@ -4894,7 +4894,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Coleção de certificado de curso, organizada em ordem cronológica de emissão",
+                                "text": "Pergunta própria e análise exploratória com gráficos, parando antes do modelo",
                                 "isCorrect": false
                             }
                         ]
@@ -5027,11 +5027,11 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "Porque o roadmap, na prática, não chegou a cobrir nenhum conceito útil",
+                                "text": "Porque só é cientista de dados quem já domina deep learning e as especializações",
                                 "isCorrect": false
                             },
                             {
-                                "text": "Porque cientista de dados é um título que não existe no mercado real",
+                                "text": "Porque falta um diploma de pós-graduação pra exercer a profissão",
                                 "isCorrect": false
                             },
                             {
@@ -5049,7 +5049,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "As duas expressões significam exatamente a mesma coisa, sem diferença real",
+                                "text": "Terminar o roadmap forma o profissional; seguir estudando vira opcional",
                                 "isCorrect": false
                             },
                             {
@@ -5057,7 +5057,7 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": false
                             },
                             {
-                                "text": "Aprender ciência de dados termina antes mesmo de o roadmap acabar",
+                                "text": "Terminar o roadmap dá o domínio; depois, só falta acompanhar versões novas",
                                 "isCorrect": false
                             }
                         ]
@@ -5093,15 +5093,15 @@ const MODULOS: Modulo[] = [
                                 "isCorrect": true
                             },
                             {
-                                "text": "O roadmap já substitui qualquer necessidade de prática ou projeto posterior",
+                                "text": "O roadmap deu a base ampla; agora cabe dominar todas as especializações primeiro",
                                 "isCorrect": false
                             },
                             {
-                                "text": "As especializações citadas tornam o conteúdo do roadmap inteiro dispensável",
+                                "text": "O roadmap deu a base ampla; agora cabe priorizar certificados em vez de projetos",
                                 "isCorrect": false
                             },
                             {
-                                "text": "O portfólio importa apenas pra quem ainda não terminou o roadmap completo",
+                                "text": "O roadmap deu a base ampla; agora cabe focar em algoritmos, o grosso do trabalho",
                                 "isCorrect": false
                             }
                         ]

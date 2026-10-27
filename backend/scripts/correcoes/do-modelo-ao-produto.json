@@ -1,0 +1,419 @@
+{
+ "trilha": "Do Modelo ao Produto",
+ "correcoes": [
+  {
+   "tipo": "enunciado",
+   "chave": "1.1.5",
+   "de": "Um modelo de aprovação de crédito passa a recusar clientes bons por causa de um bug sutil no jeito de montar as features, mas isso só aparece depois que o modelo vai pra produção. Por que um bug assim costuma escapar da fase de notebook?",
+   "para": "Um modelo de aprovação de crédito passa a recusar clientes bons por causa de um bug sutil no jeito de montar as features, mas isso só aparece depois que o modelo vai pra produção. Por que um bug assim costuma demorar mais a ser percebido em produção do que seria no notebook?"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "1.5.3",
+   "de": "Numa startup pequena, a mesma pessoa treina o modelo, sobe a API e acompanha o monitoramento básico. Isso mostra que, nesse caso, os três papéis desta aula...",
+   "para": "Numa startup pequena, a mesma pessoa monta os pipelines que levam os dados pro banco, treina o modelo, sobe a API e acompanha o monitoramento básico. Isso mostra que, nesse caso, os três papéis desta aula..."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "2.3.4",
+   "de": "O Flask não é capaz de expor rotas do tipo POST, então não serve pra receber dados via JSON.",
+   "para": "O FastAPI carrega o modelo uma única vez, enquanto o Flask relê o arquivo joblib a cada requisição."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.3",
+   "de": "    dados = request.get_json()\n    entrada = pd.DataFrame([dados])",
+   "para": "    dados = request.get_json()\n    # as colunas do treino, na ordem do treino\n    entrada = pd.DataFrame([dados])[list(modelo.feature_names_in_)]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.3",
+   "de": "É o mesmo tipo de entrada que ele viu durante o treino, isso volta com mais detalhe na aula 5.",
+   "para": "É o mesmo tipo de entrada que ele viu durante o treino, isso volta com mais detalhe na aula 5.\n\nO `[list(modelo.feature_names_in_)]` logo depois escolhe as colunas que o modelo viu no treino, na mesma ordem. Sem ele, um JSON com os mesmos campos em outra ordem já quebraria: um pipeline como o da aula 1, que começa pelo `StandardScaler`, confere os nomes das colunas contra os do treino, inclusive a ordem, e recusa a entrada. Essa seleção tem dois efeitos que vale conhecer. Um campo a mais no JSON é descartado sem aviso, o mesmo que o Pydantic faz por padrão no exemplo FastAPI, logo abaixo. E um campo que falta continua dando erro, agora já na seleção (um `KeyError`), antes de chegar no `predict`. Por isso não vale trocar essa linha por `pd.DataFrame([dados], columns=...)`: essa forma preenche o campo que falta com `NaN` sem reclamar, e o erro só aparece mais adiante, ou nem aparece, se o pipeline tiver um imputer."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "2.3.5",
+   "de": "O Pipeline provavelmente lança um erro, porque falta uma coluna que o modelo espera encontrar.",
+   "para": "O código provavelmente lança um erro, porque falta uma coluna que o modelo espera encontrar."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "2.5",
+   "de": "previsao = pipeline.predict(pd.DataFrame([dados]))  # o preparo já está embutido no objeto",
+   "para": "# as colunas do treino, na ordem do treino (como na aula 3)\nentrada = pd.DataFrame([dados])[list(pipeline.feature_names_in_)]\nprevisao = pipeline.predict(entrada)  # o preparo já está embutido no objeto"
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "3.3.3",
+   "de": "Depois de um docker build sem erros, o comando docker run -p 8000:8000 minha-imagem sobe, mas o endpoint não responde em localhost:8000. O Dockerfile tem EXPOSE 8000 e a API sobe na porta 8000 dentro do container. O que mais provavelmente está errado?",
+   "para": "Depois de um docker build sem erros, o comando docker run minha-imagem sobe, mas o endpoint não responde em localhost:8000. O Dockerfile tem EXPOSE 8000 e a API sobe na porta 8000 dentro do container. O que mais provavelmente está errado?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.3.3",
+   "de": "A porta não foi publicada corretamente no comando, ou a API não subiu de fato dentro do container.",
+   "para": "Faltou publicar a porta com -p 8000:8000 no docker run, já que o EXPOSE só documenta a porta."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.4.1",
+   "de": "O código roda só localmente, na máquina do cientista de dados, sem nunca subir pra produção.",
+   "para": "O código roda no aparelho de quem faz o pedido, já que serverless quer dizer não ter servidor nenhum."
+  },
+  {
+   "tipo": "enunciado",
+   "chave": "3.4.2",
+   "de": "Qual a principal diferença de responsabilidade entre rodar o modelo numa VPS e rodar num serviço gerenciado de nuvem, como o SageMaker ou o Vertex AI?",
+   "para": "Qual a principal diferença de responsabilidade entre rodar o modelo numa VPS e rodar num serviço gerenciado de nuvem, como o Amazon SageMaker AI ou o Gemini Enterprise Agent Platform (nomes que o SageMaker e o Vertex AI ganharam em dezembro de 2024 e em abril de 2026)?"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.4.2",
+   "de": "Na VPS não é possível usar Docker; o serviço gerenciado exige que o modelo esteja containerizado.",
+   "para": "Na VPS não é possível usar Docker; o serviço gerenciado só aceita o modelo se ele já vier containerizado."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.4.4",
+   "de": "Porque o cold start após períodos ociosos pode somar latência justo quando a resposta rápida mais importa.",
+   "para": "Porque cada ambiente novo, criado ao escalar ou ao reciclar os antigos, soma o atraso do cold start."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "3.5.4",
+   "de": "Porque nenhum modelo de machine learning consegue, de fato, ser servido por uma API em produção real.",
+   "para": "Porque todo deploy exige retreinar o modelo dentro do servidor de produção antes de liberar o endpoint."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.1",
+   "de": "# e depois limpo pra manter só o que o projeto realmente usa\n\nscikit-learn==1.3.2\npandas==2.1.1",
+   "para": "# e depois limpo pra manter só o que o projeto usa, sem cortar o que\n# o scikit-learn instala por baixo (scipy e threadpoolctl): sem versão\n# fixa, essas dependências mudam de uma máquina pra outra\n\nscikit-learn==1.3.2\nscipy==1.11.3\nthreadpoolctl==3.2.0\npandas==2.1.1"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.1",
+   "de": "instala exatamente o que foi usado no treino.",
+   "para": "instala exatamente o que foi usado no treino. Na hora de limpar a saída do `pip freeze`, mantenha também o que o scikit-learn instala por baixo, como o scipy, que entra nas contas do modelo."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "e apontar qual comando sobe a API.",
+   "para": "e apontar qual comando sobe a API.\n\nAntes, um ajuste no `app.py` do módulo anterior. Ele termina em `app.run(port=5000)`, e o Flask, por padrão, escuta só em 127.0.0.1: dentro do container, esse endereço atende só o próprio container, não os pedidos que chegam de fora. Pra API receber o que chega pela porta publicada, a última linha passa a ser `app.run(host=\"0.0.0.0\", port=8000)`, na porta que o Dockerfile abaixo usa."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "COPY modelo.joblib .\n\nEXPOSE 8000\n\nCMD [\"python\", \"app.py\"]",
+   "para": "COPY modelo_v1.joblib .\n\nEXPOSE 8000\n\n# na versão FastAPI do módulo anterior, a linha de baixo vira:\n# CMD [\"uvicorn\", \"app:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\nCMD [\"python\", \"app.py\"]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "Depois, `COPY app.py .` e `COPY modelo.joblib .` trazem o código da API e o modelo salvo com `joblib` no módulo anterior. `EXPOSE 8000` documenta a porta que a API usa, e `CMD` é o comando executado quando o container inicia.",
+   "para": "Depois, `COPY app.py .` e `COPY modelo_v1.joblib .` trazem o código da API (já com o ajuste do `app.run`) e o modelo salvo com `joblib` no módulo anterior, com o mesmo nome que o `app.py` carrega. `EXPOSE 8000` documenta a porta que a API usa, mas não publica nada: quem publica é o `-p` do `docker run`, logo abaixo. E `CMD` é o comando executado quando o container inicia. Na versão FastAPI do módulo anterior, o `app.py` não sobe servidor sozinho: o `CMD` passa a chamar o uvicorn, como no comentário do Dockerfile, e o `requirements.txt` ganha `fastapi` e `uvicorn` no lugar do `flask`, com as versões que o `pip freeze` mostrar."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "curl -X POST http://localhost:8000/prever -H \"Content-Type: application/json\" -d '{\"features\": [5.1, 3.5, 1.4, 0.2]}'",
+   "para": "curl -X POST http://localhost:8000/predict -H \"Content-Type: application/json\" -d '{\"idade\": 35, \"renda\": 4200.0, \"tempo_de_casa\": 2}'"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.3",
+   "de": "manter um arquivo `.dockerignore` (o equivalente do `.gitignore` pro build)",
+   "para": "manter um arquivo `.dockerignore` (parecido com o `.gitignore`, mas com os padrões contados a partir da raiz do projeto: `*.ipynb` só pega os notebooks da raiz, e `**/*.ipynb` pega os de qualquer pasta)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "o SageMaker (AWS), o Vertex AI (Google Cloud) e o Azure Machine Learning são exemplos",
+   "para": "o Amazon SageMaker AI (AWS), o Gemini Enterprise Agent Platform (Google Cloud) e o Azure Machine Learning são exemplos"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "costuma pagar mais por pedido do que numa VPS pura.",
+   "para": "costuma pagar mais por pedido do que numa VPS pura. Os nomes mudam rápido: o SageMaker AI se chamava só SageMaker até dezembro de 2024, e o Vertex AI passou a fazer parte do Gemini Enterprise Agent Platform em abril de 2026 (nomes conferidos em outubro de 2026)."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "3.4",
+   "de": "o AWS Lambda, o Google Cloud Functions e o Azure Functions são exemplos",
+   "para": "o AWS Lambda, as funções do Cloud Run e o Azure Functions são exemplos; até agosto de 2024, as funções do Cloud Run se chamavam Google Cloud Functions"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.2.3",
+   "de": "Aumentar o número de árvores do modelo para melhorar a acurácia geral",
+   "para": "Comparar a correlação entre a idade e o alvo no treino e na produção"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.2.4",
+   "de": "Um bug recente no pipeline que calcula as features antes da previsão",
+   "para": "Um bug recente no código que junta cada previsão ao seu rótulo real"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.4.1",
+   "de": "A quantidade de linhas do arquivo requirements.txt usado no ambiente",
+   "para": "A acurácia do modelo em produção, recalculada a cada nova previsão"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.4.5",
+   "de": "Reduzir o limite de decisão do modelo até a proporção voltar ao normal",
+   "para": "Aumentar o limite de decisão do modelo até a proporção voltar aos 2%"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "4.5.1",
+   "de": "O dashboard é pago, o alerta é sempre uma ferramenta gratuita e open source",
+   "para": "O dashboard compara com o histórico, o alerta olha só o valor atual, sem referência"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "4.1",
+   "de": "# agrupa por mes e calcula a acuracia em cada janela de tempo",
+   "para": "# so entram as linhas cujo rotulo ja chegou: um NaN em\n# rotulo_real faria o accuracy_score levantar erro\nlogs = logs.dropna(subset=[\"rotulo_real\"])\n\n# agrupa por mes e calcula a acuracia em cada janela de tempo"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.3.2",
+   "de": "A API de previsão para de responder até que os dados voltem a ser versionados junto.",
+   "para": "Nenhuma, porque o arquivo do modelo já guarda tudo o que é preciso para reproduzi-lo."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "5.4.1",
+   "de": "Porque colocar um modelo sem validar é tecnicamente impossível de configurar numa API.",
+   "para": "Porque o candidato só termina de aprender os padrões de produção durante a validação."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.2",
+   "de": "Ele só chama `fit` de novo, com dado novo.",
+   "para": "Ele só chama `fit` de novo, com dado novo, numa cópia sem treino do Pipeline feita com `clone`: chamar `fit` direto no objeto carregado treinaria o próprio modelo atual por cima, e ele sumiria da memória antes da comparação com o candidato."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.2",
+   "de": "import joblib\nimport pandas as pd\nfrom datetime import date\nfrom sklearn.metrics import f1_score\n\n# Carrega o Pipeline atual (preparo + modelo, salvo no ciclo anterior)\npipeline_atual = joblib.load(\"modelo_atual.joblib\")\n\n# Busca os dados novos e separa treino/validação\ndados_novos = pd.read_parquet(\"dados_recentes.parquet\")\nX = dados_novos.drop(columns=[\"cancelou\"])\ny = dados_novos[\"cancelou\"]\ncorte = int(len(dados_novos) * 0.8)\nX_treino, X_val = X[:corte], X[corte:]\ny_treino, y_val = y[:corte], y[corte:]\n\n# Reexecuta o MESMO fluxo: o Pipeline cuida do preparo e do treino juntos\ncandidato = pipeline_atual.fit(X_treino, y_treino)\n\n# Avalia o candidato antes de cogitar substituir o modelo em produção\nscore = f1_score(y_val, candidato.predict(X_val))\nversao = date.today().isoformat()\njoblib.dump(candidato, f\"modelo_candidato_{versao}.joblib\")\nprint(f\"Candidato {versao} treinado, f1 = {score:.3f}\")",
+   "para": "import joblib\nimport pandas as pd\nfrom datetime import date\nfrom sklearn.base import clone\nfrom sklearn.metrics import f1_score\n\n# Carrega o Pipeline atual (preparo + modelo, salvo no ciclo anterior)\npipeline_atual = joblib.load(\"modelo_atual.joblib\")\n\n# Busca os dados novos e separa treino/validação\ndados_novos = pd.read_parquet(\"dados_recentes.parquet\")\nX = dados_novos.drop(columns=[\"cancelou\"])\ny = dados_novos[\"cancelou\"]\ncorte = int(len(dados_novos) * 0.8)\nX_treino, X_val = X[:corte], X[corte:]\ny_treino, y_val = y[:corte], y[corte:]\n\n# Reexecuta o MESMO fluxo numa cópia sem treino (clone): o Pipeline cuida do\n# preparo e do treino juntos, e o modelo atual fica intacto pra comparação\ncandidato = clone(pipeline_atual).fit(X_treino, y_treino)\n\n# Avalia candidato e atual no mesmo conjunto antes de cogitar a troca\nscore = f1_score(y_val, candidato.predict(X_val))\nscore_atual = f1_score(y_val, pipeline_atual.predict(X_val))\nversao = date.today().isoformat()\njoblib.dump(candidato, f\"modelo_candidato_{versao}.joblib\")\nprint(f\"Candidato {versao} treinado, f1 = {score:.3f} (atual: {score_atual:.3f})\")"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.3",
+   "de": "# mlflow.sklearn.log_model(candidato, \"modelo\")\n# mlflow.log_metric(\"f1_validacao\", score)",
+   "para": "# mlflow.sklearn.log_model(candidato, name=\"modelo\", registered_model_name=\"churn\")\n# mlflow.log_metric(\"f1_validacao\", score)\n# Cada registro vira uma versão nova de \"churn\"; depois de validada (aula 4),\n# promover é mover o alias pra ela:\n# MlflowClient().set_registered_model_alias(\"churn\", \"champion\", versao_aprovada)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.3",
+   "de": "O MLflow é um exemplo bastante usado: além de registrar experimentos de treino, ele mantém esse catálogo de versões e permite mover um modelo de um estágio pro outro sem precisar caçar arquivo em pasta nenhuma.",
+   "para": "O MLflow é um exemplo bastante usado: além de registrar experimentos de treino, ele mantém esse catálogo de versões e permite mudar o estágio de uma versão sem precisar caçar arquivo em pasta nenhuma. No MLflow atual (3.17, de outubro de 2026), o estágio é marcado com aliases e tags: um alias como `champion` é um nome que aponta pra uma versão (quem serve o modelo carrega `models:/churn@champion`), promover outra versão é mover o alias pra ela, e as tags anotam cada versão (se passou na validação, por exemplo). Os estágios fixos que o MLflow usava antes (Staging, Production, Archived) estão descontinuados desde a versão 2.9.0, de dezembro de 2023, e a documentação avisa que vão ser removidos numa versão futura."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "5.5",
+   "de": "def decidir_promocao(metrica_atual, metrica_candidato, limiar_minimo=0.02):\n    # Só promove se a melhora for maior que um limiar mínimo definido\n    melhora = metrica_candidato - metrica_atual\n    if melhora >= limiar_minimo:\n        return \"promover\"\n    return \"manter_atual\"\n\n\ndef checar_rollback(metrica_pos_deploy, metrica_baseline, queda_maxima=0.03):\n    # Critério definido ANTES do incidente, não decidido durante ele\n    queda = metrica_baseline - metrica_pos_deploy\n    if queda >= queda_maxima:\n        return \"rollback\"\n    return \"seguir_monitorando\"",
+   "para": "def decidir_promocao(metrica_atual, metrica_candidato, limiar_minimo=0.02):\n    # Só promove se a melhora for de pelo menos um limiar mínimo definido.\n    # O round evita que 0.82 - 0.80 vire 0.0199999... e escape do limiar\n    melhora = round(metrica_candidato - metrica_atual, 6)\n    if melhora >= limiar_minimo:\n        return \"promover\"\n    return \"manter_atual\"\n\n\ndef checar_rollback(metrica_pos_deploy, metrica_baseline, queda_maxima=0.03):\n    # Critério definido ANTES do incidente, não decidido durante ele\n    queda = round(metrica_baseline - metrica_pos_deploy, 6)\n    if queda >= queda_maxima:\n        return \"rollback\"\n    return \"seguir_monitorando\""
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.2.3",
+   "de": "Porque a acurácia é uma métrica que só existe pra problemas de regressão, não pra classificação binária comum.",
+   "para": "Porque a acurácia só conta os acertos da classe positiva e deixa de fora os acertos da classe negativa."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.2.3",
+   "de": "Porque a acurácia não pode ser calculada quando a base de dados contém mais de um grupo protegido junto.",
+   "para": "Porque a acurácia só revela diferença entre grupos quando o atributo protegido entra como feature do modelo."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.2.5",
+   "de": "Basta reduzir o threshold de decisão pra zero que as taxas de falso positivo dos dois grupos vão se igualar automaticamente.",
+   "para": "Basta usar o mesmo threshold de decisão para os dois grupos que as taxas de falso positivo deles vão se igualar automaticamente."
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "6.4.3",
+   "de": "Porque nenhuma técnica de anonimização consegue remover nomes e CPFs de um conjunto de dados estruturado como planilha.",
+   "para": "Porque, para a LGPD, um dado anonimizado continua sendo dado pessoal mesmo quando ninguém consegue mais revertê-lo."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.3",
+   "de": "entrada = pd.DataFrame([pedido.dict()])",
+   "para": "entrada = pd.DataFrame([pedido.model_dump()])"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "**consentimento** (a pessoa autorizou aquele uso) e **transparência** (a pessoa sabe o que está sendo feito com o dado dela).",
+   "para": "**transparência** (a pessoa sabe o que está sendo feito com o dado dela) e **não discriminação** (o dado não pode ser tratado pra fins discriminatórios ilícitos ou abusivos). Além de seguir os princípios, todo tratamento precisa de uma **base legal**: o art. 7º lista dez, e o **consentimento** (a pessoa autorizou aquele uso) é só uma delas; a execução de um contrato, o cumprimento de uma obrigação legal, a proteção do crédito e o legítimo interesse são outras."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "Quem fornece o dado é o **titular**, que tem direitos",
+   "para": "O **titular** é a pessoa a quem os dados se referem, e tem direitos"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "a **ANPD** (Autoridade Nacional de Proteção de Dados) fiscaliza o cumprimento da lei.",
+   "para": "a **ANPD** (Agência Nacional de Proteção de Dados, nome que vale desde a Medida Provisória 1.317, de setembro de 2025, convertida na Lei 15.352, de fevereiro de 2026) fiscaliza o cumprimento da lei."
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "(origem racial ou étnica, convicção religiosa, opinião política, filiação sindical, dado de saúde, dado genético ou biométrico, orientação sexual)",
+   "para": "(pelo art. 5º, II: origem racial ou étnica, convicção religiosa, opinião política, filiação a sindicato ou a organização de caráter religioso, filosófico ou político, dado referente à saúde ou à vida sexual, dado genético ou biométrico)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "import pandas as pd\nimport hashlib\n\nclientes",
+   "para": "import pandas as pd\nimport hashlib\nimport hmac\n\nclientes"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "def pseudonimizar(valor):\n    # hash irreversivel sem a entrada original, mas o mesmo cpf\n    # sempre gera o mesmo codigo, permitindo rastreio interno\n    return hashlib.sha256(valor.encode()).hexdigest()[:12]",
+   "para": "# a chave fica fora do dataset (num cofre de segredos, por exemplo);\n# aqui ela aparece no codigo so pro exemplo rodar\nCHAVE_SECRETA = b'chave-de-exemplo-guardada-a-parte'\n\ndef pseudonimizar(valor):\n    # hmac com chave: o mesmo cpf sempre gera o mesmo codigo, o que\n    # permite rastreio interno, e so quem tem a chave consegue religar\n    # o codigo ao cpf. um sha256 simples, sem chave, nao serve: da pra\n    # testar todos os cpfs possiveis (1 bilhao) em cerca de uma hora\n    return hmac.new(CHAVE_SECRETA, valor.encode(), hashlib.sha256).hexdigest()[:12]"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.4",
+   "de": "# 0  a1b2c3d4e5f6      26_a_40          4200\n# 1  9f8e7d6c5b4a      41_a_60          6800",
+   "para": "# 0  a89bccb9c8b6      26_a_40          4200\n# 1  eb3b8d2e1d9b      41_a_60          6800"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "6.5",
+   "de": "com consentimento e proteção adequada",
+   "para": "com base legal e proteção adequada"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.2.3",
+   "de": "Porque todo modelo correto tecnicamente já garante uma acurácia perfeita",
+   "para": "Porque foi treinado com scikit-learn, e não com uma biblioteca de deep learning"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.4.2",
+   "de": "Coleção de certificado de curso, organizada em ordem cronológica de emissão",
+   "para": "Pergunta própria e análise exploratória com gráficos, parando antes do modelo"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.2",
+   "de": "Porque o roadmap, na prática, não chegou a cobrir nenhum conceito útil",
+   "para": "Porque só é cientista de dados quem já domina deep learning e as especializações"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.2",
+   "de": "Porque cientista de dados é um título que não existe no mercado real",
+   "para": "Porque falta um diploma de pós-graduação pra exercer a profissão"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.3",
+   "de": "Aprender ciência de dados termina antes mesmo de o roadmap acabar",
+   "para": "Terminar o roadmap dá o domínio; depois, só falta acompanhar versões novas"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.3",
+   "de": "As duas expressões significam exatamente a mesma coisa, sem diferença real",
+   "para": "Terminar o roadmap forma o profissional; seguir estudando vira opcional"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.5",
+   "de": "O roadmap já substitui qualquer necessidade de prática ou projeto posterior",
+   "para": "O roadmap deu a base ampla; agora cabe dominar todas as especializações primeiro"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.5",
+   "de": "As especializações citadas tornam o conteúdo do roadmap inteiro dispensável",
+   "para": "O roadmap deu a base ampla; agora cabe priorizar certificados em vez de projetos"
+  },
+  {
+   "tipo": "alternativa",
+   "chave": "7.5.5",
+   "de": "O portfólio importa apenas pra quem ainda não terminou o roadmap completo",
+   "para": "O roadmap deu a base ampla; agora cabe focar em algoritmos, o grosso do trabalho"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.3",
+   "de": "Se o que te empolgou mais nesta trilha foi a parte de infraestrutura (o SQL da trilha de Banco de Dados, o Docker do Módulo 3 desta trilha)",
+   "para": "Se o que te empolgou mais na jornada foi a parte de infraestrutura (as consultas da trilha SQL para Dados, o Docker do Módulo 3 desta trilha)"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.1",
+   "de": "from sklearn.linear_model import LogisticRegression\nimport joblib",
+   "para": "from sklearn.linear_model import LogisticRegression\nfrom sklearn.pipeline import make_pipeline\nfrom sklearn.preprocessing import StandardScaler\nimport joblib"
+  },
+  {
+   "tipo": "bloco",
+   "aula": "7.1",
+   "de": "# machine learning e ML na prática: modelar\nX = dados.drop(columns=\"comprou\")\ny = dados[\"comprou\"]\nmodelo = LogisticRegression()",
+   "para": "# machine learning e ML na prática: modelar, com a escala e o modelo num pipeline só\nX = dados.drop(columns=\"comprou\")\ny = dados[\"comprou\"]\nmodelo = make_pipeline(StandardScaler(), LogisticRegression())"
+  }
+ ],
+ "finais": {
+  "aulas": {
+   "2.3": "89b44a2021aee3deb13cbe4f744f38a7dc1bb5e6411d8d3af9117fb1e5aca288",
+   "2.5": "9303eeed61bdc802ea3e004df8bee826dda30ad839ec551f24b23c79e10fc553",
+   "3.1": "1b1bdffb0d03f141d09c227f325b335987cf37c44d5a24ff2bfb10628234c7ed",
+   "3.3": "de9e61e952abac6b21c581ccd8f8483ac17501ee9caeced5976be861b04d035e",
+   "3.4": "fb0bdea57676ef3a7550aa39e8c0a10cff65bdcee0f51d8b2973a4ad8d503bd0",
+   "4.1": "470a29448c5ac7cec45a016629c0964b678533406d237def2e3b6005c5c99ee9",
+   "5.2": "4f02426423d51402ae54434fcc7d0c9a0bbfca0ec056c4470bef94b3f39545bb",
+   "5.3": "254539483fc6fe97823a5017c6264d9c0d92a9aa886ad03708a9722ec5d2ad2a",
+   "5.5": "e581504ff3f07ac6d782c051b2b8f69b8696f9bea8e058e3eb3147dcd223876a",
+   "6.3": "e1925095c76756b589c1db1e8d5eabc2fe777c32af52d692e21b1124b800089a",
+   "6.4": "200f975680fadc3954a17564ed90714cdae5309e150968fb888461dd1d9c73d3",
+   "6.5": "25dd9bd20e84cdbbcd51549dfac4909b29e695b94ddb97783e739ac4c734c1cc",
+   "7.3": "a0851a725e164d3b3d8f5fd5bacda8af5fcf1c6d3964ec4b3e7a40eebcdd7291",
+   "7.1": "768fae6632af5334e2b861eef83e013575d9192933c17713761875038885a499"
+  },
+  "alternativas": {
+   "2.3.4": "deed88b6344445e7e4b597bfb46a2a470addde2c7854e5fc8cdb5e7ba31d2ac1",
+   "2.3.5": "014d3680b407bf05b5ec17e04b728320517e6814862a2d039e87dafa0e687400",
+   "3.3.3": "ce2045f3e70af4981b8645e123b832ab4470bd676930b200b3dc7ba157ba0b2c",
+   "3.4.1": "e5e4cd32a67b357b912fc9fb8b3d4a8c77483809c8ffcbeb3d99e158b971f218",
+   "3.4.2": "d231c947d51b8cc0eae6481f2cef494f6d8354531946d827a38ef7f6a491ddb6",
+   "3.4.4": "d891237eb9648dcf32309e2b365b689af92620c5bb8dcd0b344915edb7f117c9",
+   "3.5.4": "470fce5b791591f9af62b52123072040b7d273406e506c8a6d3b8136790546de",
+   "4.2.3": "87d476ffdd69446ff17f2885416fb66c50549accbe13f4c7c19b9342bb8fd5a9",
+   "4.2.4": "607fc177c197d4a9705ae5ce8fc14eac153a4403791bcdf9194f0613b16e3bab",
+   "4.4.1": "e13899f98c5156127f6fa0bf6d673e34b62b0bc190529f3c232aa9a7fcbbeb72",
+   "4.4.5": "155ee1157938a2763aa91bd52e314af6715949380f080a5aa586d6cb6b79b06d",
+   "4.5.1": "5da88a61d8c2ed9cfa44c158098e6dfe0c71a3cdb05d375d8c11791628f19e81",
+   "5.3.2": "27535bb312b0ad1aa552597cff043f1d4326c04a77e01a5c2905fc4b47c4ec9e",
+   "5.4.1": "cc79c3e988575a35f88f6b2bf1b912196b856bef976a87388f45e01bcddbdb65",
+   "6.2.3": "5b7e6d5da3f09d26e55ab0d5a73812315eff743bde02ea7bfb4462d885f6b38d",
+   "6.2.5": "8c1c6826d4a650b437e021a390dafd5e01f2107fadd7d24a5abb086a43a12a1c",
+   "6.4.3": "9c1e22e1f8d3adf132048d0c9140d163e6e29c07e9b0fa29c313f4be7bc700fb",
+   "7.2.3": "f00db9815a9d54057e072d69b7c3b4135ab4c9b05639fd697c85d81a7bf6b9aa",
+   "7.4.2": "c23d29e31fc96de60c621a0691df309206965b5a4bfc2888816ebf51393ef1b3",
+   "7.5.2": "8a02bd2c384358d6bd39d556379c15138237a5b15bcedd63782ced097717b314",
+   "7.5.3": "619fce0d232b187ec0779cc8ea2fb4559c9c445298ba986c5c949ed206c16b72",
+   "7.5.5": "aea17d384bc242ad118026b6effbce5366fc675d03f6f866fc987a74be1103da"
+  }
+ }
+}
