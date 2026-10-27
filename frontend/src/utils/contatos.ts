@@ -168,30 +168,10 @@ const RASCUNHO_VAZIO: RascunhoContato = {
   email: '',
 };
 
-function rascunhoDoContato(contato: Contato | null): RascunhoContato {
-  if (!contato) return RASCUNHO_VAZIO;
-  switch (contato.canal) {
-    case 'whatsapp':
-      return {
-        ...RASCUNHO_VAZIO,
-        canal: 'whatsapp',
-        pais: contato.pais,
-        ddd: contato.ddd ?? '',
-        numero: mascararNumero(contato.numero, contato.pais),
-      };
-    case 'instagram':
-      return { ...RASCUNHO_VAZIO, canal: 'instagram', usuario: contato.usuario };
-    case 'email':
-      return { ...RASCUNHO_VAZIO, canal: 'email', email: contato.email };
-  }
-}
-
-export function rascunhosDe(contatos: Contatos | null): Rascunhos {
-  return {
-    primario: rascunhoDoContato(contatos?.primario ?? null),
-    secundario: rascunhoDoContato(contatos?.secundario ?? null),
-  };
-}
+export const RASCUNHOS_VAZIOS: Rascunhos = {
+  primario: RASCUNHO_VAZIO,
+  secundario: RASCUNHO_VAZIO,
+};
 
 export function canaisDoSecundario(canalDoPrincipal: Canal | ''): Canal[] {
   return CANAIS.filter((c) => c !== canalDoPrincipal);
@@ -328,8 +308,34 @@ function paraEntrada(rascunho: RascunhoContato): ContatoEntrada | null {
   }
 }
 
+// Como o servidor vai guardar. O corpo do POST vai cru para não normalizar duas vezes.
+function contatoNormalizado(rascunho: RascunhoContato): Contato | null {
+  switch (rascunho.canal) {
+    case 'whatsapp': {
+      const ddi = PAIS_POR_CODIGO.get(rascunho.pais)?.ddi ?? '';
+      const numero = digitos(rascunho.numero);
+      return usaDdd(rascunho.pais)
+        ? { canal: 'whatsapp', pais: rascunho.pais, ddi, ddd: digitos(rascunho.ddd), numero }
+        : {
+            canal: 'whatsapp',
+            pais: rascunho.pais,
+            ddi,
+            ddd: null,
+            numero: semZeroNacional(numero, rascunho.pais),
+          };
+    }
+    case 'instagram':
+      return { canal: 'instagram', usuario: normalizarInstagram(rascunho.usuario) };
+    case 'email':
+      return { canal: 'email', email: normalizarEmail(rascunho.email) };
+    case '':
+      return null;
+  }
+}
+
 export type ResultadoInscricao =
-  { valida: true; entrada: InscricaoEntrada } | { valida: false; erros: ErrosInscricao };
+  | { valida: true; entrada: InscricaoEntrada; contatos: Contatos }
+  | { valida: false; erros: ErrosInscricao };
 
 export function prepararInscricao({ primario, secundario }: Rascunhos): ResultadoInscricao {
   const erros: ErrosInscricao = {
@@ -342,11 +348,13 @@ export function prepararInscricao({ primario, secundario }: Rascunhos): Resultad
   }
 
   const entradaPrincipal = paraEntrada(primario);
+  const contatoPrincipal = contatoNormalizado(primario);
   const temErro = Object.keys(erros.primario).length + Object.keys(erros.secundario).length > 0;
-  if (temErro || !entradaPrincipal) return { valida: false, erros };
+  if (temErro || !entradaPrincipal || !contatoPrincipal) return { valida: false, erros };
   return {
     valida: true,
     entrada: { primario: entradaPrincipal, secundario: paraEntrada(secundario) },
+    contatos: { primario: contatoPrincipal, secundario: contatoNormalizado(secundario) },
   };
 }
 

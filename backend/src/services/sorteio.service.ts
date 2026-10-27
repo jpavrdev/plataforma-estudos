@@ -19,7 +19,6 @@ const GANHADORES = 3;
 const participacaoDoAluno = {
     contatos: sorteioParticipacoes.contatos,
     inscritoEm: sorteioParticipacoes.createdAt,
-    atualizadoEm: sorteioParticipacoes.updatedAt,
 };
 
 export async function sorteioAtivo(userId: string) {
@@ -74,7 +73,8 @@ async function exigirInscricoesAbertas(tx: Transacao, sorteioId: string) {
     }
 }
 
-export async function salvarParticipacao(sorteioId: string, userId: string, contatos: Contatos) {
+// A inscrição é definitiva: não há edição nem saída depois de confirmada.
+export async function inscrever(sorteioId: string, userId: string, contatos: Contatos) {
     return db.transaction(async (tx) => {
         await exigirInscricoesAbertas(tx, sorteioId);
         // A tela manda completar o perfil antes; sem @ o ganhador não teria como ser anunciado.
@@ -84,31 +84,17 @@ export async function salvarParticipacao(sorteioId: string, userId: string, cont
             .where(eq(users.id, userId));
         if (!aluno?.username) throw new AppError(403, "Complete o perfil com um @ para participar");
 
+        // Sem linha devolvida, o unique(sorteio_id, user_id) barrou: já havia inscrição.
         const [participacao] = await tx
             .insert(sorteioParticipacoes)
             .values({ sorteioId, userId, contatos })
-            .onConflictDoUpdate({
+            .onConflictDoNothing({
                 target: [sorteioParticipacoes.sorteioId, sorteioParticipacoes.userId],
-                set: { contatos, updatedAt: new Date() },
             })
             .returning(participacaoDoAluno);
+        if (!participacao) throw new AppError(409, "Você já está inscrito neste sorteio");
         return participacao;
     });
-}
-
-export async function sairDoSorteio(sorteioId: string, userId: string) {
-    await db.transaction(async (tx) => {
-        await exigirInscricoesAbertas(tx, sorteioId);
-        await tx
-            .delete(sorteioParticipacoes)
-            .where(
-                and(
-                    eq(sorteioParticipacoes.sorteioId, sorteioId),
-                    eq(sorteioParticipacoes.userId, userId),
-                ),
-            );
-    });
-    return { ok: true };
 }
 
 export async function listarSorteios() {

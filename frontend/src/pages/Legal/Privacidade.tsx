@@ -110,8 +110,8 @@ export function Privacidade() {
         </li>
         <li>
           <strong>Avisar quem for sorteado</strong> nos sorteios da plataforma: consentimento, art.
-          7, I. Você escolhe participar e por onde quer ser avisado, e pode sair do sorteio enquanto
-          as inscrições estiverem abertas.
+          7, I. Você escolhe participar e por onde quer ser avisado. A inscrição não muda depois de
+          confirmada, e o consentimento pode ser revogado pelo canal da seção 10.
         </li>
         <li>
           <strong>Enviar emails da plataforma</strong> (verificação de email, recuperação de senha):

@@ -60,9 +60,6 @@
 .srt__quem b {
   color: var(--accent);
 }
-.srt__inscrito {
-  margin-top: -8px;
-}
 .srt__acoes {
   display: flex;
   flex-wrap: wrap;
@@ -145,6 +142,87 @@
   flex: none;
 }
 
+.srt__confirmada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 24px;
+  text-align: center;
+}
+.srt__confirmada-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  background: var(--success-soft);
+  color: var(--success);
+}
+.srt__confirmada-titulo {
+  margin: 4px 0 0;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+.srt__texto {
+  max-width: 520px;
+  margin: 0;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.srt__data-inscricao {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.srt__confirmada .btn {
+  flex: none;
+  margin-top: 4px;
+}
+.srt__info {
+  align-self: stretch;
+  margin-top: 8px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+.srt__info .srt__titulo {
+  font-size: 22px;
+}
+
+.srt-contatos {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  text-align: left;
+}
+.sim-modal__text .srt-contatos {
+  margin: 12px 0;
+}
+.srt-contatos__linha {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.srt-contatos__papel {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.srt-contatos__valor {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 640px) {
   .srt {
     padding: 20px 16px 40px;
@@ -154,6 +232,9 @@
   }
   .srt__form {
     padding: 18px;
+  }
+  .srt__confirmada {
+    padding: 24px 16px;
   }
   .srt-contato__fone {
     grid-template-columns: 84px minmax(0, 1fr);

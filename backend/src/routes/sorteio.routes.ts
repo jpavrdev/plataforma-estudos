@@ -2,8 +2,7 @@ import { Router } from "express";
 import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
 import {
     getSorteioAtivo,
-    putParticipacao,
-    deleteParticipacao,
+    postParticipacao,
     listSorteiosStudio,
     getSorteioStudio,
     createSorteio,
@@ -15,8 +14,7 @@ import {
 const router = Router();
 
 router.get("/sorteios/ativo", autenticar, getSorteioAtivo);
-router.put("/sorteios/:id/participacao", autenticar, putParticipacao);
-router.delete("/sorteios/:id/participacao", autenticar, deleteParticipacao);
+router.post("/sorteios/:id/participacao", autenticar, postParticipacao);
 
 router.get("/studio/sorteios", autenticar, exigirAdmin, listSorteiosStudio);
 router.get("/studio/sorteios/:id", autenticar, exigirAdmin, getSorteioStudio);

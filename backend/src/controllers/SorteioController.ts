@@ -7,8 +7,7 @@ import {
 } from "../schemas/sorteio.schema.ts";
 import {
     sorteioAtivo,
-    salvarParticipacao,
-    sairDoSorteio,
+    inscrever,
     listarSorteios,
     detalharSorteio,
     criarSorteio,
@@ -25,20 +24,11 @@ export const getSorteioAtivo = async (req: Request, res: Response, next: NextFun
     }
 };
 
-export const putParticipacao = async (req: Request, res: Response, next: NextFunction) => {
+export const postParticipacao = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = idSorteioSchema.parse(req.params.id);
         const contatos = participacaoSchema.parse(req.body);
-        res.json(await salvarParticipacao(id, req.userId!, contatos));
-    } catch (err) {
-        next(err);
-    }
-};
-
-export const deleteParticipacao = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = idSorteioSchema.parse(req.params.id);
-        res.json(await sairDoSorteio(id, req.userId!));
+        res.status(201).json(await inscrever(id, req.userId!, contatos));
     } catch (err) {
         next(err);
     }

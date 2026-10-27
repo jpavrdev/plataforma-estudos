@@ -80,9 +80,7 @@ const inscrever = (
     token: string,
     id: string,
     corpo: unknown = { primario: ZAP, secundario: INSTA },
-) => chamar("PUT", `/sorteios/${id}/participacao`, token, corpo);
-
-const sair = (token: string, id: string) => chamar("DELETE", `/sorteios/${id}/participacao`, token);
+) => chamar("POST", `/sorteios/${id}/participacao`, token, corpo);
 
 const ativo = async (token: string) => (await chamar("GET", "/sorteios/ativo", token)).body;
 
@@ -119,32 +117,40 @@ describe("Sorteios: aluno", () => {
         assert.equal(corpo.participacao, null);
     });
 
-    test("inscrição normaliza os contatos; repetir atualiza sem duplicar", async () => {
+    test("inscrição cria com 201 e normaliza os contatos; a segunda dá 409 e nada muda", async () => {
         const admin = await criarUsuarioLogado(true);
         const aluno = await criarUsuarioLogado();
         const sorteio = await criarSorteio(admin.token, -30, 30);
 
         const primeira = await inscrever(aluno.token, sorteio.id);
-        assert.equal(primeira.status, 200);
+        assert.equal(primeira.status, 201);
+        assert.deepEqual(Object.keys(primeira.body).sort(), ["contatos", "inscritoEm"]);
         assert.deepEqual(primeira.body.contatos, {
             primario: { canal: "whatsapp", pais: "BR", ddi: "55", ddd: "11", numero: "987654321" },
             secundario: { canal: "instagram", usuario: "fulano.dev" },
         });
         assert.ok(primeira.body.inscritoEm);
-        assert.ok(primeira.body.atualizadoEm);
 
-        const segunda = await inscrever(aluno.token, sorteio.id, {
-            primario: EMAIL,
-            secundario: ZAP,
-        });
-        assert.equal(segunda.status, 200);
-        assert.deepEqual(segunda.body.contatos.primario, {
-            canal: "email",
-            email: "fulano@email.com",
-        });
-        assert.equal(segunda.body.inscritoEm, primeira.body.inscritoEm);
+        const segunda = await inscrever(aluno.token, sorteio.id, { primario: EMAIL });
+        assert.equal(segunda.status, 409);
+        assert.equal(segunda.body.erro, "Você já está inscrito neste sorteio");
 
-        assert.deepEqual((await ativo(aluno.token)).participacao, segunda.body);
+        assert.deepEqual((await ativo(aluno.token)).participacao, primeira.body);
+        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
+        assert.equal(detalhe.body.participantes.length, 1);
+        assert.deepEqual(detalhe.body.participantes[0].contatos, primeira.body.contatos);
+    });
+
+    test("dois envios ao mesmo tempo inscrevem uma vez só", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const aluno = await criarUsuarioLogado();
+        const sorteio = await criarSorteio(admin.token, -30, 30);
+
+        const respostas = await Promise.all([
+            inscrever(aluno.token, sorteio.id),
+            inscrever(aluno.token, sorteio.id),
+        ]);
+        assert.deepEqual(respostas.map((r) => r.status).sort(), [201, 409]);
         const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
         assert.equal(detalhe.body.participantes.length, 1);
     });
@@ -155,23 +161,11 @@ describe("Sorteios: aluno", () => {
         const sorteio = await criarSorteio(admin.token, -30, 30);
 
         const res = await inscrever(aluno.token, sorteio.id, { primario: INSTA });
-        assert.equal(res.status, 200);
+        assert.equal(res.status, 201);
         assert.deepEqual(res.body.contatos, {
             primario: { canal: "instagram", usuario: "fulano.dev" },
             secundario: null,
         });
-    });
-
-    test("atualizar com o secundário null remove o secundário", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
-        await inscrever(aluno.token, sorteio.id);
-
-        const res = await inscrever(aluno.token, sorteio.id, { primario: ZAP, secundario: null });
-        assert.equal(res.status, 200);
-        assert.equal(res.body.contatos.secundario, null);
-        assert.equal((await ativo(aluno.token)).participacao.contatos.secundario, null);
     });
 
     test("contato inválido dá 400 e não inscreve", async () => {
@@ -205,27 +199,10 @@ describe("Sorteios: aluno", () => {
 
         for (const sorteio of [agendado, encerrado]) {
             assert.equal((await inscrever(aluno.token, sorteio.id)).status, 409);
-            assert.equal((await sair(aluno.token, sorteio.id)).status, 409);
         }
 
-        const inexistente = randomUUID();
-        assert.equal((await inscrever(aluno.token, inexistente)).status, 404);
-        assert.equal((await sair(aluno.token, inexistente)).status, 404);
+        assert.equal((await inscrever(aluno.token, randomUUID())).status, 404);
         assert.equal((await inscrever(aluno.token, "nao-e-um-id")).status, 400);
-    });
-
-    test("sair apaga a inscrição e pode ser repetido", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
-        await inscrever(aluno.token, sorteio.id);
-
-        for (let vez = 0; vez < 2; vez++) {
-            const res = await sair(aluno.token, sorteio.id);
-            assert.equal(res.status, 200);
-            assert.deepEqual(res.body, { ok: true });
-        }
-        assert.equal((await ativo(aluno.token)).participacao, null);
     });
 
     test("aluno sem @ não se inscreve", async () => {
@@ -366,7 +343,7 @@ describe("Sorteios: sortear", () => {
         const alunos = [];
         for (let i = 0; i < quantos; i++) {
             const aluno = await criarUsuarioLogado();
-            assert.equal((await inscrever(aluno.token, sorteio.id)).status, 200);
+            assert.equal((await inscrever(aluno.token, sorteio.id)).status, 201);
             alunos.push(aluno);
         }
         return { sorteio, alunos };

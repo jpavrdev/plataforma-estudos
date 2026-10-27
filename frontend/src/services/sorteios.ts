@@ -4,7 +4,6 @@ import type { Contatos, InscricaoEntrada } from '../utils/contatos';
 export interface Participacao {
   contatos: Contatos;
   inscritoEm: string;
-  atualizadoEm: string;
 }
 
 export interface SorteioAtivo {
@@ -22,12 +21,8 @@ export async function obterSorteioAtivo() {
 }
 
 export async function inscreverNoSorteio(id: string, inscricao: InscricaoEntrada) {
-  const { data } = await api.put<Participacao>(`/sorteios/${id}/participacao`, inscricao);
+  const { data } = await api.post<Participacao>(`/sorteios/${id}/participacao`, inscricao);
   return data;
-}
-
-export async function sairDoSorteio(id: string) {
-  await api.delete(`/sorteios/${id}/participacao`);
 }
 
 export type SituacaoSorteio = 'agendado' | 'aberto' | 'encerrado' | 'sorteado';

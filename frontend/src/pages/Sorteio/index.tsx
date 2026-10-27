@@ -7,10 +7,11 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Calendar, Flame, Trophy } from '../../components/Icons';
+import { Flame, Trophy } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
-import { dataHoraPorExtenso } from '../../utils/tempo';
 import { FormularioInscricao } from './FormularioInscricao';
+import { InformacoesDoSorteio } from './InformacoesDoSorteio';
+import { InscricaoConfirmada } from './InscricaoConfirmada';
 
 function Aviso({ titulo, texto, acao }: { titulo: string; texto: string; acao: ReactNode }) {
   return (
@@ -34,24 +35,13 @@ export function Sorteio() {
   let conteudo: ReactNode;
   if (carregando) {
     conteudo = <p className="track__desc">Carregando...</p>;
+  } else if (sorteio?.participacao) {
+    conteudo = <InscricaoConfirmada sorteio={sorteio} participacao={sorteio.participacao} />;
   } else if (sorteio) {
     conteudo = (
       <>
-        <div className="srt__cabecalho">
-          <span className="srt__selo">
-            <Trophy size={13} /> Sorteio aberto
-          </span>
-          <h1 className="srt__titulo">{sorteio.titulo}</h1>
-          <p className="srt__descricao">{sorteio.descricao}</p>
-          <p className="srt__prazo">
-            <Calendar size={15} /> Inscrições até {dataHoraPorExtenso(sorteio.fim)}
-          </p>
-        </div>
-        {/* Só remonta quando a inscrição muda: a busca periódica não apaga o que foi digitado. */}
-        <FormularioInscricao
-          key={`${sorteio.id}:${sorteio.participacao?.atualizadoEm ?? 'sem-inscricao'}`}
-          sorteio={sorteio}
-        />
+        <InformacoesDoSorteio sorteio={sorteio} />
+        <FormularioInscricao key={sorteio.id} sorteio={sorteio} />
       </>
     );
   } else if (erro) {
