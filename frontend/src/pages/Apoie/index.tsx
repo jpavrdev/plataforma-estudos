@@ -8,7 +8,7 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Check, Heart, Star } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { aplicarAccent } from '../../utils/accent';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import {
   ACCENTS,
   obterStatusApoio,
@@ -88,6 +88,7 @@ function lerArquivo(file: File): Promise<string> {
 
 export function Apoie() {
   const { user: authUser, atualizarUsuario } = useAuth();
+  const nav = useNavPrincipal();
   const [ciclo, setCiclo] = useState<PlanoAvulso>('mensal');
   const [status, setStatus] = useState<StatusApoio | null>(null);
   const [cobranca, setCobranca] = useState<CobrancaPix | null>(null);
@@ -292,7 +293,7 @@ export function Apoie() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

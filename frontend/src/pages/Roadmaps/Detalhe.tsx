@@ -8,7 +8,7 @@ import { ThemeToggle } from '../../components/ThemeToggle';
 import { Flame, Check, ChevronRight, ChevronLeft, Play } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import {
   concluirEstagio,
   obterRoadmap,
@@ -58,6 +58,7 @@ function Ring({ percent }: { percent: number }) {
 export function RoadmapDetalhe() {
   const { slug } = useParams();
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const navigate = useNavigate();
 
   const displayName = authUser?.name ?? user.name;
@@ -146,7 +147,7 @@ export function RoadmapDetalhe() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}

@@ -21,7 +21,7 @@ import {
 } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { urlImagem } from '../../utils/urlImagem';
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { obterPerfilPublico, type PerfilPublicoData } from '../../services/perfis';
 import { estadoSeguir, seguir, deixarDeSeguir } from '../../services/comunidade';
 
@@ -48,6 +48,7 @@ function urlSocial(valor: string, prefixo: string): string {
 export function PerfilPublico() {
   const { username } = useParams();
   const { user, isAuthenticated } = useAuth();
+  const nav = useNavPrincipal();
   const [perfil, setPerfil] = useState<PerfilPublicoData | null>(null);
   const [estado, setEstado] = useState<'carregando' | 'ok' | 'nao_encontrado'>('carregando');
   // Qual imagem do perfil está ampliada, ou nulo com o visor fechado.
@@ -113,7 +114,7 @@ export function PerfilPublico() {
             <MobileMenu />
             <Logo variant="solid" size={20} to="/home" />
             <nav className="nav">
-              {NAV.map((item) => (
+              {nav.map((item) => (
                 <Link key={item.to} to={item.to} className="nav__item">
                   {item.label}
                 </Link>

@@ -23,7 +23,7 @@ import { ehCliqueSimples } from '../../utils/cliqueSimples';
 
 type TrailComId = Trail & { id: string };
 
-import { NAV_PRINCIPAL as NAV } from '../../data/nav';
+import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 
 type Tint = { fg: string; bg: string };
 
@@ -60,6 +60,7 @@ function Metric({ value, label, accent }: { value: string; label: string; accent
 
 export function Trilhas() {
   const { user: authUser } = useAuth();
+  const nav = useNavPrincipal();
   const { theme } = useTheme();
   const navigate = useNavigate();
   const tint = LEVEL_TINT[theme] ?? LEVEL_TINT.light;
@@ -143,7 +144,7 @@ export function Trilhas() {
           <MobileMenu />
           <Logo variant="solid" size={20} to="/home" />
           <nav className="nav">
-            {NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
