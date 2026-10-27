@@ -76,6 +76,39 @@ jobs:
       - name: Typecheck e build
         run: npm run build
 
+  # Sem credencial da AWS: o synth só gera o template, com um email de exemplo.
+  monitor:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: monitor
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Instalar dependências do monitor
+        run: npm ci
+      - name: Typecheck do monitor
+        run: npm run typecheck
+      - name: Testes do monitor
+        run: npm test
+        # O runner já traz o Chrome; sem o caminho, o teste da renderização é pulado.
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+      - name: Instalar dependências da infra
+        working-directory: monitor/infra
+        run: npm ci
+      - name: Typecheck da infra
+        working-directory: monitor/infra
+        run: npm run typecheck
+      - name: Testes da infra
+        working-directory: monitor/infra
+        run: npm test
+      - name: Síntese da stack
+        working-directory: monitor/infra
+        run: npx cdk synth --quiet -c emailAlertas=alertas@example.com
+
   deploy:
     needs: [backend-tests, frontend-build]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
