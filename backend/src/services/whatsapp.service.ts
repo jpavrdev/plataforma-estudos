@@ -1,9 +1,12 @@
+import { z } from "zod";
 import { env } from "../config/env.ts";
 
 // Envia mensagens via Evolution API (gateway WhatsApp/Baileys) hospedado na VPS.
 // Sem EVOLUTION_URL/EVOLUTION_API_KEY (ex.: dev), o envio vira no-op logado, igual
 // ao email quando o SMTP não está configurado.
 const configurado = !!(env.EVOLUTION_URL && env.EVOLUTION_API_KEY);
+
+const estadoDaConexaoSchema = z.object({ instance: z.object({ state: z.string() }) });
 
 // Normaliza para o formato do WhatsApp (só dígitos, com DDI). Aceita telefone
 // brasileiro sem DDI (10-11 dígitos) e prefixa 55; se já vier com DDI, mantém.
@@ -51,5 +54,17 @@ export const whatsappService = {
             `ensina.dev\n\nSeu código para redefinir a senha é *${otp}*.\n` +
             `Ele vale por 10 minutos. Se você não pediu, ignore esta mensagem.`;
         await enviarTexto(telefone, texto);
+    },
+
+    // Ao contrário do envio, aqui o erro sobe: é ele que marca o WhatsApp como
+    // falha no endpoint de dependências. null quando não há Evolution configurada.
+    async estadoDaConexao(sinal: AbortSignal): Promise<string | null> {
+        if (!configurado) return null;
+        const resp = await fetch(
+            `${env.EVOLUTION_URL}/instance/connectionState/${env.EVOLUTION_INSTANCE}`,
+            { headers: { apikey: env.EVOLUTION_API_KEY! }, signal: sinal },
+        );
+        if (!resp.ok) throw new Error(`Evolution respondeu HTTP ${resp.status}`);
+        return estadoDaConexaoSchema.parse(await resp.json()).instance.state;
     },
 };
