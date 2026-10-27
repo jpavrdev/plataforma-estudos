@@ -1,10 +1,12 @@
 // Seed da trilha Machine Learning (avancado), estagio 7 do roadmap de Ciencia de Dados.
-// Idempotente e nao destrutivo: se a trilha ja tiver aulas, nao faz nada.
+// Idempotente e nao destrutivo: se a trilha ja tiver aulas, so preenche as
+// resolucoes de scripts/solucoes/machine-learning.json.
 //
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/seed-trilha-machine-learning.ts
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
+import { backfillExplicacoes, mesclarSolucoes } from "./backfill-explicacoes.ts";
 
 const NOME = "Machine Learning";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "avancado";
@@ -14,6 +16,7 @@ const DESCRICAO =
 type Bloco = { type: "text" | "code" | "quote" | "table"; value: string };
 type Questao = {
     statement: string;
+    explanation?: string;
     difficulty: "facil" | "medio" | "dificil";
     options: { text: string; isCorrect: boolean }[];
 };
@@ -3788,7 +3791,7 @@ const MODULOS: Modulo[] = [
                         ]
                     },
                     {
-                        "statement": "Duas empresas clientes têm o mesmo total gasto e o mesmo tempo de casa em meses, mas perfis de consumo bem diferentes. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
+                        "statement": "Duas empresas clientes gastaram o mesmo total, 6 mil reais, mas uma é cliente há 3 meses e a outra há 36. Criar a feature \"gasto médio mensal\" ajuda nesse caso porque...",
                         "difficulty": "dificil",
                         "options": [
                             {
@@ -5114,6 +5117,7 @@ const MODULOS: Modulo[] = [
 ];
 
 async function seed() {
+    mesclarSolucoes(MODULOS, "machine-learning");
     let [trilha] = await db.select().from(trails).where(eq(trails.name, NOME));
     if (!trilha) {
         [trilha] = await db
@@ -5125,7 +5129,8 @@ async function seed() {
 
     const existentes = await db.select().from(lessons).where(eq(lessons.trailId, trilha.id));
     if (existentes.length > 0) {
-        console.log("Trilha " + NOME + " ja tem " + existentes.length + " aulas. Nada a fazer.");
+        const n = await backfillExplicacoes(trilha.id, MODULOS);
+        console.log("Trilha " + NOME + " já existe; " + n + " explicações atualizadas.");
         return;
     }
 
@@ -5158,6 +5163,7 @@ async function seed() {
                     .values({
                         lessonId: lesson.id,
                         statement: q.statement,
+                        explanation: q.explanation ?? null,
                         difficulty: q.difficulty,
                         position: qi + 1,
                     })
