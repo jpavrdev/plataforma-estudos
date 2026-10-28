@@ -311,7 +311,8 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
       <div className={`lesson__modules${aberto ? ' lesson__modules--aberto' : ''}`}>
         {trilha.modules.map((m) => {
           const concluidas = m.lessons.filter((l) => l.state === 'done').length;
-          const moduloCompleto = concluidas === m.lessons.length;
+          // A API manda todos os módulos e só as aulas publicadas: módulo vazio não está concluído.
+          const moduloCompleto = m.lessons.length > 0 && concluidas === m.lessons.length;
           return (
             <div key={m.id} className="lesson__module">
               <div className="lesson__module-title">
