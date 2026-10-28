@@ -4,14 +4,14 @@ import type { Resultado } from "../dominio/tipos.ts";
 import { ehObjeto, lerJson } from "./json.ts";
 import { novaMedicao } from "./medicao.ts";
 
-export const DEPENDENCIAS = ["banco", "whatsapp", "disco"] as const;
+export const DEPENDENCIAS = ["banco", "whatsapp", "disco", "labs"] as const;
 export const LIMITE_DE_USO_DO_DISCO = 85;
 
 const TIMEOUT_MS = 10_000;
 const ACESSO_RECUSADO = new Set([401, 404]);
 const MUITAS_REQUISICOES = 429;
 
-// Sem resposta, as três mantêm o estado: com a API fora, quem avisa é a verificação api.
+// Sem resposta, todas mantêm o estado: com a API fora, quem avisa é a verificação api.
 export type LeituraDependencias =
     { tipo: "resultados"; resultados: Resultado[] } | { tipo: "sem-resposta"; motivo: string };
 
@@ -51,7 +51,7 @@ export async function verificarDependencias(
 }
 
 function interpretar(resposta: RespostaHttp, agora: Date): LeituraDependencias {
-    // O 429 do limitador da API é passageiro e não diz nada sobre banco, WhatsApp ou disco.
+    // O 429 do limitador da API é passageiro e não diz nada sobre as dependências.
     if (resposta.status >= 500 || resposta.status === MUITAS_REQUISICOES) {
         return { tipo: "sem-resposta", motivo: `o endpoint respondeu ${resposta.status}` };
     }
@@ -73,6 +73,7 @@ function interpretar(resposta: RespostaHttp, agora: Date): LeituraDependencias {
             lerBanco(corpo.banco, agora),
             lerWhatsapp(corpo.whatsapp, agora),
             lerDisco(corpo.disco, agora),
+            lerLabs(corpo.labs, agora),
         ],
     };
 }
@@ -117,6 +118,21 @@ function lerDisco(campo: unknown, agora: Date): Resultado {
     return campo.usoPercentual < LIMITE_DE_USO_DO_DISCO
         ? medicao.ok(uso)
         : medicao.falha(`${uso}, o limite é ${LIMITE_DE_USO_DO_DISCO}%`);
+}
+
+function lerLabs(campo: unknown, agora: Date): Resultado {
+    const medicao = novaMedicao("labs", agora);
+    if (!ehObjeto(campo) || typeof campo.situacao !== "string") {
+        return medicao.falha("campo labs ausente ou inválido na resposta");
+    }
+    if (campo.situacao !== "ok") {
+        return medicao.falha(
+            "a API não confirmou que um lab abre: confira o container labs e o serviço docker-labs",
+        );
+    }
+    return typeof campo.sessoes === "number" && typeof campo.max === "number"
+        ? medicao.ok(`${campo.sessoes} de ${campo.max} sessões em uso`)
+        : medicao.ok("um lab consegue abrir");
 }
 
 function todasEmFalha(agora: Date, detalhe: string): LeituraDependencias {

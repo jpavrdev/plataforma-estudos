@@ -2,8 +2,8 @@
 
 Detecta e avisa, sem depender da VPS, quando a plataforma sai do ar para quem
 acessa do Brasil: site ou API fora, página em branco, backup que não chegou ao
-S3, WhatsApp da recuperação de senha desconectado, banco inacessível e disco
-cheio.
+S3, WhatsApp da recuperação de senha desconectado, banco inacessível, disco
+cheio e laboratório de Linux que não abre.
 
 ## Decisões
 
@@ -30,13 +30,14 @@ cheio.
 | `banco` | campo `banco` do endpoint de dependências | 1 min | 2 falhas seguidas |
 | `whatsapp` | campo `whatsapp` do endpoint de dependências (conexão `open`) | 1 min | 5 falhas seguidas |
 | `disco` | campo `disco` do endpoint de dependências abaixo de 85% de uso | 1 min | 1 falha |
+| `labs` | campo `labs` do endpoint de dependências (o daemon dos labs responde e tem a imagem) | 1 min | 2 falhas seguidas |
 | `renderizacao` | um Chromium sem tela abre o site, o `#root` ganha conteúdo e a página não lança erro | 10 min | 2 falhas seguidas |
 | `backup` | `postgres/estudos-<data UTC>.dump` existe no bucket com pelo menos 80% do tamanho do dump do dia anterior | 1 vez por dia, 07:00 UTC | 1 falha |
 
 Quando o endpoint de dependências não responde (rede, tempo esgotado, 5xx ou o
-429 do limitador da API), `banco`, `whatsapp` e `disco` não mudam de estado:
+429 do limitador da API), `banco`, `whatsapp`, `disco` e `labs` não mudam de estado:
 quem avisa é `api`. Quando ele responde 401 ou 404, a API está de pé e recusou
-o monitor, o que é erro de configuração do token; aí as três viram falha, com o
+o monitor, o que é erro de configuração do token; aí todas viram falha, com o
 conserto no detalhe do alerta. `whatsapp` como `nao-configurado` também é
 falha, porque em produção a Evolution sempre está configurada.
 
@@ -71,7 +72,7 @@ monitor/
 export type Situacao = "ok" | "falha";
 
 export interface Resultado {
-    verificacao: string;      // "site", "api", "banco", "whatsapp", "disco", "renderizacao", "backup"
+    verificacao: string;      // "site", "api", "banco", "whatsapp", "disco", "labs", "renderizacao", "backup"
     situacao: Situacao;
     detalhe: string;          // frase curta para o email, sem dado pessoal
     medidoEm: string;         // ISO 8601
@@ -132,7 +133,7 @@ Handlers (cada um exporta `handler`):
 
 | Arquivo | Verificações | Agenda |
 |---|---|---|
-| `src/handlers/frequente.ts` | `site`, `api`, `banco`, `whatsapp`, `disco` | a cada 1 min |
+| `src/handlers/frequente.ts` | `site`, `api`, `banco`, `whatsapp`, `disco`, `labs` | a cada 1 min |
 | `src/handlers/renderizacao.ts` | `renderizacao` | a cada 10 min |
 | `src/handlers/backup.ts` | `backup` | todo dia às 07:00 UTC |
 
@@ -170,12 +171,15 @@ dumps têm dado pessoal dos alunos e o monitor não pode conseguir baixá-los.
 {
   "banco": { "situacao": "ok", "latenciaMs": 4 },
   "whatsapp": { "situacao": "ok", "estado": "open" },
-  "disco": { "situacao": "ok", "usoPercentual": 34 }
+  "disco": { "situacao": "ok", "usoPercentual": 34 },
+  "labs": { "situacao": "ok", "sessoes": 1, "max": 6 }
 }
 ```
 
 `whatsapp.situacao` é `"nao-configurado"` quando a API não tem Evolution (dev).
 `disco` mede o volume de uploads, que fica no disco da VPS.
+`labs` repete o `/health` do serviço de labs, que só é ok quando o daemon dos
+labs responde e tem a imagem `lab-linux`.
 
 ## Testes
 

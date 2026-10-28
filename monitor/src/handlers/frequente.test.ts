@@ -24,8 +24,9 @@ const SAUDAVEL = {
     banco: { situacao: "ok", latenciaMs: 4 },
     whatsapp: { situacao: "ok", estado: "open" },
     disco: { situacao: "ok", usoPercentual: 34 },
+    labs: { situacao: "ok", sessoes: 0, max: 6 },
 };
-const DEPENDENCIAS_OK: EstadoVerificacao[] = ["banco", "whatsapp", "disco"].map((verificacao) => ({
+const DEPENDENCIAS_OK: EstadoVerificacao[] = ["banco", "whatsapp", "disco", "labs"].map((verificacao) => ({
     verificacao,
     situacao: "ok",
     falhasSeguidas: 0,
@@ -64,7 +65,7 @@ const situacoes = (repositorio: RepositorioEmMemoria) =>
     );
 
 describe("executarFrequente", () => {
-    test("tudo no ar: as cinco verificações gravadas como ok, sem alerta", async (t) => {
+    test("tudo no ar: as seis verificações gravadas como ok, sem alerta", async (t) => {
         capturarConsole(t);
         const { repositorio, notificador, deps } = cenario(httpNoAr());
         const resumo = await executarFrequente(deps);
@@ -74,6 +75,7 @@ describe("executarFrequente", () => {
             banco: "ok 0",
             whatsapp: "ok 0",
             disco: "ok 0",
+            labs: "ok 0",
         });
         assert.equal(notificador.enviados.length, 0);
         assert.deepEqual(resumo.problemas, []);
@@ -106,7 +108,7 @@ describe("executarFrequente", () => {
         ],
     ] as const;
     for (const [caso, derrubarDependencias] of apiFora) {
-        test(`API fora (${caso}): banco, whatsapp e disco mantêm o estado e quem avisa é a api`, async (t) => {
+        test(`API fora (${caso}): as dependências mantêm o estado e quem avisa é a api`, async (t) => {
             capturarConsole(t);
             const http = derrubarDependencias(httpNoAr().responder(URLS.api, 502, "Bad Gateway"));
             const { relogio, repositorio, notificador, deps } = cenario(http, {
@@ -123,12 +125,12 @@ describe("executarFrequente", () => {
                 assert.deepEqual(repositorio.estados.get(estado.verificacao), estado);
             }
             assert.deepEqual(repositorio.lidas.at(-1), ["site", "api"]);
-            assert.deepEqual(resumo.semLeitura?.verificacoes, ["banco", "whatsapp", "disco"]);
+            assert.deepEqual(resumo.semLeitura?.verificacoes, ["banco", "whatsapp", "disco", "labs"]);
         });
     }
 
     for (const status of [401, 404]) {
-        test(`monitor sem acesso ao endpoint (HTTP ${status}): as três falham apontando o conserto`, async (t) => {
+        test(`monitor sem acesso ao endpoint (HTTP ${status}): todas falham apontando o conserto`, async (t) => {
             capturarConsole(t);
             const { repositorio, notificador, deps } = cenario(
                 httpNoAr({ status, corpo: { erro: "Não autorizado" } }),
@@ -139,6 +141,7 @@ describe("executarFrequente", () => {
                 banco: "falha 1",
                 whatsapp: "falha 1",
                 disco: "falha 1",
+                labs: "falha 1",
                 site: "ok 0",
                 api: "ok 0",
             });
@@ -188,6 +191,7 @@ describe("executarFrequente", () => {
             banco: "falha 1",
             whatsapp: "falha 1",
             disco: "falha 1",
+            labs: "falha 1",
         });
         assert.deepEqual(resumo.problemas, []);
     });

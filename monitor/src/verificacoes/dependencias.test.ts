@@ -12,6 +12,7 @@ const SAUDAVEL = {
     banco: { situacao: "ok", latenciaMs: 4 },
     whatsapp: { situacao: "ok", estado: "open" },
     disco: { situacao: "ok", usoPercentual: 34 },
+    labs: { situacao: "ok", sessoes: 1, max: 6 },
 };
 const SEM_ACESSO = "confira o token no SSM e o MONITOR_TOKEN do .env.prod";
 
@@ -43,13 +44,14 @@ async function lerCorpo(corpo: unknown): Promise<string[]> {
 }
 
 describe("verificarDependencias", () => {
-    test("tudo saudável: as três ok, com o token no cabeçalho e timeout de 10 s", async () => {
+    test("tudo saudável: todas ok, com o token no cabeçalho e timeout de 10 s", async () => {
         const http = respondendo(200, SAUDAVEL);
         const resultados = resultadosDe(await verificarDependencias(portas(http), URL));
         assert.deepEqual(resumo(resultados), [
             "banco ok: a API alcançou o banco em 4 ms",
             "whatsapp ok: conexão open",
             "disco ok: 34% de uso",
+            "labs ok: 1 de 6 sessões em uso",
         ]);
         assert.equal(resultados[0]?.latenciaMs, 4);
         assert.ok(resultados.every((resultado) => resultado.medidoEm === AGORA));
@@ -108,26 +110,39 @@ describe("verificarDependencias", () => {
         );
     });
 
+    test("labs: falha aponta o container e o daemon", async () => {
+        const labs = async (campo: unknown) => (await lerCorpo({ ...SAUDAVEL, labs: campo }))[3];
+        assert.equal(
+            await labs({ situacao: "falha" }),
+            "labs falha: a API não confirmou que um lab abre: confira o container labs e o serviço docker-labs",
+        );
+        assert.equal(await labs({ situacao: "ok" }), "labs ok: um lab consegue abrir");
+        assert.equal(await labs(undefined), "labs falha: campo labs ausente ou inválido na resposta");
+    });
+
     test("campo ausente derruba só a dependência dele", async () => {
-        const linhas = await lerCorpo({ banco: SAUDAVEL.banco, disco: SAUDAVEL.disco });
+        const { banco, disco, labs } = SAUDAVEL;
+        const linhas = await lerCorpo({ banco, disco, labs });
         assert.deepEqual(linhas, [
             "banco ok: a API alcançou o banco em 4 ms",
             "whatsapp falha: campo whatsapp ausente ou inválido na resposta",
             "disco ok: 34% de uso",
+            "labs ok: 1 de 6 sessões em uso",
         ]);
     });
 
-    test("corpo que não é JSON deixa as três em falha", async (t) => {
+    test("corpo que não é JSON deixa todas em falha", async (t) => {
         capturarConsole(t);
         const linhas = await lerCorpo("<html>erro</html>");
         assert.deepEqual(linhas, [
             "banco falha: o endpoint de dependências respondeu um corpo inesperado",
             "whatsapp falha: o endpoint de dependências respondeu um corpo inesperado",
             "disco falha: o endpoint de dependências respondeu um corpo inesperado",
+            "labs falha: o endpoint de dependências respondeu um corpo inesperado",
         ]);
     });
 
-    describe("API fora: as três ficam sem leitura e mantêm o estado", () => {
+    describe("API fora: todas ficam sem leitura e mantêm o estado", () => {
         test("tempo esgotado ou erro de rede", async (t) => {
             capturarConsole(t);
             const http = new ClienteHttpFalso().falhar(
@@ -153,7 +168,7 @@ describe("verificarDependencias", () => {
         });
     });
 
-    describe("monitor sem acesso: as três em falha apontando o conserto", () => {
+    describe("monitor sem acesso: todas em falha apontando o conserto", () => {
         test("401 de token errado", async (t) => {
             const linhas = capturarConsole(t);
             const http = respondendo(401, { erro: "Não autorizado" });
@@ -163,6 +178,7 @@ describe("verificarDependencias", () => {
                 `banco falha: ${esperado}`,
                 `whatsapp falha: ${esperado}`,
                 `disco falha: ${esperado}`,
+                `labs falha: ${esperado}`,
             ]);
             assert.ok(linhas.some((linha) => linha.includes("HTTP 401")));
         });
@@ -172,7 +188,7 @@ describe("verificarDependencias", () => {
             const resultados = resultadosDe(
                 await verificarDependencias(portas(respondendo(404, "")), URL),
             );
-            assert.equal(resultados.length, 3);
+            assert.equal(resultados.length, 4);
             for (const resultado of resultados) {
                 assert.equal(resultado.situacao, "falha");
                 assert.match(resultado.detalhe, /\(HTTP 404\): confira o token no SSM/);
@@ -180,7 +196,7 @@ describe("verificarDependencias", () => {
         });
     });
 
-    test("outro status inesperado deixa as três em falha", async () => {
+    test("outro status inesperado deixa todas em falha", async () => {
         const resultados = resultadosDe(
             await verificarDependencias(portas(respondendo(403, "")), URL),
         );
@@ -189,7 +205,7 @@ describe("verificarDependencias", () => {
         );
     });
 
-    test("token indisponível no SSM: as três em falha e o endpoint nem é chamado", async (t) => {
+    test("token indisponível no SSM: todas em falha e o endpoint nem é chamado", async (t) => {
         capturarConsole(t);
         const http = respondendo(200, SAUDAVEL);
         const semToken = new SegredoFalso(new Error("parâmetro não encontrado"));

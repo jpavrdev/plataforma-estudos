@@ -170,10 +170,29 @@ function abrirSessao(ws, req) {
   ws.send(JSON.stringify({ tipo: 'pronto', ttlMinutos: Math.round(TTL_MS / 60000) }));
 }
 
-const server = http.createServer((req, res) => {
+// Saudável é conseguir abrir um lab: o daemon responde e tem a imagem. Contar
+// sessões não basta, porque este serviço segue de pé com o daemon fora.
+function conferirDaemon() {
+  return new Promise((resolve) => {
+    execFile(
+      'docker',
+      ['image', 'inspect', '--format', '{{.Id}}', IMAGEM],
+      { env: ambiente, timeout: 5000 },
+      (e) => {
+        if (e) console.error('[labs] health: daemon ou imagem indisponível:', e.message);
+        resolve(!e);
+      },
+    );
+  });
+}
+
+const server = http.createServer(async (req, res) => {
   if (req.url === '/health') {
-    res.writeHead(200, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ status: 'ok', sessoes: sessoes.size, max: MAX_SESSOES }));
+    const ok = await conferirDaemon();
+    res.writeHead(ok ? 200 : 503, { 'content-type': 'application/json' });
+    res.end(
+      JSON.stringify({ status: ok ? 'ok' : 'falha', sessoes: sessoes.size, max: MAX_SESSOES }),
+    );
     return;
   }
   res.writeHead(404).end();
