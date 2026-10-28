@@ -51,7 +51,7 @@ echo 'dockremap:500000:65536' >> /etc/subgid
   "data-root": "/var/lib/docker-labs",
   "exec-root": "/var/run/docker-labs",
   "pidfile": "/var/run/docker-labs.pid",
-  "hosts": ["unix:///var/run/docker-labs.sock"],
+  "hosts": ["unix:///run/docker-labs-sock/docker.sock"],
   "containerd": "/run/containerd/containerd.sock",
   "containerd-namespace": "moby-labs",
   "containerd-plugins-namespace": "plugins-moby-labs",
@@ -64,7 +64,7 @@ echo 'dockremap:500000:65536' >> /etc/subgid
 }
 ```
 
-Três armadilhas que essa configuração resolve, todas descobertas na prática:
+Quatro armadilhas que essa configuração resolve, todas descobertas na prática:
 
 - **Nunca use `"bridge": "none"`.** O dockerd assume a gestão da bridge padrão e
   **apaga a `docker0` do host**, que pertence ao daemon principal. O app não cai
@@ -74,12 +74,21 @@ Três armadilhas que essa configuração resolve, todas descobertas na prática:
   eles o daemon nem sobe, reclamando do PID do daemon principal.
 - No driver `local`, `max-file: 1` é inválido junto com compressão. Deixe
   `max-file: 2` e `compress: false`, senão todo container falha ao iniciar.
+- **O socket mora numa pasta própria**, e o compose monta a pasta, não o
+  arquivo. No boot o daemon principal religa o container `labs` antes de este
+  daemon subir; montado como arquivo, o socket ainda não existe, o Docker cria
+  um diretório vazio com o nome dele e este daemon passa a falhar em ciclo com
+  `can't create unix socket ...: is a directory`. Foi assim que os labs ficaram
+  fora de 23 a 28/10/2026 sem ninguém perceber. Com a pasta montada, o socket
+  aparece dentro dela quando o daemon sobe, e um restart do daemon também não
+  deixa o container preso a um socket velho.
 
 ### 3. Serviço em `/etc/systemd/system/docker-labs.service`
 
 O Docker exige que uma bridge de nome customizado exista **antes** de subir.
 Criar pelo `ExecStartPre` faz o daemon sobreviver a um reboot, o que um
-`ip link` manual não faria.
+`ip link` manual não faria. A pasta do socket também nasce ali, porque o `/run`
+volta vazio a cada boot.
 
 ```ini
 [Unit]
@@ -91,6 +100,7 @@ Type=notify
 ExecStartPre=-/usr/sbin/ip link add name docker-labs0 type bridge
 ExecStartPre=-/usr/sbin/ip addr add 172.31.250.1/24 dev docker-labs0
 ExecStartPre=-/usr/sbin/ip link set docker-labs0 up
+ExecStartPre=/bin/mkdir -p /run/docker-labs-sock
 ExecStart=/usr/bin/dockerd --config-file /etc/docker/daemon-labs.json
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=always
@@ -120,7 +130,7 @@ transfira.
 ```bash
 cd /opt/ensinadev/plataforma-estudos
 docker build -t lab-linux labs/image
-docker save lab-linux | DOCKER_HOST=unix:///var/run/docker-labs.sock docker load
+docker save lab-linux | DOCKER_HOST=unix:///run/docker-labs-sock/docker.sock docker load
 ```
 
 ### 5. Limite o disco dos labs
@@ -155,7 +165,7 @@ loopback, não o disco do host.
 É o teste que prova a segurança toda. De dentro o aluno é root; do host, ninguém.
 
 ```bash
-export DOCKER_HOST=unix:///var/run/docker-labs.sock
+export DOCKER_HOST=unix:///run/docker-labs-sock/docker.sock
 docker run -d --rm --name t --network none lab-linux sleep 60
 docker exec t sudo id        # uid=0(root)
 ps -eo uid,cmd | grep 'sleep 60'   # 501000 no host

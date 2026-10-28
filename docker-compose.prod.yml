@@ -70,9 +70,13 @@ services:
       - MAX_SESSOES=${LAB_MAX_SESSOES:-6}
       - LAB_TTL_MINUTOS=${LAB_TTL_MINUTOS:-45}
       - LAB_CPUS=${LAB_CPUS:-0.25}
-      - LAB_DOCKER_HOST=unix:///var/run/docker-labs.sock
+      - LAB_DOCKER_HOST=unix:///run/docker-labs-sock/docker.sock
     volumes:
-      - /var/run/docker-labs.sock:/var/run/docker-labs.sock
+      # A pasta, não o arquivo do socket. No boot o Docker religa este container
+      # antes de o docker-labs subir e, sem o arquivo no lugar, cria um diretório
+      # com o nome do socket, que impede o daemon de subir. Com a pasta montada,
+      # o socket aparece dentro dela quando o daemon sobe ou reinicia.
+      - /run/docker-labs-sock:/run/docker-labs-sock
 
 volumes:
   pgdata:
