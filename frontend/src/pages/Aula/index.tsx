@@ -309,27 +309,40 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
       </button>
 
       <div className={`lesson__modules${aberto ? ' lesson__modules--aberto' : ''}`}>
-        {trilha.modules.map((m) => (
-          <div key={m.id} className="lesson__module">
-            <div className="lesson__module-title">{m.title}</div>
-            {m.lessons.map((l) => {
-              const ativa = l.id === aulaAtualId;
-              return (
-                <Link
-                  key={l.id}
-                  to={`/trilhas/${trilha.id}/aula/${l.id}`}
-                  className={`lesson__item lesson__item--${l.state}${ativa ? ' lesson__item--active' : ''}`}
-                  onClick={() => setAberto(false)}
+        {trilha.modules.map((m) => {
+          const concluidas = m.lessons.filter((l) => l.state === 'done').length;
+          // A API manda todos os módulos e só as aulas publicadas: módulo vazio não está concluído.
+          const moduloCompleto = m.lessons.length > 0 && concluidas === m.lessons.length;
+          return (
+            <div key={m.id} className="lesson__module">
+              <div className="lesson__module-title">
+                <span>{m.title}</span>
+                <span
+                  className={`lesson__module-count${moduloCompleto ? ' lesson__module-count--completo' : ''}`}
+                  aria-label={`${concluidas} de ${m.lessons.length} aulas concluídas`}
                 >
-                  <span className="lesson__bullet">
-                    {l.state === 'done' ? <Check size={11} /> : null}
-                  </span>
-                  <span className="lesson__item-name">{l.title}</span>
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+                  {concluidas}/{m.lessons.length}
+                </span>
+              </div>
+              {m.lessons.map((l) => {
+                const ativa = l.id === aulaAtualId;
+                return (
+                  <Link
+                    key={l.id}
+                    to={`/trilhas/${trilha.id}/aula/${l.id}`}
+                    className={`lesson__item lesson__item--${l.state}${ativa ? ' lesson__item--active' : ''}`}
+                    onClick={() => setAberto(false)}
+                  >
+                    <span className="lesson__bullet">
+                      {l.state === 'done' ? <Check size={11} /> : null}
+                    </span>
+                    <span className="lesson__item-name">{l.title}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </aside>
   );

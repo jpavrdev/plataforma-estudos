@@ -12,6 +12,7 @@ const ALVOS: Record<string, Alvo> = {
     banco: { nome: "banco de dados", feminino: false },
     whatsapp: { nome: "WhatsApp da recuperação de senha", feminino: false },
     disco: { nome: "disco de uploads", feminino: false },
+    labs: { nome: "laboratório de Linux", feminino: false },
     renderizacao: { nome: "renderização do site", feminino: true },
     backup: { nome: "backup do banco", feminino: false },
 };

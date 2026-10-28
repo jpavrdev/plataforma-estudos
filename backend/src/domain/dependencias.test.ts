@@ -19,6 +19,7 @@ function portas(sobrescritas: Partial<PortasDependencias> = {}): PortasDependenc
         consultarBanco: async () => undefined,
         estadoDoWhatsapp: async () => "open",
         espacoEmDisco: async () => DISCO_34_POR_CENTO,
+        saudeDosLabs: async () => ({ status: "ok", sessoes: 1, max: 6 }),
         ...sobrescritas,
     };
 }
@@ -135,6 +136,7 @@ describe("criarVerificadorDeDependencias", () => {
             banco: { situacao: "ok", latenciaMs: relatorio.banco.latenciaMs },
             whatsapp: { situacao: "ok", estado: "open" },
             disco: { situacao: "ok", usoPercentual: 34 },
+            labs: { situacao: "ok", sessoes: 1, max: 6 },
         });
         const latencia = relatorio.banco.latenciaMs;
         assert.ok(typeof latencia === "number" && Number.isInteger(latencia) && latencia >= 0);
@@ -148,6 +150,7 @@ describe("criarVerificadorDeDependencias", () => {
         assert.deepEqual(relatorio.banco, { situacao: "falha" });
         assert.deepEqual(relatorio.whatsapp, { situacao: "ok", estado: "open" });
         assert.deepEqual(relatorio.disco, { situacao: "ok", usoPercentual: 34 });
+        assert.deepEqual(relatorio.labs, { situacao: "ok", sessoes: 1, max: 6 });
         assert.equal(JSON.stringify(relatorio).includes("172.18.0.3"), false);
         assert.equal(log.mock.callCount(), 1);
         assert.match(String(log.mock.calls[0].arguments[0]), /banco/);
@@ -219,6 +222,31 @@ describe("criarVerificadorDeDependencias", () => {
         assert.deepEqual(relatorio.disco, { situacao: "falha" });
     });
 
+    test("labs fora do ar vira falha", async (t) => {
+        const log = t.mock.method(console, "error", () => {});
+        const relatorio = await verificar({
+            saudeDosLabs: () => Promise.reject(new Error("o serviço de labs respondeu 503")),
+        });
+
+        assert.deepEqual(relatorio.labs, { situacao: "falha" });
+        assert.equal(relatorio.banco.situacao, "ok");
+        assert.equal(log.mock.callCount(), 1);
+        assert.match(String(log.mock.calls[0].arguments[0]), /labs/);
+    });
+
+    test("labs que não respondem status ok viram falha", async (t) => {
+        t.mock.method(console, "error", () => {});
+        for (const corpo of [{ status: "falha", sessoes: 0, max: 6 }, null, "ok"]) {
+            const relatorio = await verificar({ saudeDosLabs: async () => corpo });
+            assert.deepEqual(relatorio.labs, { situacao: "falha" });
+        }
+    });
+
+    test("labs ok sem a contagem de sessões ainda são ok", async () => {
+        const relatorio = await verificar({ saudeDosLabs: async () => ({ status: "ok" }) });
+        assert.deepEqual(relatorio.labs, { situacao: "ok" });
+    });
+
     test("tudo fora ao mesmo tempo ainda devolve o relatório", async (t) => {
         const log = t.mock.method(console, "error", () => {});
         const relatorio = await verificar(
@@ -226,6 +254,7 @@ describe("criarVerificadorDeDependencias", () => {
                 consultarBanco: () => Promise.reject(new Error("banco")),
                 estadoDoWhatsapp: nunca,
                 espacoEmDisco: () => Promise.reject(new Error("disco")),
+                saudeDosLabs: () => Promise.reject(new Error("labs")),
             },
             20,
         );
@@ -234,12 +263,13 @@ describe("criarVerificadorDeDependencias", () => {
             banco: { situacao: "falha" },
             whatsapp: { situacao: "falha" },
             disco: { situacao: "falha" },
+            labs: { situacao: "falha" },
         });
-        assert.equal(log.mock.callCount(), 3);
+        assert.equal(log.mock.callCount(), 4);
     });
 
-    test("as três checagens rodam em paralelo", async () => {
-        // Cada porta só termina depois que as três começaram: em série, a
+    test("as quatro checagens rodam em paralelo", async () => {
+        // Cada porta só termina depois que as quatro começaram: em série, a
         // primeira esperaria as outras para sempre e estouraria o timeout.
         let iniciadas = 0;
         let liberar = () => {};
@@ -248,7 +278,7 @@ describe("criarVerificadorDeDependencias", () => {
         });
         const esperarAsOutras = async () => {
             iniciadas += 1;
-            if (iniciadas === 3) liberar();
+            if (iniciadas === 4) liberar();
             await todasIniciadas;
         };
 
@@ -263,6 +293,10 @@ describe("criarVerificadorDeDependencias", () => {
                     await esperarAsOutras();
                     return DISCO_34_POR_CENTO;
                 },
+                saudeDosLabs: async () => {
+                    await esperarAsOutras();
+                    return { status: "ok", sessoes: 0, max: 6 };
+                },
             },
             500,
         );
@@ -270,5 +304,6 @@ describe("criarVerificadorDeDependencias", () => {
         assert.equal(relatorio.banco.situacao, "ok");
         assert.equal(relatorio.whatsapp.situacao, "ok");
         assert.equal(relatorio.disco.situacao, "ok");
+        assert.equal(relatorio.labs.situacao, "ok");
     });
 });
