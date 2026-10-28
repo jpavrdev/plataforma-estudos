@@ -10,6 +10,7 @@ export const POLITICAS: Record<string, Politica> = {
     banco: { falhasParaAlertar: 2, lembreteACadaHoras: LEMBRETE_A_CADA_HORAS },
     whatsapp: { falhasParaAlertar: 5, lembreteACadaHoras: LEMBRETE_A_CADA_HORAS },
     disco: { falhasParaAlertar: 1, lembreteACadaHoras: LEMBRETE_A_CADA_HORAS },
+    labs: { falhasParaAlertar: 2, lembreteACadaHoras: LEMBRETE_A_CADA_HORAS },
     renderizacao: { falhasParaAlertar: 2, lembreteACadaHoras: LEMBRETE_A_CADA_HORAS },
     backup: { falhasParaAlertar: 1, lembreteACadaHoras: LEMBRETE_A_CADA_HORAS },
 };

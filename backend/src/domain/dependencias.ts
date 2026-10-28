@@ -20,10 +20,17 @@ export interface EstadoDisco {
     usoPercentual?: number;
 }
 
+export interface EstadoLabs {
+    situacao: Situacao;
+    sessoes?: number;
+    max?: number;
+}
+
 export interface RelatorioDependencias {
     banco: EstadoBanco;
     whatsapp: EstadoWhatsapp;
     disco: EstadoDisco;
+    labs: EstadoLabs;
 }
 
 // Campos do statfs, com os nomes que o Node devolve.
@@ -38,6 +45,8 @@ export interface PortasDependencias {
     // null quando a API roda sem Evolution (dev).
     estadoDoWhatsapp(sinal: AbortSignal): Promise<string | null>;
     espacoEmDisco(): Promise<EspacoEmDisco>;
+    // Corpo do /health do serviço de labs; rejeita quando ele não responde 2xx.
+    saudeDosLabs(sinal: AbortSignal): Promise<unknown>;
 }
 
 export function tokenDoCabecalho(authorization: string | undefined): string | null {
@@ -109,6 +118,17 @@ export function criarVerificadorDeDependencias(portas: PortasDependencias, timeo
         return { situacao: "ok", usoPercentual: usoPercentual(await portas.espacoEmDisco()) };
     }
 
+    async function labs(sinal: AbortSignal): Promise<EstadoLabs> {
+        const corpo = await portas.saudeDosLabs(sinal);
+        const saude =
+            typeof corpo === "object" && corpo !== null ? (corpo as Record<string, unknown>) : {};
+        if (saude.status !== "ok") throw new Error("o serviço de labs não respondeu status ok");
+        const { sessoes, max } = saude;
+        return typeof sessoes === "number" && typeof max === "number"
+            ? { situacao: "ok", sessoes, max }
+            : { situacao: "ok" };
+    }
+
     // O motivo fica só no log: o corpo diz o que falhou, nunca o porquê.
     async function checar<T>(
         nome: string,
@@ -123,11 +143,17 @@ export function criarVerificadorDeDependencias(portas: PortasDependencias, timeo
     }
 
     return async function verificarDependencias(): Promise<RelatorioDependencias> {
-        const [estadoBanco, estadoWhatsapp, estadoDisco] = await Promise.all([
+        const [estadoBanco, estadoWhatsapp, estadoDisco, estadoLabs] = await Promise.all([
             checar("banco", banco),
             checar("whatsapp", whatsapp),
             checar("disco", disco),
+            checar("labs", labs),
         ]);
-        return { banco: estadoBanco, whatsapp: estadoWhatsapp, disco: estadoDisco };
+        return {
+            banco: estadoBanco,
+            whatsapp: estadoWhatsapp,
+            disco: estadoDisco,
+            labs: estadoLabs,
+        };
     };
 }

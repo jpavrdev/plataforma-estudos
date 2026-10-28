@@ -203,6 +203,7 @@ describe("POLITICAS", () => {
             banco: 2,
             whatsapp: 5,
             disco: 1,
+            labs: 2,
             renderizacao: 2,
             backup: 1,
         });
