@@ -2515,6 +2515,31 @@
 }
 .lesson__item {
   text-decoration: none;
+  color: var(--text);
+}
+.lesson__item:hover {
+  background: var(--surface-2);
+}
+.lesson__item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.lesson__module-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lesson__module-count {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.lesson__module-count--completo {
+  color: var(--success);
+}
+.lesson__item--active:hover {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 .lesson__item--disabled {
   pointer-events: none;
