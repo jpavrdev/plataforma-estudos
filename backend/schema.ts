@@ -453,6 +453,24 @@ export const simuladoAttempts = pgTable(
     ],
 );
 
+export const simuladoFavoritos = pgTable(
+    "simulado_favoritos",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        simuladoId: uuid("simulado_id")
+            .references(() => simulados.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.simuladoId, table.userId),
+        index("simulado_favoritos_user_id_idx").on(table.userId),
+    ],
+);
+
 // Snapshot das questões sorteadas para a tentativa (ordem fixa, sobrevive a
 // mudanças no banco de questões).
 // Revisão congelada no envio: a prova como o aluno viu, imune a atualizações

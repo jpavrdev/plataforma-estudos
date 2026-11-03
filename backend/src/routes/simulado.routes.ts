@@ -2,6 +2,7 @@ import { Router } from "express";
 import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
 import {
     listSimulados,
+    toggleFavorite,
     startAttempt,
     getAttemptOptions,
     getAttempt,
@@ -24,6 +25,7 @@ const router = Router();
 
 router.get("/simulados", autenticar, listSimulados);
 router.get("/me/simulado-attempts", autenticar, getMyAttempts);
+router.post("/simulados/:slug/favoritar", autenticar, toggleFavorite);
 router.get("/simulados/:slug/opcoes", autenticar, getAttemptOptions);
 router.post("/simulados/:slug/attempts", autenticar, startAttempt);
 router.get("/simulado-attempts/:id", autenticar, getAttempt);
