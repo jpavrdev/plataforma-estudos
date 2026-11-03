@@ -29,14 +29,17 @@ export const app = express();
 app.set("trust proxy", 1);
 
 app.use(cookieParser());
+// Corpo comprimido recebe 415: o front nunca envia, e a descompressão do
+// body-parser podia derrubar o processo com um corpo malformado (GHSA-27r3-jxmh-p828).
+const json = (limit?: string) => express.json({ inflate: false, ...(limit ? { limit } : {}) });
 // Uploads de imagem trafegam como data URL (base64) em JSON e precisam de um
 // limite maior que o padrao. Aplicado so nessas rotas; o json global segue enxuto.
-app.use("/me/avatar", express.json({ limit: "6mb" }));
-app.use("/me/cover", express.json({ limit: "6mb" }));
-app.use("/me/fundo", express.json({ limit: "14mb" }));
-app.use("/comunidade/imagem", express.json({ limit: "6mb" }));
-app.use("/curriculo/analises", express.json({ limit: "8mb" }));
-app.use(express.json());
+app.use("/me/avatar", json("6mb"));
+app.use("/me/cover", json("6mb"));
+app.use("/me/fundo", json("14mb"));
+app.use("/comunidade/imagem", json("6mb"));
+app.use("/curriculo/analises", json("8mb"));
+app.use(json());
 app.use(helmet({ frameguard: { action: "deny" } }));
 // Refletir a origem que chega, junto com credentials, deixaria qualquer site
 // chamar a API autenticado como quem estivesse logado.
