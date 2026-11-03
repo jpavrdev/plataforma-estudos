@@ -259,11 +259,25 @@ export async function processarWebhook(payload: Record<string, unknown>) {
     }
 
     if (EVENTOS_PAGAMENTO.has(evento)) {
-        const renovacao = evento === "subscription.renewed";
+        // Só a assinatura recorrente renova; plano avulso pago não estende.
+        const renovacao = evento === "subscription.renewed" && alvo.plan === "pix_auto";
         if (alvo.paidAt && !renovacao) {
             return { ok: true };
         }
-        await ativarAssinatura(alvo, new Date(), renovacao);
+        // O segredo da URL autentica o webhook, mas o pagamento é conferido no
+        // gateway: assim nem um webhook forjado com o segredo ativa cobrança que não
+        // foi paga. Por ora só o Pix direto tem consulta; gateway fora do ar vira
+        // erro, e a AbacatePay reenvia mais tarde.
+        let pagoEm = new Date();
+        if (gatewayConfigurado() && alvo.plan !== "pix_auto" && alvo.gatewayId) {
+            const cobranca = await consultarPixQrCode(alvo.gatewayId);
+            if (!cobranca.pago) {
+                console.warn("Webhook de pagamento sem confirmação no gateway:", evento, alvo.id);
+                return { ok: true };
+            }
+            pagoEm = cobranca.pagoEm ?? pagoEm;
+        }
+        await ativarAssinatura(alvo, pagoEm, renovacao);
     } else if (evento === "subscription.cancelled") {
         await db
             .update(subscriptions)
