@@ -112,7 +112,11 @@ export const submitQuizSchema = z.object({
             }),
         )
         .min(1, "Envie ao menos uma resposta")
-        .max(50, "Quiz não tem tantas questões"),
+        .max(50, "Quiz não tem tantas questões")
+        .refine(
+            (answers) => new Set(answers.map((a) => a.questionId)).size === answers.length,
+            "Cada questão deve ter uma resposta só",
+        ),
 });
 
 export const checkAnswerSchema = z.object({
