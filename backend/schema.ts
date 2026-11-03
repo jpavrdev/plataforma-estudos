@@ -50,6 +50,8 @@ export const users = pgTable("users", {
     birthDate: date("birth_date"),
     gender: varchar("gender", { length: 50 }),
     phone: varchar("phone", { length: 20 }),
+    // O código de senha por WhatsApp só vai para telefone verificado.
+    phoneVerifiedAt: timestamp("phone_verified_at", { withTimezone: true }),
     bio: text("bio"),
     location: varchar("location", { length: 120 }),
     occupation: varchar("occupation", { length: 120 }),

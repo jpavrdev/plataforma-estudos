@@ -117,4 +117,33 @@ export const emailService = {
         const text = `Seu código para redefinir a senha no ensina.dev é ${otp}. Ele vale por 10 minutos.\n\nSe você não pediu isso, ignore este email.`;
         await enviar({ to: email, subject: "Seu código de redefinição · ensina.dev", html, text });
     },
+    // Avisos de mudança na conta: quem tomou a conta não consegue apagá-los, e o
+    // dono descobre a tempo de recuperar o acesso pelo email.
+    async enviarAvisoSenhaRedefinida(email: string) {
+        const link = `${env.FRONTEND_URL}/recuperar-senha`;
+        const html = layout(
+            "Sua senha foi redefinida",
+            `<p style="font-size:15px;line-height:1.6;color:#555">A senha da sua conta no ensina.dev acabou de ser redefinida, e as sessões abertas foram encerradas.</p>
+  <p style="font-size:15px;line-height:1.6;color:#555">Se não foi você, redefina a senha agora pelo email e confira o telefone no seu perfil:</p>
+  <a href="${link}" style="display:inline-block;margin:20px 0;background:#2d6bf5;color:#fff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:600">Redefinir senha</a>`,
+        );
+        const text = `A senha da sua conta no ensina.dev acabou de ser redefinida, e as sessões abertas foram encerradas.\n\nSe não foi você, redefina a senha agora pelo email e confira o telefone no seu perfil:\n${link}`;
+        await enviar({ to: email, subject: "Sua senha foi redefinida · ensina.dev", html, text });
+    },
+    async enviarAvisoTelefoneAlterado(email: string) {
+        const link = `${env.FRONTEND_URL}/recuperar-senha`;
+        const html = layout(
+            "O telefone da sua conta mudou",
+            `<p style="font-size:15px;line-height:1.6;color:#555">O telefone de recuperação da sua conta no ensina.dev acabou de ser trocado.</p>
+  <p style="font-size:15px;line-height:1.6;color:#555">Se não foi você, redefina a senha agora pelo email e corrija o telefone no seu perfil:</p>
+  <a href="${link}" style="display:inline-block;margin:20px 0;background:#2d6bf5;color:#fff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:600">Redefinir senha</a>`,
+        );
+        const text = `O telefone de recuperação da sua conta no ensina.dev acabou de ser trocado.\n\nSe não foi você, redefina a senha agora pelo email e corrija o telefone no seu perfil:\n${link}`;
+        await enviar({
+            to: email,
+            subject: "O telefone da sua conta mudou · ensina.dev",
+            html,
+            text,
+        });
+    },
 };

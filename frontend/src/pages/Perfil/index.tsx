@@ -48,6 +48,7 @@ import {
 import { urlImagem } from '../../utils/urlImagem';
 
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
+import { TelefoneRecuperacao } from './TelefoneRecuperacao';
 
 // Só carrega o recortador quando o usuário vai trocar foto ou capa.
 const ImageCropper = lazy(() => import('../../components/ImageCropper'));
@@ -677,6 +678,7 @@ export function Perfil() {
                     </div>
                   </div>
                 </div>
+                <TelefoneRecuperacao />
               </div>
 
               <div className="pf-col">
