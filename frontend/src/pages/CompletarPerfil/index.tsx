@@ -11,6 +11,7 @@ import {
 import { Check } from '../../components/Icons';
 import { mensagemErro } from '../../utils/erro';
 import { useAuth } from '../../contexts/AuthContext';
+import { formatPhone } from '../../utils/phone';
 
 type Erros = Record<string, string>;
 
@@ -18,11 +19,12 @@ type Erros = Record<string, string>;
 // não fornece (nascimento, gênero e telefone).
 export function CompletarPerfil() {
   const navigate = useNavigate();
-  const { atualizarUsuario, logout } = useAuth();
+  const { user, atualizarUsuario, logout } = useAuth();
   const [username, setUsername] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
-  const [phone, setPhone] = useState('');
+  // O telefone que já existe vem preenchido: trocá-lo é pelo Perfil, com a senha.
+  const [phone, setPhone] = useState(user?.phone ? formatPhone(user.phone) : '');
   const [errors, setErrors] = useState<Erros>({});
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
