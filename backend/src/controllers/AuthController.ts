@@ -183,7 +183,8 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
         // Hasheia igual ao token que gravamos no banco
         const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
 
-        // Busca pelo hash
+        // Só token de sessão: os de verificação e de senha (inclusive o código de
+        // 6 dígitos, cujo hash é de "<userId>:<código>") viriam pelo mesmo cookie.
         const [registro] = await db
             .select({
                 userId: tokens.userId,
@@ -191,7 +192,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
                 usedAt: tokens.usedAt,
             })
             .from(tokens)
-            .where(eq(tokens.tokenHash, hashCalculado));
+            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "refresh")));
 
         // Caso não encontre
         if (!registro) {
@@ -244,7 +245,9 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
         // Revoga o token do banco se existir
         if (refreshToken) {
             const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
-            await db.delete(tokens).where(eq(tokens.tokenHash, hashCalculado));
+            await db
+                .delete(tokens)
+                .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "refresh")));
         }
 
         res.clearCookie("refreshToken", {
@@ -449,16 +452,18 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
             .from(users)
             .where(eq(users.email, email));
 
-        // Mesma correção do caminho por link: conta sem senha recebe o código para
-        // criar uma, em vez de o pedido morrer em silêncio.
-        if (user) {
-            const otp = await authService.gerarOtpResetSenha(user.id);
+        // Sem código novo (pedido repetido em menos de um minuto ou limite do dia),
+        // a resposta é a mesma: o código anterior segue valendo até expirar.
+        const otp = user ? await authService.gerarOtpResetSenha(user.id) : null;
+        if (user && otp) {
             // WhatsApp só se tiver telefone; senão cai no email para o código não se perder.
             if (canal === "whatsapp" && user.phone) {
                 await whatsappService.enviarOtpReset(user.phone, otp);
             } else if (user.passwordHash) {
                 await emailService.enviarOtpReset(email, otp);
             } else {
+                // Mesma correção do caminho por link: conta sem senha recebe o código
+                // para criar uma, em vez de o pedido morrer em silêncio.
                 await emailService.enviarOtpCriarSenha(email, otp, await provedorDe(user.id));
             }
         }
@@ -477,33 +482,21 @@ export const resetPasswordOtp = async (req: Request, res: Response, next: NextFu
         const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
         if (!user) return res.status(400).json(generico);
 
-        const hashCalculado = createHash("sha256").update(`${user.id}:${otp}`).digest("hex");
-        const [registro] = await db
-            .select({
-                id: tokens.id,
-                userId: tokens.userId,
-                expiredAt: tokens.expiredAt,
-                usedAt: tokens.usedAt,
-            })
-            .from(tokens)
-            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "password_reset_otp")));
-
-        if (!registro || registro.expiredAt < new Date() || registro.usedAt !== null) {
-            return res.status(400).json(generico);
-        }
+        const tokenId = await authService.conferirOtpResetSenha(user.id, otp);
+        if (!tokenId) return res.status(400).json(generico);
 
         const passwordHash = await hashSenha(password);
 
         await db.transaction(async (tx) => {
-            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, registro.id));
-            await tx.update(users).set({ passwordHash }).where(eq(users.id, registro.userId));
+            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, tokenId));
+            await tx.update(users).set({ passwordHash }).where(eq(users.id, user.id));
             // Revoga as sessões abertas (refresh tokens) por segurança.
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
                 .where(
                     and(
-                        eq(tokens.userId, registro.userId),
+                        eq(tokens.userId, user.id),
                         eq(tokens.type, "refresh"),
                         isNull(tokens.usedAt),
                     ),

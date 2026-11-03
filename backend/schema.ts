@@ -108,6 +108,8 @@ export const tokens = pgTable(
         type: varchar("type", { length: 50 }).notNull().default("refresh"),
         usedAt: timestamp("used_at", { withTimezone: true }),
         expiredAt: timestamp("expired_at", { withTimezone: true }).notNull(),
+        // Erros no código de 6 dígitos; o código é apagado ao chegar no limite.
+        tentativas: smallint("tentativas").notNull().default(0),
     },
     (table) => [index("tokens_user_id_idx").on(table.userId)],
 );
