@@ -90,6 +90,23 @@ export const completarPerfilSchema = z.object({
     phone: z.string().trim().min(1, "Informe o telefone").max(20, "Telefone muito longo"),
 });
 
+export const trocarTelefoneSchema = z.object({
+    phone: z
+        .string()
+        .trim()
+        .min(1, "Informe o telefone")
+        .max(20, "Telefone muito longo")
+        .refine((v) => v.replace(/\D/g, "").length >= 10, "Telefone inválido"),
+    senhaAtual: z.string().max(1024).optional(),
+});
+
+export const codigoTelefoneSchema = z.object({
+    codigo: z
+        .string()
+        .trim()
+        .regex(/^\d{6}$/, "O código deve ter 6 dígitos"),
+});
+
 export const metaSemanalSchema = z
     .object({
         kind: z.enum(["aulas", "dias"]),

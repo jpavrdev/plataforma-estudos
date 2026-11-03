@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
-import { uploadLimiter } from "../middlewares/rateLimit.ts";
+import { uploadLimiter, telefoneCodigoLimiter, telefoneLimiter } from "../middlewares/rateLimit.ts";
 import {
     getMe,
     updateMe,
@@ -16,12 +16,18 @@ import {
     clearWeeklyGoal,
     uploadBackground,
     removerBackground,
+    trocarTelefone,
+    pedirCodigoTelefone,
+    verificarTelefone,
 } from "../controllers/UserController.ts";
 const router = Router();
 
 router.get("/me", autenticar, getMe);
 router.patch("/me", autenticar, updateMe);
 router.post("/me/complete-profile", autenticar, completarPerfil);
+router.put("/me/telefone", telefoneLimiter, autenticar, trocarTelefone);
+router.post("/me/telefone/codigo", telefoneCodigoLimiter, autenticar, pedirCodigoTelefone);
+router.post("/me/telefone/verificar", telefoneLimiter, autenticar, verificarTelefone);
 router.post("/me/avatar", uploadLimiter, autenticar, uploadAvatar);
 router.post("/me/cover", uploadLimiter, autenticar, uploadCover);
 router.delete("/me/avatar", autenticar, removerAvatar);

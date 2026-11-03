@@ -1,0 +1,1 @@
+ALTER TABLE "tokens" ADD COLUMN "tentativas" smallint DEFAULT 0 NOT NULL;

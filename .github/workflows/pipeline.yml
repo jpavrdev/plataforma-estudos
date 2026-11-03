@@ -130,8 +130,11 @@ jobs:
             git fetch origin main
             git checkout main
             git reset --hard origin/main
-            echo "==> Build das imagens (sem cache, para garantir bundle atualizado)"
-            docker compose -f docker-compose.prod.yml build --no-cache
+            # --pull baixa a versão mais nova das imagens base (node, caddy): sem ele o
+            # build reaproveita a que já está no servidor e as correções de segurança
+            # do Node e do Caddy nunca chegam.
+            echo "==> Build das imagens (sem cache e com as imagens base atualizadas)"
+            docker compose -f docker-compose.prod.yml build --no-cache --pull
           PASSO
 
       # Migrations e seeds rodam num container da imagem nova, antes de o backend
@@ -141,7 +144,10 @@ jobs:
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'PASSO'
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
-            echo "==> Subindo o banco"
+            # Postgres atualizado dentro da 16, onde as versões novas só trazem
+            # correções. Se a imagem mudou, o banco reinicia por alguns segundos.
+            echo "==> Atualizando e subindo o banco"
+            docker compose -f docker-compose.prod.yml pull db </dev/null
             docker compose -f docker-compose.prod.yml up -d db
             echo "==> Aplicando migrations"
             docker compose -f docker-compose.prod.yml run --rm --no-deps -T backend npx drizzle-kit migrate </dev/null
@@ -162,8 +168,8 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             echo "==> Subindo backend e proxy (forcando recriacao p/ usar a imagem nova)"
             docker compose -f docker-compose.prod.yml up -d --force-recreate --no-deps backend caddy
-            echo "==> Subindo o servico de labs (so recria se a imagem mudou, p/ nao derrubar sessao de aluno)"
-            docker compose -f docker-compose.prod.yml up -d --no-deps labs
+            echo "==> Subindo labs e runner (so recria o que teve imagem nova)"
+            docker compose -f docker-compose.prod.yml up -d --no-deps labs runner
             echo "==> Limpando imagens antigas"
             docker image prune -f
             echo "==> Deploy concluido"
