@@ -2,7 +2,7 @@ import { env } from "../config/env.ts";
 
 export type Provedor = "google" | "github";
 
-interface DadosUsuario {
+export interface DadosUsuario {
     providerId: string;
     email: string;
     name: string;
