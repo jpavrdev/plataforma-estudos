@@ -55,6 +55,12 @@ export const whatsappService = {
             `Ele vale por 10 minutos. Se você não pediu, ignore esta mensagem.`;
         await enviarTexto(telefone, texto);
     },
+    async enviarCodigoTelefone(telefone: string, codigo: string) {
+        const texto =
+            `ensina.dev\n\nSeu código para confirmar este telefone é *${codigo}*.\n` +
+            `Ele vale por 10 minutos. Se você não pediu, ignore esta mensagem.`;
+        await enviarTexto(telefone, texto);
+    },
 
     // Ao contrário do envio, aqui o erro sobe: é ele que marca o WhatsApp como
     // falha no endpoint de dependências. null quando não há Evolution configurada.

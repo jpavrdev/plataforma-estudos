@@ -430,6 +430,12 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
                 );
         });
 
+        const [dono] = await db
+            .select({ email: users.email })
+            .from(users)
+            .where(eq(users.id, registro.userId));
+        if (dono) await emailService.enviarAvisoSenhaRedefinida(dono.email);
+
         res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
     } catch (err) {
         next(err);
@@ -448,7 +454,12 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
         };
 
         const [user] = await db
-            .select({ id: users.id, phone: users.phone, passwordHash: users.passwordHash })
+            .select({
+                id: users.id,
+                phone: users.phone,
+                phoneVerifiedAt: users.phoneVerifiedAt,
+                passwordHash: users.passwordHash,
+            })
             .from(users)
             .where(eq(users.email, email));
 
@@ -456,8 +467,9 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
         // a resposta é a mesma: o código anterior segue valendo até expirar.
         const otp = user ? await authService.gerarOtpResetSenha(user.id) : null;
         if (user && otp) {
-            // WhatsApp só se tiver telefone; senão cai no email para o código não se perder.
-            if (canal === "whatsapp" && user.phone) {
+            // WhatsApp só para telefone verificado: número nunca confirmado pode ser de
+            // outra pessoa. Sem ele, cai no email para o código não se perder.
+            if (canal === "whatsapp" && user.phone && user.phoneVerifiedAt) {
                 await whatsappService.enviarOtpReset(user.phone, otp);
             } else if (user.passwordHash) {
                 await emailService.enviarOtpReset(email, otp);
@@ -502,6 +514,8 @@ export const resetPasswordOtp = async (req: Request, res: Response, next: NextFu
                     ),
                 );
         });
+
+        await emailService.enviarAvisoSenhaRedefinida(email);
 
         res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
     } catch (err) {
