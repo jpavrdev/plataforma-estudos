@@ -39,7 +39,8 @@ export function Simulados() {
     try {
       const r = await alternarFavorito(e.slug);
       setFavoritoAlterado((prev) => ({ ...prev, [e.slug]: r.favorito }));
-    } catch {
+    } catch (err) {
+      console.error('Falha ao favoritar o simulado:', err);
       setFavoritoAlterado((prev) => ({ ...prev, [e.slug]: eraFavorito }));
     }
   }
