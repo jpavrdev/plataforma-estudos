@@ -53,6 +53,17 @@ export const forgotPasswordOtpLimiter = criarLimiter(
     "Muitos pedidos de código. Tente novamente em alguns minutos.",
 );
 
+// Telefone de recuperação: pedir código manda WhatsApp, e trocar confere a senha.
+export const telefoneCodigoLimiter = criarLimiter(
+    5,
+    "Muitos pedidos de código. Tente novamente em alguns minutos.",
+);
+
+export const telefoneLimiter = criarLimiter(
+    10,
+    "Muitas tentativas. Tente novamente em alguns minutos.",
+);
+
 export const resetPasswordLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",

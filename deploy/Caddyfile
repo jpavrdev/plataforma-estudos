@@ -32,14 +32,33 @@ https://ensinadev.com.br {
 		root * /srv
 		try_files {path} /index.html
 		file_server
+		# Cabeçalhos de segurança da página; a API já manda os dela, pelo helmet.
+		# O CSP entra como relatório: o navegador só avisa no console o que
+		# bloquearia, e depois de conferido ele passa a valer.
+		header {
+			Strict-Transport-Security "max-age=31536000; includeSubDomains"
+			X-Content-Type-Options "nosniff"
+			X-Frame-Options "DENY"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+			Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' https:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self' wss://ensinadev.com.br; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		}
 	}
 
 	encode gzip
 
 	# Sem log de acesso não há como saber se um webhook de gateway chegou e foi
-	# recusado ou se nunca chegou. Vale o barulho no journal por isso.
+	# recusado ou se nunca chegou. Vale o barulho no journal por isso. O webhook
+	# da AbacatePay traz o segredo na query string, que por isso sai do log.
 	log {
 		output stderr
-		format json
+		format filter {
+			wrap json
+			fields {
+				request>uri query {
+					delete webhookSecret
+				}
+			}
+		}
 	}
 }

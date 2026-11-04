@@ -1,10 +1,8 @@
 import type { Request, Response } from "express";
 import { randomBytes } from "node:crypto";
-import { db } from "../../db.ts";
-import { users, oauthAccounts } from "../../schema.ts";
-import { and, eq } from "drizzle-orm";
 import { env } from "../config/env.ts";
 import { authService } from "../services/auth.service.ts";
+import { vincularContaSocial } from "../services/contaSocial.service.ts";
 import {
     provedorValido,
     provedorConfigurado,
@@ -68,44 +66,7 @@ export const callbackOAuth = async (req: Request, res: Response) => {
     }
     if (!dados) return falhar("oauth_sem_email");
 
-    const [contaExistente] = await db
-        .select()
-        .from(oauthAccounts)
-        .where(
-            and(
-                eq(oauthAccounts.provider, provider),
-                eq(oauthAccounts.providerId, dados.providerId),
-            ),
-        );
-
-    let user;
-    if (contaExistente) {
-        [user] = await db.select().from(users).where(eq(users.id, contaExistente.userId));
-    } else {
-        [user] = await db.select().from(users).where(eq(users.email, dados.email));
-        if (!user) {
-            [user] = await db
-                .insert(users)
-                .values({
-                    name: dados.name,
-                    email: dados.email,
-                    emailVerifiedAt: new Date(),
-                })
-                .returning();
-        } else if (!user.emailVerifiedAt) {
-            // O provedor já confirmou o email, então marca a conta pré-existente como verificada.
-            [user] = await db
-                .update(users)
-                .set({ emailVerifiedAt: new Date() })
-                .where(eq(users.id, user.id))
-                .returning();
-        }
-        await db
-            .insert(oauthAccounts)
-            .values({ userId: user.id, provider, providerId: dados.providerId })
-            .onConflictDoNothing();
-    }
-
+    const user = await vincularContaSocial(provider, dados);
     if (!user) return falhar("oauth_falhou");
 
     const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);

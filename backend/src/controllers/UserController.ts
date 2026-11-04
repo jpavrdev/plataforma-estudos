@@ -1,12 +1,18 @@
 import type { Request, Response, NextFunction } from "express";
 import { db } from "../../db.ts";
-import { users, languages as languagesTable } from "../../schema.ts";
-import { eq } from "drizzle-orm";
+import { users, tokens, languages as languagesTable } from "../../schema.ts";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import {
     updateMeSchema,
     completarPerfilSchema,
     metaSemanalSchema,
+    trocarTelefoneSchema,
+    codigoTelefoneSchema,
 } from "../schemas/auth.schema.ts";
+import { authService } from "../services/auth.service.ts";
+import { emailService } from "../services/email.service.ts";
+import { verificarSenha } from "../services/password.service.ts";
+import { whatsappService } from "../services/whatsapp.service.ts";
 import { AVATARS_DIR, COVERS_DIR, FUNDOS_DIR } from "../config/paths.ts";
 import { salvarImagem, removerArquivoLocal } from "../services/imagens.ts";
 import { streakDoUsuario } from "../services/streak.ts";
@@ -29,6 +35,7 @@ const publicUserColumns = {
     birthDate: users.birthDate,
     gender: users.gender,
     phone: users.phone,
+    phoneVerifiedAt: users.phoneVerifiedAt,
     bio: users.bio,
     location: users.location,
     occupation: users.occupation,
@@ -52,7 +59,11 @@ export const getMe = async (req: Request, res: Response) => {
         return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
-    const encontrados = await db.select(publicUserColumns).from(users).where(eq(users.id, userId));
+    // temSenha diz ao front se trocar o telefone pede a senha atual.
+    const encontrados = await db
+        .select({ ...publicUserColumns, temSenha: sql<boolean>`${users.passwordHash} is not null` })
+        .from(users)
+        .where(eq(users.id, userId));
 
     const user = encontrados[0];
 
@@ -176,6 +187,8 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+const soDigitos = (telefone: string) => telefone.replace(/\D/g, "");
+
 // Completa nascimento, gênero e telefone (ex.: após o primeiro login social).
 export const completarPerfil = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
@@ -192,6 +205,17 @@ export const completarPerfil = async (req: Request, res: Response, next: NextFun
         if (existeUsername && existeUsername.id !== userId) {
             return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
         }
+        // Aqui o telefone só entra quando ainda não existe; trocar pede a senha
+        // atual e passa pelo PUT /me/telefone.
+        const [atual] = await db
+            .select({ phone: users.phone })
+            .from(users)
+            .where(eq(users.id, userId));
+        if (atual?.phone && soDigitos(atual.phone) !== soDigitos(dados.phone)) {
+            return res
+                .status(403)
+                .json({ erro: "Para trocar o telefone, use a página de Perfil." });
+        }
         const [user] = await db
             .update(users)
             .set({
@@ -203,6 +227,109 @@ export const completarPerfil = async (req: Request, res: Response, next: NextFun
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
         res.json(user);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Troca o telefone de recuperação. Conta com senha confirma a senha atual: quem
+// pegasse uma sessão por alguns minutos não deixa ali um canal de recuperação seu.
+// O número novo nasce sem verificar, e o email da conta recebe um aviso.
+export const trocarTelefone = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ erro: "Não autenticado" });
+    try {
+        const dados = trocarTelefoneSchema.parse(req.body);
+        const [user] = await db
+            .select({ email: users.email, phone: users.phone, passwordHash: users.passwordHash })
+            .from(users)
+            .where(eq(users.id, userId));
+        if (!user) return res.status(404).json({ erro: "Usuário não encontrado" });
+
+        const senhaConfere =
+            !user.passwordHash ||
+            (!!dados.senhaAtual && (await verificarSenha(user.passwordHash, dados.senhaAtual)));
+        if (!senhaConfere) return res.status(403).json({ erro: "Senha atual incorreta." });
+
+        if (user.phone && soDigitos(user.phone) === soDigitos(dados.phone)) {
+            const [mesmo] = await db
+                .select(publicUserColumns)
+                .from(users)
+                .where(eq(users.id, userId));
+            return res.json(mesmo);
+        }
+
+        const [atualizado] = await db.transaction(async (tx) => {
+            // Código pedido para o número antigo não confirma o novo.
+            await tx
+                .update(tokens)
+                .set({ usedAt: new Date() })
+                .where(
+                    and(
+                        eq(tokens.userId, userId),
+                        eq(tokens.type, "phone_verification"),
+                        isNull(tokens.usedAt),
+                    ),
+                );
+            return tx
+                .update(users)
+                .set({ phone: dados.phone, phoneVerifiedAt: null })
+                .where(eq(users.id, userId))
+                .returning(publicUserColumns);
+        });
+        if (user.phone) await emailService.enviarAvisoTelefoneAlterado(user.email);
+        res.json(atualizado);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Manda por WhatsApp o código que confirma o telefone de recuperação.
+export const pedirCodigoTelefone = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ erro: "Não autenticado" });
+    try {
+        const [user] = await db
+            .select({ phone: users.phone, phoneVerifiedAt: users.phoneVerifiedAt })
+            .from(users)
+            .where(eq(users.id, userId));
+        if (!user?.phone) {
+            return res.status(400).json({ erro: "Cadastre um telefone antes de verificar." });
+        }
+        if (user.phoneVerifiedAt) {
+            return res.status(409).json({ erro: "Este telefone já está verificado." });
+        }
+        const codigo = await authService.gerarCodigoTelefone(userId);
+        if (!codigo) {
+            return res
+                .status(429)
+                .json({ erro: "Espere um pouco para pedir outro código: é um por minuto." });
+        }
+        await whatsappService.enviarCodigoTelefone(user.phone, codigo);
+        res.json({ mensagem: "Enviamos um código por WhatsApp para o seu telefone." });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const verificarTelefone = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ erro: "Não autenticado" });
+    try {
+        const { codigo } = codigoTelefoneSchema.parse(req.body);
+        const tokenId = await authService.conferirCodigoTelefone(userId, codigo);
+        if (!tokenId) {
+            return res.status(400).json({ erro: "Código inválido ou expirado. Peça um novo." });
+        }
+        const [atualizado] = await db.transaction(async (tx) => {
+            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, tokenId));
+            return tx
+                .update(users)
+                .set({ phoneVerifiedAt: new Date() })
+                .where(eq(users.id, userId))
+                .returning(publicUserColumns);
+        });
+        res.json(atualizado);
     } catch (err) {
         next(err);
     }

@@ -467,3 +467,39 @@ describe("Refazer o quiz", () => {
         assert.equal((await acertosGravados(aluno.email)).length, 5);
     });
 });
+
+describe("Quiz sem atalho", () => {
+    test("a mesma questão certa repetida não conclui a aula", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { trailId, lessonIds } = await montarTrilha(admin.token, 1);
+        const aluno = await criarUsuarioLogado();
+        const aula = await get(`/lessons/${lessonIds[0]}`, aluno.token);
+        const q = aula.body.questions[0];
+        const certa = {
+            questionId: q.id,
+            optionId: q.options.find((o: any) => o.text === "certa").id,
+        };
+
+        const quiz = await post(`/lessons/${lessonIds[0]}/quiz`, aluno.token, {
+            answers: [certa, certa, certa, certa],
+        });
+        assert.equal(quiz.status, 400);
+        const trilha = await get(`/trails/${trailId}`, aluno.token);
+        const estados = trilha.body.modules.flatMap((m: any) => m.lessons.map((l: any) => l.state));
+        assert.deepEqual(estados, ["current"]);
+    });
+
+    test("faltar questão recusa o envio, mesmo com quatro certas", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const { lessonIds } = await montarTrilha(admin.token, 1);
+        const aluno = await criarUsuarioLogado();
+        const aula = await get(`/lessons/${lessonIds[0]}`, aluno.token);
+        const answers = aula.body.questions.slice(0, 4).map((q: any) => ({
+            questionId: q.id,
+            optionId: q.options.find((o: any) => o.text === "certa").id,
+        }));
+
+        const quiz = await post(`/lessons/${lessonIds[0]}/quiz`, aluno.token, { answers });
+        assert.equal(quiz.status, 400);
+    });
+});

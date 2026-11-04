@@ -50,6 +50,8 @@ export const users = pgTable("users", {
     birthDate: date("birth_date"),
     gender: varchar("gender", { length: 50 }),
     phone: varchar("phone", { length: 20 }),
+    // O código de senha por WhatsApp só vai para telefone verificado.
+    phoneVerifiedAt: timestamp("phone_verified_at", { withTimezone: true }),
     bio: text("bio"),
     location: varchar("location", { length: 120 }),
     occupation: varchar("occupation", { length: 120 }),
@@ -108,6 +110,8 @@ export const tokens = pgTable(
         type: varchar("type", { length: 50 }).notNull().default("refresh"),
         usedAt: timestamp("used_at", { withTimezone: true }),
         expiredAt: timestamp("expired_at", { withTimezone: true }).notNull(),
+        // Erros no código de 6 dígitos; o código é apagado ao chegar no limite.
+        tentativas: smallint("tentativas").notNull().default(0),
     },
     (table) => [index("tokens_user_id_idx").on(table.userId)],
 );

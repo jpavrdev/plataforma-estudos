@@ -48,6 +48,16 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
         if (o.isCorrect) corretaPorQuestao.set(o.questionId, o.id);
     }
 
+    // Uma resposta para cada questão da aula, sem faltar nenhuma. Antes, a mesma
+    // questão certa repetida somava um acerto por cópia e concluía a aula sozinha.
+    const qIdSet = new Set(qIds);
+    const respondidas = new Set(
+        dados.answers.map((r) => r.questionId).filter((id) => qIdSet.has(id)),
+    );
+    if (respondidas.size !== qIds.length) {
+        throw new AppError(400, "Responda todas as questões da aula.");
+    }
+
     let acertos = 0;
     for (const resp of dados.answers) {
         if (corretaPorQuestao.get(resp.questionId) === resp.optionId) acertos++;
@@ -63,7 +73,6 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
     // vale para XP, ranking, domínio e estatísticas, então refazer e acertar rende
     // os 10 XP uma vez só, e refazer e errar não tira XP nem posição de ninguém.
     const idsValidos = new Set(opts.map((o) => o.id));
-    const qIdSet = new Set(qIds);
     const agora = new Date();
     for (const resp of dados.answers) {
         if (!qIdSet.has(resp.questionId) || !idsValidos.has(resp.optionId)) continue;

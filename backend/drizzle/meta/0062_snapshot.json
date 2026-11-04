@@ -1,5 +1,5 @@
 {
-  "id": "f078e975-c1db-432d-9262-aba539e30695",
+  "id": "54abafc3-eff4-4415-8fa9-20e4bae11715",
   "prevId": "5d0d453f-a413-492e-85f9-dfd08ec0a9ba",
   "version": "7",
   "dialect": "postgresql",
@@ -3606,97 +3606,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.simulado_favoritos": {
-      "name": "simulado_favoritos",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "simulado_id": {
-          "name": "simulado_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "simulado_favoritos_user_id_idx": {
-          "name": "simulado_favoritos_user_id_idx",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "simulado_favoritos_simulado_id_simulados_id_fk": {
-          "name": "simulado_favoritos_simulado_id_simulados_id_fk",
-          "tableFrom": "simulado_favoritos",
-          "tableTo": "simulados",
-          "columnsFrom": [
-            "simulado_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "simulado_favoritos_user_id_users_id_fk": {
-          "name": "simulado_favoritos_user_id_users_id_fk",
-          "tableFrom": "simulado_favoritos",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "simulado_favoritos_simulado_id_user_id_unique": {
-          "name": "simulado_favoritos_simulado_id_user_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "simulado_id",
-            "user_id"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.simulado_options": {
       "name": "simulado_options",
       "schema": "",
@@ -4328,6 +4237,13 @@
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
+        },
+        "tentativas": {
+          "name": "tentativas",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {
