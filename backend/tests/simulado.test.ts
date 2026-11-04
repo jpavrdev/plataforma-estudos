@@ -374,6 +374,58 @@ describe("Simulado: modo de prática", () => {
     });
 });
 
+describe("Simulado: favoritos", () => {
+    test("favoritar marca o simulado só para quem favoritou", async () => {
+        const aluno = await criarUsuarioLogado();
+        const outro = await criarUsuarioLogado();
+        const { slug } = await montarSimulado();
+
+        const r = await post(`/simulados/${slug}/favoritar`, aluno.token);
+        assert.equal(r.status, 200);
+        assert.equal(r.body.favorito, true);
+
+        const meus = await get("/simulados", aluno.token);
+        assert.equal(meus.body.find((s: any) => s.slug === slug).favorito, true);
+        const dele = await get("/simulados", outro.token);
+        assert.equal(dele.body.find((s: any) => s.slug === slug).favorito, false);
+    });
+
+    test("favoritar de novo desfavorita", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug } = await montarSimulado();
+
+        await post(`/simulados/${slug}/favoritar`, aluno.token);
+        const r = await post(`/simulados/${slug}/favoritar`, aluno.token);
+        assert.equal(r.body.favorito, false);
+
+        const lista = await get("/simulados", aluno.token);
+        assert.equal(lista.body.find((s: any) => s.slug === slug).favorito, false);
+    });
+
+    test("simulado inexistente ou não publicado retorna 404", async () => {
+        const aluno = await criarUsuarioLogado();
+        const { slug } = await montarSimulado({ published: false });
+
+        assert.equal((await post(`/simulados/nao-existe/favoritar`, aluno.token)).status, 404);
+        assert.equal((await post(`/simulados/${slug}/favoritar`, aluno.token)).status, 404);
+    });
+
+    test("excluir simulado favoritado remove os favoritos junto", async () => {
+        const admin = await criarUsuarioLogado(true);
+        const aluno = await criarUsuarioLogado();
+        const { slug } = await montarSimulado();
+        await post(`/simulados/${slug}/favoritar`, aluno.token);
+
+        const r = await del(`/simulados/${slug}`, admin.token);
+        assert.equal(r.status, 200);
+        const lista = await get("/simulados", aluno.token);
+        assert.equal(
+            lista.body.some((s: any) => s.slug === slug),
+            false,
+        );
+    });
+});
+
 describe("Simulado: CRUD admin", () => {
     const novoSimulado = (over: Record<string, unknown> = {}) => ({
         slug: `admin-${++seq}`,

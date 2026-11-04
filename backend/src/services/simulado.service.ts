@@ -6,6 +6,7 @@ import {
     simuladoAttempts,
     simuladoAttemptQuestions,
     simuladoAttemptAnswers,
+    simuladoFavoritos,
     type SnapshotQuestaoRevisao,
 } from "../../schema.ts";
 import { eq, and, sql, inArray, desc, isNull, isNotNull, count, ne } from "drizzle-orm";
@@ -26,7 +27,7 @@ function agrupar(pares: [string, string][]): Map<string, Set<string>> {
     return mapa;
 }
 
-export async function listarSimulados() {
+export async function listarSimulados(userId: string) {
     return db
         .select({
             slug: simulados.slug,
@@ -38,10 +39,43 @@ export async function listarSimulados() {
             durationMinutes: simulados.durationMinutes,
             questionCount: simulados.questionCount,
             passPercent: simulados.passPercent,
+            favorito: sql<boolean>`${simuladoFavoritos.id} is not null`,
         })
         .from(simulados)
+        .leftJoin(
+            simuladoFavoritos,
+            and(
+                eq(simuladoFavoritos.simuladoId, simulados.id),
+                eq(simuladoFavoritos.userId, userId),
+            ),
+        )
         .where(eq(simulados.published, true))
         .orderBy(simulados.name);
+}
+
+export async function alternarFavorito(userId: string, slug: string) {
+    const [simulado] = await db
+        .select({ id: simulados.id })
+        .from(simulados)
+        .where(and(eq(simulados.slug, slug), eq(simulados.published, true)));
+    if (!simulado) throw new AppError(404, "Simulado não encontrado");
+
+    const removidos = await db
+        .delete(simuladoFavoritos)
+        .where(
+            and(
+                eq(simuladoFavoritos.simuladoId, simulado.id),
+                eq(simuladoFavoritos.userId, userId),
+            ),
+        )
+        .returning({ id: simuladoFavoritos.id });
+    if (removidos.length === 0) {
+        await db
+            .insert(simuladoFavoritos)
+            .values({ simuladoId: simulado.id, userId })
+            .onConflictDoNothing();
+    }
+    return { favorito: removidos.length === 0 };
 }
 
 // Cancela as tentativas em aberto do usuário: marca submittedAt sem gravar score/passed.

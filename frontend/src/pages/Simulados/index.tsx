@@ -2,8 +2,13 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from './SimTopbar';
-import { Search, Play, Info } from '../../components/Icons';
-import { listarSimulados, historicoSimulados, type SimuladoResumo } from '../../services/simulados';
+import { Search, Play, Info, Star } from '../../components/Icons';
+import {
+  listarSimulados,
+  historicoSimulados,
+  alternarFavorito,
+  type SimuladoResumo,
+} from '../../services/simulados';
 import { provedorDe, nomeLimpo, nivelClasse, ORDEM_PROV } from './provedores';
 
 type Melhor = { score: number; passed: boolean };
@@ -22,6 +27,23 @@ export function Simulados() {
 
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState<string | null>(null);
+  const [soFavoritos, setSoFavoritos] = useState(false);
+  const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
+
+  const ehFavorito = (e: SimuladoResumo) => favoritoAlterado[e.slug] ?? e.favorito;
+  const totalFavoritos = exams.filter(ehFavorito).length;
+
+  async function toggleFavorito(e: SimuladoResumo) {
+    const eraFavorito = ehFavorito(e);
+    setFavoritoAlterado((prev) => ({ ...prev, [e.slug]: !eraFavorito }));
+    try {
+      const r = await alternarFavorito(e.slug);
+      setFavoritoAlterado((prev) => ({ ...prev, [e.slug]: r.favorito }));
+    } catch (err) {
+      console.error('Falha ao favoritar o simulado:', err);
+      setFavoritoAlterado((prev) => ({ ...prev, [e.slug]: eraFavorito }));
+    }
+  }
 
   // Melhor tentativa enviada por simulado (maior percentual).
   const melhorPorSlug = useMemo(() => {
@@ -55,6 +77,7 @@ export function Simulados() {
   const filtrados = useMemo(() => {
     const q = busca.trim().toLowerCase();
     return exams.filter((e) => {
+      if (soFavoritos && !(favoritoAlterado[e.slug] ?? e.favorito)) return false;
       if (filtro && (e.provider ?? 'outros') !== filtro) return false;
       if (!q) return true;
       const prov = provedorDe(e.provider).nome.toLowerCase();
@@ -64,7 +87,7 @@ export function Simulados() {
         prov.includes(q)
       );
     });
-  }, [exams, busca, filtro]);
+  }, [exams, busca, filtro, soFavoritos, favoritoAlterado]);
 
   const aprovados = useMemo(
     () => Object.values(melhorPorSlug).filter((m) => m.passed).length,
@@ -122,6 +145,16 @@ export function Simulados() {
                   >
                     Todos <span className="sim-pill__n">{exams.length}</span>
                   </button>
+                  {(totalFavoritos > 0 || soFavoritos) && (
+                    <button
+                      className={`sim-pill${soFavoritos ? ' sim-pill--active' : ''}`}
+                      aria-pressed={soFavoritos}
+                      onClick={() => setSoFavoritos((v) => !v)}
+                    >
+                      <Star size={13} /> Favoritos{' '}
+                      <span className="sim-pill__n">{totalFavoritos}</span>
+                    </button>
+                  )}
                   {provedores.map((p) => (
                     <button
                       key={p}
@@ -148,6 +181,8 @@ export function Simulados() {
                       e={e}
                       melhor={melhorPorSlug[e.slug]}
                       href={`/simulados/${e.slug}`}
+                      favorito={ehFavorito(e)}
+                      onFavoritar={() => toggleFavorito(e)}
                     />
                   ))}
                 </div>
@@ -171,7 +206,19 @@ export function Simulados() {
   );
 }
 
-function CardSimulado({ e, melhor, href }: { e: SimuladoResumo; melhor?: Melhor; href: string }) {
+function CardSimulado({
+  e,
+  melhor,
+  href,
+  favorito,
+  onFavoritar,
+}: {
+  e: SimuladoResumo;
+  melhor?: Melhor;
+  href: string;
+  favorito: boolean;
+  onFavoritar: () => void;
+}) {
   const p = provedorDe(e.provider);
   const feito = !!melhor;
   const aprovado = melhor?.passed === true;
@@ -188,6 +235,16 @@ function CardSimulado({ e, melhor, href }: { e: SimuladoResumo; melhor?: Melhor;
         {e.level && (
           <span className={`simc__level simc__level--${nivelClasse(e.level)}`}>{e.level}</span>
         )}
+        <button
+          type="button"
+          className={`simc__fav${favorito ? ' simc__fav--on' : ''}`}
+          aria-pressed={favorito}
+          aria-label={favorito ? 'Remover dos favoritos' : 'Favoritar'}
+          title={favorito ? 'Remover dos favoritos' : 'Favoritar'}
+          onClick={onFavoritar}
+        >
+          <Star size={17} />
+        </button>
       </div>
       <div className="simc__name">{nomeLimpo(e.name, e.code)}</div>
       <div className="simc__meta">

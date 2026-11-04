@@ -449,6 +449,13 @@
       "when": 1793729687591,
       "tag": "0063_telefone_verificado",
       "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "7",
+      "when": 1793833268055,
+      "tag": "0064_simulado_favoritos",
+      "breakpoints": true
     }
   ]
 }
