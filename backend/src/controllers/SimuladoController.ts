@@ -9,6 +9,7 @@ import {
 } from "../schemas/simulado.schema.ts";
 import {
     listarSimulados,
+    alternarFavorito,
     iniciarTentativa,
     opcoesDoSimulado,
     estadoDaTentativa,
@@ -27,9 +28,17 @@ import {
     sincronizarQuestoesSimulado,
 } from "../services/simulado.service.ts";
 
-export const listSimulados = async (_req: Request, res: Response, next: NextFunction) => {
+export const listSimulados = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarSimulados());
+        res.json(await listarSimulados(req.userId!));
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await alternarFavorito(req.userId!, String(req.params.slug)));
     } catch (err) {
         next(err);
     }

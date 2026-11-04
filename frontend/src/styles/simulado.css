@@ -1510,6 +1510,41 @@
   padding: 3px 9px;
   border-radius: 99px;
 }
+.simc__fav {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-right: -6px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.simc__fav svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.simc__fav:hover {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+.simc__fav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.simc__fav--on {
+  color: var(--gold);
+}
+.simc__fav--on svg {
+  fill: currentColor;
+}
 .simc__level--fund {
   color: var(--success);
   background: color-mix(in srgb, var(--success) 14%, transparent);

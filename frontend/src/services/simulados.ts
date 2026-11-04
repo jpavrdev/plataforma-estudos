@@ -10,6 +10,7 @@ export interface SimuladoResumo {
   durationMinutes: number;
   questionCount: number;
   passPercent: number;
+  favorito: boolean;
 }
 
 export interface OpcaoSimulado {
@@ -110,6 +111,11 @@ export interface ConferenciaQuestao {
 
 export async function listarSimulados() {
   const { data } = await api.get<SimuladoResumo[]>('/simulados');
+  return data;
+}
+
+export async function alternarFavorito(slug: string) {
+  const { data } = await api.post<{ favorito: boolean }>(`/simulados/${slug}/favoritar`);
   return data;
 }
 
