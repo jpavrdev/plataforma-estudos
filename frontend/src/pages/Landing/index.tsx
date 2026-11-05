@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import api from '../../services/api';
+import { currentLocale } from '../../i18n';
 import { Logo } from '../../components/Logo';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import telaDesafio from '../../assets/produto-desafio.webp';
-import telaTerminal from '../../assets/produto-terminal.webp';
+import { LanguageToggle } from '../../components/LanguageToggle';
+import challengeScreen from '../../assets/produto-desafio.webp';
+import terminalScreen from '../../assets/produto-terminal.webp';
 import terminalWebm from '../../assets/produto-terminal.webm';
 import terminalMp4 from '../../assets/produto-terminal.mp4';
-import telaProgresso from '../../assets/produto-progresso.webp';
+import progressScreen from '../../assets/produto-progresso.webp';
 import {
   Zap,
   Flame,
@@ -21,8 +24,9 @@ import {
   XSocial,
 } from '../../components/Icons';
 
-// Vêm do backend para a página nunca anunciar um número que envelheceu no código.
-type Estatisticas = {
+// They come from the backend so the page never shows a number that went stale in
+// the code. The field names are the API's.
+type PublicStats = {
   trilhas: number;
   aulas: number;
   desafios: number;
@@ -33,110 +37,71 @@ type Estatisticas = {
   aulasConcluidas: number;
 };
 
-const numero = new Intl.NumberFormat('pt-BR');
+const formatNumber = (n: number) => new Intl.NumberFormat(currentLocale()).format(n);
 
-// Arredonda para baixo e marca com "+": 1293 vira "1.200+", 16138 vira "16.000+".
-// Continua verdadeiro, a vitrine não muda a cada aluno novo, e o passo cresce com
-// a grandeza, senão um "16.100+" ficaria preciso demais para uma frase de venda.
-function aproximado(n: number): string {
-  if (n < 10) return numero.format(n);
-  const passo = n >= 10000 ? 1000 : n >= 100 ? 100 : 10;
-  return `${numero.format(Math.floor(n / passo) * passo)}+`;
+// Rounds down and adds a "+": 1293 becomes "1,200+", 16138 becomes "16,000+". It
+// stays true, the showcase does not change with every new student, and the step
+// grows with the magnitude, or a "16,100+" would be too precise for a sales line.
+function approximate(n: number): string {
+  if (n < 10) return formatNumber(n);
+  const step = n >= 10000 ? 1000 : n >= 100 ? 100 : 10;
+  return `${formatNumber(Math.floor(n / step) * step)}+`;
 }
 
-// Traço enquanto carrega e também quando o número é zero: numa vitrine, anunciar
-// "0 desafios" é pior do que não anunciar nada.
-function Numero({ valor }: { valor?: number }) {
-  if (!valor) return <span className="lp-stat__num lp-stat__num--vazio">--</span>;
-  return <span className="lp-stat__num">{aproximado(valor)}</span>;
+// A dash while loading and also when the number is zero: in a showcase,
+// announcing "0 challenges" is worse than announcing nothing.
+function StatNumber({ value }: { value?: number }) {
+  if (!value) return <span className="lp-stat__num lp-stat__num--vazio">--</span>;
+  return <span className="lp-stat__num">{approximate(value)}</span>;
 }
 
-const RECURSOS = [
-  {
-    icone: <Zap size={20} />,
-    titulo: 'Desafio do dia',
-    texto:
-      'Um problema novo a cada dia, resolvido no editor da própria plataforma. Roda seus testes na hora e conta XP na primeira vez que passa.',
-  },
-  {
-    icone: <Flame size={20} />,
-    titulo: 'Streak que segura o hábito',
-    texto:
-      'Cada dia de estudo mantém sua sequência viva. É o lembrete diário de que constância vale mais do que maratona.',
-  },
-  {
-    icone: <Trophy size={20} />,
-    titulo: 'Ranking e ligas',
-    texto:
-      'Seu XP te posiciona entre os outros estudantes e sobe as ligas, de Bronze até Diamante.',
-  },
-  {
-    icone: <BookOpen size={20} />,
-    titulo: 'Trilhas guiadas',
-    texto:
-      'Da lógica de programação ao Kubernetes, com aula, exemplo e quiz. Sem pular etapa e sem se perder na ordem.',
-  },
-  {
-    icone: <ClockExam size={20} />,
-    titulo: 'Simulados de certificação',
-    texto:
-      'Provas cronometradas no formato oficial, para AWS, Azure e mais. Ao errar, você vê a resolução passo a passo.',
-  },
-  {
-    icone: <Target size={20} />,
-    titulo: 'Progresso que dá para ver',
-    texto:
-      'Mapa de atividade do ano, XP por trilha, conquistas e meta semanal. Sua evolução em números, não em sensação.',
-  },
+const FEATURES: {
+  key: 'dailyChallenge' | 'streak' | 'ranking' | 'tracks' | 'exams' | 'progress';
+  icon: ReactNode;
+}[] = [
+  { key: 'dailyChallenge', icon: <Zap size={20} /> },
+  { key: 'streak', icon: <Flame size={20} /> },
+  { key: 'ranking', icon: <Trophy size={20} /> },
+  { key: 'tracks', icon: <BookOpen size={20} /> },
+  { key: 'exams', icon: <ClockExam size={20} /> },
+  { key: 'progress', icon: <Target size={20} /> },
 ];
 
-const PASSOS = [
-  {
-    n: '01',
-    titulo: 'Crie sua conta grátis',
-    texto: 'Leva menos de um minuto. Sem cartão de crédito, sem complicação.',
-  },
-  {
-    n: '02',
-    titulo: 'Escolha por onde começar',
-    texto: 'Siga um roadmap de carreira, uma trilha específica ou vá direto no desafio do dia.',
-  },
-  {
-    n: '03',
-    titulo: 'Volte amanhã',
-    texto: 'Mantenha o streak, junte XP e acompanhe a evolução subindo no ranking.',
-  },
-];
+const STEPS = [
+  { n: '01', key: 'signUp' },
+  { n: '02', key: 'choose' },
+  { n: '03', key: 'comeBack' },
+] as const;
 
-const LEGENDA_TERMINAL =
-  'Terminal Linux dentro de uma aula: o comando falha com permissão negada e depois funciona com sudo';
-
-// Tecnologias que têm trilha de verdade na plataforma.
-const TECNOLOGIAS = ['Python', 'JavaScript', 'Java', 'Go', 'Linux', 'Docker', 'Kubernetes', 'AWS'];
+// Technologies that have a real track on the platform.
+const TECHNOLOGIES = ['Python', 'JavaScript', 'Java', 'Go', 'Linux', 'Docker', 'Kubernetes', 'AWS'];
 
 export function Landing() {
-  const [stats, setStats] = useState<Estatisticas>();
-  // Quem pediu menos movimento no sistema recebe o quadro final parado, com a
-  // mesma informação, em vez do vídeo em laço.
-  const [semAnimacao] = useState(
+  const { t } = useTranslation();
+  const [stats, setStats] = useState<PublicStats>();
+  // Whoever asked the system for less motion gets the still final frame, with the
+  // same information, instead of the looping video.
+  const [reducedMotion] = useState(
     () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
   );
 
   useEffect(() => {
-    let ativo = true;
+    let active = true;
     api
-      .get<Estatisticas>('/estatisticas-publicas')
+      .get<PublicStats>('/estatisticas-publicas')
       .then(({ data }) => {
-        if (ativo) setStats(data);
+        if (active) setStats(data);
       })
       .catch((e) => {
-        // A página se sustenta sem os números, então a visita não é interrompida.
-        console.error('Não foi possível carregar as estatísticas públicas', e);
+        // The page stands without the numbers, so the visit is not interrupted.
+        console.error('Could not load the public stats', e);
       });
     return () => {
-      ativo = false;
+      active = false;
     };
   }, []);
+
+  const terminalCaption = t('landing.lab.caption');
 
   return (
     <div className="lp">
@@ -144,19 +109,20 @@ export function Landing() {
         <div className="lp-container lp-topbar__inner">
           <Logo variant="solid" size={19} to="/" />
           <nav className="lp-nav">
-            <a href="#recursos">Recursos</a>
-            <a href="#trilhas">Trilhas</a>
-            <a href="#como-funciona">Como funciona</a>
+            <a href="#recursos">{t('landing.nav.features')}</a>
+            <a href="#trilhas">{t('landing.nav.tracks')}</a>
+            <a href="#como-funciona">{t('landing.nav.howItWorks')}</a>
           </nav>
           <div className="lp-topbar__acoes">
             <span className="lp-tema">
+              <LanguageToggle inline />
               <ThemeToggle inline />
             </span>
             <Link className="lp-link-entrar" to="/entrar">
-              Entrar
+              {t('landing.signIn')}
             </Link>
             <Link className="btn btn--accent lp-btn-topo" to="/cadastro">
-              Começar grátis
+              {t('landing.startFree')}
             </Link>
           </div>
         </div>
@@ -167,42 +133,42 @@ export function Landing() {
           <div className="lp-container">
             <div className="lp-hero__texto">
               <span className="lp-badge">
-                <Flame size={13} /> Um novo desafio todo dia
+                <Flame size={13} /> {t('landing.hero.badge')}
               </span>
               <h1 className="lp-h1">
-                Aprenda a programar resolvendo <span className="lp-h1__destaque">um desafio</span>{' '}
-                por dia.
+                <Trans
+                  i18nKey="landing.hero.title"
+                  components={{ highlight: <span className="lp-h1__destaque" /> }}
+                />
               </h1>
-              <p className="lp-lede">
-                O Ensina Dev transforma o aprendizado de programação em hábito. Desafios diários,
-                trilhas guiadas, simulados de certificação e um ranking para te manter no ritmo, do
-                zero à sua primeira vaga.
-              </p>
+              <p className="lp-lede">{t('landing.hero.lede')}</p>
               <div className="lp-hero__ctas">
                 <Link className="btn btn--accent lp-btn-grande" to="/cadastro">
-                  Criar conta grátis <ChevronRight size={14} />
+                  {t('landing.hero.createAccount')} <ChevronRight size={14} />
                 </Link>
                 <a className="btn lp-btn-secundario" href="#como-funciona">
-                  Ver como funciona
+                  {t('landing.hero.seeHow')}
                 </a>
               </div>
               <p className="lp-hero__prova">
                 {stats ? (
-                  <>
-                    <strong>{aproximado(stats.estudantes)} alunos</strong> já estudam no Ensina Dev
-                  </>
+                  <Trans
+                    i18nKey="landing.hero.proof"
+                    values={{ students: approximate(stats.estudantes) }}
+                    components={{ strong: <strong /> }}
+                  />
                 ) : (
-                  <>Comece hoje, de graça</>
+                  t('landing.hero.proofFallback')
                 )}
               </p>
             </div>
 
             <figure className="lp-tela lp-tela--hero">
               <img
-                src={telaDesafio}
+                src={challengeScreen}
                 width={1400}
                 height={683}
-                alt="Tela de um desafio no Ensina Dev: enunciado à esquerda, editor de código à direita e o resultado dos testes aprovado"
+                alt={t('landing.hero.screenshotAlt')}
               />
             </figure>
           </div>
@@ -210,21 +176,18 @@ export function Landing() {
 
         <section className="lp-tecnologias" id="trilhas">
           <div className="lp-container">
-            <p className="lp-olho lp-olho--centro">O que você aprende aqui</p>
+            <p className="lp-olho lp-olho--centro">{t('landing.technologies.eyebrow')}</p>
             <ul className="lp-tecnologias__lista">
-              {TECNOLOGIAS.map((t) => (
-                <li key={t}>{t}</li>
+              {TECHNOLOGIES.map((tech) => (
+                <li key={tech}>{tech}</li>
               ))}
             </ul>
             <p className="lp-tecnologias__nota">
-              {stats ? (
-                <>
-                  e mais {numero.format(stats.trilhas - TECNOLOGIAS.length)} trilhas, de lógica de
-                  programação a machine learning
-                </>
-              ) : (
-                <>e muitas outras trilhas, de lógica de programação a machine learning</>
-              )}
+              {stats
+                ? t('landing.technologies.more', {
+                    tracks: formatNumber(stats.trilhas - TECHNOLOGIES.length),
+                  })
+                : t('landing.technologies.moreFallback')}
             </p>
           </div>
         </section>
@@ -232,20 +195,20 @@ export function Landing() {
         <section className="lp-numeros">
           <div className="lp-container lp-numeros__grade">
             <div className="lp-stat">
-              <Numero valor={stats?.estudantes} />
-              <span className="lp-stat__rotulo">alunos</span>
+              <StatNumber value={stats?.estudantes} />
+              <span className="lp-stat__rotulo">{t('landing.stats.students')}</span>
             </div>
             <div className="lp-stat">
-              <Numero valor={stats?.aulas} />
-              <span className="lp-stat__rotulo">aulas publicadas</span>
+              <StatNumber value={stats?.aulas} />
+              <span className="lp-stat__rotulo">{t('landing.stats.lessons')}</span>
             </div>
             <div className="lp-stat">
-              <Numero valor={stats?.desafios} />
-              <span className="lp-stat__rotulo">desafios de código</span>
+              <StatNumber value={stats?.desafios} />
+              <span className="lp-stat__rotulo">{t('landing.stats.challenges')}</span>
             </div>
             <div className="lp-stat">
-              <Numero valor={stats?.simulados} />
-              <span className="lp-stat__rotulo">simulados de certificação</span>
+              <StatNumber value={stats?.simulados} />
+              <span className="lp-stat__rotulo">{t('landing.stats.exams')}</span>
             </div>
           </div>
         </section>
@@ -253,34 +216,33 @@ export function Landing() {
         <section className="lp-secao lp-secao--alt">
           <div className="lp-container lp-destaque">
             <div className="lp-destaque__texto">
-              <p className="lp-olho">Laboratório de verdade</p>
-              <h2 className="lp-destaque__titulo">
-                Um Linux inteiro dentro da aula, e ele é só seu.
-              </h2>
+              <p className="lp-olho">{t('landing.lab.eyebrow')}</p>
+              <h2 className="lp-destaque__titulo">{t('landing.lab.title')}</h2>
               <p className="lp-destaque__lede">
-                Nas aulas de Linux você não lê sobre comando: você digita. Um Debian de verdade sobe
-                na hora, com <code className="code-inline">sudo</code> liberado, e some quando você
-                termina. Errar ali não quebra nada, porque a máquina é sua e é descartável.
+                <Trans
+                  i18nKey="landing.lab.lede"
+                  components={{ code: <code className="code-inline" /> }}
+                />
               </p>
               <ul className="lp-lista">
-                <li>Sem instalar nada, sem máquina virtual, sem dual boot</li>
-                <li>Permissão negada de verdade, e o sudo resolvendo de verdade</li>
-                <li>Disponível em 20 aulas, da linha de comando ao bash</li>
+                <li>{t('landing.lab.noInstall')}</li>
+                <li>{t('landing.lab.realPermissions')}</li>
+                <li>{t('landing.lab.lessons')}</li>
               </ul>
             </div>
             <figure className="lp-tela">
-              {semAnimacao ? (
-                <img src={telaTerminal} width={1240} height={500} alt={LEGENDA_TERMINAL} />
+              {reducedMotion ? (
+                <img src={terminalScreen} width={1240} height={500} alt={terminalCaption} />
               ) : (
                 <video
-                  poster={telaTerminal}
+                  poster={terminalScreen}
                   width={1240}
                   height={500}
                   autoPlay
                   muted
                   loop
                   playsInline
-                  aria-label={LEGENDA_TERMINAL}
+                  aria-label={terminalCaption}
                 >
                   <source src={terminalWebm} type="video/webm" />
                   <source src={terminalMp4} type="video/mp4" />
@@ -292,17 +254,15 @@ export function Landing() {
 
         <section className="lp-secao" id="recursos">
           <div className="lp-container">
-            <p className="lp-olho lp-olho--centro">Por que Ensina Dev</p>
-            <h2 className="lp-h2">Feito para criar o hábito de programar</h2>
-            <p className="lp-sub">
-              Tudo o que você precisa para sair da teoria e praticar de verdade, todos os dias.
-            </p>
+            <p className="lp-olho lp-olho--centro">{t('landing.features.eyebrow')}</p>
+            <h2 className="lp-h2">{t('landing.features.title')}</h2>
+            <p className="lp-sub">{t('landing.features.subtitle')}</p>
             <div className="lp-cards">
-              {RECURSOS.map((r) => (
-                <article className="lp-card" key={r.titulo}>
-                  <span className="lp-card__icone">{r.icone}</span>
-                  <h3 className="lp-card__titulo">{r.titulo}</h3>
-                  <p className="lp-card__texto">{r.texto}</p>
+              {FEATURES.map((feature) => (
+                <article className="lp-card" key={feature.key}>
+                  <span className="lp-card__icone">{feature.icon}</span>
+                  <h3 className="lp-card__titulo">{t(`landing.features.${feature.key}.title`)}</h3>
+                  <p className="lp-card__texto">{t(`landing.features.${feature.key}.text`)}</p>
                 </article>
               ))}
             </div>
@@ -312,25 +272,21 @@ export function Landing() {
         <section className="lp-secao lp-secao--alt">
           <div className="lp-container lp-destaque lp-destaque--invertido">
             <div className="lp-destaque__texto">
-              <p className="lp-olho">Sua evolução</p>
-              <h2 className="lp-destaque__titulo">Constância que dá para ver, não para sentir.</h2>
-              <p className="lp-destaque__lede">
-                Cada dia de estudo vira um quadrado no mapa do ano. Some XP, mantenha o streak e
-                acompanhe o domínio de cada trilha. É o painel que mostra se você está mesmo
-                avançando ou só se sentindo produtivo.
-              </p>
+              <p className="lp-olho">{t('landing.progress.eyebrow')}</p>
+              <h2 className="lp-destaque__titulo">{t('landing.progress.title')}</h2>
+              <p className="lp-destaque__lede">{t('landing.progress.lede')}</p>
               <ul className="lp-lista">
-                <li>Mapa de atividade do ano inteiro</li>
-                <li>XP por trilha, conquistas e meta semanal</li>
-                <li>Ranking com ligas, de Bronze até Diamante</li>
+                <li>{t('landing.progress.activityMap')}</li>
+                <li>{t('landing.progress.xp')}</li>
+                <li>{t('landing.progress.leagues')}</li>
               </ul>
             </div>
             <figure className="lp-tela">
               <img
-                src={telaProgresso}
+                src={progressScreen}
                 width={1500}
                 height={787}
-                alt="Painel de progresso do Ensina Dev com XP total, meta semanal, mapa de atividade do ano, domínio por trilha e conquistas recentes"
+                alt={t('landing.progress.screenshotAlt')}
               />
             </figure>
           </div>
@@ -338,29 +294,34 @@ export function Landing() {
 
         <section className="lp-secao" id="como-funciona">
           <div className="lp-container">
-            <p className="lp-olho lp-olho--centro">Como funciona</p>
-            <h2 className="lp-h2">Comece em 3 passos</h2>
+            <p className="lp-olho lp-olho--centro">{t('landing.steps.eyebrow')}</p>
+            <h2 className="lp-h2">{t('landing.steps.title')}</h2>
             <div className="lp-passos">
-              {PASSOS.map((p) => (
-                <article className="lp-passo" key={p.n}>
-                  <span className="lp-passo__n">{p.n}</span>
-                  <h3 className="lp-card__titulo">{p.titulo}</h3>
-                  <p className="lp-card__texto">{p.texto}</p>
+              {STEPS.map((step) => (
+                <article className="lp-passo" key={step.n}>
+                  <span className="lp-passo__n">{step.n}</span>
+                  <h3 className="lp-card__titulo">{t(`landing.steps.${step.key}.title`)}</h3>
+                  <p className="lp-card__texto">{t(`landing.steps.${step.key}.text`)}</p>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Só aparece com os números na mão: a frase não faz sentido sem eles. */}
+        {/* Only shown with the numbers at hand: the sentence makes no sense without them. */}
         {stats && (
           <section className="lp-movimento">
             <div className="lp-container">
-              <p className="lp-olho lp-olho--centro">Quem já está aqui</p>
+              <p className="lp-olho lp-olho--centro">{t('landing.community.eyebrow')}</p>
               <p className="lp-movimento__frase">
-                Os alunos do Ensina Dev já resolveram{' '}
-                <strong>{aproximado(stats.exerciciosResolvidos)}</strong> exercícios e concluíram{' '}
-                <strong>{aproximado(stats.aulasConcluidas)}</strong> aulas.
+                <Trans
+                  i18nKey="landing.community.sentence"
+                  values={{
+                    exercises: approximate(stats.exerciciosResolvidos),
+                    lessons: approximate(stats.aulasConcluidas),
+                  }}
+                  components={{ strong: <strong /> }}
+                />
               </p>
             </div>
           </section>
@@ -369,14 +330,12 @@ export function Landing() {
         <section className="lp-secao">
           <div className="lp-container">
             <div className="lp-cta">
-              <h2 className="lp-cta__titulo">Seu próximo desafio começa hoje.</h2>
-              <p className="lp-cta__texto">
-                Crie sua conta grátis, resolva o desafio do dia e comece seu streak agora mesmo.
-              </p>
+              <h2 className="lp-cta__titulo">{t('landing.cta.title')}</h2>
+              <p className="lp-cta__texto">{t('landing.cta.text')}</p>
               <Link className="btn lp-cta__botao" to="/cadastro">
-                Criar conta grátis
+                {t('landing.cta.button')}
               </Link>
-              <p className="lp-cta__nota">Sem cartão de crédito. Comece em segundos.</p>
+              <p className="lp-cta__nota">{t('landing.cta.note')}</p>
             </div>
           </div>
         </section>
@@ -387,37 +346,37 @@ export function Landing() {
           <div className="lp-rodape__marca">
             <Logo variant="solid" size={18} />
             <p>
-              {stats ? (
-                <>
-                  {aproximado(stats.aulas)} aulas e {aproximado(stats.questoes)} questões para você
-                  praticar programação todo dia.
-                </>
-              ) : (
-                <>Aprenda a programar resolvendo um desafio por dia.</>
-              )}
+              {stats
+                ? t('landing.footer.tagline', {
+                    lessons: approximate(stats.aulas),
+                    questions: approximate(stats.questoes),
+                  })
+                : t('landing.footer.taglineFallback')}
             </p>
           </div>
           <nav className="lp-rodape__col">
-            <h4>Plataforma</h4>
-            <a href="#recursos">Recursos</a>
-            <a href="#trilhas">Trilhas</a>
-            <a href="#como-funciona">Como funciona</a>
+            <h4>{t('landing.footer.platform')}</h4>
+            <a href="#recursos">{t('landing.nav.features')}</a>
+            <a href="#trilhas">{t('landing.nav.tracks')}</a>
+            <a href="#como-funciona">{t('landing.nav.howItWorks')}</a>
           </nav>
           <nav className="lp-rodape__col">
-            <h4>Conta</h4>
-            <Link to="/entrar">Entrar</Link>
-            <Link to="/cadastro">Criar conta</Link>
-            <Link to="/recuperar-senha">Recuperar senha</Link>
+            <h4>{t('landing.footer.account')}</h4>
+            <Link to="/entrar">{t('landing.footer.signIn')}</Link>
+            <Link to="/cadastro">{t('landing.footer.createAccount')}</Link>
+            <Link to="/recuperar-senha">{t('landing.footer.recoverPassword')}</Link>
           </nav>
           <nav className="lp-rodape__col">
-            <h4>Legal</h4>
-            <Link to="/termos">Termos de Uso</Link>
-            <Link to="/privacidade">Política de Privacidade</Link>
+            <h4>{t('landing.footer.legal')}</h4>
+            <Link to="/termos">{t('landing.footer.terms')}</Link>
+            <Link to="/privacidade">{t('landing.footer.privacy')}</Link>
           </nav>
         </div>
         <div className="lp-container lp-rodape__base">
-          <span>© {new Date().getFullYear()} Ensina Dev. Todos os direitos reservados.</span>
+          <span>{t('landing.footer.rights', { year: new Date().getFullYear() })}</span>
           <span className="lp-rodape__redes">
+            {/* The topbar hides its toggles on small screens; here the language stays reachable. */}
+            <LanguageToggle inline />
             <a
               href="https://github.com/jpavrdev"
               target="_blank"

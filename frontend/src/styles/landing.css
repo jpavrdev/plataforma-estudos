@@ -32,6 +32,11 @@
 .lp-topbar__acoes {
   flex-shrink: 0;
 }
+.lp-tema {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 .lp-topbar__inner .logo__word,
 .lp-nav a,
 .lp-link-entrar,

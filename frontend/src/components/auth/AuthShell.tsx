@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ThemeToggle } from '../ThemeToggle';
+import { LanguageToggle } from '../LanguageToggle';
 
 interface AuthShellProps {
   /** Painel de marca (lado esquerdo). */
@@ -14,6 +15,7 @@ export function AuthShell({ brand, children }: AuthShellProps) {
       <div className="auth">
         {brand}
         <section className="auth__panel">
+          <LanguageToggle />
           <ThemeToggle />
           {children}
         </section>
