@@ -6367,3 +6367,31 @@ a.logo {
     animation: none;
   }
 }
+
+/* Two-factor authentication (profile card) */
+.tf-qr {
+  width: 184px;
+  height: 184px;
+  padding: 8px;
+  border-radius: var(--r-md);
+  background: #fff;
+}
+.tf-key {
+  display: block;
+  font-family: var(--font-code);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+}
+.tf-codes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  list-style: none;
+  font-family: var(--font-code);
+  font-size: 14px;
+}

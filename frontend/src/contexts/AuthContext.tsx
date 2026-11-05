@@ -19,13 +19,17 @@ interface User {
   backgroundUrl?: string | null;
   backgroundDim?: number | null;
   features?: string[];
+  // Admin without 2FA enabled, or with a session older than the activation: the
+  // admin area stays blocked.
+  pendingTwoFactor?: '2fa_required' | '2fa_session' | null;
 }
 
 interface AuthContextData {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ challenge?: string }>;
+  confirmTwoFactor: (challenge: string, code: string) => Promise<void>;
   entrarComToken: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
   atualizarUsuario: (patch: Partial<User>) => void;
@@ -79,8 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadStorageData();
   }, []);
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string): Promise<{ challenge?: string }> {
     const response = await api.post('/login', { email: email.trim(), password });
+    // 2FA account: the password only opens the challenge, and the code completes the login.
+    if (response.data.challenge) return { challenge: response.data.challenge as string };
     const { token } = response.data;
 
     localStorage.setItem('@App:accessToken', token);
@@ -92,6 +98,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     aplicarAccent(meResponse.data.apoiador ? meResponse.data.accent : null);
     aplicarFundo(meResponse.data.apoiador ? urlImagem(meResponse.data.backgroundUrl) : null);
     aplicarVeu(meResponse.data.apoiador ? meResponse.data.backgroundDim : null);
+    return {};
+  }
+
+  async function confirmTwoFactor(challenge: string, code: string) {
+    const { data } = await api.post('/login/2fa', { challenge, code });
+    await entrarComToken(data.token);
   }
 
   // Entra a partir de um access token já emitido (usado no callback do login social).
@@ -137,6 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         loading,
         login,
+        confirmTwoFactor,
         entrarComToken,
         logout,
         atualizarUsuario,

@@ -116,6 +116,36 @@ export const tokens = pgTable(
     (table) => [index("tokens_user_id_idx").on(table.userId)],
 );
 
+// Two-factor authentication with an authenticator app (TOTP). Secrets are stored
+// encrypted (services/secretBox.ts). The pending one belongs to a setup in
+// progress and only becomes the secret once the first code matches.
+export const twoFactorAuth = pgTable("two_factor_auth", {
+    userId: uuid("user_id")
+        .primaryKey()
+        .references(() => users.id, { onDelete: "cascade" }),
+    secret: text("secret"),
+    pendingSecret: text("pending_secret"),
+    enabledAt: timestamp("enabled_at", { withTimezone: true }),
+    // Last accepted 30-second step: the same code is never accepted twice.
+    lastStep: integer("last_step"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Single-use 2FA recovery codes, stored only as hashes.
+export const twoFactorRecoveryCodes = pgTable(
+    "two_factor_recovery_codes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        codeHash: varchar("code_hash", { length: 64 }).notNull().unique(),
+        usedAt: timestamp("used_at", { withTimezone: true }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("two_factor_recovery_codes_user_id_idx").on(table.userId)],
+);
+
 export const trails = pgTable("trails", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),

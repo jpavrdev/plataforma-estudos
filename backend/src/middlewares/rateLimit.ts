@@ -64,6 +64,13 @@ export const telefoneLimiter = criarLimiter(
     "Muitas tentativas. Tente novamente em alguns minutos.",
 );
 
+// 2FA codes, at login and on the profile. The account lock stops guessing per
+// user; this one caps the volume per IP.
+export const twoFactorLimiter = criarLimiter(
+    10,
+    "Muitas tentativas de código. Tente novamente em alguns minutos.",
+);
+
 export const resetPasswordLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",

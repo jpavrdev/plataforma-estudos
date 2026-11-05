@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { env } from "../config/env.ts";
 import { authService } from "../services/auth.service.ts";
 import { vincularContaSocial } from "../services/contaSocial.service.ts";
+import { twoFactorService } from "../services/twoFactor.service.ts";
 import {
     provedorValido,
     provedorConfigurado,
@@ -69,10 +70,18 @@ export const callbackOAuth = async (req: Request, res: Response) => {
     const user = await vincularContaSocial(provider, dados);
     if (!user) return falhar("oauth_falhou");
 
-    const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
-    res.cookie("refreshToken", refreshToken, refreshCookieOpts);
-
     const precisaCompletar = !user.username || !user.birthDate || !user.gender || !user.phone;
     const destino = precisaCompletar ? "completar-perfil" : "home";
+
+    // With 2FA the provider counts as the password: the session only comes after the code.
+    if (await twoFactorService.isEnabled(user.id)) {
+        const challenge = await twoFactorService.createChallenge(user.id);
+        return res.redirect(
+            `${env.FRONTEND_URL}/auth/callback#challenge=${challenge}&destino=${destino}`,
+        );
+    }
+
+    const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
+    res.cookie("refreshToken", refreshToken, refreshCookieOpts);
     res.redirect(`${env.FRONTEND_URL}/auth/callback#token=${accessToken}&destino=${destino}`);
 };

@@ -1,6 +1,11 @@
 import { Router } from "express";
 import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
-import { uploadLimiter, telefoneCodigoLimiter, telefoneLimiter } from "../middlewares/rateLimit.ts";
+import {
+    uploadLimiter,
+    telefoneCodigoLimiter,
+    telefoneLimiter,
+    twoFactorLimiter,
+} from "../middlewares/rateLimit.ts";
 import {
     getMe,
     updateMe,
@@ -20,6 +25,13 @@ import {
     pedirCodigoTelefone,
     verificarTelefone,
 } from "../controllers/UserController.ts";
+import {
+    getTwoFactorStatus,
+    startTwoFactorSetup,
+    enableTwoFactor,
+    regenerateRecoveryCodes,
+    disableTwoFactor,
+} from "../controllers/TwoFactorController.ts";
 const router = Router();
 
 router.get("/me", autenticar, getMe);
@@ -28,6 +40,11 @@ router.post("/me/complete-profile", autenticar, completarPerfil);
 router.put("/me/telefone", telefoneLimiter, autenticar, trocarTelefone);
 router.post("/me/telefone/codigo", telefoneCodigoLimiter, autenticar, pedirCodigoTelefone);
 router.post("/me/telefone/verificar", telefoneLimiter, autenticar, verificarTelefone);
+router.get("/me/2fa", autenticar, getTwoFactorStatus);
+router.post("/me/2fa/setup", twoFactorLimiter, autenticar, startTwoFactorSetup);
+router.post("/me/2fa/enable", twoFactorLimiter, autenticar, enableTwoFactor);
+router.post("/me/2fa/recovery-codes", twoFactorLimiter, autenticar, regenerateRecoveryCodes);
+router.post("/me/2fa/disable", twoFactorLimiter, autenticar, disableTwoFactor);
 router.post("/me/avatar", uploadLimiter, autenticar, uploadAvatar);
 router.post("/me/cover", uploadLimiter, autenticar, uploadCover);
 router.delete("/me/avatar", autenticar, removerAvatar);

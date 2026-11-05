@@ -2,7 +2,7 @@ import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto
 import { db } from "../../db.ts";
 import { env } from "../config/env.ts";
 import jwt from "jsonwebtoken";
-import { tokens } from "../../schema.ts";
+import { tokens, users } from "../../schema.ts";
 import { and, eq, isNull, lt, sql } from "drizzle-orm";
 
 const VALIDADE_OTP_MS = 10 * 60 * 1000;
@@ -12,6 +12,19 @@ const DIA_MS = 24 * 60 * 60 * 1000;
 const INTERVALO_ENTRE_OTPS_MS = 60 * 1000;
 const MAX_OTPS_POR_DIA = 10;
 export const MAX_TENTATIVAS_OTP = 5;
+// Wrong password or wrong 2FA code: on the fifth failure in a row the account
+// locks for 15 minutes and the counter starts over.
+const MAX_FAILED_LOGINS = 5;
+
+// The same session cookie everywhere a session is opened (the /refresh calls
+// are same-site).
+export const refreshCookieOptions = {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    maxAge: 24 * 60 * 60 * 1000,
+    path: "/",
+};
 
 type TipoCodigo = "password_reset_otp" | "phone_verification";
 
@@ -97,8 +110,17 @@ async function conferirCodigo(
 }
 
 export const authService = {
-    async gerarEGravarTokens(userId: string, tx: Pick<typeof db, "insert"> = db) {
-        const accessToken = jwt.sign({ userId }, env.JWT_SECRET, { expiresIn: "15m" });
+    // mfa marks a session that went through the 2FA code; admin routes require it.
+    async gerarEGravarTokens(
+        userId: string,
+        tx: Pick<typeof db, "insert"> = db,
+        options: { mfa?: boolean } = {},
+    ) {
+        const accessToken = jwt.sign(
+            { userId, ...(options.mfa ? { mfa: true } : {}) },
+            env.JWT_SECRET,
+            { expiresIn: "15m" },
+        );
         const refreshToken = randomBytes(40).toString("hex");
 
         await tx.insert(tokens).values({
@@ -109,6 +131,22 @@ export const authService = {
         });
 
         return { accessToken, refreshToken };
+    },
+    async recordFailedLogin(userId: string) {
+        const attempts = sql`${users.failedLoginAttempts} + 1`;
+        await db
+            .update(users)
+            .set({
+                failedLoginAttempts: sql`case when ${attempts} >= ${MAX_FAILED_LOGINS} then 0 else ${attempts} end`,
+                lockedUntil: sql`case when ${attempts} >= ${MAX_FAILED_LOGINS} then now() + interval '15 minutes' else ${users.lockedUntil} end`,
+            })
+            .where(eq(users.id, userId));
+    },
+    async resetFailedLogins(userId: string) {
+        await db
+            .update(users)
+            .set({ failedLoginAttempts: 0, lockedUntil: null })
+            .where(eq(users.id, userId));
     },
     async gerarTokenVerificacao(userId: string, tx: Pick<typeof db, "insert"> = db) {
         const verificationToken = randomBytes(40).toString("hex");
