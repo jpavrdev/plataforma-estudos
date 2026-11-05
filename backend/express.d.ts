@@ -4,7 +4,7 @@ declare global {
     namespace Express {
         interface Request {
             userId?: string;
-            // A sessão passou pelo código do 2FA (claim mfa do access token).
+            // The session went through the 2FA code (mfa claim of the access token).
             mfa?: boolean;
         }
     }

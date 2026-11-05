@@ -6,7 +6,7 @@ import { AuthBrand } from '../../components/auth/AuthBrand';
 import { Logo } from '../../components/Logo';
 import { FormField } from '../../components/FormField';
 import { SocialAuth } from '../../components/auth/SocialAuth';
-import { DoisFatoresLogin } from '../../components/auth/DoisFatoresLogin';
+import { TwoFactorLogin } from '../../components/auth/TwoFactorLogin';
 import { Flame, Trophy } from '../../components/Icons';
 import api from '../../services/api';
 import { mensagemErro, statusErro } from '../../utils/erro';
@@ -36,8 +36,8 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  // Conta com 2FA: depois da senha, a tela pede o código.
-  const [desafio, setDesafio] = useState<string | null>(null);
+  // 2FA account: after the password, the screen asks for the code.
+  const [challenge, setChallenge] = useState<string | null>(null);
   // Login bloqueado por email não confirmado (403): oferece reenviar a verificação.
   const [naoVerificado, setNaoVerificado] = useState(false);
   const [reenviando, setReenviando] = useState(false);
@@ -51,9 +51,9 @@ export function Login() {
     setReenvioMsg('');
     setSubmitting(true);
     try {
-      const resultado = await login(email, password);
-      if (resultado.desafio) {
-        setDesafio(resultado.desafio);
+      const result = await login(email, password);
+      if (result.challenge) {
+        setChallenge(result.challenge);
         return;
       }
       navigate('/home');
@@ -122,17 +122,17 @@ export function Login() {
     </AuthBrand>
   );
 
-  if (desafio) {
+  if (challenge) {
     return (
       <AuthShell brand={brand}>
         <div className="auth__logo-m">
           <Logo variant="solid" size={22} />
         </div>
-        <DoisFatoresLogin
-          desafio={desafio}
-          onConcluir={() => navigate('/home')}
-          onVoltar={() => {
-            setDesafio(null);
+        <TwoFactorLogin
+          challenge={challenge}
+          onDone={() => navigate('/home')}
+          onBack={() => {
+            setChallenge(null);
             setPassword('');
           }}
         />

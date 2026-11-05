@@ -42,8 +42,8 @@ jobs:
       CERT_RAZAO_SOCIAL: Ensina Dev Treinamentos
       CERT_CNPJ: 00.000.000/0001-00
       CERT_RESPONSAVEL: Joao Paulo Avelino
-      # Os testes de admin não tratam do 2FA; o dois-fatores.test.ts liga a exigência.
-      ADMIN_EXIGE_2FA: "false"
+      # Admin tests are not about 2FA; two-factor.test.ts turns the requirement on.
+      ADMIN_REQUIRE_2FA: "false"
     defaults:
       run:
         working-directory: backend

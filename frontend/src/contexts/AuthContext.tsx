@@ -19,16 +19,17 @@ interface User {
   backgroundUrl?: string | null;
   backgroundDim?: number | null;
   features?: string[];
-  // Admin sem 2FA ativo, ou com sessão anterior à ativação: a área de admin fica barrada.
-  pendencia2fa?: '2fa_obrigatorio' | '2fa_sessao' | null;
+  // Admin without 2FA enabled, or with a session older than the activation: the
+  // admin area stays blocked.
+  pendingTwoFactor?: '2fa_required' | '2fa_session' | null;
 }
 
 interface AuthContextData {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ desafio?: string }>;
-  confirmarDoisFatores: (desafio: string, codigo: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ challenge?: string }>;
+  confirmTwoFactor: (challenge: string, code: string) => Promise<void>;
   entrarComToken: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
   atualizarUsuario: (patch: Partial<User>) => void;
@@ -82,10 +83,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadStorageData();
   }, []);
 
-  async function login(email: string, password: string): Promise<{ desafio?: string }> {
+  async function login(email: string, password: string): Promise<{ challenge?: string }> {
     const response = await api.post('/login', { email: email.trim(), password });
-    // Conta com 2FA: a senha só abre o desafio, e o código fecha o login.
-    if (response.data.desafio) return { desafio: response.data.desafio as string };
+    // 2FA account: the password only opens the challenge, and the code completes the login.
+    if (response.data.challenge) return { challenge: response.data.challenge as string };
     const { token } = response.data;
 
     localStorage.setItem('@App:accessToken', token);
@@ -100,8 +101,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return {};
   }
 
-  async function confirmarDoisFatores(desafio: string, codigo: string) {
-    const { data } = await api.post('/login/2fa', { desafio, codigo });
+  async function confirmTwoFactor(challenge: string, code: string) {
+    const { data } = await api.post('/login/2fa', { challenge, code });
     await entrarComToken(data.token);
   }
 
@@ -148,7 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         loading,
         login,
-        confirmarDoisFatores,
+        confirmTwoFactor,
         entrarComToken,
         logout,
         atualizarUsuario,

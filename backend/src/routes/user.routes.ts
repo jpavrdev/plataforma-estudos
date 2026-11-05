@@ -4,7 +4,7 @@ import {
     uploadLimiter,
     telefoneCodigoLimiter,
     telefoneLimiter,
-    doisFatoresLimiter,
+    twoFactorLimiter,
 } from "../middlewares/rateLimit.ts";
 import {
     getMe,
@@ -26,12 +26,12 @@ import {
     verificarTelefone,
 } from "../controllers/UserController.ts";
 import {
-    estadoDoisFatores,
-    configurarDoisFatores,
-    ativarDoisFatores,
-    novosCodigosDoisFatores,
-    desativarDoisFatores,
-} from "../controllers/DoisFatoresController.ts";
+    getTwoFactorStatus,
+    startTwoFactorSetup,
+    enableTwoFactor,
+    regenerateRecoveryCodes,
+    disableTwoFactor,
+} from "../controllers/TwoFactorController.ts";
 const router = Router();
 
 router.get("/me", autenticar, getMe);
@@ -40,11 +40,11 @@ router.post("/me/complete-profile", autenticar, completarPerfil);
 router.put("/me/telefone", telefoneLimiter, autenticar, trocarTelefone);
 router.post("/me/telefone/codigo", telefoneCodigoLimiter, autenticar, pedirCodigoTelefone);
 router.post("/me/telefone/verificar", telefoneLimiter, autenticar, verificarTelefone);
-router.get("/me/2fa", autenticar, estadoDoisFatores);
-router.post("/me/2fa/configurar", doisFatoresLimiter, autenticar, configurarDoisFatores);
-router.post("/me/2fa/ativar", doisFatoresLimiter, autenticar, ativarDoisFatores);
-router.post("/me/2fa/codigos", doisFatoresLimiter, autenticar, novosCodigosDoisFatores);
-router.post("/me/2fa/desativar", doisFatoresLimiter, autenticar, desativarDoisFatores);
+router.get("/me/2fa", autenticar, getTwoFactorStatus);
+router.post("/me/2fa/setup", twoFactorLimiter, autenticar, startTwoFactorSetup);
+router.post("/me/2fa/enable", twoFactorLimiter, autenticar, enableTwoFactor);
+router.post("/me/2fa/recovery-codes", twoFactorLimiter, autenticar, regenerateRecoveryCodes);
+router.post("/me/2fa/disable", twoFactorLimiter, autenticar, disableTwoFactor);
 router.post("/me/avatar", uploadLimiter, autenticar, uploadAvatar);
 router.post("/me/cover", uploadLimiter, autenticar, uploadCover);
 router.delete("/me/avatar", autenticar, removerAvatar);

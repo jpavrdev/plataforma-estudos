@@ -2,21 +2,21 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
-import { DoisFatoresLogin } from '../../components/auth/DoisFatoresLogin';
+import { TwoFactorLogin } from '../../components/auth/TwoFactorLogin';
 
 // O backend redireciona para cá com #token=...&destino=home|completar-perfil.
 // Pegamos o token do fragment (não vai pro servidor), entramos e seguimos.
-// Conta com 2FA chega com #desafio=... no lugar do token e confirma o código aqui.
+// A 2FA account arrives with #challenge=... instead of the token and confirms the code here.
 export function OAuthCallback() {
   const { entrarComToken } = useAuth();
   const navigate = useNavigate();
   const params = new URLSearchParams(window.location.hash.slice(1));
   const token = params.get('token');
   const destino = params.get('destino');
-  const desafio = params.get('desafio');
+  const challenge = params.get('challenge');
   // Sem token na URL já começa em erro (evita setState síncrono no efeito).
-  const [erro, setErro] = useState(!token && !desafio);
-  const seguir = () =>
+  const [erro, setErro] = useState(!token && !challenge);
+  const proceed = () =>
     navigate(destino === 'completar-perfil' ? '/completar-perfil' : '/home', { replace: true });
   const jaRodou = useRef(false);
 
@@ -24,7 +24,7 @@ export function OAuthCallback() {
     if (!token || jaRodou.current) return;
     jaRodou.current = true;
     entrarComToken(token)
-      .then(seguir)
+      .then(proceed)
       .catch(() => setErro(true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -42,11 +42,11 @@ export function OAuthCallback() {
               Voltar ao login
             </Link>
           </>
-        ) : desafio ? (
-          <DoisFatoresLogin
-            desafio={desafio}
-            onConcluir={seguir}
-            onVoltar={() => navigate('/entrar', { replace: true })}
+        ) : challenge ? (
+          <TwoFactorLogin
+            challenge={challenge}
+            onDone={proceed}
+            onBack={() => navigate('/entrar', { replace: true })}
           />
         ) : (
           <>

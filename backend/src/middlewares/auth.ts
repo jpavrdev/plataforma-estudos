@@ -36,20 +36,20 @@ export function autenticar(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-// O que falta para a sessão usar as rotas de admin: o 2FA ligado e a sessão
-// verificada pelo código. O /me usa o mesmo critério para o front barrar a área
-// de admin, que tem telas que só leem rotas comuns.
-export function pendenciaDoisFatores(doisFatoresEm: Date | null, mfa: boolean | undefined) {
-    if (!env.ADMIN_EXIGE_2FA) return null;
-    if (!doisFatoresEm) return "2fa_obrigatorio" as const;
-    if (!mfa) return "2fa_sessao" as const;
+// What the session still lacks to use the admin routes: 2FA enabled and a
+// session verified by the code. /me applies the same rule so the frontend can
+// block the admin area, whose screens sometimes only read regular routes.
+export function pendingTwoFactor(twoFactorEnabledAt: Date | null, mfa: boolean | undefined) {
+    if (!env.ADMIN_REQUIRE_2FA) return null;
+    if (!twoFactorEnabledAt) return "2fa_required" as const;
+    if (!mfa) return "2fa_session" as const;
     return null;
 }
 
-const MENSAGEM_PENDENCIA = {
-    "2fa_obrigatorio":
+const PENDING_TWO_FACTOR_MESSAGES = {
+    "2fa_required":
         "Ative a verificação em duas etapas no seu perfil para usar as funções de administrador.",
-    "2fa_sessao":
+    "2fa_session":
         "Entre de novo e confirme com o código do app autenticador para usar as funções de administrador.",
 };
 
@@ -61,7 +61,7 @@ export async function exigirAdmin(req: Request, res: Response, next: NextFunctio
     }
 
     const [registro] = await db
-        .select({ role: users.role, doisFatoresEm: twoFactorAuth.enabledAt })
+        .select({ role: users.role, twoFactorEnabledAt: twoFactorAuth.enabledAt })
         .from(users)
         .leftJoin(twoFactorAuth, eq(twoFactorAuth.userId, users.id))
         .where(eq(users.id, idUsuario));
@@ -70,10 +70,10 @@ export async function exigirAdmin(req: Request, res: Response, next: NextFunctio
         return res.status(403).json({ erro: "Usuário não é administrador" });
     }
 
-    // Desligar o 2FA vale na hora, sem esperar o token marcado expirar.
-    const pendencia = pendenciaDoisFatores(registro.doisFatoresEm, req.mfa);
-    if (pendencia) {
-        return res.status(403).json({ erro: MENSAGEM_PENDENCIA[pendencia], codigo: pendencia });
+    // Turning 2FA off takes effect right away, without waiting for the marked token to expire.
+    const pending = pendingTwoFactor(registro.twoFactorEnabledAt, req.mfa);
+    if (pending) {
+        return res.status(403).json({ erro: PENDING_TWO_FACTOR_MESSAGES[pending], code: pending });
     }
 
     next();

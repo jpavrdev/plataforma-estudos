@@ -3,12 +3,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../Logo';
 
 interface Props {
-  motivo: '2fa_obrigatorio' | '2fa_sessao';
+  reason: '2fa_required' | '2fa_session';
 }
 
-// Tela no lugar da área de admin enquanto falta o 2FA. Algumas telas do Estúdio
-// só leem rotas comuns e abririam normalmente, quebrando só na hora de salvar.
-export function BloqueioDoisFatores({ motivo }: Props) {
+// Shown instead of the admin area while 2FA is missing. Some Estúdio screens only
+// read regular routes and would open normally, failing only when saving.
+export function TwoFactorGate({ reason }: Props) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -17,13 +17,13 @@ export function BloqueioDoisFatores({ motivo }: Props) {
       <div className="verify-card">
         <Logo variant="solid" size={22} />
         <h1 className="verify-title">Verificação em duas etapas</h1>
-        {motivo === '2fa_obrigatorio' ? (
+        {reason === '2fa_required' ? (
           <>
             <p className="verify-text">
               As funções de administrador pedem a verificação em duas etapas. Ative no seu perfil
               com um app autenticador.
             </p>
-            <Link className="btn btn--accent btn--block" to="/perfil#dois-fatores">
+            <Link className="btn btn--accent btn--block" to="/perfil#two-factor">
               Ativar no perfil
             </Link>
           </>

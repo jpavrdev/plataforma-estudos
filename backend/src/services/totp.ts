@@ -1,63 +1,63 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
-// TOTP da RFC 6238 com os parâmetros que todo app autenticador aceita sem
-// configuração: HMAC-SHA1, 6 dígitos e passo de 30 segundos.
-const PASSO_S = 30;
-const DIGITOS = 6;
-const ALFABETO_BASE32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+// RFC 6238 TOTP with the parameters every authenticator app accepts without
+// extra setup: HMAC-SHA1, 6 digits and a 30-second step.
+const STEP_SECONDS = 30;
+const DIGITS = 6;
+const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-export const novoSegredo = () => randomBytes(20);
+export const newSecret = () => randomBytes(20);
 
-// Base32 da RFC 4648 sem o preenchimento "=", que é o formato do otpauth://.
+// RFC 4648 base32 without the "=" padding, which is the otpauth:// format.
 export function base32(bytes: Buffer): string {
-    let valor = 0;
+    let value = 0;
     let bits = 0;
-    let saida = "";
+    let output = "";
     for (const byte of bytes) {
-        valor = ((valor & 0xff) << 8) | byte;
+        value = ((value & 0xff) << 8) | byte;
         bits += 8;
         while (bits >= 5) {
-            saida += ALFABETO_BASE32[(valor >>> (bits - 5)) & 31];
+            output += BASE32_ALPHABET[(value >>> (bits - 5)) & 31];
             bits -= 5;
         }
     }
-    if (bits > 0) saida += ALFABETO_BASE32[(valor << (5 - bits)) & 31];
-    return saida;
+    if (bits > 0) output += BASE32_ALPHABET[(value << (5 - bits)) & 31];
+    return output;
 }
 
-export const passoAtual = (agoraMs = Date.now()) => Math.floor(agoraMs / 1000 / PASSO_S);
+export const currentStep = (nowMs = Date.now()) => Math.floor(nowMs / 1000 / STEP_SECONDS);
 
-export function codigoNoPasso(segredo: Buffer, passo: number, digitos = DIGITOS): string {
-    const contador = Buffer.alloc(8);
-    contador.writeBigUInt64BE(BigInt(passo));
-    const hmac = createHmac("sha1", segredo).update(contador).digest();
-    const deslocamento = hmac[hmac.length - 1] & 0x0f;
-    const numero = (hmac.readUInt32BE(deslocamento) & 0x7fffffff) % 10 ** digitos;
-    return String(numero).padStart(digitos, "0");
+export function codeAtStep(secret: Buffer, step: number, digits = DIGITS): string {
+    const counter = Buffer.alloc(8);
+    counter.writeBigUInt64BE(BigInt(step));
+    const hmac = createHmac("sha1", secret).update(counter).digest();
+    const offset = hmac[hmac.length - 1] & 0x0f;
+    const number = (hmac.readUInt32BE(offset) & 0x7fffffff) % 10 ** digits;
+    return String(number).padStart(digits, "0");
 }
 
-// Aceita também o passo anterior e o seguinte, para celular com o relógio um
-// pouco adiantado ou atrasado. Devolve o passo que bateu, que quem chama grava
-// para o mesmo código não entrar duas vezes.
-export function conferirTotp(segredo: Buffer, codigo: string, agoraMs = Date.now()): number | null {
-    if (!/^\d{6}$/.test(codigo)) return null;
-    const atual = passoAtual(agoraMs);
-    for (const passo of [atual - 1, atual, atual + 1]) {
-        if (timingSafeEqual(Buffer.from(codigoNoPasso(segredo, passo)), Buffer.from(codigo))) {
-            return passo;
+// Also accepts the previous and the next step, for a phone clock slightly
+// ahead or behind. Returns the matching step, which the caller stores so the
+// same code is never accepted twice.
+export function verifyTotp(secret: Buffer, code: string, nowMs = Date.now()): number | null {
+    if (!/^\d{6}$/.test(code)) return null;
+    const current = currentStep(nowMs);
+    for (const step of [current - 1, current, current + 1]) {
+        if (timingSafeEqual(Buffer.from(codeAtStep(secret, step)), Buffer.from(code))) {
+            return step;
         }
     }
     return null;
 }
 
-export function uriOtpauth(segredo: Buffer, conta: string, emissor: string) {
-    const rotulo = `${encodeURIComponent(emissor)}:${encodeURIComponent(conta)}`;
-    const parametros = new URLSearchParams({
-        secret: base32(segredo),
-        issuer: emissor,
+export function otpauthUri(secret: Buffer, account: string, issuer: string) {
+    const label = `${encodeURIComponent(issuer)}:${encodeURIComponent(account)}`;
+    const params = new URLSearchParams({
+        secret: base32(secret),
+        issuer,
         algorithm: "SHA1",
-        digits: String(DIGITOS),
-        period: String(PASSO_S),
+        digits: String(DIGITS),
+        period: String(STEP_SECONDS),
     });
-    return `otpauth://totp/${rotulo}?${parametros}`;
+    return `otpauth://totp/${label}?${params}`;
 }

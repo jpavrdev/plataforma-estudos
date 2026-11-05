@@ -25,7 +25,7 @@ import {
 } from "../services/progresso.service.ts";
 import { apoiadorAtivo } from "../services/apoiador.service.ts";
 import { featuresDoUsuario } from "../services/feature-flag.service.ts";
-import { pendenciaDoisFatores } from "../middlewares/auth.ts";
+import { pendingTwoFactor } from "../middlewares/auth.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -102,16 +102,23 @@ export const getMe = async (req: Request, res: Response) => {
         console.error("getMe: falha ao listar features", e);
     }
 
-    let pendencia2fa: ReturnType<typeof pendenciaDoisFatores> = null;
+    let pendingTwoFactorStep: ReturnType<typeof pendingTwoFactor> = null;
     if (user.role === "admin") {
-        const [doisFatores] = await db
+        const [twoFactor] = await db
             .select({ enabledAt: twoFactorAuth.enabledAt })
             .from(twoFactorAuth)
             .where(eq(twoFactorAuth.userId, userId));
-        pendencia2fa = pendenciaDoisFatores(doisFatores?.enabledAt ?? null, req.mfa);
+        pendingTwoFactorStep = pendingTwoFactor(twoFactor?.enabledAt ?? null, req.mfa);
     }
 
-    res.json({ ...user, streak, level, apoiador, features, pendencia2fa });
+    res.json({
+        ...user,
+        streak,
+        level,
+        apoiador,
+        features,
+        pendingTwoFactor: pendingTwoFactorStep,
+    });
 };
 
 // Atualiza o próprio perfil (campos editáveis). Não toca em campos sensíveis.

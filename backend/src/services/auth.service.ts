@@ -12,13 +12,13 @@ const DIA_MS = 24 * 60 * 60 * 1000;
 const INTERVALO_ENTRE_OTPS_MS = 60 * 1000;
 const MAX_OTPS_POR_DIA = 10;
 export const MAX_TENTATIVAS_OTP = 5;
-// Senha ou código do 2FA errado: na quinta falha seguida a conta trava por 15
-// minutos e o contador recomeça.
-const MAX_FALHAS_LOGIN = 5;
+// Wrong password or wrong 2FA code: on the fifth failure in a row the account
+// locks for 15 minutes and the counter starts over.
+const MAX_FAILED_LOGINS = 5;
 
-// O mesmo cookie de sessão em todo lugar que abre uma (as chamadas de /refresh
-// são same-site).
-export const opcoesCookieRefresh = {
+// The same session cookie everywhere a session is opened (the /refresh calls
+// are same-site).
+export const refreshCookieOptions = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
     sameSite: "strict" as const,
@@ -110,14 +110,14 @@ async function conferirCodigo(
 }
 
 export const authService = {
-    // mfa marca a sessão que passou pelo código do 2FA; as rotas de admin exigem.
+    // mfa marks a session that went through the 2FA code; admin routes require it.
     async gerarEGravarTokens(
         userId: string,
         tx: Pick<typeof db, "insert"> = db,
-        opcoes: { mfa?: boolean } = {},
+        options: { mfa?: boolean } = {},
     ) {
         const accessToken = jwt.sign(
-            { userId, ...(opcoes.mfa ? { mfa: true } : {}) },
+            { userId, ...(options.mfa ? { mfa: true } : {}) },
             env.JWT_SECRET,
             { expiresIn: "15m" },
         );
@@ -132,17 +132,17 @@ export const authService = {
 
         return { accessToken, refreshToken };
     },
-    async registrarFalhaDeLogin(userId: string) {
-        const proxima = sql`${users.failedLoginAttempts} + 1`;
+    async recordFailedLogin(userId: string) {
+        const attempts = sql`${users.failedLoginAttempts} + 1`;
         await db
             .update(users)
             .set({
-                failedLoginAttempts: sql`case when ${proxima} >= ${MAX_FALHAS_LOGIN} then 0 else ${proxima} end`,
-                lockedUntil: sql`case when ${proxima} >= ${MAX_FALHAS_LOGIN} then now() + interval '15 minutes' else ${users.lockedUntil} end`,
+                failedLoginAttempts: sql`case when ${attempts} >= ${MAX_FAILED_LOGINS} then 0 else ${attempts} end`,
+                lockedUntil: sql`case when ${attempts} >= ${MAX_FAILED_LOGINS} then now() + interval '15 minutes' else ${users.lockedUntil} end`,
             })
             .where(eq(users.id, userId));
     },
-    async zerarFalhasDeLogin(userId: string) {
+    async resetFailedLogins(userId: string) {
         await db
             .update(users)
             .set({ failedLoginAttempts: 0, lockedUntil: null })
