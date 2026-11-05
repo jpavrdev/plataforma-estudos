@@ -7,7 +7,7 @@ import { eq, ilike } from "drizzle-orm";
 import { db } from "../db.ts";
 import { trails } from "../schema.ts";
 import { buildTrailBook } from "../src/services/book.service.ts";
-import { LIVROS_DIR } from "../src/config/paths.ts";
+import { BOOKS_DIR } from "../src/config/paths.ts";
 
 const [alvo, lang] = process.argv.slice(2);
 if (!alvo) {
@@ -34,7 +34,7 @@ if (achadas.length > 1) {
 }
 
 const { buffer, nome } = await buildTrailBook(achadas[0].id, lang);
-const destino = path.join(LIVROS_DIR, nome);
+const destino = path.join(BOOKS_DIR, nome);
 await writeFile(destino, buffer);
 console.log(`${achadas[0].name}: ${destino} (${(buffer.length / 1024).toFixed(0)} KB)`);
 process.exit(0);

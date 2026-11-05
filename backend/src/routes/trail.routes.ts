@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
+import { authenticate, requireAdmin } from "../middlewares/auth.ts";
 import {
     createTrail,
     updateTrail,
@@ -56,64 +56,64 @@ const router = Router();
 router.get("/estatisticas-publicas", getPublicStats);
 
 // Catalog (the admin creates, anyone signed in reads)
-router.post("/trails", autenticar, exigirAdmin, createTrail);
-router.patch("/trails/:id", autenticar, exigirAdmin, updateTrail);
-router.delete("/trails/:id", autenticar, exigirAdmin, deleteTrail);
+router.post("/trails", authenticate, requireAdmin, createTrail);
+router.patch("/trails/:id", authenticate, requireAdmin, updateTrail);
+router.delete("/trails/:id", authenticate, requireAdmin, deleteTrail);
 
 // Tags (categories): anyone signed in reads; only the admin writes
-router.get("/tags", autenticar, listTags);
-router.post("/tags", autenticar, exigirAdmin, createTag);
-router.patch("/tags/:id", autenticar, exigirAdmin, updateTag);
-router.delete("/tags/:id", autenticar, exigirAdmin, deleteTag);
+router.get("/tags", authenticate, listTags);
+router.post("/tags", authenticate, requireAdmin, createTag);
+router.patch("/tags/:id", authenticate, requireAdmin, updateTag);
+router.delete("/tags/:id", authenticate, requireAdmin, deleteTag);
 
 // Profile languages: anyone signed in reads; only the admin writes
-router.get("/languages", autenticar, listLanguages);
-router.post("/languages", autenticar, exigirAdmin, createLanguage);
-router.patch("/languages/:id", autenticar, exigirAdmin, updateLanguage);
-router.delete("/languages/:id", autenticar, exigirAdmin, deleteLanguage);
+router.get("/languages", authenticate, listLanguages);
+router.post("/languages", authenticate, requireAdmin, createLanguage);
+router.patch("/languages/:id", authenticate, requireAdmin, updateLanguage);
+router.delete("/languages/:id", authenticate, requireAdmin, deleteLanguage);
 
 // Achievements: anyone signed in reads; only the admin writes
-router.get("/achievements", autenticar, listAchievements);
-router.post("/achievements", autenticar, exigirAdmin, createAchievement);
-router.patch("/achievements/:id", autenticar, exigirAdmin, updateAchievement);
-router.delete("/achievements/:id", autenticar, exigirAdmin, deleteAchievement);
-router.get("/achievements/:id/holders", autenticar, exigirAdmin, listAchievementHolders);
-router.post("/achievements/:id/grant", autenticar, exigirAdmin, grantAchievement);
-router.delete("/achievements/:id/grant/:userId", autenticar, exigirAdmin, revokeAchievement);
+router.get("/achievements", authenticate, listAchievements);
+router.post("/achievements", authenticate, requireAdmin, createAchievement);
+router.patch("/achievements/:id", authenticate, requireAdmin, updateAchievement);
+router.delete("/achievements/:id", authenticate, requireAdmin, deleteAchievement);
+router.get("/achievements/:id/holders", authenticate, requireAdmin, listAchievementHolders);
+router.post("/achievements/:id/grant", authenticate, requireAdmin, grantAchievement);
+router.delete("/achievements/:id/grant/:userId", authenticate, requireAdmin, revokeAchievement);
 
 // Glossary: anyone signed in reads; only the admin writes
-router.get("/glossary", autenticar, listGlossary);
-router.post("/glossary", autenticar, exigirAdmin, createGlossaryTerm);
-router.patch("/glossary/:id", autenticar, exigirAdmin, updateGlossaryTerm);
-router.delete("/glossary/:id", autenticar, exigirAdmin, deleteGlossaryTerm);
-router.post("/trails/:id/modules", autenticar, exigirAdmin, createModule);
-router.post("/modules/:id/lessons", autenticar, exigirAdmin, createLesson);
-router.delete("/modules/:id", autenticar, exigirAdmin, deleteModule);
-router.post("/lessons/:id/questions", autenticar, exigirAdmin, createQuestion);
-router.patch("/lessons/:id/published", autenticar, exigirAdmin, setLessonPublished);
-router.get("/trails", autenticar, listTrails);
-router.get("/trails/:id", autenticar, getTrail);
+router.get("/glossary", authenticate, listGlossary);
+router.post("/glossary", authenticate, requireAdmin, createGlossaryTerm);
+router.patch("/glossary/:id", authenticate, requireAdmin, updateGlossaryTerm);
+router.delete("/glossary/:id", authenticate, requireAdmin, deleteGlossaryTerm);
+router.post("/trails/:id/modules", authenticate, requireAdmin, createModule);
+router.post("/modules/:id/lessons", authenticate, requireAdmin, createLesson);
+router.delete("/modules/:id", authenticate, requireAdmin, deleteModule);
+router.post("/lessons/:id/questions", authenticate, requireAdmin, createQuestion);
+router.patch("/lessons/:id/published", authenticate, requireAdmin, setLessonPublished);
+router.get("/trails", authenticate, listTrails);
+router.get("/trails/:id", authenticate, getTrail);
 // The track as an EPUB book: same access rule as the content (being signed in is enough).
-router.get("/trails/:id/epub", autenticar, getTrailEpub);
-router.post("/trails/:id/review", autenticar, submitTrailReview);
-router.get("/lessons/:id", autenticar, getLesson);
+router.get("/trails/:id/epub", authenticate, getTrailEpub);
+router.post("/trails/:id/review", authenticate, submitTrailReview);
+router.get("/lessons/:id", authenticate, getLesson);
 
 // Estúdio (admin): editing the structure and the content of the lessons
-router.get("/trails/:id/studio", autenticar, exigirAdmin, getTrailStudio);
-router.get("/lessons/:id/studio", autenticar, exigirAdmin, getLessonStudio);
-router.put("/lessons/:id/studio", autenticar, exigirAdmin, saveLessonStudio);
-router.delete("/lessons/:id", autenticar, exigirAdmin, deleteLesson);
+router.get("/trails/:id/studio", authenticate, requireAdmin, getTrailStudio);
+router.get("/lessons/:id/studio", authenticate, requireAdmin, getLessonStudio);
+router.put("/lessons/:id/studio", authenticate, requireAdmin, saveLessonStudio);
+router.delete("/lessons/:id", authenticate, requireAdmin, deleteLesson);
 
 // Student progress
-router.get("/me/trails", autenticar, getMyTrails);
-router.get("/me/xp", autenticar, getMyXp);
-router.get("/me/achievements", autenticar, getMyAchievements);
-router.get("/me/achievements/unseen", autenticar, getUnseenAchievements);
-router.get("/me/activity", autenticar, getMyActivity);
-router.get("/me/streak", autenticar, getMyStreak);
-router.get("/community/achievements", autenticar, getCommunityAchievements);
-router.get("/ranking", autenticar, getRanking);
-router.post("/lessons/:id/quiz", autenticar, submitQuiz);
-router.post("/lessons/:id/quiz/check", autenticar, checkAnswer);
+router.get("/me/trails", authenticate, getMyTrails);
+router.get("/me/xp", authenticate, getMyXp);
+router.get("/me/achievements", authenticate, getMyAchievements);
+router.get("/me/achievements/unseen", authenticate, getUnseenAchievements);
+router.get("/me/activity", authenticate, getMyActivity);
+router.get("/me/streak", authenticate, getMyStreak);
+router.get("/community/achievements", authenticate, getCommunityAchievements);
+router.get("/ranking", authenticate, getRanking);
+router.post("/lessons/:id/quiz", authenticate, submitQuiz);
+router.post("/lessons/:id/quiz/check", authenticate, checkAnswer);
 
 export default router;

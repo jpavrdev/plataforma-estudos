@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
+import { authenticate, requireAdmin } from "../middlewares/auth.ts";
 import {
     createCharge,
     createRecurring,
@@ -13,14 +13,14 @@ import {
 
 const router = Router();
 
-router.get("/apoie/status", autenticar, getSupportStatus);
-router.post("/apoie/cobranca", autenticar, createCharge);
-router.post("/apoie/assinatura", autenticar, createRecurring);
-router.delete("/apoie/assinatura", autenticar, cancelSupport);
-router.patch("/me/accent", autenticar, setAccent);
-router.patch("/me/fundo", autenticar, setBackgroundDim);
+router.get("/apoie/status", authenticate, getSupportStatus);
+router.post("/apoie/cobranca", authenticate, createCharge);
+router.post("/apoie/assinatura", authenticate, createRecurring);
+router.delete("/apoie/assinatura", authenticate, cancelSupport);
+router.patch("/me/accent", authenticate, setAccent);
+router.patch("/me/fundo", authenticate, setBackgroundDim);
 
-router.get("/studio/assinaturas", autenticar, exigirAdmin, listSubscriptionsAdmin);
+router.get("/studio/assinaturas", authenticate, requireAdmin, listSubscriptionsAdmin);
 
 // Chamado pelo AbacatePay; valida o segredo combinado na criação do webhook.
 router.post("/webhooks/abacatepay", gatewayWebhook);

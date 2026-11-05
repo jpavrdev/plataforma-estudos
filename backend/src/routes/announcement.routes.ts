@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
+import { authenticate, requireAdmin } from "../middlewares/auth.ts";
 import {
     getActiveAnnouncement,
     answerAnnouncement,
@@ -13,14 +13,14 @@ import {
 
 const router = Router();
 
-router.get("/comunicados/ativo", autenticar, getActiveAnnouncement);
-router.post("/comunicados/:id/responder", autenticar, answerAnnouncement);
-router.post("/comunicados/:id/dispensar", autenticar, dismissAnnouncement);
+router.get("/comunicados/ativo", authenticate, getActiveAnnouncement);
+router.post("/comunicados/:id/responder", authenticate, answerAnnouncement);
+router.post("/comunicados/:id/dispensar", authenticate, dismissAnnouncement);
 
-router.get("/studio/comunicados", autenticar, exigirAdmin, listStudioAnnouncements);
-router.get("/studio/comunicados/:id", autenticar, exigirAdmin, getStudioAnnouncement);
-router.post("/comunicados", autenticar, exigirAdmin, createAnnouncement);
-router.patch("/comunicados/:id", autenticar, exigirAdmin, updateAnnouncement);
-router.delete("/comunicados/:id", autenticar, exigirAdmin, deleteAnnouncement);
+router.get("/studio/comunicados", authenticate, requireAdmin, listStudioAnnouncements);
+router.get("/studio/comunicados/:id", authenticate, requireAdmin, getStudioAnnouncement);
+router.post("/comunicados", authenticate, requireAdmin, createAnnouncement);
+router.patch("/comunicados/:id", authenticate, requireAdmin, updateAnnouncement);
+router.delete("/comunicados/:id", authenticate, requireAdmin, deleteAnnouncement);
 
 export default router;

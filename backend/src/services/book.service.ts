@@ -13,7 +13,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { lessons, modules, questionOptions, questions, trails } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
-import { LIVROS_DIR, UPLOADS_DIR } from "../config/paths.ts";
+import { BOOKS_DIR, UPLOADS_DIR } from "../config/paths.ts";
 import {
     CONTAINER,
     CSS,
@@ -179,7 +179,7 @@ export async function buildTrailBook(trailId: string, lang?: string) {
     });
     const hash = createHash("sha1").update(signature).digest("hex").slice(0, 12);
     const fileName = `${slug(trail.name)}${language ? `-${slug(language)}` : ""}.epub`;
-    const cachedPath = path.join(LIVROS_DIR, `${trailId}-${language ?? "unico"}-${hash}.epub`);
+    const cachedPath = path.join(BOOKS_DIR, `${trailId}-${language ?? "unico"}-${hash}.epub`);
     try {
         return { buffer: await readFile(cachedPath), nome: fileName };
     } catch (err) {
@@ -393,15 +393,15 @@ ${spine}
     });
 
     try {
-        await mkdir(LIVROS_DIR, { recursive: true });
+        await mkdir(BOOKS_DIR, { recursive: true });
         await writeFile(cachedPath, buffer);
         // Old versions of this same track are no longer useful: without this, every
         // lesson edit would leave an orphan file in the volume.
         const prefix = `${trailId}-${language ?? "unico"}-`;
         const current = path.basename(cachedPath);
-        for (const existingFile of await readdir(LIVROS_DIR)) {
+        for (const existingFile of await readdir(BOOKS_DIR)) {
             if (existingFile.startsWith(prefix) && existingFile !== current) {
-                await unlink(path.join(LIVROS_DIR, existingFile));
+                await unlink(path.join(BOOKS_DIR, existingFile));
             }
         }
     } catch (err) {

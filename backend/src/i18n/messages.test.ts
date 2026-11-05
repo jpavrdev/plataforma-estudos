@@ -135,7 +135,7 @@ describe("catalog coverage", () => {
                 if (text) found.push(text);
             } else if (
                 ts.isCallExpression(node) &&
-                node.expression.getText(source) === "criarLimiter"
+                node.expression.getText(source) === "createLimiter"
             ) {
                 const text = textOf(node.arguments[1]);
                 if (text) found.push(text);
