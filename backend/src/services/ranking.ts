@@ -7,7 +7,7 @@ import {
     questionAnswers,
     challengeSubmissions,
 } from "../../schema.ts";
-import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
+import { findAllStreaks, todayInSaoPaulo } from "./streak.ts";
 import { apoiadoresAtivos } from "./apoiador.service.ts";
 import { computeXp, levelFromXp } from "../domain/xp.ts";
 
@@ -129,7 +129,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
                   .where(gte(challengeSubmissions.createdAt, desde))
                   .groupBy(challengeSubmissions.userId)
             : Promise.resolve(null),
-        streaksTodos(),
+        findAllStreaks(),
         apoiadoresAtivos(),
     ]);
 
@@ -173,7 +173,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
     const ordemGeral = [...base]
         .sort((a, b) => b.totalXp - a.totalXp)
         .map((u, i) => ({ id: u.id, position: i + 1 }));
-    const deltas = await movimentacaoRanking(hojeSaoPaulo(), ordemGeral);
+    const deltas = await movimentacaoRanking(todayInSaoPaulo(), ordemGeral);
 
     const meu = ordenados.find((u) => u.you);
     const me = meu

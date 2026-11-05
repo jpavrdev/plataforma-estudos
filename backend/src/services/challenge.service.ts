@@ -14,7 +14,7 @@ import type {
     challengeCommentSchema,
 } from "../schemas/challenge.schema.ts";
 import { AppError } from "../errors/AppError.ts";
-import { hojeSaoPaulo } from "./streak.ts";
+import { todayInSaoPaulo } from "./streak.ts";
 import { runOnRunner } from "./runner.client.ts";
 import { gradeChallenge, outputMatches, returnMatches, dayIndex } from "../domain/challenge.ts";
 import { challengeXp } from "../domain/xp.ts";
@@ -128,7 +128,7 @@ async function dailyChallengeId(today: string): Promise<string | null> {
 
 // Challenge of the day: pinned by the admin for this date or picked automatically.
 export async function findDailyChallenge(userId: string) {
-    const id = await dailyChallengeId(hojeSaoPaulo());
+    const id = await dailyChallengeId(todayInSaoPaulo());
     if (!id) return null;
     const [d] = await db.select().from(challenges).where(eq(challenges.id, id));
     if (!d) return null;
@@ -137,7 +137,7 @@ export async function findDailyChallenge(userId: string) {
 
 // Challenge bank: lists everything published + the user's progress (for the ring).
 export async function findChallenges(userId: string) {
-    const today = hojeSaoPaulo();
+    const today = todayInSaoPaulo();
     const allChallenges = await db
         .select({
             id: challenges.id,
@@ -227,7 +227,7 @@ export async function findChallenges(userId: string) {
 
 export async function findChallengeDetail(userId: string, id: string) {
     const d = await findPublished(id);
-    const dailyId = await dailyChallengeId(hojeSaoPaulo());
+    const dailyId = await dailyChallengeId(todayInSaoPaulo());
     return buildView(d, userId, dailyId);
 }
 

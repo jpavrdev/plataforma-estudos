@@ -6,7 +6,7 @@ import { limparBanco } from "./helpers/db.ts";
 let server: Awaited<ReturnType<typeof startTestServer>>;
 
 let seq = 0;
-const novoUsuario = () => ({
+const newUser = () => ({
     name: "Aluno Progresso",
     email: `prg_${++seq}_${Math.round(performance.now() * 1000)}@email.com`,
     username: `prg_${seq}`,
@@ -16,24 +16,24 @@ const novoUsuario = () => ({
     phone: "11999998888",
 });
 
-async function ajustarUsuario(email: string, campos: Record<string, unknown>) {
+async function updateUser(email: string, fields: Record<string, unknown>) {
     const { db } = await import("../db.ts");
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
-    await db.update(users).set(campos).where(eq(users.email, email));
+    await db.update(users).set(fields).where(eq(users.email, email));
 }
 
-async function criarUsuarioLogado(admin = false) {
-    const dados = novoUsuario();
-    await server.request("POST", "/register", { body: dados });
-    await ajustarUsuario(dados.email, {
+async function createSignedInUser(admin = false) {
+    const data = newUser();
+    await server.request("POST", "/register", { body: data });
+    await updateUser(data.email, {
         emailVerifiedAt: new Date(),
         ...(admin ? { role: "admin" } : {}),
     });
     const login = await server.request("POST", "/login", {
-        body: { email: dados.email, password: dados.password },
+        body: { email: data.email, password: data.password },
     });
-    return { email: dados.email, token: login.body.token };
+    return { email: data.email, token: login.body.token };
 }
 
 function auth(token: string) {
@@ -70,26 +70,26 @@ beforeEach(async () => {
     await limparBanco();
 });
 
-describe("Meu progresso", () => {
-    test("agrega XP, exercícios, tempo estimado, meta da semana e heatmap", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const trilha = await post("/trails", admin.token, {
+describe("My progress", () => {
+    test("aggregates XP, exercises, estimated time, the weekly goal and the heatmap", async () => {
+        const admin = await createSignedInUser(true);
+        const trail = await post("/trails", admin.token, {
             name: "Logica",
             level: "iniciante",
             description: "Base da programacao logica.",
         });
-        const modulo = await post(`/trails/${trilha.body.id}/modules`, admin.token, {
+        const mod = await post(`/trails/${trail.body.id}/modules`, admin.token, {
             title: "Modulo 1",
             position: 1,
         });
-        const aluno = await criarUsuarioLogado();
+        const student = await createSignedInUser();
         for (let i = 1; i <= 2; i++) {
-            const aula = await post(`/modules/${modulo.body.id}/lessons`, admin.token, {
+            const lesson = await post(`/modules/${mod.body.id}/lessons`, admin.token, {
                 title: `Aula ${i}`,
                 position: i,
             });
             for (let q = 1; q <= 5; q++) {
-                await post(`/lessons/${aula.body.id}/questions`, admin.token, {
+                await post(`/lessons/${lesson.body.id}/questions`, admin.token, {
                     statement: `Questao numero ${q}`,
                     position: q,
                     options: [
@@ -98,16 +98,16 @@ describe("Meu progresso", () => {
                     ],
                 });
             }
-            await patch(`/lessons/${aula.body.id}/published`, admin.token, { published: true });
-            const detalhe = await get(`/lessons/${aula.body.id}`, aluno.token);
-            const answers = detalhe.body.questions.map((q: any) => ({
+            await patch(`/lessons/${lesson.body.id}/published`, admin.token, { published: true });
+            const detail = await get(`/lessons/${lesson.body.id}`, student.token);
+            const answers = detail.body.questions.map((q: any) => ({
                 questionId: q.id,
                 optionId: q.options.find((o: any) => o.text === "certa").id,
             }));
-            await post(`/lessons/${aula.body.id}/quiz`, aluno.token, { answers });
+            await post(`/lessons/${lesson.body.id}/quiz`, student.token, { answers });
         }
 
-        const r = await get("/me/progresso?periodo=30", aluno.token);
+        const r = await get("/me/progresso?periodo=30", student.token);
         assert.equal(r.status, 200);
         assert.equal(r.body.xpTotal, 200);
         assert.equal(r.body.streakAtual, 1);
@@ -130,25 +130,25 @@ describe("Meu progresso", () => {
         assert.equal(r.body.dominio[0].pct, 100);
     });
 
-    test("meta semanal personalizada muda o anel e pode voltar ao padrão", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const trilha = await post("/trails", admin.token, {
+    test("a custom weekly goal changes the ring and can go back to the default", async () => {
+        const admin = await createSignedInUser(true);
+        const trail = await post("/trails", admin.token, {
             name: "Logica",
             level: "iniciante",
             description: "Base da programacao logica.",
         });
-        const modulo = await post(`/trails/${trilha.body.id}/modules`, admin.token, {
+        const mod = await post(`/trails/${trail.body.id}/modules`, admin.token, {
             title: "Modulo 1",
             position: 1,
         });
-        const aluno = await criarUsuarioLogado();
+        const student = await createSignedInUser();
         for (let i = 1; i <= 2; i++) {
-            const aula = await post(`/modules/${modulo.body.id}/lessons`, admin.token, {
+            const lesson = await post(`/modules/${mod.body.id}/lessons`, admin.token, {
                 title: `Aula ${i}`,
                 position: i,
             });
             for (let q = 1; q <= 5; q++) {
-                await post(`/lessons/${aula.body.id}/questions`, admin.token, {
+                await post(`/lessons/${lesson.body.id}/questions`, admin.token, {
                     statement: `Questao numero ${q}`,
                     position: q,
                     options: [
@@ -157,51 +157,51 @@ describe("Meu progresso", () => {
                     ],
                 });
             }
-            await patch(`/lessons/${aula.body.id}/published`, admin.token, { published: true });
-            const detalhe = await get(`/lessons/${aula.body.id}`, aluno.token);
-            const answers = detalhe.body.questions.map((q: any) => ({
+            await patch(`/lessons/${lesson.body.id}/published`, admin.token, { published: true });
+            const detail = await get(`/lessons/${lesson.body.id}`, student.token);
+            const answers = detail.body.questions.map((q: any) => ({
                 questionId: q.id,
                 optionId: q.options.find((o: any) => o.text === "certa").id,
             }));
-            await post(`/lessons/${aula.body.id}/quiz`, aluno.token, { answers });
+            await post(`/lessons/${lesson.body.id}/quiz`, student.token, { answers });
         }
 
         const put = await fetch(`${server.base}/me/meta-semanal`, {
             method: "PUT",
-            headers: { ...auth(aluno.token), "Content-Type": "application/json" },
+            headers: { ...auth(student.token), "Content-Type": "application/json" },
             body: JSON.stringify({ kind: "aulas", target: 2 }),
         });
         assert.equal(put.status, 200);
-        let r = await get("/me/progresso?periodo=30", aluno.token);
+        let r = await get("/me/progresso?periodo=30", student.token);
         assert.deepEqual(r.body.metaSemana, { tipo: "aulas", valor: 1, alvo: 7, alvoDiario: 2 });
 
         await fetch(`${server.base}/me/meta-semanal`, {
             method: "PUT",
-            headers: { ...auth(aluno.token), "Content-Type": "application/json" },
+            headers: { ...auth(student.token), "Content-Type": "application/json" },
             body: JSON.stringify({ kind: "dias", target: 5 }),
         });
-        r = await get("/me/progresso?periodo=30", aluno.token);
+        r = await get("/me/progresso?periodo=30", student.token);
         assert.deepEqual(r.body.metaSemana, { tipo: "dias", valor: 1, alvo: 5 });
 
         const del = await fetch(`${server.base}/me/meta-semanal`, {
             method: "DELETE",
-            headers: auth(aluno.token),
+            headers: auth(student.token),
         });
         assert.equal(del.status, 200);
-        r = await get("/me/progresso?periodo=30", aluno.token);
+        r = await get("/me/progresso?periodo=30", student.token);
         assert.equal(r.body.metaSemana.tipo, "padrao");
 
-        const invalida = await fetch(`${server.base}/me/meta-semanal`, {
+        const invalid = await fetch(`${server.base}/me/meta-semanal`, {
             method: "PUT",
-            headers: { ...auth(aluno.token), "Content-Type": "application/json" },
+            headers: { ...auth(student.token), "Content-Type": "application/json" },
             body: JSON.stringify({ kind: "dias", target: 1 }),
         });
-        assert.equal(invalida.status, 400);
+        assert.equal(invalid.status, 400);
     });
 
-    test("período tudo não traz comparação com anterior", async () => {
-        const aluno = await criarUsuarioLogado();
-        const r = await get("/me/progresso?periodo=tudo", aluno.token);
+    test("the all-time period brings no comparison with the previous one", async () => {
+        const student = await createSignedInUser();
+        const r = await get("/me/progresso?periodo=tudo", student.token);
         assert.equal(r.status, 200);
         assert.equal(r.body.periodo.dias, null);
         assert.equal(r.body.periodo.anterior, null);
