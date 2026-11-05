@@ -1,6 +1,6 @@
 import { db } from "../../db.ts";
 import { sql, type SQL } from "drizzle-orm";
-import { calcularXp, XP_POR_AULA, XP_POR_QUESTAO } from "../domain/xp.ts";
+import { computeXp, XP_PER_LESSON, XP_PER_QUESTION } from "../domain/xp.ts";
 
 // Linha de atividade unificada (aula, simulado, desafio, conquista). Serve para
 // derivar "última atividade" e "usuários ativos" sem uma coluna de last-seen.
@@ -124,7 +124,7 @@ const ORDENACOES: Record<string, SQL> = {
     simulados: sql`coalesce(sa.n, 0)`,
     desafios: sql`coalesce(ds.n, 0)`,
     conquistas: sql`coalesce(cq.n, 0)`,
-    xp: sql`(coalesce(ap.n, 0) * ${XP_POR_AULA} + coalesce(ac.n, 0) * ${XP_POR_QUESTAO} + coalesce(ds.xp, 0))`,
+    xp: sql`(coalesce(ap.n, 0) * ${XP_PER_LESSON} + coalesce(ac.n, 0) * ${XP_PER_QUESTION} + coalesce(ds.xp, 0))`,
     ultimaAtividade: sql`la.ultima`,
 };
 
@@ -208,7 +208,7 @@ export async function usuariosCrm(
         desafios: r.desafios as number,
         conquistas: r.conquistas as number,
         questoesCertas: r.questoes as number,
-        xp: calcularXp({ aulas: r.aulas, questoes: r.questoes, desafiosXp: r.desafios_xp }),
+        xp: computeXp({ aulas: r.aulas, questoes: r.questoes, desafiosXp: r.desafios_xp }),
     }));
 
     return { rows: usuarios, total };

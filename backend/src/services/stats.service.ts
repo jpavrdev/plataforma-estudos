@@ -11,7 +11,7 @@ import {
     users,
 } from "../../schema.ts";
 import { eq, and, count, sum, gt, isNotNull } from "drizzle-orm";
-import { calcularXp, nivelPorXp } from "../domain/xp.ts";
+import { computeXp, levelFromXp } from "../domain/xp.ts";
 
 // Estatísticas base do usuário: conta o progresso no banco e deriva XP e nível.
 export async function calcularEstatisticas(userId: string) {
@@ -32,10 +32,10 @@ export async function calcularEstatisticas(userId: string) {
     const questionsCorrect = Number(acertos?.n ?? 0);
     const challengesCompleted = Number(desafios?.n ?? 0);
     const desafiosXp = Number(desafios?.xp ?? 0);
-    const xp = calcularXp({ aulas: lessonsCompleted, questoes: questionsCorrect, desafiosXp });
+    const xp = computeXp({ aulas: lessonsCompleted, questoes: questionsCorrect, desafiosXp });
     return {
         xp,
-        level: nivelPorXp(xp),
+        level: levelFromXp(xp),
         lessonsCompleted,
         questionsCorrect,
         challengesCompleted,

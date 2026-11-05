@@ -9,7 +9,7 @@ import {
 } from "../../schema.ts";
 import { streaksTodos, hojeSaoPaulo } from "./streak.ts";
 import { apoiadoresAtivos } from "./apoiador.service.ts";
-import { calcularXp, nivelPorXp } from "../domain/xp.ts";
+import { computeXp, levelFromXp } from "../domain/xp.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
 // usuário, quantas posições subiu (positivo) ou caiu (negativo) desde o último
@@ -144,12 +144,12 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
     const dP = desde ? paraMapa(desafiosPer) : dT;
 
     const base = usuarios.map((u) => {
-        const totalXp = calcularXp({
+        const totalXp = computeXp({
             aulas: at.get(u.id) ?? 0,
             questoes: acT.get(u.id) ?? 0,
             desafiosXp: dT.get(u.id) ?? 0,
         });
-        const periodXp = calcularXp({
+        const periodXp = computeXp({
             aulas: aP.get(u.id) ?? 0,
             questoes: acP.get(u.id) ?? 0,
             desafiosXp: dP.get(u.id) ?? 0,
@@ -160,7 +160,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
             username: u.username,
             totalXp,
             periodXp,
-            level: nivelPorXp(totalXp),
+            level: levelFromXp(totalXp),
             streak: streaks.get(u.id) ?? 0,
             apoiador: apoiadores.has(u.id),
             you: u.id === currentUserId,

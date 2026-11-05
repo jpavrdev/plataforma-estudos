@@ -4,10 +4,10 @@ import type { z } from "zod";
 import { db } from "../../db.ts";
 import { sorteioParticipacoes, sorteios, users } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
-import type { Contatos } from "../domain/contatos.ts";
-import { periodosSobrepoem, periodoValido, situacaoDoSorteio } from "../domain/sorteio.ts";
-import type { Periodo } from "../domain/sorteio.ts";
-import { sortear } from "../domain/sortear.ts";
+import type { Contacts } from "../domain/contacts.ts";
+import { periodsOverlap, isValidPeriod, raffleStatus } from "../domain/raffle.ts";
+import type { Period } from "../domain/raffle.ts";
+import { pickRandom } from "../domain/pickRandom.ts";
 import type { atualizarSorteioSchema, criarSorteioSchema } from "../schemas/sorteio.schema.ts";
 
 type DadosCriar = z.infer<typeof criarSorteioSchema>;
@@ -37,7 +37,7 @@ export async function sorteioAtivo(userId: string) {
         .where(lte(sorteios.inicio, agora))
         .orderBy(desc(sorteios.inicio))
         .limit(1);
-    if (!sorteio || situacaoDoSorteio(sorteio, agora) !== "aberto") return null;
+    if (!sorteio || raffleStatus(sorteio, agora) !== "aberto") return null;
 
     const [participacao] = await db
         .select(participacaoDoAluno)
@@ -68,13 +68,13 @@ async function exigirInscricoesAbertas(tx: Transacao, sorteioId: string) {
         .where(eq(sorteios.id, sorteioId))
         .for("share");
     if (!sorteio) throw new AppError(404, "Sorteio não encontrado");
-    if (situacaoDoSorteio(sorteio, new Date()) !== "aberto") {
+    if (raffleStatus(sorteio, new Date()) !== "aberto") {
         throw new AppError(409, "As inscrições deste sorteio estão fechadas");
     }
 }
 
 // A inscrição é definitiva: não há edição nem saída depois de confirmada.
-export async function inscrever(sorteioId: string, userId: string, contatos: Contatos) {
+export async function inscrever(sorteioId: string, userId: string, contatos: Contacts) {
     return db.transaction(async (tx) => {
         await exigirInscricoesAbertas(tx, sorteioId);
         // A tela manda completar o perfil antes; sem @ o ganhador não teria como ser anunciado.
@@ -114,7 +114,7 @@ export async function listarSorteios() {
         .orderBy(desc(sorteios.inicio));
     return linhas.map(({ participantes, ...sorteio }) => ({
         ...sorteio,
-        situacao: situacaoDoSorteio(sorteio, agora),
+        situacao: raffleStatus(sorteio, agora),
         participantes,
     }));
 }
@@ -154,7 +154,7 @@ export async function detalharSorteio(id: string) {
 
     return {
         ...sorteio,
-        situacao: situacaoDoSorteio(sorteio, new Date()),
+        situacao: raffleStatus(sorteio, new Date()),
         ganhadores,
         participantes: inscritos.map(({ username, nome, inscritoEm, contatos }) => ({
             username,
@@ -167,14 +167,14 @@ export async function detalharSorteio(id: string) {
 
 // Um sorteio por período. O lock da transação põe criações e edições em fila:
 // sem ele, duas podiam conferir a agenda ao mesmo tempo e gravar períodos sobrepostos.
-async function garantirPeriodoLivre(tx: Transacao, periodo: Periodo, ignorarId?: string) {
-    if (!periodoValido(periodo)) throw new AppError(400, "O fim deve ser depois do início");
+async function garantirPeriodoLivre(tx: Transacao, periodo: Period, ignorarId?: string) {
+    if (!isValidPeriod(periodo)) throw new AppError(400, "O fim deve ser depois do início");
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext('sorteios_periodo'))`);
     const outros = await tx
         .select({ inicio: sorteios.inicio, fim: sorteios.fim })
         .from(sorteios)
         .where(ignorarId ? ne(sorteios.id, ignorarId) : undefined);
-    if (outros.some((outro) => periodosSobrepoem(outro, periodo))) {
+    if (outros.some((outro) => periodsOverlap(outro, periodo))) {
         throw new AppError(409, "Já existe um sorteio nesse período");
     }
 }
@@ -250,7 +250,7 @@ export async function realizarSorteio(id: string) {
             .orderBy(asc(sorteioParticipacoes.createdAt), asc(sorteioParticipacoes.id));
         if (inscritos.length === 0) throw new AppError(409, "Ninguém se inscreveu neste sorteio");
 
-        const ganhadores = sortear(
+        const ganhadores = pickRandom(
             inscritos.map((inscrito) => inscrito.id),
             GANHADORES,
             (limite) => randomInt(limite),

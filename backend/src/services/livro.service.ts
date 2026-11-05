@@ -17,14 +17,14 @@ import { LIVROS_DIR, UPLOADS_DIR } from "../config/paths.ts";
 import {
     CONTAINER,
     CSS,
-    capituloParaXhtml,
-    escapar,
-    lista,
-    pagina,
-    renderizarMarkdown,
+    chapterToXhtml,
+    escapeXml,
+    list,
+    page,
+    renderMarkdown,
     slug,
-    type Questao,
-} from "../domain/livro.ts";
+    type Question,
+} from "../domain/book.ts";
 
 // Sobe quando o gerador muda, para os livros em cache serem refeitos.
 const VERSAO_GERADOR = 6;
@@ -147,7 +147,7 @@ export async function livroDaTrilha(trailId: string, lang?: string) {
         arr.push({ text: o.text, isCorrect: o.isCorrect });
         opcoesPorQuestao.set(o.questionId, arr);
     }
-    const quizPorAula = new Map<string, Questao[]>();
+    const quizPorAula = new Map<string, Question[]>();
     for (const q of qs) {
         const arr = quizPorAula.get(q.lessonId) ?? [];
         arr.push({
@@ -223,7 +223,7 @@ export async function livroDaTrilha(trailId: string, lang?: string) {
             arquivo,
             titulo: aula.title,
             moduloId: aula.moduleId,
-            xhtml: capituloParaXhtml(aula, tarja, quizPorAula.get(aula.id) ?? [], caminhoDaImagem),
+            xhtml: chapterToXhtml(aula, tarja, quizPorAula.get(aula.id) ?? [], caminhoDaImagem),
         });
     }
 
@@ -231,29 +231,29 @@ export async function livroDaTrilha(trailId: string, lang?: string) {
     const dia = agora.toISOString().slice(0, 10);
     const nivel = NIVEIS[trilha.trailLevel] ?? "";
     const comQuiz = capitulos.filter((c) => c.xhtml.includes("quiz-gabarito")).length;
-    const capa = pagina(
+    const capa = page(
         trilha.name,
         `<section class="capa" epub:type="titlepage">
-<h1>${escapar(trilha.name)}</h1>
-<p class="subtitulo">${escapar([nivel, `${aulas.length} aulas`, idioma ? `em ${idioma}` : ""].filter(Boolean).join(", "))}</p>
-<p class="editora">${escapar(EDITORA)}</p>
+<h1>${escapeXml(trilha.name)}</h1>
+<p class="subtitulo">${escapeXml([nivel, `${aulas.length} aulas`, idioma ? `em ${idioma}` : ""].filter(Boolean).join(", "))}</p>
+<p class="editora">${escapeXml(EDITORA)}</p>
 </section>`,
     );
-    const sobre = pagina(
+    const sobre = page(
         "Sobre este livro",
         `<section class="chapter" epub:type="preamble">
 <h1>Sobre este livro</h1>
-${renderizarMarkdown(trilha.description)}
+${renderMarkdown(trilha.description)}
 <h2>Como o livro está organizado</h2>
-<p>Cada capítulo é uma aula da trilha <strong>${escapar(trilha.name)}</strong>, na mesma ordem dos módulos da plataforma. ${comQuiz > 0 ? "No fim do capítulo vem o quiz da aula, com o gabarito comentado logo depois, para você responder antes de conferir." : ""}</p>
-${lista(trilha.whatYouLearn) ? `<h2>O que você aprende</h2>\n${lista(trilha.whatYouLearn)}` : ""}
-${lista(trilha.prerequisites) ? `<h2>Pré-requisitos</h2>\n${lista(trilha.prerequisites)}` : ""}
+<p>Cada capítulo é uma aula da trilha <strong>${escapeXml(trilha.name)}</strong>, na mesma ordem dos módulos da plataforma. ${comQuiz > 0 ? "No fim do capítulo vem o quiz da aula, com o gabarito comentado logo depois, para você responder antes de conferir." : ""}</p>
+${list(trilha.whatYouLearn) ? `<h2>O que você aprende</h2>\n${list(trilha.whatYouLearn)}` : ""}
+${list(trilha.prerequisites) ? `<h2>Pré-requisitos</h2>\n${list(trilha.prerequisites)}` : ""}
 <h2>Ficha</h2>
 <ul>
-<li>${escapar(String(aulas.length))} aulas em ${escapar(String(mods.length))} módulos</li>
-${trilha.workloadHours ? `<li>Carga horária de ${escapar(String(trilha.workloadHours))} horas</li>` : ""}
-${nivel ? `<li>${escapar(nivel)}</li>` : ""}
-<li>Versão gerada em ${escapar(dia)}</li>
+<li>${escapeXml(String(aulas.length))} aulas em ${escapeXml(String(mods.length))} módulos</li>
+${trilha.workloadHours ? `<li>Carga horária de ${escapeXml(String(trilha.workloadHours))} horas</li>` : ""}
+${nivel ? `<li>${escapeXml(nivel)}</li>` : ""}
+<li>Versão gerada em ${escapeXml(dia)}</li>
 </ul>
 <aside class="nota"><p>Os laboratórios, os desafios de código e o registro de progresso continuam na plataforma: este livro é a parte de leitura da trilha, para estudar offline.</p></aside>
 </section>`,
@@ -264,13 +264,13 @@ ${nivel ? `<li>${escapar(nivel)}</li>` : ""}
             const doModulo = capitulos.filter((c) => c.moduloId === m.id);
             if (doModulo.length === 0) return "";
             const filhos = doModulo
-                .map((c) => `      <li><a href="text/${c.arquivo}">${escapar(c.titulo)}</a></li>`)
+                .map((c) => `      <li><a href="text/${c.arquivo}">${escapeXml(c.titulo)}</a></li>`)
                 .join("\n");
-            return `  <li><span class="sumario-modulo">${escapar(m.title)}</span>\n    <ol>\n${filhos}\n    </ol>\n  </li>`;
+            return `  <li><span class="sumario-modulo">${escapeXml(m.title)}</span>\n    <ol>\n${filhos}\n    </ol>\n  </li>`;
         })
         .filter(Boolean)
         .join("\n");
-    const nav = pagina(
+    const nav = page(
         "Sumário",
         `<nav epub:type="toc" id="toc">
 <h1>Sumário</h1>
@@ -301,11 +301,11 @@ ${itensNav}
         const filhos = doModulo
             .map(
                 (c) =>
-                    `      <navPoint id="nav-${c.id}" playOrder="${ordem++}"><navLabel><text>${escapar(c.titulo)}</text></navLabel><content src="text/${c.arquivo}"/></navPoint>`,
+                    `      <navPoint id="nav-${c.id}" playOrder="${ordem++}"><navLabel><text>${escapeXml(c.titulo)}</text></navLabel><content src="text/${c.arquivo}"/></navPoint>`,
             )
             .join("\n");
         pontos.push(
-            `    <navPoint id="nav-mod-${slug(m.title)}" playOrder="${ordemDoModulo}"><navLabel><text>${escapar(m.title)}</text></navLabel><content src="text/${doModulo[0].arquivo}"/>\n${filhos}\n    </navPoint>`,
+            `    <navPoint id="nav-mod-${slug(m.title)}" playOrder="${ordemDoModulo}"><navLabel><text>${escapeXml(m.title)}</text></navLabel><content src="text/${doModulo[0].arquivo}"/>\n${filhos}\n    </navPoint>`,
         );
     }
     const ncx = `<?xml version="1.0" encoding="UTF-8"?>
@@ -316,8 +316,8 @@ ${itensNav}
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
   </head>
-  <docTitle><text>${escapar(trilha.name)}</text></docTitle>
-  <docAuthor><text>${escapar(EDITORA)}</text></docAuthor>
+  <docTitle><text>${escapeXml(trilha.name)}</text></docTitle>
+  <docAuthor><text>${escapeXml(EDITORA)}</text></docAuthor>
   <navMap>
 ${pontos.join("\n")}
   </navMap>
@@ -347,13 +347,13 @@ ${pontos.join("\n")}
 <package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="pt-BR">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:identifier id="bookid">urn:uuid:${trailId}</dc:identifier>
-    <dc:title>${escapar(trilha.name)}</dc:title>
-    <dc:creator id="creator">${escapar(EDITORA)}</dc:creator>
+    <dc:title>${escapeXml(trilha.name)}</dc:title>
+    <dc:creator id="creator">${escapeXml(EDITORA)}</dc:creator>
     <meta refines="#creator" property="role" scheme="marc:relators">aut</meta>
     <dc:language>pt-BR</dc:language>
     <dc:date>${dia}</dc:date>
-    <dc:publisher>${escapar(EDITORA)}</dc:publisher>
-    <dc:description>${escapar(trilha.description)}</dc:description>
+    <dc:publisher>${escapeXml(EDITORA)}</dc:publisher>
+    <dc:description>${escapeXml(trilha.description)}</dc:description>
     <meta property="dcterms:modified">${agora.toISOString().replace(/\.\d{3}Z$/, "Z")}</meta>
   </metadata>
   <manifest>

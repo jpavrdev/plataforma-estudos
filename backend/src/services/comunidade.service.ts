@@ -12,7 +12,7 @@ import {
     questionAnswers,
     challengeSubmissions,
 } from "../../schema.ts";
-import { calcularXp, nivelPorXp } from "../domain/xp.ts";
+import { computeXp, levelFromXp } from "../domain/xp.ts";
 import { apoiadoresAtivos, apoiadorAtivo } from "./apoiador.service.ts";
 import { AppError } from "../errors/AppError.ts";
 import type { z } from "zod";
@@ -55,12 +55,12 @@ export async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, n
     const q = paraMapa(acertos);
     const d = paraMapa(desafios);
     for (const id of userIds) {
-        const xp = calcularXp({
+        const xp = computeXp({
             aulas: a.get(id) ?? 0,
             questoes: q.get(id) ?? 0,
             desafiosXp: d.get(id) ?? 0,
         });
-        niveis.set(id, nivelPorXp(xp));
+        niveis.set(id, levelFromXp(xp));
     }
     return niveis;
 }

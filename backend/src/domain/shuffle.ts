@@ -1,5 +1,5 @@
-// Embaralhamento determinístico: a mesma semente devolve sempre a mesma ordem
-// (estável ao recarregar a tentativa); sementes diferentes embaralham diferente.
+// Deterministic shuffle: the same seed always returns the same order (stable when
+// the attempt is reloaded); different seeds shuffle differently.
 function mulberry32(seed: number): () => number {
     return () => {
         seed = (seed + 0x6d2b79f5) | 0;
@@ -17,9 +17,9 @@ function hashString(s: string): number {
     return h >>> 0;
 }
 
-export function embaralharComSemente<T>(itens: T[], semente: string): T[] {
-    const rand = mulberry32(hashString(semente));
-    const arr = [...itens];
+export function seededShuffle<T>(items: T[], seed: string): T[] {
+    const rand = mulberry32(hashString(seed));
+    const arr = [...items];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(rand() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
