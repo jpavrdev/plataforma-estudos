@@ -64,6 +64,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
                     birthDate: dados.birthDate,
                     gender: dados.gender,
                     phone: dados.phone,
+                    locale: req.locale,
                 })
                 .returning({
                     id: users.id,
@@ -82,7 +83,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
         const { user, verificationToken } = novoUsuario;
 
-        await emailService.enviarVerificacao(user.email, verificationToken);
+        await emailService.sendVerification(user.email, verificationToken, req.locale);
 
         res.status(201).json({
             mensagem: "Conta criada. Verifique seu email para ativar o acesso.",
@@ -346,14 +347,19 @@ export const resendVerification = async (req: Request, res: Response, next: Next
         };
 
         const [user] = await db
-            .select({ id: users.id, email: users.email, emailVerifiedAt: users.emailVerifiedAt })
+            .select({
+                id: users.id,
+                email: users.email,
+                emailVerifiedAt: users.emailVerifiedAt,
+                locale: users.locale,
+            })
             .from(users)
             .where(eq(users.email, email));
 
         // Só reenvia quando a conta existe e ainda não foi verificada.
         if (user && !user.emailVerifiedAt) {
             const token = await authService.gerarTokenVerificacao(user.id);
-            await emailService.enviarVerificacao(user.email, token);
+            await emailService.sendVerification(user.email, token, user.locale);
         }
 
         res.json(resposta);
@@ -388,7 +394,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         };
 
         const [user] = await db
-            .select({ id: users.id, passwordHash: users.passwordHash })
+            .select({ id: users.id, passwordHash: users.passwordHash, locale: users.locale })
             .from(users)
             .where(eq(users.email, email));
 
@@ -399,9 +405,10 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         if (user) {
             const token = await authService.gerarTokenResetSenha(user.id);
             if (user.passwordHash) {
-                await emailService.enviarResetSenha(email, token);
+                await emailService.sendPasswordReset(email, token, user.locale);
             } else {
-                await emailService.enviarCriarSenha(email, token, await provedorDe(user.id));
+                const provider = await provedorDe(user.id);
+                await emailService.sendCreatePassword(email, token, provider, user.locale);
             }
         }
 
@@ -451,10 +458,10 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
         });
 
         const [dono] = await db
-            .select({ email: users.email })
+            .select({ email: users.email, locale: users.locale })
             .from(users)
             .where(eq(users.id, registro.userId));
-        if (dono) await emailService.enviarAvisoSenhaRedefinida(dono.email);
+        if (dono) await emailService.sendPasswordChangedNotice(dono.email, dono.locale);
 
         res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
     } catch (err) {
@@ -479,6 +486,7 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
                 phone: users.phone,
                 phoneVerifiedAt: users.phoneVerifiedAt,
                 passwordHash: users.passwordHash,
+                locale: users.locale,
             })
             .from(users)
             .where(eq(users.email, email));
@@ -490,13 +498,14 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
             // WhatsApp só para telefone verificado: número nunca confirmado pode ser de
             // outra pessoa. Sem ele, cai no email para o código não se perder.
             if (canal === "whatsapp" && user.phone && user.phoneVerifiedAt) {
-                await whatsappService.enviarOtpReset(user.phone, otp);
+                await whatsappService.sendResetCode(user.phone, otp, user.locale);
             } else if (user.passwordHash) {
-                await emailService.enviarOtpReset(email, otp);
+                await emailService.sendResetCode(email, otp, user.locale);
             } else {
                 // Mesma correção do caminho por link: conta sem senha recebe o código
                 // para criar uma, em vez de o pedido morrer em silêncio.
-                await emailService.enviarOtpCriarSenha(email, otp, await provedorDe(user.id));
+                const provider = await provedorDe(user.id);
+                await emailService.sendCreatePasswordCode(email, otp, provider, user.locale);
             }
         }
 
@@ -511,7 +520,10 @@ export const resetPasswordOtp = async (req: Request, res: Response, next: NextFu
         const { email, otp, password } = resetPasswordOtpSchema.parse(req.body);
         const generico = { erro: "Código inválido ou expirado. Peça um novo." };
 
-        const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+        const [user] = await db
+            .select({ id: users.id, locale: users.locale })
+            .from(users)
+            .where(eq(users.email, email));
         if (!user) return res.status(400).json(generico);
 
         const tokenId = await authService.conferirOtpResetSenha(user.id, otp);
@@ -535,7 +547,7 @@ export const resetPasswordOtp = async (req: Request, res: Response, next: NextFu
                 );
         });
 
-        await emailService.enviarAvisoSenhaRedefinida(email);
+        await emailService.sendPasswordChangedNotice(email, user.locale);
 
         res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
     } catch (err) {

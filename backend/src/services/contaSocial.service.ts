@@ -7,6 +7,7 @@ import {
     twoFactorRecoveryCodes,
     users,
 } from "../../schema.ts";
+import { DEFAULT_LOCALE, type Locale } from "../i18n/locale.ts";
 import type { DadosUsuario, Provedor } from "./oauth.service.ts";
 
 // Acha ou cria o usuário de um login social. Uma conta com o mesmo email que
@@ -14,7 +15,13 @@ import type { DadosUsuario, Provedor } from "./oauth.service.ts";
 // quando o dono do email entrar: ao adotá-la, o que foi preenchido no cadastro
 // (senha, telefone, perfil, 2FA) e as sessões abertas são descartados, e o aluno
 // completa o perfil de novo.
-export async function vincularContaSocial(provider: Provedor, dados: DadosUsuario) {
+// The language is the one of the screen where the social login started, and it
+// only goes into accounts created or adopted here.
+export async function vincularContaSocial(
+    provider: Provedor,
+    dados: DadosUsuario,
+    locale: Locale = DEFAULT_LOCALE,
+) {
     return db.transaction(async (tx) => {
         const [vinculo] = await tx
             .select({ userId: oauthAccounts.userId })
@@ -34,7 +41,12 @@ export async function vincularContaSocial(provider: Provedor, dados: DadosUsuari
         if (!user) {
             [user] = await tx
                 .insert(users)
-                .values({ name: dados.name, email: dados.email, emailVerifiedAt: new Date() })
+                .values({
+                    name: dados.name,
+                    email: dados.email,
+                    emailVerifiedAt: new Date(),
+                    locale,
+                })
                 .returning();
         } else if (!user.emailVerifiedAt) {
             await tx.delete(tokens).where(eq(tokens.userId, user.id));
@@ -54,6 +66,7 @@ export async function vincularContaSocial(provider: Provedor, dados: DadosUsuari
                     failedLoginAttempts: 0,
                     lockedUntil: null,
                     emailVerifiedAt: new Date(),
+                    locale,
                 })
                 .where(eq(users.id, user.id))
                 .returning();

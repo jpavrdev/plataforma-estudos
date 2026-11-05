@@ -3,7 +3,7 @@
 //   uma URL de preview do email renderizado.
 // - Com SMTP configurado (ex.: em produção): envia de verdade para o endereço dado.
 //
-// Uso:  node scripts/testar-email.ts [email-de-destino]
+// Uso:  node scripts/testar-email.ts [email-de-destino] [pt-BR|en]
 import nodemailer from "nodemailer";
 
 async function main() {
@@ -22,8 +22,10 @@ async function main() {
 
     const destino = process.argv[2] || "aluno@example.com";
     const { emailService } = await import("../src/services/email.service.ts");
+    const { parseLocale } = await import("../src/i18n/locale.ts");
+    const locale = parseLocale(process.argv[3]);
     console.log(`Enviando email de verificação de teste para ${destino}...`);
-    await emailService.enviarVerificacao(destino, "token-de-teste-abc123");
+    await emailService.sendVerification(destino, "token-de-teste-abc123", locale);
     console.log("Concluído.");
 }
 

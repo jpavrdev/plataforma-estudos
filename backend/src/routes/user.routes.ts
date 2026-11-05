@@ -32,11 +32,13 @@ import {
     regenerateRecoveryCodes,
     disableTwoFactor,
 } from "../controllers/TwoFactorController.ts";
+import { updateLocale } from "../controllers/LocaleController.ts";
 const router = Router();
 
 router.get("/me", autenticar, getMe);
 router.patch("/me", autenticar, updateMe);
 router.post("/me/complete-profile", autenticar, completarPerfil);
+router.put("/me/locale", autenticar, updateLocale);
 router.put("/me/telefone", telefoneLimiter, autenticar, trocarTelefone);
 router.post("/me/telefone/codigo", telefoneCodigoLimiter, autenticar, pedirCodigoTelefone);
 router.post("/me/telefone/verificar", telefoneLimiter, autenticar, verificarTelefone);

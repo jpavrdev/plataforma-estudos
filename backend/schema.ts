@@ -16,6 +16,7 @@ import {
     smallint,
 } from "drizzle-orm/pg-core";
 import type { Contacts } from "./src/domain/contacts.ts";
+import type { Locale } from "./src/i18n/locale.ts";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
@@ -78,6 +79,9 @@ export const users = pgTable("users", {
     // por cima dela (0-100; nulo = padrão de 60).
     backgroundUrl: varchar("background_url", { length: 300 }),
     backgroundDim: integer("background_dim"),
+    // Language of the screens and of the emails ("pt-BR" or "en"). Accounts created
+    // before the platform had two languages used Portuguese, hence the default.
+    locale: varchar("locale", { length: 5 }).$type<Locale>().default("pt-BR").notNull(),
 });
 
 // Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de

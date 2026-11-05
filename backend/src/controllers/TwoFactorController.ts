@@ -16,7 +16,7 @@ import { twoFactorService } from "../services/twoFactor.service.ts";
 
 async function account(userId: string) {
     const [user] = await db
-        .select({ email: users.email, passwordHash: users.passwordHash })
+        .select({ email: users.email, passwordHash: users.passwordHash, locale: users.locale })
         .from(users)
         .where(eq(users.id, userId));
     if (!user) throw new AppError(404, "Usuário não encontrado");
@@ -80,7 +80,7 @@ export const enableTwoFactor = async (req: Request, res: Response, next: NextFun
 
         const { recoveryCodes, session } = await twoFactorService.enable(userId, data.code);
         res.cookie("refreshToken", session.refreshToken, refreshCookieOptions);
-        await emailService.sendTwoFactorNotice(user.email, true);
+        await emailService.sendTwoFactorNotice(user.email, true, user.locale);
         res.json({ recoveryCodes, token: session.accessToken });
     } catch (err) {
         next(err);
@@ -117,7 +117,7 @@ export const disableTwoFactor = async (req: Request, res: Response, next: NextFu
         }
 
         await twoFactorService.disable(userId);
-        await emailService.sendTwoFactorNotice(user.email, false);
+        await emailService.sendTwoFactorNotice(user.email, false, user.locale);
         res.json({ enabled: false });
     } catch (err) {
         next(err);

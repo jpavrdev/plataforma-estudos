@@ -13,7 +13,7 @@ const URL_DO_HEALTH_DOS_LABS = `${env.LABS_URL.replace(/^ws/, "http")}/health`;
 export const verificarDependencias = createDependencyChecker(
     {
         consultarBanco: () => db.execute(sql`select 1`),
-        estadoDoWhatsapp: whatsappService.estadoDaConexao,
+        estadoDoWhatsapp: whatsappService.connectionState,
         // O volume de uploads fica no disco da VPS: medir por ele é medir o disco.
         espacoEmDisco: () => statfs(UPLOADS_DIR),
         saudeDosLabs: async (sinal) => {

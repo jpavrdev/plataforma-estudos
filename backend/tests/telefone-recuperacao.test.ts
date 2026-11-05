@@ -20,11 +20,11 @@ async function app() {
 async function espionarEnvios(t: TestContext) {
     const { emailService, whatsappService } = await app();
     return {
-        whatsappSenha: t.mock.method(whatsappService, "enviarOtpReset", async () => {}),
-        whatsappTelefone: t.mock.method(whatsappService, "enviarCodigoTelefone", async () => {}),
-        emailSenha: t.mock.method(emailService, "enviarOtpReset", async () => {}),
-        avisoTelefone: t.mock.method(emailService, "enviarAvisoTelefoneAlterado", async () => {}),
-        avisoSenha: t.mock.method(emailService, "enviarAvisoSenhaRedefinida", async () => {}),
+        whatsappSenha: t.mock.method(whatsappService, "sendResetCode", async () => {}),
+        whatsappTelefone: t.mock.method(whatsappService, "sendPhoneCode", async () => {}),
+        emailSenha: t.mock.method(emailService, "sendResetCode", async () => {}),
+        avisoTelefone: t.mock.method(emailService, "sendPhoneChangedNotice", async () => {}),
+        avisoSenha: t.mock.method(emailService, "sendPasswordChangedNotice", async () => {}),
     };
 }
 
