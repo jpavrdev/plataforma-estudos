@@ -6,10 +6,19 @@ export const en: typeof ptBR = {
     label: 'Switch the language to Portuguese',
   },
 
+  common: {
+    saving: 'Saving...',
+    sending: 'Sending...',
+  },
+
   auth: {
     socialDivider: 'or continue with',
     showPassword: 'Show password',
     hidePassword: 'Hide password',
+    email: 'Email',
+    emailPlaceholder: 'you@email.com',
+    newPassword: 'New password',
+    backToLogin: 'Back to sign in',
   },
 
   profileFields: {
@@ -52,8 +61,6 @@ export const en: typeof ptBR = {
     subtitle: 'It takes less than a minute.',
     name: 'Name',
     namePlaceholder: 'Your name',
-    email: 'Email',
-    emailPlaceholder: 'you@email.com',
     password: 'Password',
     passwordPlaceholder: 'at least {{min}} characters',
     passwordRules: {
@@ -76,6 +83,63 @@ export const en: typeof ptBR = {
       'By creating the account, you agree to the <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>.',
     haveAccount: 'Already have an account?',
     signIn: 'Sign in',
+  },
+
+  forgotPassword: {
+    kicker: '<soft>no </soft>stress',
+    headline: 'Get your access back',
+    lede: 'We send a 6-digit code by email or WhatsApp so you can create a new password in seconds.',
+    title: 'Forgot your password?',
+    chooseChannel: 'How do you want to receive the 6-digit code?',
+    viaWhatsApp: 'Send it on WhatsApp',
+    viaEmail: 'Send it by email',
+    remembered: 'Remembered your password?',
+    enterCodeWhatsApp: 'Enter the code we sent you on WhatsApp and your new password.',
+    enterCodeEmail: 'Enter the code we sent you by email and your new password.',
+    code: 'Code (6 digits)',
+    resetting: 'Resetting...',
+    submit: 'Reset password',
+    otherChannel: 'Did not get it? Choose another channel',
+    done: 'Password reset. You can sign in now.',
+    errors: {
+      sendCode: 'Could not send the code. Try again.',
+      reset: 'Could not reset the password. Check the code and the password.',
+    },
+  },
+
+  resetPassword: {
+    kicker: '<soft>almost </soft>there',
+    headline: 'Create a new password',
+    lede: 'Choose a strong password and get back to studying. The link is valid for 1 hour.',
+    invalidTitle: 'Invalid link',
+    invalidText: 'The reset link is incomplete or has expired.',
+    requestNew: 'Request a new link',
+    doneTitle: 'Password reset!',
+    doneText: 'You can now sign in with your new password.',
+    goToLogin: 'Go to sign in',
+    title: 'Create a new password',
+    subtitle: 'Choose a strong password for your account.',
+    hint: 'At least 12 characters, with uppercase, lowercase, a number and a symbol.',
+    confirmPassword: 'Confirm password',
+    submit: 'Reset password',
+    errors: {
+      mismatch: 'The passwords do not match.',
+      generic: 'Could not reset the password. The link may have expired.',
+    },
+  },
+
+  completeProfile: {
+    brandTitle: 'Almost ready to start.',
+    brandLede: 'Complete your sign-up to follow your progress and climb the ranking.',
+    verified: 'Your account is already verified',
+    title: 'Almost there',
+    subtitle: 'Just a few details left to complete your profile.',
+    submit: 'Finish',
+    leaveQuestion: 'Not ready to continue?',
+    leave: 'Sign out and go back home',
+    errors: {
+      generic: 'Could not save. Try again.',
+    },
   },
 
   landing: {

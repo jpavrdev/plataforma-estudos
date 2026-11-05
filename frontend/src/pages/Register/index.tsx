@@ -164,10 +164,10 @@ export function Register() {
           error={errors.name}
         />
         <FormField
-          label={t('register.email')}
+          label={t('auth.email')}
           type="email"
           autoComplete="email"
-          placeholder={t('register.emailPlaceholder')}
+          placeholder={t('auth.emailPlaceholder')}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);

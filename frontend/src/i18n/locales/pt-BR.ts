@@ -5,10 +5,19 @@ export const ptBR = {
     label: 'Mudar o idioma para inglês',
   },
 
+  common: {
+    saving: 'Salvando...',
+    sending: 'Enviando...',
+  },
+
   auth: {
     socialDivider: 'ou continue com',
     showPassword: 'Mostrar senha',
     hidePassword: 'Ocultar senha',
+    email: 'E-mail',
+    emailPlaceholder: 'voce@email.com',
+    newPassword: 'Nova senha',
+    backToLogin: 'Voltar ao login',
   },
 
   profileFields: {
@@ -51,8 +60,6 @@ export const ptBR = {
     subtitle: 'Leva menos de um minuto.',
     name: 'Nome',
     namePlaceholder: 'Seu nome',
-    email: 'E-mail',
-    emailPlaceholder: 'voce@email.com',
     password: 'Senha',
     passwordPlaceholder: 'mínimo {{min}} caracteres',
     passwordRules: {
@@ -75,6 +82,63 @@ export const ptBR = {
       'Ao criar a conta, você concorda com os <terms>Termos</terms> e a <privacy>Política de Privacidade</privacy>.',
     haveAccount: 'Já tem conta?',
     signIn: 'Entrar',
+  },
+
+  forgotPassword: {
+    kicker: '<soft>sem </soft>estresse',
+    headline: 'Recupere seu acesso',
+    lede: 'Enviamos um código de 6 dígitos por email ou WhatsApp para você criar uma nova senha em segundos.',
+    title: 'Esqueceu a senha?',
+    chooseChannel: 'Como você quer receber o código de 6 dígitos?',
+    viaWhatsApp: 'Receber no WhatsApp',
+    viaEmail: 'Receber por email',
+    remembered: 'Lembrou a senha?',
+    enterCodeWhatsApp: 'Digite o código que enviamos no WhatsApp e a nova senha.',
+    enterCodeEmail: 'Digite o código que enviamos por email e a nova senha.',
+    code: 'Código (6 dígitos)',
+    resetting: 'Redefinindo...',
+    submit: 'Redefinir senha',
+    otherChannel: 'Não recebeu? Escolher outro canal',
+    done: 'Senha redefinida com sucesso. Você já pode fazer login.',
+    errors: {
+      sendCode: 'Não foi possível enviar o código. Tente novamente.',
+      reset: 'Não foi possível redefinir a senha. Confira o código e a senha.',
+    },
+  },
+
+  resetPassword: {
+    kicker: '<soft>quase </soft>lá',
+    headline: 'Crie uma nova senha',
+    lede: 'Escolha uma senha forte e volte a estudar. O link é válido por 1 hora.',
+    invalidTitle: 'Link inválido',
+    invalidText: 'O link de redefinição está incompleto ou expirou.',
+    requestNew: 'Pedir um novo link',
+    doneTitle: 'Senha redefinida!',
+    doneText: 'Já pode entrar com a sua nova senha.',
+    goToLogin: 'Ir para o login',
+    title: 'Criar nova senha',
+    subtitle: 'Escolha uma senha forte para a sua conta.',
+    hint: 'Mínimo 12 caracteres, com maiúscula, minúscula, número e símbolo.',
+    confirmPassword: 'Confirmar senha',
+    submit: 'Redefinir senha',
+    errors: {
+      mismatch: 'As senhas não coincidem.',
+      generic: 'Não foi possível redefinir. O link pode ter expirado.',
+    },
+  },
+
+  completeProfile: {
+    brandTitle: 'Falta pouco para começar.',
+    brandLede: 'Complete seu cadastro para acompanhar seu progresso e subir no ranking.',
+    verified: 'Sua conta já está verificada',
+    title: 'Quase lá',
+    subtitle: 'Só faltam alguns dados para completar seu perfil.',
+    submit: 'Concluir',
+    leaveQuestion: 'Não quer continuar agora?',
+    leave: 'Sair e voltar ao início',
+    errors: {
+      generic: 'Não foi possível salvar. Tente novamente.',
+    },
   },
 
   landing: {
