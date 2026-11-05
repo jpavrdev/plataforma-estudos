@@ -20,6 +20,7 @@ must leave these contracts exactly as they were on `develop`:
 | `record-shapes.mjs` | Preload that records the shape of every JSON response (method, route, status, each key path and its type). |
 | `run-shapes.sh` | Runs the backend integration suite with the recorder and writes the sorted shapes. Two runs of the same code give zero differences. |
 | `rename.mjs` | Semantic rename of exported symbols with ts-morph, like the editor's "Rename Symbol". Shorthand properties keep their keys. |
+| `rename-locals.mjs` | Same, for every declaration inside the given files (variables, parameters, local functions, types), in any scope. `--list` prints the names first. It does not check for shadowing, so new names must not collide with names in scope. |
 
 ## Checking a branch
 
