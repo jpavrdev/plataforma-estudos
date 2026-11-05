@@ -17,7 +17,7 @@
 import { asc, sql } from "drizzle-orm";
 import { db } from "../db.ts";
 import { questionOptions, simuladoOptions } from "../schema.ts";
-import { embaralharComSemente } from "../src/domain/embaralhar.ts";
+import { seededShuffle } from "../src/domain/shuffle.ts";
 
 type Linha = { id: string; questionId: string; position: number; isCorrect: boolean };
 
@@ -34,7 +34,7 @@ function novasPosicoes(linhas: Linha[]): Map<string, number> {
         // Ordem de entrada canônica, para o resultado não depender da position
         // que já está gravada e o script poder rodar quantas vezes quiser.
         const canonica = [...opcoes].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-        embaralharComSemente(canonica, questionId).forEach((o, i) => {
+        seededShuffle(canonica, questionId).forEach((o, i) => {
             destino.set(o.id, i + 1);
         });
     }

@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { calcularStreak, semanaAtividade } from "../domain/streak.ts";
+import { computeStreak, weekActivity } from "../domain/streak.ts";
 
 // Streak = dias corridos com atividade (questão respondida, aula concluída ou
 // desafio resolvido). O "dia" é bucketizado no fuso de São Paulo para bater com o usuário.
@@ -41,17 +41,17 @@ export async function streaksTodos(): Promise<Map<string, number>> {
     }
     const hoje = hojeSaoPaulo();
     const streaks = new Map<string, number>();
-    for (const [uid, dias] of porUsuario) streaks.set(uid, calcularStreak(dias, hoje));
+    for (const [uid, dias] of porUsuario) streaks.set(uid, computeStreak(dias, hoje));
     return streaks;
 }
 
 // Orquestram fetch + relógio + cálculo puro para os endpoints.
 export async function streakDoUsuario(userId: string): Promise<number> {
-    return calcularStreak(await diasAtivosDoUsuario(userId), hojeSaoPaulo());
+    return computeStreak(await diasAtivosDoUsuario(userId), hojeSaoPaulo());
 }
 
 export async function resumoSemana(userId: string) {
     const dias = await diasAtivosDoUsuario(userId);
     const hoje = hojeSaoPaulo();
-    return { streak: calcularStreak(dias, hoje), week: semanaAtividade(dias, hoje) };
+    return { streak: computeStreak(dias, hoje), week: weekActivity(dias, hoje) };
 }

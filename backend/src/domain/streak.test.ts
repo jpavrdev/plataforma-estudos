@@ -1,84 +1,84 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { calcularStreak, semanaAtividade, diaAnterior } from "./streak.ts";
+import { computeStreak, weekActivity, previousDay } from "./streak.ts";
 
-const HOJE = "2026-07-01";
+const TODAY = "2026-07-01";
 
-describe("calcularStreak", () => {
-    test("sem dias ativos é 0", () => {
-        assert.equal(calcularStreak(new Set(), HOJE), 0);
+describe("computeStreak", () => {
+    test("no active days is 0", () => {
+        assert.equal(computeStreak(new Set(), TODAY), 0);
     });
 
-    test("só hoje conta 1", () => {
-        assert.equal(calcularStreak(new Set([HOJE]), HOJE), 1);
+    test("only today counts 1", () => {
+        assert.equal(computeStreak(new Set([TODAY]), TODAY), 1);
     });
 
-    test("só ontem (sem hoje) ainda conta 1", () => {
-        assert.equal(calcularStreak(new Set(["2026-06-30"]), HOJE), 1);
+    test("only yesterday (without today) still counts 1", () => {
+        assert.equal(computeStreak(new Set(["2026-06-30"]), TODAY), 1);
     });
 
-    test("hoje e ontem contam 2", () => {
-        assert.equal(calcularStreak(new Set(["2026-07-01", "2026-06-30"]), HOJE), 2);
+    test("today and yesterday count 2", () => {
+        assert.equal(computeStreak(new Set(["2026-07-01", "2026-06-30"]), TODAY), 2);
     });
 
-    test("sem hoje nem ontem é 0", () => {
-        assert.equal(calcularStreak(new Set(["2026-06-28"]), HOJE), 0);
+    test("neither today nor yesterday is 0", () => {
+        assert.equal(computeStreak(new Set(["2026-06-28"]), TODAY), 0);
     });
 
-    test("buraco quebra a contagem", () => {
-        // hoje ativo, ontem não, anteontem ativo: só hoje conta
-        assert.equal(calcularStreak(new Set(["2026-07-01", "2026-06-29"]), HOJE), 1);
+    test("a gap breaks the count", () => {
+        // today active, yesterday not, the day before active: only today counts
+        assert.equal(computeStreak(new Set(["2026-07-01", "2026-06-29"]), TODAY), 1);
     });
 
-    test("atravessa a virada de mês", () => {
-        assert.equal(calcularStreak(new Set(["2026-07-01", "2026-06-30", "2026-06-29"]), HOJE), 3);
+    test("crosses a month boundary", () => {
+        assert.equal(computeStreak(new Set(["2026-07-01", "2026-06-30", "2026-06-29"]), TODAY), 3);
     });
 
-    test("atravessa a virada de ano", () => {
+    test("crosses a year boundary", () => {
         assert.equal(
-            calcularStreak(new Set(["2026-01-01", "2025-12-31", "2025-12-30"]), "2026-01-01"),
+            computeStreak(new Set(["2026-01-01", "2025-12-31", "2025-12-30"]), "2026-01-01"),
             3,
         );
     });
 
-    test("dia no futuro é ignorado", () => {
-        assert.equal(calcularStreak(new Set(["2026-07-02", "2026-07-01"]), HOJE), 1);
+    test("a day in the future is ignored", () => {
+        assert.equal(computeStreak(new Set(["2026-07-02", "2026-07-01"]), TODAY), 1);
     });
 });
 
-describe("diaAnterior", () => {
-    test("dia comum", () => {
-        assert.equal(diaAnterior("2026-07-01"), "2026-06-30");
+describe("previousDay", () => {
+    test("regular day", () => {
+        assert.equal(previousDay("2026-07-01"), "2026-06-30");
     });
 
-    test("virada de ano", () => {
-        assert.equal(diaAnterior("2026-01-01"), "2025-12-31");
+    test("year boundary", () => {
+        assert.equal(previousDay("2026-01-01"), "2025-12-31");
     });
 
-    test("fevereiro em ano não bissexto", () => {
-        assert.equal(diaAnterior("2026-03-01"), "2026-02-28");
+    test("February in a non-leap year", () => {
+        assert.equal(previousDay("2026-03-01"), "2026-02-28");
     });
 
-    test("fevereiro em ano bissexto", () => {
-        assert.equal(diaAnterior("2024-03-01"), "2024-02-29");
+    test("February in a leap year", () => {
+        assert.equal(previousDay("2024-03-01"), "2024-02-29");
     });
 });
 
-describe("semanaAtividade", () => {
-    test("retorna 7 dias terminando em hoje", () => {
-        const semana = semanaAtividade(new Set([HOJE]), HOJE);
-        assert.equal(semana.length, 7);
-        assert.equal(semana[6].active, true); // último é hoje
+describe("weekActivity", () => {
+    test("returns 7 days ending today", () => {
+        const week = weekActivity(new Set([TODAY]), TODAY);
+        assert.equal(week.length, 7);
+        assert.equal(week[6].active, true); // the last one is today
     });
 
-    test("marca ativos só nos dias da janela", () => {
-        const semana = semanaAtividade(new Set(["2026-07-01", "2026-06-29", "2026-05-01"]), HOJE);
-        // 07-01 e 06-29 caem nos últimos 7 dias; 05-01 não
-        assert.equal(semana.filter((d) => d.active).length, 2);
+    test("marks as active only the days inside the window", () => {
+        const week = weekActivity(new Set(["2026-07-01", "2026-06-29", "2026-05-01"]), TODAY);
+        // 07-01 and 06-29 fall in the last 7 days; 05-01 does not
+        assert.equal(week.filter((d) => d.active).length, 2);
     });
 
-    test("labels são iniciais de dia da semana", () => {
-        const semana = semanaAtividade(new Set(), HOJE);
-        assert.ok(semana.every((d) => "DSTQ".includes(d.label)));
+    test("labels are weekday initials", () => {
+        const week = weekActivity(new Set(), TODAY);
+        assert.ok(week.every((d) => "DSTQ".includes(d.label)));
     });
 });

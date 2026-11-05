@@ -15,7 +15,7 @@ import {
     numeric,
     smallint,
 } from "drizzle-orm/pg-core";
-import type { Contatos } from "./src/domain/contatos.ts";
+import type { Contacts } from "./src/domain/contacts.ts";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
@@ -1157,7 +1157,7 @@ export const sorteioParticipacoes = pgTable(
         userId: uuid("user_id")
             .references(() => users.id, { onDelete: "cascade" })
             .notNull(),
-        contatos: jsonb("contatos").$type<Contatos>(),
+        contatos: jsonb("contatos").$type<Contacts>(),
         // Colocação de 1 a 3, só nos ganhadores.
         posicao: smallint("posicao"),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

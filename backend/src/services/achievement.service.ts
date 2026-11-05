@@ -12,7 +12,7 @@ import type { createAchievementSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
 import { calcularEstatisticas } from "./stats.service.ts";
 import { diasAtivosDoUsuario } from "./streak.ts";
-import { recordeStreak } from "../domain/streak.ts";
+import { longestStreak } from "../domain/streak.ts";
 import { trilhasDoUsuario } from "./trail.service.ts";
 
 type DadosConquista = z.infer<typeof createAchievementSchema>;
@@ -98,7 +98,7 @@ export async function verificarConquistas(userId: string) {
         lessons_completed: stats.lessonsCompleted,
         questions_correct: stats.questionsCorrect,
         // Recorde de dias seguidos: quem já atingiu a marca não perde a conquista se o streak cair.
-        streak_days: recordeStreak(dias),
+        streak_days: longestStreak(dias),
         challenges_facil: desafios.facil,
         challenges_medio: desafios.medio,
         challenges_dificil: desafios.dificil,

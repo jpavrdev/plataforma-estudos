@@ -16,8 +16,8 @@ import type {
 import { AppError } from "../errors/AppError.ts";
 import { hojeSaoPaulo } from "./streak.ts";
 import { executarNoRunner } from "./runner.client.ts";
-import { corrigirDesafio, saidaCorreta, retornoCorreto, indiceDoDia } from "../domain/desafio.ts";
-import { xpDoDesafio } from "../domain/xp.ts";
+import { gradeChallenge, outputMatches, returnMatches, dayIndex } from "../domain/challenge.ts";
+import { challengeXp } from "../domain/xp.ts";
 import { verificarConquistas } from "./achievement.service.ts";
 import { niveisDeUsuarios } from "./comunidade.service.ts";
 
@@ -101,7 +101,7 @@ async function montarView(
         difficulty: d.difficulty,
         kind: d.kind,
         entryPoint: d.entryPoint,
-        xp: xpDoDesafio(d.difficulty),
+        xp: challengeXp(d.difficulty),
         starterCode: d.starterCode ?? {},
         activeDate: d.activeDate,
         isToday: d.id === dailyId,
@@ -123,7 +123,7 @@ async function idDoDesafioDoDia(hoje: string): Promise<string | null> {
     if (publicados.length === 0) return null;
     const fixado = publicados.find((c) => c.activeDate === hoje);
     if (fixado) return fixado.id;
-    return publicados[indiceDoDia(hoje, publicados.length)].id;
+    return publicados[dayIndex(hoje, publicados.length)].id;
 }
 
 // Desafio do dia: fixado pelo admin nesta data ou escolhido automaticamente.
@@ -193,7 +193,7 @@ export async function listarDesafios(userId: string) {
     // Desafio do dia: fixado pelo admin ou determinístico entre os publicados.
     const fixado = todos.find((d) => d.activeDate === hoje);
     const ordenados = [...todos].sort((a, b) => (a.number ?? 0) - (b.number ?? 0));
-    const dailyId = fixado ? fixado.id : ordenados[indiceDoDia(hoje, ordenados.length)].id;
+    const dailyId = fixado ? fixado.id : ordenados[dayIndex(hoje, ordenados.length)].id;
 
     const items = todos.map((d) => ({
         id: d.id,
@@ -201,7 +201,7 @@ export async function listarDesafios(userId: string) {
         title: d.title,
         topic: d.topic,
         difficulty: d.difficulty,
-        xp: xpDoDesafio(d.difficulty),
+        xp: challengeXp(d.difficulty),
         acceptance: aceitacaoPorDesafio.get(d.id) ?? null,
         status: statusPorDesafio.get(d.id) ?? "todo",
         isToday: d.id === dailyId,
@@ -249,7 +249,7 @@ export async function rodarExemplos(userId: string, id: string, dados: Execucao)
     if (runner.compileOutput) {
         return { compileError: runner.compileOutput, cases: [], timeMs };
     }
-    const comparar = d.kind === "function" ? retornoCorreto : saidaCorreta;
+    const comparar = d.kind === "function" ? returnMatches : outputMatches;
     const cases = publicos.map((t, i) => {
         const r = runner.results[i];
         const got = r?.stdout ?? "";
@@ -286,7 +286,7 @@ export async function submeterDesafio(userId: string, id: string, dados: Execuca
     );
     const timeMs = Math.round(performance.now() - t0);
 
-    const correcao = corrigirDesafio(
+    const correcao = gradeChallenge(
         testes.map((t) => t.expectedOutput),
         runner.results.map((r) => ({
             stdout: r.stdout,
@@ -328,7 +328,7 @@ export async function submeterDesafio(userId: string, id: string, dados: Execuca
                 ),
             )
             .limit(1);
-        if (!jaGanhou) xpEarned = xpDoDesafio(d.difficulty);
+        if (!jaGanhou) xpEarned = challengeXp(d.difficulty);
     }
 
     await db.insert(challengeSubmissions).values({
