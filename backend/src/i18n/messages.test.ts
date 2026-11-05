@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import ts from "typescript";
 import { MESSAGES, t, translateMessage } from "./messages.ts";
-import { localeFromHeader } from "./locale.ts";
+import { parseLocale } from "./locale.ts";
 
 const placeholders = (text: string) => [...text.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
 
@@ -76,13 +76,14 @@ describe("translateMessage", () => {
     });
 });
 
-describe("localeFromHeader", () => {
-    test("English only when the header asks for it; pt-BR otherwise", () => {
-        assert.equal(localeFromHeader("en"), "en");
-        assert.equal(localeFromHeader("en-US"), "en");
-        assert.equal(localeFromHeader("pt-BR"), "pt-BR");
-        assert.equal(localeFromHeader(undefined), "pt-BR");
-        assert.equal(localeFromHeader("fr"), "pt-BR");
+describe("parseLocale", () => {
+    test("English only when the value asks for it; pt-BR otherwise", () => {
+        assert.equal(parseLocale("en"), "en");
+        assert.equal(parseLocale("en-US"), "en");
+        assert.equal(parseLocale("pt-BR"), "pt-BR");
+        assert.equal(parseLocale(undefined), "pt-BR");
+        assert.equal(parseLocale(null), "pt-BR");
+        assert.equal(parseLocale("fr"), "pt-BR");
     });
 });
 

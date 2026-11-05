@@ -463,6 +463,13 @@
       "when": 1793884370740,
       "tag": "0065_two_factor",
       "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "7",
+      "when": 1793897054198,
+      "tag": "0066_user_locale",
+      "breakpoints": true
     }
   ]
 }

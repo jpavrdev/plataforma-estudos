@@ -86,10 +86,10 @@ export function Register() {
       });
       // Carries the confirm-your-email notice along: sign-in refuses whoever has not
       // confirmed yet, and without this text the person does not understand why they
-      // came back here. (`aviso` is the state key the sign-in screen reads.)
+      // came back here. (`notice` is the state key the sign-in screen reads.)
       navigate('/entrar', {
         state: {
-          aviso: data?.mensagem ?? t('register.accountCreated'),
+          notice: data?.mensagem ?? t('register.accountCreated'),
           email: email.trim(),
         },
       });
@@ -190,7 +190,7 @@ export function Register() {
           required
         />
         <FormField
-          label={t('register.password')}
+          label={t('auth.password')}
           type="password"
           autoComplete="new-password"
           placeholder={t('register.passwordPlaceholder', { min: PASSWORD_MIN })}

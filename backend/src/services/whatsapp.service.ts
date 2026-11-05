@@ -1,33 +1,36 @@
 import { z } from "zod";
 import { env } from "../config/env.ts";
+import { NOTIFICATIONS } from "../i18n/emails.ts";
+import type { Locale } from "../i18n/locale.ts";
 
-// Envia mensagens via Evolution API (gateway WhatsApp/Baileys) hospedado na VPS.
-// Sem EVOLUTION_URL/EVOLUTION_API_KEY (ex.: dev), o envio vira no-op logado, igual
-// ao email quando o SMTP não está configurado.
-const configurado = !!(env.EVOLUTION_URL && env.EVOLUTION_API_KEY);
+// Sends messages through the Evolution API (WhatsApp/Baileys gateway) hosted on the
+// VPS. Without EVOLUTION_URL/EVOLUTION_API_KEY (e.g. dev), sending becomes a logged
+// no-op, like the email when SMTP is not configured.
+const configured = !!(env.EVOLUTION_URL && env.EVOLUTION_API_KEY);
 
-const estadoDaConexaoSchema = z.object({ instance: z.object({ state: z.string() }) });
+const connectionStateSchema = z.object({ instance: z.object({ state: z.string() }) });
 
-// Normaliza para o formato do WhatsApp (só dígitos, com DDI). Aceita telefone
-// brasileiro sem DDI (10-11 dígitos) e prefixa 55; se já vier com DDI, mantém.
-function normalizarNumero(telefone: string): string | null {
-    const digitos = telefone.replace(/\D/g, "");
-    if (digitos.length < 10) return null;
-    if (digitos.startsWith("55")) return digitos;
-    if (digitos.length === 10 || digitos.length === 11) return "55" + digitos;
-    return digitos;
+// Normalizes to the WhatsApp format (digits only, with the country code). Accepts a
+// Brazilian phone without the country code (10-11 digits) and prefixes 55; one that
+// already has it stays as it is.
+function normalizeNumber(phone: string): string | null {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 10) return null;
+    if (digits.startsWith("55")) return digits;
+    if (digits.length === 10 || digits.length === 11) return "55" + digits;
+    return digits;
 }
 
-// Uma falha é logada, não propagada: a recuperação não deve quebrar porque o
-// WhatsApp não saiu (o email continua como canal padrão).
-async function enviarTexto(telefone: string, texto: string) {
-    const numero = normalizarNumero(telefone);
-    if (!numero) {
-        console.warn(`[WHATSAPP] telefone inválido, envio ignorado: ${telefone}`);
+// A failure is logged, not thrown: recovery must not break because the WhatsApp
+// message did not go out (email stays as the default channel).
+async function sendText(phone: string, text: string) {
+    const number = normalizeNumber(phone);
+    if (!number) {
+        console.warn(`[WHATSAPP] invalid phone, message skipped: ${phone}`);
         return;
     }
-    if (!configurado) {
-        console.log(`[WHATSAPP] (Evolution não configurado) para=${numero}\n${texto}`);
+    if (!configured) {
+        console.log(`[WHATSAPP] (Evolution not configured) to=${number}\n${text}`);
         return;
     }
     try {
@@ -36,41 +39,36 @@ async function enviarTexto(telefone: string, texto: string) {
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json", apikey: env.EVOLUTION_API_KEY! },
-                body: JSON.stringify({ number: numero, text: texto }),
+                body: JSON.stringify({ number, text }),
             },
         );
         if (!resp.ok) {
-            const corpo = await resp.text().catch(() => "");
-            console.error(`Falha ao enviar WhatsApp para ${numero}: HTTP ${resp.status} ${corpo}`);
+            const body = await resp.text().catch(() => "");
+            console.error(`Failed to send WhatsApp to ${number}: HTTP ${resp.status} ${body}`);
         }
     } catch (e) {
-        console.error(`Falha ao enviar WhatsApp para ${numero}:`, e);
+        console.error(`Failed to send WhatsApp to ${number}:`, e);
     }
 }
 
+// Messages go in the language saved in the account.
 export const whatsappService = {
-    async enviarOtpReset(telefone: string, otp: string) {
-        const texto =
-            `ensina.dev\n\nSeu código para redefinir a senha é *${otp}*.\n` +
-            `Ele vale por 10 minutos. Se você não pediu, ignore esta mensagem.`;
-        await enviarTexto(telefone, texto);
+    async sendResetCode(phone: string, code: string, locale: Locale) {
+        await sendText(phone, NOTIFICATIONS[locale].whatsapp.resetCode(code));
     },
-    async enviarCodigoTelefone(telefone: string, codigo: string) {
-        const texto =
-            `ensina.dev\n\nSeu código para confirmar este telefone é *${codigo}*.\n` +
-            `Ele vale por 10 minutos. Se você não pediu, ignore esta mensagem.`;
-        await enviarTexto(telefone, texto);
+    async sendPhoneCode(phone: string, code: string, locale: Locale) {
+        await sendText(phone, NOTIFICATIONS[locale].whatsapp.phoneCode(code));
     },
 
-    // Ao contrário do envio, aqui o erro sobe: é ele que marca o WhatsApp como
-    // falha no endpoint de dependências. null quando não há Evolution configurada.
-    async estadoDaConexao(sinal: AbortSignal): Promise<string | null> {
-        if (!configurado) return null;
+    // Unlike sending, here the error goes up: it is what marks WhatsApp as failing
+    // in the dependencies endpoint. null when there is no Evolution configured.
+    async connectionState(signal: AbortSignal): Promise<string | null> {
+        if (!configured) return null;
         const resp = await fetch(
             `${env.EVOLUTION_URL}/instance/connectionState/${env.EVOLUTION_INSTANCE}`,
-            { headers: { apikey: env.EVOLUTION_API_KEY! }, signal: sinal },
+            { headers: { apikey: env.EVOLUTION_API_KEY! }, signal },
         );
-        if (!resp.ok) throw new Error(`Evolution respondeu HTTP ${resp.status}`);
-        return estadoDaConexaoSchema.parse(await resp.json()).instance.state;
+        if (!resp.ok) throw new Error(`Evolution answered HTTP ${resp.status}`);
+        return connectionStateSchema.parse(await resp.json()).instance.state;
     },
 };

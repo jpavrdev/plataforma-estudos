@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { FormField } from '../FormField';
 import { mensagemErro } from '../../utils/erro';
@@ -13,6 +14,7 @@ interface Props {
 // the authenticator app code or a recovery code.
 export function TwoFactorLogin({ challenge, onDone, onBack }: Props) {
   const { confirmTwoFactor } = useAuth();
+  const { t } = useTranslation();
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
@@ -26,7 +28,7 @@ export function TwoFactorLogin({ challenge, onDone, onBack }: Props) {
       await confirmTwoFactor(challenge, code);
       onDone();
     } catch (e: unknown) {
-      setError(mensagemErro(e, 'Não foi possível confirmar o código.'));
+      setError(mensagemErro(e, t('twoFactorLogin.error')));
     } finally {
       setSubmitting(false);
     }
@@ -42,11 +44,9 @@ export function TwoFactorLogin({ challenge, onDone, onBack }: Props) {
 
   return (
     <>
-      <h2 className="auth__title">Verificação em duas etapas</h2>
+      <h2 className="auth__title">{t('twoFactorLogin.title')}</h2>
       <p className="auth__subtitle">
-        {recoveryMode
-          ? 'Digite um dos seus códigos de recuperação. Cada um vale uma vez só.'
-          : 'Digite o código de 6 dígitos do seu app autenticador.'}
+        {recoveryMode ? t('twoFactorLogin.recoveryHint') : t('twoFactorLogin.appHint')}
       </p>
 
       {error && <div className="auth__alert">{error}</div>}
@@ -54,7 +54,7 @@ export function TwoFactorLogin({ challenge, onDone, onBack }: Props) {
       <form className="form" onSubmit={confirm} noValidate>
         {recoveryMode ? (
           <FormField
-            label="Código de recuperação"
+            label={t('twoFactorLogin.recoveryCode')}
             autoComplete="off"
             placeholder="xxxxx-xxxxx"
             value={code}
@@ -62,7 +62,7 @@ export function TwoFactorLogin({ challenge, onDone, onBack }: Props) {
           />
         ) : (
           <FormField
-            label="Código do app"
+            label={t('twoFactorLogin.appCode')}
             inputMode="numeric"
             autoComplete="one-time-code"
             placeholder="000000"
@@ -75,17 +75,17 @@ export function TwoFactorLogin({ challenge, onDone, onBack }: Props) {
           type="submit"
           disabled={submitting || !complete}
         >
-          {submitting ? 'Confirmando...' : 'Confirmar'}
+          {submitting ? t('twoFactorLogin.confirming') : t('twoFactorLogin.confirm')}
         </button>
       </form>
 
       <p className="auth__foot">
         <button type="button" className="link link--btn" onClick={toggleMode}>
-          {recoveryMode ? 'Usar o código do app' : 'Usar um código de recuperação'}
+          {recoveryMode ? t('twoFactorLogin.useApp') : t('twoFactorLogin.useRecovery')}
         </button>
         {' · '}
         <button type="button" className="link link--btn" onClick={onBack}>
-          Voltar ao login
+          {t('auth.backToLogin')}
         </button>
       </p>
     </>

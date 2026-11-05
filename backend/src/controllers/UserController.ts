@@ -62,7 +62,11 @@ export const getMe = async (req: Request, res: Response) => {
 
     // temSenha diz ao front se trocar o telefone pede a senha atual.
     const encontrados = await db
-        .select({ ...publicUserColumns, temSenha: sql<boolean>`${users.passwordHash} is not null` })
+        .select({
+            ...publicUserColumns,
+            temSenha: sql<boolean>`${users.passwordHash} is not null`,
+            locale: users.locale,
+        })
         .from(users)
         .where(eq(users.id, userId));
 
@@ -258,7 +262,12 @@ export const trocarTelefone = async (req: Request, res: Response, next: NextFunc
     try {
         const dados = trocarTelefoneSchema.parse(req.body);
         const [user] = await db
-            .select({ email: users.email, phone: users.phone, passwordHash: users.passwordHash })
+            .select({
+                email: users.email,
+                phone: users.phone,
+                passwordHash: users.passwordHash,
+                locale: users.locale,
+            })
             .from(users)
             .where(eq(users.id, userId));
         if (!user) return res.status(404).json({ erro: "Usuário não encontrado" });
@@ -294,7 +303,7 @@ export const trocarTelefone = async (req: Request, res: Response, next: NextFunc
                 .where(eq(users.id, userId))
                 .returning(publicUserColumns);
         });
-        if (user.phone) await emailService.enviarAvisoTelefoneAlterado(user.email);
+        if (user.phone) await emailService.sendPhoneChangedNotice(user.email, user.locale);
         res.json(atualizado);
     } catch (err) {
         next(err);
@@ -307,7 +316,11 @@ export const pedirCodigoTelefone = async (req: Request, res: Response, next: Nex
     if (!userId) return res.status(401).json({ erro: "Não autenticado" });
     try {
         const [user] = await db
-            .select({ phone: users.phone, phoneVerifiedAt: users.phoneVerifiedAt })
+            .select({
+                phone: users.phone,
+                phoneVerifiedAt: users.phoneVerifiedAt,
+                locale: users.locale,
+            })
             .from(users)
             .where(eq(users.id, userId));
         if (!user?.phone) {
@@ -322,7 +335,7 @@ export const pedirCodigoTelefone = async (req: Request, res: Response, next: Nex
                 .status(429)
                 .json({ erro: "Espere um pouco para pedir outro código: é um por minuto." });
         }
-        await whatsappService.enviarCodigoTelefone(user.phone, codigo);
+        await whatsappService.sendPhoneCode(user.phone, codigo, user.locale);
         res.json({ mensagem: "Enviamos um código por WhatsApp para o seu telefone." });
     } catch (err) {
         next(err);

@@ -1,69 +1,69 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { Logo } from '../../components/Logo';
 import { mensagemErro } from '../../utils/erro';
 
-type Status = 'verificando' | 'sucesso' | 'erro';
+type Status = 'verifying' | 'done' | 'failed';
 
 export function VerifyEmail() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
-  const [status, setStatus] = useState<Status>(token ? 'verificando' : 'erro');
-  const [mensagem, setMensagem] = useState(token ? '' : 'Link inválido: token não encontrado.');
-  const jaRodou = useRef(false);
+  const [status, setStatus] = useState<Status>(token ? 'verifying' : 'failed');
+  const [message, setMessage] = useState(token ? '' : t('verifyEmail.noToken'));
+  const started = useRef(false);
 
   useEffect(() => {
-    // Evita chamada dupla no StrictMode (dev). Sem token, o estado inicial já é erro.
-    if (!token || jaRodou.current) return;
-    jaRodou.current = true;
+    // Avoids a double call in StrictMode (dev). Without a token, the initial state is already failed.
+    if (!token || started.current) return;
+    started.current = true;
 
-    async function verificar() {
+    async function verify() {
       try {
         const { data } = await api.post('/verify-email', { token });
-        setStatus('sucesso');
-        setMensagem(data.mensagem ?? 'Email verificado com sucesso.');
+        setStatus('done');
+        setMessage(data.mensagem ?? t('verifyEmail.done'));
       } catch (e: unknown) {
-        setStatus('erro');
-        setMensagem(
-          mensagemErro(e, 'Não foi possível verificar seu email. O link pode ter expirado.'),
-        );
+        setStatus('failed');
+        setMessage(mensagemErro(e, t('verifyEmail.failed')));
       }
     }
 
-    verificar();
-  }, [token]);
+    verify();
+  }, [token, t]);
 
   return (
     <div className="verify-shell">
       <div className="verify-card">
         <Logo variant="solid" size={22} />
 
-        {status === 'verificando' && (
+        {status === 'verifying' && (
           <>
-            <h1 className="verify-title">Verificando seu email...</h1>
-            <p className="verify-text">Aguarde um instante.</p>
+            <h1 className="verify-title">{t('verifyEmail.verifying')}</h1>
+            <p className="verify-text">{t('verifyEmail.wait')}</p>
           </>
         )}
 
-        {status === 'sucesso' && (
+        {status === 'done' && (
           <>
             <div className="verify-icon verify-icon--ok">✓</div>
-            <h1 className="verify-title">Email verificado!</h1>
-            <p className="verify-text">{mensagem}</p>
+            <h1 className="verify-title">{t('verifyEmail.doneTitle')}</h1>
+            <p className="verify-text">{message}</p>
             <Link className="btn btn--accent btn--block" to="/entrar">
-              Ir para o login
+              {t('auth.goToLogin')}
             </Link>
           </>
         )}
 
-        {status === 'erro' && (
+        {status === 'failed' && (
           <>
             <div className="verify-icon verify-icon--erro">!</div>
-            <h1 className="verify-title">Não foi possível verificar</h1>
-            <p className="verify-text">{mensagem}</p>
+            <h1 className="verify-title">{t('verifyEmail.failedTitle')}</h1>
+            <p className="verify-text">{message}</p>
             <Link className="btn btn--ghost btn--block" to="/entrar">
-              Voltar ao login
+              {t('auth.backToLogin')}
             </Link>
           </>
         )}
