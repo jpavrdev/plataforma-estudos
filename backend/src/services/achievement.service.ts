@@ -13,7 +13,7 @@ import { AppError } from "../errors/AppError.ts";
 import { calcularEstatisticas } from "./stats.service.ts";
 import { diasAtivosDoUsuario } from "./streak.ts";
 import { longestStreak } from "../domain/streak.ts";
-import { trilhasDoUsuario } from "./trail.service.ts";
+import { findUserTrails } from "./trail.service.ts";
 
 type DadosConquista = z.infer<typeof createAchievementSchema>;
 
@@ -76,7 +76,7 @@ async function desafiosPorDificuldade(userId: string) {
 
 // Trilhas concluídas 100% pelo usuário (mesma régua do selo, do roadmap e do certificado).
 async function trilhasCompletadas(userId: string): Promise<Set<string>> {
-    const trilhas = await trilhasDoUsuario(userId);
+    const trilhas = await findUserTrails(userId);
     return new Set(
         trilhas
             .filter((t) => t.totalLessons > 0 && t.completedLessons >= t.totalLessons)

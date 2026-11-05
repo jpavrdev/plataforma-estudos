@@ -5,7 +5,7 @@ import { AppError } from "../errors/AppError.ts";
 import { calcularEstatisticas } from "./stats.service.ts";
 import { streakDoUsuario } from "./streak.ts";
 import { conquistasDoUsuario } from "./achievement.service.ts";
-import { trilhasDoUsuario } from "./trail.service.ts";
+import { findUserTrails } from "./trail.service.ts";
 import { apoiadorAtivo } from "./apoiador.service.ts";
 
 // Só o que pode ser visto por qualquer pessoa: nada de email, telefone ou nascimento.
@@ -19,7 +19,7 @@ export async function perfilPublico(username: string) {
         calcularEstatisticas(usuario.id),
         streakDoUsuario(usuario.id),
         conquistasDoUsuario(usuario.id),
-        trilhasDoUsuario(usuario.id),
+        findUserTrails(usuario.id),
         apoiadorAtivo(usuario.id),
         db
             .select({

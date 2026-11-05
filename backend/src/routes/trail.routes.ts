@@ -52,27 +52,27 @@ import {
 
 const router = Router();
 
-// Números da plataforma para a página inicial, antes de qualquer login.
+// Platform numbers for the home page, before any sign-in.
 router.get("/estatisticas-publicas", getPublicStats);
 
-// Catálogo (admin cria, qualquer logado lê)
+// Catalog (the admin creates, anyone signed in reads)
 router.post("/trails", autenticar, exigirAdmin, createTrail);
 router.patch("/trails/:id", autenticar, exigirAdmin, updateTrail);
 router.delete("/trails/:id", autenticar, exigirAdmin, deleteTrail);
 
-// Tags (categorias): leitura para qualquer logado; escrita só admin
+// Tags (categories): anyone signed in reads; only the admin writes
 router.get("/tags", autenticar, listTags);
 router.post("/tags", autenticar, exigirAdmin, createTag);
 router.patch("/tags/:id", autenticar, exigirAdmin, updateTag);
 router.delete("/tags/:id", autenticar, exigirAdmin, deleteTag);
 
-// Linguagens do perfil: leitura para qualquer logado; escrita só admin
+// Profile languages: anyone signed in reads; only the admin writes
 router.get("/languages", autenticar, listLanguages);
 router.post("/languages", autenticar, exigirAdmin, createLanguage);
 router.patch("/languages/:id", autenticar, exigirAdmin, updateLanguage);
 router.delete("/languages/:id", autenticar, exigirAdmin, deleteLanguage);
 
-// Conquistas: leitura para qualquer logado; escrita só admin
+// Achievements: anyone signed in reads; only the admin writes
 router.get("/achievements", autenticar, listAchievements);
 router.post("/achievements", autenticar, exigirAdmin, createAchievement);
 router.patch("/achievements/:id", autenticar, exigirAdmin, updateAchievement);
@@ -81,7 +81,7 @@ router.get("/achievements/:id/holders", autenticar, exigirAdmin, listAchievement
 router.post("/achievements/:id/grant", autenticar, exigirAdmin, grantAchievement);
 router.delete("/achievements/:id/grant/:userId", autenticar, exigirAdmin, revokeAchievement);
 
-// Glossário: leitura para qualquer logado; escrita só admin
+// Glossary: anyone signed in reads; only the admin writes
 router.get("/glossary", autenticar, listGlossary);
 router.post("/glossary", autenticar, exigirAdmin, createGlossaryTerm);
 router.patch("/glossary/:id", autenticar, exigirAdmin, updateGlossaryTerm);
@@ -93,18 +93,18 @@ router.post("/lessons/:id/questions", autenticar, exigirAdmin, createQuestion);
 router.patch("/lessons/:id/published", autenticar, exigirAdmin, setLessonPublished);
 router.get("/trails", autenticar, listTrails);
 router.get("/trails/:id", autenticar, getTrail);
-// Livro da trilha em EPUB: mesma regra de acesso do conteúdo (basta estar logado).
+// The track as an EPUB book: same access rule as the content (being signed in is enough).
 router.get("/trails/:id/epub", autenticar, getTrailEpub);
 router.post("/trails/:id/review", autenticar, submitTrailReview);
 router.get("/lessons/:id", autenticar, getLesson);
 
-// Estúdio (admin): edição de estrutura e conteúdo das aulas
+// Estúdio (admin): editing the structure and the content of the lessons
 router.get("/trails/:id/studio", autenticar, exigirAdmin, getTrailStudio);
 router.get("/lessons/:id/studio", autenticar, exigirAdmin, getLessonStudio);
 router.put("/lessons/:id/studio", autenticar, exigirAdmin, saveLessonStudio);
 router.delete("/lessons/:id", autenticar, exigirAdmin, deleteLesson);
 
-// Progresso do aluno
+// Student progress
 router.get("/me/trails", autenticar, getMyTrails);
 router.get("/me/xp", autenticar, getMyXp);
 router.get("/me/achievements", autenticar, getMyAchievements);
