@@ -1,299 +1,317 @@
-# ensina.dev
+# Ensina Dev
 
-Plataforma de estudos de programação em português: trilhas de aulas, desafios de
-código corrigidos na hora, simulados de certificação, laboratórios de Linux com
-terminal de verdade e revisão espaçada em cartões. Todo o conteúdo é gratuito e não
-existe parte trancada atrás de pagamento.
+**English** | [Português](README.pt-BR.md)
 
-Em produção: [ensinadev.com.br](https://ensinadev.com.br)
+A programming study platform in Portuguese: lesson tracks, coding challenges graded
+on the spot, certification practice exams, Linux labs with a real terminal and
+spaced repetition flashcards. All content is free, and nothing is locked behind a
+paywall.
 
-## O que a plataforma faz
+Live at [ensinadev.com.br](https://ensinadev.com.br)
 
-| Área | O que é |
+## What the platform does
+
+| Area | What it is |
 | --- | --- |
-| **Trilhas e aulas** | Conteúdo em blocos (texto, tabela, código, citação) com quiz ao final de cada aula. Trilhas de programação têm trilhos por linguagem, com a mesma aula em JavaScript e Python. |
-| **Roadmaps** | Sequências de trilhas por carreira, do primeiro `if` até o nível de especialista. |
-| **Desafios** | Exercícios diários de código, executados e corrigidos contra uma bateria de testes. |
-| **Simulados** | Provas no formato das certificações reais (AWS, Azure, ISTQB, PSPO I, entre outras), com domínios e relatório por área. |
-| **Revisão** | Cartões com agendamento pela curva do esquecimento de Ebbinghaus. |
-| **Laboratórios** | Terminal Linux dentro da aula, em container descartável, onde `sudo` é liberado porque a máquina é do aluno e some no fim. |
-| **Currículo** | Análise do currículo contra uma vaga, com motor híbrido: a nota é determinística e a leitura qualitativa vem de um modelo de linguagem. |
-| **Comunidade** | Posts, comentários, curtidas e perfis públicos. |
-| **Progresso** | XP, ofensiva, conquistas, ranking por liga e certificado de conclusão com validação pública. |
-| **Estúdio** | Painel administrativo para autorar trilhas, questões, desafios, simulados e comunicados. |
+| **Tracks and lessons** | Block-based content (text, table, code, quote) with a quiz at the end of each lesson. Programming tracks have per-language paths, with the same lesson in JavaScript and Python. |
+| **Roadmaps** | Career sequences of tracks, from the first `if` up to specialist level. |
+| **Challenges** | Daily coding exercises, run and graded against a test suite. |
+| **Practice exams** | Exams in the format of real certifications (AWS, Azure, ISTQB, PSPO I, among others), with domains, a per-area report, a practice mode and favorites. |
+| **Review** | Flashcards scheduled along Ebbinghaus's forgetting curve. |
+| **Interviews** | Technical interview questions by topic and level, from intern to senior, as cards with an answer outline. |
+| **Labs** | A Linux terminal inside the lesson, in a disposable container, where `sudo` is allowed because the machine belongs to the student and is gone at the end. |
+| **Resume** | Resume analysis against a job posting, with a hybrid engine: the score is deterministic and the qualitative reading comes from a language model. A supporter benefit. |
+| **Community** | Posts, comments, likes and public profiles. |
+| **Progress** | XP, streak, achievements, league ranking and a completion certificate with public validation. |
+| **Raffles** | Prize raffles among students, with sign-up on the platform and the draw run from the Estúdio. |
+| **Support** | An optional Pix subscription that helps keep the platform running, with a badge on the profile and in the ranking, an accent color, a custom background and the resume analysis. |
+| **Estúdio** | Admin panel to author tracks, questions, challenges, practice exams, roadmaps, raffles and announcements. |
 
-## Tecnologias
+## Tech stack
 
 **Backend**
 
-- **Node 22** rodando TypeScript nativamente, sem passo de build. Não há `tsc` no caminho de execução, só para conferência de tipos.
-- **Express 5** e **Zod** para validação de entrada.
-- **Drizzle ORM** sobre **PostgreSQL 16**, com migrations versionadas em `backend/drizzle`.
-- **JWT** com refresh token em cookie httpOnly, senhas em **Argon2** (migrando do bcrypt no login).
-- **helmet**, **express-rate-limit** e bloqueio de conta por tentativas.
-- **ws** para o terminal dos laboratórios, **pdfkit** e **qrcode** para os certificados, **nodemailer** para email, **unpdf** para ler o currículo enviado.
+- **Node 22** running TypeScript natively, with no build step. There is no `tsc` in the execution path, only for type checking.
+- **Express 5** and **Zod** for input validation.
+- **Drizzle ORM** on **PostgreSQL 16**, with versioned migrations in `backend/drizzle`.
+- **JWT** with a refresh token in an httpOnly cookie, passwords in **Argon2** (migrating from bcrypt on login).
+- **helmet**, **express-rate-limit** and account lockout after failed attempts.
+- **ws** for the lab terminal, **pdfkit** and **qrcode** for the certificates, **nodemailer** for email, **unpdf** to read the uploaded resume, and **@anthropic-ai/sdk** for the resume analysis model (in production, DeepSeek's compatible endpoint).
 
 **Frontend**
 
-- **React 19** com **Vite** e **React Router 7**.
-- **CodeMirror** no editor dos desafios, **xterm.js** no terminal dos laboratórios.
-- **react-markdown** com **remark-gfm**, **remark-math** e **KaTeX** para o conteúdo das aulas, o que permite fórmula matemática nas trilhas de cálculo.
-- CSS próprio com tokens de tema em `frontend/src/styles/tokens.css`. Sem framework de UI.
+- **React 19** with **Vite** and **React Router 7**.
+- **CodeMirror** in the challenge editor, **xterm.js** in the lab terminal.
+- **react-markdown** with **remark-gfm**, **remark-math** and **KaTeX** for lesson content, which allows math formulas in the calculus tracks.
+- Hand-written CSS with theme tokens in `frontend/src/styles/tokens.css`. No UI framework.
 
-**Infraestrutura**
+**Infrastructure**
 
-- **Docker Compose** para desenvolvimento e produção.
-- **Caddy** como proxy reverso, com TLS automático.
-- **GitHub Actions** para typecheck, testes e deploy.
+- **Docker Compose** for development and production.
+- **Caddy** as the reverse proxy, with automatic TLS.
+- **GitHub Actions** for type checking, tests and deploy.
+- **AWS Lambda** in São Paulo for the external monitor.
 
-## Arquitetura
+## Architecture
 
-O ponto não óbvio é que **o backend nunca executa código de aluno**. Quem faz isso
-são dois serviços separados, e só eles falam com o Docker.
+The non-obvious part is that **the backend never runs student code**. Two separate
+services do that, and they are the only ones that talk to Docker.
 
 ```mermaid
 flowchart LR
-    N[Navegador<br/>React + Vite] -->|HTTP| C[Caddy]
+    N[Browser<br/>React + Vite] -->|HTTP| C[Caddy]
     C --> B[Backend<br/>Express + Drizzle]
-    C --> F[Frontend estático]
+    C --> F[Static frontend]
     N -.->|WebSocket| B
     B --> D[(PostgreSQL)]
     B -->|HTTP| R[Runner]
     B -.->|WebSocket| L[Labs]
-    R -->|container por submissão| RC[desafio-js<br/>desafio-python]
-    L -->|container por sessão| LC[shell descartável]
+    R -->|container per submission| RC[desafio-js<br/>desafio-python]
+    L -->|container per session| LC[disposable shell]
 ```
 
-- **Runner**: recebe o código de uma submissão, sobe um container efêmero com a
-  imagem da linguagem, roda os testes e devolve o resultado. Sem rede e com tempo
-  limitado.
-- **Labs**: entrega um shell por WebSocket. O backend confere de quem é a sessão e
-  emite um ticket que vale 30 segundos e queima no primeiro uso. Detalhes em
+- **Runner**: receives the code of a submission, starts an ephemeral container
+  with the language image, runs the tests and returns the result. No network and
+  a time limit.
+- **Labs**: serves a shell over WebSocket. The backend checks who owns the session
+  and issues a ticket that lasts 30 seconds and burns on first use. Details in
   [`labs/README.md`](labs/README.md).
+- **Monitor**: an external monitor built to run outside the server, on AWS Lambda
+  in São Paulo, and send an email when the site, the API, the database or the
+  backup fails for users in Brazil. Details in [`monitor/README.md`](monitor/README.md).
 
-Essa separação existe para que uma falha de isolamento no código do aluno não
-alcance o banco nem os dados de ninguém.
+This separation exists so that an isolation failure in student code cannot reach
+the database or anyone's data.
 
-## Rodando localmente
+## Running locally
 
-Requisitos: Docker e Docker Compose.
+Requirements: Docker and Docker Compose.
 
 ```bash
 git clone git@github.com:jpavrdev/plataforma-estudos.git
 cd plataforma-estudos
 
-cp backend/.env.example backend/.env   # ajuste DATABASE_URL e JWT_SECRET
+cp backend/.env.example backend/.env   # set DATABASE_URL and JWT_SECRET
 docker compose up -d
 
-# cria as tabelas
+# create the tables
 docker compose exec backend npx drizzle-kit migrate
 ```
 
-| Serviço | Endereço |
+| Service | Address |
 | --- | --- |
 | Frontend | http://localhost:5173 |
 | API | http://localhost:3001 |
 | PostgreSQL | localhost:5432 |
 
-Só `DATABASE_URL` e `JWT_SECRET` são obrigatórias. Todo o resto é opcional e
-degrada com elegância: sem SMTP o link de verificação vai para o log em vez do
-email, sem as variáveis de certificado a emissão fica desligada, sem chave de IA a
-análise de currículo usa apenas o motor determinístico. A lista completa está em
-[`backend/src/config/env.ts`](backend/src/config/env.ts), que é a fonte de verdade.
+Only `DATABASE_URL` and `JWT_SECRET` are required. Everything else is optional and
+degrades gracefully: without SMTP the verification link goes to the log instead of
+an email, without the certificate variables issuing is turned off, and without an
+AI key the resume analysis uses only the deterministic engine. The full list is in
+[`backend/src/config/env.ts`](backend/src/config/env.ts), the source of truth.
 
-Para os desafios e laboratórios funcionarem, as imagens de execução precisam
-existir no daemon:
+For challenges and labs to work, the execution images must exist in the daemon:
 
 ```bash
 bash runner/build-images.sh
 bash labs/build-images.sh
 ```
 
-### Popular com conteúdo
+### Seeding content
 
-Os seeds ficam em `backend/scripts` e são idempotentes: rodar duas vezes não
-duplica nada.
+The seeds live in `backend/scripts` and are idempotent: running them twice does not
+duplicate anything.
 
 ```bash
 docker compose exec backend node scripts/seed-trilha-python.ts
 docker compose exec backend node scripts/seed-flashcards.ts
 ```
 
-## Estrutura
+## Layout
 
 ```
 backend/
-  app.ts            Express, middlewares e montagem das rotas
-  index.ts          servidor HTTP, necessário à parte por causa do WebSocket
-  schema.ts         schema Drizzle, fonte de verdade do banco
-  drizzle/          migrations versionadas
-  scripts/          seeds de conteúdo e scripts de manutenção
+  app.ts            Express, middlewares and route mounting
+  index.ts          HTTP server, separate because of the WebSocket
+  schema.ts         Drizzle schema, the source of truth for the database
+  drizzle/          versioned migrations
+  scripts/          content seeds and maintenance scripts
   src/
-    routes/         14 módulos de rota
-    controllers/    entrada e saída HTTP, sem regra de negócio
-    services/       36 serviços, onde a regra de negócio vive
-    schemas/        validação Zod das requisições
-    middlewares/    autenticação, rate limit, tratamento de erro
-    domain/         cálculos puros (XP, ligas)
-  tests/            testes de integração contra Postgres efêmero
+    routes/         route modules
+    controllers/    HTTP in and out, no business rules
+    services/       where the business rules live
+    schemas/        Zod validation of requests
+    middlewares/    authentication, rate limiting, error handling
+    domain/         pure rules with no I/O (XP, streak, raffle draw, challenge grading)
+  tests/            integration tests against an ephemeral Postgres
 
 frontend/
   src/
-    pages/          36 telas, uma pasta por rota
-    components/     componentes compartilhados
-    contexts/       autenticação, tema, toast
-    services/       clientes HTTP por domínio
-    styles/         CSS por área, com tokens de tema
+    pages/          one folder per screen
+    components/     shared components
+    contexts/       authentication, theme, toast
+    services/       HTTP clients per domain
+    styles/         CSS per area, with theme tokens
 
-runner/             executor isolado dos desafios
-labs/               terminal Linux descartável
-deploy/             Caddyfile e assets de produção
+runner/             isolated challenge executor
+labs/               disposable Linux terminal
+monitor/            external monitor (AWS Lambda)
+deploy/             Caddyfile and production assets
 ```
 
-## Modelo de dados
+## Data model
 
-São 50 tabelas, e quase todas penduram em um de dois eixos: **`users`**, para tudo
-que é do aluno, e **`trails`**, para tudo que é conteúdo. Entender esses dois já
-resolve a leitura do resto.
+There are 55 tables, and almost all of them hang from one of two axes: **`users`**,
+for everything that belongs to the student, and **`trails`**, for everything that is
+content. Understanding these two already makes the rest readable.
 
-| Área | Ancora em | Tabelas |
+| Area | Anchored on | Tables |
 | --- | --- | --- |
-| **Conteúdo** | `trails` | `modules`, `lessons`, `questions`, `question_options`, `tags`, `trail_tags`, `trail_reviews`, `glossary`, `languages` |
-| **Conta** | `users` | `oauth_accounts`, `tokens`, `user_follows` |
-| **Progresso** | ambos | `lessons_progress`, `question_answers`, `achievements`, `user_achievements`, `ranking_snapshots`, `certificates` |
-| **Roadmaps** | ambos | `roadmaps`, `roadmap_stages`, `roadmap_stage_refs`, `roadmap_stage_completions`, `user_roadmaps` |
-| **Simulados** | `users` | `simulados`, `simulado_questions`, `simulado_options`, `simulado_attempts`, `simulado_attempt_questions`, `simulado_attempt_answers` |
-| **Desafios** | `users` | `challenges`, `challenge_tests`, `challenge_submissions`, `challenge_comments` |
-| **Revisão** | ambos | `flashcards`, `user_cards`, `card_reviews`, `card_reports` |
-| **Comunidade** | `users` | `community_posts`, `community_comments`, `community_likes`, `community_comment_likes`, `community_post_tags` |
-| **Operação** | `users` | `subscriptions`, `resume_analyses`, `comunicados`, `comunicado_respostas`, `feature_flags`, `feature_flag_users` |
+| **Content** | `trails` | `modules`, `lessons`, `questions`, `question_options`, `tags`, `trail_tags`, `trail_reviews`, `glossary`, `languages` |
+| **Account** | `users` | `oauth_accounts`, `tokens`, `user_follows` |
+| **Progress** | both | `lessons_progress`, `question_answers`, `achievements`, `user_achievements`, `ranking_snapshots`, `certificates` |
+| **Roadmaps** | both | `roadmaps`, `roadmap_stages`, `roadmap_stage_refs`, `roadmap_stage_completions`, `user_roadmaps` |
+| **Practice exams** | `users` | `simulados`, `simulado_questions`, `simulado_options`, `simulado_attempts`, `simulado_attempt_questions`, `simulado_attempt_answers`, `simulado_favoritos` |
+| **Challenges** | `users` | `challenges`, `challenge_tests`, `challenge_submissions`, `challenge_comments` |
+| **Review** | both | `flashcards`, `user_cards`, `card_reviews`, `card_reports` |
+| **Interviews** | standalone content | `interview_topics`, `interview_cards` |
+| **Community** | `users` | `community_posts`, `community_comments`, `community_likes`, `community_comment_likes`, `community_post_tags` |
+| **Raffles** | `users` | `sorteios`, `sorteio_participacoes` |
+| **Operations** | `users` | `subscriptions`, `resume_analyses`, `comunicados`, `comunicado_respostas`, `feature_flags`, `feature_flag_users` |
 
-As três áreas marcadas com "ambos" pertencem ao aluno, mas cobram conteúdo que vem
-da trilha. Os diagramas abaixo abrem as três partes onde a estrutura não é óbvia.
+The three areas marked "both" belong to the student but draw on content that comes
+from the track. Interview questions are standalone content on purpose: what comes
+up in an interview does not follow the order of any track. The diagrams below open
+up the three parts where the structure is not obvious.
 
-### Conteúdo e progresso
+### Content and progress
 
-A espinha do produto. O aluno lê a aula, responde o quiz, e os dois viram
-progresso.
+The backbone of the product. The student reads the lesson, answers the quiz, and
+both become progress.
 
 ```mermaid
 erDiagram
-    trails    ||--o{ modules           : "tem"
-    trails    ||--o{ lessons           : "tem"
-    modules   ||--o{ lessons           : "agrupa"
-    lessons   ||--o{ questions         : "quiz de"
-    questions ||--o{ question_options  : "alternativas"
+    trails    ||--o{ modules           : "has"
+    trails    ||--o{ lessons           : "has"
+    modules   ||--o{ lessons           : "groups"
+    lessons   ||--o{ questions         : "quiz of"
+    questions ||--o{ question_options  : "options"
 
-    users     ||--o{ lessons_progress  : "conclui"
-    lessons   ||--o{ lessons_progress  : "concluida em"
-    users     ||--o{ question_answers  : "responde"
-    questions ||--o{ question_answers  : "respondida em"
-    question_options ||--o{ question_answers : "escolhida"
+    users     ||--o{ lessons_progress  : "completes"
+    lessons   ||--o{ lessons_progress  : "completed in"
+    users     ||--o{ question_answers  : "answers"
+    questions ||--o{ question_answers  : "answered in"
+    question_options ||--o{ question_answers : "chosen"
 
-    users     ||--o{ certificates      : "emite"
-    trails    ||--o{ certificates      : "de"
+    users     ||--o{ certificates      : "earns"
+    trails    ||--o{ certificates      : "for"
 ```
 
-Uma conclusão por aluno e aula, uma resposta por aluno e questão, e um certificado
-por aluno e trilha. As três são restrições únicas no banco, não convenção.
+One completion per student and lesson, one answer per student and question, and one
+certificate per student and track. All three are unique constraints in the
+database, not conventions.
 
-### Simulados
+### Practice exams
 
-A parte com mais tabelas, porque uma tentativa **congela** as questões sorteadas.
-Sem isso, editar o simulado depois reescreveria provas já feitas.
+The part with the most tables, because an attempt **freezes** the questions it
+drew. Without that, editing the exam later would rewrite exams already taken.
 
 ```mermaid
 erDiagram
-    simulados         ||--o{ simulado_questions : "tem"
-    simulado_questions ||--o{ simulado_options  : "alternativas"
+    simulados         ||--o{ simulado_questions : "has"
+    simulado_questions ||--o{ simulado_options  : "options"
 
-    users     ||--o{ simulado_attempts : "faz"
-    simulados ||--o{ simulado_attempts : "de"
+    users     ||--o{ simulado_attempts : "takes"
+    simulados ||--o{ simulado_attempts : "of"
 
-    simulado_attempts  ||--o{ simulado_attempt_questions : "questões sorteadas"
-    simulado_questions ||--o{ simulado_attempt_questions : "sorteada em"
-    simulado_attempts  ||--o{ simulado_attempt_answers   : "respostas"
-    simulado_questions ||--o{ simulado_attempt_answers   : "respondida em"
-    simulado_options   ||--o{ simulado_attempt_answers   : "marcada"
+    simulado_attempts  ||--o{ simulado_attempt_questions : "drawn questions"
+    simulado_questions ||--o{ simulado_attempt_questions : "drawn in"
+    simulado_attempts  ||--o{ simulado_attempt_answers   : "answers"
+    simulado_questions ||--o{ simulado_attempt_answers   : "answered in"
+    simulado_options   ||--o{ simulado_attempt_answers   : "marked"
 ```
 
-### Revisão espaçada
+### Spaced repetition
 
-Linha cheia é chave estrangeira de verdade. Linha tracejada é relacionamento que
-existe na aplicação mas **não** no banco, e o motivo está logo abaixo.
+A solid line is a real foreign key. A dashed line is a relationship that exists in
+the application but **not** in the database, and the reason is right below.
 
 ```mermaid
 erDiagram
-    lessons ||--o{ flashcards   : "cartões da aula"
-    users   ||--o{ user_cards   : "baralho"
-    users   ||--o{ card_reviews : "cada resposta"
-    users   ||--o{ card_reports : "erro reportado"
+    lessons ||--o{ flashcards   : "lesson cards"
+    users   ||--o{ user_cards   : "deck"
+    users   ||--o{ card_reviews : "each answer"
+    users   ||--o{ card_reports : "reported error"
 
     flashcards ||..o{ user_cards : "origem = flashcard"
     glossary   ||..o{ user_cards : "origem = glossario"
 ```
 
-`user_cards`, `card_reviews` e `card_reports` são **polimórficas**: a coluna
-`origem_id` aponta para `flashcards.id` ou para `glossary.id` conforme o valor de
-`origem`, e por isso **não tem chave estrangeira**. Quem for procurar esse
-relacionamento no banco não vai encontrar. A unicidade é
+`user_cards`, `card_reviews` and `card_reports` are **polymorphic**: the `origem_id`
+column points to `flashcards.id` or to `glossary.id` depending on the value of
+`origem`, and that is why it **has no foreign key**. Whoever looks for this
+relationship in the database will not find it. The uniqueness is
 `(user_id, origem, origem_id)`.
 
-### Notas de modelagem
+### Modeling notes
 
-- **`lessons.trail_id` é denormalizado.** A aula já pertence à trilha pelo módulo, mas a coluna direta evita um join em consulta quente.
-- **Postgres não indexa chave estrangeira sozinho.** Coluna de FK nova pede um `index()` declarado no schema.
-- **`community_comments.parent_id` aponta para a própria tabela**, com thread de um nível só.
+- **`lessons.trail_id` is denormalized.** The lesson already belongs to the track through its module, but the direct column avoids a join in a hot query.
+- **Postgres does not index foreign keys on its own.** A new FK column needs an `index()` declared in the schema.
+- **`community_comments.parent_id` points to the same table**, with single-level threads.
 
-Os diagramas acima são um mapa, não a especificação. A fonte de verdade é
+The diagrams above are a map, not the specification. The source of truth is
 [`backend/schema.ts`](backend/schema.ts).
 
 ## Migrations
 
-Depois de alterar o `schema.ts`:
+After changing `schema.ts`:
 
 ```bash
-docker compose exec backend npx drizzle-kit generate   # gera a migration
-docker compose exec backend npx drizzle-kit migrate    # aplica
+docker compose exec backend npx drizzle-kit generate   # generate the migration
+docker compose exec backend npx drizzle-kit migrate    # apply it
 ```
 
-Sempre confira a migration gerada antes de commitar. Renomear valor de enum, por
-exemplo, o drizzle-kit resolve derrubando e recriando o tipo, o que apaga dados; o
-certo nesse caso é escrever `ALTER TYPE ... RENAME VALUE` à mão.
+Always review the generated migration before committing. Renaming an enum value,
+for example, is something drizzle-kit solves by dropping and recreating the type,
+which deletes data; the right way in that case is to write
+`ALTER TYPE ... RENAME VALUE` by hand.
 
-## Testes
+## Tests
 
 ```bash
 cd backend
-npm run test:unit                  # unitários, sem banco
-bash tests/run-integration.sh      # integração
+npm run test:unit                  # unit tests, no database
+bash tests/run-integration.sh      # integration tests
 ```
 
-Os testes de integração sobem um Postgres efêmero em container, aplicam as
-migrations e derrubam tudo ao final.
+The integration tests start an ephemeral Postgres in a container, apply the
+migrations and tear everything down at the end.
 
-> **Atenção:** `npm test` na raiz do backend roda a suíte inteira contra o
-> `DATABASE_URL` do seu ambiente e **trunca as tabelas**. Para integração use
-> sempre o `run-integration.sh`, que isola o banco.
+> **Warning:** `npm test` in the backend root runs the whole suite against the
+> `DATABASE_URL` of your environment and **truncates the tables**. For integration
+> tests, always use `run-integration.sh`, which isolates the database.
 
-## CI e deploy
+## CI and deploy
 
-`.github/workflows/pipeline.yml` roda a cada push em `develop` e `main`:
+`.github/workflows/pipeline.yml` runs on every push and pull request to `develop`
+and `main`:
 
-1. **backend-tests**: typecheck, testes unitários, migrations e testes de integração.
-2. **frontend-build**: typecheck e build de produção.
-3. **deploy**: só em `main`, publica na VPS por SSH e aplica as migrations.
+1. **backend-tests**: type checking, unit tests, migrations and integration tests.
+2. **frontend-build**: type checking and production build.
+3. **monitor**: type checking and tests of the external monitor and of its infrastructure.
+4. **deploy**: only on pushes to `main`. It builds the images on the server over SSH, applies the migrations, runs the content seeds and corrections, restarts the services and checks the site's health.
 
-O fluxo de branches é `feature` → `develop` → `main`.
+The branch flow is `feature` → `develop` → `main`.
 
-## Contribuindo
+## Contributing
 
-- Mensagens de commit e títulos de PR começam com prefixo convencional (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`) e são escritas em português.
-- Antes de abrir PR: `npm run lint` e `npm run format:check` nos dois projetos.
-- Encontrou uma falha de segurança? Não abra issue pública. O caminho está em [SECURITY.md](SECURITY.md).
+- Code is written in English: file names, functions, variables, routes, API fields and comments. What the user reads (screens, error messages, emails) stays in Portuguese. Older code is still in Portuguese.
+- Commit messages and PR titles start with a conventional prefix (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`) and are written in Portuguese.
+- Before opening a PR: `npm run lint` and `npm run format:check` in both projects.
+- Found a security issue? Do not open a public issue. The process is in [SECURITY.md](SECURITY.md) (in Portuguese).
 
-## Licença
+## License
 
-Projeto pessoal, ainda sem licença definida. Enquanto isso, todos os direitos são
-reservados: leia, estude e aprenda à vontade, mas fale comigo antes de reutilizar o
-conteúdo ou o código em outro lugar.
+A personal project, still without a defined license. Until then, all rights are
+reserved: read it, study it and learn from it freely, but talk to me before reusing
+the content or the code elsewhere.
