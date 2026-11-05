@@ -8,42 +8,42 @@ import {
     users,
 } from "../../schema.ts";
 import { DEFAULT_LOCALE, type Locale } from "../i18n/locale.ts";
-import type { DadosUsuario, Provedor } from "./oauth.service.ts";
+import type { ProviderUser, Provider } from "./oauth.service.ts";
 
-// Acha ou cria o usuário de um login social. Uma conta com o mesmo email que
-// nunca foi verificada pode ter sido criada por outra pessoa, para tomar a conta
-// quando o dono do email entrar: ao adotá-la, o que foi preenchido no cadastro
-// (senha, telefone, perfil, 2FA) e as sessões abertas são descartados, e o aluno
-// completa o perfil de novo.
+// Finds or creates the user of a social login. An account with the same email that
+// was never verified may have been created by someone else, to take over the account
+// when the email owner signs in: on adopting it, what the sign-up filled in
+// (password, phone, profile, 2FA) and the open sessions are dropped, and the student
+// completes the profile again.
 // The language is the one of the screen where the social login started, and it
 // only goes into accounts created or adopted here.
-export async function vincularContaSocial(
-    provider: Provedor,
-    dados: DadosUsuario,
+export async function linkSocialAccount(
+    provider: Provider,
+    providerUser: ProviderUser,
     locale: Locale = DEFAULT_LOCALE,
 ) {
     return db.transaction(async (tx) => {
-        const [vinculo] = await tx
+        const [link] = await tx
             .select({ userId: oauthAccounts.userId })
             .from(oauthAccounts)
             .where(
                 and(
                     eq(oauthAccounts.provider, provider),
-                    eq(oauthAccounts.providerId, dados.providerId),
+                    eq(oauthAccounts.providerId, providerUser.providerId),
                 ),
             );
-        if (vinculo) {
-            const [user] = await tx.select().from(users).where(eq(users.id, vinculo.userId));
+        if (link) {
+            const [user] = await tx.select().from(users).where(eq(users.id, link.userId));
             return user;
         }
 
-        let [user] = await tx.select().from(users).where(eq(users.email, dados.email));
+        let [user] = await tx.select().from(users).where(eq(users.email, providerUser.email));
         if (!user) {
             [user] = await tx
                 .insert(users)
                 .values({
-                    name: dados.name,
-                    email: dados.email,
+                    name: providerUser.name,
+                    email: providerUser.email,
                     emailVerifiedAt: new Date(),
                     locale,
                 })
@@ -57,7 +57,7 @@ export async function vincularContaSocial(
             [user] = await tx
                 .update(users)
                 .set({
-                    name: dados.name,
+                    name: providerUser.name,
                     username: null,
                     passwordHash: null,
                     phone: null,
@@ -73,7 +73,7 @@ export async function vincularContaSocial(
         }
         await tx
             .insert(oauthAccounts)
-            .values({ userId: user.id, provider, providerId: dados.providerId })
+            .values({ userId: user.id, provider, providerId: providerUser.providerId })
             .onConflictDoNothing();
         return user;
     });

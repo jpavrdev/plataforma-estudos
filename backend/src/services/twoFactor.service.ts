@@ -148,7 +148,7 @@ export const twoFactorService = {
             await tx
                 .delete(tokens)
                 .where(and(eq(tokens.userId, userId), eq(tokens.type, "refresh")));
-            const session = await authService.gerarEGravarTokens(userId, tx, { mfa: true });
+            const session = await authService.issueSessionTokens(userId, tx, { mfa: true });
             return { recoveryCodes, session };
         });
     },

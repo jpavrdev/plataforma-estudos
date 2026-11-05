@@ -12,7 +12,7 @@ import {
     forgotPasswordOtp,
     resetPasswordOtp,
 } from "../controllers/AuthController.ts";
-import { iniciarOAuth, callbackOAuth } from "../controllers/OAuthController.ts";
+import { startOAuth, oauthCallback } from "../controllers/OAuthController.ts";
 import {
     loginLimiter,
     registerLimiter,
@@ -40,8 +40,8 @@ router.post("/forgot-password-otp", forgotPasswordOtpLimiter, forgotPasswordOtp)
 router.post("/reset-password-otp", resetPasswordLimiter, resetPasswordOtp);
 router.post("/resend-verification", resendVerificationLimiter, resendVerification);
 
-// Login social (OAuth): inicia o fluxo e trata o retorno do provedor.
-router.get("/auth/:provider", iniciarOAuth);
-router.get("/auth/:provider/callback", callbackOAuth);
+// Social login (OAuth): starts the flow and handles the provider's return.
+router.get("/auth/:provider", startOAuth);
+router.get("/auth/:provider/callback", oauthCallback);
 
 export default router;

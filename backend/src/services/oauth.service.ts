@@ -1,23 +1,23 @@
 import { env } from "../config/env.ts";
 
-export type Provedor = "google" | "github";
+export type Provider = "google" | "github";
 
-export interface DadosUsuario {
+export interface ProviderUser {
     providerId: string;
     email: string;
     name: string;
 }
 
-interface ConfigProvedor {
+interface ProviderConfig {
     clientId?: string;
     clientSecret?: string;
     authorizeUrl: string;
     tokenUrl: string;
     scope: string;
-    buscarUsuario: (accessToken: string) => Promise<DadosUsuario | null>;
+    buscarUsuario: (accessToken: string) => Promise<ProviderUser | null>;
 }
 
-const CONFIGS: Record<Provedor, ConfigProvedor> = {
+const CONFIGS: Record<Provider, ProviderConfig> = {
     google: {
         clientId: env.GOOGLE_CLIENT_ID,
         clientSecret: env.GOOGLE_CLIENT_SECRET,
@@ -35,7 +35,7 @@ const CONFIGS: Record<Provedor, ConfigProvedor> = {
                 email_verified?: boolean;
                 name?: string;
             };
-            // Só aceita email já verificado pelo provedor.
+            // Only accepts an email the provider already verified.
             if (!u.sub || !u.email || u.email_verified === false) return null;
             return { providerId: u.sub, email: u.email.toLowerCase(), name: u.name || u.email };
         },
@@ -61,7 +61,7 @@ const CONFIGS: Record<Provedor, ConfigProvedor> = {
                 email?: string;
             };
             if (!u.id) return null;
-            // O email do GitHub pode ser privado: busca o verificado em /user/emails.
+            // The GitHub email may be private: it fetches the verified one from /user/emails.
             let email = u.email ?? null;
             const er = await fetch("https://api.github.com/user/emails", { headers });
             if (er.ok) {
@@ -70,9 +70,9 @@ const CONFIGS: Record<Provedor, ConfigProvedor> = {
                     primary: boolean;
                     verified: boolean;
                 }[];
-                const escolhido =
+                const chosen =
                     emails.find((e) => e.primary && e.verified) ?? emails.find((e) => e.verified);
-                if (escolhido) email = escolhido.email;
+                if (chosen) email = chosen.email;
             }
             if (!email) return null;
             return {
@@ -84,20 +84,20 @@ const CONFIGS: Record<Provedor, ConfigProvedor> = {
     },
 };
 
-export function provedorValido(p: string): p is Provedor {
+export function isValidProvider(p: string): p is Provider {
     return p === "google" || p === "github";
 }
 
-export function provedorConfigurado(p: Provedor): boolean {
+export function isProviderConfigured(p: Provider): boolean {
     const c = CONFIGS[p];
     return !!c.clientId && !!c.clientSecret;
 }
 
-function redirectUri(provider: Provedor): string {
+function redirectUri(provider: Provider): string {
     return `${env.OAUTH_CALLBACK_BASE}/auth/${provider}/callback`;
 }
 
-export function urlAutorizacao(provider: Provedor, state: string): string {
+export function authorizationUrl(provider: Provider, state: string): string {
     const c = CONFIGS[provider];
     const params = new URLSearchParams({
         client_id: c.clientId!,
@@ -113,10 +113,10 @@ export function urlAutorizacao(provider: Provedor, state: string): string {
     return `${c.authorizeUrl}?${params.toString()}`;
 }
 
-export async function trocarCodePorUsuario(
-    provider: Provedor,
+export async function exchangeCodeForUser(
+    provider: Provider,
     code: string,
-): Promise<DadosUsuario | null> {
+): Promise<ProviderUser | null> {
     const c = CONFIGS[provider];
     const tr = await fetch(c.tokenUrl, {
         method: "POST",

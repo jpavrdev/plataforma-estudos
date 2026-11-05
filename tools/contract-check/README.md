@@ -19,7 +19,7 @@ must leave these contracts exactly as they were on `develop`:
 | `contract.mjs` | Writes the static contract of a checkout (routes, property names, `/` paths, localStorage keys, schema strings, env vars) into a folder, one sorted file per aspect. |
 | `record-shapes.mjs` | Preload that records the shape of every JSON response (method, route, status, each key path and its type). |
 | `run-shapes.sh` | Runs the backend integration suite with the recorder and writes the sorted shapes. Two runs of the same code give zero differences. |
-| `rename.mjs` | Semantic rename of exported symbols with ts-morph, like the editor's "Rename Symbol". Shorthand properties keep their keys. |
+| `rename.mjs` | Semantic rename of exported symbols with ts-morph, like the editor's "Rename Symbol". Shorthand properties keep their keys. A member of an exported object goes as `object.member` (for services written as objects, like `authService`). |
 | `rename-locals.mjs` | Same, for every declaration inside the given files (variables, parameters, local functions, types), in any scope. `--list` prints the names first. It does not check for shadowing, so new names must not collide with names in scope. |
 
 ## Checking a branch
@@ -39,6 +39,11 @@ bash run-shapes.sh <repo>/backend /tmp/contract-branch/shapes.txt
 
 for f in /tmp/contract-base/*.txt; do diff "$f" "/tmp/contract-branch/$(basename "$f")"; done
 ```
+
+Two traps the tools do not cover: a name destructured from a dynamic `import()` and
+returned as a shorthand property keeps the old name in the shorthand (the typecheck
+points it out), and a file rename must update only import paths, never a blanket
+`sed`: the content seeds carry code samples as text, with paths that look like ours.
 
 Every file must match. The only accepted difference is an import path inside
 `schema.ts` (it shows up in `db.txt`) when a module it imports is renamed. Also run

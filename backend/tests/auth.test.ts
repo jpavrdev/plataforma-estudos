@@ -6,7 +6,7 @@ import { limparBanco } from "./helpers/db.ts";
 let server: Awaited<ReturnType<typeof startTestServer>>;
 
 let seq = 0;
-const novoUsuario = (over: Record<string, unknown> = {}) => ({
+const newUser = (over: Record<string, unknown> = {}) => ({
     name: "Maria Silva",
     email: `maria_${++seq}_${Math.round(performance.now() * 1000)}@email.com`,
     username: `maria_${seq}`,
@@ -17,8 +17,8 @@ const novoUsuario = (over: Record<string, unknown> = {}) => ({
     ...over,
 });
 
-// Marca o email como verificado direto no banco, para testar o login.
-async function verificarEmail(email: string) {
+// Marks the email as verified straight in the database, to test the login.
+async function markEmailVerified(email: string) {
     const { db } = await import("../db.ts");
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
@@ -36,73 +36,73 @@ beforeEach(async () => {
 });
 
 describe("POST /register", () => {
-    test("cria usuário com os campos obrigatórios e retorna 201", async () => {
-        const dados = novoUsuario();
-        const res = await server.request("POST", "/register", { body: dados });
+    test("creates a user with the required fields and returns 201", async () => {
+        const data = newUser();
+        const res = await server.request("POST", "/register", { body: data });
 
         assert.equal(res.status, 201);
-        assert.equal(res.body.user.email, dados.email);
-        // Não deve vazar hash de senha nem logar automaticamente (fluxo hard)
+        assert.equal(res.body.user.email, data.email);
+        // It must not leak the password hash or sign in automatically (hard flow)
         assert.equal(res.body.user.passwordHash, undefined);
         assert.equal(res.body.token, undefined);
         assert.equal(extractRefreshCookie(res.setCookie), null);
     });
 
-    test("rejeita cadastro sem campos obrigatórios (400)", async () => {
+    test("rejects a sign-up without the required fields (400)", async () => {
         const res = await server.request("POST", "/register", {
             body: { name: "X", email: "x@email.com", password: "senhaforte123" },
         });
         assert.equal(res.status, 400);
     });
 
-    test("rejeita email duplicado", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        // Mesmo email, username diferente: deve barrar pela checagem de email.
+    test("rejects a duplicate email", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        // Same email, different username: the email check has to block it.
         const res = await server.request("POST", "/register", {
-            body: novoUsuario({ email: dados.email }),
+            body: newUser({ email: data.email }),
         });
         assert.equal(res.status, 409);
     });
 });
 
 describe("POST /login", () => {
-    test("bloqueia login com email não verificado (403)", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
+    test("blocks login with an unverified email (403)", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
 
         const res = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
         assert.equal(res.status, 403);
         assert.equal(extractRefreshCookie(res.setCookie), null);
     });
 
-    test("permite login após verificar o email (200 + cookie)", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
+    test("allows login after verifying the email (200 + cookie)", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
 
         const res = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
         assert.equal(res.status, 200);
-        assert.ok(res.body.token, "deve retornar access token");
-        assert.ok(extractRefreshCookie(res.setCookie), "deve setar cookie de refresh");
+        assert.ok(res.body.token, "must return an access token");
+        assert.ok(extractRefreshCookie(res.setCookie), "must set the refresh cookie");
     });
 
-    test("rejeita senha errada (401)", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
+    test("rejects a wrong password (401)", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
 
         const res = await server.request("POST", "/login", {
-            body: { email: dados.email, password: "senhaerrada999" },
+            body: { email: data.email, password: "senhaerrada999" },
         });
         assert.equal(res.status, 401);
     });
 
-    test("rejeita usuário inexistente (401)", async () => {
+    test("rejects a missing user (401)", async () => {
         const res = await server.request("POST", "/login", {
             body: { email: "naoexiste@email.com", password: "senhaforte123" },
         });
@@ -110,9 +110,9 @@ describe("POST /login", () => {
     });
 });
 
-describe("Lockout de conta", () => {
-    // Lê o estado de lockout direto do banco.
-    async function estadoLock(email: string) {
+describe("Account lockout", () => {
+    // Reads the lockout state straight from the database.
+    async function lockState(email: string) {
         const { db } = await import("../db.ts");
         const { users } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
@@ -123,85 +123,85 @@ describe("Lockout de conta", () => {
         return u;
     }
 
-    test("trava a conta com 429 após 5 senhas erradas", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
+    test("locks the account with 429 after 5 wrong passwords", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
 
-        // 5 tentativas erradas: as 4 primeiras 401, a 5a trava
+        // 5 wrong attempts: the first 4 get 401, the 5th locks
         for (let i = 0; i < 5; i++) {
             await server.request("POST", "/login", {
-                body: { email: dados.email, password: "errada999" },
+                body: { email: data.email, password: "errada999" },
             });
         }
 
-        // 6a tentativa (mesmo com a senha CERTA) deve bater no lock -> 429
+        // 6th attempt (even with the RIGHT password) must hit the lock -> 429
         const res = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
         assert.equal(res.status, 429);
 
-        const estado = await estadoLock(dados.email);
+        const state = await lockState(data.email);
         assert.ok(
-            estado.lockedUntil && estado.lockedUntil > new Date(),
+            state.lockedUntil && state.lockedUntil > new Date(),
             "lockedUntil deve estar no futuro",
         );
     });
 
-    test("login bem-sucedido zera o contador de tentativas", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
+    test("a successful login resets the attempt counter", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
 
-        // 2 erros (abaixo do limite), depois acerta
+        // 2 mistakes (below the limit), then the right one
         await server.request("POST", "/login", {
-            body: { email: dados.email, password: "errada1" },
+            body: { email: data.email, password: "errada1" },
         });
         await server.request("POST", "/login", {
-            body: { email: dados.email, password: "errada2" },
+            body: { email: data.email, password: "errada2" },
         });
 
-        let estado = await estadoLock(dados.email);
-        assert.equal(estado.tentativas, 2);
+        let state = await lockState(data.email);
+        assert.equal(state.tentativas, 2);
 
         const ok = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
         assert.equal(ok.status, 200);
 
-        estado = await estadoLock(dados.email);
-        assert.equal(estado.tentativas, 0);
-        assert.equal(estado.lockedUntil, null);
+        state = await lockState(data.email);
+        assert.equal(state.tentativas, 0);
+        assert.equal(state.lockedUntil, null);
     });
 
-    test("lockout expirado permite login novamente", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
+    test("an expired lockout allows login again", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
 
-        // Trava manualmente com lockedUntil no PASSADO (simula lock expirado)
+        // Locks by hand with lockedUntil in the PAST (simulates an expired lock)
         const { db } = await import("../db.ts");
         const { users } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
         await db
             .update(users)
             .set({ lockedUntil: new Date(Date.now() - 1000), failedLoginAttempts: 5 })
-            .where(eq(users.email, dados.email));
+            .where(eq(users.email, data.email));
 
-        // Lock no passado nao bloqueia: login com senha certa deve funcionar
+        // A lock in the past does not block: login with the right password must work
         const res = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
         assert.equal(res.status, 200);
     });
 });
 
 describe("POST /verify-email", () => {
-    test("verifica email com token válido e libera o login", async () => {
-        const dados = novoUsuario();
-        // Captura o token puro interceptando o emailService via log não é trivial;
-        // então geramos um token de verificação diretamente pelo service.
-        await server.request("POST", "/register", { body: dados });
+    test("verifies the email with a valid token and allows login", async () => {
+        const data = newUser();
+        // Capturing the raw token by intercepting the emailService through the log is not
+        // simple, so the verification token comes straight from the service.
+        await server.request("POST", "/register", { body: data });
 
         const { authService } = await import("../src/services/auth.service.ts");
         const { db } = await import("../db.ts");
@@ -210,29 +210,29 @@ describe("POST /verify-email", () => {
         const [u] = await db
             .select({ id: users.id })
             .from(users)
-            .where(eq(users.email, dados.email));
-        const token = await authService.gerarTokenVerificacao(u.id);
+            .where(eq(users.email, data.email));
+        const token = await authService.createVerificationToken(u.id);
 
         const res = await server.request("POST", "/verify-email", { body: { token } });
         assert.equal(res.status, 200);
 
-        // Agora o login deve funcionar
+        // Now the login must work
         const login = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
         assert.equal(login.status, 200);
     });
 
-    test("rejeita token inválido (400)", async () => {
+    test("rejects an invalid token (400)", async () => {
         const res = await server.request("POST", "/verify-email", {
             body: { token: "lixoinvalido" },
         });
         assert.equal(res.status, 400);
     });
 
-    test("rejeita reuso do mesmo token (400)", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
+    test("rejects reusing the same token (400)", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
         const { authService } = await import("../src/services/auth.service.ts");
         const { db } = await import("../db.ts");
         const { users } = await import("../schema.ts");
@@ -240,53 +240,53 @@ describe("POST /verify-email", () => {
         const [u] = await db
             .select({ id: users.id })
             .from(users)
-            .where(eq(users.email, dados.email));
-        const token = await authService.gerarTokenVerificacao(u.id);
+            .where(eq(users.email, data.email));
+        const token = await authService.createVerificationToken(u.id);
 
         await server.request("POST", "/verify-email", { body: { token } });
-        const segundo = await server.request("POST", "/verify-email", { body: { token } });
-        assert.equal(segundo.status, 400);
+        const second = await server.request("POST", "/verify-email", { body: { token } });
+        assert.equal(second.status, 400);
     });
 });
 
-// Helper: registra, verifica e loga, devolvendo o cookie de refresh.
-async function usuarioLogado(dados = novoUsuario()) {
-    await server.request("POST", "/register", { body: dados });
-    await verificarEmail(dados.email as string);
+// Helper: signs up, verifies and signs in, returning the refresh cookie.
+async function signedInUser(data = newUser()) {
+    await server.request("POST", "/register", { body: data });
+    await markEmailVerified(data.email as string);
     const login = await server.request("POST", "/login", {
-        body: { email: dados.email, password: dados.password },
+        body: { email: data.email, password: data.password },
     });
-    return { dados, cookie: extractRefreshCookie(login.setCookie), token: login.body.token };
+    return { dados: data, cookie: extractRefreshCookie(login.setCookie), token: login.body.token };
 }
 
 describe("POST /refresh", () => {
-    test("renova o token com cookie válido (200 + novo cookie)", async () => {
-        const { cookie } = await usuarioLogado();
+    test("renews the token with a valid cookie (200 + new cookie)", async () => {
+        const { cookie } = await signedInUser();
         const res = await server.request("POST", "/refresh", { cookie: cookie! });
         assert.equal(res.status, 200);
         assert.ok(res.body.token);
         assert.ok(extractRefreshCookie(res.setCookie));
     });
 
-    test("sem cookie retorna 401 (não 500)", async () => {
+    test("without a cookie returns 401 (not 500)", async () => {
         const res = await server.request("POST", "/refresh", {});
         assert.equal(res.status, 401);
     });
 
-    test("detecta reuso de token rotacionado", async () => {
-        const { cookie } = await usuarioLogado();
-        // Primeiro refresh: consome o cookie original e gera um novo
+    test("detects reuse of a rotated token", async () => {
+        const { cookie } = await signedInUser();
+        // First refresh: uses the original cookie and creates a new one
         const r1 = await server.request("POST", "/refresh", { cookie: cookie! });
         assert.equal(r1.status, 200);
-        // Reusar o cookie ORIGINAL (já rotacionado) deve falhar
+        // Reusing the ORIGINAL cookie (already rotated) must fail
         const r2 = await server.request("POST", "/refresh", { cookie: cookie! });
         assert.equal(r2.status, 401);
     });
 });
 
 describe("POST /logout", () => {
-    test("revoga o refresh token (refresh posterior falha)", async () => {
-        const { cookie } = await usuarioLogado();
+    test("revokes the refresh token (a later refresh fails)", async () => {
+        const { cookie } = await signedInUser();
         const out = await server.request("POST", "/logout", { cookie: cookie! });
         assert.equal(out.status, 204);
 
@@ -295,8 +295,8 @@ describe("POST /logout", () => {
     });
 });
 
-// Promove um usuário a admin direto no banco.
-async function promoverAdmin(email: string) {
+// Promotes a user to admin straight in the database.
+async function promoteToAdmin(email: string) {
     const { db } = await import("../db.ts");
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
@@ -304,108 +304,108 @@ async function promoverAdmin(email: string) {
 }
 
 describe("GET /users (RBAC)", () => {
-    test("usuário comum recebe 403", async () => {
-        const { token } = await usuarioLogado();
+    test("a regular user gets 403", async () => {
+        const { token } = await signedInUser();
         const res = await fetch(`${server.base}/users`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         assert.equal(res.status, 403);
     });
 
-    test("admin recebe 200 e a lista não expõe passwordHash", async () => {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
-        await promoverAdmin(dados.email);
+    test("the admin gets 200 and the list does not expose passwordHash", async () => {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
+        await promoteToAdmin(data.email);
         const login = await server.request("POST", "/login", {
-            body: { email: dados.email, password: dados.password },
+            body: { email: data.email, password: data.password },
         });
 
         const res = await fetch(`${server.base}/users`, {
             headers: { Authorization: `Bearer ${login.body.token}` },
         });
         assert.equal(res.status, 200);
-        const lista = await res.json();
-        assert.ok(Array.isArray(lista));
-        for (const u of lista) {
-            assert.equal(u.passwordHash, undefined, "passwordHash não deve vazar");
+        const userList = await res.json();
+        assert.ok(Array.isArray(userList));
+        for (const u of userList) {
+            assert.equal(u.passwordHash, undefined, "passwordHash must not leak");
         }
     });
 
-    test("sem token retorna 401", async () => {
+    test("without a token returns 401", async () => {
         const res = await fetch(`${server.base}/users`);
         assert.equal(res.status, 401);
     });
 });
 
-// Relato de produção: uma aluna que entrou pelo Google pediu para redefinir a senha,
-// recebeu a mensagem de que o link tinha sido enviado, e nada chegou nunca. O motivo
-// era o pedido ser descartado em silêncio quando a conta não tinha senha para
-// redefinir. Ela não queria redefinir: queria passar a ter uma.
-describe("Recuperação de senha em conta de login social", () => {
-    // Simula quem entrou por provedor: sem senha, e com a conta social vinculada.
-    async function contaSocial(provider = "google") {
-        const dados = novoUsuario();
-        await server.request("POST", "/register", { body: dados });
-        await verificarEmail(dados.email);
+// Reported in production: a student who signed in with Google asked to reset her
+// password, was told the link had been sent, and nothing ever arrived. The request
+// was dropped silently when the account had no password to reset. She did not want
+// to reset one: she wanted to have one.
+describe("Password recovery for a social login account", () => {
+    // Simulates someone who came through a provider: no password, and the social account linked.
+    async function socialAccount(provider = "google") {
+        const data = newUser();
+        await server.request("POST", "/register", { body: data });
+        await markEmailVerified(data.email);
         const { db } = await import("../db.ts");
         const { users, oauthAccounts } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
         const [u] = await db
             .select({ id: users.id })
             .from(users)
-            .where(eq(users.email, dados.email));
+            .where(eq(users.email, data.email));
         await db.update(users).set({ passwordHash: null }).where(eq(users.id, u.id));
         await db.insert(oauthAccounts).values({ userId: u.id, provider, providerId: `id-${u.id}` });
-        return { id: u.id, email: dados.email };
+        return { id: u.id, email: data.email };
     }
 
-    async function tokensDe(userId: string, tipo: string) {
+    async function tokensOf(userId: string, tokenType: string) {
         const { db } = await import("../db.ts");
         const { tokens } = await import("../schema.ts");
         const { and, eq } = await import("drizzle-orm");
         return db
             .select()
             .from(tokens)
-            .where(and(eq(tokens.userId, userId), eq(tokens.type, tipo)));
+            .where(and(eq(tokens.userId, userId), eq(tokens.type, tokenType)));
     }
 
-    test("pedido de conta sem senha passa a gerar o link, em vez de morrer calado", async () => {
-        const conta = await contaSocial();
-        assert.equal((await tokensDe(conta.id, "password_reset")).length, 0);
+    test("a request from an account without a password now creates the link, instead of dying silently", async () => {
+        const account = await socialAccount();
+        assert.equal((await tokensOf(account.id, "password_reset")).length, 0);
 
         const res = await server.request("POST", "/forgot-password", {
-            body: { email: conta.email },
+            body: { email: account.email },
         });
         assert.equal(res.status, 200);
         assert.equal(
-            (await tokensDe(conta.id, "password_reset")).length,
+            (await tokensOf(account.id, "password_reset")).length,
             1,
             "a conta sem senha precisa receber um link para criar uma",
         );
     });
 
-    test("o link cria a senha e libera o login por email", async () => {
-        const conta = await contaSocial();
+    test("the link creates the password and allows email login", async () => {
+        const account = await socialAccount();
         const { authService } = await import("../src/services/auth.service.ts");
-        const token = await authService.gerarTokenResetSenha(conta.id);
+        const token = await authService.createPasswordResetToken(account.id);
 
-        const troca = await server.request("POST", "/reset-password", {
+        const exchange = await server.request("POST", "/reset-password", {
             body: { token, password: "NovaSenha123!" },
         });
-        assert.equal(troca.status, 200);
+        assert.equal(exchange.status, 200);
 
         const login = await server.request("POST", "/login", {
-            body: { email: conta.email, password: "NovaSenha123!" },
+            body: { email: account.email, password: "NovaSenha123!" },
         });
         assert.equal(login.status, 200);
     });
 
-    // Criar senha não pode custar o acesso que ela já tinha.
-    test("criar a senha não desvincula a conta social", async () => {
-        const conta = await contaSocial();
+    // Creating a password must not cost the access she already had.
+    test("creating the password does not unlink the social account", async () => {
+        const account = await socialAccount();
         const { authService } = await import("../src/services/auth.service.ts");
-        const token = await authService.gerarTokenResetSenha(conta.id);
+        const token = await authService.createPasswordResetToken(account.id);
         await server.request("POST", "/reset-password", {
             body: { token, password: "NovaSenha123!" },
         });
@@ -413,35 +413,35 @@ describe("Recuperação de senha em conta de login social", () => {
         const { db } = await import("../db.ts");
         const { oauthAccounts } = await import("../schema.ts");
         const { eq } = await import("drizzle-orm");
-        const vinculos = await db
+        const links = await db
             .select()
             .from(oauthAccounts)
-            .where(eq(oauthAccounts.userId, conta.id));
-        assert.equal(vinculos.length, 1);
-        assert.equal(vinculos[0].provider, "google");
+            .where(eq(oauthAccounts.userId, account.id));
+        assert.equal(links.length, 1);
+        assert.equal(links[0].provider, "google");
     });
 
-    test("o caminho do código de seis dígitos também atende conta sem senha", async () => {
-        const conta = await contaSocial();
+    test("the six-digit code path also serves an account without a password", async () => {
+        const account = await socialAccount();
         const res = await server.request("POST", "/forgot-password-otp", {
-            body: { email: conta.email, canal: "email" },
+            body: { email: account.email, canal: "email" },
         });
         assert.equal(res.status, 200);
-        assert.equal((await tokensDe(conta.id, "password_reset_otp")).length, 1);
+        assert.equal((await tokensOf(account.id, "password_reset_otp")).length, 1);
     });
 
-    // A resposta continua sem revelar se o email tem conta, que é o motivo de ela ser
-    // genérica. O que mudou foi só o que acontece por baixo.
-    test("email sem conta continua sem gerar token e com a mesma resposta", async () => {
-        const conta = await contaSocial();
+    // The answer still does not reveal whether the email has an account, which is why it
+    // is generic. Only what happens underneath changed.
+    test("an email without an account still creates no token and gets the same answer", async () => {
+        const account = await socialAccount();
         const res = await server.request("POST", "/forgot-password", {
             body: { email: `naoexiste_${Date.now()}@email.com` },
         });
         assert.equal(res.status, 200);
 
-        const comConta = await server.request("POST", "/forgot-password", {
-            body: { email: conta.email },
+        const withAccount = await server.request("POST", "/forgot-password", {
+            body: { email: account.email },
         });
-        assert.deepEqual(res.body, comConta.body, "as duas respostas precisam ser iguais");
+        assert.deepEqual(res.body, withAccount.body, "both answers have to be the same");
     });
 });

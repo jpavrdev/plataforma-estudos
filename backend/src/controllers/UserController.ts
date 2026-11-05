@@ -4,14 +4,14 @@ import { users, tokens, twoFactorAuth, languages as languagesTable } from "../..
 import { and, eq, isNull, sql } from "drizzle-orm";
 import {
     updateMeSchema,
-    completarPerfilSchema,
-    metaSemanalSchema,
-    trocarTelefoneSchema,
-    codigoTelefoneSchema,
+    completeProfileSchema,
+    weeklyGoalSchema,
+    changePhoneSchema,
+    phoneCodeSchema,
 } from "../schemas/auth.schema.ts";
 import { authService } from "../services/auth.service.ts";
 import { emailService } from "../services/email.service.ts";
-import { verificarSenha } from "../services/password.service.ts";
+import { verifyPassword } from "../services/password.service.ts";
 import { whatsappService } from "../services/whatsapp.service.ts";
 import { AVATARS_DIR, COVERS_DIR, BACKGROUNDS_DIR } from "../config/paths.ts";
 import { salvarImagem, removerArquivoLocal } from "../services/imagens.ts";
@@ -217,7 +217,7 @@ export const completarPerfil = async (req: Request, res: Response, next: NextFun
         return res.status(401).json({ erro: "Não autenticado" });
     }
     try {
-        const dados = completarPerfilSchema.parse(req.body);
+        const dados = completeProfileSchema.parse(req.body);
         const username = dados.username.toLowerCase();
         const [existeUsername] = await db
             .select({ id: users.id })
@@ -260,7 +260,7 @@ export const trocarTelefone = async (req: Request, res: Response, next: NextFunc
     const userId = req.userId;
     if (!userId) return res.status(401).json({ erro: "Não autenticado" });
     try {
-        const dados = trocarTelefoneSchema.parse(req.body);
+        const dados = changePhoneSchema.parse(req.body);
         const [user] = await db
             .select({
                 email: users.email,
@@ -274,7 +274,7 @@ export const trocarTelefone = async (req: Request, res: Response, next: NextFunc
 
         const senhaConfere =
             !user.passwordHash ||
-            (!!dados.senhaAtual && (await verificarSenha(user.passwordHash, dados.senhaAtual)));
+            (!!dados.senhaAtual && (await verifyPassword(user.passwordHash, dados.senhaAtual)));
         if (!senhaConfere) return res.status(403).json({ erro: "Senha atual incorreta." });
 
         if (user.phone && soDigitos(user.phone) === soDigitos(dados.phone)) {
@@ -329,7 +329,7 @@ export const pedirCodigoTelefone = async (req: Request, res: Response, next: Nex
         if (user.phoneVerifiedAt) {
             return res.status(409).json({ erro: "Este telefone já está verificado." });
         }
-        const codigo = await authService.gerarCodigoTelefone(userId);
+        const codigo = await authService.createPhoneCode(userId);
         if (!codigo) {
             return res
                 .status(429)
@@ -346,8 +346,8 @@ export const verificarTelefone = async (req: Request, res: Response, next: NextF
     const userId = req.userId;
     if (!userId) return res.status(401).json({ erro: "Não autenticado" });
     try {
-        const { codigo } = codigoTelefoneSchema.parse(req.body);
-        const tokenId = await authService.conferirCodigoTelefone(userId, codigo);
+        const { codigo } = phoneCodeSchema.parse(req.body);
+        const tokenId = await authService.checkPhoneCode(userId, codigo);
         if (!tokenId) {
             return res.status(400).json({ erro: "Código inválido ou expirado. Peça um novo." });
         }
@@ -479,7 +479,7 @@ export const getMyProgress = async (req: Request, res: Response, next: NextFunct
 
 export const setWeeklyGoal = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { kind, target } = metaSemanalSchema.parse(req.body);
+        const { kind, target } = weeklyGoalSchema.parse(req.body);
         await definirMetaSemanal(req.userId!, kind, target);
         res.json({ ok: true });
     } catch (err) {

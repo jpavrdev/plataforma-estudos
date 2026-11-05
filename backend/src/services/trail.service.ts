@@ -19,7 +19,7 @@ import { eq, asc, desc, countDistinct, inArray, and, isNotNull } from "drizzle-o
 import type { z } from "zod";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
-import { ehAdmin } from "./usuario.service.ts";
+import { isAdmin } from "./user.service.ts";
 
 type NewTrailData = z.infer<typeof createTrailSchema>;
 type TrailUpdateData = z.infer<typeof updateTrailSchema>;
@@ -272,7 +272,7 @@ export async function findTrailDetail(trailId: string, userId: string, lang?: st
         throw new AppError(404, "trail.notFound");
     }
 
-    const admin = await ehAdmin(userId);
+    const admin = await isAdmin(userId);
 
     const mods = await db
         .select()
