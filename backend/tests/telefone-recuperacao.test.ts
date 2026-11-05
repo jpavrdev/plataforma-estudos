@@ -105,7 +105,7 @@ describe("código de senha por WhatsApp", () => {
         const envios = await espionarEnvios(t);
         const { user } = await criarUsuarioLogado();
         const { authService } = await app();
-        const otp = await authService.gerarOtpResetSenha(user.id);
+        const otp = await authService.createPasswordResetCode(user.id);
 
         const res = await server.request("POST", "/reset-password-otp", {
             body: { email: user.email, otp, password: "Novasenha456!" },

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Regras de senha forte, compartilhadas entre cadastro e redefinição.
-const senhaForte = z
+// Strong password rules, shared by sign-up and reset.
+const strongPassword = z
     .string()
     .min(12, "Senha deve ter ao menos 12 caracteres")
     .max(72)
@@ -19,7 +19,7 @@ export const registerSchema = z.object({
         .max(20, "Usuário deve ter no máximo 20 caracteres")
         .regex(/^[a-zA-Z0-9_]+$/, "Use apenas letras, números e underscore"),
     email: z.email("Email inválido"),
-    password: senhaForte,
+    password: strongPassword,
     birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve ser AAAA-MM-DD"),
     gender: z.string().max(50),
     phone: z
@@ -36,7 +36,7 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z.object({
     token: z.string().min(1, "Token é obrigatório.").max(512),
-    password: senhaForte,
+    password: strongPassword,
 });
 
 export const forgotPasswordOtpSchema = z.object({
@@ -47,7 +47,7 @@ export const forgotPasswordOtpSchema = z.object({
 export const resetPasswordOtpSchema = z.object({
     email: z.email("Email inválido"),
     otp: z.string().trim().regex(/^\d{6}$/, "O código deve ter 6 dígitos"),
-    password: senhaForte,
+    password: strongPassword,
 });
 
 export const loginSchema = z.object({
@@ -77,8 +77,8 @@ export const updateMeSchema = z.object({
     x: z.string().max(200).optional(),
 });
 
-// Campos que o login social não traz e o usuário completa depois.
-export const completarPerfilSchema = z.object({
+// Fields a social login does not bring and the user completes later.
+export const completeProfileSchema = z.object({
     username: z
         .string()
         .trim()
@@ -90,7 +90,7 @@ export const completarPerfilSchema = z.object({
     phone: z.string().trim().min(1, "Informe o telefone").max(20, "Telefone muito longo"),
 });
 
-export const trocarTelefoneSchema = z.object({
+export const changePhoneSchema = z.object({
     phone: z
         .string()
         .trim()
@@ -100,14 +100,14 @@ export const trocarTelefoneSchema = z.object({
     senhaAtual: z.string().max(1024).optional(),
 });
 
-export const codigoTelefoneSchema = z.object({
+export const phoneCodeSchema = z.object({
     codigo: z
         .string()
         .trim()
         .regex(/^\d{6}$/, "O código deve ter 6 dígitos"),
 });
 
-export const metaSemanalSchema = z
+export const weeklyGoalSchema = z
     .object({
         kind: z.enum(["aulas", "dias"]),
         target: z.number().int().min(1).max(60),

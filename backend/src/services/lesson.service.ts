@@ -9,7 +9,7 @@ import {
 } from "../../schema.ts";
 import { eq, and, asc, inArray } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
-import { ehAdmin } from "./usuario.service.ts";
+import { isAdmin } from "./user.service.ts";
 
 // Computes the state (done/current/locked) of one lesson in the track.
 export async function findLessonState(
@@ -80,7 +80,7 @@ export async function findLessonDetail(lessonId: string, userId: string, lang?: 
     }
 
     // An unpublished lesson is invisible to the student; the admin can view it (preview).
-    const admin = await ehAdmin(userId);
+    const admin = await isAdmin(userId);
     if (!lesson.published && !admin) {
         throw new AppError(404, "lesson.notFound");
     }

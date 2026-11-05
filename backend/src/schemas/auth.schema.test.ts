@@ -2,7 +2,7 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { registerSchema, loginSchema } from "./auth.schema.ts";
 
-const usuarioValido = {
+const validUser = {
     name: "Maria Silva",
     username: "maria_silva",
     email: "maria@email.com",
@@ -13,94 +13,94 @@ const usuarioValido = {
 };
 
 describe("registerSchema", () => {
-    test("aceita um cadastro válido", () => {
-        const r = registerSchema.safeParse(usuarioValido);
+    test("accepts a valid sign-up", () => {
+        const r = registerSchema.safeParse(validUser);
         assert.equal(r.success, true);
     });
 
-    test("rejeita nome com menos de 2 caracteres", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, name: "M" });
+    test("rejects a name with fewer than 2 characters", () => {
+        const r = registerSchema.safeParse({ ...validUser, name: "M" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita email inválido", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, email: "naoehemail" });
+    test("rejects an invalid email", () => {
+        const r = registerSchema.safeParse({ ...validUser, email: "naoehemail" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita username com caracteres inválidos", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, username: "maria silva" });
+    test("rejects a username with invalid characters", () => {
+        const r = registerSchema.safeParse({ ...validUser, username: "maria silva" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita username muito curto", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, username: "ab" });
+    test("rejects a username that is too short", () => {
+        const r = registerSchema.safeParse({ ...validUser, username: "ab" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita username muito longo", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, username: "a".repeat(21) });
+    test("rejects a username that is too long", () => {
+        const r = registerSchema.safeParse({ ...validUser, username: "a".repeat(21) });
         assert.equal(r.success, false);
     });
 
-    test("rejeita senha com menos de 12 caracteres", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "abc123" });
+    test("rejects a password with fewer than 12 characters", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "abc123" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita senha sem número", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "senhasemnumero" });
+    test("rejects a password without a number", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "senhasemnumero" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita senha com mais de 72 caracteres", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "a1" + "x".repeat(72) });
+    test("rejects a password with more than 72 characters", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "a1" + "x".repeat(72) });
         assert.equal(r.success, false);
     });
 
-    test("aceita senha no limite de 12 caracteres com todos os requisitos", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "Abcdefgh123!" });
+    test("accepts a password at the 12-character limit with every requirement", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "Abcdefgh123!" });
         assert.equal(r.success, true);
     });
 
-    test("rejeita senha sem maiúscula", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "senhaforte123!" });
+    test("rejects a password without an uppercase letter", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "senhaforte123!" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita senha sem minúscula", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "SENHAFORTE123!" });
+    test("rejects a password without a lowercase letter", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "SENHAFORTE123!" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita senha sem caractere especial", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, password: "Senhaforte123" });
+    test("rejects a password without a special character", () => {
+        const r = registerSchema.safeParse({ ...validUser, password: "Senhaforte123" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita birthDate em formato errado", () => {
-        const r = registerSchema.safeParse({ ...usuarioValido, birthDate: "01/01/1990" });
+    test("rejects a birthDate in the wrong format", () => {
+        const r = registerSchema.safeParse({ ...validUser, birthDate: "01/01/1990" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita quando faltam campos obrigatórios", () => {
+    test("rejects missing required fields", () => {
         const r = registerSchema.safeParse({ name: "Maria", email: "maria@email.com" });
         assert.equal(r.success, false);
     });
 });
 
 describe("loginSchema", () => {
-    test("aceita email e senha válidos", () => {
+    test("accepts a valid email and password", () => {
         const r = loginSchema.safeParse({ email: "maria@email.com", password: "x" });
         assert.equal(r.success, true);
     });
 
-    test("rejeita email inválido", () => {
+    test("rejects an invalid email", () => {
         const r = loginSchema.safeParse({ email: "invalido", password: "x" });
         assert.equal(r.success, false);
     });
 
-    test("rejeita senha vazia", () => {
+    test("rejects an empty password", () => {
         const r = loginSchema.safeParse({ email: "maria@email.com", password: "" });
         assert.equal(r.success, false);
     });

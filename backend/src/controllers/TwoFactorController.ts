@@ -11,7 +11,7 @@ import {
 } from "../schemas/twoFactor.schema.ts";
 import { refreshCookieOptions } from "../services/auth.service.ts";
 import { emailService } from "../services/email.service.ts";
-import { verificarSenha } from "../services/password.service.ts";
+import { verifyPassword } from "../services/password.service.ts";
 import { twoFactorService } from "../services/twoFactor.service.ts";
 
 async function account(userId: string) {
@@ -26,7 +26,7 @@ async function account(userId: string) {
 // Social-login-only accounts have no password to check.
 async function checkPassword(passwordHash: string | null, password: string | undefined) {
     if (!passwordHash) return;
-    if (!password || !(await verificarSenha(passwordHash, password))) {
+    if (!password || !(await verifyPassword(passwordHash, password))) {
         throw new AppError(403, "Senha atual incorreta.");
     }
 }

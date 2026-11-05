@@ -11,7 +11,7 @@ import { eq, and, inArray, sql } from "drizzle-orm";
 import type { z } from "zod";
 import type { submitQuizSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
-import { ehAdmin } from "./usuario.service.ts";
+import { isAdmin } from "./user.service.ts";
 import { verificarConquistas } from "./achievement.service.ts";
 
 // Minimum of right answers to complete the lesson (and of questions to publish it).
@@ -147,7 +147,7 @@ export async function verifyAnswer(
     if (!lesson) {
         throw new AppError(404, "lesson.notFound");
     }
-    if (!lesson.published && !(await ehAdmin(userId))) {
+    if (!lesson.published && !(await isAdmin(userId))) {
         throw new AppError(404, "lesson.notFound");
     }
 

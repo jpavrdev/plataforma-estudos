@@ -4,14 +4,22 @@
 // and API payloads stay the same.
 // Usage: node rename.mjs <tsconfig.json> <mapping.json>
 // mapping.json: { "<file relative to the tsconfig dir>": { "OldName": "NewName" } }
+// A member of an exported object literal goes as "object.member", for services
+// written as objects ({ "authService.oldMethod": "newMethod" }).
 import fs from "node:fs";
 import path from "node:path";
-import { Project } from "ts-morph";
+import { Node, Project } from "ts-morph";
 
 const [tsconfig, mappingFile] = process.argv.slice(2);
 const base = path.dirname(path.resolve(tsconfig));
 const mapping = JSON.parse(fs.readFileSync(mappingFile, "utf8"));
 const project = new Project({ tsConfigFilePath: tsconfig });
+
+function memberOf(decl, name) {
+    if (!Node.isVariableDeclaration(decl)) return undefined;
+    const init = decl.getInitializer();
+    return init && Node.isObjectLiteralExpression(init) ? init.getProperty(name) : undefined;
+}
 
 let renamed = 0;
 const missing = [];
@@ -19,12 +27,14 @@ for (const [file, names] of Object.entries(mapping)) {
     const sf = project.getSourceFileOrThrow(path.join(base, file));
     const exported = sf.getExportedDeclarations();
     for (const [oldName, newName] of Object.entries(names)) {
-        const decls = exported.get(oldName);
-        if (!decls?.length) {
+        const [owner, member] = oldName.split(".");
+        const decl = exported.get(owner)?.[0];
+        const target = member ? memberOf(decl, member) : decl;
+        if (!target || !("rename" in target)) {
             missing.push(`${file}: ${oldName}`);
             continue;
         }
-        decls[0].rename(newName, { usePrefixAndSuffixText: true });
+        target.rename(newName, { usePrefixAndSuffixText: true });
         renamed++;
     }
 }

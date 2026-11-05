@@ -15,8 +15,8 @@ async function app() {
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
     const { emailService } = await import("../src/services/email.service.ts");
-    const { vincularContaSocial } = await import("../src/services/contaSocial.service.ts");
-    return { db, users, eq, emailService, vincularContaSocial };
+    const { linkSocialAccount } = await import("../src/services/socialAccount.service.ts");
+    return { db, users, eq, emailService, linkSocialAccount };
 }
 
 const PASSWORD = "Senhaforte123!";
@@ -153,8 +153,8 @@ describe("account language", () => {
         assert.equal(start.status, 302);
         assert.match(start.headers.get("set-cookie") ?? "", /oauth_locale=en/);
 
-        const { vincularContaSocial } = await app();
-        const created = await vincularContaSocial(
+        const { linkSocialAccount } = await app();
+        const created = await linkSocialAccount(
             "google",
             {
                 providerId: "google-locale-1",
@@ -165,7 +165,7 @@ describe("account language", () => {
         );
         assert.equal(created.locale, "en");
 
-        const fallback = await vincularContaSocial("google", {
+        const fallback = await linkSocialAccount("google", {
             providerId: "google-locale-2",
             email: `social2_${Date.now()}@example.com`,
             name: "Aluno",

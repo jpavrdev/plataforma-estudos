@@ -5,13 +5,13 @@ import jwt from "jsonwebtoken";
 import { tokens, users } from "../../schema.ts";
 import { and, eq, isNull, lt, sql } from "drizzle-orm";
 
-const VALIDADE_OTP_MS = 10 * 60 * 1000;
-const DIA_MS = 24 * 60 * 60 * 1000;
-// Por conta: um código novo por minuto, no máximo 10 por dia, e cada código morre
-// no quinto erro. São no máximo 50 palpites por dia, venham de quantos IPs vierem.
-const INTERVALO_ENTRE_OTPS_MS = 60 * 1000;
-const MAX_OTPS_POR_DIA = 10;
-export const MAX_TENTATIVAS_OTP = 5;
+const OTP_VALIDITY_MS = 10 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+// Per account: one new code per minute, at most 10 a day, and each code dies on
+// the fifth mistake. That is at most 50 guesses a day, from however many IPs.
+const OTP_INTERVAL_MS = 60 * 1000;
+const MAX_OTPS_PER_DAY = 10;
+export const MAX_OTP_ATTEMPTS = 5;
 // Wrong password or wrong 2FA code: on the fifth failure in a row the account
 // locks for 15 minutes and the counter starts over.
 const MAX_FAILED_LOGINS = 5;
@@ -26,92 +26,90 @@ export const refreshCookieOptions = {
     path: "/",
 };
 
-type TipoCodigo = "password_reset_otp" | "phone_verification";
+type CodeType = "password_reset_otp" | "phone_verification";
 
-// O hash é único na tabela inteira, então o tipo entra nele para códigos de tipos
-// diferentes não colidirem. O de senha fica no formato antigo, para os códigos já
-// enviados seguirem valendo no deploy.
-const hashDoCodigo = (userId: string, tipo: TipoCodigo, codigo: string) =>
+// The hash is unique across the whole table, so the type goes into it and codes of
+// different types do not collide. The password one keeps the old format, so the
+// codes already sent stay valid through the deploy.
+const codeHash = (userId: string, codeType: CodeType, code: string) =>
     createHash("sha256")
         .update(
-            tipo === "password_reset_otp" ? `${userId}:${codigo}` : `${userId}:${tipo}:${codigo}`,
+            codeType === "password_reset_otp"
+                ? `${userId}:${code}`
+                : `${userId}:${codeType}:${code}`,
         )
         .digest("hex");
 
-// Código de 6 dígitos. Guarda só o hash e mantém um único código ativo por usuário
-// e tipo. Devolve null quando a conta não pode receber outro agora: menos de um
-// minuto desde o último ou limite do dia atingido.
-async function gerarCodigo(userId: string, tipo: TipoCodigo): Promise<string | null> {
-    const doUsuario = and(eq(tokens.userId, userId), eq(tokens.type, tipo));
-    const agora = Date.now();
-    // Código de mais de um dia já não conta para o limite.
-    await db.delete(tokens).where(and(doUsuario, lt(tokens.expiredAt, new Date(agora - DIA_MS))));
-    const recentes = await db
+// 6-digit code. Only the hash is stored, with a single active code per user and
+// type. Returns null when the account cannot get another one now: less than a
+// minute since the last one, or the daily limit reached.
+async function createCode(userId: string, codeType: CodeType): Promise<string | null> {
+    const ofUser = and(eq(tokens.userId, userId), eq(tokens.type, codeType));
+    const now = Date.now();
+    // A code older than a day no longer counts toward the limit.
+    await db.delete(tokens).where(and(ofUser, lt(tokens.expiredAt, new Date(now - DAY_MS))));
+    const recent = await db
         .select({ tokenHash: tokens.tokenHash, expiredAt: tokens.expiredAt })
         .from(tokens)
-        .where(doUsuario);
-    const ultimo = Math.max(0, ...recentes.map((t) => t.expiredAt.getTime() - VALIDADE_OTP_MS));
-    if (agora - ultimo < INTERVALO_ENTRE_OTPS_MS || recentes.length >= MAX_OTPS_POR_DIA) {
+        .where(ofUser);
+    const last = Math.max(0, ...recent.map((t) => t.expiredAt.getTime() - OTP_VALIDITY_MS));
+    if (now - last < OTP_INTERVAL_MS || recent.length >= MAX_OTPS_PER_DAY) {
         return null;
     }
 
-    // Os códigos do dia ficam guardados para o limite, e o hash não pode repetir.
-    const usados = new Set(recentes.map((t) => t.tokenHash));
-    let codigo = String(randomInt(100000, 1000000));
-    while (usados.has(hashDoCodigo(userId, tipo, codigo))) {
-        codigo = String(randomInt(100000, 1000000));
+    // The day's codes stay stored for the limit, and the hash cannot repeat.
+    const usedHashes = new Set(recent.map((t) => t.tokenHash));
+    let code = String(randomInt(100000, 1000000));
+    while (usedHashes.has(codeHash(userId, codeType, code))) {
+        code = String(randomInt(100000, 1000000));
     }
 
     await db.transaction(async (tx) => {
-        // O anterior morre, mas continua contando no limite do dia.
+        // The previous one dies, but still counts toward the daily limit.
         await tx
             .update(tokens)
-            .set({ usedAt: new Date(agora) })
-            .where(and(doUsuario, isNull(tokens.usedAt)));
+            .set({ usedAt: new Date(now) })
+            .where(and(ofUser, isNull(tokens.usedAt)));
         await tx.insert(tokens).values({
             userId,
-            tokenHash: hashDoCodigo(userId, tipo, codigo),
-            type: tipo,
-            expiredAt: new Date(agora + VALIDADE_OTP_MS),
+            tokenHash: codeHash(userId, codeType, code),
+            type: codeType,
+            expiredAt: new Date(now + OTP_VALIDITY_MS),
         });
     });
-    return codigo;
+    return code;
 }
 
-// Confere o código contra o ativo do usuário e devolve o id do token se bater.
-// Cada erro soma uma tentativa no próprio banco, para tentativas simultâneas não
-// se perderem, e no limite o código morre.
-async function conferirCodigo(
-    userId: string,
-    tipo: TipoCodigo,
-    codigo: string,
-): Promise<string | null> {
-    const [ativo] = await db
+// Checks the code against the user's active one and returns the token id on a match.
+// Each mistake adds an attempt in the database itself, so simultaneous attempts are
+// not lost, and at the limit the code dies.
+async function checkCode(userId: string, codeType: CodeType, code: string): Promise<string | null> {
+    const [active] = await db
         .select({ id: tokens.id, tokenHash: tokens.tokenHash, expiredAt: tokens.expiredAt })
         .from(tokens)
-        .where(and(eq(tokens.userId, userId), eq(tokens.type, tipo), isNull(tokens.usedAt)));
-    if (!ativo || ativo.expiredAt < new Date()) return null;
+        .where(and(eq(tokens.userId, userId), eq(tokens.type, codeType), isNull(tokens.usedAt)));
+    if (!active || active.expiredAt < new Date()) return null;
 
-    const certo = timingSafeEqual(
-        Buffer.from(hashDoCodigo(userId, tipo, codigo), "hex"),
-        Buffer.from(ativo.tokenHash, "hex"),
+    const matches = timingSafeEqual(
+        Buffer.from(codeHash(userId, codeType, code), "hex"),
+        Buffer.from(active.tokenHash, "hex"),
     );
-    if (certo) return ativo.id;
+    if (matches) return active.id;
 
-    const [contado] = await db
+    const [counted] = await db
         .update(tokens)
         .set({ tentativas: sql`${tokens.tentativas} + 1` })
-        .where(eq(tokens.id, ativo.id))
+        .where(eq(tokens.id, active.id))
         .returning({ tentativas: tokens.tentativas });
-    if (contado && contado.tentativas >= MAX_TENTATIVAS_OTP) {
-        await db.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, ativo.id));
+    if (counted && counted.tentativas >= MAX_OTP_ATTEMPTS) {
+        await db.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, active.id));
     }
     return null;
 }
 
 export const authService = {
     // mfa marks a session that went through the 2FA code; admin routes require it.
-    async gerarEGravarTokens(
+    async issueSessionTokens(
         userId: string,
         tx: Pick<typeof db, "insert"> = db,
         options: { mfa?: boolean } = {},
@@ -148,7 +146,7 @@ export const authService = {
             .set({ failedLoginAttempts: 0, lockedUntil: null })
             .where(eq(users.id, userId));
     },
-    async gerarTokenVerificacao(userId: string, tx: Pick<typeof db, "insert"> = db) {
+    async createVerificationToken(userId: string, tx: Pick<typeof db, "insert"> = db) {
         const verificationToken = randomBytes(40).toString("hex");
 
         await tx.insert(tokens).values({
@@ -160,7 +158,7 @@ export const authService = {
 
         return verificationToken;
     },
-    async gerarTokenResetSenha(userId: string, tx: Pick<typeof db, "insert"> = db) {
+    async createPasswordResetToken(userId: string, tx: Pick<typeof db, "insert"> = db) {
         const resetToken = randomBytes(40).toString("hex");
 
         await tx.insert(tokens).values({
@@ -172,12 +170,11 @@ export const authService = {
 
         return resetToken;
     },
-    // Código de 6 dígitos para redefinir a senha, por email ou WhatsApp.
-    gerarOtpResetSenha: (userId: string) => gerarCodigo(userId, "password_reset_otp"),
-    conferirOtpResetSenha: (userId: string, otp: string) =>
-        conferirCodigo(userId, "password_reset_otp", otp),
-    // Código para confirmar o telefone de recuperação, com os mesmos limites.
-    gerarCodigoTelefone: (userId: string) => gerarCodigo(userId, "phone_verification"),
-    conferirCodigoTelefone: (userId: string, codigo: string) =>
-        conferirCodigo(userId, "phone_verification", codigo),
+    // 6-digit code to reset the password, by email or WhatsApp.
+    createPasswordResetCode: (userId: string) => createCode(userId, "password_reset_otp"),
+    checkPasswordResetCode: (userId: string, otp: string) =>
+        checkCode(userId, "password_reset_otp", otp),
+    // Code to confirm the recovery phone, with the same limits.
+    createPhoneCode: (userId: string) => createCode(userId, "phone_verification"),
+    checkPhoneCode: (userId: string, code: string) => checkCode(userId, "phone_verification", code),
 };
