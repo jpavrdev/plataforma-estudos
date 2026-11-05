@@ -26,24 +26,24 @@ import type {
 import { AppError } from "../errors/AppError.ts";
 
 type RefType = "trail" | "module" | "lesson" | "simulado" | "challenge";
-type StatusRoadmap = "nao_iniciado" | "em_progresso" | "concluido";
+type RoadmapStatus = "nao_iniciado" | "em_progresso" | "concluido";
 
-interface Conclusao {
+interface Completion {
     lessons: Set<string>;
     simulados: Set<string>;
     desafios: Set<string>;
 }
 
-const SEM_CONCLUSAO: Conclusao = {
+const NO_COMPLETION: Completion = {
     lessons: new Set(),
     simulados: new Set(),
     desafios: new Set(),
 };
 
-// Sinais de conclusão do usuário, carregados uma vez. Desafio resolvido = submissão
-// com status "passed" (não xpEarned, que é específico do desafio do dia).
-async function carregarConclusao(userId: string): Promise<Conclusao> {
-    const [aulas, sims, des] = await Promise.all([
+// The user's completion signals, loaded once. A solved challenge = a submission with
+// status "passed" (not xpEarned, which is specific to the challenge of the day).
+async function loadCompletion(userId: string): Promise<Completion> {
+    const [lessonDone, examRows, challengeRows] = await Promise.all([
         db
             .select({ id: lessonProgress.lessonId })
             .from(lessonProgress)
@@ -63,27 +63,27 @@ async function carregarConclusao(userId: string): Promise<Conclusao> {
             ),
     ]);
     return {
-        lessons: new Set(aulas.map((r) => r.id)),
-        simulados: new Set(sims.map((r) => r.id)),
-        desafios: new Set(des.map((r) => r.id)),
+        lessons: new Set(lessonDone.map((r) => r.id)),
+        simulados: new Set(examRows.map((r) => r.id)),
+        desafios: new Set(challengeRows.map((r) => r.id)),
     };
 }
 
-type AulaContainer = { id: string; language: string | null };
+type ContainerLesson = { id: string; language: string | null };
 
-// Aulas publicadas por trilha e por módulo referenciados (pra derivar conclusão de container).
-async function carregarAulasPorContainer(trailIds: string[], moduleIds: string[]) {
-    const porTrail = new Map<string, AulaContainer[]>();
-    const porModule = new Map<string, AulaContainer[]>();
+// Published lessons per referenced track and module (to derive container completion).
+async function loadContainerLessons(trailIds: string[], moduleIds: string[]) {
+    const byTrail = new Map<string, ContainerLesson[]>();
+    const byModule = new Map<string, ContainerLesson[]>();
     if (trailIds.length) {
         const rows = await db
             .select({ trailId: lessons.trailId, id: lessons.id, language: lessons.language })
             .from(lessons)
             .where(and(inArray(lessons.trailId, trailIds), eq(lessons.published, true)));
         for (const r of rows) {
-            const arr = porTrail.get(r.trailId) ?? [];
+            const arr = byTrail.get(r.trailId) ?? [];
             arr.push({ id: r.id, language: r.language });
-            porTrail.set(r.trailId, arr);
+            byTrail.set(r.trailId, arr);
         }
     }
     if (moduleIds.length) {
@@ -92,30 +92,36 @@ async function carregarAulasPorContainer(trailIds: string[], moduleIds: string[]
             .from(lessons)
             .where(and(inArray(lessons.moduleId, moduleIds), eq(lessons.published, true)));
         for (const r of rows) {
-            const arr = porModule.get(r.moduleId) ?? [];
+            const arr = byModule.get(r.moduleId) ?? [];
             arr.push({ id: r.id, language: r.language });
-            porModule.set(r.moduleId, arr);
+            byModule.set(r.moduleId, arr);
         }
     }
-    return { porTrail, porModule };
+    return { porTrail: byTrail, porModule: byModule };
 }
 
-// Multi-linguagem: concluído = todas as neutras + todas as aulas de alguma linguagem.
-function containerConcluido(ls: AulaContainer[], c: Conclusao): boolean {
-    if (!ls.length) return false;
-    const linguagens = [...new Set(ls.map((l) => l.language).filter((x): x is string => !!x))];
-    if (!linguagens.length) return ls.every((l) => c.lessons.has(l.id));
-    if (!ls.filter((l) => l.language === null).every((l) => c.lessons.has(l.id))) return false;
-    return linguagens.some((lg) =>
-        ls.filter((l) => l.language === lg).every((l) => c.lessons.has(l.id)),
+// Multi-language: completed = every neutral lesson + every lesson of some language.
+function isContainerCompleted(lessonRows: ContainerLesson[], c: Completion): boolean {
+    if (!lessonRows.length) return false;
+    const languages = [
+        ...new Set(lessonRows.map((l) => l.language).filter((x): x is string => !!x)),
+    ];
+    if (!languages.length) return lessonRows.every((l) => c.lessons.has(l.id));
+    if (!lessonRows.filter((l) => l.language === null).every((l) => c.lessons.has(l.id)))
+        return false;
+    return languages.some((lang) =>
+        lessonRows.filter((l) => l.language === lang).every((l) => c.lessons.has(l.id)),
     );
 }
 
-function refConcluido(
+function isRefCompleted(
     refType: RefType,
     refId: string,
-    c: Conclusao,
-    aulas: { porTrail: Map<string, AulaContainer[]>; porModule: Map<string, AulaContainer[]> },
+    c: Completion,
+    containerLessons: {
+        porTrail: Map<string, ContainerLesson[]>;
+        porModule: Map<string, ContainerLesson[]>;
+    },
 ): boolean {
     switch (refType) {
         case "lesson":
@@ -125,66 +131,67 @@ function refConcluido(
         case "challenge":
             return c.desafios.has(refId);
         case "trail":
-            return containerConcluido(aulas.porTrail.get(refId) ?? [], c);
+            return isContainerCompleted(containerLessons.porTrail.get(refId) ?? [], c);
         case "module":
-            return containerConcluido(aulas.porModule.get(refId) ?? [], c);
+            return isContainerCompleted(containerLessons.porModule.get(refId) ?? [], c);
     }
 }
 
-function statusPorProgresso(feitos: number, total: number): StatusRoadmap {
-    if (total === 0 || feitos === 0) return "nao_iniciado";
-    if (feitos >= total) return "concluido";
+function statusFromProgress(done: number, total: number): RoadmapStatus {
+    if (total === 0 || done === 0) return "nao_iniciado";
+    if (done >= total) return "concluido";
     return "em_progresso";
 }
 
-// Resolve cada ref para dados de exibição (título + o que o front precisa pra rotear).
-async function resolverRefs(refs: { refType: RefType; refId: string }[]) {
-    const idsDe = (t: RefType) => [
+// Resolves each ref into display data (title + what the frontend needs to route).
+async function resolveRefs(refs: { refType: RefType; refId: string }[]) {
+    const idsOf = (t: RefType) => [
         ...new Set(refs.filter((r) => r.refType === t).map((r) => r.refId)),
     ];
-    const [tr, md, ls, sm, ch] = await Promise.all([
-        idsDe("trail").length
+    const [trailRows, moduleRows, lessonRows, examRows, challengeRows] = await Promise.all([
+        idsOf("trail").length
             ? db
                   .select({ id: trails.id, name: trails.name })
                   .from(trails)
-                  .where(inArray(trails.id, idsDe("trail")))
+                  .where(inArray(trails.id, idsOf("trail")))
             : Promise.resolve([] as { id: string; name: string }[]),
-        idsDe("module").length
+        idsOf("module").length
             ? db
                   .select({ id: modules.id, title: modules.title, trailId: modules.trailId })
                   .from(modules)
-                  .where(inArray(modules.id, idsDe("module")))
+                  .where(inArray(modules.id, idsOf("module")))
             : Promise.resolve([] as { id: string; title: string; trailId: string }[]),
-        idsDe("lesson").length
+        idsOf("lesson").length
             ? db
                   .select({ id: lessons.id, title: lessons.title, trailId: lessons.trailId })
                   .from(lessons)
-                  .where(inArray(lessons.id, idsDe("lesson")))
+                  .where(inArray(lessons.id, idsOf("lesson")))
             : Promise.resolve([] as { id: string; title: string; trailId: string }[]),
-        idsDe("simulado").length
+        idsOf("simulado").length
             ? db
                   .select({ id: simulados.id, name: simulados.name, slug: simulados.slug })
                   .from(simulados)
-                  .where(inArray(simulados.id, idsDe("simulado")))
+                  .where(inArray(simulados.id, idsOf("simulado")))
             : Promise.resolve([] as { id: string; name: string; slug: string }[]),
-        idsDe("challenge").length
+        idsOf("challenge").length
             ? db
                   .select({ id: challenges.id, title: challenges.title, number: challenges.number })
                   .from(challenges)
-                  .where(inArray(challenges.id, idsDe("challenge")))
+                  .where(inArray(challenges.id, idsOf("challenge")))
             : Promise.resolve([] as { id: string; title: string; number: number | null }[]),
     ]);
     const info = new Map<string, Record<string, unknown>>();
-    for (const r of tr) info.set("trail:" + r.id, { title: r.name, trailId: r.id });
-    for (const r of md) info.set("module:" + r.id, { title: r.title, trailId: r.trailId });
-    for (const r of ls)
+    for (const r of trailRows) info.set("trail:" + r.id, { title: r.name, trailId: r.id });
+    for (const r of moduleRows) info.set("module:" + r.id, { title: r.title, trailId: r.trailId });
+    for (const r of lessonRows)
         info.set("lesson:" + r.id, { title: r.title, trailId: r.trailId, lessonId: r.id });
-    for (const r of sm) info.set("simulado:" + r.id, { title: r.name, slug: r.slug });
-    for (const r of ch) info.set("challenge:" + r.id, { title: r.title, number: r.number });
+    for (const r of examRows) info.set("simulado:" + r.id, { title: r.name, slug: r.slug });
+    for (const r of challengeRows)
+        info.set("challenge:" + r.id, { title: r.title, number: r.number });
     return info;
 }
 
-async function estagiosConcluidosManualmente(userId: string) {
+async function manuallyCompletedStages(userId: string) {
     const rows = await db
         .select({ stageId: roadmapStageCompletions.stageId })
         .from(roadmapStageCompletions)
@@ -192,63 +199,65 @@ async function estagiosConcluidosManualmente(userId: string) {
     return new Set(rows.map((r) => r.stageId));
 }
 
-export async function listarRoadmaps(userId?: string) {
-    const lista = await db
+export async function findRoadmaps(userId?: string) {
+    const roadmapRows = await db
         .select()
         .from(roadmaps)
         .where(eq(roadmaps.published, true))
         .orderBy(asc(roadmaps.position));
-    if (lista.length === 0) return [];
+    if (roadmapRows.length === 0) return [];
 
-    const ids = lista.map((r) => r.id);
-    const etapas = await db
+    const ids = roadmapRows.map((r) => r.id);
+    const stageRows = await db
         .select()
         .from(roadmapStages)
         .where(inArray(roadmapStages.roadmapId, ids))
         .orderBy(asc(roadmapStages.position));
-    const etapaIds = etapas.map((e) => e.id);
-    const refs = etapaIds.length
+    const stageIds = stageRows.map((e) => e.id);
+    const refs = stageIds.length
         ? await db
               .select()
               .from(roadmapStageRefs)
-              .where(inArray(roadmapStageRefs.stageId, etapaIds))
+              .where(inArray(roadmapStageRefs.stageId, stageIds))
         : [];
 
-    let conclusao = SEM_CONCLUSAO;
-    let manuais = new Set<string>();
-    let aulas = {
-        porTrail: new Map<string, AulaContainer[]>(),
-        porModule: new Map<string, AulaContainer[]>(),
+    let completion = NO_COMPLETION;
+    let manualStages = new Set<string>();
+    let containerLessons = {
+        porTrail: new Map<string, ContainerLesson[]>(),
+        porModule: new Map<string, ContainerLesson[]>(),
     };
     if (userId) {
-        conclusao = await carregarConclusao(userId);
-        manuais = await estagiosConcluidosManualmente(userId);
-        aulas = await carregarAulasPorContainer(
+        completion = await loadCompletion(userId);
+        manualStages = await manuallyCompletedStages(userId);
+        containerLessons = await loadContainerLessons(
             refs.filter((r) => r.refType === "trail").map((r) => r.refId),
             refs.filter((r) => r.refType === "module").map((r) => r.refId),
         );
     }
 
-    const refsPorEtapa = new Map<string, typeof refs>();
+    const refsByStage = new Map<string, typeof refs>();
     for (const r of refs) {
-        const arr = refsPorEtapa.get(r.stageId) ?? [];
+        const arr = refsByStage.get(r.stageId) ?? [];
         arr.push(r);
-        refsPorEtapa.set(r.stageId, arr);
+        refsByStage.set(r.stageId, arr);
     }
-    const etapaConcluida = (stageId: string) => {
-        if (manuais.has(stageId)) return true;
-        const rs = refsPorEtapa.get(stageId) ?? [];
+    const isStageCompleted = (stageId: string) => {
+        if (manualStages.has(stageId)) return true;
+        const rs = refsByStage.get(stageId) ?? [];
         return (
             rs.length > 0 &&
-            rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas))
+            rs.every((r) =>
+                isRefCompleted(r.refType as RefType, r.refId, completion, containerLessons),
+            )
         );
     };
 
-    return lista.map((r) => {
-        const suas = etapas.filter((e) => e.roadmapId === r.id);
-        const total = suas.length;
-        const feitos = userId ? suas.filter((e) => etapaConcluida(e.id)).length : 0;
-        const tags = [...new Set(suas.flatMap((e) => e.tags ?? []))].slice(0, 3);
+    return roadmapRows.map((r) => {
+        const ownStages = stageRows.filter((e) => e.roadmapId === r.id);
+        const total = ownStages.length;
+        const done = userId ? ownStages.filter((e) => isStageCompleted(e.id)).length : 0;
+        const tags = [...new Set(ownStages.flatMap((e) => e.tags ?? []))].slice(0, 3);
         return {
             id: r.id,
             slug: r.slug,
@@ -259,66 +268,68 @@ export async function listarRoadmaps(userId?: string) {
             premium: r.premium,
             tags,
             stagesTotal: total,
-            stagesDone: feitos,
-            percent: total ? Math.round((feitos / total) * 100) : 0,
-            status: statusPorProgresso(feitos, total),
+            stagesDone: done,
+            percent: total ? Math.round((done / total) * 100) : 0,
+            status: statusFromProgress(done, total),
         };
     });
 }
 
-export async function obterRoadmap(slug: string, userId?: string) {
+export async function findRoadmapBySlug(slug: string, userId?: string) {
     const [roadmap] = await db
         .select()
         .from(roadmaps)
         .where(and(eq(roadmaps.slug, slug), eq(roadmaps.published, true)));
     if (!roadmap) return null;
 
-    const etapas = await db
+    const stageRows = await db
         .select()
         .from(roadmapStages)
         .where(eq(roadmapStages.roadmapId, roadmap.id))
         .orderBy(asc(roadmapStages.position));
-    const etapaIds = etapas.map((e) => e.id);
-    const refs = etapaIds.length
+    const stageIds = stageRows.map((e) => e.id);
+    const refs = stageIds.length
         ? await db
               .select()
               .from(roadmapStageRefs)
-              .where(inArray(roadmapStageRefs.stageId, etapaIds))
+              .where(inArray(roadmapStageRefs.stageId, stageIds))
               .orderBy(asc(roadmapStageRefs.position))
         : [];
 
-    let conclusao = SEM_CONCLUSAO;
-    let manuais = new Set<string>();
-    let aulas = {
-        porTrail: new Map<string, AulaContainer[]>(),
-        porModule: new Map<string, AulaContainer[]>(),
+    let completion = NO_COMPLETION;
+    let manualStages = new Set<string>();
+    let containerLessons = {
+        porTrail: new Map<string, ContainerLesson[]>(),
+        porModule: new Map<string, ContainerLesson[]>(),
     };
     if (userId) {
-        conclusao = await carregarConclusao(userId);
-        manuais = await estagiosConcluidosManualmente(userId);
-        aulas = await carregarAulasPorContainer(
+        completion = await loadCompletion(userId);
+        manualStages = await manuallyCompletedStages(userId);
+        containerLessons = await loadContainerLessons(
             refs.filter((r) => r.refType === "trail").map((r) => r.refId),
             refs.filter((r) => r.refType === "module").map((r) => r.refId),
         );
     }
-    const infoRef = await resolverRefs(
+    const refInfo = await resolveRefs(
         refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })),
     );
 
-    const refsPorEtapa = new Map<string, typeof refs>();
+    const refsByStage = new Map<string, typeof refs>();
     for (const r of refs) {
-        const arr = refsPorEtapa.get(r.stageId) ?? [];
+        const arr = refsByStage.get(r.stageId) ?? [];
         arr.push(r);
-        refsPorEtapa.set(r.stageId, arr);
+        refsByStage.set(r.stageId, arr);
     }
 
-    const etapasSaida = etapas.map((e) => {
-        const rs = refsPorEtapa.get(e.id) ?? [];
+    const outputStages = stageRows.map((e) => {
+        const rs = refsByStage.get(e.id) ?? [];
         const completed =
-            (userId && manuais.has(e.id)) ||
+            (userId && manualStages.has(e.id)) ||
             (userId &&
                 rs.length > 0 &&
-                rs.every((r) => refConcluido(r.refType as RefType, r.refId, conclusao, aulas)));
+                rs.every((r) =>
+                    isRefCompleted(r.refType as RefType, r.refId, completion, containerLessons),
+                ));
         return {
             id: e.id,
             phase: e.phase,
@@ -330,22 +341,22 @@ export async function obterRoadmap(slug: string, userId?: string) {
             refs: rs.map((r) => ({
                 refType: r.refType,
                 refId: r.refId,
-                ...(infoRef.get(r.refType + ":" + r.refId) ?? { title: null }),
+                ...(refInfo.get(r.refType + ":" + r.refId) ?? { title: null }),
             })),
         };
     });
 
-    // Cadeado sequencial: a etapa fica bloqueada até a anterior ser concluída. A primeira nunca.
-    let anteriorConcluida = true;
-    const comCadeado = etapasSaida.map((e) => {
-        const locked = userId ? !anteriorConcluida : false;
-        anteriorConcluida = e.completed;
+    // Sequential lock: a stage stays locked until the previous one is completed. The first never is.
+    let previousCompleted = true;
+    const withLocks = outputStages.map((e) => {
+        const locked = userId ? !previousCompleted : false;
+        previousCompleted = e.completed;
         return { ...e, locked };
     });
 
-    const feitos = comCadeado.filter((e) => e.completed).length;
-    const total = comCadeado.length;
-    const atual = comCadeado.find((e) => !e.completed && !e.locked);
+    const done = withLocks.filter((e) => e.completed).length;
+    const total = withLocks.length;
+    const current = withLocks.find((e) => !e.completed && !e.locked);
 
     return {
         id: roadmap.id,
@@ -357,77 +368,78 @@ export async function obterRoadmap(slug: string, userId?: string) {
         premium: roadmap.premium,
         progress: {
             stagesTotal: total,
-            stagesDone: feitos,
-            percent: total ? Math.round((feitos / total) * 100) : 0,
-            status: statusPorProgresso(feitos, total),
+            stagesDone: done,
+            percent: total ? Math.round((done / total) * 100) : 0,
+            status: statusFromProgress(done, total),
         },
-        currentStageId: atual?.id ?? null,
-        // A tela precisa saber para não oferecer "seguir" a quem já segue.
-        seguindo: userId ? await estaSeguindo(userId, roadmap.id) : false,
-        stages: comCadeado,
+        currentStageId: current?.id ?? null,
+        // The screen needs to know, so it does not offer "follow" to whoever already follows.
+        seguindo: userId ? await isFollowing(userId, roadmap.id) : false,
+        stages: withLocks,
     };
 }
 
-async function estaSeguindo(userId: string, roadmapId: string) {
-    const [ja] = await db
+async function isFollowing(userId: string, roadmapId: string) {
+    const [existingFollow] = await db
         .select({ id: userRoadmaps.id })
         .from(userRoadmaps)
         .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
-    return !!ja;
+    return !!existingFollow;
 }
 
-// ============ Qual roadmap o aluno está seguindo ============
+// ============ Which roadmap the student follows ============
 
 /**
- * Marca que o aluno segue este roadmap. `explicito` distingue a escolha dele
- * (botão de seguir) da inferência feita a partir do progresso: escolha explícita
- * nunca é rebaixada por inferência posterior.
+ * Marks that the student follows this roadmap. `explicit` tells their choice (the
+ * follow button) apart from the inference made from progress: an explicit choice is
+ * never downgraded by a later inference.
  */
-export async function seguirRoadmap(userId: string, roadmapId: string, explicito = true) {
-    const [ja] = await db
+export async function saveFollow(userId: string, roadmapId: string, explicit = true) {
+    const [existingFollow] = await db
         .select()
         .from(userRoadmaps)
         .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
-    if (ja) {
+    if (existingFollow) {
         await db
             .update(userRoadmaps)
-            .set({ lastSeenAt: new Date(), explicito: ja.explicito || explicito })
-            .where(eq(userRoadmaps.id, ja.id));
+            .set({ lastSeenAt: new Date(), explicito: existingFollow.explicito || explicit })
+            .where(eq(userRoadmaps.id, existingFollow.id));
         return;
     }
-    await db.insert(userRoadmaps).values({ userId, roadmapId, explicito });
+    await db.insert(userRoadmaps).values({ userId, roadmapId, explicito: explicit });
 }
 
 /**
- * O aluno entrou numa trilha A PARTIR da tela deste roadmap. É o sinal mais forte
- * que existe sobre qual caminho ele segue, porque não é dedução: ele clicou ali.
+ * The student entered a track FROM this roadmap's screen. It is the strongest signal
+ * there is about which path they follow, because it is not a deduction: they clicked
+ * there.
  *
- * Cria o vínculo se não houver e atualiza a recência sempre. Fica como inferido,
- * não explícito, porque entrar numa trilha é um ato de estudo e não uma escolha
- * de caminho declarada; o aluno continua podendo trocar na tela. A diferença para
- * a inferência por progresso é que aqui não há adivinhação nenhuma.
+ * Creates the link if there is none and always refreshes the recency. It stays as
+ * inferred, not explicit, because entering a track is an act of studying and not a
+ * declared choice of path; the student can still switch on the screen. The difference
+ * from the inference by progress is that there is no guessing here at all.
  */
-export async function registrarEntradaPorRoadmap(userId: string, roadmapId: string) {
-    const [ja] = await db
+export async function saveEntryFromRoadmap(userId: string, roadmapId: string) {
+    const [existingFollow] = await db
         .select()
         .from(userRoadmaps)
         .where(and(eq(userRoadmaps.userId, userId), eq(userRoadmaps.roadmapId, roadmapId)));
-    if (ja) {
+    if (existingFollow) {
         await db
             .update(userRoadmaps)
             .set({ lastSeenAt: new Date() })
-            .where(eq(userRoadmaps.id, ja.id));
+            .where(eq(userRoadmaps.id, existingFollow.id));
         return;
     }
     await db.insert(userRoadmaps).values({ userId, roadmapId, explicito: false });
 }
 
 /**
- * Abrir o detalhe do roadmap atualiza a recência de quem já segue. NÃO cria
- * vínculo: espiar um roadmap não pode fazer o app achar que o aluno mudou de
- * caminho, senão a curiosidade viraria declaração.
+ * Opening the roadmap detail refreshes the recency of whoever already follows. It does
+ * NOT create a link: peeking at a roadmap cannot make the app think the student changed
+ * paths, or curiosity would become a declaration.
  */
-export async function registrarVisita(userId: string, roadmapId: string) {
+export async function saveVisit(userId: string, roadmapId: string) {
     await db
         .update(userRoadmaps)
         .set({ lastSeenAt: new Date() })
@@ -435,13 +447,13 @@ export async function registrarVisita(userId: string, roadmapId: string) {
 }
 
 /**
- * Quantos roadmaps publicados contêm cada trilha. É o peso da inferência: trilha
- * que está em quase todo roadmap (Lógica de Programação, em sete) quase não
- * informa; trilha exclusiva de um caminho decide sozinha.
+ * How many published roadmaps contain each track. It is the weight of the inference: a
+ * track that is in almost every roadmap (Programming Logic, in seven) tells almost
+ * nothing; a track exclusive to one path decides on its own.
  */
-async function roadmapsPorTrilha(trailIds: string[]): Promise<Map<string, number>> {
+async function roadmapCountByTrail(trailIds: string[]): Promise<Map<string, number>> {
     if (!trailIds.length) return new Map();
-    const linhas = await db
+    const rows = await db
         .select({ trailId: roadmapStageRefs.refId, n: countDistinct(roadmapStages.roadmapId) })
         .from(roadmapStageRefs)
         .innerJoin(roadmapStages, eq(roadmapStages.id, roadmapStageRefs.stageId))
@@ -449,34 +461,34 @@ async function roadmapsPorTrilha(trailIds: string[]): Promise<Map<string, number
             and(eq(roadmapStageRefs.refType, "trail"), inArray(roadmapStageRefs.refId, trailIds)),
         )
         .groupBy(roadmapStageRefs.refId);
-    return new Map(linhas.map((l) => [l.trailId, Number(l.n)]));
+    return new Map(rows.map((l) => [l.trailId, Number(l.n)]));
 }
 
-type DetalheRoadmap = NonNullable<Awaited<ReturnType<typeof obterRoadmap>>>;
+type RoadmapDetail = NonNullable<Awaited<ReturnType<typeof findRoadmapBySlug>>>;
 
 /**
- * Adivinha o roadmap a partir do progresso, quando o aluno não declarou nenhum.
+ * Guesses the roadmap from progress, when the student has not declared any.
  *
- * Dois sinais, nesta ordem. O prefixo contínuo (quantos estágios seguidos, a
- * partir do primeiro, ele concluiu) captura a SEQUÊNCIA que ele vem seguindo, e
- * é o que separa casos que o volume não separa: quem fez Lógica, Python e SQL
- * tem prefixo 3 em Engenharia de Dados e 2 em Ciência de Dados, porque pulou
- * Estatística. O peso por exclusividade desempata.
+ * Two signals, in this order. The continuous prefix (how many stages in a row, from
+ * the first one, they completed) captures the SEQUENCE they have been following, and
+ * it is what separates cases that volume does not: whoever did Logic, Python and SQL
+ * has prefix 3 in Data Engineering and 2 in Data Science, because they skipped
+ * Statistics. The exclusivity weight breaks ties.
  *
- * Devolve null quando empata, e isso é de propósito: melhor perguntar do que
- * cravar um caminho errado. Medido contra a base de produção, decide 112 dos 489
- * alunos com progresso; o resto só tocou trilha compartilhada e genuinamente ainda
- * não revelou caminho nenhum.
+ * Returns null on a tie, on purpose: better to ask than to pin down a wrong path.
+ * Measured against the production database, it decides 112 of the 489 students with
+ * progress; the rest only touched shared tracks and genuinely have not revealed any
+ * path yet.
  */
-async function inferirRoadmap(
+async function inferRoadmap(
     userId: string,
-    detalhes: DetalheRoadmap[],
-): Promise<DetalheRoadmap | null> {
-    // Conta trilha TOCADA (ao menos uma aula feita), não trilha concluída. Quem
-    // está na décima aula de Python já revelou o caminho; exigir as 35 adia a
-    // resposta para depois de ela deixar de ser útil. Medido na base: com
-    // "concluída" a inferência decide 16 alunos, com "tocada" decide 112.
-    const tocadas = new Set(
+    details: RoadmapDetail[],
+): Promise<RoadmapDetail | null> {
+    // Counts TOUCHED tracks (at least one lesson done), not completed ones. Whoever is
+    // on the tenth Python lesson has already revealed the path; requiring all 35 delays
+    // the answer until after it stops being useful. Measured on the database: with
+    // "completed" the inference decides 16 students, with "touched" it decides 112.
+    const touchedTrails = new Set(
         (
             await db
                 .selectDistinct({ trailId: lessons.trailId })
@@ -486,43 +498,43 @@ async function inferirRoadmap(
         ).map((r) => r.trailId),
     );
 
-    const tocou = (s: DetalheRoadmap["stages"][number]) =>
-        s.refs.some((r) => r.refType === "trail" && tocadas.has(r.refId));
+    const touches = (s: RoadmapDetail["stages"][number]) =>
+        s.refs.some((r) => r.refType === "trail" && touchedTrails.has(r.refId));
 
-    const peso = await roadmapsPorTrilha([...tocadas]);
+    const weights = await roadmapCountByTrail([...touchedTrails]);
 
-    const pontuados = detalhes.map((d) => {
-        let prefixo = 0;
+    const scored = details.map((d) => {
+        let prefix = 0;
         for (const s of d.stages) {
-            if (!tocou(s)) break;
-            prefixo++;
+            if (!touches(s)) break;
+            prefix++;
         }
-        let pontos = 0;
+        let points = 0;
         for (const s of d.stages)
             for (const r of s.refs)
-                if (r.refType === "trail" && tocadas.has(r.refId))
-                    pontos += 1 / (peso.get(r.refId) ?? 1);
-        return { d, prefixo, pontos };
+                if (r.refType === "trail" && touchedTrails.has(r.refId))
+                    points += 1 / (weights.get(r.refId) ?? 1);
+        return { d, prefixo: prefix, pontos: points };
     });
 
-    const melhor = pontuados.reduce((a, b) =>
+    const best = scored.reduce((a, b) =>
         b.prefixo !== a.prefixo ? (b.prefixo > a.prefixo ? b : a) : b.pontos > a.pontos ? b : a,
     );
-    const empatados = pontuados.filter(
-        (p) => p.prefixo === melhor.prefixo && Math.abs(p.pontos - melhor.pontos) < 1e-9,
+    const tied = scored.filter(
+        (p) => p.prefixo === best.prefixo && Math.abs(p.pontos - best.pontos) < 1e-9,
     );
-    return empatados.length === 1 ? melhor.d : null;
+    return tied.length === 1 ? best.d : null;
 }
 
-// Depois de concluir uma trilha: em qual roadmap ela vive e qual é a próxima
-// trilha dele. Com a trilha em mais de um roadmap a escolha segue esta ordem:
-// o que o aluno declarou seguir, depois a inferência pelo progresso e, se as
-// duas falharem, a heurística antiga de maior número de estágios concluídos.
-// `origem` diz qual delas decidiu, para a tela poder oferecer a troca em vez de
-// fingir certeza. Só oferece etapa destravada; no fim do roadmap (ou sem etapa
-// elegível), proximaTrilha volta nula.
-export async function proximaTrilhaAposConcluir(userId: string, trailId: string) {
-    const candidatos = await db
+// After completing a track: which roadmap it lives in and what that roadmap's next
+// track is. With the track in more than one roadmap the choice follows this order:
+// what the student declared to follow, then the inference by progress and, if both
+// fail, the old heuristic of the most completed stages. `origem` says which one
+// decided, so the screen can offer a switch instead of faking certainty. It only
+// offers an unlocked stage; at the end of the roadmap (or with no eligible stage),
+// proximaTrilha comes back null.
+export async function findNextTrailAfterCompletion(userId: string, trailId: string) {
+    const candidates = await db
         .selectDistinct({ slug: roadmaps.slug, position: roadmaps.position })
         .from(roadmapStageRefs)
         .innerJoin(roadmapStages, eq(roadmapStages.id, roadmapStageRefs.stageId))
@@ -534,36 +546,36 @@ export async function proximaTrilhaAposConcluir(userId: string, trailId: string)
                 eq(roadmaps.published, true),
             ),
         );
-    if (!candidatos.length) return { roadmap: null, proximaTrilha: null };
+    if (!candidates.length) return { roadmap: null, proximaTrilha: null };
 
-    const detalhes: NonNullable<Awaited<ReturnType<typeof obterRoadmap>>>[] = [];
-    for (const c of [...candidatos].sort((a, b) => a.position - b.position)) {
-        const d = await obterRoadmap(c.slug, userId);
-        if (d) detalhes.push(d);
+    const details: NonNullable<Awaited<ReturnType<typeof findRoadmapBySlug>>>[] = [];
+    for (const c of [...candidates].sort((a, b) => a.position - b.position)) {
+        const d = await findRoadmapBySlug(c.slug, userId);
+        if (d) details.push(d);
     }
-    if (!detalhes.length) return { roadmap: null, proximaTrilha: null };
+    if (!details.length) return { roadmap: null, proximaTrilha: null };
 
-    // A próxima etapa elegível de cada roadmap: depois da etapa desta trilha,
-    // destravada, não concluída e com uma trilha para apontar.
-    const refDaProxima = (d: (typeof detalhes)[number]) => {
+    // Each roadmap's next eligible stage: after this track's stage, unlocked, not
+    // completed and with a track to point to.
+    const nextTrailRef = (d: (typeof details)[number]) => {
         const idx = d.stages.findIndex((s) =>
             s.refs.some((r) => r.refType === "trail" && r.refId === trailId),
         );
         if (idx < 0) return null;
-        const etapa = d.stages
+        const foundStage = d.stages
             .slice(idx + 1)
             .find((s) => !s.completed && !s.locked && s.refs.some((r) => r.refType === "trail"));
-        return etapa?.refs.find((r) => r.refType === "trail") ?? null;
+        return foundStage?.refs.find((r) => r.refType === "trail") ?? null;
     };
 
-    // Prefere um roadmap que tenha o que oferecer; entre eles (e no fallback
-    // sem oferta), o escolhido pela ordem: declarado, inferido, heurística.
-    const comProxima = detalhes.filter((d) => refDaProxima(d) !== null);
-    const elegiveis = comProxima.length ? comProxima : detalhes;
+    // Prefers a roadmap that has something to offer; among them (and in the fallback
+    // with no offer), the one chosen in order: declared, inferred, heuristic.
+    const withNext = details.filter((d) => nextTrailRef(d) !== null);
+    const eligible = withNext.length ? withNext : details;
 
-    // 1. O que o aluno declarou seguir. Escolha explícita vem antes da inferida,
-    // e entre iguais vale a mais recente.
-    const seguidos = await db
+    // 1. What the student declared to follow. An explicit choice comes before an
+    // inferred one, and between equals the most recent wins.
+    const follows = await db
         .select()
         .from(userRoadmaps)
         .where(
@@ -571,95 +583,93 @@ export async function proximaTrilhaAposConcluir(userId: string, trailId: string)
                 eq(userRoadmaps.userId, userId),
                 inArray(
                     userRoadmaps.roadmapId,
-                    elegiveis.map((d) => d.id),
+                    eligible.map((d) => d.id),
                 ),
             ),
         );
-    seguidos.sort(
+    follows.sort(
         (a, b) =>
             Number(b.explicito) - Number(a.explicito) ||
             b.lastSeenAt.getTime() - a.lastSeenAt.getTime(),
     );
-    // O vínculo vale para escolher, mas SÓ o explícito vira certeza. Vínculo
-    // inferido continua sendo palpite: apresentá-lo como declarado esconde a
-    // opção de trocar na tela, e o aluno fica preso num caminho que ele nunca
-    // escolheu. Foi exatamente o que aconteceu depois do backfill.
-    const seguido = seguidos.length
-        ? (elegiveis.find((d) => d.id === seguidos[0].roadmapId) ?? null)
+    // The link counts for choosing, but ONLY an explicit one becomes certainty. An
+    // inferred link is still a guess: presenting it as declared hides the option to
+    // switch on the screen, and the student gets stuck on a path they never chose.
+    // That is exactly what happened after the backfill.
+    const followed = follows.length
+        ? (eligible.find((d) => d.id === follows[0].roadmapId) ?? null)
         : null;
-    const declarado = seguido && seguidos[0].explicito ? seguido : null;
+    const declared = followed && follows[0].explicito ? followed : null;
 
-    // 2. Inferência pelo progresso. 3. Heurística antiga, que erra em empate mas
-    // é melhor que não sugerir nada.
-    const inferido = declarado ? null : (seguido ?? (await inferirRoadmap(userId, elegiveis)));
-    const escolhido =
-        declarado ??
-        inferido ??
-        elegiveis.reduce((melhor, d) =>
-            d.progress.stagesDone > melhor.progress.stagesDone ? d : melhor,
-        );
-    const origem: "declarado" | "inferido" | "heuristica" = declarado
+    // 2. Inference by progress. 3. The old heuristic, which gets ties wrong but is
+    // better than suggesting nothing.
+    const inferred = declared ? null : (followed ?? (await inferRoadmap(userId, eligible)));
+    const chosen =
+        declared ??
+        inferred ??
+        eligible.reduce((best, d) => (d.progress.stagesDone > best.progress.stagesDone ? d : best));
+    const source: "declarado" | "inferido" | "heuristica" = declared
         ? "declarado"
-        : inferido
+        : inferred
           ? "inferido"
           : "heuristica";
-    const refTrilha = refDaProxima(escolhido);
+    const trailRef = nextTrailRef(chosen);
 
-    let proximaTrilha = null;
-    if (refTrilha) {
+    let nextTrail = null;
+    if (trailRef) {
         const [t] = await db
             .select({ id: trails.id, name: trails.name, level: trails.trailLevel })
             .from(trails)
-            .where(eq(trails.id, refTrilha.refId));
-        proximaTrilha = t ?? null;
+            .where(eq(trails.id, trailRef.refId));
+        nextTrail = t ?? null;
     }
-    // Quando a trilha vive em mais de um roadmap e a escolha não foi declarada
-    // pelo aluno, a tela precisa saber para oferecer a troca em vez de afirmar.
+    // When the track lives in more than one roadmap and the choice was not declared
+    // by the student, the screen needs to know so it offers a switch instead of asserting.
     return {
-        roadmap: { slug: escolhido.slug, name: escolhido.name },
-        proximaTrilha,
-        origem,
-        outrosRoadmaps: elegiveis
-            .filter((d) => d.id !== escolhido.id)
+        roadmap: { slug: chosen.slug, name: chosen.name },
+        proximaTrilha: nextTrail,
+        origem: source,
+        outrosRoadmaps: eligible
+            .filter((d) => d.id !== chosen.id)
             .map((d) => ({ slug: d.slug, name: d.name })),
     };
 }
 
 // ============================ CRUD (admin) ============================
 
-type DadosCriarRoadmap = z.infer<typeof createRoadmapSchema>;
-type DadosAtualizarRoadmap = z.infer<typeof updateRoadmapSchema>;
-type DadosCriarEstagio = z.infer<typeof createStageSchema>;
-type DadosAtualizarEstagio = z.infer<typeof updateStageSchema>;
-type DadosCriarRef = z.infer<typeof createRefSchema>;
+type CreateRoadmapData = z.infer<typeof createRoadmapSchema>;
+type UpdateRoadmapData = z.infer<typeof updateRoadmapSchema>;
+type CreateStageData = z.infer<typeof createStageSchema>;
+type UpdateStageData = z.infer<typeof updateStageSchema>;
+type CreateRefData = z.infer<typeof createRefSchema>;
 
-function gerarSlug(nome: string): string {
-    return nome
+function slugify(name: string): string {
+    return name
         .normalize("NFD")
-        .replace(/[̀-ͯ]/g, "")
+        .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
 }
 
-// Lista para o admin: todos os roadmaps (inclusive rascunhos), com contagem de estágios.
-export async function concluirEstagio(stageId: string, userId: string) {
-    const [etapa] = await db
+// Manual stage completion: the stage counts as done for the student.
+export async function saveStageCompletion(stageId: string, userId: string) {
+    const [foundStage] = await db
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
         .where(eq(roadmapStages.id, stageId));
-    if (!etapa) throw new AppError(404, "Estágio não encontrado");
+    if (!foundStage) throw new AppError(404, "Estágio não encontrado");
     await db.insert(roadmapStageCompletions).values({ stageId, userId }).onConflictDoNothing();
 
-    // As trilhas e módulos do estágio também ficam concluídos: progresso manual, sem XP.
+    // The stage's tracks and modules are completed too: manual progress, no XP.
     const refs = await db
         .select()
         .from(roadmapStageRefs)
         .where(eq(roadmapStageRefs.stageId, stageId));
     const trailIds = refs.filter((r) => r.refType === "trail").map((r) => r.refId);
     const moduleIds = refs.filter((r) => r.refType === "module").map((r) => r.refId);
-    const aulasAlvo = [
+    const targetLessons = [
         ...(trailIds.length
             ? await db
                   .select({ id: lessons.id })
@@ -673,64 +683,65 @@ export async function concluirEstagio(stageId: string, userId: string) {
                   .where(and(inArray(lessons.moduleId, moduleIds), eq(lessons.published, true)))
             : []),
     ];
-    if (aulasAlvo.length) {
+    if (targetLessons.length) {
         await db
             .insert(lessonProgress)
-            .values(aulasAlvo.map((a) => ({ userId, lessonId: a.id, manual: true })))
+            .values(targetLessons.map((a) => ({ userId, lessonId: a.id, manual: true })))
             .onConflictDoNothing();
     }
     return { ok: true };
 }
 
-export async function listarRoadmapsAdmin() {
-    const lista = await db.select().from(roadmaps).orderBy(asc(roadmaps.position));
-    const contagens = await db
+// List for the admin: every roadmap (drafts included), with the stage count.
+export async function findRoadmapsForStudio() {
+    const roadmapRows = await db.select().from(roadmaps).orderBy(asc(roadmaps.position));
+    const stageCounts = await db
         .select({ roadmapId: roadmapStages.roadmapId, n: count() })
         .from(roadmapStages)
         .groupBy(roadmapStages.roadmapId);
-    const porId = new Map(contagens.map((c) => [c.roadmapId, Number(c.n)]));
-    return lista.map((r) => ({ ...r, stagesTotal: porId.get(r.id) ?? 0 }));
+    const byId = new Map(stageCounts.map((c) => [c.roadmapId, Number(c.n)]));
+    return roadmapRows.map((r) => ({ ...r, stagesTotal: byId.get(r.id) ?? 0 }));
 }
 
-// Estrutura crua de um roadmap para edição no estúdio (por id, sem progresso de aluno).
-export async function obterRoadmapStudio(id: string) {
+// Raw structure of a roadmap for editing in the studio (by id, without student progress).
+export async function findStudioRoadmap(id: string) {
     const [roadmap] = await db.select().from(roadmaps).where(eq(roadmaps.id, id));
     if (!roadmap) throw new AppError(404, "Roadmap não encontrado");
 
-    const etapas = await db
+    const stageRows = await db
         .select()
         .from(roadmapStages)
         .where(eq(roadmapStages.roadmapId, id))
         .orderBy(asc(roadmapStages.position));
-    const etapaIds = etapas.map((e) => e.id);
-    const refs = etapaIds.length
+    const stageIds = stageRows.map((e) => e.id);
+    const refs = stageIds.length
         ? await db
               .select()
               .from(roadmapStageRefs)
-              .where(inArray(roadmapStageRefs.stageId, etapaIds))
+              .where(inArray(roadmapStageRefs.stageId, stageIds))
               .orderBy(asc(roadmapStageRefs.position))
         : [];
-    const info = await resolverRefs(
+    const info = await resolveRefs(
         refs.map((r) => ({ refType: r.refType as RefType, refId: r.refId })),
     );
 
-    const refsPorEtapa = new Map<string, typeof refs>();
+    const refsByStage = new Map<string, typeof refs>();
     for (const r of refs) {
-        const arr = refsPorEtapa.get(r.stageId) ?? [];
+        const arr = refsByStage.get(r.stageId) ?? [];
         arr.push(r);
-        refsPorEtapa.set(r.stageId, arr);
+        refsByStage.set(r.stageId, arr);
     }
 
     return {
         ...roadmap,
-        stages: etapas.map((e) => ({
+        stages: stageRows.map((e) => ({
             id: e.id,
             phase: e.phase,
             title: e.title,
             description: e.description,
             tags: e.tags ?? [],
             position: e.position,
-            refs: (refsPorEtapa.get(e.id) ?? []).map((r) => ({
+            refs: (refsByStage.get(e.id) ?? []).map((r) => ({
                 id: r.id,
                 refType: r.refType,
                 refId: r.refId,
@@ -741,76 +752,76 @@ export async function obterRoadmapStudio(id: string) {
     };
 }
 
-export async function criarRoadmap(dados: DadosCriarRoadmap) {
-    const slug = (dados.slug?.trim() || gerarSlug(dados.name)).slice(0, 80);
+export async function insertRoadmap(data: CreateRoadmapData) {
+    const slug = (data.slug?.trim() || slugify(data.name)).slice(0, 80);
     if (!slug) throw new AppError(400, "Não foi possível gerar um slug a partir do nome");
-    const [existe] = await db
+    const [existing] = await db
         .select({ id: roadmaps.id })
         .from(roadmaps)
         .where(eq(roadmaps.slug, slug));
-    if (existe) throw new AppError(409, "Já existe um roadmap com esse slug");
+    if (existing) throw new AppError(409, "Já existe um roadmap com esse slug");
 
-    let position = dados.position;
+    let position = data.position;
     if (position === undefined) {
-        const [ult] = await db
+        const [last] = await db
             .select({ p: roadmaps.position })
             .from(roadmaps)
             .orderBy(desc(roadmaps.position))
             .limit(1);
-        position = ult ? ult.p + 1 : 1;
+        position = last ? last.p + 1 : 1;
     }
     const [rm] = await db
         .insert(roadmaps)
         .values({
             slug,
-            name: dados.name,
-            description: dados.description,
-            level: dados.level,
-            icon: dados.icon ?? null,
+            name: data.name,
+            description: data.description,
+            level: data.level,
+            icon: data.icon ?? null,
             position,
-            premium: dados.premium ?? false,
-            published: dados.published ?? false,
+            premium: data.premium ?? false,
+            published: data.published ?? false,
         })
         .returning();
     return rm;
 }
 
-export async function atualizarRoadmap(id: string, dados: DadosAtualizarRoadmap) {
+export async function editRoadmap(id: string, data: UpdateRoadmapData) {
     const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, id));
     if (!rm) throw new AppError(404, "Roadmap não encontrado");
 
     const sets: Partial<typeof roadmaps.$inferInsert> = {};
-    if (dados.slug !== undefined) {
-        const s = dados.slug.trim();
-        const [outro] = await db
+    if (data.slug !== undefined) {
+        const s = data.slug.trim();
+        const [other] = await db
             .select({ id: roadmaps.id })
             .from(roadmaps)
             .where(eq(roadmaps.slug, s));
-        if (outro && outro.id !== id) throw new AppError(409, "Já existe um roadmap com esse slug");
+        if (other && other.id !== id) throw new AppError(409, "Já existe um roadmap com esse slug");
         sets.slug = s;
     }
-    if (dados.name !== undefined) sets.name = dados.name;
-    if (dados.description !== undefined) sets.description = dados.description;
-    if (dados.level !== undefined) sets.level = dados.level;
-    if (dados.icon !== undefined) sets.icon = dados.icon;
-    if (dados.position !== undefined) sets.position = dados.position;
-    if (dados.premium !== undefined) sets.premium = dados.premium;
-    if (dados.published !== undefined) sets.published = dados.published;
+    if (data.name !== undefined) sets.name = data.name;
+    if (data.description !== undefined) sets.description = data.description;
+    if (data.level !== undefined) sets.level = data.level;
+    if (data.icon !== undefined) sets.icon = data.icon;
+    if (data.position !== undefined) sets.position = data.position;
+    if (data.premium !== undefined) sets.premium = data.premium;
+    if (data.published !== undefined) sets.published = data.published;
     if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
 
-    const [atualizado] = await db.update(roadmaps).set(sets).where(eq(roadmaps.id, id)).returning();
-    return atualizado;
+    const [updated] = await db.update(roadmaps).set(sets).where(eq(roadmaps.id, id)).returning();
+    return updated;
 }
 
-export async function excluirRoadmap(id: string) {
+export async function removeRoadmap(id: string) {
     const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, id));
     if (!rm) throw new AppError(404, "Roadmap não encontrado");
     await db.transaction(async (tx) => {
-        const etapas = await tx
+        const stageRows = await tx
             .select({ id: roadmapStages.id })
             .from(roadmapStages)
             .where(eq(roadmapStages.roadmapId, id));
-        const ids = etapas.map((e) => e.id);
+        const ids = stageRows.map((e) => e.id);
         if (ids.length) {
             await tx.delete(roadmapStageRefs).where(inArray(roadmapStageRefs.stageId, ids));
             await tx.delete(roadmapStages).where(inArray(roadmapStages.id, ids));
@@ -819,38 +830,38 @@ export async function excluirRoadmap(id: string) {
     });
 }
 
-export async function criarEstagio(roadmapId: string, dados: DadosCriarEstagio) {
+export async function insertStage(roadmapId: string, data: CreateStageData) {
     const [rm] = await db
         .select({ id: roadmaps.id })
         .from(roadmaps)
         .where(eq(roadmaps.id, roadmapId));
     if (!rm) throw new AppError(404, "Roadmap não encontrado");
 
-    let position = dados.position;
+    let position = data.position;
     if (position === undefined) {
-        const [ult] = await db
+        const [last] = await db
             .select({ p: roadmapStages.position })
             .from(roadmapStages)
             .where(eq(roadmapStages.roadmapId, roadmapId))
             .orderBy(desc(roadmapStages.position))
             .limit(1);
-        position = ult ? ult.p + 1 : 1;
+        position = last ? last.p + 1 : 1;
     }
     const [stage] = await db
         .insert(roadmapStages)
         .values({
             roadmapId,
-            phase: dados.phase,
-            title: dados.title,
-            description: dados.description,
-            tags: dados.tags ?? [],
+            phase: data.phase,
+            title: data.title,
+            description: data.description,
+            tags: data.tags ?? [],
             position,
         })
         .returning();
     return stage;
 }
 
-export async function atualizarEstagio(id: string, dados: DadosAtualizarEstagio) {
+export async function editStage(id: string, data: UpdateStageData) {
     const [st] = await db
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
@@ -858,22 +869,22 @@ export async function atualizarEstagio(id: string, dados: DadosAtualizarEstagio)
     if (!st) throw new AppError(404, "Estágio não encontrado");
 
     const sets: Partial<typeof roadmapStages.$inferInsert> = {};
-    if (dados.phase !== undefined) sets.phase = dados.phase;
-    if (dados.title !== undefined) sets.title = dados.title;
-    if (dados.description !== undefined) sets.description = dados.description;
-    if (dados.tags !== undefined) sets.tags = dados.tags;
-    if (dados.position !== undefined) sets.position = dados.position;
+    if (data.phase !== undefined) sets.phase = data.phase;
+    if (data.title !== undefined) sets.title = data.title;
+    if (data.description !== undefined) sets.description = data.description;
+    if (data.tags !== undefined) sets.tags = data.tags;
+    if (data.position !== undefined) sets.position = data.position;
     if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
 
-    const [atualizado] = await db
+    const [updated] = await db
         .update(roadmapStages)
         .set(sets)
         .where(eq(roadmapStages.id, id))
         .returning();
-    return atualizado;
+    return updated;
 }
 
-export async function excluirEstagio(id: string) {
+export async function removeStage(id: string) {
     const [st] = await db
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
@@ -885,37 +896,37 @@ export async function excluirEstagio(id: string) {
     });
 }
 
-export async function adicionarRef(stageId: string, dados: DadosCriarRef) {
+export async function insertStageRef(stageId: string, data: CreateRefData) {
     const [st] = await db
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
         .where(eq(roadmapStages.id, stageId));
     if (!st) throw new AppError(404, "Estágio não encontrado");
 
-    // Valida que o conteúdo referenciado existe, para nunca criar um ref pendurado.
-    const info = await resolverRefs([{ refType: dados.refType, refId: dados.refId }]);
-    if (!info.has(dados.refType + ":" + dados.refId)) {
+    // Checks that the referenced content exists, so it never creates a dangling ref.
+    const info = await resolveRefs([{ refType: data.refType, refId: data.refId }]);
+    if (!info.has(data.refType + ":" + data.refId)) {
         throw new AppError(400, "O conteúdo referenciado não existe");
     }
 
-    let position = dados.position;
+    let position = data.position;
     if (position === undefined) {
-        const [ult] = await db
+        const [last] = await db
             .select({ p: roadmapStageRefs.position })
             .from(roadmapStageRefs)
             .where(eq(roadmapStageRefs.stageId, stageId))
             .orderBy(desc(roadmapStageRefs.position))
             .limit(1);
-        position = ult ? ult.p + 1 : 1;
+        position = last ? last.p + 1 : 1;
     }
     const [ref] = await db
         .insert(roadmapStageRefs)
-        .values({ stageId, refType: dados.refType, refId: dados.refId, position })
+        .values({ stageId, refType: data.refType, refId: data.refId, position })
         .returning();
-    return { ...ref, ...(info.get(dados.refType + ":" + dados.refId) ?? {}) };
+    return { ...ref, ...(info.get(data.refType + ":" + data.refId) ?? {}) };
 }
 
-export async function removerRef(id: string) {
+export async function removeStageRef(id: string) {
     const [ref] = await db
         .select({ id: roadmapStageRefs.id })
         .from(roadmapStageRefs)

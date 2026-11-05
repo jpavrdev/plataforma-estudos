@@ -2,7 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { trails, users } from "../../schema.ts";
 import { diasAtivosDoUsuario, hojeSaoPaulo } from "./streak.ts";
-import { calcularStreak, recordeStreak, semanaAtividade } from "../domain/streak.ts";
+import { computeStreak, longestStreak, weekActivity } from "../domain/streak.ts";
 import { calcularEstatisticas } from "./stats.service.ts";
 
 const TZ = "America/Sao_Paulo";
@@ -205,8 +205,8 @@ export async function progressoDoUsuario(userId: string, periodoDias: number | n
         if (v.aulas > 0) heatmap.push({ d, n: v.aulas });
     }
 
-    const semana = semanaAtividade(diasAtivos, hoje);
-    const streakAtual = calcularStreak(diasAtivos, hoje);
+    const semana = weekActivity(diasAtivos, hoje);
+    const streakAtual = computeStreak(diasAtivos, hoje);
 
     let metaSemana: MetaSemanal;
     if (meta?.kind === "aulas" && meta.target) {
@@ -226,7 +226,7 @@ export async function progressoDoUsuario(userId: string, periodoDias: number | n
         xpTotal: stats.xp,
         level: stats.level,
         streakAtual,
-        streakRecorde: recordeStreak(diasAtivos),
+        streakRecorde: longestStreak(diasAtivos),
         periodo: { dias: periodoDias, atual, anterior },
         xpPorDia,
         metaSemana,

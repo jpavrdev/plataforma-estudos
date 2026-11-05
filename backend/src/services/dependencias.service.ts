@@ -3,14 +3,14 @@ import { sql } from "drizzle-orm";
 import { db } from "../../db.ts";
 import { env } from "../config/env.ts";
 import { UPLOADS_DIR } from "../config/paths.ts";
-import { criarVerificadorDeDependencias } from "../domain/dependencias.ts";
+import { createDependencyChecker } from "../domain/dependencies.ts";
 import { whatsappService } from "./whatsapp.service.ts";
 
 const TIMEOUT_POR_DEPENDENCIA_MS = 3_000;
 // O LABS_URL é o do WebSocket; o health é HTTP no mesmo host e porta.
 const URL_DO_HEALTH_DOS_LABS = `${env.LABS_URL.replace(/^ws/, "http")}/health`;
 
-export const verificarDependencias = criarVerificadorDeDependencias(
+export const verificarDependencias = createDependencyChecker(
     {
         consultarBanco: () => db.execute(sql`select 1`),
         estadoDoWhatsapp: whatsappService.estadoDaConexao,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { normalizarContatos } from "../domain/contatos.ts";
+import { normalizeContacts } from "../domain/contacts.ts";
 
 export const idSorteioSchema = z.uuid("Sorteio inválido");
 
@@ -53,7 +53,7 @@ const contatoSchema = z.discriminatedUnion(
 export const participacaoSchema = z
     .object({ primario: contatoSchema, secundario: contatoSchema.nullish() })
     .transform((entrada, ctx) => {
-        const resultado = normalizarContatos(entrada);
+        const resultado = normalizeContacts(entrada);
         if (resultado.ok) return resultado.contatos;
         for (const { caminho, mensagem } of resultado.problemas) {
             ctx.addIssue({ code: "custom", path: caminho, message: mensagem, input: entrada });

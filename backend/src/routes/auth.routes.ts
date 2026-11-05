@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
     login,
+    loginTwoFactor,
     refresh,
     register,
     logout,
@@ -21,12 +22,14 @@ import {
     resetPasswordLimiter,
     resendVerificationLimiter,
     forgotPasswordOtpLimiter,
+    twoFactorLimiter,
 } from "../middlewares/rateLimit.ts";
 import { mesmaOrigem } from "../middlewares/origem.ts";
 
 const router = Router();
 
 router.post("/login", loginLimiter, login);
+router.post("/login/2fa", twoFactorLimiter, loginTwoFactor);
 router.post("/register", registerLimiter, register);
 router.post("/refresh", mesmaOrigem, refreshLimiter, refresh);
 router.post("/logout", mesmaOrigem, refreshLimiter, logout);

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { db } from "../../db.ts";
-import { users, tokens, languages as languagesTable } from "../../schema.ts";
+import { users, tokens, twoFactorAuth, languages as languagesTable } from "../../schema.ts";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import {
     updateMeSchema,
@@ -25,6 +25,7 @@ import {
 } from "../services/progresso.service.ts";
 import { apoiadorAtivo } from "../services/apoiador.service.ts";
 import { featuresDoUsuario } from "../services/feature-flag.service.ts";
+import { pendingTwoFactor } from "../middlewares/auth.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -101,7 +102,23 @@ export const getMe = async (req: Request, res: Response) => {
         console.error("getMe: falha ao listar features", e);
     }
 
-    res.json({ ...user, streak, level, apoiador, features });
+    let pendingTwoFactorStep: ReturnType<typeof pendingTwoFactor> = null;
+    if (user.role === "admin") {
+        const [twoFactor] = await db
+            .select({ enabledAt: twoFactorAuth.enabledAt })
+            .from(twoFactorAuth)
+            .where(eq(twoFactorAuth.userId, userId));
+        pendingTwoFactorStep = pendingTwoFactor(twoFactor?.enabledAt ?? null, req.mfa);
+    }
+
+    res.json({
+        ...user,
+        streak,
+        level,
+        apoiador,
+        features,
+        pendingTwoFactor: pendingTwoFactorStep,
+    });
 };
 
 // Atualiza o próprio perfil (campos editáveis). Não toca em campos sensíveis.

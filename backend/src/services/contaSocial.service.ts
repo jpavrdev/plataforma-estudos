@@ -1,12 +1,18 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { oauthAccounts, tokens, users } from "../../schema.ts";
+import {
+    oauthAccounts,
+    tokens,
+    twoFactorAuth,
+    twoFactorRecoveryCodes,
+    users,
+} from "../../schema.ts";
 import type { DadosUsuario, Provedor } from "./oauth.service.ts";
 
 // Acha ou cria o usuário de um login social. Uma conta com o mesmo email que
 // nunca foi verificada pode ter sido criada por outra pessoa, para tomar a conta
 // quando o dono do email entrar: ao adotá-la, o que foi preenchido no cadastro
-// (senha, telefone, perfil) e as sessões abertas são descartados, e o aluno
+// (senha, telefone, perfil, 2FA) e as sessões abertas são descartados, e o aluno
 // completa o perfil de novo.
 export async function vincularContaSocial(provider: Provedor, dados: DadosUsuario) {
     return db.transaction(async (tx) => {
@@ -32,6 +38,10 @@ export async function vincularContaSocial(provider: Provedor, dados: DadosUsuari
                 .returning();
         } else if (!user.emailVerifiedAt) {
             await tx.delete(tokens).where(eq(tokens.userId, user.id));
+            await tx
+                .delete(twoFactorRecoveryCodes)
+                .where(eq(twoFactorRecoveryCodes.userId, user.id));
+            await tx.delete(twoFactorAuth).where(eq(twoFactorAuth.userId, user.id));
             [user] = await tx
                 .update(users)
                 .set({

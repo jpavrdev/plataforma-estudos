@@ -10,7 +10,7 @@ import adminRoutes from "./src/routes/admin.routes.ts";
 import roadmapRoutes from "./src/routes/roadmap.routes.ts";
 import flashcardRoutes from "./src/routes/flashcard.routes.ts";
 import interviewRoutes from "./src/routes/interview.routes.ts";
-import comunicadoRoutes from "./src/routes/comunicado.routes.ts";
+import announcementRoutes from "./src/routes/announcement.routes.ts";
 import sorteioRoutes from "./src/routes/sorteio.routes.ts";
 import certificateRoutes from "./src/routes/certificate.routes.ts";
 import apoioRoutes from "./src/routes/apoio.routes.ts";
@@ -19,6 +19,7 @@ import labRoutes from "./src/routes/lab.routes.ts";
 import atsRoutes from "./src/routes/ats.routes.ts";
 import healthRoutes from "./src/routes/health.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
+import { locale } from "./src/middlewares/locale.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
 import cors from "cors";
@@ -28,6 +29,9 @@ export const app = express();
 
 app.set("trust proxy", 1);
 
+// First of all, so every answer below (including body parsing errors) leaves in
+// the language of the request.
+app.use(locale);
 app.use(cookieParser());
 // Corpo comprimido recebe 415: o front nunca envia, e a descompressão do
 // body-parser podia derrubar o processo com um corpo malformado (GHSA-27r3-jxmh-p828).
@@ -70,7 +74,7 @@ app.use(desafioRoutes);
 app.use(roadmapRoutes);
 app.use(flashcardRoutes);
 app.use(interviewRoutes);
-app.use(comunicadoRoutes);
+app.use(announcementRoutes);
 app.use(sorteioRoutes);
 app.use(certificateRoutes);
 app.use(apoioRoutes);

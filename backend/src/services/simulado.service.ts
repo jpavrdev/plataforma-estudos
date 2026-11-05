@@ -11,8 +11,8 @@ import {
 } from "../../schema.ts";
 import { eq, and, sql, inArray, desc, isNull, isNotNull, count, ne } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
-import { corrigirSimulado, questaoCorreta, resumoPorTema } from "../domain/simulado.ts";
-import { embaralharComSemente } from "../domain/embaralhar.ts";
+import { gradePracticeExam, isQuestionCorrect, summaryByTopic } from "../domain/practiceExam.ts";
+import { seededShuffle } from "../domain/shuffle.ts";
 
 function agrupar(pares: [string, string][]): Map<string, Set<string>> {
     const mapa = new Map<string, Set<string>>();
@@ -296,7 +296,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
             });
             paraResumo.push({
                 topic: snap.topic,
-                correta: questaoCorreta(marcadasSet, corretasSet),
+                correta: isQuestionCorrect(marcadasSet, corretasSet),
             });
             return {
                 id: l.questionId ?? l.id,
@@ -343,7 +343,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         const marcadas = agrupar(respostas.map((r) => [r.questionId, r.optionId]));
 
         questions = questoes.map((q) => {
-            const opcoesDaQuestao = embaralharComSemente(
+            const opcoesDaQuestao = seededShuffle(
                 opcoes.filter((o) => o.questionId === q.id),
                 attemptId + q.id,
             );
@@ -356,7 +356,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                 const marcadasSet = new Set(marcadas.get(q.id) ?? []);
                 paraResumo.push({
                     topic: q.topic,
-                    correta: questaoCorreta(marcadasSet, corretasSet),
+                    correta: isQuestionCorrect(marcadasSet, corretasSet),
                 });
             }
             return {
@@ -410,7 +410,7 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                           (attempt.submittedAt!.getTime() - attempt.startedAt.getTime()) / 1000,
                       ),
                   ),
-                  temasARevisar: resumoPorTema(paraResumo),
+                  temasARevisar: summaryByTopic(paraResumo),
               }
             : {}),
         questions,
@@ -542,7 +542,7 @@ export async function conferirQuestao(userId: string, attemptId: string, questio
 
     return {
         questionId,
-        correta: questaoCorreta(marcadas, corretas),
+        correta: isQuestionCorrect(marcadas, corretas),
         corretas: [...corretas],
         explanation: questao.explanation,
         topic: questao.topic,
@@ -598,13 +598,13 @@ export async function enviarTentativa(userId: string, attemptId: string) {
         corretas: corretasPorQuestao.get(id) ?? new Set<string>(),
     }));
 
-    const resultado = corrigirSimulado(questoes, respostasPorQuestao, simulado.passPercent);
+    const resultado = gradePracticeExam(questoes, respostasPorQuestao, simulado.passPercent);
 
     // Congela a prova como foi exibida (mesma ordem embaralhada) para a revisão
     // sobreviver a atualizações do banco de questões.
     const snapshots = linhasQ.map((q) => {
         const marcadasSet = respostasPorQuestao.get(q.questionId) ?? new Set<string>();
-        const opcoes = embaralharComSemente(
+        const opcoes = seededShuffle(
             opcoesRows.filter((o) => o.questionId === q.questionId),
             attemptId + q.questionId,
         );

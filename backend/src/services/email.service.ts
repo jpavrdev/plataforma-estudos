@@ -130,6 +130,23 @@ export const emailService = {
         const text = `A senha da sua conta no ensina.dev acabou de ser redefinida, e as sessões abertas foram encerradas.\n\nSe não foi você, redefina a senha agora pelo email e confira o telefone no seu perfil:\n${link}`;
         await enviar({ to: email, subject: "Sua senha foi redefinida · ensina.dev", html, text });
     },
+    async sendTwoFactorNotice(email: string, enabled: boolean) {
+        const link = `${env.FRONTEND_URL}/recuperar-senha`;
+        const title = enabled
+            ? "A verificação em duas etapas foi ativada"
+            : "A verificação em duas etapas foi desativada";
+        const message = enabled
+            ? "A verificação em duas etapas acabou de ser ativada na sua conta do ensina.dev. A partir de agora, o login pede também o código do app autenticador."
+            : "A verificação em duas etapas acabou de ser desativada na sua conta do ensina.dev. O login volta a pedir só a senha.";
+        const html = layout(
+            title,
+            `<p style="font-size:15px;line-height:1.6;color:#555">${message}</p>
+  <p style="font-size:15px;line-height:1.6;color:#555">Se não foi você, redefina a senha agora pelo email:</p>
+  <a href="${link}" style="display:inline-block;margin:20px 0;background:#2d6bf5;color:#fff;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:600">Redefinir senha</a>`,
+        );
+        const text = `${message}\n\nSe não foi você, redefina a senha agora pelo email:\n${link}`;
+        await enviar({ to: email, subject: `${title} · ensina.dev`, html, text });
+    },
     async enviarAvisoTelefoneAlterado(email: string) {
         const link = `${env.FRONTEND_URL}/recuperar-senha`;
         const html = layout(
