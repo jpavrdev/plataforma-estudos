@@ -21,7 +21,7 @@ import {
 import { resumoSemana } from "../services/streak.ts";
 import { rankingGlobal } from "../services/ranking.ts";
 import { atividadeRecente } from "../services/activity.service.ts";
-import { livroDaTrilha } from "../services/livro.service.ts";
+import { buildTrailBook } from "../services/book.service.ts";
 import { listarTags, criarTag, atualizarTag, excluirTag } from "../services/tag.service.ts";
 import {
     listarLinguagens,
@@ -49,16 +49,16 @@ import {
     excluirTermo,
 } from "../services/glossary.service.ts";
 import {
-    criarTrilha,
-    atualizarTrilha,
-    excluirTrilha,
-    listarTrilhas,
-    trilhasDoUsuario,
-    detalheDaTrilha,
-    avaliarTrilha,
+    insertTrail,
+    editTrail,
+    removeTrail,
+    findTrails,
+    findUserTrails,
+    findTrailDetail,
+    saveTrailReview,
 } from "../services/trail.service.ts";
-import { detalheDaAula } from "../services/lesson.service.ts";
-import { corrigirQuiz, conferirResposta } from "../services/quiz.service.ts";
+import { findLessonDetail } from "../services/lesson.service.ts";
+import { gradeQuiz, verifyAnswer } from "../services/quiz.service.ts";
 import {
     criarModulo,
     excluirModulo,
@@ -73,14 +73,14 @@ import {
 
 export const createTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createTrailSchema.parse(req.body);
-        res.status(201).json(await criarTrilha(dados));
+        const data = createTrailSchema.parse(req.body);
+        res.status(201).json(await insertTrail(data));
     } catch (err) {
         next(err);
     }
 };
 
-// ===================== TAGS (categorias de trilha) =====================
+// ===================== TAGS (track categories) =====================
 export const listTags = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await listarTags());
@@ -91,8 +91,8 @@ export const listTags = async (_req: Request, res: Response, next: NextFunction)
 
 export const createTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createTagSchema.parse(req.body);
-        res.status(201).json(await criarTag(dados.name));
+        const data = createTagSchema.parse(req.body);
+        res.status(201).json(await criarTag(data.name));
     } catch (err) {
         next(err);
     }
@@ -101,8 +101,8 @@ export const createTag = async (req: Request, res: Response, next: NextFunction)
 export const updateTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = String(req.params.id);
-        const dados = updateTagSchema.parse(req.body);
-        res.json(await atualizarTag(id, dados.name));
+        const data = updateTagSchema.parse(req.body);
+        res.json(await atualizarTag(id, data.name));
     } catch (err) {
         next(err);
     }
@@ -117,7 +117,7 @@ export const deleteTag = async (req: Request, res: Response, next: NextFunction)
     }
 };
 
-// ===================== LINGUAGENS (canônicas do perfil) =====================
+// ===================== LANGUAGES (the profile's canonical list) =====================
 export const listLanguages = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await listarLinguagens());
@@ -128,8 +128,8 @@ export const listLanguages = async (_req: Request, res: Response, next: NextFunc
 
 export const createLanguage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createLanguageSchema.parse(req.body);
-        res.status(201).json(await criarLinguagem(dados.name));
+        const data = createLanguageSchema.parse(req.body);
+        res.status(201).json(await criarLinguagem(data.name));
     } catch (err) {
         next(err);
     }
@@ -138,8 +138,8 @@ export const createLanguage = async (req: Request, res: Response, next: NextFunc
 export const updateLanguage = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = String(req.params.id);
-        const dados = updateLanguageSchema.parse(req.body);
-        res.json(await atualizarLinguagem(id, dados.name));
+        const data = updateLanguageSchema.parse(req.body);
+        res.json(await atualizarLinguagem(id, data.name));
     } catch (err) {
         next(err);
     }
@@ -154,7 +154,7 @@ export const deleteLanguage = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-// ===================== CONQUISTAS (catálogo, admin) =====================
+// ===================== ACHIEVEMENTS (catalog, admin) =====================
 export const listAchievements = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await listarConquistas());
@@ -165,8 +165,8 @@ export const listAchievements = async (_req: Request, res: Response, next: NextF
 
 export const createAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createAchievementSchema.parse(req.body);
-        res.status(201).json(await criarConquista(dados));
+        const data = createAchievementSchema.parse(req.body);
+        res.status(201).json(await criarConquista(data));
     } catch (err) {
         next(err);
     }
@@ -175,8 +175,8 @@ export const createAchievement = async (req: Request, res: Response, next: NextF
 export const updateAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = String(req.params.id);
-        const dados = updateAchievementSchema.parse(req.body);
-        res.json(await atualizarConquista(id, dados));
+        const data = updateAchievementSchema.parse(req.body);
+        res.json(await atualizarConquista(id, data));
     } catch (err) {
         next(err);
     }
@@ -191,7 +191,7 @@ export const deleteAchievement = async (req: Request, res: Response, next: NextF
     }
 };
 
-// Concede/revoga uma conquista (ocasião especial) a um usuário; lista quem já tem.
+// Grants or revokes an achievement (special occasion) to a user; lists who has it.
 export const grantAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = String(req.params.id);
@@ -220,7 +220,7 @@ export const listAchievementHolders = async (req: Request, res: Response, next: 
     }
 };
 
-// ===================== Glossário =====================
+// ===================== Glossary =====================
 export const listGlossary = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await listarGlossario());
@@ -231,8 +231,8 @@ export const listGlossary = async (_req: Request, res: Response, next: NextFunct
 
 export const createGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = glossaryTermSchema.parse(req.body);
-        res.status(201).json(await criarTermo(dados));
+        const data = glossaryTermSchema.parse(req.body);
+        res.status(201).json(await criarTermo(data));
     } catch (err) {
         next(err);
     }
@@ -240,8 +240,8 @@ export const createGlossaryTerm = async (req: Request, res: Response, next: Next
 
 export const updateGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = glossaryTermSchema.parse(req.body);
-        res.json(await atualizarTermo(String(req.params.id), dados));
+        const data = glossaryTermSchema.parse(req.body);
+        res.json(await atualizarTermo(String(req.params.id), data));
     } catch (err) {
         next(err);
     }
@@ -256,21 +256,21 @@ export const deleteGlossaryTerm = async (req: Request, res: Response, next: Next
     }
 };
 
-// Edita os dados da trilha (admin).
+// Edits the track data (admin).
 export const updateTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const trailId = String(req.params.id);
-        const dados = updateTrailSchema.parse(req.body);
-        res.json(await atualizarTrilha(trailId, dados));
+        const data = updateTrailSchema.parse(req.body);
+        res.json(await editTrail(trailId, data));
     } catch (err) {
         next(err);
     }
 };
 
-// Exclui a trilha inteira (módulos, aulas, questões e progresso).
+// Deletes the whole track (modules, lessons, questions and progress).
 export const deleteTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirTrilha(String(req.params.id));
+        await removeTrail(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -280,14 +280,14 @@ export const deleteTrail = async (req: Request, res: Response, next: NextFunctio
 export const createModule = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const trailId = String(req.params.id);
-        const dados = createModuleSchema.parse(req.body);
-        res.status(201).json(await criarModulo(trailId, dados));
+        const data = createModuleSchema.parse(req.body);
+        res.status(201).json(await criarModulo(trailId, data));
     } catch (err) {
         next(err);
     }
 };
 
-// Exclui um módulo e todas as suas aulas (questões, opções e progresso).
+// Deletes a module and all its lessons (questions, options and progress).
 export const deleteModule = async (req: Request, res: Response, next: NextFunction) => {
     try {
         await excluirModulo(String(req.params.id));
@@ -300,8 +300,8 @@ export const deleteModule = async (req: Request, res: Response, next: NextFuncti
 export const createLesson = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const moduleId = String(req.params.id);
-        const dados = createLessonSchema.parse(req.body);
-        res.status(201).json(await criarAula(moduleId, dados));
+        const data = createLessonSchema.parse(req.body);
+        res.status(201).json(await criarAula(moduleId, data));
     } catch (err) {
         next(err);
     }
@@ -310,8 +310,8 @@ export const createLesson = async (req: Request, res: Response, next: NextFuncti
 export const createQuestion = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lessonId = String(req.params.id);
-        const dados = createQuestionSchema.parse(req.body);
-        res.status(201).json(await criarQuestao(lessonId, dados));
+        const data = createQuestionSchema.parse(req.body);
+        res.status(201).json(await criarQuestao(lessonId, data));
     } catch (err) {
         next(err);
     }
@@ -320,8 +320,8 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
 export const listTrails = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const level = typeof req.query.level === "string" ? req.query.level : undefined;
-        const categoria = typeof req.query.categoria === "string" ? req.query.categoria : undefined;
-        res.json(await listarTrilhas({ level, categoria }));
+        const category = typeof req.query.categoria === "string" ? req.query.categoria : undefined;
+        res.json(await findTrails({ level, categoria: category }));
     } catch (err) {
         next(err);
     }
@@ -331,34 +331,34 @@ export const getMyTrails = async (req: Request, res: Response, next: NextFunctio
     try {
         const userId = req.userId;
         if (!userId) {
-            return res.status(401).json({ erro: "Não autenticado" });
+            return res.status(401).json({ erro: "common.notAuthenticated" });
         }
-        res.json(await trilhasDoUsuario(userId));
+        res.json(await findUserTrails(userId));
     } catch (err) {
         next(err);
     }
 };
 
-// Retorna a trilha com módulos e aulas, cada aula com estado para o usuário.
-// Estado sequencial na trilha toda: done | current | locked.
+// Returns the track with modules and lessons, each lesson with its state for the user.
+// The state follows the whole track in sequence: done | current | locked.
 export const getTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        res.json(await detalheDaTrilha(String(req.params.id), req.userId!, lang));
+        res.json(await findTrailDetail(String(req.params.id), req.userId!, lang));
     } catch (err) {
         next(err);
     }
 };
 
-// Livro da trilha em EPUB, para ler fora da plataforma. O arquivo sai do
-// conteúdo publicado e fica em cache por hash, então baixar de novo não
-// reprocessa a trilha inteira.
+// The track as an EPUB book, to read outside the platform. The file comes from the
+// published content and is cached by hash, so downloading it again does not
+// process the whole track again.
 export const getTrailEpub = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        const { buffer, nome } = await livroDaTrilha(String(req.params.id), lang);
+        const { buffer, nome: fileName } = await buildTrailBook(String(req.params.id), lang);
         res.setHeader("Content-Type", "application/epub+zip");
-        res.setHeader("Content-Disposition", `attachment; filename="${nome}"`);
+        res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
         res.setHeader("Content-Length", String(buffer.length));
         res.send(buffer);
     } catch (err) {
@@ -368,13 +368,13 @@ export const getTrailEpub = async (req: Request, res: Response, next: NextFuncti
 
 export const submitTrailReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = reviewTrailSchema.parse(req.body);
+        const data = reviewTrailSchema.parse(req.body);
         res.json(
-            await avaliarTrilha(
+            await saveTrailReview(
                 String(req.params.id),
                 req.userId!,
-                dados.stars,
-                dados.comment ?? null,
+                data.stars,
+                data.comment ?? null,
             ),
         );
     } catch (err) {
@@ -382,28 +382,28 @@ export const submitTrailReview = async (req: Request, res: Response, next: NextF
     }
 };
 
-// Retorna a aula com conteúdo e questões SEM revelar a alternativa correta.
+// Returns the lesson with content and questions WITHOUT revealing the right option.
 export const getLesson = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        res.json(await detalheDaAula(String(req.params.id), req.userId!, lang));
+        res.json(await findLessonDetail(String(req.params.id), req.userId!, lang));
     } catch (err) {
         next(err);
     }
 };
 
-// Recebe as respostas, corrige no servidor e conclui a aula se acertar o mínimo.
+// Receives the answers, grades them on the server and completes the lesson when enough are right.
 export const submitQuiz = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lessonId = String(req.params.id);
-        const dados = submitQuizSchema.parse(req.body);
-        res.json(await corrigirQuiz(req.userId!, lessonId, dados));
+        const data = submitQuizSchema.parse(req.body);
+        res.json(await gradeQuiz(req.userId!, lessonId, data));
     } catch (err) {
         next(err);
     }
 };
 
-// XP total do usuário: 50 por aula concluída + 10 por questão acertada (primeira vez).
+// The user's total XP: 50 per completed lesson + 10 per question answered right (the first time).
 export const getMyXp = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await calcularEstatisticas(req.userId!));
@@ -412,7 +412,7 @@ export const getMyXp = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-// Números da plataforma para a página inicial pública (sem login). Só agregados.
+// Platform numbers for the public home page (no sign-in). Aggregates only.
 export const getPublicStats = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await estatisticasPublicas());
@@ -421,7 +421,7 @@ export const getPublicStats = async (_req: Request, res: Response, next: NextFun
     }
 };
 
-// Catálogo de conquistas com a marcação do que o usuário já desbloqueou.
+// Achievement catalog, marking what the user already unlocked.
 export const getMyAchievements = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await conquistasDoUsuario(req.userId!));
@@ -430,7 +430,7 @@ export const getMyAchievements = async (req: Request, res: Response, next: NextF
     }
 };
 
-// Conquistas recém-desbloqueadas ainda não notificadas (alimenta o toast estilo Steam).
+// Newly unlocked achievements not notified yet (they feed the Steam-style toast).
 export const getUnseenAchievements = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await conquistasNaoVistas(req.userId!));
@@ -439,7 +439,7 @@ export const getUnseenAchievements = async (req: Request, res: Response, next: N
     }
 };
 
-// Atividades recentes derivadas: aulas concluídas + conquistas desbloqueadas.
+// Derived recent activity: completed lessons + unlocked achievements.
 export const getMyActivity = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await atividadeRecente(req.userId!));
@@ -448,7 +448,7 @@ export const getMyActivity = async (req: Request, res: Response, next: NextFunct
     }
 };
 
-// Feed da comunidade: quem desbloqueou cada conquista, mais recentes primeiro.
+// Community feed: who unlocked each achievement, most recent first.
 export const getCommunityAchievements = async (
     _req: Request,
     res: Response,
@@ -461,18 +461,18 @@ export const getCommunityAchievements = async (
     }
 };
 
-// Ranking global por XP. Liga e nível usam o XP total; o leaderboard usa o
-// período (week/month/all). XP = 50 por aula concluída + 10 por questão certa.
+// Global XP ranking. League and level use the total XP; the leaderboard uses the
+// period (week/month/all). XP = 50 per completed lesson + 10 per right answer.
 export const getRanking = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const periodo = String(req.query.period ?? "all");
-        res.json(await rankingGlobal(periodo, req.userId));
+        const period = String(req.query.period ?? "all");
+        res.json(await rankingGlobal(period, req.userId));
     } catch (err) {
         next(err);
     }
 };
 
-// Streak do usuário + os últimos 7 dias (para o card da home).
+// The user's streak + the last 7 days (for the home card).
 export const getMyStreak = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await resumoSemana(req.userId!));
@@ -481,26 +481,26 @@ export const getMyStreak = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
-// Verifica uma única resposta para o quiz em carrossel (feedback imediato), sem
-// expor o gabarito das outras questões. Não grava nada: a conclusão da aula
-// continua sendo decidida no submitQuiz.
+// Checks a single answer for the carousel quiz (immediate feedback), without
+// exposing the answer key of the other questions. It saves nothing: completing
+// the lesson is still decided in submitQuiz.
 export const checkAnswer = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lessonId = String(req.params.id);
         const { questionId, optionId } = checkAnswerSchema.parse(req.body);
-        res.json(await conferirResposta(req.userId!, lessonId, questionId, optionId));
+        res.json(await verifyAnswer(req.userId!, lessonId, questionId, optionId));
     } catch (err) {
         next(err);
     }
 };
 
-// Publica ou despublica uma aula (admin). Body: { published: boolean }
+// Publishes or unpublishes a lesson (admin). Body: { published: boolean }
 export const setLessonPublished = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lessonId = String(req.params.id);
         const { published } = req.body;
         if (typeof published !== "boolean") {
-            return res.status(400).json({ erro: "Campo 'published' deve ser booleano" });
+            return res.status(400).json({ erro: "trail.publishedMustBeBoolean" });
         }
 
         res.json(await definirPublicacao(lessonId, published));
@@ -511,7 +511,7 @@ export const setLessonPublished = async (req: Request, res: Response, next: Next
 
 // ===================== ESTÚDIO (admin) =====================
 
-// Estrutura do curso para o editor: módulos ordenados com suas aulas (inclui rascunhos).
+// Course structure for the editor: ordered modules with their lessons (drafts included).
 export const getTrailStudio = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await estruturaDoEstudio(String(req.params.id)));
@@ -520,7 +520,7 @@ export const getTrailStudio = async (req: Request, res: Response, next: NextFunc
     }
 };
 
-// Aula completa para edição: inclui o gabarito e a dificuldade (só admin).
+// Full lesson for editing: includes the answer key and the difficulty (admin only).
 export const getLessonStudio = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await aulaParaEdicao(String(req.params.id)));
@@ -529,7 +529,7 @@ export const getLessonStudio = async (req: Request, res: Response, next: NextFun
     }
 };
 
-// Exclui uma aula e tudo que depende dela.
+// Deletes a lesson and everything that depends on it.
 export const deleteLesson = async (req: Request, res: Response, next: NextFunction) => {
     try {
         await excluirAula(String(req.params.id));
@@ -539,13 +539,13 @@ export const deleteLesson = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-// Salva a aula inteira (título, blocos de conteúdo e questões de uma vez). Substitui
-// as questões por completo. Valida o conteúdo apenas quando vai publicar.
+// Saves the whole lesson (title, content blocks and questions at once). It replaces
+// the questions completely. The content is validated only when publishing.
 export const saveLessonStudio = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lessonId = String(req.params.id);
-        const dados = saveLessonStudioSchema.parse(req.body);
-        await salvarAulaEstudio(lessonId, dados);
+        const data = saveLessonStudioSchema.parse(req.body);
+        await salvarAulaEstudio(lessonId, data);
         res.json({ ok: true });
     } catch (err) {
         next(err);
