@@ -17,8 +17,10 @@ export const en: typeof ptBR = {
     hidePassword: 'Hide password',
     email: 'Email',
     emailPlaceholder: 'you@email.com',
+    password: 'Password',
     newPassword: 'New password',
     backToLogin: 'Back to sign in',
+    goToLogin: 'Go to sign in',
   },
 
   profileFields: {
@@ -61,7 +63,6 @@ export const en: typeof ptBR = {
     subtitle: 'It takes less than a minute.',
     name: 'Name',
     namePlaceholder: 'Your name',
-    password: 'Password',
     passwordPlaceholder: 'at least {{min}} characters',
     passwordRules: {
       length: 'At least {{min}} characters',
@@ -116,7 +117,6 @@ export const en: typeof ptBR = {
     requestNew: 'Request a new link',
     doneTitle: 'Password reset!',
     doneText: 'You can now sign in with your new password.',
-    goToLogin: 'Go to sign in',
     title: 'Create a new password',
     subtitle: 'Choose a strong password for your account.',
     hint: 'At least 12 characters, with uppercase, lowercase, a number and a symbol.',
@@ -125,6 +125,71 @@ export const en: typeof ptBR = {
     errors: {
       mismatch: 'The passwords do not match.',
       generic: 'Could not reset the password. The link may have expired.',
+    },
+  },
+
+  login: {
+    kicker: '<soft>every </soft>day',
+    headline: 'Solve a challenge',
+    lede: 'Learn to code by doing, with daily problems, streaks and a ranking that keeps you going.',
+    sampleFunction: 'sum',
+    streakChip: '12 days',
+    title: 'Welcome back',
+    subtitle: 'Pick up where you left off.',
+    forgotPassword: 'Forgot your password?',
+    submit: 'Sign in',
+    submitting: 'Signing in...',
+    noAccount: 'No account yet?',
+    createAccount: 'Create a free account',
+    resend: 'Resend the verification email',
+    resending: 'Resending...',
+    resent: 'If there is an account waiting for confirmation, we sent the link again.',
+    resendFailed: 'Could not resend it now. Try again in a moment.',
+    errors: {
+      generic: 'Could not sign in. Try again.',
+    },
+    oauthErrors: {
+      providerUnavailable: 'This social sign-in is not available right now.',
+      invalid: 'Could not validate the sign-in. Try again.',
+      failed: 'Signing in with the provider failed. Try again.',
+      noEmail: 'Could not get a verified email from your account.',
+    },
+  },
+
+  twoFactorLogin: {
+    title: 'Two-step verification',
+    appHint: 'Enter the 6-digit code from your authenticator app.',
+    recoveryHint: 'Enter one of your recovery codes. Each one works only once.',
+    appCode: 'App code',
+    recoveryCode: 'Recovery code',
+    confirm: 'Confirm',
+    confirming: 'Confirming...',
+    useApp: 'Use the app code',
+    useRecovery: 'Use a recovery code',
+    error: 'Could not confirm the code.',
+  },
+
+  oauthCallback: {
+    failedTitle: 'Could not sign in',
+    failedText: 'Try again from the sign-in screen.',
+    signingIn: 'Signing in...',
+    wait: 'Just a moment.',
+  },
+
+  verifyEmail: {
+    verifying: 'Verifying your email...',
+    wait: 'Wait a moment.',
+    doneTitle: 'Email verified!',
+    done: 'Email verified.',
+    failedTitle: 'Could not verify',
+    failed: 'Could not verify your email. The link may have expired.',
+    noToken: 'Invalid link: the token is missing.',
+  },
+
+  profile: {
+    language: {
+      title: 'Language',
+      hint: 'It applies to the screens and to the emails of your account. Some screens are still only in Portuguese.',
     },
   },
 

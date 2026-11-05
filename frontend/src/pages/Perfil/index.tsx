@@ -49,6 +49,7 @@ import { urlImagem } from '../../utils/urlImagem';
 
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { TelefoneRecuperacao } from './TelefoneRecuperacao';
+import { LanguageCard } from './LanguageCard';
 import { TwoFactorCard } from './TwoFactorCard';
 
 // Só carrega o recortador quando o usuário vai trocar foto ou capa.
@@ -680,6 +681,7 @@ export function Perfil() {
                   </div>
                 </div>
                 <TelefoneRecuperacao />
+                <LanguageCard />
                 {authUser?.role === 'admin' && <TwoFactorCard />}
               </div>
 

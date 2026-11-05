@@ -16,8 +16,10 @@ export const ptBR = {
     hidePassword: 'Ocultar senha',
     email: 'E-mail',
     emailPlaceholder: 'voce@email.com',
+    password: 'Senha',
     newPassword: 'Nova senha',
     backToLogin: 'Voltar ao login',
+    goToLogin: 'Ir para o login',
   },
 
   profileFields: {
@@ -60,7 +62,6 @@ export const ptBR = {
     subtitle: 'Leva menos de um minuto.',
     name: 'Nome',
     namePlaceholder: 'Seu nome',
-    password: 'Senha',
     passwordPlaceholder: 'mínimo {{min}} caracteres',
     passwordRules: {
       length: 'Ao menos {{min}} caracteres',
@@ -115,7 +116,6 @@ export const ptBR = {
     requestNew: 'Pedir um novo link',
     doneTitle: 'Senha redefinida!',
     doneText: 'Já pode entrar com a sua nova senha.',
-    goToLogin: 'Ir para o login',
     title: 'Criar nova senha',
     subtitle: 'Escolha uma senha forte para a sua conta.',
     hint: 'Mínimo 12 caracteres, com maiúscula, minúscula, número e símbolo.',
@@ -124,6 +124,71 @@ export const ptBR = {
     errors: {
       mismatch: 'As senhas não coincidem.',
       generic: 'Não foi possível redefinir. O link pode ter expirado.',
+    },
+  },
+
+  login: {
+    kicker: '<soft>todo </soft>dia',
+    headline: 'Resolva um desafio',
+    lede: 'Aprenda programação na prática com problemas diários, streaks e um ranking que mantém você no ritmo.',
+    sampleFunction: 'soma',
+    streakChip: '12 dias',
+    title: 'Bem-vindo de volta',
+    subtitle: 'Continue de onde você parou.',
+    forgotPassword: 'Esqueceu a senha?',
+    submit: 'Entrar',
+    submitting: 'Entrando...',
+    noAccount: 'Não tem conta?',
+    createAccount: 'Criar conta grátis',
+    resend: 'Reenviar email de verificação',
+    resending: 'Reenviando...',
+    resent: 'Se houver uma conta pendente, reenviamos o link de confirmação.',
+    resendFailed: 'Não foi possível reenviar agora. Tente de novo em instantes.',
+    errors: {
+      generic: 'Erro ao fazer login. Tente novamente.',
+    },
+    oauthErrors: {
+      providerUnavailable: 'Esse login social não está disponível no momento.',
+      invalid: 'Não foi possível validar o login. Tente de novo.',
+      failed: 'Falha ao entrar com o provedor. Tente de novo.',
+      noEmail: 'Não foi possível obter um email verificado da sua conta.',
+    },
+  },
+
+  twoFactorLogin: {
+    title: 'Verificação em duas etapas',
+    appHint: 'Digite o código de 6 dígitos do seu app autenticador.',
+    recoveryHint: 'Digite um dos seus códigos de recuperação. Cada um vale uma vez só.',
+    appCode: 'Código do app',
+    recoveryCode: 'Código de recuperação',
+    confirm: 'Confirmar',
+    confirming: 'Confirmando...',
+    useApp: 'Usar o código do app',
+    useRecovery: 'Usar um código de recuperação',
+    error: 'Não foi possível confirmar o código.',
+  },
+
+  oauthCallback: {
+    failedTitle: 'Não foi possível entrar',
+    failedText: 'Tente novamente pela tela de login.',
+    signingIn: 'Entrando...',
+    wait: 'Só um instante.',
+  },
+
+  verifyEmail: {
+    verifying: 'Verificando seu email...',
+    wait: 'Aguarde um instante.',
+    doneTitle: 'Email verificado!',
+    done: 'Email verificado com sucesso.',
+    failedTitle: 'Não foi possível verificar',
+    failed: 'Não foi possível verificar seu email. O link pode ter expirado.',
+    noToken: 'Link inválido: token não encontrado.',
+  },
+
+  profile: {
+    language: {
+      title: 'Idioma',
+      hint: 'Vale para as telas e para os emails da sua conta. Algumas telas ainda estão só em português.',
     },
   },
 

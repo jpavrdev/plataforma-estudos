@@ -26,6 +26,7 @@ Live at [ensinadev.com.br](https://ensinadev.com.br)
 | **Raffles** | Prize raffles among students, with sign-up on the platform and the draw run from the Estúdio. |
 | **Support** | An optional Pix subscription that helps keep the platform running, with a badge on the profile and in the ranking, an accent color, a custom background and the resume analysis. |
 | **Estúdio** | Admin panel to author tracks, questions, challenges, practice exams, roadmaps, raffles and announcements. |
+| **Languages** | Portuguese and English. A new visitor gets the browser language, and the choice stays in a cookie and in the account, which also sets the language of the emails. The screens are being translated area by area; the content comes after them. |
 
 ## Tech stack
 
@@ -35,7 +36,8 @@ Live at [ensinadev.com.br](https://ensinadev.com.br)
 - **Express 5** and **Zod** for input validation.
 - **Drizzle ORM** on **PostgreSQL 16**, with versioned migrations in `backend/drizzle`.
 - **JWT** with a refresh token in an httpOnly cookie, passwords in **Argon2** (migrating from bcrypt on login).
-- **helmet**, **express-rate-limit** and account lockout after failed attempts.
+- **helmet**, **express-rate-limit**, account lockout after failed attempts and TOTP two-step verification, required for admins.
+- Messages in two languages: the frontend sends `X-Locale` and the API answers in it, with the catalog in `backend/src/i18n`.
 - **ws** for the lab terminal, **pdfkit** and **qrcode** for the certificates, **nodemailer** for email, **unpdf** to read the uploaded resume, and **@anthropic-ai/sdk** for the resume analysis model (in production, DeepSeek's compatible endpoint).
 
 **Frontend**
@@ -43,6 +45,7 @@ Live at [ensinadev.com.br](https://ensinadev.com.br)
 - **React 19** with **Vite** and **React Router 7**.
 - **CodeMirror** in the challenge editor, **xterm.js** in the lab terminal.
 - **react-markdown** with **remark-gfm**, **remark-math** and **KaTeX** for lesson content, which allows math formulas in the calculus tracks.
+- **react-i18next** with typed catalogs in `frontend/src/i18n/locales`: a missing English key breaks the build.
 - Hand-written CSS with theme tokens in `frontend/src/styles/tokens.css`. No UI framework.
 
 **Infrastructure**
@@ -161,14 +164,14 @@ deploy/             Caddyfile and production assets
 
 ## Data model
 
-There are 55 tables, and almost all of them hang from one of two axes: **`users`**,
+There are 57 tables, and almost all of them hang from one of two axes: **`users`**,
 for everything that belongs to the student, and **`trails`**, for everything that is
 content. Understanding these two already makes the rest readable.
 
 | Area | Anchored on | Tables |
 | --- | --- | --- |
 | **Content** | `trails` | `modules`, `lessons`, `questions`, `question_options`, `tags`, `trail_tags`, `trail_reviews`, `glossary`, `languages` |
-| **Account** | `users` | `oauth_accounts`, `tokens`, `user_follows` |
+| **Account** | `users` | `oauth_accounts`, `tokens`, `user_follows`, `two_factor_auth`, `two_factor_recovery_codes` |
 | **Progress** | both | `lessons_progress`, `question_answers`, `achievements`, `user_achievements`, `ranking_snapshots`, `certificates` |
 | **Roadmaps** | both | `roadmaps`, `roadmap_stages`, `roadmap_stage_refs`, `roadmap_stage_completions`, `user_roadmaps` |
 | **Practice exams** | `users` | `simulados`, `simulado_questions`, `simulado_options`, `simulado_attempts`, `simulado_attempt_questions`, `simulado_attempt_answers`, `simulado_favoritos` |

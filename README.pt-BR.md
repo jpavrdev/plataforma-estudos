@@ -26,6 +26,7 @@ Em produção: [ensinadev.com.br](https://ensinadev.com.br)
 | **Sorteios** | Sorteios de prêmios entre os alunos, com inscrição na plataforma e o sorteio feito pelo Estúdio. |
 | **Apoio** | Assinatura opcional por Pix que ajuda a manter a plataforma, com selo no perfil e no ranking, cor de destaque, fundo personalizado e a análise de currículo. |
 | **Estúdio** | Painel administrativo para autorar trilhas, questões, desafios, simulados, roadmaps, sorteios e comunicados. |
+| **Idiomas** | Português e inglês. O visitante novo recebe o idioma do navegador, e a escolha fica num cookie e na conta, que também define o idioma dos emails. As telas estão sendo traduzidas área por área; o conteúdo vem depois delas. |
 
 ## Tecnologias
 
@@ -35,7 +36,8 @@ Em produção: [ensinadev.com.br](https://ensinadev.com.br)
 - **Express 5** e **Zod** para validação de entrada.
 - **Drizzle ORM** sobre **PostgreSQL 16**, com migrations versionadas em `backend/drizzle`.
 - **JWT** com refresh token em cookie httpOnly, senhas em **Argon2** (migrando do bcrypt no login).
-- **helmet**, **express-rate-limit** e bloqueio de conta por tentativas.
+- **helmet**, **express-rate-limit**, bloqueio de conta por tentativas e verificação em duas etapas por TOTP, obrigatória para admin.
+- Mensagens em dois idiomas: o front manda `X-Locale` e a API responde nele, com o catálogo em `backend/src/i18n`.
 - **ws** para o terminal dos laboratórios, **pdfkit** e **qrcode** para os certificados, **nodemailer** para email, **unpdf** para ler o currículo enviado e **@anthropic-ai/sdk** para o modelo da análise de currículo (em produção, o endpoint compatível da DeepSeek).
 
 **Frontend**
@@ -43,6 +45,7 @@ Em produção: [ensinadev.com.br](https://ensinadev.com.br)
 - **React 19** com **Vite** e **React Router 7**.
 - **CodeMirror** no editor dos desafios, **xterm.js** no terminal dos laboratórios.
 - **react-markdown** com **remark-gfm**, **remark-math** e **KaTeX** para o conteúdo das aulas, o que permite fórmula matemática nas trilhas de cálculo.
+- **react-i18next** com catálogos tipados em `frontend/src/i18n/locales`: chave faltando no inglês quebra o build.
 - CSS próprio com tokens de tema em `frontend/src/styles/tokens.css`. Sem framework de UI.
 
 **Infraestrutura**
@@ -162,14 +165,14 @@ deploy/             Caddyfile e assets de produção
 
 ## Modelo de dados
 
-São 55 tabelas, e quase todas penduram em um de dois eixos: **`users`**, para tudo
+São 57 tabelas, e quase todas penduram em um de dois eixos: **`users`**, para tudo
 que é do aluno, e **`trails`**, para tudo que é conteúdo. Entender esses dois já
 resolve a leitura do resto.
 
 | Área | Ancora em | Tabelas |
 | --- | --- | --- |
 | **Conteúdo** | `trails` | `modules`, `lessons`, `questions`, `question_options`, `tags`, `trail_tags`, `trail_reviews`, `glossary`, `languages` |
-| **Conta** | `users` | `oauth_accounts`, `tokens`, `user_follows` |
+| **Conta** | `users` | `oauth_accounts`, `tokens`, `user_follows`, `two_factor_auth`, `two_factor_recovery_codes` |
 | **Progresso** | ambos | `lessons_progress`, `question_answers`, `achievements`, `user_achievements`, `ranking_snapshots`, `certificates` |
 | **Roadmaps** | ambos | `roadmaps`, `roadmap_stages`, `roadmap_stage_refs`, `roadmap_stage_completions`, `user_roadmaps` |
 | **Simulados** | `users` | `simulados`, `simulado_questions`, `simulado_options`, `simulado_attempts`, `simulado_attempt_questions`, `simulado_attempt_answers`, `simulado_favoritos` |

@@ -69,7 +69,7 @@ export function ResetPassword() {
           <h2 className="auth__title">{t('resetPassword.doneTitle')}</h2>
           <p className="auth__subtitle">{t('resetPassword.doneText')}</p>
           <Link className="btn btn--accent btn--block" to="/entrar">
-            {t('resetPassword.goToLogin')}
+            {t('auth.goToLogin')}
           </Link>
         </>
       ) : (

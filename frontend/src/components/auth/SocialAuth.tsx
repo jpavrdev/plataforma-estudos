@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
+import { currentLocale } from '../../i18n';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export function SocialAuth() {
   const { t } = useTranslation();
   const signIn = (provider: 'google' | 'github') => {
-    window.location.href = `${API}/auth/${provider}`;
+    // A new account is born in the language of this screen.
+    window.location.href = `${API}/auth/${provider}?locale=${currentLocale()}`;
   };
 
   return (
