@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { db } from "../../db.ts";
-import { users } from "../../schema.ts";
+import { twoFactorAuth, users } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 import { env } from "../config/env.ts";
 
@@ -12,6 +12,7 @@ const JWT_SECRET = env.JWT_SECRET;
 
 interface UserPayload {
     userId: string;
+    mfa?: boolean;
 }
 
 export function autenticar(req: Request, res: Response, next: NextFunction) {
@@ -27,6 +28,7 @@ export function autenticar(req: Request, res: Response, next: NextFunction) {
         const payload = jwt.verify(token, JWT_SECRET) as UserPayload;
 
         req.userId = payload.userId;
+        req.mfa = payload.mfa === true;
 
         next();
     } catch {
@@ -42,12 +44,29 @@ export async function exigirAdmin(req: Request, res: Response, next: NextFunctio
     }
 
     const [registro] = await db
-        .select({ role: users.role })
+        .select({ role: users.role, doisFatoresEm: twoFactorAuth.enabledAt })
         .from(users)
+        .leftJoin(twoFactorAuth, eq(twoFactorAuth.userId, users.id))
         .where(eq(users.id, idUsuario));
 
     if (!registro || registro.role !== "admin") {
         return res.status(403).json({ erro: "Usuário não é administrador" });
+    }
+
+    // Admin só age com sessão que passou pelo código do app autenticador, e com o
+    // 2FA ainda ligado (desligar vale na hora, sem esperar o token expirar).
+    if (env.ADMIN_EXIGE_2FA && (!req.mfa || !registro.doisFatoresEm)) {
+        return res.status(403).json(
+            registro.doisFatoresEm
+                ? {
+                      erro: "Entre de novo e confirme com o código do app autenticador para usar as funções de administrador.",
+                      codigo: "2fa_sessao",
+                  }
+                : {
+                      erro: "Ative a verificação em duas etapas no seu perfil para usar as funções de administrador.",
+                      codigo: "2fa_obrigatorio",
+                  },
+        );
     }
 
     next();

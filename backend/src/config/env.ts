@@ -60,6 +60,12 @@ const envSchema = z.object({
     CERT_RESPONSAVEL: z.string().optional(),
     // Token do monitor externo para ler /health/dependencias. Sem ele, a rota não existe.
     MONITOR_TOKEN: z.string().min(32, "MONITOR_TOKEN deve ter ao menos 32 caracteres.").optional(),
+    // Rotas de admin só com sessão verificada pelo 2FA. "false" desliga a exigência,
+    // para uma emergência (ou para os testes que não tratam do 2FA).
+    ADMIN_EXIGE_2FA: z
+        .string()
+        .optional()
+        .transform((v) => v !== "false"),
 });
 
 // Valida os dados e lança erro se tiver algo errado.

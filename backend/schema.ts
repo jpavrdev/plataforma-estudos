@@ -116,6 +116,36 @@ export const tokens = pgTable(
     (table) => [index("tokens_user_id_idx").on(table.userId)],
 );
 
+// Verificação em duas etapas por app autenticador (TOTP). Os segredos ficam
+// cifrados (services/cifra.ts). O pendente é o da configuração em curso e só
+// vira o segredo quando o primeiro código confere.
+export const twoFactorAuth = pgTable("two_factor_auth", {
+    userId: uuid("user_id")
+        .primaryKey()
+        .references(() => users.id, { onDelete: "cascade" }),
+    secret: text("secret"),
+    pendingSecret: text("pending_secret"),
+    enabledAt: timestamp("enabled_at", { withTimezone: true }),
+    // Último passo de 30 segundos aceito: o mesmo código não entra duas vezes.
+    lastStep: integer("last_step"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Códigos de recuperação do 2FA, de uso único, guardados só como hash.
+export const twoFactorRecoveryCodes = pgTable(
+    "two_factor_recovery_codes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        codeHash: varchar("code_hash", { length: 64 }).notNull().unique(),
+        usedAt: timestamp("used_at", { withTimezone: true }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("two_factor_recovery_codes_user_id_idx").on(table.userId)],
+);
+
 export const trails = pgTable("trails", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: varchar("name", { length: 255 }).notNull(),

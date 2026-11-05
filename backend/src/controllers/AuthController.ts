@@ -17,14 +17,12 @@ import { users, tokens, oauthAccounts } from "../../schema.ts";
 import { eq, and, isNull } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "../config/env.ts";
-import { authService } from "../services/auth.service.ts";
+import { authService, opcoesCookieRefresh } from "../services/auth.service.ts";
+import { doisFatoresService } from "../services/doisFatores.service.ts";
+import { loginDoisFatoresSchema } from "../schemas/doisFatores.schema.ts";
 import { createHash } from "node:crypto";
 import { emailService } from "../services/email.service.ts";
 import { whatsappService } from "../services/whatsapp.service.ts";
-
-// Lockout de conta: trava temporariamente após muitas senhas erradas.
-const MAX_TENTATIVAS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutos
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -115,34 +113,16 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const senhaCorreta = await verificarSenha(hashParaComparar, dados.password);
 
         if (!user || !senhaCorreta) {
-            // Conta tentativas falhas só para usuário existente. Ao atingir o limite,
-            // trava por LOCKOUT_MS e zera o contador (a próxima janela começa limpa).
-            if (user) {
-                const tentativas = user.failedLoginAttempts + 1;
-                if (tentativas >= MAX_TENTATIVAS) {
-                    await db
-                        .update(users)
-                        .set({
-                            failedLoginAttempts: 0,
-                            lockedUntil: new Date(Date.now() + LOCKOUT_MS),
-                        })
-                        .where(eq(users.id, user.id));
-                } else {
-                    await db
-                        .update(users)
-                        .set({ failedLoginAttempts: tentativas })
-                        .where(eq(users.id, user.id));
-                }
-            }
+            // Conta tentativas falhas só para usuário existente; na quinta a conta trava.
+            if (user) await authService.registrarFalhaDeLogin(user.id);
             return res.status(401).json({ erro: "Credenciais inválidas" });
         }
 
-        // Senha correta: zera o contador se havia tentativas/lock pendentes.
-        if (user.failedLoginAttempts > 0 || user.lockedUntil) {
-            await db
-                .update(users)
-                .set({ failedLoginAttempts: 0, lockedUntil: null })
-                .where(eq(users.id, user.id));
+        // Senha correta zera o contador, menos para quem tem 2FA: nesse caso só o
+        // código certo zera, senão senha certa e código errado nunca travariam a conta.
+        const comDoisFatores = await doisFatoresService.ativo(user.id);
+        if (!comDoisFatores && (user.failedLoginAttempts > 0 || user.lockedUntil)) {
+            await authService.zerarFalhasDeLogin(user.id);
         }
 
         // Migração transparente do hash: um bcrypt antigo vira argon2 no primeiro login.
@@ -153,6 +133,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
         if (!user.emailVerifiedAt) {
             return res.status(403).json({ erro: "Verifique seu email antes de entrar" });
+        }
+
+        if (comDoisFatores) {
+            return res.json({ desafio: await doisFatoresService.criarDesafio(user.id) });
         }
 
         const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
@@ -166,6 +150,36 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         });
 
         res.json({ name: user.name, email: user.email, token: accessToken });
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Segunda etapa do login de quem tem 2FA: o desafio aberto pela senha (ou pelo
+// login social) mais o código do app ou um código de recuperação.
+export const loginDoisFatores = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const dados = loginDoisFatoresSchema.parse(req.body);
+        const { userId, metodo } = await doisFatoresService.resolverDesafio(
+            dados.desafio,
+            dados.codigo,
+        );
+        const [user] = await db
+            .select({ name: users.name, email: users.email })
+            .from(users)
+            .where(eq(users.id, userId));
+        const { accessToken, refreshToken } = await authService.gerarEGravarTokens(userId, db, {
+            mfa: true,
+        });
+        res.cookie("refreshToken", refreshToken, opcoesCookieRefresh);
+        res.json({
+            name: user.name,
+            email: user.email,
+            token: accessToken,
+            ...(metodo === "recuperacao"
+                ? { codigosRestantes: (await doisFatoresService.estado(userId)).codigosRestantes }
+                : {}),
+        });
     } catch (err) {
         next(err);
     }
@@ -211,13 +225,17 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
             return res.status(401).json({ erro: "Refresh token inválido" });
         }
 
+        const mfa = await doisFatoresService.ativo(registro.userId);
+
         // Deletar token antigo e Gerar novo token (atomicidade)
         const novosTokens = await db.transaction(async (tx) => {
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
                 .where(eq(tokens.tokenHash, hashCalculado));
-            return await authService.gerarEGravarTokens(registro.userId, tx);
+            // Com o 2FA ligado, toda sessão viva passou pelo código: as de antes caem
+            // quando ele é ativado.
+            return await authService.gerarEGravarTokens(registro.userId, tx, { mfa });
         });
 
         // Adicionar novo token no cookie

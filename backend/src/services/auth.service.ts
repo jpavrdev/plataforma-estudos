@@ -2,7 +2,7 @@ import { createHash, randomBytes, randomInt, timingSafeEqual } from "node:crypto
 import { db } from "../../db.ts";
 import { env } from "../config/env.ts";
 import jwt from "jsonwebtoken";
-import { tokens } from "../../schema.ts";
+import { tokens, users } from "../../schema.ts";
 import { and, eq, isNull, lt, sql } from "drizzle-orm";
 
 const VALIDADE_OTP_MS = 10 * 60 * 1000;
@@ -12,6 +12,19 @@ const DIA_MS = 24 * 60 * 60 * 1000;
 const INTERVALO_ENTRE_OTPS_MS = 60 * 1000;
 const MAX_OTPS_POR_DIA = 10;
 export const MAX_TENTATIVAS_OTP = 5;
+// Senha ou código do 2FA errado: na quinta falha seguida a conta trava por 15
+// minutos e o contador recomeça.
+const MAX_FALHAS_LOGIN = 5;
+
+// O mesmo cookie de sessão em todo lugar que abre uma (as chamadas de /refresh
+// são same-site).
+export const opcoesCookieRefresh = {
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    maxAge: 24 * 60 * 60 * 1000,
+    path: "/",
+};
 
 type TipoCodigo = "password_reset_otp" | "phone_verification";
 
@@ -97,8 +110,17 @@ async function conferirCodigo(
 }
 
 export const authService = {
-    async gerarEGravarTokens(userId: string, tx: Pick<typeof db, "insert"> = db) {
-        const accessToken = jwt.sign({ userId }, env.JWT_SECRET, { expiresIn: "15m" });
+    // mfa marca a sessão que passou pelo código do 2FA; as rotas de admin exigem.
+    async gerarEGravarTokens(
+        userId: string,
+        tx: Pick<typeof db, "insert"> = db,
+        opcoes: { mfa?: boolean } = {},
+    ) {
+        const accessToken = jwt.sign(
+            { userId, ...(opcoes.mfa ? { mfa: true } : {}) },
+            env.JWT_SECRET,
+            { expiresIn: "15m" },
+        );
         const refreshToken = randomBytes(40).toString("hex");
 
         await tx.insert(tokens).values({
@@ -109,6 +131,22 @@ export const authService = {
         });
 
         return { accessToken, refreshToken };
+    },
+    async registrarFalhaDeLogin(userId: string) {
+        const proxima = sql`${users.failedLoginAttempts} + 1`;
+        await db
+            .update(users)
+            .set({
+                failedLoginAttempts: sql`case when ${proxima} >= ${MAX_FALHAS_LOGIN} then 0 else ${proxima} end`,
+                lockedUntil: sql`case when ${proxima} >= ${MAX_FALHAS_LOGIN} then now() + interval '15 minutes' else ${users.lockedUntil} end`,
+            })
+            .where(eq(users.id, userId));
+    },
+    async zerarFalhasDeLogin(userId: string) {
+        await db
+            .update(users)
+            .set({ failedLoginAttempts: 0, lockedUntil: null })
+            .where(eq(users.id, userId));
     },
     async gerarTokenVerificacao(userId: string, tx: Pick<typeof db, "insert"> = db) {
         const verificationToken = randomBytes(40).toString("hex");

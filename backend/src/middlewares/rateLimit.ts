@@ -64,6 +64,13 @@ export const telefoneLimiter = criarLimiter(
     "Muitas tentativas. Tente novamente em alguns minutos.",
 );
 
+// Códigos do 2FA, no login e no perfil. A trava da conta segura o chute por
+// usuário; este segura o volume por IP.
+export const doisFatoresLimiter = criarLimiter(
+    10,
+    "Muitas tentativas de código. Tente novamente em alguns minutos.",
+);
+
 export const resetPasswordLimiter = criarLimiter(
     20,
     "Muitas tentativas. Tente novamente em alguns minutos.",

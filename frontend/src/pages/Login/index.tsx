@@ -6,6 +6,7 @@ import { AuthBrand } from '../../components/auth/AuthBrand';
 import { Logo } from '../../components/Logo';
 import { FormField } from '../../components/FormField';
 import { SocialAuth } from '../../components/auth/SocialAuth';
+import { DoisFatoresLogin } from '../../components/auth/DoisFatoresLogin';
 import { Flame, Trophy } from '../../components/Icons';
 import api from '../../services/api';
 import { mensagemErro, statusErro } from '../../utils/erro';
@@ -35,6 +36,8 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  // Conta com 2FA: depois da senha, a tela pede o código.
+  const [desafio, setDesafio] = useState<string | null>(null);
   // Login bloqueado por email não confirmado (403): oferece reenviar a verificação.
   const [naoVerificado, setNaoVerificado] = useState(false);
   const [reenviando, setReenviando] = useState(false);
@@ -48,7 +51,11 @@ export function Login() {
     setReenvioMsg('');
     setSubmitting(true);
     try {
-      await login(email, password);
+      const resultado = await login(email, password);
+      if (resultado.desafio) {
+        setDesafio(resultado.desafio);
+        return;
+      }
       navigate('/home');
     } catch (e: unknown) {
       setError(mensagemErro(e, 'Erro ao fazer login. Tente novamente.'));
@@ -114,6 +121,24 @@ export function Login() {
       </div>
     </AuthBrand>
   );
+
+  if (desafio) {
+    return (
+      <AuthShell brand={brand}>
+        <div className="auth__logo-m">
+          <Logo variant="solid" size={22} />
+        </div>
+        <DoisFatoresLogin
+          desafio={desafio}
+          onConcluir={() => navigate('/home')}
+          onVoltar={() => {
+            setDesafio(null);
+            setPassword('');
+          }}
+        />
+      </AuthShell>
+    );
+  }
 
   return (
     <AuthShell brand={brand}>

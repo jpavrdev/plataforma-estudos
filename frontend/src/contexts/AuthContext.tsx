@@ -25,7 +25,8 @@ interface AuthContextData {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ desafio?: string }>;
+  confirmarDoisFatores: (desafio: string, codigo: string) => Promise<void>;
   entrarComToken: (accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
   atualizarUsuario: (patch: Partial<User>) => void;
@@ -79,8 +80,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadStorageData();
   }, []);
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string): Promise<{ desafio?: string }> {
     const response = await api.post('/login', { email: email.trim(), password });
+    // Conta com 2FA: a senha só abre o desafio, e o código fecha o login.
+    if (response.data.desafio) return { desafio: response.data.desafio as string };
     const { token } = response.data;
 
     localStorage.setItem('@App:accessToken', token);
@@ -92,6 +95,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     aplicarAccent(meResponse.data.apoiador ? meResponse.data.accent : null);
     aplicarFundo(meResponse.data.apoiador ? urlImagem(meResponse.data.backgroundUrl) : null);
     aplicarVeu(meResponse.data.apoiador ? meResponse.data.backgroundDim : null);
+    return {};
+  }
+
+  async function confirmarDoisFatores(desafio: string, codigo: string) {
+    const { data } = await api.post('/login/2fa', { desafio, codigo });
+    await entrarComToken(data.token);
   }
 
   // Entra a partir de um access token já emitido (usado no callback do login social).
@@ -137,6 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         loading,
         login,
+        confirmarDoisFatores,
         entrarComToken,
         logout,
         atualizarUsuario,
