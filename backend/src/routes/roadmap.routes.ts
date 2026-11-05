@@ -14,19 +14,19 @@ import {
     createStageRef,
     deleteStageRef,
     completeStage,
-    getProximaTrilha,
-    seguir,
-    registrarEntrada,
+    getNextTrail,
+    followRoadmap,
+    recordRoadmapEntry,
 } from "../controllers/RoadmapController.ts";
 
 const router = Router();
 
-// Leitura (qualquer logado)
+// Reading (any logged-in user)
 router.get("/roadmaps", autenticar, listRoadmaps);
-router.get("/roadmaps/proxima-trilha/:trailId", autenticar, getProximaTrilha);
+router.get("/roadmaps/proxima-trilha/:trailId", autenticar, getNextTrail);
 
-// Gestão pelo estúdio (admin). Vem antes de "/roadmaps/:slug" e usa o prefixo
-// "/studio" para não colidir com a rota de detalhe do aluno.
+// Management from the studio (admin). It comes before "/roadmaps/:slug" and uses the
+// "/studio" prefix so it does not collide with the student's detail route.
 router.get("/studio/roadmaps", autenticar, exigirAdmin, listRoadmapsStudio);
 router.get("/studio/roadmaps/:id", autenticar, exigirAdmin, getRoadmapStudio);
 router.post("/roadmaps", autenticar, exigirAdmin, createRoadmap);
@@ -39,10 +39,10 @@ router.post("/roadmap-stages/:id/concluir", autenticar, completeStage);
 router.post("/roadmap-stages/:id/refs", autenticar, exigirAdmin, createStageRef);
 router.delete("/roadmap-stage-refs/:id", autenticar, exigirAdmin, deleteStageRef);
 
-router.post("/roadmaps/:slug/seguir", autenticar, seguir);
-router.post("/roadmaps/:slug/entrei", autenticar, registrarEntrada);
+router.post("/roadmaps/:slug/seguir", autenticar, followRoadmap);
+router.post("/roadmaps/:slug/entrei", autenticar, recordRoadmapEntry);
 
-// Detalhe do aluno por slug (por último, para não capturar as rotas acima).
+// Student detail by slug (last, so it does not capture the routes above).
 router.get("/roadmaps/:slug", autenticar, getRoadmap);
 
 export default router;

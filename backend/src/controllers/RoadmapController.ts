@@ -1,22 +1,22 @@
 import type { Request, Response, NextFunction } from "express";
 import {
-    concluirEstagio,
-    listarRoadmaps,
-    obterRoadmap,
-    proximaTrilhaAposConcluir,
-    listarRoadmapsAdmin,
-    obterRoadmapStudio,
-    criarRoadmap,
-    atualizarRoadmap,
-    excluirRoadmap,
-    criarEstagio,
-    atualizarEstagio,
-    excluirEstagio,
-    adicionarRef,
-    removerRef,
-    seguirRoadmap,
-    registrarVisita,
-    registrarEntradaPorRoadmap,
+    saveStageCompletion,
+    findRoadmaps,
+    findRoadmapBySlug,
+    findNextTrailAfterCompletion,
+    findRoadmapsForStudio,
+    findStudioRoadmap,
+    insertRoadmap,
+    editRoadmap,
+    removeRoadmap,
+    insertStage,
+    editStage,
+    removeStage,
+    insertStageRef,
+    removeStageRef,
+    saveFollow,
+    saveVisit,
+    saveEntryFromRoadmap,
 } from "../services/roadmap.service.ts";
 import {
     createRoadmapSchema,
@@ -26,10 +26,10 @@ import {
     createRefSchema,
 } from "../schemas/roadmap.schema.ts";
 
-// ===================== Leitura (aluno) =====================
+// ===================== Reading (student) =====================
 export const listRoadmaps = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarRoadmaps(req.userId));
+        res.json(await findRoadmaps(req.userId));
     } catch (err) {
         next(err);
     }
@@ -38,49 +38,49 @@ export const listRoadmaps = async (req: Request, res: Response, next: NextFuncti
 export const getRoadmap = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const slug = typeof req.params.slug === "string" ? req.params.slug : "";
-        const roadmap = await obterRoadmap(slug, req.userId);
+        const roadmap = await findRoadmapBySlug(slug, req.userId);
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
-        // Abrir o detalhe atualiza a recência de quem JÁ segue, e só isso: abrir
-        // não faz ninguém passar a seguir, senão bastaria espiar um roadmap para
-        // o app achar que você mudou de caminho.
-        if (req.userId) await registrarVisita(req.userId, roadmap.id);
+        // Opening the detail refreshes the recency of whoever ALREADY follows, and only
+        // that: opening does not make anyone follow, or just peeking at a roadmap would
+        // make the app think you changed paths.
+        if (req.userId) await saveVisit(req.userId, roadmap.id);
         res.json(roadmap);
     } catch (err) {
         next(err);
     }
 };
 
-// O aluno declara que está seguindo este roadmap. Idempotente: chamar de novo só
-// atualiza a data do último acesso.
-export const seguir = async (req: Request, res: Response, next: NextFunction) => {
+// The student declares they follow this roadmap. Idempotent: calling it again only
+// updates the last access date.
+export const followRoadmap = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const slug = typeof req.params.slug === "string" ? req.params.slug : "";
-        const roadmap = await obterRoadmap(slug, req.userId);
+        const roadmap = await findRoadmapBySlug(slug, req.userId);
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
-        await seguirRoadmap(req.userId!, roadmap.id, true);
+        await saveFollow(req.userId!, roadmap.id, true);
         res.status(204).end();
     } catch (err) {
         next(err);
     }
 };
 
-// Registra que o aluno entrou numa trilha vindo deste roadmap. Não é escolha
-// declarada, é o caminho que ele está de fato percorrendo agora.
-export const registrarEntrada = async (req: Request, res: Response, next: NextFunction) => {
+// Records that the student entered a track coming from this roadmap. It is not a
+// declared choice, it is the path they are actually taking right now.
+export const recordRoadmapEntry = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const slug = typeof req.params.slug === "string" ? req.params.slug : "";
-        const roadmap = await obterRoadmap(slug, req.userId);
+        const roadmap = await findRoadmapBySlug(slug, req.userId);
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
-        await registrarEntradaPorRoadmap(req.userId!, roadmap.id);
+        await saveEntryFromRoadmap(req.userId!, roadmap.id);
         res.status(204).end();
     } catch (err) {
         next(err);
     }
 };
 
-export const getProximaTrilha = async (req: Request, res: Response, next: NextFunction) => {
+export const getNextTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await proximaTrilhaAposConcluir(req.userId!, String(req.params.trailId)));
+        res.json(await findNextTrailAfterCompletion(req.userId!, String(req.params.trailId)));
     } catch (err) {
         next(err);
     }
@@ -89,7 +89,7 @@ export const getProximaTrilha = async (req: Request, res: Response, next: NextFu
 // ===================== Admin: roadmaps =====================
 export const listRoadmapsStudio = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarRoadmapsAdmin());
+        res.json(await findRoadmapsForStudio());
     } catch (err) {
         next(err);
     }
@@ -97,7 +97,7 @@ export const listRoadmapsStudio = async (_req: Request, res: Response, next: Nex
 
 export const getRoadmapStudio = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await obterRoadmapStudio(String(req.params.id)));
+        res.json(await findStudioRoadmap(String(req.params.id)));
     } catch (err) {
         next(err);
     }
@@ -105,8 +105,8 @@ export const getRoadmapStudio = async (req: Request, res: Response, next: NextFu
 
 export const createRoadmap = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createRoadmapSchema.parse(req.body);
-        res.status(201).json(await criarRoadmap(dados));
+        const data = createRoadmapSchema.parse(req.body);
+        res.status(201).json(await insertRoadmap(data));
     } catch (err) {
         next(err);
     }
@@ -114,8 +114,8 @@ export const createRoadmap = async (req: Request, res: Response, next: NextFunct
 
 export const updateRoadmap = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = updateRoadmapSchema.parse(req.body);
-        res.json(await atualizarRoadmap(String(req.params.id), dados));
+        const data = updateRoadmapSchema.parse(req.body);
+        res.json(await editRoadmap(String(req.params.id), data));
     } catch (err) {
         next(err);
     }
@@ -123,18 +123,18 @@ export const updateRoadmap = async (req: Request, res: Response, next: NextFunct
 
 export const deleteRoadmap = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirRoadmap(String(req.params.id));
+        await removeRoadmap(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
     }
 };
 
-// ===================== Admin: estágios =====================
+// ===================== Admin: stages =====================
 export const createStage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createStageSchema.parse(req.body);
-        res.status(201).json(await criarEstagio(String(req.params.id), dados));
+        const data = createStageSchema.parse(req.body);
+        res.status(201).json(await insertStage(String(req.params.id), data));
     } catch (err) {
         next(err);
     }
@@ -142,8 +142,8 @@ export const createStage = async (req: Request, res: Response, next: NextFunctio
 
 export const updateStage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = updateStageSchema.parse(req.body);
-        res.json(await atualizarEstagio(String(req.params.id), dados));
+        const data = updateStageSchema.parse(req.body);
+        res.json(await editStage(String(req.params.id), data));
     } catch (err) {
         next(err);
     }
@@ -151,18 +151,18 @@ export const updateStage = async (req: Request, res: Response, next: NextFunctio
 
 export const deleteStage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirEstagio(String(req.params.id));
+        await removeStage(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
     }
 };
 
-// ===================== Admin: referências de conteúdo =====================
+// ===================== Admin: content references =====================
 export const createStageRef = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = createRefSchema.parse(req.body);
-        res.status(201).json(await adicionarRef(String(req.params.id), dados));
+        const data = createRefSchema.parse(req.body);
+        res.status(201).json(await insertStageRef(String(req.params.id), data));
     } catch (err) {
         next(err);
     }
@@ -170,7 +170,7 @@ export const createStageRef = async (req: Request, res: Response, next: NextFunc
 
 export const deleteStageRef = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await removerRef(String(req.params.id));
+        await removeStageRef(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -179,7 +179,7 @@ export const deleteStageRef = async (req: Request, res: Response, next: NextFunc
 
 export const completeStage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await concluirEstagio(String(req.params.id), req.userId!));
+        res.json(await saveStageCompletion(String(req.params.id), req.userId!));
     } catch (err) {
         next(err);
     }
