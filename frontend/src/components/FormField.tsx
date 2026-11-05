@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type HTMLAttributes, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff } from './Icons';
 
 interface FormFieldProps {
@@ -33,6 +34,7 @@ export function FormField({
   error,
   children,
 }: FormFieldProps) {
+  const { t } = useTranslation();
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const ehSenha = type === 'password';
   // Em campo de senha, o toggle alterna o type real entre password e text.
@@ -66,8 +68,8 @@ export function FormField({
             type="button"
             className="input-toggle"
             onClick={() => setMostrarSenha((v) => !v)}
-            aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
-            title={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+            aria-label={mostrarSenha ? t('auth.hidePassword') : t('auth.showPassword')}
+            title={mostrarSenha ? t('auth.hidePassword') : t('auth.showPassword')}
             tabIndex={-1}
           >
             {mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}

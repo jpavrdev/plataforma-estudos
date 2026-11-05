@@ -1,4 +1,5 @@
 import axios, { type InternalAxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
+import { currentLocale } from '../i18n';
 
 const api = axios.create({
   withCredentials: true,
@@ -12,6 +13,8 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // The API answers its messages in the language chosen on the screen.
+  if (config.headers) config.headers['X-Locale'] = currentLocale();
 
   return config;
 });

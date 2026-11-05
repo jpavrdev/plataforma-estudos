@@ -272,6 +272,14 @@
 .theme-toggle:hover {
   border-color: var(--accent);
 }
+/* Language button, beside the theme one (on the auth screens both are pinned to
+   the corner, so it sits one button to the left). */
+.language-toggle {
+  right: 62px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
 .auth__alert {
   margin-top: 16px;
   font-size: 13.5px;

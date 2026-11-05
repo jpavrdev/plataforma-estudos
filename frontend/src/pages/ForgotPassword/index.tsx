@@ -1,93 +1,95 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
 import { mensagemErro } from '../../utils/erro';
 
-const brand = (
-  <AuthBrand glow="login">
-    <div className="auth__brand-body">
-      <h1 className="auth__headline">
-        <span className="auth__kicker">
-          <span className="auth__kicker-soft">sem </span>estresse
-        </span>
-        <span className="auth__headline-main">Recupere seu acesso</span>
-      </h1>
-      <p className="auth__lede">
-        Enviamos um código de 6 dígitos por email ou WhatsApp para você criar uma nova senha em
-        segundos.
-      </p>
-    </div>
-  </AuthBrand>
-);
+type Channel = 'email' | 'whatsapp';
 
-type Canal = 'email' | 'whatsapp';
-
-export function RecuperarSenha() {
-  const [etapa, setEtapa] = useState<'pedir' | 'codigo' | 'ok'>('pedir');
+export function ForgotPassword() {
+  const { t } = useTranslation();
+  const [step, setStep] = useState<'request' | 'code' | 'done'>('request');
   const [email, setEmail] = useState('');
-  const [canal, setCanal] = useState<Canal | null>(null);
+  const [channel, setChannel] = useState<Channel | null>(null);
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [mensagem, setMensagem] = useState('');
+  const [message, setMessage] = useState('');
 
-  async function pedirCodigo(c: Canal) {
+  async function requestCode(selected: Channel) {
     if (submitting || !email) return;
     setError('');
-    setCanal(c);
+    setChannel(selected);
     setSubmitting(true);
     try {
-      await api.post('/forgot-password-otp', { email, canal: c });
-      setEtapa('codigo');
+      await api.post('/forgot-password-otp', { email, canal: selected });
+      setStep('code');
     } catch (e: unknown) {
-      setError(mensagemErro(e, 'Não foi possível enviar o código. Tente novamente.'));
+      setError(mensagemErro(e, t('forgotPassword.errors.sendCode')));
     } finally {
       setSubmitting(false);
     }
   }
 
-  async function redefinir(event: FormEvent<HTMLFormElement>) {
+  async function resetPassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
     setSubmitting(true);
     try {
       const { data } = await api.post('/reset-password-otp', { email, otp, password });
-      setMensagem(data.mensagem ?? 'Senha redefinida com sucesso. Você já pode fazer login.');
-      setEtapa('ok');
+      setMessage(data.mensagem ?? t('forgotPassword.done'));
+      setStep('done');
     } catch (e: unknown) {
-      setError(mensagemErro(e, 'Não foi possível redefinir a senha. Confira o código e a senha.'));
+      setError(mensagemErro(e, t('forgotPassword.errors.reset')));
     } finally {
       setSubmitting(false);
     }
   }
 
+  const brand = (
+    <AuthBrand glow="login">
+      <div className="auth__brand-body">
+        <h1 className="auth__headline">
+          <span className="auth__kicker">
+            <Trans
+              i18nKey="forgotPassword.kicker"
+              components={{ soft: <span className="auth__kicker-soft" /> }}
+            />
+          </span>
+          <span className="auth__headline-main">{t('forgotPassword.headline')}</span>
+        </h1>
+        <p className="auth__lede">{t('forgotPassword.lede')}</p>
+      </div>
+    </AuthBrand>
+  );
+
   return (
     <AuthShell brand={brand}>
-      <h2 className="auth__title">Esqueceu a senha?</h2>
+      <h2 className="auth__title">{t('forgotPassword.title')}</h2>
 
-      {etapa === 'ok' ? (
+      {step === 'done' ? (
         <>
-          <div className="auth__alert auth__alert--ok">{mensagem}</div>
+          <div className="auth__alert auth__alert--ok">{message}</div>
           <p className="auth__foot">
             <Link className="link" to="/entrar">
-              Voltar ao login
+              {t('auth.backToLogin')}
             </Link>
           </p>
         </>
-      ) : etapa === 'pedir' ? (
+      ) : step === 'request' ? (
         <>
-          <p className="auth__subtitle">Como você quer receber o código de 6 dígitos?</p>
+          <p className="auth__subtitle">{t('forgotPassword.chooseChannel')}</p>
           {error && <div className="auth__alert">{error}</div>}
           <div className="form">
             <FormField
-              label="E-mail"
+              label={t('auth.email')}
               type="email"
               autoComplete="email"
-              placeholder="voce@email.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -96,36 +98,41 @@ export function RecuperarSenha() {
               className="btn btn--accent btn--block"
               type="button"
               disabled={submitting || !email}
-              onClick={() => pedirCodigo('whatsapp')}
+              onClick={() => requestCode('whatsapp')}
             >
-              {submitting && canal === 'whatsapp' ? 'Enviando...' : 'Receber no WhatsApp'}
+              {submitting && channel === 'whatsapp'
+                ? t('common.sending')
+                : t('forgotPassword.viaWhatsApp')}
             </button>
             <button
               className="btn btn--ghost btn--block"
               type="button"
               disabled={submitting || !email}
-              onClick={() => pedirCodigo('email')}
+              onClick={() => requestCode('email')}
             >
-              {submitting && canal === 'email' ? 'Enviando...' : 'Receber por email'}
+              {submitting && channel === 'email'
+                ? t('common.sending')
+                : t('forgotPassword.viaEmail')}
             </button>
           </div>
           <p className="auth__foot">
-            Lembrou a senha?{' '}
+            {t('forgotPassword.remembered')}{' '}
             <Link className="link" to="/entrar">
-              Voltar ao login
+              {t('auth.backToLogin')}
             </Link>
           </p>
         </>
       ) : (
         <>
           <p className="auth__subtitle">
-            Digite o código que enviamos {canal === 'whatsapp' ? 'no WhatsApp' : 'por email'} e a
-            nova senha.
+            {channel === 'whatsapp'
+              ? t('forgotPassword.enterCodeWhatsApp')
+              : t('forgotPassword.enterCodeEmail')}
           </p>
           {error && <div className="auth__alert">{error}</div>}
-          <form className="form" onSubmit={redefinir} noValidate>
+          <form className="form" onSubmit={resetPassword} noValidate>
             <FormField
-              label="Código (6 dígitos)"
+              label={t('forgotPassword.code')}
               type="text"
               autoComplete="one-time-code"
               placeholder="000000"
@@ -134,7 +141,7 @@ export function RecuperarSenha() {
               required
             />
             <FormField
-              label="Nova senha"
+              label={t('auth.newPassword')}
               type="password"
               autoComplete="new-password"
               placeholder="••••••••••"
@@ -143,7 +150,7 @@ export function RecuperarSenha() {
               required
             />
             <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
-              {submitting ? 'Redefinindo...' : 'Redefinir senha'}
+              {submitting ? t('forgotPassword.resetting') : t('forgotPassword.submit')}
             </button>
           </form>
           <p className="auth__foot">
@@ -151,12 +158,12 @@ export function RecuperarSenha() {
               type="button"
               className="link link--btn"
               onClick={() => {
-                setEtapa('pedir');
+                setStep('request');
                 setOtp('');
                 setError('');
               }}
             >
-              Não recebeu? Escolher outro canal
+              {t('forgotPassword.otherChannel')}
             </button>
           </p>
         </>
