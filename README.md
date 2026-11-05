@@ -1,4 +1,4 @@
-# ensina.dev
+# Ensina Dev
 
 **English** | [Português](README.pt-BR.md)
 
