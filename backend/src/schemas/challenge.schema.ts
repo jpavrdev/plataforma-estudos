@@ -1,17 +1,17 @@
 import { z } from "zod";
 
-// O que o runner executa hoje. O enum do banco também reserva "csharp".
-const LINGUAGENS = ["javascript", "python", "java"] as const;
+// What the runner executes today. The database enum also reserves "csharp".
+const LANGUAGES = ["javascript", "python", "java"] as const;
 
-// Rodar exemplos ou submeter: o código é limitado para não estourar o runner.
-// durationSeconds só importa na submissão (cronômetro do aluno, informativo).
-export const executarDesafioSchema = z.object({
-    language: z.enum(LINGUAGENS),
+// Running examples or submitting: the code is limited so it does not overload the runner.
+// durationSeconds only matters on submission (the student's timer, informational).
+export const runChallengeSchema = z.object({
+    language: z.enum(LANGUAGES),
     code: z.string().min(1, "Envie algum código").max(50_000, "Código muito longo"),
     durationSeconds: z.number().int().min(0).max(86_400).nullable().optional(),
 });
 
-export const comentarioDesafioSchema = z.object({
+export const challengeCommentSchema = z.object({
     content: z
         .string()
         .transform((v) => v.trim())
@@ -21,35 +21,35 @@ export const comentarioDesafioSchema = z.object({
         ),
 });
 
-const blocoSchema = z.object({
+const blockSchema = z.object({
     type: z.enum(["text", "code", "quote", "table"]),
     value: z.string(),
 });
 
-const testeSchema = z.object({
+const testSchema = z.object({
     input: z.string(),
     expectedOutput: z.string(),
     isPublic: z.boolean().default(false),
 });
 
-export const criarDesafioSchema = z
+export const createChallengeSchema = z
     .object({
         title: z.string().trim().min(3, "O título deve ter ao menos 3 caracteres").max(255),
-        // Número de exibição (opcional; o backend atribui o próximo livre quando ausente).
+        // Display number (optional; the backend assigns the next free one when missing).
         number: z.number().int().positive().nullable().optional(),
-        // Tema(s) livres, ex.: "Array · Hash Table".
+        // Free-form topic(s), e.g. "Array · Hash Table".
         topic: z.string().trim().max(160).default(""),
-        // stdin: lê stdin/imprime stdout. function: implementa uma função chamada com args.
+        // stdin: reads stdin/prints stdout. function: implements a function called with args.
         kind: z.enum(["stdin", "function"]).default("stdin"),
-        // Nome do método (obrigatório quando kind = function), ex.: "twoSum".
+        // Method name (required when kind = function), e.g. "twoSum".
         entryPoint: z.string().trim().max(120).default(""),
-        statementBlocks: z.array(blocoSchema).default([]),
+        statementBlocks: z.array(blockSchema).default([]),
         difficulty: z.enum(["facil", "medio", "dificil"]).default("facil"),
         starterCode: z.record(z.string(), z.string()).default({}),
         activeDate: z.iso.date().nullable().optional(),
         published: z.boolean().default(false),
         tests: z
-            .array(testeSchema)
+            .array(testSchema)
             .min(1, "Adicione ao menos um caso de teste")
             .refine(
                 (t) => t.some((x) => x.isPublic),
