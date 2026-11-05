@@ -8,6 +8,7 @@ import { Landing } from './pages/Landing';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { BottomNav } from './components/BottomNav';
 import { ConquistaToaster } from './components/ConquistaToaster';
+import { BloqueioDoisFatores } from './components/auth/BloqueioDoisFatores';
 
 // Cada página é baixada só quando a rota abre. A Landing fica no pacote principal
 // por ser a primeira tela de quem chega. As páginas exportam por nome, e o lazy
@@ -135,7 +136,9 @@ function AdminRoute({ children }: { children: React.JSX.Element }) {
   if (loading) return <div>Carregando...</div>;
   if (!isAuthenticated) return <Navigate to="/entrar" />;
   if (!user?.username) return <Navigate to="/completar-perfil" replace />;
-  return user?.role === 'admin' ? children : <Navigate to="/home" />;
+  if (user.role !== 'admin') return <Navigate to="/home" />;
+  if (user.pendencia2fa) return <BloqueioDoisFatores motivo={user.pendencia2fa} />;
+  return children;
 }
 
 // A URL canônica do perfil é /username: o dono vê a versão editável, os demais a pública.

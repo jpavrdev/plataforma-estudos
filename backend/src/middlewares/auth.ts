@@ -36,6 +36,23 @@ export function autenticar(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+// O que falta para a sessão usar as rotas de admin: o 2FA ligado e a sessão
+// verificada pelo código. O /me usa o mesmo critério para o front barrar a área
+// de admin, que tem telas que só leem rotas comuns.
+export function pendenciaDoisFatores(doisFatoresEm: Date | null, mfa: boolean | undefined) {
+    if (!env.ADMIN_EXIGE_2FA) return null;
+    if (!doisFatoresEm) return "2fa_obrigatorio" as const;
+    if (!mfa) return "2fa_sessao" as const;
+    return null;
+}
+
+const MENSAGEM_PENDENCIA = {
+    "2fa_obrigatorio":
+        "Ative a verificação em duas etapas no seu perfil para usar as funções de administrador.",
+    "2fa_sessao":
+        "Entre de novo e confirme com o código do app autenticador para usar as funções de administrador.",
+};
+
 export async function exigirAdmin(req: Request, res: Response, next: NextFunction) {
     const idUsuario = req.userId;
 
@@ -53,20 +70,10 @@ export async function exigirAdmin(req: Request, res: Response, next: NextFunctio
         return res.status(403).json({ erro: "Usuário não é administrador" });
     }
 
-    // Admin só age com sessão que passou pelo código do app autenticador, e com o
-    // 2FA ainda ligado (desligar vale na hora, sem esperar o token expirar).
-    if (env.ADMIN_EXIGE_2FA && (!req.mfa || !registro.doisFatoresEm)) {
-        return res.status(403).json(
-            registro.doisFatoresEm
-                ? {
-                      erro: "Entre de novo e confirme com o código do app autenticador para usar as funções de administrador.",
-                      codigo: "2fa_sessao",
-                  }
-                : {
-                      erro: "Ative a verificação em duas etapas no seu perfil para usar as funções de administrador.",
-                      codigo: "2fa_obrigatorio",
-                  },
-        );
+    // Desligar o 2FA vale na hora, sem esperar o token marcado expirar.
+    const pendencia = pendenciaDoisFatores(registro.doisFatoresEm, req.mfa);
+    if (pendencia) {
+        return res.status(403).json({ erro: MENSAGEM_PENDENCIA[pendencia], codigo: pendencia });
     }
 
     next();

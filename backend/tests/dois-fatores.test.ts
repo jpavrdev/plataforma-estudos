@@ -173,6 +173,8 @@ describe("2FA: ativação", () => {
         const r = await chamar("GET", "/admin/overview", { token: admin.token });
         assert.equal(r.status, 403);
         assert.equal(r.body.codigo, "2fa_obrigatorio");
+        const me = await chamar("GET", "/me", { token: admin.token });
+        assert.equal(me.body.pendencia2fa, "2fa_obrigatorio", "o /me avisa o front");
     });
 
     test("ativar pede o código certo e a senha, e devolve dez códigos de recuperação", async () => {
@@ -228,6 +230,11 @@ describe("2FA: ativação", () => {
         const antigo = await chamar("GET", "/admin/overview", { token: admin.tokenAntigo });
         assert.equal(antigo.status, 403);
         assert.equal(antigo.body.codigo, "2fa_sessao");
+        assert.equal(
+            (await chamar("GET", "/me", { token: admin.tokenAntigo })).body.pendencia2fa,
+            "2fa_sessao",
+        );
+        assert.equal((await chamar("GET", "/me", { token: admin.token })).body.pendencia2fa, null);
 
         const refreshAntigo = await chamar("POST", "/refresh", { cookie: admin.cookieAntigo });
         assert.equal(refreshAntigo.status, 401);

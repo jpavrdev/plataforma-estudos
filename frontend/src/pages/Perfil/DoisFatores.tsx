@@ -21,7 +21,7 @@ type Etapa = 'ver' | 'configurar' | 'codigos' | 'novos' | 'desativar';
 // Verificação em duas etapas por app autenticador. O cartão aparece só para
 // admin, e as funções de administrador exigem o 2FA ativo.
 export function DoisFatores() {
-  const { entrarComToken } = useAuth();
+  const { entrarComToken, atualizarUsuario } = useAuth();
   const [estado, setEstado] = useState<Estado | null>(null);
   const [etapa, setEtapa] = useState<Etapa>('ver');
   const [config, setConfig] = useState<Configuracao | null>(null);
@@ -35,7 +35,17 @@ export function DoisFatores() {
   useEffect(() => {
     api
       .get<Estado>('/me/2fa')
-      .then(({ data }) => setEstado(data))
+      .then(({ data }) => {
+        setEstado(data);
+        // Quem chega pelo bloqueio da área de admin cai direto no cartão.
+        if (window.location.hash === '#dois-fatores') {
+          requestAnimationFrame(() =>
+            document
+              .getElementById('dois-fatores')
+              ?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+          );
+        }
+      })
       .catch((e: unknown) =>
         setErro(mensagemErro(e, 'Não foi possível carregar a verificação em duas etapas.')),
       );
@@ -117,6 +127,8 @@ export function DoisFatores() {
       setEstado(
         (atual) => atual && { ...atual, ativo: false, ativadoEm: null, codigosRestantes: 0 },
       );
+      const { data } = await api.get('/me');
+      atualizarUsuario({ pendencia2fa: data.pendencia2fa ?? null });
       irPara('ver');
       setAviso('Verificação em duas etapas desativada.');
     }, 'Não foi possível desativar.');
@@ -171,7 +183,7 @@ export function DoisFatores() {
   );
 
   return (
-    <div className="card">
+    <div className="card" id="dois-fatores">
       <h3 className="card__title card__title--mb">Verificação em duas etapas</h3>
       <div className="pf-field__label">Situação</div>
       <div className="pf-field__value">

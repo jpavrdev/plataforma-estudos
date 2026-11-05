@@ -19,6 +19,8 @@ interface User {
   backgroundUrl?: string | null;
   backgroundDim?: number | null;
   features?: string[];
+  // Admin sem 2FA ativo, ou com sessão anterior à ativação: a área de admin fica barrada.
+  pendencia2fa?: '2fa_obrigatorio' | '2fa_sessao' | null;
 }
 
 interface AuthContextData {
