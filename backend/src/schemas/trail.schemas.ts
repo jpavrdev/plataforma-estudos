@@ -49,9 +49,9 @@ export const createAchievementSchema = z
             "challenges_dificil",
             "trail_completed",
         ]),
-        // "special" e "trail_completed" não usam valor: uma é manual, a outra casa pela trilha.
+        // "special" and "trail_completed" take no value: one is manual, the other matches by track.
         threshold: z.int().min(0, "O valor não pode ser negativo").default(0),
-        // Preenchido só quando criteria = trail_completed: a trilha a concluir.
+        // Filled only when criteria = trail_completed: the track to complete.
         refId: z.uuid().nullish(),
     })
     .refine(
@@ -124,8 +124,8 @@ export const checkAnswerSchema = z.object({
     optionId: z.uuid("ID de alternativa inválido"),
 });
 
-// Salvar a aula inteira pelo Estúdio. Lenient para rascunho; a validação forte
-// (exatamente 1 correta, minimo de questoes) acontece no controller ao publicar.
+// Saving the whole lesson from the Estúdio. Lenient for drafts; the strict validation
+// (exactly 1 right option, minimum of questions) happens in the controller when publishing.
 export const saveLessonStudioSchema = z.object({
     title: z.string().min(3, "Título deve ter ao menos 3 caracteres").max(255),
     content: z.string().nullable().optional(),
