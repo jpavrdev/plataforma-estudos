@@ -19,6 +19,7 @@ import labRoutes from "./src/routes/lab.routes.ts";
 import atsRoutes from "./src/routes/ats.routes.ts";
 import healthRoutes from "./src/routes/health.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
+import { locale } from "./src/middlewares/locale.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
 import helmet from "helmet";
 import cors from "cors";
@@ -28,6 +29,9 @@ export const app = express();
 
 app.set("trust proxy", 1);
 
+// First of all, so every answer below (including body parsing errors) leaves in
+// the language of the request.
+app.use(locale);
 app.use(cookieParser());
 // Corpo comprimido recebe 415: o front nunca envia, e a descompressão do
 // body-parser podia derrubar o processo com um corpo malformado (GHSA-27r3-jxmh-p828).
