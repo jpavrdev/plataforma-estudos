@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
+import { authenticate, requireAdmin } from "../middlewares/auth.ts";
 import {
     getSorteioAtivo,
     postParticipacao,
@@ -13,14 +13,14 @@ import {
 
 const router = Router();
 
-router.get("/sorteios/ativo", autenticar, getSorteioAtivo);
-router.post("/sorteios/:id/participacao", autenticar, postParticipacao);
+router.get("/sorteios/ativo", authenticate, getSorteioAtivo);
+router.post("/sorteios/:id/participacao", authenticate, postParticipacao);
 
-router.get("/studio/sorteios", autenticar, exigirAdmin, listSorteiosStudio);
-router.get("/studio/sorteios/:id", autenticar, exigirAdmin, getSorteioStudio);
-router.post("/sorteios", autenticar, exigirAdmin, createSorteio);
-router.patch("/sorteios/:id", autenticar, exigirAdmin, updateSorteio);
-router.delete("/sorteios/:id", autenticar, exigirAdmin, deleteSorteio);
-router.post("/sorteios/:id/sortear", autenticar, exigirAdmin, postSortear);
+router.get("/studio/sorteios", authenticate, requireAdmin, listSorteiosStudio);
+router.get("/studio/sorteios/:id", authenticate, requireAdmin, getSorteioStudio);
+router.post("/sorteios", authenticate, requireAdmin, createSorteio);
+router.patch("/sorteios/:id", authenticate, requireAdmin, updateSorteio);
+router.delete("/sorteios/:id", authenticate, requireAdmin, deleteSorteio);
+router.post("/sorteios/:id/sortear", authenticate, requireAdmin, postSortear);
 
 export default router;

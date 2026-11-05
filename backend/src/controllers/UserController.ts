@@ -13,7 +13,7 @@ import { authService } from "../services/auth.service.ts";
 import { emailService } from "../services/email.service.ts";
 import { verificarSenha } from "../services/password.service.ts";
 import { whatsappService } from "../services/whatsapp.service.ts";
-import { AVATARS_DIR, COVERS_DIR, FUNDOS_DIR } from "../config/paths.ts";
+import { AVATARS_DIR, COVERS_DIR, BACKGROUNDS_DIR } from "../config/paths.ts";
 import { salvarImagem, removerArquivoLocal } from "../services/imagens.ts";
 import { streakDoUsuario } from "../services/streak.ts";
 import { calcularEstatisticas } from "../services/stats.service.ts";
@@ -505,7 +505,7 @@ export const uploadBackground = async (req: Request, res: Response, next: NextFu
         }
         const r = await salvarImagem(
             req.body?.image,
-            FUNDOS_DIR,
+            BACKGROUNDS_DIR,
             "/uploads/fundos",
             10 * 1024 * 1024,
         );
