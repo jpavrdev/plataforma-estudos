@@ -1,19 +1,19 @@
 import { z } from "zod";
 
-function cpfValido(cpf: string) {
+function isValidCpf(cpf: string) {
     if (!/^\d{11}$/.test(cpf) || /^(\d)\1{10}$/.test(cpf)) return false;
-    for (const tamanho of [9, 10]) {
-        let soma = 0;
-        for (let i = 0; i < tamanho; i++) {
-            soma += Number(cpf[i]) * (tamanho + 1 - i);
+    for (const length of [9, 10]) {
+        let sum = 0;
+        for (let i = 0; i < length; i++) {
+            sum += Number(cpf[i]) * (length + 1 - i);
         }
-        const digito = ((soma * 10) % 11) % 10;
-        if (digito !== Number(cpf[tamanho])) return false;
+        const digit = ((sum * 10) % 11) % 10;
+        if (digit !== Number(cpf[length])) return false;
     }
     return true;
 }
 
-export const emitirCertificadoSchema = z.object({
+export const issueCertificateSchema = z.object({
     name: z
         .string()
         .transform((v) => v.trim().replace(/\s+/g, " "))
@@ -23,5 +23,5 @@ export const emitirCertificadoSchema = z.object({
     cpf: z
         .string()
         .transform((v) => v.replace(/\D/g, ""))
-        .refine(cpfValido, "CPF inválido"),
+        .refine(isValidCpf, "CPF inválido"),
 });
