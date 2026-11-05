@@ -1,46 +1,43 @@
 import { env } from "../config/env.ts";
 import { AppError } from "../errors/AppError.ts";
 
-export interface CasoResultado {
+export interface CaseResult {
     stdout: string;
     stderr: string;
     exitCode: number;
     timedOut: boolean;
 }
 
-export interface RunnerResposta {
-    // Erro de compilação/setup (visível ao aluno); null quando compilou.
+export interface RunnerResponse {
+    // Compile/setup error (visible to the student); null when it compiled.
     compileOutput: string | null;
-    results: CasoResultado[];
+    results: CaseResult[];
 }
 
-// Chama o serviço runner, que executa o código em containers isolados. O runner
-// é interno (rede do compose), então o backend nunca fala com o Docker direto.
-// mode "function" anexa um driver que chama entryPoint com os args de cada caso.
-export async function executarNoRunner(
+// Calls the runner service, which executes the code in isolated containers. The runner
+// is internal (compose network), so the backend never talks to Docker directly.
+// mode "function" attaches a driver that calls entryPoint with each case's args.
+export async function runOnRunner(
     language: string,
     code: string,
-    entradas: string[],
+    inputs: string[],
     mode: "stdin" | "function" = "stdin",
     entryPoint: string | null = null,
-): Promise<RunnerResposta> {
-    let resp: Response;
+): Promise<RunnerResponse> {
+    let response: Response;
     try {
-        resp = await fetch(`${env.RUNNER_URL}/run`, {
+        response = await fetch(`${env.RUNNER_URL}/run`, {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ language, code, stdins: entradas, mode, entryPoint }),
+            body: JSON.stringify({ language, code, stdins: inputs, mode, entryPoint }),
             signal: AbortSignal.timeout(60_000),
         });
     } catch (e) {
-        console.error("runner indisponível:", e);
-        throw new AppError(
-            503,
-            "O executor de código está indisponível. Tente de novo em instantes.",
-        );
+        console.error("runner unavailable:", e);
+        throw new AppError(503, "runner.unavailable");
     }
-    if (!resp.ok) {
-        throw new AppError(503, "O executor de código falhou. Tente de novo.");
+    if (!response.ok) {
+        throw new AppError(503, "runner.failed");
     }
-    return (await resp.json()) as RunnerResposta;
+    return (await response.json()) as RunnerResponse;
 }
