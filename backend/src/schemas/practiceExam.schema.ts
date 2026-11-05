@@ -1,22 +1,22 @@
 import { z } from "zod";
 
-// Vazio limpa a resposta; várias opções cobrem as questões de múltipla resposta.
-export const salvarRespostaSchema = z.object({
+// Empty clears the answer; several options cover the multiple-answer questions.
+export const saveAnswerSchema = z.object({
     optionIds: z.array(z.uuid()).max(10),
 });
 
-// Tudo opcional: sem corpo, a tentativa sai na configuração oficial da prova.
-export const iniciarTentativaSchema = z.object({
+// All optional: without a body, the attempt uses the exam's official settings.
+export const startAttemptSchema = z.object({
     questionCount: z.int().min(5).max(200).optional(),
     comTempo: z.boolean().optional(),
     duracaoMinutos: z.int().min(1).max(300).optional(),
     topicos: z.array(z.string().trim().min(1).max(60)).max(30).optional(),
-    // Modo de prática: confere cada questão na hora. Ignora comTempo (prática
-    // nunca tem cronômetro).
+    // Practice mode: checks each question right away. It ignores comTempo (practice
+    // never has a timer).
     pratica: z.boolean().optional(),
 });
 
-export const createSimuladoSchema = z.object({
+export const createPracticeExamSchema = z.object({
     slug: z
         .string()
         .trim()
@@ -31,7 +31,7 @@ export const createSimuladoSchema = z.object({
     published: z.boolean().default(false),
 });
 
-export const updateSimuladoSchema = z.object({
+export const updatePracticeExamSchema = z.object({
     name: z.string().trim().min(3).max(160).optional(),
     description: z.string().max(2000).optional(),
     durationMinutes: z.int().positive().optional(),
@@ -40,8 +40,8 @@ export const updateSimuladoSchema = z.object({
     published: z.boolean().optional(),
 });
 
-// Questão de simulado: aceita múltipla resposta, então exige ao menos uma correta.
-export const simuladoQuestionSchema = z.object({
+// Exam question: it accepts multiple answers, so it requires at least one right option.
+export const examQuestionSchema = z.object({
     statement: z.string().trim().min(3, "O enunciado deve ter ao menos 3 caracteres"),
     topic: z.string().trim().max(60).optional(),
     explanation: z.string().max(2000).optional(),
@@ -57,8 +57,8 @@ export const simuladoQuestionSchema = z.object({
         .refine((opts) => opts.some((o) => o.isCorrect), "Marque ao menos uma alternativa correta"),
 });
 
-// Salvar tudo (atômico): cada questão pode ter id (edita) ou não (cria); as que
-// sumirem da lista são removidas. A validação da lista inteira é tudo-ou-nada.
-export const sincronizarQuestoesSchema = z.object({
-    questions: z.array(simuladoQuestionSchema.extend({ id: z.uuid().optional() })).max(200),
+// Saving everything (atomic): each question may have an id (edits) or not (creates);
+// the ones missing from the list are removed. Validating the whole list is all-or-nothing.
+export const syncExamQuestionsSchema = z.object({
+    questions: z.array(examQuestionSchema.extend({ id: z.uuid().optional() })).max(200),
 });

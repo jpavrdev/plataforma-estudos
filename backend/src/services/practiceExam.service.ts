@@ -14,20 +14,20 @@ import { AppError } from "../errors/AppError.ts";
 import { gradePracticeExam, isQuestionCorrect, summaryByTopic } from "../domain/practiceExam.ts";
 import { seededShuffle } from "../domain/shuffle.ts";
 
-function agrupar(pares: [string, string][]): Map<string, Set<string>> {
-    const mapa = new Map<string, Set<string>>();
-    for (const [chave, valor] of pares) {
-        let conjunto = mapa.get(chave);
-        if (!conjunto) {
-            conjunto = new Set();
-            mapa.set(chave, conjunto);
+function groupPairs(pairs: [string, string][]): Map<string, Set<string>> {
+    const groups = new Map<string, Set<string>>();
+    for (const [key, value] of pairs) {
+        let members = groups.get(key);
+        if (!members) {
+            members = new Set();
+            groups.set(key, members);
         }
-        conjunto.add(valor);
+        members.add(value);
     }
-    return mapa;
+    return groups;
 }
 
-export async function listarSimulados(userId: string) {
+export async function findPracticeExams(userId: string) {
     return db
         .select({
             slug: simulados.slug,
@@ -53,54 +53,49 @@ export async function listarSimulados(userId: string) {
         .orderBy(simulados.name);
 }
 
-export async function alternarFavorito(userId: string, slug: string) {
-    const [simulado] = await db
+export async function toggleExamFavorite(userId: string, slug: string) {
+    const [exam] = await db
         .select({ id: simulados.id })
         .from(simulados)
         .where(and(eq(simulados.slug, slug), eq(simulados.published, true)));
-    if (!simulado) throw new AppError(404, "Simulado não encontrado");
+    if (!exam) throw new AppError(404, "practiceExam.notFound");
 
-    const removidos = await db
+    const removed = await db
         .delete(simuladoFavoritos)
-        .where(
-            and(
-                eq(simuladoFavoritos.simuladoId, simulado.id),
-                eq(simuladoFavoritos.userId, userId),
-            ),
-        )
+        .where(and(eq(simuladoFavoritos.simuladoId, exam.id), eq(simuladoFavoritos.userId, userId)))
         .returning({ id: simuladoFavoritos.id });
-    if (removidos.length === 0) {
+    if (removed.length === 0) {
         await db
             .insert(simuladoFavoritos)
-            .values({ simuladoId: simulado.id, userId })
+            .values({ simuladoId: exam.id, userId })
             .onConflictDoNothing();
     }
-    return { favorito: removidos.length === 0 };
+    return { favorito: removed.length === 0 };
 }
 
-// Cancela as tentativas em aberto do usuário: marca submittedAt sem gravar score/passed.
-// Como toda tentativa realmente enviada tem score, o histórico exibe estas como "Cancelada"
-// e o cronômetro delas para. Opcionalmente preserva uma tentativa (a que será retomada).
-async function cancelarTentativasEmAberto(userId: string, exceto: string | null) {
-    const condicoes = [eq(simuladoAttempts.userId, userId), isNull(simuladoAttempts.submittedAt)];
-    if (exceto) condicoes.push(ne(simuladoAttempts.id, exceto));
+// Cancels the user's open attempts: sets submittedAt without saving score/passed.
+// Since every attempt really submitted has a score, the history shows these as "Cancelada"
+// and their timer stops. Optionally keeps one attempt (the one being resumed).
+async function cancelOpenAttempts(userId: string, keepId: string | null) {
+    const conditions = [eq(simuladoAttempts.userId, userId), isNull(simuladoAttempts.submittedAt)];
+    if (keepId) conditions.push(ne(simuladoAttempts.id, keepId));
     await db
         .update(simuladoAttempts)
         .set({ submittedAt: new Date() })
-        .where(and(...condicoes));
+        .where(and(...conditions));
 }
 
-export const MIN_QUESTOES = 5;
-// Sem cronômetro a tentativa não expira sozinha, e uma abandonada travaria o
-// simulado para sempre, porque o início sempre a retomaria.
-const VALIDADE_SEM_TEMPO_MS = 24 * 60 * 60 * 1000;
+export const MIN_QUESTIONS = 5;
+// Without a timer the attempt does not expire by itself, and an abandoned one would
+// lock the exam forever, because starting would always resume it.
+const UNTIMED_VALIDITY_MS = 24 * 60 * 60 * 1000;
 
-// O que o aluno escolhe no filtro de assuntos. Em parte dos simulados o topic é o
-// serviço testado e o domínio da prova vem da coluna domain; nos outros o próprio
-// topic já é o domínio.
-const assunto = sql<string>`coalesce(${simuladoQuestions.domain}, ${simuladoQuestions.topic})`;
+// What the student picks in the subject filter. In some exams the topic is the
+// service being tested and the exam domain comes from the domain column; in the
+// others the topic itself is the domain.
+const subject = sql<string>`coalesce(${simuladoQuestions.domain}, ${simuladoQuestions.topic})`;
 
-export type OpcoesTentativa = {
+export type AttemptSettings = {
     questionCount?: number;
     comTempo?: boolean;
     duracaoMinutos?: number;
@@ -108,99 +103,102 @@ export type OpcoesTentativa = {
     pratica?: boolean;
 };
 
-function aindaVale(attempt: { expiresAt: Date | null; startedAt: Date }, agora: Date) {
-    if (attempt.expiresAt) return attempt.expiresAt > agora;
-    return agora.getTime() - attempt.startedAt.getTime() < VALIDADE_SEM_TEMPO_MS;
+function isStillValid(attempt: { expiresAt: Date | null; startedAt: Date }, now: Date) {
+    if (attempt.expiresAt) return attempt.expiresAt > now;
+    return now.getTime() - attempt.startedAt.getTime() < UNTIMED_VALIDITY_MS;
 }
 
-export async function iniciarTentativa(userId: string, slug: string, opcoes: OpcoesTentativa = {}) {
-    const [simulado] = await db
+export async function insertAttempt(userId: string, slug: string, settings: AttemptSettings = {}) {
+    const [exam] = await db
         .select()
         .from(simulados)
         .where(and(eq(simulados.slug, slug), eq(simulados.published, true)));
-    if (!simulado) throw new AppError(404, "Simulado não encontrado");
+    if (!exam) throw new AppError(404, "practiceExam.notFound");
 
-    const agora = new Date();
+    const now = new Date();
 
-    // Se já existe uma tentativa em aberto e ainda válida, retoma em vez de criar outra.
-    const [emAberto] = await db
+    // If there is an open attempt that is still valid, it resumes instead of creating another.
+    const [openAttempt] = await db
         .select()
         .from(simuladoAttempts)
         .where(
             and(
                 eq(simuladoAttempts.userId, userId),
-                eq(simuladoAttempts.simuladoId, simulado.id),
+                eq(simuladoAttempts.simuladoId, exam.id),
                 isNull(simuladoAttempts.submittedAt),
             ),
         )
         .orderBy(desc(simuladoAttempts.startedAt))
         .limit(1);
-    if (emAberto && aindaVale(emAberto, agora)) {
-        // Retoma esta tentativa e cancela qualquer outra em aberto (de outros simulados).
-        // Retomada avisa o cliente de que a configuração pedida agora não valeu.
-        await cancelarTentativasEmAberto(userId, emAberto.id);
-        return { ...(await estadoDaTentativa(userId, emAberto.id)), retomada: true };
+    if (openAttempt && isStillValid(openAttempt, now)) {
+        // Resumes this attempt and cancels any other open one (from other exams).
+        // retomada tells the client that the settings asked for now were not applied.
+        await cancelOpenAttempts(userId, openAttempt.id);
+        return { ...(await findAttemptState(userId, openAttempt.id)), retomada: true };
     }
 
-    // Vai criar uma nova: cancela todas as tentativas em aberto, parando o cronômetro delas.
-    await cancelarTentativasEmAberto(userId, null);
+    // A new one is coming: cancels every open attempt, stopping their timers.
+    await cancelOpenAttempts(userId, null);
 
-    const topicos = opcoes.topicos?.length ? [...new Set(opcoes.topicos)] : null;
-    const doSimulado = eq(simuladoQuestions.simuladoId, simulado.id);
-    const filtro = topicos ? and(doSimulado, inArray(assunto, topicos)) : doSimulado;
+    const topics = settings.topicos?.length ? [...new Set(settings.topicos)] : null;
+    const inExam = eq(simuladoQuestions.simuladoId, exam.id);
+    const questionFilter = topics ? and(inExam, inArray(subject, topics)) : inExam;
 
-    const [disponiveis] = await db.select({ n: count() }).from(simuladoQuestions).where(filtro);
-    const total = Number(disponiveis?.n ?? 0);
+    const [available] = await db
+        .select({ n: count() })
+        .from(simuladoQuestions)
+        .where(questionFilter);
+    const total = Number(available?.n ?? 0);
     if (total === 0) {
         throw new AppError(
             409,
-            topicos ? "Nenhuma questão nos temas escolhidos" : "Simulado ainda não tem questões",
+            topics ? "practiceExam.noQuestionsInTopics" : "practiceExam.noQuestions",
         );
     }
 
-    // Aparado pelo que existe: pedir 60 num tema de 12 dá 12.
-    const pedido = opcoes.questionCount ?? simulado.questionCount;
-    const quantidade = Math.min(Math.max(pedido, MIN_QUESTOES), total);
+    // Trimmed to what exists: asking for 60 in a topic of 12 gives 12.
+    const requested = settings.questionCount ?? exam.questionCount;
+    const amount = Math.min(Math.max(requested, MIN_QUESTIONS), total);
 
-    const sorteadas = await db
+    const drawn = await db
         .select({ id: simuladoQuestions.id })
         .from(simuladoQuestions)
-        .where(filtro)
+        .where(questionFilter)
         .orderBy(sql`random()`)
-        .limit(quantidade);
+        .limit(amount);
 
-    // No modo de prática o aluno confere cada questão na hora e lê a explicação,
-    // então cronômetro só atrapalharia: prática é estudo, não prova.
-    const pratica = opcoes.pratica === true;
-    // Sem duração escolhida, mantém o ritmo oficial: menos questões, menos minutos.
-    const comTempo = pratica ? false : (opcoes.comTempo ?? true);
-    const proporcional = Math.max(
+    // In practice mode the student checks each question right away and reads the
+    // explanation, so a timer would only get in the way: practice is study, not an exam.
+    const practice = settings.pratica === true;
+    // Without a chosen duration, it keeps the official pace: fewer questions, fewer minutes.
+    const timed = practice ? false : (settings.comTempo ?? true);
+    const proportional = Math.max(
         1,
-        Math.round((simulado.durationMinutes * sorteadas.length) / simulado.questionCount),
+        Math.round((exam.durationMinutes * drawn.length) / exam.questionCount),
     );
-    const minutos = opcoes.duracaoMinutos ?? proporcional;
-    const expiresAt = comTempo ? new Date(agora.getTime() + minutos * 60 * 1000) : null;
-    const personalizado =
-        pratica ||
-        !comTempo ||
-        topicos !== null ||
-        sorteadas.length !== simulado.questionCount ||
-        (comTempo && minutos !== simulado.durationMinutes);
+    const minutes = settings.duracaoMinutos ?? proportional;
+    const expiresAt = timed ? new Date(now.getTime() + minutes * 60 * 1000) : null;
+    const custom =
+        practice ||
+        !timed ||
+        topics !== null ||
+        drawn.length !== exam.questionCount ||
+        (timed && minutes !== exam.durationMinutes);
 
     const attemptId = await db.transaction(async (tx) => {
         const [attempt] = await tx
             .insert(simuladoAttempts)
             .values({
                 userId,
-                simuladoId: simulado.id,
+                simuladoId: exam.id,
                 expiresAt,
-                personalizado,
-                pratica,
-                topicos,
+                personalizado: custom,
+                pratica: practice,
+                topicos: topics,
             })
             .returning({ id: simuladoAttempts.id });
         await tx.insert(simuladoAttemptQuestions).values(
-            sorteadas.map((q, i) => ({
+            drawn.map((q, i) => ({
                 attemptId: attempt.id,
                 questionId: q.id,
                 position: i + 1,
@@ -209,67 +207,67 @@ export async function iniciarTentativa(userId: string, slug: string, opcoes: Opc
         return attempt.id;
     });
 
-    return estadoDaTentativa(userId, attemptId);
+    return findAttemptState(userId, attemptId);
 }
 
-// Simulado sem domínio classificado ainda cairia numa lista de centenas de itens de
-// uma questão cada, inútil como filtro. Nesse caso a lista sai vazia e a tela esconde
-// a escolha de assuntos.
-const MIN_QUESTOES_POR_TEMA = 5;
+// An exam without classified domains would fall into a list of hundreds of items with
+// one question each, useless as a filter. In that case the list comes out empty and the
+// screen hides the subject choice.
+const MIN_QUESTIONS_PER_TOPIC = 5;
 
-export async function opcoesDoSimulado(slug: string) {
-    const [simulado] = await db
+export async function findAttemptOptions(slug: string) {
+    const [exam] = await db
         .select()
         .from(simulados)
         .where(and(eq(simulados.slug, slug), eq(simulados.published, true)));
-    if (!simulado) throw new AppError(404, "Simulado não encontrado");
+    if (!exam) throw new AppError(404, "practiceExam.notFound");
 
-    const temas = await db
-        .select({ nome: assunto, questoes: count() })
+    const topicRows = await db
+        .select({ nome: subject, questoes: count() })
         .from(simuladoQuestions)
-        .where(eq(simuladoQuestions.simuladoId, simulado.id))
-        .groupBy(assunto)
+        .where(eq(simuladoQuestions.simuladoId, exam.id))
+        .groupBy(subject)
         .orderBy(desc(count()));
 
-    const comNome = temas.filter((t): t is { nome: string; questoes: number } => !!t.nome);
-    const totalQuestoes = comNome.reduce((s, t) => s + Number(t.questoes), 0);
-    const media = comNome.length ? totalQuestoes / comNome.length : 0;
+    const named = topicRows.filter((t): t is { nome: string; questoes: number } => !!t.nome);
+    const totalQuestions = named.reduce((s, t) => s + Number(t.questoes), 0);
+    const average = named.length ? totalQuestions / named.length : 0;
 
     return {
         oficial: {
-            questionCount: simulado.questionCount,
-            durationMinutes: simulado.durationMinutes,
+            questionCount: exam.questionCount,
+            durationMinutes: exam.durationMinutes,
         },
-        minQuestoes: MIN_QUESTOES,
-        maxQuestoes: totalQuestoes,
+        minQuestoes: MIN_QUESTIONS,
+        maxQuestoes: totalQuestions,
         temas:
-            media >= MIN_QUESTOES_POR_TEMA
-                ? comNome.map((t) => ({ nome: t.nome, questoes: Number(t.questoes) }))
+            average >= MIN_QUESTIONS_PER_TOPIC
+                ? named.map((t) => ({ nome: t.nome, questoes: Number(t.questoes) }))
                 : [],
     };
 }
 
-// O gabarito (isCorrect e a justificativa) só é revelado depois de enviar, ou,
-// no modo de prática, nas questões que o aluno já conferiu.
-export async function estadoDaTentativa(userId: string, attemptId: string) {
+// The answer key (isCorrect and the explanation) is revealed only after submitting,
+// or, in practice mode, on the questions the student already checked.
+export async function findAttemptState(userId: string, attemptId: string) {
     const [attempt] = await db
         .select()
         .from(simuladoAttempts)
         .where(and(eq(simuladoAttempts.id, attemptId), eq(simuladoAttempts.userId, userId)));
-    if (!attempt) throw new AppError(404, "Tentativa não encontrada");
+    if (!attempt) throw new AppError(404, "practiceExam.attemptNotFound");
 
-    const enviado = attempt.submittedAt !== null;
+    const submitted = attempt.submittedAt !== null;
 
-    const linhas = await db
+    const rows = await db
         .select()
         .from(simuladoAttemptQuestions)
         .where(eq(simuladoAttemptQuestions.attemptId, attemptId))
         .orderBy(simuladoAttemptQuestions.position);
-    // Tentativa enviada com snapshot renderiza a prova congelada no envio; as
-    // demais (em andamento ou anteriores ao snapshot) leem o banco vivo.
-    const congelada = enviado && linhas.length > 0 && linhas.every((l) => l.snapshot !== null);
+    // A submitted attempt with a snapshot renders the exam frozen at submission; the
+    // others (in progress or older than the snapshot) read the live database.
+    const frozen = submitted && rows.length > 0 && rows.every((l) => l.snapshot !== null);
 
-    type QuestaoRevisao = {
+    type ReviewQuestion = {
         id: string;
         statement: string;
         position: number;
@@ -280,38 +278,38 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         topic?: string | null;
         explanation?: string | null;
     };
-    const paraResumo: { topic: string | null; correta: boolean }[] = [];
-    let questions: QuestaoRevisao[];
+    const forSummary: { topic: string | null; correta: boolean }[] = [];
+    let questions: ReviewQuestion[];
 
-    if (congelada) {
-        questions = linhas.map((l) => {
+    if (frozen) {
+        questions = rows.map((l) => {
             const snap = l.snapshot!;
-            const corretasSet = new Set<string>();
-            const marcadasSet = new Set<string>();
+            const correctSet = new Set<string>();
+            const markedSet = new Set<string>();
             const options = snap.options.map((o, i) => {
                 const id = `${l.id}:${i}`;
-                if (o.isCorrect) corretasSet.add(id);
-                if (o.marked) marcadasSet.add(id);
+                if (o.isCorrect) correctSet.add(id);
+                if (o.marked) markedSet.add(id);
                 return { id, text: o.text, position: i + 1, isCorrect: o.isCorrect };
             });
-            paraResumo.push({
+            forSummary.push({
                 topic: snap.topic,
-                correta: isQuestionCorrect(marcadasSet, corretasSet),
+                correta: isQuestionCorrect(markedSet, correctSet),
             });
             return {
                 id: l.questionId ?? l.id,
                 statement: snap.statement,
                 position: l.position,
-                multiple: corretasSet.size > 1,
+                multiple: correctSet.size > 1,
                 options,
-                selected: [...marcadasSet],
+                selected: [...markedSet],
                 revealed: true,
                 topic: snap.topic,
                 explanation: snap.explanation,
             };
         });
     } else {
-        const questoes = await db
+        const questionRows = await db
             .select({
                 id: simuladoQuestions.id,
                 statement: simuladoQuestions.statement,
@@ -328,58 +326,58 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
             .where(eq(simuladoAttemptQuestions.attemptId, attemptId))
             .orderBy(simuladoAttemptQuestions.position);
 
-        const questionIds = questoes.map((q) => q.id);
-        const opcoes = questionIds.length
+        const questionIds = questionRows.map((q) => q.id);
+        const optionRows = questionIds.length
             ? await db
                   .select()
                   .from(simuladoOptions)
                   .where(inArray(simuladoOptions.questionId, questionIds))
                   .orderBy(simuladoOptions.position)
             : [];
-        const respostas = await db
+        const answerRows = await db
             .select()
             .from(simuladoAttemptAnswers)
             .where(eq(simuladoAttemptAnswers.attemptId, attemptId));
-        const marcadas = agrupar(respostas.map((r) => [r.questionId, r.optionId]));
+        const marked = groupPairs(answerRows.map((r) => [r.questionId, r.optionId]));
 
-        questions = questoes.map((q) => {
-            const opcoesDaQuestao = seededShuffle(
-                opcoes.filter((o) => o.questionId === q.id),
+        questions = questionRows.map((q) => {
+            const shuffledOptions = seededShuffle(
+                optionRows.filter((o) => o.questionId === q.id),
                 attemptId + q.id,
             );
-            // Na prática, a questão já conferida mostra o gabarito antes do envio.
-            const revelada = enviado || (attempt.pratica && q.revealedAt !== null);
-            if (enviado) {
-                const corretasSet = new Set(
-                    opcoesDaQuestao.filter((o) => o.isCorrect).map((o) => o.id),
+            // In practice mode, a question already checked shows the answer key before submitting.
+            const revealed = submitted || (attempt.pratica && q.revealedAt !== null);
+            if (submitted) {
+                const correctSet = new Set(
+                    shuffledOptions.filter((o) => o.isCorrect).map((o) => o.id),
                 );
-                const marcadasSet = new Set(marcadas.get(q.id) ?? []);
-                paraResumo.push({
+                const markedSet = new Set(marked.get(q.id) ?? []);
+                forSummary.push({
                     topic: q.topic,
-                    correta: isQuestionCorrect(marcadasSet, corretasSet),
+                    correta: isQuestionCorrect(markedSet, correctSet),
                 });
             }
             return {
                 id: q.id,
                 statement: q.statement,
                 position: q.position,
-                // multi-resposta é derivado do gabarito; só expomos o booleano (a contagem
-                // exata já está no enunciado, ex.: "selecione DUAS").
-                multiple: opcoesDaQuestao.filter((o) => o.isCorrect).length > 1,
-                options: opcoesDaQuestao.map((o) => ({
+                // Multiple answers come from the answer key; only the boolean is exposed (the exact
+                // count is already in the statement, e.g. "selecione DUAS").
+                multiple: shuffledOptions.filter((o) => o.isCorrect).length > 1,
+                options: shuffledOptions.map((o) => ({
                     id: o.id,
                     text: o.text,
                     position: o.position,
-                    ...(revelada ? { isCorrect: o.isCorrect } : {}),
+                    ...(revealed ? { isCorrect: o.isCorrect } : {}),
                 })),
-                selected: [...(marcadas.get(q.id) ?? [])],
-                revealed: revelada,
-                ...(revelada ? { topic: q.topic, explanation: q.explanation } : {}),
+                selected: [...(marked.get(q.id) ?? [])],
+                revealed: revealed,
+                ...(revealed ? { topic: q.topic, explanation: q.explanation } : {}),
             };
         });
     }
 
-    const [sim] = await db
+    const [examRow] = await db
         .select({
             slug: simulados.slug,
             name: simulados.name,
@@ -387,20 +385,24 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
         })
         .from(simulados)
         .where(eq(simulados.id, attempt.simuladoId));
-    const restanteMs = attempt.expiresAt ? attempt.expiresAt.getTime() - Date.now() : null;
+    const remainingMs = attempt.expiresAt ? attempt.expiresAt.getTime() - Date.now() : null;
     return {
         attemptId: attempt.id,
-        slug: sim?.slug ?? null,
-        simulado: sim?.name ?? null,
-        passPercent: sim?.passPercent ?? null,
-        submitted: enviado,
+        slug: examRow?.slug ?? null,
+        simulado: examRow?.name ?? null,
+        passPercent: examRow?.passPercent ?? null,
+        submitted: submitted,
         expiresAt: attempt.expiresAt,
         personalizado: attempt.personalizado,
         pratica: attempt.pratica,
         topicos: attempt.topicos ?? null,
         remainingSeconds:
-            restanteMs === null ? null : enviado ? 0 : Math.max(0, Math.floor(restanteMs / 1000)),
-        ...(enviado
+            remainingMs === null
+                ? null
+                : submitted
+                  ? 0
+                  : Math.max(0, Math.floor(remainingMs / 1000)),
+        ...(submitted
             ? {
                   score: attempt.score,
                   passed: attempt.passed,
@@ -410,14 +412,14 @@ export async function estadoDaTentativa(userId: string, attemptId: string) {
                           (attempt.submittedAt!.getTime() - attempt.startedAt.getTime()) / 1000,
                       ),
                   ),
-                  temasARevisar: summaryByTopic(paraResumo),
+                  temasARevisar: summaryByTopic(forSummary),
               }
             : {}),
         questions,
     };
 }
 
-export async function salvarResposta(
+export async function saveAttemptAnswer(
     userId: string,
     attemptId: string,
     questionId: string,
@@ -427,12 +429,12 @@ export async function salvarResposta(
         .select()
         .from(simuladoAttempts)
         .where(and(eq(simuladoAttempts.id, attemptId), eq(simuladoAttempts.userId, userId)));
-    if (!attempt) throw new AppError(404, "Tentativa não encontrada");
-    if (attempt.submittedAt) throw new AppError(409, "Simulado já enviado");
+    if (!attempt) throw new AppError(404, "practiceExam.attemptNotFound");
+    if (attempt.submittedAt) throw new AppError(409, "practiceExam.alreadySubmitted");
     if (attempt.expiresAt && attempt.expiresAt <= new Date())
-        throw new AppError(409, "Tempo esgotado");
+        throw new AppError(409, "practiceExam.timeUp");
 
-    const [pertence] = await db
+    const [attemptQuestion] = await db
         .select({
             id: simuladoAttemptQuestions.id,
             revealedAt: simuladoAttemptQuestions.revealedAt,
@@ -444,13 +446,13 @@ export async function salvarResposta(
                 eq(simuladoAttemptQuestions.questionId, questionId),
             ),
         );
-    if (!pertence) throw new AppError(404, "Questão não faz parte da tentativa");
-    if (pertence.revealedAt) throw new AppError(409, "Questão já conferida");
+    if (!attemptQuestion) throw new AppError(404, "practiceExam.questionNotInAttempt");
+    if (attemptQuestion.revealedAt) throw new AppError(409, "practiceExam.questionAlreadyChecked");
 
-    // As opções precisam ser desta questão (não deixa marcar opção de outra).
-    let validas: string[] = [];
+    // The options have to belong to this question (an option of another cannot be marked).
+    let validIds: string[] = [];
     if (optionIds.length > 0) {
-        const encontradas = await db
+        const found = await db
             .select({ id: simuladoOptions.id })
             .from(simuladoOptions)
             .where(
@@ -459,9 +461,9 @@ export async function salvarResposta(
                     inArray(simuladoOptions.id, optionIds),
                 ),
             );
-        validas = encontradas.map((o) => o.id);
-        if (validas.length !== new Set(optionIds).size) {
-            throw new AppError(400, "Opção inválida para esta questão");
+        validIds = found.map((o) => o.id);
+        if (validIds.length !== new Set(optionIds).size) {
+            throw new AppError(400, "practiceExam.invalidOption");
         }
     }
 
@@ -474,28 +476,28 @@ export async function salvarResposta(
                     eq(simuladoAttemptAnswers.questionId, questionId),
                 ),
             );
-        if (validas.length > 0) {
+        if (validIds.length > 0) {
             await tx
                 .insert(simuladoAttemptAnswers)
-                .values(validas.map((optionId) => ({ attemptId, questionId, optionId })));
+                .values(validIds.map((optionId) => ({ attemptId, questionId, optionId })));
         }
     });
     return { ok: true };
 }
 
-// Modo de prática: confere uma questão na hora. Exige resposta marcada, porque
-// conferir em branco seria só ler o gabarito, e marca a questão como conferida,
-// o que trava a resposta: sem isso dava para conferir, corrigir e sair com 100%.
-export async function conferirQuestao(userId: string, attemptId: string, questionId: string) {
+// Practice mode: checks one question right away. It requires a marked answer, because
+// checking a blank one would just read the answer key, and it marks the question as
+// checked, which locks the answer: without that one could check, fix it and get 100%.
+export async function revealAttemptQuestion(userId: string, attemptId: string, questionId: string) {
     const [attempt] = await db
         .select()
         .from(simuladoAttempts)
         .where(and(eq(simuladoAttempts.id, attemptId), eq(simuladoAttempts.userId, userId)));
-    if (!attempt) throw new AppError(404, "Tentativa não encontrada");
-    if (!attempt.pratica) throw new AppError(409, "Esta tentativa não é do modo de prática");
-    if (attempt.submittedAt) throw new AppError(409, "Simulado já enviado");
+    if (!attempt) throw new AppError(404, "practiceExam.attemptNotFound");
+    if (!attempt.pratica) throw new AppError(409, "practiceExam.notPracticeAttempt");
+    if (attempt.submittedAt) throw new AppError(409, "practiceExam.alreadySubmitted");
 
-    const [linha] = await db
+    const [row] = await db
         .select({
             id: simuladoAttemptQuestions.id,
             revealedAt: simuladoAttemptQuestions.revealedAt,
@@ -507,15 +509,15 @@ export async function conferirQuestao(userId: string, attemptId: string, questio
                 eq(simuladoAttemptQuestions.questionId, questionId),
             ),
         );
-    if (!linha) throw new AppError(404, "Questão não faz parte da tentativa");
+    if (!row) throw new AppError(404, "practiceExam.questionNotInAttempt");
 
-    const [questao] = await db
+    const [question] = await db
         .select({ explanation: simuladoQuestions.explanation, topic: simuladoQuestions.topic })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.id, questionId));
-    if (!questao) throw new AppError(404, "Questão não encontrada");
+    if (!question) throw new AppError(404, "quiz.questionNotFound");
 
-    const respostas = await db
+    const answerRows = await db
         .select({ optionId: simuladoAttemptAnswers.optionId })
         .from(simuladoAttemptAnswers)
         .where(
@@ -524,47 +526,47 @@ export async function conferirQuestao(userId: string, attemptId: string, questio
                 eq(simuladoAttemptAnswers.questionId, questionId),
             ),
         );
-    if (respostas.length === 0) throw new AppError(409, "Responda a questão antes de conferir");
+    if (answerRows.length === 0) throw new AppError(409, "practiceExam.answerBeforeChecking");
 
-    const opcoes = await db
+    const optionRows = await db
         .select({ id: simuladoOptions.id, isCorrect: simuladoOptions.isCorrect })
         .from(simuladoOptions)
         .where(eq(simuladoOptions.questionId, questionId));
-    const corretas = new Set(opcoes.filter((o) => o.isCorrect).map((o) => o.id));
-    const marcadas = new Set(respostas.map((r) => r.optionId));
+    const correctIds = new Set(optionRows.filter((o) => o.isCorrect).map((o) => o.id));
+    const marked = new Set(answerRows.map((r) => r.optionId));
 
-    if (!linha.revealedAt) {
+    if (!row.revealedAt) {
         await db
             .update(simuladoAttemptQuestions)
             .set({ revealedAt: new Date() })
-            .where(eq(simuladoAttemptQuestions.id, linha.id));
+            .where(eq(simuladoAttemptQuestions.id, row.id));
     }
 
     return {
         questionId,
-        correta: isQuestionCorrect(marcadas, corretas),
-        corretas: [...corretas],
-        explanation: questao.explanation,
-        topic: questao.topic,
+        correta: isQuestionCorrect(marked, correctIds),
+        corretas: [...correctIds],
+        explanation: question.explanation,
+        topic: question.topic,
     };
 }
 
-// Pontua só o que estava salvo, então envio após o prazo vale como auto-envio.
-export async function enviarTentativa(userId: string, attemptId: string) {
+// Scores only what was saved, so a submission after the deadline counts as an auto-submit.
+export async function gradeAttempt(userId: string, attemptId: string) {
     const [attempt] = await db
         .select()
         .from(simuladoAttempts)
         .where(and(eq(simuladoAttempts.id, attemptId), eq(simuladoAttempts.userId, userId)));
-    if (!attempt) throw new AppError(404, "Tentativa não encontrada");
-    if (attempt.submittedAt) throw new AppError(409, "Simulado já enviado");
+    if (!attempt) throw new AppError(404, "practiceExam.attemptNotFound");
+    if (attempt.submittedAt) throw new AppError(409, "practiceExam.alreadySubmitted");
 
-    const [simulado] = await db
+    const [exam] = await db
         .select({ passPercent: simulados.passPercent })
         .from(simulados)
         .where(eq(simulados.id, attempt.simuladoId));
-    if (!simulado) throw new AppError(404, "Simulado não encontrado");
+    if (!exam) throw new AppError(404, "practiceExam.notFound");
 
-    const linhasQ = await db
+    const questionLinks = await db
         .select({
             aqId: simuladoAttemptQuestions.id,
             questionId: simuladoQuestions.id,
@@ -575,47 +577,47 @@ export async function enviarTentativa(userId: string, attemptId: string) {
         .from(simuladoAttemptQuestions)
         .innerJoin(simuladoQuestions, eq(simuladoQuestions.id, simuladoAttemptQuestions.questionId))
         .where(eq(simuladoAttemptQuestions.attemptId, attemptId));
-    const questionIds = linhasQ.map((q) => q.questionId);
+    const questionIds = questionLinks.map((q) => q.questionId);
 
-    const opcoesRows = questionIds.length
+    const allOptionRows = questionIds.length
         ? await db
               .select()
               .from(simuladoOptions)
               .where(inArray(simuladoOptions.questionId, questionIds))
               .orderBy(simuladoOptions.position)
         : [];
-    const respostasRows = await db
+    const allAnswerRows = await db
         .select()
         .from(simuladoAttemptAnswers)
         .where(eq(simuladoAttemptAnswers.attemptId, attemptId));
 
-    const corretasPorQuestao = agrupar(
-        opcoesRows.filter((o) => o.isCorrect).map((o) => [o.questionId, o.id]),
+    const correctByQuestion = groupPairs(
+        allOptionRows.filter((o) => o.isCorrect).map((o) => [o.questionId, o.id]),
     );
-    const respostasPorQuestao = agrupar(respostasRows.map((r) => [r.questionId, r.optionId]));
-    const questoes = questionIds.map((id) => ({
+    const answersByQuestion = groupPairs(allAnswerRows.map((r) => [r.questionId, r.optionId]));
+    const questionRows = questionIds.map((id) => ({
         id,
-        corretas: corretasPorQuestao.get(id) ?? new Set<string>(),
+        corretas: correctByQuestion.get(id) ?? new Set<string>(),
     }));
 
-    const resultado = gradePracticeExam(questoes, respostasPorQuestao, simulado.passPercent);
+    const result = gradePracticeExam(questionRows, answersByQuestion, exam.passPercent);
 
-    // Congela a prova como foi exibida (mesma ordem embaralhada) para a revisão
-    // sobreviver a atualizações do banco de questões.
-    const snapshots = linhasQ.map((q) => {
-        const marcadasSet = respostasPorQuestao.get(q.questionId) ?? new Set<string>();
-        const opcoes = seededShuffle(
-            opcoesRows.filter((o) => o.questionId === q.questionId),
+    // Freezes the exam as it was shown (same shuffled order) so the review survives
+    // changes to the question bank.
+    const snapshots = questionLinks.map((q) => {
+        const markedSet = answersByQuestion.get(q.questionId) ?? new Set<string>();
+        const optionRows = seededShuffle(
+            allOptionRows.filter((o) => o.questionId === q.questionId),
             attemptId + q.questionId,
         );
         const snapshot: SnapshotQuestaoRevisao = {
             statement: q.statement,
             explanation: q.explanation,
             topic: q.topic,
-            options: opcoes.map((o) => ({
+            options: optionRows.map((o) => ({
                 text: o.text,
                 isCorrect: o.isCorrect,
-                marked: marcadasSet.has(o.id),
+                marked: markedSet.has(o.id),
             })),
         };
         return { aqId: q.aqId, snapshot };
@@ -630,15 +632,15 @@ export async function enviarTentativa(userId: string, attemptId: string) {
         }
         await tx
             .update(simuladoAttempts)
-            .set({ submittedAt: new Date(), score: resultado.score, passed: resultado.passed })
+            .set({ submittedAt: new Date(), score: result.score, passed: result.passed })
             .where(eq(simuladoAttempts.id, attemptId));
     });
 
-    return resultado;
+    return result;
 }
 
-export async function historicoDoUsuario(userId: string) {
-    const questoesPorTentativa = db
+export async function findUserAttempts(userId: string) {
+    const questionsPerAttempt = db
         .select({
             attemptId: simuladoAttemptQuestions.attemptId,
             total: count().as("total"),
@@ -660,18 +662,18 @@ export async function historicoDoUsuario(userId: string) {
             pratica: simuladoAttempts.pratica,
             comTempo: sql<boolean>`${simuladoAttempts.expiresAt} is not null`,
             topicos: simuladoAttempts.topicos,
-            questoes: sql<number>`coalesce(${questoesPorTentativa.total}, 0)::int`,
+            questoes: sql<number>`coalesce(${questionsPerAttempt.total}, 0)::int`,
         })
         .from(simuladoAttempts)
         .innerJoin(simulados, eq(simulados.id, simuladoAttempts.simuladoId))
-        .leftJoin(questoesPorTentativa, eq(questoesPorTentativa.attemptId, simuladoAttempts.id))
+        .leftJoin(questionsPerAttempt, eq(questionsPerAttempt.attemptId, simuladoAttempts.id))
         .where(eq(simuladoAttempts.userId, userId))
         .orderBy(desc(simuladoAttempts.startedAt));
 }
 
 // ===================== ADMIN (CRUD) =====================
 
-type DadosSimulado = {
+type PracticeExamData = {
     slug: string;
     name: string;
     description?: string;
@@ -680,21 +682,21 @@ type DadosSimulado = {
     passPercent: number;
     published: boolean;
 };
-type DadosSimuladoUpdate = Partial<Omit<DadosSimulado, "slug">>;
-type DadosQuestao = {
+type PracticeExamUpdate = Partial<Omit<PracticeExamData, "slug">>;
+type ExamQuestionData = {
     statement: string;
     topic?: string;
     explanation?: string;
     options: { text: string; isCorrect: boolean }[];
 };
 
-async function simuladoPorSlug(slug: string) {
+async function findExamBySlug(slug: string) {
     const [s] = await db.select().from(simulados).where(eq(simulados.slug, slug));
-    if (!s) throw new AppError(404, "Simulado não encontrado");
+    if (!s) throw new AppError(404, "practiceExam.notFound");
     return s;
 }
 
-export async function listarSimuladosAdmin() {
+export async function findPracticeExamsForStudio() {
     return db
         .select({
             slug: simulados.slug,
@@ -711,35 +713,35 @@ export async function listarSimuladosAdmin() {
         .orderBy(simulados.name);
 }
 
-export async function criarSimulado(dados: DadosSimulado) {
-    const [existe] = await db
+export async function insertPracticeExam(data: PracticeExamData) {
+    const [existing] = await db
         .select({ id: simulados.id })
         .from(simulados)
-        .where(eq(simulados.slug, dados.slug));
-    if (existe) throw new AppError(409, "Já existe um simulado com esse slug");
-    const [s] = await db.insert(simulados).values(dados).returning();
+        .where(eq(simulados.slug, data.slug));
+    if (existing) throw new AppError(409, "practiceExam.slugTaken");
+    const [s] = await db.insert(simulados).values(data).returning();
     return s;
 }
 
-export async function atualizarSimulado(slug: string, dados: DadosSimuladoUpdate) {
-    const s = await simuladoPorSlug(slug);
-    if (Object.keys(dados).length === 0) throw new AppError(400, "Nada para atualizar");
-    const [atualizado] = await db
+export async function editPracticeExam(slug: string, data: PracticeExamUpdate) {
+    const s = await findExamBySlug(slug);
+    if (Object.keys(data).length === 0) throw new AppError(400, "common.nothingToUpdate");
+    const [updated] = await db
         .update(simulados)
-        .set(dados)
+        .set(data)
         .where(eq(simulados.id, s.id))
         .returning();
-    return atualizado;
+    return updated;
 }
 
-export async function excluirSimulado(slug: string) {
-    const s = await simuladoPorSlug(slug);
+export async function removePracticeExam(slug: string) {
+    const s = await findExamBySlug(slug);
     await db.transaction(async (tx) => {
-        const tentativas = await tx
+        const attempts = await tx
             .select({ id: simuladoAttempts.id })
             .from(simuladoAttempts)
             .where(eq(simuladoAttempts.simuladoId, s.id));
-        const attemptIds = tentativas.map((t) => t.id);
+        const attemptIds = attempts.map((t) => t.id);
         if (attemptIds.length) {
             await tx
                 .delete(simuladoAttemptAnswers)
@@ -749,11 +751,11 @@ export async function excluirSimulado(slug: string) {
                 .where(inArray(simuladoAttemptQuestions.attemptId, attemptIds));
             await tx.delete(simuladoAttempts).where(eq(simuladoAttempts.simuladoId, s.id));
         }
-        const questoes = await tx
+        const questionRows = await tx
             .select({ id: simuladoQuestions.id })
             .from(simuladoQuestions)
             .where(eq(simuladoQuestions.simuladoId, s.id));
-        const questionIds = questoes.map((q) => q.id);
+        const questionIds = questionRows.map((q) => q.id);
         if (questionIds.length) {
             await tx
                 .delete(simuladoOptions)
@@ -765,16 +767,16 @@ export async function excluirSimulado(slug: string) {
     return { ok: true };
 }
 
-// Simulado com o banco de questões inteiro (com gabarito), para a edição no admin.
-export async function detalheSimuladoAdmin(slug: string) {
-    const s = await simuladoPorSlug(slug);
-    const questoes = await db
+// The exam with its whole question bank (answer key included), for editing in the admin.
+export async function findStudioPracticeExam(slug: string) {
+    const s = await findExamBySlug(slug);
+    const questionRows = await db
         .select()
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.simuladoId, s.id))
         .orderBy(simuladoQuestions.createdAt);
-    const questionIds = questoes.map((q) => q.id);
-    const opcoes = questionIds.length
+    const questionIds = questionRows.map((q) => q.id);
+    const optionRows = questionIds.length
         ? await db
               .select()
               .from(simuladoOptions)
@@ -789,12 +791,12 @@ export async function detalheSimuladoAdmin(slug: string) {
         questionCount: s.questionCount,
         passPercent: s.passPercent,
         published: s.published,
-        questions: questoes.map((q) => ({
+        questions: questionRows.map((q) => ({
             id: q.id,
             statement: q.statement,
             topic: q.topic,
             explanation: q.explanation,
-            options: opcoes
+            options: optionRows
                 .filter((o) => o.questionId === q.id)
                 .map((o) => ({
                     id: o.id,
@@ -806,20 +808,20 @@ export async function detalheSimuladoAdmin(slug: string) {
     };
 }
 
-export async function criarQuestaoSimulado(slug: string, dados: DadosQuestao) {
-    const s = await simuladoPorSlug(slug);
+export async function insertExamQuestion(slug: string, data: ExamQuestionData) {
+    const s = await findExamBySlug(slug);
     return db.transaction(async (tx) => {
         const [q] = await tx
             .insert(simuladoQuestions)
             .values({
                 simuladoId: s.id,
-                statement: dados.statement,
-                topic: dados.topic,
-                explanation: dados.explanation,
+                statement: data.statement,
+                topic: data.topic,
+                explanation: data.explanation,
             })
             .returning();
         await tx.insert(simuladoOptions).values(
-            dados.options.map((o, i) => ({
+            data.options.map((o, i) => ({
                 questionId: q.id,
                 text: o.text,
                 isCorrect: o.isCorrect,
@@ -830,29 +832,29 @@ export async function criarQuestaoSimulado(slug: string, dados: DadosQuestao) {
     });
 }
 
-export async function atualizarQuestaoSimulado(questionId: string, dados: DadosQuestao) {
+export async function editExamQuestion(questionId: string, data: ExamQuestionData) {
     const [q] = await db
         .select({ id: simuladoQuestions.id })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.id, questionId));
-    if (!q) throw new AppError(404, "Questão não encontrada");
+    if (!q) throw new AppError(404, "quiz.questionNotFound");
     await db.transaction(async (tx) => {
         await tx
             .update(simuladoQuestions)
             .set({
-                statement: dados.statement,
-                topic: dados.topic,
-                explanation: dados.explanation,
+                statement: data.statement,
+                topic: data.topic,
+                explanation: data.explanation,
             })
             .where(eq(simuladoQuestions.id, questionId));
-        // Substitui as opções. Como o id delas muda, apaga as respostas de tentativas
-        // que apontavam para as antigas (edição de banco reflete em revisões passadas).
+        // Replaces the options. Since their ids change, it deletes the attempt answers that
+        // pointed to the old ones (editing the bank shows in past reviews).
         await tx
             .delete(simuladoAttemptAnswers)
             .where(eq(simuladoAttemptAnswers.questionId, questionId));
         await tx.delete(simuladoOptions).where(eq(simuladoOptions.questionId, questionId));
         await tx.insert(simuladoOptions).values(
-            dados.options.map((o, i) => ({
+            data.options.map((o, i) => ({
                 questionId,
                 text: o.text,
                 isCorrect: o.isCorrect,
@@ -863,18 +865,18 @@ export async function atualizarQuestaoSimulado(questionId: string, dados: DadosQ
     return { ok: true };
 }
 
-export async function excluirQuestaoSimulado(questionId: string) {
+export async function removeExamQuestion(questionId: string) {
     const [q] = await db
         .select({ id: simuladoQuestions.id })
         .from(simuladoQuestions)
         .where(eq(simuladoQuestions.id, questionId));
-    if (!q) throw new AppError(404, "Questão não encontrada");
+    if (!q) throw new AppError(404, "quiz.questionNotFound");
     await db.transaction(async (tx) => {
         await tx
             .delete(simuladoAttemptAnswers)
             .where(eq(simuladoAttemptAnswers.questionId, questionId));
-        // Tentativas com revisão congelada mantêm a linha (a questão vira órfã);
-        // as demais perdem a questão, como antes.
+        // Attempts with a frozen review keep the row (the question becomes an orphan);
+        // the others lose the question, as before.
         await tx
             .update(simuladoAttemptQuestions)
             .set({ questionId: null })
@@ -893,51 +895,52 @@ export async function excluirQuestaoSimulado(questionId: string) {
     return { ok: true };
 }
 
-// Salvar tudo numa única transação (atômico): remove as questões que sumiram,
-// atualiza as que têm id e cria as novas. Se qualquer passo falhar, nada é gravado.
-export async function sincronizarQuestoesSimulado(
+// Saves everything in a single transaction (atomic): removes the questions that are
+// gone, updates the ones with an id and creates the new ones. If any step fails,
+// nothing is saved.
+export async function replaceExamQuestions(
     slug: string,
-    questoes: ({ id?: string } & DadosQuestao)[],
+    questionRows: ({ id?: string } & ExamQuestionData)[],
 ) {
-    const s = await simuladoPorSlug(slug);
+    const s = await findExamBySlug(slug);
     await db.transaction(async (tx) => {
-        const existentes = await tx
+        const existingQuestions = await tx
             .select({ id: simuladoQuestions.id })
             .from(simuladoQuestions)
             .where(eq(simuladoQuestions.simuladoId, s.id));
-        const idsExistentes = new Set(existentes.map((q) => q.id));
+        const existingIds = new Set(existingQuestions.map((q) => q.id));
 
-        const idsEnviados = new Set<string>();
-        for (const q of questoes) {
+        const sentIds = new Set<string>();
+        for (const q of questionRows) {
             if (q.id) {
-                if (!idsExistentes.has(q.id))
-                    throw new AppError(400, "Questão não pertence a este simulado");
-                idsEnviados.add(q.id);
+                if (!existingIds.has(q.id))
+                    throw new AppError(400, "practiceExam.questionNotInExam");
+                sentIds.add(q.id);
             }
         }
 
-        const aRemover = [...idsExistentes].filter((id) => !idsEnviados.has(id));
-        if (aRemover.length) {
+        const toRemove = [...existingIds].filter((id) => !sentIds.has(id));
+        if (toRemove.length) {
             await tx
                 .delete(simuladoAttemptAnswers)
-                .where(inArray(simuladoAttemptAnswers.questionId, aRemover));
+                .where(inArray(simuladoAttemptAnswers.questionId, toRemove));
             await tx
                 .update(simuladoAttemptQuestions)
                 .set({ questionId: null })
                 .where(
                     and(
-                        inArray(simuladoAttemptQuestions.questionId, aRemover),
+                        inArray(simuladoAttemptQuestions.questionId, toRemove),
                         isNotNull(simuladoAttemptQuestions.snapshot),
                     ),
                 );
             await tx
                 .delete(simuladoAttemptQuestions)
-                .where(inArray(simuladoAttemptQuestions.questionId, aRemover));
-            await tx.delete(simuladoOptions).where(inArray(simuladoOptions.questionId, aRemover));
-            await tx.delete(simuladoQuestions).where(inArray(simuladoQuestions.id, aRemover));
+                .where(inArray(simuladoAttemptQuestions.questionId, toRemove));
+            await tx.delete(simuladoOptions).where(inArray(simuladoOptions.questionId, toRemove));
+            await tx.delete(simuladoQuestions).where(inArray(simuladoQuestions.id, toRemove));
         }
 
-        for (const q of questoes) {
+        for (const q of questionRows) {
             let questionId: string;
             if (q.id) {
                 await tx
@@ -950,7 +953,7 @@ export async function sincronizarQuestoesSimulado(
                 await tx.delete(simuladoOptions).where(eq(simuladoOptions.questionId, q.id));
                 questionId = q.id;
             } else {
-                const [nova] = await tx
+                const [created] = await tx
                     .insert(simuladoQuestions)
                     .values({
                         simuladoId: s.id,
@@ -959,7 +962,7 @@ export async function sincronizarQuestoesSimulado(
                         explanation: q.explanation,
                     })
                     .returning({ id: simuladoQuestions.id });
-                questionId = nova.id;
+                questionId = created.id;
             }
             await tx.insert(simuladoOptions).values(
                 q.options.map((o, i) => ({
