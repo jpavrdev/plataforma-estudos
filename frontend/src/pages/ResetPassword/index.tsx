@@ -5,6 +5,7 @@ import api from '../../services/api';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
+import { PasswordChecklist, isValidPassword } from '../../components/auth/PasswordChecklist';
 import { mensagemErro } from '../../utils/erro';
 
 export function ResetPassword() {
@@ -22,6 +23,12 @@ export function ResetPassword() {
     setError('');
     if (password !== confirmation) {
       setError(t('resetPassword.errors.mismatch'));
+      return;
+    }
+    // The same rules the backend enforces, checked here so the message says what
+    // is wrong instead of a generic "invalid data".
+    if (!isValidPassword(password)) {
+      setError(t('auth.weakPassword'));
       return;
     }
     setSubmitting(true);
@@ -89,7 +96,7 @@ export function ResetPassword() {
               onChange={(e) => setPassword(e.target.value)}
               required
             >
-              <span className="field__hint">{t('resetPassword.hint')}</span>
+              <PasswordChecklist value={password} />
             </FormField>
             <FormField
               label={t('resetPassword.confirmPassword')}
