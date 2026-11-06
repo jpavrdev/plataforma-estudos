@@ -478,9 +478,10 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
             .from(users)
             .where(eq(users.email, email));
 
-        // Without a new code (a repeated request within a minute, or the daily limit),
-        // the answer is the same: the previous code stays valid until it expires.
-        const otp = user ? await authService.createPasswordResetCode(user.id) : null;
+        // Without a new code (a repeated request within a minute on the same
+        // channel, or the daily limit), the answer is the same: the previous
+        // code stays valid until it expires.
+        const otp = user ? await authService.createPasswordResetCode(user.id, channel) : null;
         if (user && otp) {
             // WhatsApp only for a verified phone: a number never confirmed may belong to
             // someone else. Without it, it falls back to email so the code is not lost.

@@ -138,6 +138,26 @@ describe("6-digit code", () => {
         assert.equal((await codesOf(user.id)).length, 1);
     });
 
+    test("switching channels within a minute still creates a code on the new channel", async () => {
+        const user = await createUser({ verificado: true });
+
+        const byWhatsApp = await server.request("POST", "/forgot-password-otp", {
+            body: { email: user.email, canal: "whatsapp" },
+        });
+        assert.equal(byWhatsApp.status, 200);
+        const byEmail = await server.request("POST", "/forgot-password-otp", {
+            body: { email: user.email, canal: "email" },
+        });
+        assert.equal(byEmail.status, 200);
+
+        const codes = await codesOf(user.id);
+        assert.equal(codes.length, 2);
+        assert.equal(codes.filter((code) => code.channel === "email").length, 1);
+        assert.equal(codes.filter((code) => code.channel === "whatsapp").length, 1);
+        // Issuing the new code kills the previous one.
+        assert.equal(codes.filter((code) => code.usedAt !== null).length, 1);
+    });
+
     test("at most 10 codes a day per account", async () => {
         const user = await createUser({ verificado: true });
         const { db, tokens, and, eq, sql, authService } = await app();

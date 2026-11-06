@@ -116,6 +116,10 @@ export const tokens = pgTable(
         expiredAt: timestamp("expired_at", { withTimezone: true }).notNull(),
         // Erros no código de 6 dígitos; o código é apagado ao chegar no limite.
         tentativas: smallint("tentativas").notNull().default(0),
+        // Channel the recovery code was asked on (email/whatsapp). The one-minute
+        // window is per channel, so switching channels still delivers. Null on
+        // rows written before this column existed.
+        channel: varchar("channel", { length: 10 }),
     },
     (table) => [index("tokens_user_id_idx").on(table.userId)],
 );
