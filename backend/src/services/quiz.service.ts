@@ -1,5 +1,5 @@
 import { db } from "../../db.ts";
-import { abrirCartoesDaAula } from "./flashcard.service.ts";
+import { openLessonCards } from "./flashcard.service.ts";
 import {
     lessons,
     questions,
@@ -124,7 +124,7 @@ export async function gradeQuiz(userId: string, lessonId: string, data: QuizAnsw
         // lesson not studied yet would give the answer away too early. It fails
         // silently on purpose, because it must never block completing the lesson.
         try {
-            await abrirCartoesDaAula(userId, lessonId);
+            await openLessonCards(userId, lessonId);
         } catch (e) {
             console.error("Failed to open the lesson flashcards", e);
         }

@@ -1,120 +1,123 @@
 import type { Request, Response, NextFunction } from "express";
 import {
-    baralhos,
-    contarRevisaoDaTrilha,
-    estatisticas,
-    filaDoDia,
-    historicoSessoes,
-    pontosFracos,
-    reportarCartao,
-    responder,
-    resumo,
-    revisaoDaTrilha,
-    type Resposta,
+    decks,
+    countTrailReview,
+    statistics,
+    dailyQueue,
+    sessionHistory,
+    weakPoints,
+    reportCard,
+    answerCard,
+    summary,
+    trailReview,
+    type Answer,
 } from "../services/flashcard.service.ts";
 import { AppError } from "../errors/AppError.ts";
 
-const RESPOSTAS: Resposta[] = ["errei", "dificil", "intermediaria", "facil"];
+const ANSWERS: Answer[] = ["errei", "dificil", "intermediaria", "facil"];
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-// Acima de dois minutos a carta ficou aberta, não foi pensada.
-const TEMPO_MAXIMO_MS = 120_000;
+// Past two minutes the card was left open, not thought about.
+const MAX_ANSWER_MS = 120_000;
 
-export const getResumo = async (req: Request, res: Response, next: NextFunction) => {
+export const getSummary = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await resumo(req.userId!));
+        res.json(await summary(req.userId!));
     } catch (err) {
         next(err);
     }
 };
 
-export const getFila = async (req: Request, res: Response, next: NextFunction) => {
+export const getQueue = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const limite = Math.min(Number(req.query.limite) || 500, 500);
-        // trilhas=id1,id2 e glossario=1 escolhem o baralho. Sem nada, vem tudo.
-        const trilhas = String(req.query.trilhas ?? "")
+        const limit = Math.min(Number(req.query.limite) || 500, 500);
+        // trilhas=id1,id2 and glossario=1 pick the deck. Without them, everything
+        // comes. (Query parameter names are part of the API contract.)
+        const deckList = String(req.query.trilhas ?? "")
             .split(",")
             .map((t) => t.trim())
             .filter((t) => UUID.test(t));
-        const glossario = req.query.glossario === "1";
-        res.json(await filaDoDia(req.userId!, limite, { trilhas, glossario }));
+        const includeGlossary = req.query.glossario === "1";
+        res.json(
+            await dailyQueue(req.userId!, limit, { trilhas: deckList, glossario: includeGlossary }),
+        );
     } catch (err) {
         next(err);
     }
 };
 
-export const getBaralhos = async (req: Request, res: Response, next: NextFunction) => {
+export const getDecks = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await baralhos(req.userId!));
+        res.json(await decks(req.userId!));
     } catch (err) {
         next(err);
     }
 };
 
-export const getEstatisticas = async (req: Request, res: Response, next: NextFunction) => {
+export const getStatistics = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await estatisticas(req.userId!));
+        res.json(await statistics(req.userId!));
     } catch (err) {
         next(err);
     }
 };
 
-export const getHistorico = async (req: Request, res: Response, next: NextFunction) => {
+export const getHistory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await historicoSessoes(req.userId!, 20));
+        res.json(await sessionHistory(req.userId!, 20));
     } catch (err) {
         next(err);
     }
 };
 
-export const getPontosFracos = async (req: Request, res: Response, next: NextFunction) => {
+export const getWeakPoints = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await pontosFracos(req.userId!, 5));
+        res.json(await weakPoints(req.userId!, 5));
     } catch (err) {
         next(err);
     }
 };
 
-export const getRevisaoTrilha = async (req: Request, res: Response, next: NextFunction) => {
+export const getTrailReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await revisaoDaTrilha(String(req.params.trailId)));
+        res.json(await trailReview(String(req.params.trailId)));
     } catch (err) {
         next(err);
     }
 };
 
-export const getContagemTrilha = async (req: Request, res: Response, next: NextFunction) => {
+export const getTrailReviewCount = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await contarRevisaoDaTrilha(String(req.params.trailId)));
+        res.json(await countTrailReview(String(req.params.trailId)));
     } catch (err) {
         next(err);
     }
 };
 
-export const postReporte = async (req: Request, res: Response, next: NextFunction) => {
+export const postReport = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { origem, comentario } = req.body ?? {};
-        if (origem !== "flashcard" && origem !== "glossario" && origem !== "entrevista")
-            throw new AppError(400, "Origem inválida.");
-        const texto =
-            typeof comentario === "string" && comentario.trim()
-                ? comentario.trim().slice(0, 300)
+        const { origem: source, comentario: comment } = req.body ?? {};
+        if (source !== "flashcard" && source !== "glossario" && source !== "entrevista")
+            throw new AppError(400, "flashcard.invalidSource");
+        const text =
+            typeof comment === "string" && comment.trim()
+                ? comment.trim().slice(0, 300)
                 : undefined;
-        res.json(await reportarCartao(req.userId!, origem, String(req.params.id), texto));
+        res.json(await reportCard(req.userId!, source, String(req.params.id), text));
     } catch (err) {
         next(err);
     }
 };
 
-export const postResposta = async (req: Request, res: Response, next: NextFunction) => {
+export const postAnswer = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { origem, resposta, tempoMs } = req.body ?? {};
-        if (origem !== "flashcard" && origem !== "glossario" && origem !== "entrevista")
-            throw new AppError(400, "Origem inválida.");
-        if (!RESPOSTAS.includes(resposta)) throw new AppError(400, "Resposta inválida.");
-        const tempo = Number.isFinite(Number(tempoMs))
-            ? Math.min(Math.max(0, Math.round(Number(tempoMs))), TEMPO_MAXIMO_MS)
+        const { origem: source, resposta: answer, tempoMs } = req.body ?? {};
+        if (source !== "flashcard" && source !== "glossario" && source !== "entrevista")
+            throw new AppError(400, "flashcard.invalidSource");
+        if (!ANSWERS.includes(answer)) throw new AppError(400, "flashcard.invalidAnswer");
+        const elapsedMs = Number.isFinite(Number(tempoMs))
+            ? Math.min(Math.max(0, Math.round(Number(tempoMs))), MAX_ANSWER_MS)
             : undefined;
-        res.json(await responder(req.userId!, origem, String(req.params.id), resposta, tempo));
+        res.json(await answerCard(req.userId!, source, String(req.params.id), answer, elapsedMs));
     } catch (err) {
         next(err);
     }
