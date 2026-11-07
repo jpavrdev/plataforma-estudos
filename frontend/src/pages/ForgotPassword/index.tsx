@@ -5,6 +5,7 @@ import api from '../../services/api';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { FormField } from '../../components/FormField';
+import { PasswordChecklist, isValidPassword } from '../../components/auth/PasswordChecklist';
 import { mensagemErro } from '../../utils/erro';
 
 type Channel = 'email' | 'whatsapp';
@@ -38,6 +39,12 @@ export function ForgotPassword() {
   async function resetPassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
+    // The same rules the backend enforces, checked here so the message says what
+    // is wrong instead of a generic "invalid data".
+    if (!isValidPassword(password)) {
+      setError(t('auth.weakPassword'));
+      return;
+    }
     setSubmitting(true);
     try {
       const { data } = await api.post('/reset-password-otp', { email, otp, password });
@@ -148,7 +155,9 @@ export function ForgotPassword() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-            />
+            >
+              <PasswordChecklist value={password} />
+            </FormField>
             <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
               {submitting ? t('forgotPassword.resetting') : t('forgotPassword.submit')}
             </button>

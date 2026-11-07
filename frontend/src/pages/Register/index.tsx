@@ -14,22 +14,16 @@ import {
 import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Avatar } from '../../components/Avatar';
 import { Check } from '../../components/Icons';
+import {
+  PasswordChecklist,
+  PASSWORD_MIN,
+  isValidPassword,
+} from '../../components/auth/PasswordChecklist';
 import { mensagemErro } from '../../utils/erro';
 
 const BENEFITS = ['daily', 'streak', 'ranking', 'progress'] as const;
 
 type FieldErrors = Record<string, string>;
-
-// Password requirements (they mirror the backend registerSchema, the source of truth).
-const PASSWORD_MIN = 12;
-const PASSWORD_RULES = [
-  { key: 'length', ok: (s: string) => s.length >= PASSWORD_MIN },
-  { key: 'upper', ok: (s: string) => /[A-Z]/.test(s) },
-  { key: 'lower', ok: (s: string) => /[a-z]/.test(s) },
-  { key: 'digit', ok: (s: string) => /[0-9]/.test(s) },
-  { key: 'special', ok: (s: string) => /[^A-Za-z0-9]/.test(s) },
-] as const;
-const isValidPassword = (s: string) => PASSWORD_RULES.every((r) => r.ok(s));
 
 export function Register() {
   const navigate = useNavigate();
@@ -59,7 +53,7 @@ export function Register() {
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = t('register.errors.email');
 
-    if (!isValidPassword(password)) e.password = t('register.errors.password');
+    if (!isValidPassword(password)) e.password = t('auth.weakPassword');
 
     return e;
   }
@@ -103,11 +97,6 @@ export function Register() {
       setSubmitting(false);
     }
   }
-
-  const passwordChecks = PASSWORD_RULES.map((r) => ({
-    ok: r.ok(password),
-    label: t(`register.passwordRules.${r.key}`, { min: PASSWORD_MIN }),
-  }));
 
   const brand = (
     <AuthBrand glow="register">
@@ -202,13 +191,7 @@ export function Register() {
           required
           error={errors.password}
         >
-          <ul className="pw-reqs">
-            {passwordChecks.map((r) => (
-              <li key={r.label} className={`pw-reqs__item${r.ok ? ' pw-reqs__item--ok' : ''}`}>
-                <Check size={12} /> {r.label}
-              </li>
-            ))}
-          </ul>
+          <PasswordChecklist value={password} />
         </FormField>
         <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
           {submitting ? t('register.submitting') : t('register.submit')}
