@@ -10,7 +10,7 @@ import {
     summarizeProgress,
     listTopics,
 } from "../src/services/interview.service.ts";
-import { filaDoDia, responder } from "../src/services/flashcard.service.ts";
+import { dailyQueue, answerCard } from "../src/services/flashcard.service.ts";
 
 async function createUser(email = "entrevista@teste.dev") {
     const [user] = await db
@@ -94,7 +94,7 @@ describe("interview mode", () => {
         const user = await createUser();
 
         const [card] = await buildQueue(user.id, { nivel: "estagio" });
-        await responder(user.id, "entrevista", card.id, "facil");
+        await answerCard(user.id, "entrevista", card.id, "facil");
 
         const [row] = await db
             .select()
@@ -129,7 +129,7 @@ describe("interview mode", () => {
         assert.equal(before.vistas, 0);
 
         const [card] = await buildQueue(user.id, { nivel: "senior" });
-        await responder(user.id, "entrevista", card.id, "dificil");
+        await answerCard(user.id, "entrevista", card.id, "dificil");
 
         const after = await summarizeProgress(user.id, "senior");
         assert.equal(after.total, 8);
@@ -145,9 +145,9 @@ describe("interview mode", () => {
         const user = await createUser();
 
         const [card] = await buildQueue(user.id, { nivel: "estagio" });
-        await responder(user.id, "entrevista", card.id, "errei");
+        await answerCard(user.id, "entrevista", card.id, "errei");
 
-        const daily = await filaDoDia(user.id, 50);
+        const daily = await dailyQueue(user.id, 50);
         const found = daily.find((c) => c.id === card.id);
         assert.ok(found, "the answered card shows up in the daily review");
         assert.equal(found.origem, "entrevista");
@@ -161,7 +161,7 @@ describe("interview mode", () => {
         await seedCards();
         const user = await createUser();
 
-        const daily = await filaDoDia(user.id, 50);
+        const daily = await dailyQueue(user.id, 50);
         assert.equal(daily.length, 0);
     });
 });
