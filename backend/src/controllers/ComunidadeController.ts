@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { criarPostSchema, comentarSchema } from "../schemas/comunidade.schema.ts";
-import { salvarImagem } from "../services/imagens.ts";
+import { saveImage } from "../services/images.ts";
 import { apoiadorAtivo } from "../services/apoiador.service.ts";
 import { COMMUNITY_DIR } from "../config/paths.ts";
 import {
@@ -59,7 +59,7 @@ export const enviarImagem = async (req: Request, res: Response, next: NextFuncti
                 .status(403)
                 .json({ erro: "Enviar imagens na comunidade é um benefício de apoiador." });
         }
-        const r = await salvarImagem(req.body?.image, COMMUNITY_DIR, "/uploads/comunidade");
+        const r = await saveImage(req.body?.image, COMMUNITY_DIR, "/uploads/comunidade");
         if (!r.ok) return res.status(400).json({ erro: r.erro });
         res.json({ url: r.url });
     } catch (err) {

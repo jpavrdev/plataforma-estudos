@@ -10,8 +10,8 @@ import { eq, and, asc, desc, sql, inArray } from "drizzle-orm";
 import type { z } from "zod";
 import type { createAchievementSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
-import { calcularEstatisticas } from "./stats.service.ts";
-import { diasAtivosDoUsuario } from "./streak.ts";
+import { computeUserStats } from "./stats.service.ts";
+import { findActiveDays } from "./streak.ts";
 import { longestStreak } from "../domain/streak.ts";
 import { findUserTrails } from "./trail.service.ts";
 
@@ -88,8 +88,8 @@ async function trilhasCompletadas(userId: string): Promise<Set<string>> {
 // Desbloqueia (idempotente) as conquistas cujo critério o usuário já atingiu.
 export async function verificarConquistas(userId: string) {
     const [stats, dias, desafios, completadas] = await Promise.all([
-        calcularEstatisticas(userId),
-        diasAtivosDoUsuario(userId),
+        computeUserStats(userId),
+        findActiveDays(userId),
         desafiosPorDificuldade(userId),
         trilhasCompletadas(userId),
     ]);

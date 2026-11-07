@@ -2,25 +2,25 @@ import { db } from "../../db.ts";
 import { certificates, users } from "../../schema.ts";
 import { desc, eq } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
-import { calcularEstatisticas } from "./stats.service.ts";
-import { streakDoUsuario } from "./streak.ts";
+import { computeUserStats } from "./stats.service.ts";
+import { findUserStreak } from "./streak.ts";
 import { conquistasDoUsuario } from "./achievement.service.ts";
 import { findUserTrails } from "./trail.service.ts";
 import { apoiadorAtivo } from "./apoiador.service.ts";
 
-// Só o que pode ser visto por qualquer pessoa: nada de email, telefone ou nascimento.
-export async function perfilPublico(username: string) {
-    const [usuario] = await db.select().from(users).where(eq(users.username, username));
-    if (!usuario || !usuario.username) {
-        throw new AppError(404, "Perfil não encontrado");
+// Only what anyone may see: no email, phone or birth date.
+export async function findPublicProfile(username: string) {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    if (!user || !user.username) {
+        throw new AppError(404, "profile.notFound");
     }
 
-    const [stats, streak, conquistas, trilhas, apoiador, certs] = await Promise.all([
-        calcularEstatisticas(usuario.id),
-        streakDoUsuario(usuario.id),
-        conquistasDoUsuario(usuario.id),
-        findUserTrails(usuario.id),
-        apoiadorAtivo(usuario.id),
+    const [stats, streak, achievements, userTrails, isSupporter, certs] = await Promise.all([
+        computeUserStats(user.id),
+        findUserStreak(user.id),
+        conquistasDoUsuario(user.id),
+        findUserTrails(user.id),
+        apoiadorAtivo(user.id),
         db
             .select({
                 code: certificates.code,
@@ -30,31 +30,31 @@ export async function perfilPublico(username: string) {
                 issuedAt: certificates.issuedAt,
             })
             .from(certificates)
-            .where(eq(certificates.userId, usuario.id))
+            .where(eq(certificates.userId, user.id))
             .orderBy(desc(certificates.issuedAt)),
     ]);
 
     return {
-        name: usuario.name,
-        username: usuario.username,
-        bio: usuario.bio,
-        location: usuario.location,
-        occupation: usuario.occupation,
-        languages: usuario.languages ?? [],
-        github: usuario.github,
-        linkedin: usuario.linkedin,
-        x: usuario.x,
-        avatarUrl: usuario.avatarUrl,
-        coverUrl: usuario.coverUrl,
-        memberSince: usuario.createdAt,
-        apoiador,
+        name: user.name,
+        username: user.username,
+        bio: user.bio,
+        location: user.location,
+        occupation: user.occupation,
+        languages: user.languages ?? [],
+        github: user.github,
+        linkedin: user.linkedin,
+        x: user.x,
+        avatarUrl: user.avatarUrl,
+        coverUrl: user.coverUrl,
+        memberSince: user.createdAt,
+        apoiador: isSupporter,
         xp: stats.xp,
         level: stats.level,
         lessonsCompleted: stats.lessonsCompleted,
         questionsCorrect: stats.questionsCorrect,
         challengesCompleted: stats.challengesCompleted,
         streak,
-        conquistas: conquistas
+        conquistas: achievements
             .filter((c) => c.earned)
             .map((c) => ({
                 id: c.id,
@@ -63,7 +63,7 @@ export async function perfilPublico(username: string) {
                 icon: c.icon,
                 earnedAt: c.earnedAt,
             })),
-        trilhas: trilhas.map((t) => ({
+        trilhas: userTrails.map((t) => ({
             name: t.name,
             trailLevel: t.trailLevel,
             totalLessons: t.totalLessons,

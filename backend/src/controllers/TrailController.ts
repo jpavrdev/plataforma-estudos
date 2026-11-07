@@ -18,7 +18,7 @@ import {
     grantAchievementSchema,
     glossaryTermSchema,
 } from "../schemas/trail.schemas.ts";
-import { resumoSemana } from "../services/streak.ts";
+import { summarizeWeek } from "../services/streak.ts";
 import { rankingGlobal } from "../services/ranking.ts";
 import { atividadeRecente } from "../services/activity.service.ts";
 import { buildTrailBook } from "../services/book.service.ts";
@@ -29,7 +29,7 @@ import {
     atualizarLinguagem,
     excluirLinguagem,
 } from "../services/language.service.ts";
-import { calcularEstatisticas, estatisticasPublicas } from "../services/stats.service.ts";
+import { computeUserStats, findPublicStats } from "../services/stats.service.ts";
 import {
     listarConquistas,
     criarConquista,
@@ -406,7 +406,7 @@ export const submitQuiz = async (req: Request, res: Response, next: NextFunction
 // The user's total XP: 50 per completed lesson + 10 per question answered right (the first time).
 export const getMyXp = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await calcularEstatisticas(req.userId!));
+        res.json(await computeUserStats(req.userId!));
     } catch (err) {
         next(err);
     }
@@ -415,7 +415,7 @@ export const getMyXp = async (req: Request, res: Response, next: NextFunction) =
 // Platform numbers for the public home page (no sign-in). Aggregates only.
 export const getPublicStats = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await estatisticasPublicas());
+        res.json(await findPublicStats());
     } catch (err) {
         next(err);
     }
@@ -475,7 +475,7 @@ export const getRanking = async (req: Request, res: Response, next: NextFunction
 // The user's streak + the last 7 days (for the home card).
 export const getMyStreak = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await resumoSemana(req.userId!));
+        res.json(await summarizeWeek(req.userId!));
     } catch (err) {
         next(err);
     }
