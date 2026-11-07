@@ -470,6 +470,13 @@
       "when": 1793897054198,
       "tag": "0066_user_locale",
       "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1793994569038,
+      "tag": "0067_otp_channel",
+      "breakpoints": true
     }
   ]
 }

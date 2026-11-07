@@ -42,17 +42,31 @@ const codeHash = (userId: string, codeType: CodeType, code: string) =>
 
 // 6-digit code. Only the hash is stored, with a single active code per user and
 // type. Returns null when the account cannot get another one now: less than a
-// minute since the last one, or the daily limit reached.
-async function createCode(userId: string, codeType: CodeType): Promise<string | null> {
+// minute since the last one on the same channel, or the daily limit reached.
+// The one-minute window is per channel (a channel switch must still deliver),
+// while the daily cap counts every channel together.
+async function createCode(
+    userId: string,
+    codeType: CodeType,
+    channel: string | null = null,
+): Promise<string | null> {
     const ofUser = and(eq(tokens.userId, userId), eq(tokens.type, codeType));
     const now = Date.now();
     // A code older than a day no longer counts toward the limit.
     await db.delete(tokens).where(and(ofUser, lt(tokens.expiredAt, new Date(now - DAY_MS))));
     const recent = await db
-        .select({ tokenHash: tokens.tokenHash, expiredAt: tokens.expiredAt })
+        .select({
+            tokenHash: tokens.tokenHash,
+            expiredAt: tokens.expiredAt,
+            channel: tokens.channel,
+        })
         .from(tokens)
         .where(ofUser);
-    const last = Math.max(0, ...recent.map((t) => t.expiredAt.getTime() - OTP_VALIDITY_MS));
+    const created = (code: { expiredAt: Date }) => code.expiredAt.getTime() - OTP_VALIDITY_MS;
+    // Codes without a channel (written before the column existed) block every
+    // channel: where they went is unknown.
+    const sameChannel = recent.filter((t) => t.channel === channel || t.channel === null);
+    const last = Math.max(0, ...sameChannel.map(created));
     if (now - last < OTP_INTERVAL_MS || recent.length >= MAX_OTPS_PER_DAY) {
         return null;
     }
@@ -75,6 +89,7 @@ async function createCode(userId: string, codeType: CodeType): Promise<string | 
             tokenHash: codeHash(userId, codeType, code),
             type: codeType,
             expiredAt: new Date(now + OTP_VALIDITY_MS),
+            channel,
         });
     });
     return code;
@@ -171,7 +186,8 @@ export const authService = {
         return resetToken;
     },
     // 6-digit code to reset the password, by email or WhatsApp.
-    createPasswordResetCode: (userId: string) => createCode(userId, "password_reset_otp"),
+    createPasswordResetCode: (userId: string, channel?: string | null) =>
+        createCode(userId, "password_reset_otp", channel ?? null),
     checkPasswordResetCode: (userId: string, otp: string) =>
         checkCode(userId, "password_reset_otp", otp),
     // Code to confirm the recovery phone, with the same limits.
