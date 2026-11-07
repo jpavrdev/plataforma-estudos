@@ -58,3 +58,33 @@ export function normalizarFormulasEmBloco(texto: string): string {
     })
     .join('\n');
 }
+
+const CIFRAO_DE_MOEDA = /(?<![\\\w])(R|US)\$(?=\s?\d)/g;
+const TRECHO_DE_CODIGO_INLINE = /(`[^`\n]*`)/;
+
+function escaparCifraoForaDeCodigoInline(linha: string): string {
+  return linha
+    .split(TRECHO_DE_CODIGO_INLINE)
+    .map((parte, i) => (i % 2 === 1 ? parte : parte.replace(CIFRAO_DE_MOEDA, '$1\\$')))
+    .join('');
+}
+
+export function escaparCifraoDeMoeda(texto: string): string {
+  if (!texto.includes('$')) return texto;
+
+  let emCerca = false;
+  return texto
+    .split('\n')
+    .map((linha) => {
+      if (/^\s*(```|~~~)/.test(linha)) {
+        emCerca = !emCerca;
+        return linha;
+      }
+      return emCerca ? linha : escaparCifraoForaDeCodigoInline(linha);
+    })
+    .join('\n');
+}
+
+export function prepararMarkdownComFormulas(texto: string): string {
+  return normalizarFormulasEmBloco(escaparCifraoDeMoeda(texto));
+}
