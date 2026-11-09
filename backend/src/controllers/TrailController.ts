@@ -19,8 +19,8 @@ import {
     glossaryTermSchema,
 } from "../schemas/trail.schemas.ts";
 import { summarizeWeek } from "../services/streak.ts";
-import { rankingGlobal } from "../services/ranking.ts";
-import { atividadeRecente } from "../services/activity.service.ts";
+import { globalRanking } from "../services/ranking.ts";
+import { recentActivity } from "../services/activity.service.ts";
 import { buildTrailBook } from "../services/book.service.ts";
 import { findTags, insertTag, editTag, removeTag } from "../services/tag.service.ts";
 import {
@@ -437,7 +437,7 @@ export const getUnseenAchievements = async (req: Request, res: Response, next: N
 // Derived recent activity: completed lessons + unlocked achievements.
 export const getMyActivity = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await atividadeRecente(req.userId!));
+        res.json(await recentActivity(req.userId!));
     } catch (err) {
         next(err);
     }
@@ -461,7 +461,7 @@ export const getCommunityAchievements = async (
 export const getRanking = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const period = String(req.query.period ?? "all");
-        res.json(await rankingGlobal(period, req.userId));
+        res.json(await globalRanking(period, req.userId));
     } catch (err) {
         next(err);
     }

@@ -55,9 +55,9 @@ export async function userLevels(userIds: string[]): Promise<Map<string, number>
     const challengeCounts = toMap(challenges);
     for (const id of userIds) {
         const xp = computeXp({
-            aulas: lessonCounts.get(id) ?? 0,
-            questoes: correctCounts.get(id) ?? 0,
-            desafiosXp: challengeCounts.get(id) ?? 0,
+            lessons: lessonCounts.get(id) ?? 0,
+            questions: correctCounts.get(id) ?? 0,
+            challengesXp: challengeCounts.get(id) ?? 0,
         });
         levels.set(id, levelFromXp(xp));
     }
