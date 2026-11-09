@@ -19,35 +19,32 @@ import type {
 import { AppError } from "../errors/AppError.ts";
 import { QUIZ_MIN_CORRECT } from "./quiz.service.ts";
 
-type DadosModulo = z.infer<typeof createModuleSchema>;
-type DadosAula = z.infer<typeof createLessonSchema>;
-type DadosQuestao = z.infer<typeof createQuestionSchema>;
-type DadosSalvarAula = z.infer<typeof saveLessonStudioSchema>;
+type ModuleData = z.infer<typeof createModuleSchema>;
+type LessonData = z.infer<typeof createLessonSchema>;
+type QuestionData = z.infer<typeof createQuestionSchema>;
+type SaveLessonData = z.infer<typeof saveLessonStudioSchema>;
 
-export async function criarModulo(trailId: string, dados: DadosModulo) {
-    const [trilha] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
-    if (!trilha) {
-        throw new AppError(404, "Trilha não encontrada");
+export async function insertModule(trailId: string, data: ModuleData) {
+    const [trail] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
+    if (!trail) {
+        throw new AppError(404, "trail.notFound");
     }
-    const [modulo] = await db
+    const [mod] = await db
         .insert(modules)
         .values({
             trailId,
-            title: dados.title,
-            position: dados.position,
+            title: data.title,
+            position: data.position,
         })
         .returning();
-    return modulo;
+    return mod;
 }
 
-// Exclui um módulo e todas as suas aulas (questões, opções e progresso).
-export async function excluirModulo(moduleId: string) {
-    const [modulo] = await db
-        .select({ id: modules.id })
-        .from(modules)
-        .where(eq(modules.id, moduleId));
-    if (!modulo) {
-        throw new AppError(404, "Módulo não encontrado");
+// Deletes a module and all of its lessons (questions, options and progress).
+export async function removeModule(moduleId: string) {
+    const [mod] = await db.select({ id: modules.id }).from(modules).where(eq(modules.id, moduleId));
+    if (!mod) {
+        throw new AppError(404, "module.notFound");
     }
     await db.transaction(async (tx) => {
         const ls = await tx
@@ -73,78 +70,78 @@ export async function excluirModulo(moduleId: string) {
     });
 }
 
-export async function criarAula(moduleId: string, dados: DadosAula) {
-    const [modulo] = await db
+export async function insertLesson(moduleId: string, data: LessonData) {
+    const [mod] = await db
         .select({ id: modules.id, trailId: modules.trailId })
         .from(modules)
         .where(eq(modules.id, moduleId));
-    if (!modulo) {
-        throw new AppError(404, "Módulo não encontrado");
+    if (!mod) {
+        throw new AppError(404, "module.notFound");
     }
-    const [aula] = await db
+    const [lesson] = await db
         .insert(lessons)
         .values({
-            trailId: modulo.trailId,
+            trailId: mod.trailId,
             moduleId,
-            title: dados.title,
-            content: dados.content,
-            position: dados.position,
+            title: data.title,
+            content: data.content,
+            position: data.position,
         })
         .returning();
-    return aula;
+    return lesson;
 }
 
-export async function criarQuestao(lessonId: string, dados: DadosQuestao) {
-    const [aula] = await db
+export async function insertQuestion(lessonId: string, data: QuestionData) {
+    const [lesson] = await db
         .select({ id: lessons.id })
         .from(lessons)
         .where(eq(lessons.id, lessonId));
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
     return db.transaction(async (tx) => {
-        const [questao] = await tx
+        const [question] = await tx
             .insert(questions)
             .values({
                 lessonId,
-                statement: dados.statement,
-                position: dados.position,
+                statement: data.statement,
+                position: data.position,
             })
             .returning();
 
         await tx.insert(questionOptions).values(
-            dados.options.map((o, i) => ({
-                questionId: questao.id,
+            data.options.map((o, i) => ({
+                questionId: question.id,
                 text: o.text,
                 isCorrect: o.isCorrect,
                 position: i + 1,
             })),
         );
-        return questao;
+        return question;
     });
 }
 
-// Publica ou despublica uma aula (admin).
-export async function definirPublicacao(lessonId: string, published: boolean) {
-    const [aula] = await db
+// Publishes or unpublishes a lesson (admin).
+export async function setPublished(lessonId: string, published: boolean) {
+    const [lesson] = await db
         .update(lessons)
         .set({ published })
         .where(eq(lessons.id, lessonId))
         .returning({ id: lessons.id, title: lessons.title, published: lessons.published });
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
-    return aula;
+    return lesson;
 }
 
-// Estrutura do curso para o editor: módulos ordenados com suas aulas (inclui rascunhos).
-export async function estruturaDoEstudio(trailId: string) {
-    const [trilha] = await db
+// Course structure for the editor: ordered modules with their lessons (drafts included).
+export async function studioStructure(trailId: string) {
+    const [trail] = await db
         .select({ id: trails.id, name: trails.name })
         .from(trails)
         .where(eq(trails.id, trailId));
-    if (!trilha) {
-        throw new AppError(404, "Trilha não encontrada");
+    if (!trail) {
+        throw new AppError(404, "trail.notFound");
     }
 
     const mods = await db
@@ -152,7 +149,7 @@ export async function estruturaDoEstudio(trailId: string) {
         .from(modules)
         .where(eq(modules.trailId, trailId))
         .orderBy(asc(modules.position));
-    const aulas = await db
+    const lessonRows = await db
         .select({
             id: lessons.id,
             moduleId: lessons.moduleId,
@@ -165,22 +162,22 @@ export async function estruturaDoEstudio(trailId: string) {
         .orderBy(asc(lessons.position));
 
     return {
-        id: trilha.id,
-        name: trilha.name,
+        id: trail.id,
+        name: trail.name,
         modules: mods.map((m) => ({
             id: m.id,
             title: m.title,
             position: m.position,
-            lessons: aulas.filter((a) => a.moduleId === m.id),
+            lessons: lessonRows.filter((a) => a.moduleId === m.id),
         })),
     };
 }
 
-// Aula completa para edição: inclui o gabarito e a dificuldade (só admin).
-export async function aulaParaEdicao(lessonId: string) {
-    const [aula] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+// Full lesson for editing: includes the answer key and difficulty (admin only).
+export async function lessonForEditing(lessonId: string) {
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
 
     const qs = await db
@@ -198,14 +195,15 @@ export async function aulaParaEdicao(lessonId: string) {
         : [];
 
     return {
-        id: aula.id,
-        moduleId: aula.moduleId,
-        title: aula.title,
-        content: aula.content,
+        id: lesson.id,
+        moduleId: lesson.moduleId,
+        title: lesson.title,
+        content: lesson.content,
         contentBlocks:
-            aula.contentBlocks ?? (aula.content ? [{ type: "text", value: aula.content }] : []),
-        published: aula.published,
-        position: aula.position,
+            lesson.contentBlocks ??
+            (lesson.content ? [{ type: "text", value: lesson.content }] : []),
+        published: lesson.published,
+        position: lesson.position,
         questions: qs.map((q) => ({
             id: q.id,
             statement: q.statement,
@@ -223,14 +221,14 @@ export async function aulaParaEdicao(lessonId: string) {
     };
 }
 
-// Exclui uma aula e tudo que depende dela.
-export async function excluirAula(lessonId: string) {
-    const [aula] = await db
+// Deletes a lesson and everything that depends on it.
+export async function removeLesson(lessonId: string) {
+    const [lesson] = await db
         .select({ id: lessons.id })
         .from(lessons)
         .where(eq(lessons.id, lessonId));
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
 
     await db.transaction(async (tx) => {
@@ -249,26 +247,29 @@ export async function excluirAula(lessonId: string) {
     });
 }
 
-// Converte o grid (JSON salvo pelo editor) em uma tabela markdown. 1ª linha = cabeçalho.
-function tabelaParaMarkdown(value: string): string {
+// Converts the grid (JSON saved by the editor) into a markdown table. 1st row = header.
+function tableToMarkdown(value: string): string {
     try {
         const grid = JSON.parse(value);
         if (!Array.isArray(grid) || grid.length === 0) return "";
-        const celula = (c: unknown) =>
-            String(c ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|").replace(/\n/g, " ");
-        const linha = (r: unknown[]) => "| " + r.map(celula).join(" | ") + " |";
-        const [cabecalho, ...corpo] = grid as unknown[][];
-        const separador = "| " + cabecalho.map(() => "---").join(" | ") + " |";
-        return [linha(cabecalho), separador, ...corpo.map(linha)].join("\n");
+        const cell = (c: unknown) =>
+            String(c ?? "")
+                .replace(/\\/g, "\\\\")
+                .replace(/\|/g, "\\|")
+                .replace(/\n/g, " ");
+        const row = (r: unknown[]) => "| " + r.map(cell).join(" | ") + " |";
+        const [header, ...body] = grid as unknown[][];
+        const separator = "| " + header.map(() => "---").join(" | ") + " |";
+        return [row(header), separator, ...body.map(row)].join("\n");
     } catch (e) {
-        console.error("tabelaParaMarkdown: valor inválido", e);
+        console.error("tableToMarkdown: invalid value", e);
         return "";
     }
 }
 
-// Serializa os blocos em markdown (fallback para o aluno e para conteúdo legado).
-function blocosParaMarkdown(blocos: { type: string; value: string }[]): string {
-    return blocos
+// Serializes blocks into markdown (fallback for the student and legacy content).
+function blocksToMarkdown(blocks: { type: string; value: string }[]): string {
+    return blocks
         .map((b) => {
             switch (b.type) {
                 case "code":
@@ -283,7 +284,7 @@ function blocosParaMarkdown(blocos: { type: string; value: string }[]): string {
                 case "video":
                     return `[Vídeo](${b.value})`;
                 case "table":
-                    return tabelaParaMarkdown(b.value);
+                    return tableToMarkdown(b.value);
                 default:
                     return b.value;
             }
@@ -291,25 +292,25 @@ function blocosParaMarkdown(blocos: { type: string; value: string }[]): string {
         .join("\n\n");
 }
 
-// Salva a aula inteira (título, blocos de conteúdo e questões de uma vez). Substitui
-// as questões por completo. Valida o conteúdo apenas quando vai publicar.
-export async function salvarAulaEstudio(lessonId: string, dados: DadosSalvarAula) {
-    const [aula] = await db
+// Saves the whole lesson (title, content blocks and questions at once). Replaces
+// the questions entirely. Validates the content only when publishing.
+export async function saveStudioLesson(lessonId: string, data: SaveLessonData) {
+    const [lesson] = await db
         .select({ id: lessons.id })
         .from(lessons)
         .where(eq(lessons.id, lessonId));
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
 
-    if (dados.published) {
-        if (dados.questions.length < QUIZ_MIN_CORRECT) {
+    if (data.published) {
+        if (data.questions.length < QUIZ_MIN_CORRECT) {
             throw new AppError(
                 400,
                 `Para publicar, a aula precisa de ao menos ${QUIZ_MIN_CORRECT} questões.`,
             );
         }
-        for (const [i, q] of dados.questions.entries()) {
+        for (const [i, q] of data.questions.entries()) {
             if (q.statement.trim().length < 3) {
                 throw new AppError(400, `Questão ${i + 1}: enunciado muito curto.`);
             }
@@ -326,14 +327,14 @@ export async function salvarAulaEstudio(lessonId: string, dados: DadosSalvarAula
     }
 
     await db.transaction(async (tx) => {
-        const blocos = dados.contentBlocks ?? [];
+        const blocks = data.contentBlocks ?? [];
         await tx
             .update(lessons)
             .set({
-                title: dados.title,
-                contentBlocks: blocos,
-                content: blocos.length ? blocosParaMarkdown(blocos) : null,
-                ...(dados.published === undefined ? {} : { published: dados.published }),
+                title: data.title,
+                contentBlocks: blocks,
+                content: blocks.length ? blocksToMarkdown(blocks) : null,
+                ...(data.published === undefined ? {} : { published: data.published }),
             })
             .where(eq(lessons.id, lessonId));
 
@@ -348,8 +349,8 @@ export async function salvarAulaEstudio(lessonId: string, dados: DadosSalvarAula
             await tx.delete(questions).where(inArray(questions.id, qIds));
         }
 
-        for (const [i, q] of dados.questions.entries()) {
-            const [nova] = await tx
+        for (const [i, q] of data.questions.entries()) {
+            const [created] = await tx
                 .insert(questions)
                 .values({
                     lessonId,
@@ -361,7 +362,7 @@ export async function salvarAulaEstudio(lessonId: string, dados: DadosSalvarAula
             if (q.options.length) {
                 await tx.insert(questionOptions).values(
                     q.options.map((o, oi) => ({
-                        questionId: nova.id,
+                        questionId: created.id,
                         text: o.text,
                         isCorrect: o.isCorrect,
                         position: oi + 1,
