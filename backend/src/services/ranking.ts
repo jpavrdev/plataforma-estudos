@@ -8,7 +8,7 @@ import {
     challengeSubmissions,
 } from "../../schema.ts";
 import { findAllStreaks, todayInSaoPaulo } from "./streak.ts";
-import { apoiadoresAtivos } from "./apoiador.service.ts";
+import { apoiadoresAtivos } from "./supporter.service.ts";
 import { computeXp, levelFromXp } from "../domain/xp.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por

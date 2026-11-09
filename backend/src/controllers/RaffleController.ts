@@ -4,7 +4,7 @@ import {
     createRaffleSchema,
     updateRaffleSchema,
     raffleEntrySchema,
-} from "../schemas/sorteio.schema.ts";
+} from "../schemas/raffle.schema.ts";
 import {
     activeRaffle,
     enterRaffle,
@@ -14,7 +14,7 @@ import {
     editRaffle,
     removeRaffle,
     drawRaffle,
-} from "../services/sorteio.service.ts";
+} from "../services/raffle.service.ts";
 
 export const getActiveRaffle = async (req: Request, res: Response, next: NextFunction) => {
     try {

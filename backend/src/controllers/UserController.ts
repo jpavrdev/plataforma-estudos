@@ -23,7 +23,7 @@ import {
     saveWeeklyGoal,
     removeWeeklyGoal,
 } from "../services/progress.service.ts";
-import { apoiadorAtivo } from "../services/apoiador.service.ts";
+import { apoiadorAtivo } from "../services/supporter.service.ts";
 import { userFeatures } from "../services/feature-flag.service.ts";
 import { pendingTwoFactor } from "../middlewares/auth.ts";
 

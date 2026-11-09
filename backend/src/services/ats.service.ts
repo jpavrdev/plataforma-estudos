@@ -6,8 +6,8 @@ import { db } from "../../db.ts";
 import { resumeAnalyses } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
 import { env } from "../config/env.ts";
-import { apoiadorAtivo } from "./apoiador.service.ts";
-import { analisar, type ItemResumo, type ResultadoAnalise } from "./ats/heuristica.ts";
+import { apoiadorAtivo } from "./supporter.service.ts";
+import { analisar, type ItemResumo, type ResultadoAnalise } from "./ats/heuristic.ts";
 import { iaAtiva, refinar, type Refinamento } from "./ats/ia.ts";
 import { extrairTextoPdf } from "./ats/pdf.ts";
 

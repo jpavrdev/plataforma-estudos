@@ -64,7 +64,7 @@ import {
     lessonForEditing,
     removeLesson,
     saveStudioLesson,
-} from "../services/estudio.service.ts";
+} from "../services/studio.service.ts";
 
 export const createTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
