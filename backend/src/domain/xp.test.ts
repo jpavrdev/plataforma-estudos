@@ -4,25 +4,27 @@ import { computeXp, levelFromXp } from "./xp.ts";
 
 describe("computeXp", () => {
     test("no progress is worth 0", () => {
-        assert.equal(computeXp({ aulas: 0, questoes: 0 }), 0);
+        assert.equal(computeXp({ lessons: 0, questions: 0 }), 0);
     });
 
     test("each completed lesson is worth 50", () => {
-        assert.equal(computeXp({ aulas: 1, questoes: 0 }), 50);
-        assert.equal(computeXp({ aulas: 3, questoes: 0 }), 150);
+        assert.equal(computeXp({ lessons: 1, questions: 0 }), 50);
+        assert.equal(computeXp({ lessons: 3, questions: 0 }), 150);
     });
 
     test("each right answer is worth 10", () => {
-        assert.equal(computeXp({ aulas: 0, questoes: 1 }), 10);
-        assert.equal(computeXp({ aulas: 0, questoes: 5 }), 50);
+        assert.equal(computeXp({ lessons: 0, questions: 1 }), 10);
+        assert.equal(computeXp({ lessons: 0, questions: 5 }), 50);
     });
 
     test("adds lessons and questions", () => {
-        assert.equal(computeXp({ aulas: 2, questoes: 4 }), 140);
+        assert.equal(computeXp({ lessons: 2, questions: 4 }), 140);
     });
 
     test("a lesson weighs more than a question", () => {
-        assert.ok(computeXp({ aulas: 1, questoes: 0 }) > computeXp({ aulas: 0, questoes: 1 }));
+        assert.ok(
+            computeXp({ lessons: 1, questions: 0 }) > computeXp({ lessons: 0, questions: 1 }),
+        );
     });
 });
 

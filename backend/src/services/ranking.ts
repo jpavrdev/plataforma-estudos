@@ -11,76 +11,76 @@ import { findAllStreaks, todayInSaoPaulo } from "./streak.ts";
 import { activeSupporters } from "./supporter.service.ts";
 import { computeXp, levelFromXp } from "../domain/xp.ts";
 
-// Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
-// usuário, quantas posições subiu (positivo) ou caiu (negativo) desde o último
-// snapshot anterior a hoje.
-export async function movimentacaoRanking(
-    hoje: string,
-    posicoesHoje: { id: string; position: number }[],
+// Saves the day's snapshot (once a day, on the first view) and returns, per
+// user, how many positions they climbed (positive) or dropped (negative) since
+// the last snapshot before today.
+export async function rankingMovement(
+    today: string,
+    todayPositions: { id: string; position: number }[],
 ): Promise<Map<string, number>> {
-    // Snapshot mais recente anterior a hoje (a base de comparação).
+    // Most recent snapshot before today (the comparison baseline).
     const prior = await db.execute(
-        sql`SELECT to_char(max(snapshot_date), 'YYYY-MM-DD') AS d FROM ranking_snapshots WHERE snapshot_date < ${hoje}::date`,
+        sql`SELECT to_char(max(snapshot_date), 'YYYY-MM-DD') AS d FROM ranking_snapshots WHERE snapshot_date < ${today}::date`,
     );
-    const ultimaData = (prior.rows as { d: string | null }[])[0]?.d ?? null;
+    const latestDate = (prior.rows as { d: string | null }[])[0]?.d ?? null;
 
-    const anterior = new Map<string, number>();
-    if (ultimaData) {
-        const linhas = await db
+    const previous = new Map<string, number>();
+    if (latestDate) {
+        const rows = await db
             .select({ userId: rankingSnapshots.userId, position: rankingSnapshots.position })
             .from(rankingSnapshots)
-            .where(eq(rankingSnapshots.snapshotDate, ultimaData));
-        for (const l of linhas) anterior.set(l.userId, l.position);
+            .where(eq(rankingSnapshots.snapshotDate, latestDate));
+        for (const r of rows) previous.set(r.userId, r.position);
     }
 
-    // Grava o snapshot de hoje só uma vez (primeira visita do dia).
-    const [existe] = await db
+    // Saves today's snapshot only once (first visit of the day).
+    const [exists] = await db
         .select({ id: rankingSnapshots.id })
         .from(rankingSnapshots)
-        .where(eq(rankingSnapshots.snapshotDate, hoje))
+        .where(eq(rankingSnapshots.snapshotDate, today))
         .limit(1);
-    if (!existe && posicoesHoje.length > 0) {
+    if (!exists && todayPositions.length > 0) {
         await db
             .insert(rankingSnapshots)
             .values(
-                posicoesHoje.map((p) => ({
+                todayPositions.map((p) => ({
                     userId: p.id,
                     position: p.position,
-                    snapshotDate: hoje,
+                    snapshotDate: today,
                 })),
             )
             .onConflictDoNothing();
     }
 
     const deltas = new Map<string, number>();
-    for (const p of posicoesHoje) {
-        const antes = anterior.get(p.id);
-        deltas.set(p.id, antes === undefined ? 0 : antes - p.position);
+    for (const p of todayPositions) {
+        const before = previous.get(p.id);
+        deltas.set(p.id, before === undefined ? 0 : before - p.position);
     }
     return deltas;
 }
 
-// Ranking global por XP. Liga e nível usam o XP total; o leaderboard usa o
-// período (week/month/all).
-export async function rankingGlobal(periodo: string, currentUserId: string | undefined) {
-    const dia = 24 * 60 * 60 * 1000;
-    const desde =
-        periodo === "week"
-            ? new Date(Date.now() - 7 * dia)
-            : periodo === "month"
-              ? new Date(Date.now() - 30 * dia)
+// Global ranking by XP. Badge and level use total XP; the leaderboard uses the
+// period (week/month/all).
+export async function globalRanking(period: string, currentUserId: string | undefined) {
+    const dayMs = 24 * 60 * 60 * 1000;
+    const since =
+        period === "week"
+            ? new Date(Date.now() - 7 * dayMs)
+            : period === "month"
+              ? new Date(Date.now() - 30 * dayMs)
               : null;
 
     const [
         usuarios,
-        aulasTot,
-        acertosTot,
-        desafiosTot,
-        aulasPer,
-        acertosPer,
-        desafiosPer,
+        lessonsTotal,
+        correctTotal,
+        challengesTotal,
+        lessonsPeriod,
+        correctPeriod,
+        challengesPeriod,
         streaks,
-        apoiadores,
+        supporters,
     ] = await Promise.all([
         db.select({ id: users.id, name: users.name, username: users.username }).from(users),
         db
@@ -97,62 +97,63 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
             .select({ userId: challengeSubmissions.userId, n: sum(challengeSubmissions.xpEarned) })
             .from(challengeSubmissions)
             .groupBy(challengeSubmissions.userId),
-        desde
+        since
             ? db
                   .select({ userId: lessonProgress.userId, n: count() })
                   .from(lessonProgress)
-                  .where(gte(lessonProgress.completedAt, desde))
+                  .where(gte(lessonProgress.completedAt, since))
                   .groupBy(lessonProgress.userId)
             : Promise.resolve(null),
-        desde
+        since
             ? db
                   .select({ userId: questionAnswers.userId, n: count() })
                   .from(questionAnswers)
                   .where(
-                      // Pela data do primeiro acerto, e não pela da última tentativa:
-                      // quem refez uma questão antiga não deve reaparecer no ranking
-                      // do período como se tivesse acertado agora.
+                      // By the date of the first correct answer, not the last
+                      // attempt: someone who redid an old question must not
+                      // reappear in the period ranking as if they had just
+                      // answered it.
                       and(
                           isNotNull(questionAnswers.acertouEm),
-                          gte(questionAnswers.acertouEm, desde),
+                          gte(questionAnswers.acertouEm, since),
                       ),
                   )
                   .groupBy(questionAnswers.userId)
             : Promise.resolve(null),
-        desde
+        since
             ? db
                   .select({
                       userId: challengeSubmissions.userId,
                       n: sum(challengeSubmissions.xpEarned),
                   })
                   .from(challengeSubmissions)
-                  .where(gte(challengeSubmissions.createdAt, desde))
+                  .where(gte(challengeSubmissions.createdAt, since))
                   .groupBy(challengeSubmissions.userId)
             : Promise.resolve(null),
         findAllStreaks(),
         activeSupporters(),
     ]);
 
-    // n vem como number (count) ou string (sum de xp); Number() normaliza os dois.
-    const paraMapa = (arr: { userId: string; n: number | string | null }[] | null) =>
+    // n comes back as number (count) or string (sum of xp); Number() normalizes both.
+    const toMap = (arr: { userId: string; n: number | string | null }[] | null) =>
         new Map((arr ?? []).map((a) => [a.userId, Number(a.n ?? 0)]));
-    const at = paraMapa(aulasTot),
-        acT = paraMapa(acertosTot),
-        dT = paraMapa(desafiosTot);
-    const aP = desde ? paraMapa(aulasPer) : at;
-    const acP = desde ? paraMapa(acertosPer) : acT;
-    const dP = desde ? paraMapa(desafiosPer) : dT;
+    const lessonsAll = toMap(lessonsTotal),
+        correctAll = toMap(correctTotal),
+        challengesAll = toMap(challengesTotal);
+    const lessonsPer = since ? toMap(lessonsPeriod) : lessonsAll;
+    const correctPer = since ? toMap(correctPeriod) : correctAll;
+    const challengesPer = since ? toMap(challengesPeriod) : challengesAll;
 
     const base = usuarios.map((u) => {
         const totalXp = computeXp({
-            aulas: at.get(u.id) ?? 0,
-            questoes: acT.get(u.id) ?? 0,
-            desafiosXp: dT.get(u.id) ?? 0,
+            lessons: lessonsAll.get(u.id) ?? 0,
+            questions: correctAll.get(u.id) ?? 0,
+            challengesXp: challengesAll.get(u.id) ?? 0,
         });
         const periodXp = computeXp({
-            aulas: aP.get(u.id) ?? 0,
-            questoes: acP.get(u.id) ?? 0,
-            desafiosXp: dP.get(u.id) ?? 0,
+            lessons: lessonsPer.get(u.id) ?? 0,
+            questions: correctPer.get(u.id) ?? 0,
+            challengesXp: challengesPer.get(u.id) ?? 0,
         });
         return {
             id: u.id,
@@ -162,32 +163,32 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
             periodXp,
             level: levelFromXp(totalXp),
             streak: streaks.get(u.id) ?? 0,
-            apoiador: apoiadores.has(u.id),
+            apoiador: supporters.has(u.id),
             you: u.id === currentUserId,
         };
     });
-    const ordenados = [...base]
+    const sorted = [...base]
         .sort((a, b) => b.periodXp - a.periodXp)
         .map((u, i) => ({ ...u, position: i + 1 }));
-    // Movimentação é calculada sobre o ranking geral (XP total).
-    const ordemGeral = [...base]
+    // Movement is computed over the overall ranking (total XP).
+    const overallOrder = [...base]
         .sort((a, b) => b.totalXp - a.totalXp)
         .map((u, i) => ({ id: u.id, position: i + 1 }));
-    const deltas = await movimentacaoRanking(todayInSaoPaulo(), ordemGeral);
+    const deltas = await rankingMovement(todayInSaoPaulo(), overallOrder);
 
-    const meu = ordenados.find((u) => u.you);
-    const me = meu
+    const mine = sorted.find((u) => u.you);
+    const me = mine
         ? {
-              position: meu.position,
-              username: meu.username,
-              xp: meu.periodXp,
-              totalXp: meu.totalXp,
-              level: meu.level,
-              streak: meu.streak,
-              delta: deltas.get(meu.id) ?? 0,
+              position: mine.position,
+              username: mine.username,
+              xp: mine.periodXp,
+              totalXp: mine.totalXp,
+              level: mine.level,
+              streak: mine.streak,
+              delta: deltas.get(mine.id) ?? 0,
           }
         : null;
-    const rows = ordenados.slice(0, 20).map((u) => ({
+    const rows = sorted.slice(0, 20).map((u) => ({
         position: u.position,
         name: u.name,
         username: u.username,

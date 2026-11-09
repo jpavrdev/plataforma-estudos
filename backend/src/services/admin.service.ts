@@ -210,7 +210,11 @@ export async function crmUsers(
             desafios: r.desafios as number,
             conquistas: r.conquistas as number,
             questoesCertas: questoes,
-            xp: computeXp({ aulas, questoes, desafiosXp: r.desafios_xp as number }),
+            xp: computeXp({
+                lessons: aulas,
+                questions: questoes,
+                challengesXp: r.desafios_xp as number,
+            }),
         };
     });
 

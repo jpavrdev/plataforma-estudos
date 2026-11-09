@@ -2,16 +2,16 @@ import { db } from "../../db.ts";
 import { lessonProgress, lessons, userAchievements, achievements } from "../../schema.ts";
 import { eq, and, desc } from "drizzle-orm";
 
-// Atividades recentes derivadas: aulas concluídas + conquistas desbloqueadas.
-export async function atividadeRecente(userId: string) {
-    const aulas = await db
+// Derived recent activity: completed lessons + unlocked achievements.
+export async function recentActivity(userId: string) {
+    const completed = await db
         .select({ at: lessonProgress.completedAt, title: lessons.title })
         .from(lessonProgress)
         .innerJoin(lessons, eq(lessons.id, lessonProgress.lessonId))
         .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.manual, false)))
         .orderBy(desc(lessonProgress.completedAt))
         .limit(15);
-    const conquistas = await db
+    const unlocked = await db
         .select({
             at: userAchievements.earnedAt,
             name: achievements.name,
@@ -23,13 +23,13 @@ export async function atividadeRecente(userId: string) {
         .orderBy(desc(userAchievements.earnedAt))
         .limit(15);
     return [
-        ...aulas.map((a) => ({
+        ...completed.map((a) => ({
             type: "lesson",
             icon: "check",
             text: `Concluiu a aula "${a.title}"`,
             at: a.at,
         })),
-        ...conquistas.map((c) => ({
+        ...unlocked.map((c) => ({
             type: "achievement",
             icon: c.icon,
             text: `Desbloqueou "${c.name}"`,
