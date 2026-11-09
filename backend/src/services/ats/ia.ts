@@ -1,26 +1,27 @@
-// Camada de IA do analisador. Nunca produz nota: reescreve as sugestões e revisa
-// as palavras-chave de fronteira. Qualquer falha vira null e a análise segue com
-// o resultado da heurística.
+// AI layer of the analyzer. Never produces the score: it rewrites the
+// suggestions and reviews the boundary keywords. Any failure becomes null and
+// the analysis carries on with the heuristic result.
 //
-// ATS_IA_MODO escolhe o transporte. "cli" chama o Claude Code headless pela
-// assinatura da máquina, então só vale local, fora do container. "api" fala o
-// protocolo da Anthropic e é o modo de produção; com ATS_API_BASE_URL ele aponta
-// para outro provedor que exponha o mesmo formato, como o DeepSeek.
+// ATS_IA_MODO picks the transport. "cli" calls Claude Code headless through the
+// machine's subscription, so it only works locally, outside the container.
+// "api" speaks the Anthropic protocol and is the production mode; with
+// ATS_API_BASE_URL it points at another provider exposing the same format,
+// such as DeepSeek.
 
 import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "../../config/env.ts";
-import type { Prioridade, ResultadoAnalise, Sugestao } from "./heuristic.ts";
+import type { Priority, AnalysisResult, Suggestion } from "./heuristic.ts";
 
-export interface Refinamento {
-    sugestoes: Sugestao[];
+export interface Refinement {
+    sugestoes: Suggestion[];
     encontradas: string[];
     parciais: string[];
     ausentes: string[];
 }
 
-const INSTRUCOES = `Você é um recrutador técnico brasileiro que revisa currículos para vagas de tecnologia e conhece como um ATS lê um currículo.
+const INSTRUCTIONS = `Você é um recrutador técnico brasileiro que revisa currículos para vagas de tecnologia e conhece como um ATS lê um currículo.
 
 Recebe uma vaga, o texto de um currículo e o resultado de uma análise automática (nota, palavras-chave já classificadas e sugestões iniciais).
 
@@ -46,7 +47,7 @@ Como escrever: frase direta, do jeito que uma pessoa falaria. Nada de emoji, de 
 Não recalcule a nota. Responda só com o objeto JSON, sem texto em volta:
 {"sugestoes":[{"prioridade":"alta|media|baixa","titulo":"...","texto":"..."}],"encontradas":["..."],"parciais":["..."],"ausentes":["..."]}`;
 
-const ESQUEMA = {
+const SCHEMA = {
     type: "object",
     properties: {
         sugestoes: {
@@ -70,37 +71,37 @@ const ESQUEMA = {
     additionalProperties: false,
 } as const;
 
-export function iaAtiva(): boolean {
+export function aiEnabled(): boolean {
     if (env.ATS_IA_MODO === "cli") return true;
     return env.ATS_IA_MODO === "api" && Boolean(env.ATS_API_KEY);
 }
 
-export async function refinar(
-    vaga: string,
-    curriculo: string,
-    base: ResultadoAnalise,
-): Promise<Refinamento | null> {
-    if (!iaAtiva()) return null;
+export async function refine(
+    job: string,
+    resume: string,
+    base: AnalysisResult,
+): Promise<Refinement | null> {
+    if (!aiEnabled()) return null;
 
-    const mensagem = montarMensagem(vaga, curriculo, base);
+    const message = buildMessage(job, resume, base);
     try {
-        const texto = env.ATS_IA_MODO === "cli" ? await viaCli(mensagem) : await viaApi(mensagem);
-        return texto ? interpretar(texto) : null;
+        const text = env.ATS_IA_MODO === "cli" ? await viaCli(message) : await viaApi(message);
+        return text ? parse(text) : null;
     } catch (err) {
-        console.error("Refinamento da análise de currículo falhou:", err);
+        console.error("Resume analysis refinement failed:", err);
         return null;
     }
 }
 
-function montarMensagem(vaga: string, curriculo: string, base: ResultadoAnalise): string {
+function buildMessage(job: string, resume: string, base: AnalysisResult): string {
     const sugestoes = base.sugestoes
         .map((s) => `- [${s.prioridade}] ${s.titulo}: ${s.texto}`)
         .join("\n");
     return `=== VAGA ===
-${vaga}
+${job}
 
 === CURRÍCULO ===
-${curriculo}
+${resume}
 
 === ANÁLISE AUTOMÁTICA ===
 Nota geral: ${base.score}
@@ -111,102 +112,103 @@ Sugestões iniciais:
 ${sugestoes}`;
 }
 
-let cliente: Anthropic | null = null;
+let client: Anthropic | null = null;
 
-async function viaApi(mensagem: string): Promise<string | null> {
-    cliente ??= new Anthropic({
+async function viaApi(message: string): Promise<string | null> {
+    client ??= new Anthropic({
         apiKey: env.ATS_API_KEY,
         baseURL: env.ATS_API_BASE_URL,
         timeout: env.ATS_TIMEOUT_S * 1000,
     });
 
-    // Fora da Anthropic, o endpoint compatível costuma ignorar ou recusar esses
-    // dois: o DeepSeek só aceita `effort` em output_config e já vem com o próprio
-    // modo de raciocínio ligado. Sem o schema a saída deixa de ser JSON garantido,
-    // e é o parser tolerante (o mesmo do modo cli) que segura.
+    // Outside Anthropic, the compatible endpoint usually ignores or rejects
+    // these two: DeepSeek only accepts `effort` in output_config and already
+    // ships with its own reasoning mode on. Without the schema the output is no
+    // longer guaranteed JSON, and it is the tolerant parser (the same one as
+    // cli mode) that holds the line.
     let hostApiBaseUrl: string;
     try {
         hostApiBaseUrl = new URL(env.ATS_API_BASE_URL).hostname.toLowerCase();
     } catch {
         hostApiBaseUrl = "";
     }
-    const soAnthropic =
+    const anthropicOnly =
         hostApiBaseUrl === "api.anthropic.com"
             ? {
                   thinking: { type: "adaptive" as const },
-                  output_config: { format: { type: "json_schema" as const, schema: ESQUEMA } },
+                  output_config: { format: { type: "json_schema" as const, schema: SCHEMA } },
               }
             : {};
 
-    const resposta = await cliente.messages.create({
+    const response = await client.messages.create({
         model: env.ATS_MODELO,
         max_tokens: 8000,
-        // As instruções são idênticas em toda análise; o cache corta o custo delas.
-        system: [{ type: "text", text: INSTRUCOES, cache_control: { type: "ephemeral" } }],
-        messages: [{ role: "user", content: mensagem }],
-        ...soAnthropic,
+        // The instructions are identical on every analysis; caching cuts their cost.
+        system: [{ type: "text", text: INSTRUCTIONS, cache_control: { type: "ephemeral" } }],
+        messages: [{ role: "user", content: message }],
+        ...anthropicOnly,
     });
 
-    if (resposta.stop_reason === "refusal") {
-        console.error("Refinamento recusado pelo modelo:", resposta.stop_details);
+    if (response.stop_reason === "refusal") {
+        console.error("Refinement refused by the model:", response.stop_details);
         return null;
     }
-    const bloco = resposta.content.find((b) => b.type === "text");
-    return bloco?.type === "text" ? bloco.text : null;
+    const block = response.content.find((b) => b.type === "text");
+    return block?.type === "text" ? block.text : null;
 }
 
-function viaCli(mensagem: string): Promise<string | null> {
+function viaCli(message: string): Promise<string | null> {
     return new Promise((resolve) => {
         const args = ["-p", "--output-format", "json"];
         if (env.ATS_MODELO_CLI) args.push("--model", env.ATS_MODELO_CLI);
 
-        // cwd neutro: de dentro do projeto o CLI carregaria o CLAUDE.md do repositório.
-        const processo = spawn("claude", args, { cwd: tmpdir(), stdio: ["pipe", "pipe", "pipe"] });
+        // neutral cwd: from inside the project the CLI would load the repo's CLAUDE.md.
+        const child = spawn("claude", args, { cwd: tmpdir(), stdio: ["pipe", "pipe", "pipe"] });
 
-        let saida = "";
-        let erro = "";
-        const prazo = setTimeout(() => processo.kill("SIGKILL"), env.ATS_TIMEOUT_S * 1000);
+        let output = "";
+        let errText = "";
+        const timer = setTimeout(() => child.kill("SIGKILL"), env.ATS_TIMEOUT_S * 1000);
 
-        processo.stdout.on("data", (d) => (saida += d));
-        processo.stderr.on("data", (d) => (erro += d));
-        processo.on("error", (e) => {
-            clearTimeout(prazo);
-            console.error("Não foi possível executar o Claude Code:", e.message);
+        child.stdout.on("data", (d) => (output += d));
+        child.stderr.on("data", (d) => (errText += d));
+        child.on("error", (e) => {
+            clearTimeout(timer);
+            console.error("Could not run Claude Code:", e.message);
             resolve(null);
         });
-        processo.on("close", (codigo) => {
-            clearTimeout(prazo);
-            if (codigo !== 0) {
-                console.error(`Claude Code saiu com código ${codigo}:`, erro.slice(0, 300));
+        child.on("close", (code) => {
+            clearTimeout(timer);
+            if (code !== 0) {
+                console.error(`Claude Code exited with code ${code}:`, errText.slice(0, 300));
                 return resolve(null);
             }
-            resolve(extrairResultadoCli(saida));
+            resolve(extractCliResult(output));
         });
 
-        processo.stdin.end(`${INSTRUCOES}\n\n${mensagem}`);
+        child.stdin.end(`${INSTRUCTIONS}\n\n${message}`);
     });
 }
 
-// O modo headless embrulha a resposta num envelope; o texto vem em "result".
-function extrairResultadoCli(saida: string): string | null {
-    if (!saida.trim()) return null;
+// Headless mode wraps the answer in an envelope; the text lives in "result".
+function extractCliResult(output: string): string | null {
+    if (!output.trim()) return null;
     try {
-        const envelope = JSON.parse(saida) as { is_error?: boolean; result?: unknown };
+        const envelope = JSON.parse(output) as { is_error?: boolean; result?: unknown };
         if (envelope.is_error) return null;
         return typeof envelope.result === "string" ? envelope.result : null;
     } catch {
-        return saida;
+        return output;
     }
 }
 
-const PRIORIDADES = new Set<Prioridade>(["alta", "media", "baixa"]);
+const PRIORITIES = new Set<Priority>(["alta", "media", "baixa"]);
 
-// O prompt pede para não usar travessão nem emoji, mas nem todo modelo obedece.
-// Aqui a regra deixa de depender disso.
-function limpar(texto: string): string {
+// The prompt asks for no dash and no emoji, but not every model obeys.
+// Here the rule stops depending on that.
+function clean(text: string): string {
     return (
-        texto
-            // Entre números é faixa ("10–20", "2h–35min"), não pontuação: vira hífen.
+        text
+            // Between numbers it is a range ("10–20", "2h–35min"), not punctuation: becomes a hyphen.
             .replace(/(\d\p{L}*)\s*[—–]\s*(\d)/gu, "$1-$2")
             .replace(/\s*[—–]\s*/g, ", ")
             .replace(/\p{Extended_Pictographic}/gu, "")
@@ -216,42 +218,42 @@ function limpar(texto: string): string {
     );
 }
 
-// Recorta do primeiro { ao último }: o modo api devolve JSON puro pelo schema,
-// mas o cli pode vir com prosa em volta.
-function interpretar(texto: string): Refinamento | null {
-    const inicio = texto.indexOf("{");
-    const fim = texto.lastIndexOf("}");
-    if (inicio < 0 || fim <= inicio) return null;
+// Cuts from the first { to the last }: api mode returns pure JSON via the schema,
+// but cli can come with prose around it.
+function parse(text: string): Refinement | null {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start < 0 || end <= start) return null;
 
-    let bruto: Record<string, unknown>;
+    let raw: Record<string, unknown>;
     try {
-        bruto = JSON.parse(texto.slice(inicio, fim + 1)) as Record<string, unknown>;
+        raw = JSON.parse(text.slice(start, end + 1)) as Record<string, unknown>;
     } catch (err) {
-        console.error("Resposta do refinamento não é JSON válido:", err);
+        console.error("Refinement response is not valid JSON:", err);
         return null;
     }
 
-    const sugestoes = (Array.isArray(bruto.sugestoes) ? bruto.sugestoes : [])
+    const sugestoes = (Array.isArray(raw.sugestoes) ? raw.sugestoes : [])
         .map((s) => s as Record<string, unknown>)
         .filter((s) => typeof s.titulo === "string" && s.titulo.trim().length > 0)
-        .map<Sugestao>((s) => ({
-            prioridade: PRIORIDADES.has(s.prioridade as Prioridade)
-                ? (s.prioridade as Prioridade)
+        .map<Suggestion>((s) => ({
+            prioridade: PRIORITIES.has(s.prioridade as Priority)
+                ? (s.prioridade as Priority)
                 : "media",
-            titulo: limpar(String(s.titulo)),
-            texto: typeof s.texto === "string" ? limpar(s.texto) : "",
+            titulo: clean(String(s.titulo)),
+            texto: typeof s.texto === "string" ? clean(s.texto) : "",
         }))
         .filter((s) => s.titulo.length > 0)
         .slice(0, 5);
 
     return {
         sugestoes,
-        encontradas: listaDeTextos(bruto.encontradas),
-        parciais: listaDeTextos(bruto.parciais),
-        ausentes: listaDeTextos(bruto.ausentes),
+        encontradas: stringList(raw.encontradas),
+        parciais: stringList(raw.parciais),
+        ausentes: stringList(raw.ausentes),
     };
 }
 
-function listaDeTextos(valor: unknown): string[] {
-    return Array.isArray(valor) ? valor.filter((v): v is string => typeof v === "string") : [];
+function stringList(value: unknown): string[] {
+    return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
 }

@@ -1,113 +1,110 @@
-// Motor determinístico do analisador: mesma entrada, mesma saída, sem rede.
-// É ele quem produz a nota; a IA, quando ligada, só reescreve as sugestões e
-// revisa a classificação das palavras-chave.
+// Deterministic engine of the analyzer: same input, same output, no network.
+// It is what produces the score; the AI, when enabled, only rewrites the
+// suggestions and reviews the keyword classification.
 
-import { TERMOS } from "./dictionary.ts";
+import { KEYWORDS } from "./dictionary.ts";
 import {
-    PALAVRAS_VAZIAS,
-    contemPalavra,
-    contemSolto,
-    normalizar,
-    tokenizar,
-    tokenizarOriginal,
+    STOPWORDS,
+    containsWord,
+    containsLoose,
+    normalize,
+    tokenize,
+    tokenizeOriginal,
 } from "./normalize.ts";
 
-export type Tom = "bom" | "atencao" | "ruim";
-export type Prioridade = "alta" | "media" | "baixa";
-export type StatusPalavra = "encontrada" | "parcial" | "ausente";
-export type Motor = "heuristica" | "ia";
+export type Tone = "bom" | "atencao" | "ruim";
+export type Priority = "alta" | "media" | "baixa";
+export type KeywordStatus = "encontrada" | "parcial" | "ausente";
+export type Engine = "heuristica" | "ia";
 
-export interface ItemResumo {
+export interface SummaryItem {
     rotulo: string;
     valor: string;
-    tom: Tom;
+    tom: Tone;
     icone: string;
 }
 
-export interface ItemDetalhe {
+export interface DetailItem {
     rotulo: string;
     icone: string;
     pct: number;
 }
 
-export interface Sugestao {
-    prioridade: Prioridade;
+export interface Suggestion {
+    prioridade: Priority;
     titulo: string;
     texto: string;
 }
 
-export interface ResultadoAnalise {
+export interface AnalysisResult {
     score: number;
     veredito: string;
     descricao: string;
-    motor: Motor;
-    resumo: ItemResumo[];
-    detalhe: ItemDetalhe[];
+    motor: Engine;
+    resumo: SummaryItem[];
+    detalhe: DetailItem[];
     encontradas: string[];
     parciais: string[];
     ausentes: string[];
-    sugestoes: Sugestao[];
+    sugestoes: Suggestion[];
 }
 
-// Somam 1.
-const PESO_PALAVRAS = 0.35;
-const PESO_TECNICO = 0.2;
-const PESO_EXPERIENCIA = 0.2;
-const PESO_FORMACAO = 0.1;
-const PESO_FORMATACAO = 0.15;
+// They add up to 1.
+const WEIGHT_KEYWORDS = 0.35;
+const WEIGHT_TECHNICAL = 0.2;
+const WEIGHT_EXPERIENCE = 0.2;
+const WEIGHT_EDUCATION = 0.1;
+const WEIGHT_FORMATTING = 0.15;
 
-const MAX_PALAVRAS = 21;
+const MAX_KEYWORDS = 21;
 
-const ORDEM_PRIORIDADE: Record<Prioridade, number> = { alta: 0, media: 1, baixa: 2 };
+const PRIORITY_ORDER: Record<Priority, number> = { alta: 0, media: 1, baixa: 2 };
 
-interface Candidata {
-    exibicao: string;
-    apelidos: string[];
-    tecnica: boolean;
+interface Candidate {
+    display: string;
+    aliases: string[];
+    technical: boolean;
 }
 
-interface Classificada extends Candidata {
-    status: StatusPalavra;
+interface Classified extends Candidate {
+    status: KeywordStatus;
 }
 
-export function analisar(vaga: string, curriculo: string): ResultadoAnalise {
-    const vagaNorm = normalizar(vaga ?? "");
-    const curriculoNorm = normalizar(curriculo ?? "");
+export function analyze(job: string, resume: string): AnalysisResult {
+    const jobNorm = normalize(job ?? "");
+    const resumeNorm = normalize(resume ?? "");
 
-    const classificadas = extrairPalavras(vaga ?? "", vagaNorm).map((c) => ({
+    const classified = extractKeywords(job ?? "", jobNorm).map((c) => ({
         ...c,
-        status: classificar(c, curriculoNorm),
+        status: classify(c, resumeNorm),
     }));
 
-    const encontradas = classificadas
-        .filter((k) => k.status === "encontrada")
-        .map((k) => k.exibicao);
-    const parciais = classificadas.filter((k) => k.status === "parcial").map((k) => k.exibicao);
-    const ausentes = classificadas.filter((k) => k.status === "ausente").map((k) => k.exibicao);
+    const encontradas = classified.filter((k) => k.status === "encontrada").map((k) => k.display);
+    const parciais = classified.filter((k) => k.status === "parcial").map((k) => k.display);
+    const ausentes = classified.filter((k) => k.status === "ausente").map((k) => k.display);
 
-    const pctPalavras = coberturaPct(classificadas);
-    const pctTecnico = coberturaPct(classificadas.filter((k) => k.tecnica));
-    const experiencia = notaExperiencia(curriculo ?? "", curriculoNorm);
-    const pctFormacao = notaFormacao(curriculoNorm);
-    const formatacao = notaFormatacao(curriculo ?? "", curriculoNorm);
+    const keywordsPct = coveragePct(classified);
+    const technicalPct = coveragePct(classified.filter((k) => k.technical));
+    const experience = scoreExperience(resume ?? "", resumeNorm);
+    const educationPct = scoreEducation(resumeNorm);
+    const formatting = scoreFormatting(resume ?? "", resumeNorm);
 
     const score = Math.min(
         100,
         Math.max(
             0,
             Math.round(
-                pctPalavras * PESO_PALAVRAS +
-                    pctTecnico * PESO_TECNICO +
-                    experiencia.pct * PESO_EXPERIENCIA +
-                    pctFormacao * PESO_FORMACAO +
-                    formatacao.pct * PESO_FORMATACAO,
+                keywordsPct * WEIGHT_KEYWORDS +
+                    technicalPct * WEIGHT_TECHNICAL +
+                    experience.pct * WEIGHT_EXPERIENCE +
+                    educationPct * WEIGHT_EDUCATION +
+                    formatting.pct * WEIGHT_FORMATTING,
             ),
         ),
     );
 
-    const { veredito, descricao } = vereditoPara(score);
-    const razaoPalavras =
-        classificadas.length === 0 ? 0 : encontradas.length / classificadas.length;
+    const { veredito, descricao } = verdictFor(score);
+    const keywordRatio = classified.length === 0 ? 0 : encontradas.length / classified.length;
 
     return {
         score,
@@ -117,267 +114,266 @@ export function analisar(vaga: string, curriculo: string): ResultadoAnalise {
         resumo: [
             {
                 rotulo: "Palavras-chave",
-                valor: `${encontradas.length}/${classificadas.length}`,
-                tom: tomPorRazao(razaoPalavras),
+                valor: `${encontradas.length}/${classified.length}`,
+                tom: toneByRatio(keywordRatio),
                 icone: "key",
             },
             {
                 rotulo: "Formatação ATS",
-                valor: formatacao.rotulo,
-                tom: tomPorPct(formatacao.pct),
+                valor: formatting.label,
+                tom: toneByPct(formatting.pct),
                 icone: "layout",
             },
             {
                 rotulo: "Verbos de ação",
-                valor: experiencia.rotuloVerbos,
-                tom: experiencia.tomVerbos,
+                valor: experience.verbsLabel,
+                tom: experience.verbsTone,
                 icone: "bolt",
             },
         ],
         detalhe: [
-            { rotulo: "Palavras-chave da vaga", icone: "key", pct: pctPalavras },
-            { rotulo: "Experiência profissional", icone: "briefcase", pct: experiencia.pct },
-            { rotulo: "Habilidades técnicas", icone: "code", pct: pctTecnico },
-            { rotulo: "Formação acadêmica", icone: "cap", pct: pctFormacao },
-            { rotulo: "Formatação e legibilidade ATS", icone: "layout", pct: formatacao.pct },
+            { rotulo: "Palavras-chave da vaga", icone: "key", pct: keywordsPct },
+            { rotulo: "Experiência profissional", icone: "briefcase", pct: experience.pct },
+            { rotulo: "Habilidades técnicas", icone: "code", pct: technicalPct },
+            { rotulo: "Formação acadêmica", icone: "cap", pct: educationPct },
+            { rotulo: "Formatação e legibilidade ATS", icone: "layout", pct: formatting.pct },
         ],
         encontradas,
         parciais,
         ausentes,
-        sugestoes: montarSugestoes(classificadas, curriculoNorm, experiencia, formatacao.pct),
+        sugestoes: buildSuggestions(classified, resumeNorm, experience, formatting.pct),
     };
 }
 
-function extrairPalavras(vagaBruta: string, vagaNorm: string): Candidata[] {
-    const candidatas: Candidata[] = [];
-    const vistas = new Set<string>();
+function extractKeywords(rawJob: string, jobNorm: string): Candidate[] {
+    const candidates: Candidate[] = [];
+    const seen = new Set<string>();
 
-    for (const termo of TERMOS) {
-        if (!termo.apelidos.some((a) => contemPalavra(vagaNorm, a))) continue;
-        const chave = normalizar(termo.exibicao);
-        if (vistas.has(chave)) continue;
-        vistas.add(chave);
-        candidatas.push({
-            exibicao: termo.exibicao,
-            apelidos: termo.apelidos,
-            tecnica: termo.tecnica,
+    for (const term of KEYWORDS) {
+        if (!term.aliases.some((a) => containsWord(jobNorm, a))) continue;
+        const key = normalize(term.display);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        candidates.push({
+            display: term.display,
+            aliases: term.aliases,
+            technical: term.technical,
         });
     }
 
-    // Fallback para o que o dicionário não cobre. Só passa ALL-CAPS (OWASP) ou
-    // camelCase (MongoDB): palavra comum, mesmo Capitalizada por começar frase, fica fora.
-    for (const linha of vagaBruta.split(/[\r\n]+/)) {
-        if (candidatas.length >= MAX_PALAVRAS) break;
-        const semMarcador = linha.replace(/^[\s\-*•·–]+/, "");
-        if (semMarcador === linha.trimStart()) continue; // não é linha de bullet
+    // Fallback for what the dictionary does not cover. Only ALL-CAPS (OWASP) or
+    // camelCase (MongoDB) pass: a common word, even Capitalized for starting a
+    // sentence, stays out.
+    for (const line of rawJob.split(/[\r\n]+/)) {
+        if (candidates.length >= MAX_KEYWORDS) break;
+        const stripped = line.replace(/^[\s\-*•·–]+/, "");
+        if (stripped === line.trimStart()) continue; // not a bullet line
 
-        for (const original of tokenizarOriginal(semMarcador)) {
-            if (candidatas.length >= MAX_PALAVRAS) break;
+        for (const original of tokenizeOriginal(stripped)) {
+            if (candidates.length >= MAX_KEYWORDS) break;
 
             const token = original.replace(/^[.,;:()"'!?]+|[.,;:()"'!?]+$/g, "");
-            const norm = normalizar(token);
-            if (norm.length < 3 || PALAVRAS_VAZIAS.has(norm)) continue;
-            if (/^[\d.+/]+$/.test(norm) || !pareceSiglaOuTecnologia(token)) continue;
-            // "APIs" ao lado de "APIs REST" é a mesma palavra-chave contada duas vezes.
+            const norm = normalize(token);
+            if (norm.length < 3 || STOPWORDS.has(norm)) continue;
+            if (/^[\d.+/]+$/.test(norm) || !looksLikeAcronymOrTech(token)) continue;
+            // "APIs" next to "APIs REST" is the same keyword counted twice.
             if (
-                candidatas.some((c) =>
-                    c.apelidos.some((a) => a === norm || a.split(" ").includes(norm)),
+                candidates.some((c) =>
+                    c.aliases.some((a) => a === norm || a.split(" ").includes(norm)),
                 )
             )
                 continue;
-            if (vistas.has(norm)) continue;
+            if (seen.has(norm)) continue;
 
-            vistas.add(norm);
-            candidatas.push({ exibicao: token, apelidos: [norm], tecnica: false });
+            seen.add(norm);
+            candidates.push({ display: token, aliases: [norm], technical: false });
         }
     }
 
-    return candidatas.slice(0, MAX_PALAVRAS);
+    return candidates.slice(0, MAX_KEYWORDS);
 }
 
-function classificar(c: Candidata, curriculoNorm: string): StatusPalavra {
-    if (c.apelidos.some((a) => contemPalavra(curriculoNorm, a))) return "encontrada";
-    if (c.apelidos.some((a) => a.length >= 3 && contemSolto(curriculoNorm, a))) return "parcial";
+function classify(c: Candidate, resumeNorm: string): KeywordStatus {
+    if (c.aliases.some((a) => containsWord(resumeNorm, a))) return "encontrada";
+    if (c.aliases.some((a) => a.length >= 3 && containsLoose(resumeNorm, a))) return "parcial";
     return "ausente";
 }
 
-function pareceSiglaOuTecnologia(token: string): boolean {
-    const letras = [...token].filter((c) => /\p{L}/u.test(c));
-    if (letras.length < 2) return false;
-    const todasMaiusculas = letras.every((c) => c === c.toUpperCase() && c !== c.toLowerCase());
-    const maiusculaInterna = [...token.slice(1)].some(
+function looksLikeAcronymOrTech(token: string): boolean {
+    const letters = [...token].filter((c) => /\p{L}/u.test(c));
+    if (letters.length < 2) return false;
+    const allCaps = letters.every((c) => c === c.toUpperCase() && c !== c.toLowerCase());
+    const innerCap = [...token.slice(1)].some(
         (c) => c === c.toUpperCase() && c !== c.toLowerCase(),
     );
-    return todasMaiusculas || maiusculaInterna;
+    return allCaps || innerCap;
 }
 
-function coberturaPct(palavras: Classificada[]): number {
-    if (palavras.length === 0) return 0;
-    const soma = palavras.reduce(
+function coveragePct(keywords: Classified[]): number {
+    if (keywords.length === 0) return 0;
+    const sum = keywords.reduce(
         (t, k) => t + (k.status === "encontrada" ? 1 : k.status === "parcial" ? 0.5 : 0),
         0,
     );
-    return Math.round((soma / palavras.length) * 100);
+    return Math.round((sum / keywords.length) * 100);
 }
 
-interface NotaExperiencia {
+interface ExperienceScore {
     pct: number;
-    rotuloVerbos: string;
-    tomVerbos: Tom;
-    verbos: number;
-    razaoMetricas: number;
-    anos: number;
+    verbsLabel: string;
+    verbsTone: Tone;
+    verbs: number;
+    metricsRatio: number;
+    years: number;
 }
 
-function notaExperiencia(bruto: string, norm: string): NotaExperiencia {
-    let anos = 0;
+function scoreExperience(raw: string, norm: string): ExperienceScore {
+    let years = 0;
     for (const m of norm.matchAll(/(\d+)\s*\+?\s*(anos|ano|years|year)/g)) {
-        anos = Math.max(anos, Number(m[1]));
+        years = Math.max(years, Number(m[1]));
     }
-    const notaAnos =
-        anos >= 5
+    const yearsScore =
+        years >= 5
             ? 100
-            : anos === 4
+            : years === 4
               ? 90
-              : anos === 3
+              : years === 3
                 ? 80
-                : anos === 2
+                : years === 2
                   ? 65
-                  : anos === 1
+                  : years === 1
                     ? 50
                     : 30;
 
-    const tokens = tokenizar(bruto);
-    const verbos = tokens.filter((t) => VERBOS_ACAO.has(t)).length;
-    const notaVerbos =
-        verbos >= 8 ? 100 : verbos >= 5 ? 85 : verbos >= 3 ? 70 : verbos >= 1 ? 55 : 35;
+    const tokens = tokenize(raw);
+    const verbs = tokens.filter((t) => ACTION_VERBS.has(t)).length;
+    const verbsScore = verbs >= 8 ? 100 : verbs >= 5 ? 85 : verbs >= 3 ? 70 : verbs >= 1 ? 55 : 35;
 
-    const linhas = bruto
+    const lines = raw
         .split(/[\r\n]+/)
         .map((l) => l.trim())
         .filter((l) => l.length > 0);
-    const bullets = linhas.filter((l) => /^[-•*·–]/.test(l));
-    const consideradas = bullets.length > 0 ? bullets : linhas;
-    const comNumero = consideradas.filter((l) => /\d/.test(l)).length;
+    const bullets = lines.filter((l) => /^[-•*·–]/.test(l));
+    const considered = bullets.length > 0 ? bullets : lines;
+    const withNumber = considered.filter((l) => /\d/.test(l)).length;
 
     return {
-        pct: Math.min(100, Math.max(0, Math.round(notaAnos * 0.55 + notaVerbos * 0.45))),
-        rotuloVerbos: verbos >= 5 ? "Forte" : verbos >= 2 ? "Médio" : "Fraco",
-        tomVerbos: verbos >= 5 ? "bom" : verbos >= 2 ? "atencao" : "ruim",
-        verbos,
-        razaoMetricas: consideradas.length === 0 ? 0 : comNumero / consideradas.length,
-        anos,
+        pct: Math.min(100, Math.max(0, Math.round(yearsScore * 0.55 + verbsScore * 0.45))),
+        verbsLabel: verbs >= 5 ? "Forte" : verbs >= 2 ? "Médio" : "Fraco",
+        verbsTone: verbs >= 5 ? "bom" : verbs >= 2 ? "atencao" : "ruim",
+        verbs,
+        metricsRatio: considered.length === 0 ? 0 : withNumber / considered.length,
+        years,
     };
 }
 
-function notaFormacao(norm: string): number {
-    const acertos = PALAVRAS_FORMACAO.filter((k) => contemPalavra(norm, k)).length;
-    return acertos >= 3 ? 95 : acertos === 2 ? 85 : acertos === 1 ? 70 : 35;
+function scoreEducation(norm: string): number {
+    const hits = EDUCATION_KEYWORDS.filter((k) => containsWord(norm, k)).length;
+    return hits >= 3 ? 95 : hits === 2 ? 85 : hits === 1 ? 70 : 35;
 }
 
-function notaFormatacao(bruto: string, norm: string): { pct: number; rotulo: string } {
-    let nota = 0;
+function scoreFormatting(raw: string, norm: string): { pct: number; label: string } {
+    let points = 0;
 
-    const titulos = TITULOS_PADRAO.filter((h) => contemPalavra(norm, h)).length;
-    nota += Math.min(30, titulos * 10);
+    const headers = STANDARD_SECTIONS.filter((h) => containsWord(norm, h)).length;
+    points += Math.min(30, headers * 10);
 
-    if (/[-•*]/.test(bruto)) nota += 25;
+    if (/[-•*]/.test(raw)) points += 25;
 
-    const palavras = tokenizar(bruto).length;
-    if (palavras >= 200 && palavras <= 1200) nota += 25;
-    else if ((palavras >= 120 && palavras < 200) || (palavras > 1200 && palavras <= 1800))
-        nota += 15;
-    else nota += 5;
+    const words = tokenize(raw).length;
+    if (words >= 200 && words <= 1200) points += 25;
+    else if ((words >= 120 && words < 200) || (words > 1200 && words <= 1800)) points += 15;
+    else points += 5;
 
-    // Caractere estranho em excesso é resquício de layout que o ATS não lê.
-    const estranhos = [...bruto].filter(caractereEstranho).length;
-    const razao = bruto.length === 0 ? 1 : estranhos / bruto.length;
-    nota += razao < 0.02 ? 20 : razao < 0.06 ? 12 : 4;
+    // Too many odd characters is leftover layout the ATS cannot read.
+    const oddChars = [...raw].filter(isOddChar).length;
+    const ratio = raw.length === 0 ? 1 : oddChars / raw.length;
+    points += ratio < 0.02 ? 20 : ratio < 0.06 ? 12 : 4;
 
-    nota = Math.min(100, Math.max(0, nota));
-    return { pct: nota, rotulo: nota >= 75 ? "Boa" : nota >= 50 ? "Regular" : "Fraca" };
+    points = Math.min(100, Math.max(0, points));
+    return { pct: points, label: points >= 75 ? "Boa" : points >= 50 ? "Regular" : "Fraca" };
 }
 
-function caractereEstranho(c: string): boolean {
+function isOddChar(c: string): boolean {
     if (/[\p{L}\p{N}\s]/u.test(c)) return false;
     return !".,;:-–()/@+%#&'\"!?•*_".includes(c);
 }
 
-function montarSugestoes(
-    palavras: Classificada[],
-    curriculoNorm: string,
-    experiencia: NotaExperiencia,
-    pctFormatacao: number,
-): Sugestao[] {
-    const sugestoes: Sugestao[] = [];
+function buildSuggestions(
+    keywords: Classified[],
+    resumeNorm: string,
+    experience: ExperienceScore,
+    formattingPct: number,
+): Suggestion[] {
+    const suggestions: Suggestion[] = [];
 
-    const tecnicasAusentes = palavras
-        .filter((k) => k.tecnica && k.status === "ausente")
-        .map((k) => k.exibicao);
-    if (tecnicasAusentes.length > 0) {
-        sugestoes.push({
+    const missingTechnical = keywords
+        .filter((k) => k.technical && k.status === "ausente")
+        .map((k) => k.display);
+    if (missingTechnical.length > 0) {
+        suggestions.push({
             prioridade: "alta",
             titulo: "Inclua as tecnologias que a vaga pede",
-            texto: `A vaga cita ${tecnicasAusentes.slice(0, 3).join(", ")} e nada disso aparece no seu currículo. Se você já trabalhou com essas tecnologias, cite-as nas habilidades e, principalmente, na experiência em que você as usou.`,
+            texto: `A vaga cita ${missingTechnical.slice(0, 3).join(", ")} e nada disso aparece no seu currículo. Se você já trabalhou com essas tecnologias, cite-as nas habilidades e, principalmente, na experiência em que você as usou.`,
         });
     }
 
-    const parcialCentral = palavras.find((k) => k.tecnica && k.status === "parcial")?.exibicao;
-    if (parcialCentral) {
-        sugestoes.push({
+    const centralPartial = keywords.find((k) => k.technical && k.status === "parcial")?.display;
+    if (centralPartial) {
+        suggestions.push({
             prioridade: "alta",
-            titulo: `Deixe ${parcialCentral} explícito`,
-            texto: `${parcialCentral} aparece de forma vaga no seu currículo, mas é um requisito central da vaga. Cite o nome por extenso em uma experiência recente e descreva o que você construiu com ele.`,
+            titulo: `Deixe ${centralPartial} explícito`,
+            texto: `${centralPartial} aparece de forma vaga no seu currículo, mas é um requisito central da vaga. Cite o nome por extenso em uma experiência recente e descreva o que você construiu com ele.`,
         });
     }
 
-    if (experiencia.verbos < 3) {
-        sugestoes.push({
+    if (experience.verbs < 3) {
+        suggestions.push({
             prioridade: "media",
             titulo: "Comece cada entrega com um verbo de ação",
             texto: 'Suas descrições contam pouco sobre o que você fez. Troque frases como "responsável pelo módulo de pagamentos" por "desenvolvi o módulo de pagamentos", "reduzi", "automatizei", "liderei".',
         });
     }
 
-    if (experiencia.razaoMetricas < 0.5) {
-        sugestoes.push({
+    if (experience.metricsRatio < 0.5) {
+        suggestions.push({
             prioridade: "media",
             titulo: "Quantifique os resultados",
-            texto: `Só ${Math.round(experiencia.razaoMetricas * 100)}% das suas entregas têm número. Métrica é o que separa "melhorei a performance" de "reduzi o tempo de carregamento em 35%" na leitura do recrutador.`,
+            texto: `Só ${Math.round(experience.metricsRatio * 100)}% das suas entregas têm número. Métrica é o que separa "melhorei a performance" de "reduzi o tempo de carregamento em 35%" na leitura do recrutador.`,
         });
     }
 
-    if (experiencia.anos === 0) {
-        sugestoes.push({
+    if (experience.years === 0) {
+        suggestions.push({
             prioridade: "baixa",
             titulo: "Deixe o tempo de experiência visível",
             texto: "Não encontramos um tempo de atuação declarado. Coloque o período de cada cargo (mês/ano de início e fim) e, no resumo, quantos anos você tem na área.",
         });
     }
 
-    const titulos = TITULOS_PADRAO.filter((h) => contemPalavra(curriculoNorm, h)).length;
-    if (titulos < 3 || pctFormatacao < 75) {
-        sugestoes.push({
+    const headers = STANDARD_SECTIONS.filter((h) => containsWord(resumeNorm, h)).length;
+    if (headers < 3 || formattingPct < 75) {
+        suggestions.push({
             prioridade: "baixa",
             titulo: "Padronize os títulos das seções",
             texto: 'Use nomes convencionais como "Experiência", "Formação" e "Habilidades". O ATS separa o currículo por esses títulos e ignora seções que não reconhece.',
         });
     }
 
-    return sugestoes
-        .sort((a, b) => ORDEM_PRIORIDADE[a.prioridade] - ORDEM_PRIORIDADE[b.prioridade])
+    return suggestions
+        .sort((a, b) => PRIORITY_ORDER[a.prioridade] - PRIORITY_ORDER[b.prioridade])
         .slice(0, 5);
 }
 
-function tomPorRazao(razao: number): Tom {
-    return razao >= 0.75 ? "bom" : razao >= 0.5 ? "atencao" : "ruim";
+function toneByRatio(ratio: number): Tone {
+    return ratio >= 0.75 ? "bom" : ratio >= 0.5 ? "atencao" : "ruim";
 }
 
-function tomPorPct(pct: number): Tom {
+function toneByPct(pct: number): Tone {
     return pct >= 75 ? "bom" : pct >= 50 ? "atencao" : "ruim";
 }
 
-function vereditoPara(score: number): { veredito: string; descricao: string } {
+function verdictFor(score: number): { veredito: string; descricao: string } {
     if (score >= 80) {
         return {
             veredito: "Ótima compatibilidade",
@@ -407,7 +403,7 @@ function vereditoPara(score: number): { veredito: string; descricao: string } {
 }
 
 // prettier-ignore
-const VERBOS_ACAO = new Set([
+const ACTION_VERBS = new Set([
     "desenvolvi", "implementei", "criei", "construi", "liderei", "gerenciei", "otimizei",
     "reduzi", "aumentei", "melhorei", "automatizei", "projetei", "entreguei", "mantive",
     "colaborei", "coordenei", "integrei", "refatorei", "modernizei", "migrei", "publiquei",
@@ -418,7 +414,7 @@ const VERBOS_ACAO = new Set([
 ]);
 
 // prettier-ignore
-const PALAVRAS_FORMACAO = [
+const EDUCATION_KEYWORDS = [
     "formacao", "graduacao", "bacharelado", "tecnologo", "licenciatura", "pos", "mestrado",
     "doutorado", "faculdade", "universidade", "curso", "tecnico", "ciencia da computacao",
     "engenharia", "sistemas de informacao", "analise e desenvolvimento", "education",
@@ -426,7 +422,7 @@ const PALAVRAS_FORMACAO = [
 ];
 
 // prettier-ignore
-const TITULOS_PADRAO = [
+const STANDARD_SECTIONS = [
     "experiencia", "formacao", "educacao", "habilidades", "competencias", "resumo", "objetivo",
     "projetos", "certificacoes", "idiomas", "contato", "experience", "education", "skills",
     "summary", "projects",

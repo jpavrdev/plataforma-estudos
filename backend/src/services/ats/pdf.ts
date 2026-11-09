@@ -1,31 +1,25 @@
 import { extractText, getDocumentProxy } from "unpdf";
 import { AppError } from "../../errors/AppError.ts";
 
-// Abaixo disso o PDF é escaneado ou só imagem: a nota sairia inventada.
-const MINIMO_CARACTERES = 200;
+// Below this the PDF is scanned or image only: the score would come out made up.
+const MIN_CHARS = 200;
 
-export async function extrairTextoPdf(pdf: Buffer): Promise<string> {
-    let texto: string;
+export async function extractPdfText(pdf: Buffer): Promise<string> {
+    let text: string;
     try {
-        const documento = await getDocumentProxy(new Uint8Array(pdf));
-        const extraido = await extractText(documento, { mergePages: true });
-        texto = extraido.text;
+        const document = await getDocumentProxy(new Uint8Array(pdf));
+        const extracted = await extractText(document, { mergePages: true });
+        text = extracted.text;
     } catch (err) {
-        console.error("Falha ao ler o PDF do currículo:", err);
-        throw new AppError(
-            422,
-            "Não conseguimos ler esse PDF. Confira se o arquivo não está corrompido.",
-        );
+        console.error("Failed to read the resume PDF:", err);
+        throw new AppError(422, "resume.pdfUnreadable");
     }
 
-    if (texto.replace(/\s/g, "").length < MINIMO_CARACTERES) {
-        throw new AppError(
-            422,
-            "Esse PDF não tem texto selecionável (parece uma imagem ou um currículo escaneado). Exporte o currículo como PDF de texto e envie de novo.",
-        );
+    if (text.replace(/\s/g, "").length < MIN_CHARS) {
+        throw new AppError(422, "resume.pdfWithoutText");
     }
 
-    return texto
+    return text
         .split(/\r?\n/)
         .map((l) => l.replace(/[ \t]+/g, " ").trim())
         .filter((l) => l.length > 0)

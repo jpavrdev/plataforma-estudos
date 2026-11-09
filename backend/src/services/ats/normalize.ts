@@ -1,47 +1,47 @@
-// Todo o casamento acontece sobre o texto normalizado, para "inglês" no
-// currículo casar com "ingles" na vaga. O original só serve para exibir.
+// All matching happens over normalized text, so "inglês" in the resume matches
+// "ingles" in the job description. The original is only used for display.
 
-export function normalizar(texto: string): string {
-    if (!texto) return "";
-    return texto
+export function normalize(text: string): string {
+    if (!text) return "";
+    return text
         .toLowerCase()
         .normalize("NFD")
         .replace(/\p{Diacritic}/gu, "")
         .normalize("NFC");
 }
 
-// Ponto, barra e cerquilha entram no token para preservar "next.js", "ci/cd" e "c#".
-const PALAVRA = /[\p{L}\p{N}][\p{L}\p{N}.+/#]*/gu;
+// Dot, slash and hash join the token to preserve "next.js", "ci/cd" and "c#".
+const WORD_PATTERN = /[\p{L}\p{N}][\p{L}\p{N}.+/#]*/gu;
 
-export function tokenizar(texto: string): string[] {
-    return normalizar(texto).match(PALAVRA) ?? [];
+export function tokenize(text: string): string[] {
+    return normalize(text).match(WORD_PATTERN) ?? [];
 }
 
-export function tokenizarOriginal(texto: string): string[] {
-    return texto ? (texto.match(PALAVRA) ?? []) : [];
+export function tokenizeOriginal(text: string): string[] {
+    return text ? (text.match(WORD_PATTERN) ?? []) : [];
 }
 
-function escaparRegex(texto: string): string {
-    return texto.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function escapeRegex(text: string): string {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export function contemPalavra(textoNormalizado: string, termo: string): boolean {
-    const alvo = normalizar(termo).trim();
-    if (!alvo) return false;
-    return new RegExp(`(?<![\\p{L}\\p{N}])${escaparRegex(alvo)}(?![\\p{L}\\p{N}])`, "u").test(
-        textoNormalizado,
+export function containsWord(normalizedText: string, term: string): boolean {
+    const target = normalize(term).trim();
+    if (!target) return false;
+    return new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(target)}(?![\\p{L}\\p{N}])`, "u").test(
+        normalizedText,
     );
 }
 
-// Sem fronteira de palavra: é o que caracteriza a menção fraca (parcial).
-export function contemSolto(textoNormalizado: string, termo: string): boolean {
-    const alvo = normalizar(termo).trim();
-    return alvo.length > 0 && textoNormalizado.includes(alvo);
+// Without a word boundary: this is what characterizes a weak mention (partial).
+export function containsLoose(normalizedText: string, term: string): boolean {
+    const target = normalize(term).trim();
+    return target.length > 0 && normalizedText.includes(target);
 }
 
-// Filtram o fallback de extração, que pega tokens soltos das linhas de requisito.
+// These filter the extraction fallback, which picks loose tokens from requirement lines.
 // prettier-ignore
-export const PALAVRAS_VAZIAS = new Set([
+export const STOPWORDS = new Set([
     // Português
     "a", "o", "as", "os", "um", "uma", "uns", "umas", "de", "do", "da", "dos", "das", "em",
     "no", "na", "nos", "nas", "por", "para", "com", "sem", "sob", "sobre", "ate", "e", "ou",
