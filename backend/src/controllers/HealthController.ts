@@ -1,15 +1,15 @@
 import type { Request, Response, NextFunction } from "express";
-import { verificarDependencias } from "../services/dependencias.service.ts";
+import { checkDependencies } from "../services/dependencias.service.ts";
 
 export const getHealth = (_req: Request, res: Response) => {
     res.json({ status: "ok" });
 };
 
-// Sempre 200, mesmo com dependência fora: o corpo diz o que falhou e quem decide
-// se vira alerta é o monitor.
-export const getDependencias = async (_req: Request, res: Response, next: NextFunction) => {
+// Always 200, even with a dependency down: the body says what failed, and the
+// monitor decides whether it becomes an alert.
+export const getDependencies = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await verificarDependencias());
+        res.json(await checkDependencies());
     } catch (err) {
         next(err);
     }

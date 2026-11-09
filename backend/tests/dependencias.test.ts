@@ -6,21 +6,21 @@ import type { AddressInfo } from "node:net";
 import { startTestServer } from "./helpers/server.ts";
 import { UPLOADS_DIR } from "../src/config/paths.ts";
 
-// O env só é lido quando o app sobe (import dinâmico no startTestServer) e cada
-// arquivo de teste roda em processo próprio, então ajustar aqui basta.
+// Env is only read when the app boots (dynamic import inside startTestServer) and
+// each test file runs in its own process, so adjusting it here is enough.
 const TOKEN = "token_do_monitor_de_teste_com_mais_de_32_caracteres";
 process.env.MONITOR_TOKEN = TOKEN;
 delete process.env.EVOLUTION_URL;
 
 let server: Awaited<ReturnType<typeof startTestServer>>;
 
-// Serviço de labs falso: o app chega nele pelo LABS_URL, como chega no de verdade.
-let statusDoLabs = 200;
-const labsFalso = createServer((req, res) => {
-    const saude = req.url === "/health";
-    res.writeHead(saude ? statusDoLabs : 404, { "content-type": "application/json" });
-    const status = statusDoLabs === 200 ? "ok" : "falha";
-    res.end(saude ? JSON.stringify({ status, sessoes: 0, max: 6 }) : "");
+// Fake labs service: the app reaches it through LABS_URL, just like the real one.
+let labsStatus = 200;
+const fakeLabs = createServer((req, res) => {
+    const isHealth = req.url === "/health";
+    res.writeHead(isHealth ? labsStatus : 404, { "content-type": "application/json" });
+    const status = labsStatus === 200 ? "ok" : "falha";
+    res.end(isHealth ? JSON.stringify({ status, sessoes: 0, max: 6 }) : "");
 });
 
 async function get(path: string, authorization?: string) {
@@ -31,40 +31,40 @@ async function get(path: string, authorization?: string) {
 }
 
 before(async () => {
-    // Em produção o volume de uploads sempre existe; num checkout limpo (CI), não.
+    // In production the uploads volume always exists; on a clean checkout (CI) it does not.
     await mkdir(UPLOADS_DIR, { recursive: true });
-    await new Promise<void>((resolve) => labsFalso.listen(0, "127.0.0.1", resolve));
-    process.env.LABS_URL = `ws://127.0.0.1:${(labsFalso.address() as AddressInfo).port}`;
+    await new Promise<void>((resolve) => fakeLabs.listen(0, "127.0.0.1", resolve));
+    process.env.LABS_URL = `ws://127.0.0.1:${(fakeLabs.address() as AddressInfo).port}`;
     server = await startTestServer();
 });
 after(async () => {
     await server.close();
-    labsFalso.close();
+    fakeLabs.close();
 });
 
 describe("GET /health/dependencias", () => {
-    test("sem Authorization responde 401", async () => {
+    test("without Authorization answers 401", async () => {
         const res = await get("/health/dependencias");
         assert.equal(res.status, 401);
         assert.deepEqual(res.body, { erro: "Não autorizado" });
     });
 
-    test("token errado do mesmo tamanho responde 401", async () => {
+    test("wrong token of the same length answers 401", async () => {
         const res = await get("/health/dependencias", `Bearer ${"x".repeat(TOKEN.length)}`);
         assert.equal(res.status, 401);
     });
 
-    test("token de outro tamanho responde 401", async () => {
+    test("token of another length answers 401", async () => {
         const res = await get("/health/dependencias", `Bearer ${TOKEN}x`);
         assert.equal(res.status, 401);
     });
 
-    test("token certo fora do esquema Bearer responde 401", async () => {
+    test("right token outside the Bearer scheme answers 401", async () => {
         const res = await get("/health/dependencias", `Basic ${TOKEN}`);
         assert.equal(res.status, 401);
     });
 
-    test("token certo responde 200 no formato do contrato", async () => {
+    test("right token answers 200 in the contract format", async () => {
         const res = await get("/health/dependencias", `Bearer ${TOKEN}`);
         assert.equal(res.status, 200);
 
@@ -79,11 +79,11 @@ describe("GET /health/dependencias", () => {
         assert.deepEqual(labs, { situacao: "ok", sessoes: 0, max: 6 });
     });
 
-    test("labs fora vira falha e o endpoint segue respondendo 200", async (t) => {
+    test("labs down becomes falha and the endpoint still answers 200", async (t) => {
         t.mock.method(console, "error", () => {});
-        statusDoLabs = 503;
+        labsStatus = 503;
         t.after(() => {
-            statusDoLabs = 200;
+            labsStatus = 200;
         });
         const res = await get("/health/dependencias", `Bearer ${TOKEN}`);
         assert.equal(res.status, 200);
@@ -91,7 +91,7 @@ describe("GET /health/dependencias", () => {
         assert.equal(res.body.banco.situacao, "ok");
     });
 
-    test("/health segue aberto e sem token", async () => {
+    test("/health stays open and tokenless", async () => {
         const res = await get("/health");
         assert.equal(res.status, 200);
         assert.deepEqual(res.body, { status: "ok" });

@@ -2,8 +2,8 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { startTestServer } from "./helpers/server.ts";
 
-// O env só é lido quando o app sobe e cada arquivo de teste roda em processo
-// próprio; remover aqui garante o cenário mesmo com o token exportado no shell.
+// Env is only read when the app boots and each test file runs in its own process;
+// removing it here guarantees the scenario even with the token exported in the shell.
 delete process.env.MONITOR_TOKEN;
 
 let server: Awaited<ReturnType<typeof startTestServer>>;
@@ -15,7 +15,7 @@ after(async () => {
     await server.close();
 });
 
-test("sem MONITOR_TOKEN /health/dependencias responde o 404 de rota inexistente", async () => {
+test("without MONITOR_TOKEN /health/dependencias answers the 404 of a nonexistent route", async () => {
     const res = await fetch(`${server.base}/health/dependencias`, {
         headers: { Authorization: "Bearer token_qualquer_com_mais_de_32_caracteres" },
     });

@@ -6,21 +6,21 @@ import { UPLOADS_DIR } from "../config/paths.ts";
 import { createDependencyChecker } from "../domain/dependencies.ts";
 import { whatsappService } from "./whatsapp.service.ts";
 
-const TIMEOUT_POR_DEPENDENCIA_MS = 3_000;
-// O LABS_URL é o do WebSocket; o health é HTTP no mesmo host e porta.
-const URL_DO_HEALTH_DOS_LABS = `${env.LABS_URL.replace(/^ws/, "http")}/health`;
+const PER_DEPENDENCY_TIMEOUT_MS = 3_000;
+// LABS_URL is the WebSocket one; the health endpoint is HTTP on the same host and port.
+const LABS_HEALTH_URL = `${env.LABS_URL.replace(/^ws/, "http")}/health`;
 
-export const verificarDependencias = createDependencyChecker(
+export const checkDependencies = createDependencyChecker(
     {
-        consultarBanco: () => db.execute(sql`select 1`),
-        estadoDoWhatsapp: whatsappService.connectionState,
-        // O volume de uploads fica no disco da VPS: medir por ele é medir o disco.
-        espacoEmDisco: () => statfs(UPLOADS_DIR),
-        saudeDosLabs: async (sinal) => {
-            const resposta = await fetch(URL_DO_HEALTH_DOS_LABS, { signal: sinal });
-            if (!resposta.ok) throw new Error(`o serviço de labs respondeu ${resposta.status}`);
-            return resposta.json();
+        queryDatabase: () => db.execute(sql`select 1`),
+        whatsappState: whatsappService.connectionState,
+        // The uploads volume lives on the VPS disk: measuring it measures the disk.
+        diskSpace: () => statfs(UPLOADS_DIR),
+        labsHealth: async (signal) => {
+            const response = await fetch(LABS_HEALTH_URL, { signal });
+            if (!response.ok) throw new Error(`the labs service answered ${response.status}`);
+            return response.json();
         },
     },
-    TIMEOUT_POR_DEPENDENCIA_MS,
+    PER_DEPENDENCY_TIMEOUT_MS,
 );

@@ -41,12 +41,12 @@ export interface DiskSpace {
 }
 
 export interface DependencyPorts {
-    consultarBanco(): Promise<unknown>;
+    queryDatabase(): Promise<unknown>;
     // null when the API runs without Evolution (dev).
-    estadoDoWhatsapp(signal: AbortSignal): Promise<string | null>;
-    espacoEmDisco(): Promise<DiskSpace>;
+    whatsappState(signal: AbortSignal): Promise<string | null>;
+    diskSpace(): Promise<DiskSpace>;
     // Body of the labs service /health; rejects when it does not answer 2xx.
-    saudeDosLabs(signal: AbortSignal): Promise<unknown>;
+    labsHealth(signal: AbortSignal): Promise<unknown>;
 }
 
 export function tokenFromHeader(authorization: string | undefined): string | null {
@@ -103,23 +103,23 @@ export function usagePercent({ blocks, bfree, bavail }: DiskSpace): number {
 export function createDependencyChecker(ports: DependencyPorts, timeoutMs: number) {
     async function database(): Promise<DatabaseState> {
         const start = performance.now();
-        await ports.consultarBanco();
+        await ports.queryDatabase();
         return { situacao: "ok", latenciaMs: Math.round(performance.now() - start) };
     }
 
     async function whatsapp(signal: AbortSignal): Promise<WhatsappState> {
-        const state = await ports.estadoDoWhatsapp(signal);
+        const state = await ports.whatsappState(signal);
         if (state === null) return { situacao: "nao-configurado" };
         // Only an open connection delivers messages; "connecting" and "close" already count as failure.
         return { situacao: state === "open" ? "ok" : "falha", estado: state };
     }
 
     async function disk(): Promise<DiskState> {
-        return { situacao: "ok", usoPercentual: usagePercent(await ports.espacoEmDisco()) };
+        return { situacao: "ok", usoPercentual: usagePercent(await ports.diskSpace()) };
     }
 
     async function labs(signal: AbortSignal): Promise<LabsState> {
-        const body = await ports.saudeDosLabs(signal);
+        const body = await ports.labsHealth(signal);
         const health =
             typeof body === "object" && body !== null ? (body as Record<string, unknown>) : {};
         if (health.status !== "ok") throw new Error("the labs service did not answer status ok");

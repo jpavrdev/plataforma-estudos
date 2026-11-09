@@ -24,7 +24,7 @@ import {
     removeWeeklyGoal,
 } from "../services/progress.service.ts";
 import { apoiadorAtivo } from "../services/apoiador.service.ts";
-import { featuresDoUsuario } from "../services/feature-flag.service.ts";
+import { userFeatures } from "../services/feature-flag.service.ts";
 import { pendingTwoFactor } from "../middlewares/auth.ts";
 
 const publicUserColumns = {
@@ -60,7 +60,7 @@ export const getMe = async (req: Request, res: Response) => {
         return res.status(404).json({ erro: "user.notFound" });
     }
 
-    // temSenha diz ao front se trocar o telefone pede a senha atual.
+    // temSenha tells the front end whether changing the phone asks for the current password.
     const found = await db
         .select({
             ...publicUserColumns,
@@ -101,7 +101,7 @@ export const getMe = async (req: Request, res: Response) => {
 
     let features: string[] = [];
     try {
-        features = await featuresDoUsuario(userId);
+        features = await userFeatures(userId);
     } catch (e) {
         console.error("getMe: failed to list the features", e);
     }

@@ -16,10 +16,10 @@ const never = () => new Promise<never>(() => {});
 
 function ports(overrides: Partial<DependencyPorts> = {}): DependencyPorts {
     return {
-        consultarBanco: async () => undefined,
-        estadoDoWhatsapp: async () => "open",
-        espacoEmDisco: async () => DISK_34_PERCENT,
-        saudeDosLabs: async () => ({ status: "ok", sessoes: 1, max: 6 }),
+        queryDatabase: async () => undefined,
+        whatsappState: async () => "open",
+        diskSpace: async () => DISK_34_PERCENT,
+        labsHealth: async () => ({ status: "ok", sessoes: 1, max: 6 }),
         ...overrides,
     };
 }
@@ -145,7 +145,7 @@ describe("createDependencyChecker", () => {
     test("a database outage becomes a failure without taking down the others or leaking the error", async (t) => {
         const log = t.mock.method(console, "error", () => {});
         const error = new Error("connect ECONNREFUSED 172.18.0.3:5432");
-        const report = await check({ consultarBanco: () => Promise.reject(error) });
+        const report = await check({ queryDatabase: () => Promise.reject(error) });
 
         assert.deepEqual(report.banco, { situacao: "falha" });
         assert.deepEqual(report.whatsapp, { situacao: "ok", estado: "open" });
@@ -159,7 +159,7 @@ describe("createDependencyChecker", () => {
 
     test("a hanging database times out and becomes a failure", async (t) => {
         const log = t.mock.method(console, "error", () => {});
-        const report = await check({ consultarBanco: never }, 20);
+        const report = await check({ queryDatabase: never }, 20);
 
         assert.deepEqual(report.banco, { situacao: "falha" });
         assert.equal(report.disco.situacao, "ok");
@@ -167,13 +167,13 @@ describe("createDependencyChecker", () => {
     });
 
     test("whatsapp without Evolution configured comes back nao-configurado", async () => {
-        const report = await check({ estadoDoWhatsapp: async () => null });
+        const report = await check({ whatsappState: async () => null });
         assert.deepEqual(report.whatsapp, { situacao: "nao-configurado" });
     });
 
     test("whatsapp outside the open state is a failure and reports the state", async () => {
         for (const state of ["close", "connecting"]) {
-            const report = await check({ estadoDoWhatsapp: async () => state });
+            const report = await check({ whatsappState: async () => state });
             assert.deepEqual(report.whatsapp, { situacao: "falha", estado: state });
         }
     });
@@ -181,7 +181,7 @@ describe("createDependencyChecker", () => {
     test("whatsapp with an Evolution error becomes a failure", async (t) => {
         const log = t.mock.method(console, "error", () => {});
         const report = await check({
-            estadoDoWhatsapp: () => Promise.reject(new Error("Evolution answered HTTP 401")),
+            whatsappState: () => Promise.reject(new Error("Evolution answered HTTP 401")),
         });
 
         assert.deepEqual(report.whatsapp, { situacao: "falha" });
@@ -193,7 +193,7 @@ describe("createDependencyChecker", () => {
         let signal: AbortSignal | undefined;
         const report = await check(
             {
-                estadoDoWhatsapp: (s) => {
+                whatsappState: (s) => {
                     signal = s;
                     return never();
                 },
@@ -210,14 +210,14 @@ describe("createDependencyChecker", () => {
         const enoent = Object.assign(new Error("ENOENT: no such file or directory"), {
             code: "ENOENT",
         });
-        const report = await check({ espacoEmDisco: () => Promise.reject(enoent) });
+        const report = await check({ diskSpace: () => Promise.reject(enoent) });
         assert.deepEqual(report.disco, { situacao: "falha" });
     });
 
     test("statfs without blocks becomes a failure", async (t) => {
         t.mock.method(console, "error", () => {});
         const report = await check({
-            espacoEmDisco: async () => ({ blocks: 0, bfree: 0, bavail: 0 }),
+            diskSpace: async () => ({ blocks: 0, bfree: 0, bavail: 0 }),
         });
         assert.deepEqual(report.disco, { situacao: "falha" });
     });
@@ -225,7 +225,7 @@ describe("createDependencyChecker", () => {
     test("labs down becomes a failure", async (t) => {
         const log = t.mock.method(console, "error", () => {});
         const report = await check({
-            saudeDosLabs: () => Promise.reject(new Error("the labs service answered 503")),
+            labsHealth: () => Promise.reject(new Error("the labs service answered 503")),
         });
 
         assert.deepEqual(report.labs, { situacao: "falha" });
@@ -237,13 +237,13 @@ describe("createDependencyChecker", () => {
     test("labs that do not answer status ok become a failure", async (t) => {
         t.mock.method(console, "error", () => {});
         for (const body of [{ status: "falha", sessoes: 0, max: 6 }, null, "ok"]) {
-            const report = await check({ saudeDosLabs: async () => body });
+            const report = await check({ labsHealth: async () => body });
             assert.deepEqual(report.labs, { situacao: "falha" });
         }
     });
 
     test("labs ok without the session count are still ok", async () => {
-        const report = await check({ saudeDosLabs: async () => ({ status: "ok" }) });
+        const report = await check({ labsHealth: async () => ({ status: "ok" }) });
         assert.deepEqual(report.labs, { situacao: "ok" });
     });
 
@@ -251,10 +251,10 @@ describe("createDependencyChecker", () => {
         const log = t.mock.method(console, "error", () => {});
         const report = await check(
             {
-                consultarBanco: () => Promise.reject(new Error("database")),
-                estadoDoWhatsapp: never,
-                espacoEmDisco: () => Promise.reject(new Error("disk")),
-                saudeDosLabs: () => Promise.reject(new Error("labs")),
+                queryDatabase: () => Promise.reject(new Error("database")),
+                whatsappState: never,
+                diskSpace: () => Promise.reject(new Error("disk")),
+                labsHealth: () => Promise.reject(new Error("labs")),
             },
             20,
         );
@@ -284,16 +284,16 @@ describe("createDependencyChecker", () => {
 
         const report = await check(
             {
-                consultarBanco: waitForTheOthers,
-                estadoDoWhatsapp: async () => {
+                queryDatabase: waitForTheOthers,
+                whatsappState: async () => {
                     await waitForTheOthers();
                     return "open";
                 },
-                espacoEmDisco: async () => {
+                diskSpace: async () => {
                     await waitForTheOthers();
                     return DISK_34_PERCENT;
                 },
-                saudeDosLabs: async () => {
+                labsHealth: async () => {
                     await waitForTheOthers();
                     return { status: "ok", sessoes: 0, max: 6 };
                 },
