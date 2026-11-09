@@ -72,7 +72,7 @@ export async function globalRanking(period: string, currentUserId: string | unde
               : null;
 
     const [
-        usuarios,
+        userRows,
         lessonsTotal,
         correctTotal,
         challengesTotal,
@@ -144,7 +144,7 @@ export async function globalRanking(period: string, currentUserId: string | unde
     const correctPer = since ? toMap(correctPeriod) : correctAll;
     const challengesPer = since ? toMap(challengesPeriod) : challengesAll;
 
-    const base = usuarios.map((u) => {
+    const base = userRows.map((u) => {
         const totalXp = computeXp({
             lessons: lessonsAll.get(u.id) ?? 0,
             questions: correctAll.get(u.id) ?? 0,
