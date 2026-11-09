@@ -1,226 +1,226 @@
-// Termos que o analisador reconhece. A ordem daqui é a ordem em que as
-// palavras-chave aparecem na tela. `tecnica` marca o que conta na nota de
-// habilidades técnicas: processo (Scrum, code review) e idioma ficam de fora
-// dessa conta, mas ainda valem como palavra-chave da vaga.
+// Terms the analyzer recognizes. The order here is the order the keywords
+// appear on screen. `technical` marks what counts towards the technical
+// skills score: process (Scrum, code review) and languages are left out of
+// that count but still count as job keywords.
 
-export interface TermoTecnico {
-    exibicao: string;
-    apelidos: string[];
-    tecnica: boolean;
+export interface TechTerm {
+    display: string;
+    aliases: string[];
+    technical: boolean;
 }
 
-export const TERMOS: TermoTecnico[] = [
+export const KEYWORDS: TechTerm[] = [
     // Front-end
-    { exibicao: "React", apelidos: ["react", "react.js", "reactjs"], tecnica: true },
-    { exibicao: "Next.js", apelidos: ["next.js", "nextjs", "next js"], tecnica: true },
-    { exibicao: "Vue", apelidos: ["vue", "vue.js", "vuejs"], tecnica: true },
-    { exibicao: "Angular", apelidos: ["angular", "angularjs"], tecnica: true },
-    { exibicao: "TypeScript", apelidos: ["typescript"], tecnica: true },
-    { exibicao: "JavaScript", apelidos: ["javascript", "ecmascript"], tecnica: true },
-    { exibicao: "HTML", apelidos: ["html", "html5"], tecnica: true },
-    { exibicao: "CSS", apelidos: ["css", "css3"], tecnica: true },
+    { display: "React", aliases: ["react", "react.js", "reactjs"], technical: true },
+    { display: "Next.js", aliases: ["next.js", "nextjs", "next js"], technical: true },
+    { display: "Vue", aliases: ["vue", "vue.js", "vuejs"], technical: true },
+    { display: "Angular", aliases: ["angular", "angularjs"], technical: true },
+    { display: "TypeScript", aliases: ["typescript"], technical: true },
+    { display: "JavaScript", aliases: ["javascript", "ecmascript"], technical: true },
+    { display: "HTML", aliases: ["html", "html5"], technical: true },
+    { display: "CSS", aliases: ["css", "css3"], technical: true },
     {
-        exibicao: "Tailwind CSS",
-        apelidos: ["tailwind css", "tailwind", "tailwindcss"],
-        tecnica: true,
+        display: "Tailwind CSS",
+        aliases: ["tailwind css", "tailwind", "tailwindcss"],
+        technical: true,
     },
-    { exibicao: "SASS", apelidos: ["sass", "scss"], tecnica: true },
-    { exibicao: "Redux", apelidos: ["redux"], tecnica: true },
-    { exibicao: "Webpack", apelidos: ["webpack"], tecnica: true },
-    { exibicao: "Vite", apelidos: ["vite"], tecnica: true },
-    { exibicao: "React Native", apelidos: ["react native"], tecnica: true },
-    { exibicao: "Flutter", apelidos: ["flutter"], tecnica: true },
+    { display: "SASS", aliases: ["sass", "scss"], technical: true },
+    { display: "Redux", aliases: ["redux"], technical: true },
+    { display: "Webpack", aliases: ["webpack"], technical: true },
+    { display: "Vite", aliases: ["vite"], technical: true },
+    { display: "React Native", aliases: ["react native"], technical: true },
+    { display: "Flutter", aliases: ["flutter"], technical: true },
 
-    // Linguagens e frameworks de back-end
-    { exibicao: "Node.js", apelidos: ["node.js", "nodejs", "node js", "node"], tecnica: true },
-    { exibicao: "Express", apelidos: ["express", "express.js", "expressjs"], tecnica: true },
-    { exibicao: "NestJS", apelidos: ["nestjs", "nest.js"], tecnica: true },
-    { exibicao: "C#", apelidos: ["c#", "csharp", "c sharp"], tecnica: true },
-    { exibicao: ".NET", apelidos: [".net", "dotnet", "dot net", ".net core"], tecnica: true },
+    // Back-end languages and frameworks
+    { display: "Node.js", aliases: ["node.js", "nodejs", "node js", "node"], technical: true },
+    { display: "Express", aliases: ["express", "express.js", "expressjs"], technical: true },
+    { display: "NestJS", aliases: ["nestjs", "nest.js"], technical: true },
+    { display: "C#", aliases: ["c#", "csharp", "c sharp"], technical: true },
+    { display: ".NET", aliases: [".net", "dotnet", "dot net", ".net core"], technical: true },
     {
-        exibicao: "ASP.NET Core",
-        apelidos: ["asp.net core", "asp.net", "aspnet", "asp net"],
-        tecnica: true,
+        display: "ASP.NET Core",
+        aliases: ["asp.net core", "asp.net", "aspnet", "asp net"],
+        technical: true,
     },
     {
-        exibicao: "Entity Framework",
-        apelidos: ["entity framework", "ef core", "efcore"],
-        tecnica: true,
+        display: "Entity Framework",
+        aliases: ["entity framework", "ef core", "efcore"],
+        technical: true,
     },
-    { exibicao: "Java", apelidos: ["java"], tecnica: true },
-    { exibicao: "Spring Boot", apelidos: ["spring boot", "springboot", "spring"], tecnica: true },
-    { exibicao: "Python", apelidos: ["python"], tecnica: true },
-    { exibicao: "Django", apelidos: ["django"], tecnica: true },
-    { exibicao: "Flask", apelidos: ["flask"], tecnica: true },
-    { exibicao: "FastAPI", apelidos: ["fastapi", "fast api"], tecnica: true },
-    { exibicao: "PHP", apelidos: ["php"], tecnica: true },
-    { exibicao: "Laravel", apelidos: ["laravel"], tecnica: true },
-    { exibicao: "Ruby", apelidos: ["ruby"], tecnica: true },
-    { exibicao: "Ruby on Rails", apelidos: ["ruby on rails", "rails"], tecnica: true },
-    { exibicao: "Go", apelidos: ["golang"], tecnica: true },
-    { exibicao: "Kotlin", apelidos: ["kotlin"], tecnica: true },
+    { display: "Java", aliases: ["java"], technical: true },
+    { display: "Spring Boot", aliases: ["spring boot", "springboot", "spring"], technical: true },
+    { display: "Python", aliases: ["python"], technical: true },
+    { display: "Django", aliases: ["django"], technical: true },
+    { display: "Flask", aliases: ["flask"], technical: true },
+    { display: "FastAPI", aliases: ["fastapi", "fast api"], technical: true },
+    { display: "PHP", aliases: ["php"], technical: true },
+    { display: "Laravel", aliases: ["laravel"], technical: true },
+    { display: "Ruby", aliases: ["ruby"], technical: true },
+    { display: "Ruby on Rails", aliases: ["ruby on rails", "rails"], technical: true },
+    { display: "Go", aliases: ["golang"], technical: true },
+    { display: "Kotlin", aliases: ["kotlin"], technical: true },
 
-    // APIs e integração
+    // APIs and integration
     {
-        exibicao: "APIs REST",
-        apelidos: ["apis rest", "api rest", "rest", "restful", "apis restful"],
-        tecnica: true,
+        display: "APIs REST",
+        aliases: ["apis rest", "api rest", "rest", "restful", "apis restful"],
+        technical: true,
     },
-    { exibicao: "GraphQL", apelidos: ["graphql"], tecnica: true },
-    { exibicao: "gRPC", apelidos: ["grpc"], tecnica: true },
-    { exibicao: "WebSocket", apelidos: ["websocket", "websockets"], tecnica: true },
-    { exibicao: "OpenAPI", apelidos: ["openapi", "swagger"], tecnica: true },
-    { exibicao: "JWT", apelidos: ["jwt", "json web token"], tecnica: true },
-    { exibicao: "OAuth", apelidos: ["oauth", "oauth2", "oauth 2.0"], tecnica: true },
+    { display: "GraphQL", aliases: ["graphql"], technical: true },
+    { display: "gRPC", aliases: ["grpc"], technical: true },
+    { display: "WebSocket", aliases: ["websocket", "websockets"], technical: true },
+    { display: "OpenAPI", aliases: ["openapi", "swagger"], technical: true },
+    { display: "JWT", aliases: ["jwt", "json web token"], technical: true },
+    { display: "OAuth", aliases: ["oauth", "oauth2", "oauth 2.0"], technical: true },
 
-    // Dados e mensageria
-    { exibicao: "SQL", apelidos: ["sql"], tecnica: true },
-    { exibicao: "PostgreSQL", apelidos: ["postgresql", "postgres", "postgre"], tecnica: true },
-    { exibicao: "MySQL", apelidos: ["mysql"], tecnica: true },
-    { exibicao: "SQL Server", apelidos: ["sql server", "sqlserver"], tecnica: true },
-    { exibicao: "Oracle", apelidos: ["oracle"], tecnica: true },
-    { exibicao: "MongoDB", apelidos: ["mongodb", "mongo"], tecnica: true },
-    { exibicao: "Redis", apelidos: ["redis"], tecnica: true },
-    { exibicao: "Elasticsearch", apelidos: ["elasticsearch", "elastic search"], tecnica: true },
-    { exibicao: "Prisma", apelidos: ["prisma"], tecnica: true },
-    { exibicao: "RabbitMQ", apelidos: ["rabbitmq", "rabbit mq"], tecnica: true },
-    { exibicao: "Kafka", apelidos: ["kafka", "apache kafka"], tecnica: true },
+    // Data and messaging
+    { display: "SQL", aliases: ["sql"], technical: true },
+    { display: "PostgreSQL", aliases: ["postgresql", "postgres", "postgre"], technical: true },
+    { display: "MySQL", aliases: ["mysql"], technical: true },
+    { display: "SQL Server", aliases: ["sql server", "sqlserver"], technical: true },
+    { display: "Oracle", aliases: ["oracle"], technical: true },
+    { display: "MongoDB", aliases: ["mongodb", "mongo"], technical: true },
+    { display: "Redis", aliases: ["redis"], technical: true },
+    { display: "Elasticsearch", aliases: ["elasticsearch", "elastic search"], technical: true },
+    { display: "Prisma", aliases: ["prisma"], technical: true },
+    { display: "RabbitMQ", aliases: ["rabbitmq", "rabbit mq"], technical: true },
+    { display: "Kafka", aliases: ["kafka", "apache kafka"], technical: true },
     {
-        exibicao: "Mensageria",
-        apelidos: ["mensageria", "messaging", "message broker", "filas"],
-        tecnica: true,
-    },
-
-    // Cloud, infra e DevOps
-    { exibicao: "AWS", apelidos: ["aws", "amazon web services"], tecnica: true },
-    { exibicao: "Azure", apelidos: ["azure", "microsoft azure"], tecnica: true },
-    { exibicao: "GCP", apelidos: ["gcp", "google cloud", "google cloud platform"], tecnica: true },
-    { exibicao: "Cloud", apelidos: ["cloud", "nuvem", "computacao em nuvem"], tecnica: true },
-    { exibicao: "Docker", apelidos: ["docker"], tecnica: true },
-    { exibicao: "Kubernetes", apelidos: ["kubernetes", "k8s"], tecnica: true },
-    { exibicao: "Terraform", apelidos: ["terraform"], tecnica: true },
-    {
-        exibicao: "CI/CD",
-        apelidos: ["ci/cd", "ci cd", "cicd", "integracao continua"],
-        tecnica: true,
-    },
-    { exibicao: "GitHub Actions", apelidos: ["github actions"], tecnica: true },
-    { exibicao: "Jenkins", apelidos: ["jenkins"], tecnica: true },
-    { exibicao: "Linux", apelidos: ["linux", "unix"], tecnica: true },
-    { exibicao: "Nginx", apelidos: ["nginx"], tecnica: true },
-    { exibicao: "Git", apelidos: ["git"], tecnica: true },
-    {
-        exibicao: "Observabilidade",
-        apelidos: ["observabilidade", "observability", "tracing"],
-        tecnica: false,
+        display: "Mensageria",
+        aliases: ["mensageria", "messaging", "message broker", "filas"],
+        technical: true,
     },
 
-    // Testes e qualidade
-    { exibicao: "Jest", apelidos: ["jest"], tecnica: true },
-    { exibicao: "Vitest", apelidos: ["vitest"], tecnica: true },
-    { exibicao: "Cypress", apelidos: ["cypress"], tecnica: true },
-    { exibicao: "Playwright", apelidos: ["playwright"], tecnica: true },
-    { exibicao: "Selenium", apelidos: ["selenium"], tecnica: true },
-    { exibicao: "Testing Library", apelidos: ["testing library"], tecnica: true },
-    { exibicao: "JUnit", apelidos: ["junit"], tecnica: true },
-    { exibicao: "xUnit", apelidos: ["xunit", "nunit"], tecnica: true },
-    { exibicao: "pytest", apelidos: ["pytest"], tecnica: true },
-    { exibicao: "PHPUnit", apelidos: ["phpunit"], tecnica: true },
+    // Cloud, infra and DevOps
+    { display: "AWS", aliases: ["aws", "amazon web services"], technical: true },
+    { display: "Azure", aliases: ["azure", "microsoft azure"], technical: true },
+    { display: "GCP", aliases: ["gcp", "google cloud", "google cloud platform"], technical: true },
+    { display: "Cloud", aliases: ["cloud", "nuvem", "computacao em nuvem"], technical: true },
+    { display: "Docker", aliases: ["docker"], technical: true },
+    { display: "Kubernetes", aliases: ["kubernetes", "k8s"], technical: true },
+    { display: "Terraform", aliases: ["terraform"], technical: true },
     {
-        exibicao: "Testes",
-        apelidos: ["testes", "teste", "testes automatizados", "tests"],
-        tecnica: false,
+        display: "CI/CD",
+        aliases: ["ci/cd", "ci cd", "cicd", "integracao continua"],
+        technical: true,
     },
-    { exibicao: "TDD", apelidos: ["tdd", "test driven development"], tecnica: false },
+    { display: "GitHub Actions", aliases: ["github actions"], technical: true },
+    { display: "Jenkins", aliases: ["jenkins"], technical: true },
+    { display: "Linux", aliases: ["linux", "unix"], technical: true },
+    { display: "Nginx", aliases: ["nginx"], technical: true },
+    { display: "Git", aliases: ["git"], technical: true },
+    {
+        display: "Observabilidade",
+        aliases: ["observabilidade", "observability", "tracing"],
+        technical: false,
+    },
 
-    // Arquitetura
-    { exibicao: "SOLID", apelidos: ["solid"], tecnica: true },
+    // Testing and quality
+    { display: "Jest", aliases: ["jest"], technical: true },
+    { display: "Vitest", aliases: ["vitest"], technical: true },
+    { display: "Cypress", aliases: ["cypress"], technical: true },
+    { display: "Playwright", aliases: ["playwright"], technical: true },
+    { display: "Selenium", aliases: ["selenium"], technical: true },
+    { display: "Testing Library", aliases: ["testing library"], technical: true },
+    { display: "JUnit", aliases: ["junit"], technical: true },
+    { display: "xUnit", aliases: ["xunit", "nunit"], technical: true },
+    { display: "pytest", aliases: ["pytest"], technical: true },
+    { display: "PHPUnit", aliases: ["phpunit"], technical: true },
     {
-        exibicao: "Clean Architecture",
-        apelidos: ["clean architecture", "arquitetura limpa"],
-        tecnica: true,
+        display: "Testes",
+        aliases: ["testes", "teste", "testes automatizados", "tests"],
+        technical: false,
+    },
+    { display: "TDD", aliases: ["tdd", "test driven development"], technical: false },
+
+    // Architecture
+    { display: "SOLID", aliases: ["solid"], technical: true },
+    {
+        display: "Clean Architecture",
+        aliases: ["clean architecture", "arquitetura limpa"],
+        technical: true,
     },
     {
-        exibicao: "DDD",
-        apelidos: ["ddd", "domain driven design", "domain-driven design"],
-        tecnica: true,
+        display: "DDD",
+        aliases: ["ddd", "domain driven design", "domain-driven design"],
+        technical: true,
     },
     {
-        exibicao: "Orientação a Objetos",
-        apelidos: [
+        display: "Orientação a Objetos",
+        aliases: [
             "orientacao a objetos",
             "object oriented",
             "oop",
             "programacao orientada a objetos",
         ],
-        tecnica: true,
+        technical: true,
     },
     {
-        exibicao: "Microserviços",
-        apelidos: ["microservicos", "microsservicos", "microservices"],
-        tecnica: true,
+        display: "Microserviços",
+        aliases: ["microservicos", "microsservicos", "microservices"],
+        technical: true,
     },
     {
-        exibicao: "Escalabilidade",
-        apelidos: ["escalabilidade", "scalability", "escalavel"],
-        tecnica: false,
+        display: "Escalabilidade",
+        aliases: ["escalabilidade", "scalability", "escalavel"],
+        technical: false,
     },
 
-    // Segurança
-    { exibicao: "OWASP", apelidos: ["owasp", "owasp top 10"], tecnica: true },
+    // Security
+    { display: "OWASP", aliases: ["owasp", "owasp top 10"], technical: true },
     {
-        exibicao: "Segurança de aplicações",
-        apelidos: [
+        display: "Segurança de aplicações",
+        aliases: [
             "seguranca de aplicacoes",
             "application security",
             "appsec",
             "security by design",
         ],
-        tecnica: true,
+        technical: true,
     },
-    { exibicao: "LGPD", apelidos: ["lgpd", "gdpr"], tecnica: false },
+    { display: "LGPD", aliases: ["lgpd", "gdpr"], technical: false },
 
-    // Dados e IA
+    // Data and AI
     {
-        exibicao: "Inteligência Artificial",
-        apelidos: ["inteligencia artificial", "llm", "llms"],
-        tecnica: true,
+        display: "Inteligência Artificial",
+        aliases: ["inteligencia artificial", "llm", "llms"],
+        technical: true,
     },
     {
-        exibicao: "Machine Learning",
-        apelidos: ["machine learning", "aprendizado de maquina"],
-        tecnica: true,
+        display: "Machine Learning",
+        aliases: ["machine learning", "aprendizado de maquina"],
+        technical: true,
     },
-    { exibicao: "Data Science", apelidos: ["data science", "ciencia de dados"], tecnica: true },
-    { exibicao: "Power BI", apelidos: ["power bi", "powerbi"], tecnica: true },
-    { exibicao: "ETL", apelidos: ["etl"], tecnica: true },
+    { display: "Data Science", aliases: ["data science", "ciencia de dados"], technical: true },
+    { display: "Power BI", aliases: ["power bi", "powerbi"], technical: true },
+    { display: "ETL", aliases: ["etl"], technical: true },
 
-    // Produto, processo e idioma
-    { exibicao: "Scrum", apelidos: ["scrum"], tecnica: false },
+    // Product, process and languages
+    { display: "Scrum", aliases: ["scrum"], technical: false },
     {
-        exibicao: "Ágil",
-        apelidos: ["agile", "metodologias ageis", "metodologia agil"],
-        tecnica: false,
+        display: "Ágil",
+        aliases: ["agile", "metodologias ageis", "metodologia agil"],
+        technical: false,
     },
-    { exibicao: "Kanban", apelidos: ["kanban"], tecnica: false },
-    { exibicao: "Code review", apelidos: ["code review", "revisao de codigo"], tecnica: false },
-    { exibicao: "Figma", apelidos: ["figma"], tecnica: false },
+    { display: "Kanban", aliases: ["kanban"], technical: false },
+    { display: "Code review", aliases: ["code review", "revisao de codigo"], technical: false },
+    { display: "Figma", aliases: ["figma"], technical: false },
     {
-        exibicao: "Responsivo",
-        apelidos: ["responsivo", "responsiva", "responsividade", "responsive"],
-        tecnica: false,
-    },
-    {
-        exibicao: "Performance",
-        apelidos: ["performance", "core web vitals", "desempenho"],
-        tecnica: false,
+        display: "Responsivo",
+        aliases: ["responsivo", "responsiva", "responsividade", "responsive"],
+        technical: false,
     },
     {
-        exibicao: "Acessibilidade",
-        apelidos: ["acessibilidade", "accessibility", "a11y"],
-        tecnica: false,
+        display: "Performance",
+        aliases: ["performance", "core web vitals", "desempenho"],
+        technical: false,
     },
-    { exibicao: "WCAG", apelidos: ["wcag"], tecnica: true },
-    { exibicao: "Inglês", apelidos: ["ingles", "english"], tecnica: false },
-    { exibicao: "Espanhol", apelidos: ["espanhol", "spanish"], tecnica: false },
+    {
+        display: "Acessibilidade",
+        aliases: ["acessibilidade", "accessibility", "a11y"],
+        technical: false,
+    },
+    { display: "WCAG", aliases: ["wcag"], technical: true },
+    { display: "Inglês", aliases: ["ingles", "english"], technical: false },
+    { display: "Espanhol", aliases: ["espanhol", "spanish"], technical: false },
 ];
