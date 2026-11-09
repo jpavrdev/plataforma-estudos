@@ -16,15 +16,15 @@ import { computeXp, levelFromXp } from "../domain/xp.ts";
 import { apoiadoresAtivos, apoiadorAtivo } from "./apoiador.service.ts";
 import { AppError } from "../errors/AppError.ts";
 import type { z } from "zod";
-import type { criarPostSchema, comentarSchema } from "../schemas/comunidade.schema.ts";
+import type { createPostSchema, commentSchema } from "../schemas/community.schema.ts";
 
-type DadosPost = z.infer<typeof criarPostSchema>;
+type PostInput = z.infer<typeof createPostSchema>;
 
-// Nível de cada usuário da lista, em 3 queries agrupadas (não uma por autor).
-export async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, number>> {
-    const niveis = new Map<string, number>();
-    if (userIds.length === 0) return niveis;
-    const [aulas, acertos, desafios] = await Promise.all([
+// Level of each user in the list, in 3 grouped queries (not one per author).
+export async function userLevels(userIds: string[]): Promise<Map<string, number>> {
+    const levels = new Map<string, number>();
+    if (userIds.length === 0) return levels;
+    const [lessons, correct, challenges] = await Promise.all([
         db
             .select({ userId: lessonProgress.userId, n: count() })
             .from(lessonProgress)
@@ -48,24 +48,23 @@ export async function niveisDeUsuarios(userIds: string[]): Promise<Map<string, n
             )
             .groupBy(challengeSubmissions.userId),
     ]);
-    const paraMapa = (
-        arr: { userId: string; n?: number | string; xp?: number | string | null }[],
-    ) => new Map(arr.map((a) => [a.userId, Number(a.n ?? a.xp ?? 0)]));
-    const a = paraMapa(aulas);
-    const q = paraMapa(acertos);
-    const d = paraMapa(desafios);
+    const toMap = (arr: { userId: string; n?: number | string; xp?: number | string | null }[]) =>
+        new Map(arr.map((a) => [a.userId, Number(a.n ?? a.xp ?? 0)]));
+    const lessonCounts = toMap(lessons);
+    const correctCounts = toMap(correct);
+    const challengeCounts = toMap(challenges);
     for (const id of userIds) {
         const xp = computeXp({
-            aulas: a.get(id) ?? 0,
-            questoes: q.get(id) ?? 0,
-            desafiosXp: d.get(id) ?? 0,
+            aulas: lessonCounts.get(id) ?? 0,
+            questoes: correctCounts.get(id) ?? 0,
+            desafiosXp: challengeCounts.get(id) ?? 0,
         });
-        niveis.set(id, levelFromXp(xp));
+        levels.set(id, levelFromXp(xp));
     }
-    return niveis;
+    return levels;
 }
 
-type LinhaPost = {
+type PostRow = {
     id: string;
     userId: string;
     kind: string;
@@ -79,11 +78,11 @@ type LinhaPost = {
     authorAvatar: string | null;
 };
 
-// Contagem de curtidas e comentários por post, em duas queries agrupadas.
-async function contagens(ids: string[]) {
+// Like and comment counts per post, in two grouped queries.
+async function counts(ids: string[]) {
     if (ids.length === 0)
-        return { likes: new Map<string, number>(), comentarios: new Map<string, number>() };
-    const [likes, comentarios] = await Promise.all([
+        return { likes: new Map<string, number>(), commentCount: new Map<string, number>() };
+    const [likeRows, commentRows] = await Promise.all([
         db
             .select({ postId: communityLikes.postId, n: count() })
             .from(communityLikes)
@@ -96,20 +95,20 @@ async function contagens(ids: string[]) {
             .groupBy(communityComments.postId),
     ]);
     return {
-        likes: new Map(likes.map((l) => [l.postId, Number(l.n)])),
-        comentarios: new Map(comentarios.map((c) => [c.postId, Number(c.n)])),
+        likes: new Map(likeRows.map((l) => [l.postId, Number(l.n)])),
+        commentCount: new Map(commentRows.map((c) => [c.postId, Number(c.n)])),
     };
 }
 
-// Enriquece linhas cruas de post com tags, contagens, curtida do usuário,
-// nível do autor e selo de apoiador. Preserva a ordem recebida.
-async function montarPosts(userId: string, linhas: LinhaPost[]) {
-    const ids = linhas.map((l) => l.id);
+// Enriches raw post rows with tags, counts, the user's like, the author's level
+// and supporter badge. Preserves the order received.
+async function assemblePosts(userId: string, rows: PostRow[]) {
+    const ids = rows.map((r) => r.id);
     if (ids.length === 0) return [];
-    const autores = [...new Set(linhas.map((l) => l.userId))];
+    const authors = [...new Set(rows.map((r) => r.userId))];
 
-    const [{ likes, comentarios }, tags, curtidos, niveis, apoiadores] = await Promise.all([
-        contagens(ids),
+    const [{ likes, commentCount }, tags, likedRows, levels, supporters] = await Promise.all([
+        counts(ids),
         db
             .select({ postId: communityPostTags.postId, tag: communityPostTags.tag })
             .from(communityPostTags)
@@ -118,41 +117,41 @@ async function montarPosts(userId: string, linhas: LinhaPost[]) {
             .select({ postId: communityLikes.postId })
             .from(communityLikes)
             .where(and(eq(communityLikes.userId, userId), inArray(communityLikes.postId, ids))),
-        niveisDeUsuarios(autores),
+        userLevels(authors),
         apoiadoresAtivos(),
     ]);
 
-    const tagsPorPost = new Map<string, string[]>();
+    const tagsByPost = new Map<string, string[]>();
     for (const t of tags) {
-        const arr = tagsPorPost.get(t.postId) ?? [];
+        const arr = tagsByPost.get(t.postId) ?? [];
         arr.push(t.tag);
-        tagsPorPost.set(t.postId, arr);
+        tagsByPost.set(t.postId, arr);
     }
-    const curtidosSet = new Set(curtidos.map((c) => c.postId));
+    const likedSet = new Set(likedRows.map((l) => l.postId));
 
-    return linhas.map((l) => ({
-        id: l.id,
-        kind: l.kind,
-        content: l.content,
-        code: l.code,
-        codeLanguage: l.codeLanguage,
-        imageUrl: l.imageUrl,
-        createdAt: l.createdAt,
-        tags: tagsPorPost.get(l.id) ?? [],
-        likes: likes.get(l.id) ?? 0,
-        comentarios: comentarios.get(l.id) ?? 0,
-        curtido: curtidosSet.has(l.id),
+    return rows.map((r) => ({
+        id: r.id,
+        kind: r.kind,
+        content: r.content,
+        code: r.code,
+        codeLanguage: r.codeLanguage,
+        imageUrl: r.imageUrl,
+        createdAt: r.createdAt,
+        tags: tagsByPost.get(r.id) ?? [],
+        likes: likes.get(r.id) ?? 0,
+        comentarios: commentCount.get(r.id) ?? 0,
+        curtido: likedSet.has(r.id),
         autor: {
-            name: l.authorName,
-            username: l.authorUsername,
-            avatarUrl: l.authorAvatar,
-            level: niveis.get(l.userId) ?? 1,
-            apoiador: apoiadores.has(l.userId),
+            name: r.authorName,
+            username: r.authorUsername,
+            avatarUrl: r.authorAvatar,
+            level: levels.get(r.userId) ?? 1,
+            apoiador: supporters.has(r.userId),
         },
     }));
 }
 
-const COLUNAS_POST = {
+const POST_COLUMNS = {
     id: communityPosts.id,
     userId: communityPosts.userId,
     kind: communityPosts.kind,
@@ -166,7 +165,7 @@ const COLUNAS_POST = {
     authorAvatar: users.avatarUrl,
 } as const;
 
-type FiltroFeed =
+type FeedFilter =
     | "para-voce"
     | "recentes"
     | "em-alta"
@@ -176,47 +175,47 @@ type FiltroFeed =
     | "solucao"
     | "conquista";
 
-export async function feed(userId: string, filtro: FiltroFeed, tag: string | null) {
-    const cond = [];
-    if (filtro === "duvida" || filtro === "solucao" || filtro === "conquista") {
-        cond.push(eq(communityPosts.kind, filtro));
+export async function feed(userId: string, filter: FeedFilter, tag: string | null) {
+    const conditions = [];
+    if (filter === "duvida" || filter === "solucao" || filter === "conquista") {
+        conditions.push(eq(communityPosts.kind, filter));
     }
-    if (filtro === "seguindo") {
-        const seguidos = await db
+    if (filter === "seguindo") {
+        const followedRows = await db
             .select({ id: userFollows.followingId })
             .from(userFollows)
             .where(eq(userFollows.followerId, userId));
-        const idsSeguidos = seguidos.map((s) => s.id);
-        cond.push(
-            idsSeguidos.length > 0 ? inArray(communityPosts.userId, idsSeguidos) : sql`false`,
+        const followedIds = followedRows.map((f) => f.id);
+        conditions.push(
+            followedIds.length > 0 ? inArray(communityPosts.userId, followedIds) : sql`false`,
         );
     }
-    if (filtro === "em-alta") {
-        cond.push(gt(communityPosts.createdAt, new Date(Date.now() - 14 * 86400000)));
+    if (filter === "em-alta") {
+        conditions.push(gt(communityPosts.createdAt, new Date(Date.now() - 14 * 86400000)));
     }
     if (tag) {
-        const comTag = db
+        const withTag = db
             .select({ postId: communityPostTags.postId })
             .from(communityPostTags)
             .where(eq(communityPostTags.tag, tag.toLowerCase()));
-        cond.push(inArray(communityPosts.id, comTag));
+        conditions.push(inArray(communityPosts.id, withTag));
     }
 
-    // "Em alta" e "sem resposta" ordenam/filtram por contagem, feita em JS sobre
-    // uma janela maior; os demais filtros já saem prontos por data.
-    const precisaJanela = filtro === "em-alta" || filtro === "sem-resposta";
-    const linhas = (await db
-        .select(COLUNAS_POST)
+    // "Em alta" and "sem resposta" sort/filter by count, done in JS over a larger
+    // window; the other filters are already fine coming out ordered by date.
+    const needsWindow = filter === "em-alta" || filter === "sem-resposta";
+    const rows = (await db
+        .select(POST_COLUMNS)
         .from(communityPosts)
         .innerJoin(users, eq(users.id, communityPosts.userId))
-        .where(cond.length ? and(...cond) : undefined)
+        .where(conditions.length ? and(...conditions) : undefined)
         .orderBy(desc(communityPosts.createdAt))
-        .limit(precisaJanela ? 80 : 30)) as LinhaPost[];
+        .limit(needsWindow ? 80 : 30)) as PostRow[];
 
-    let posts = await montarPosts(userId, linhas);
-    if (filtro === "sem-resposta") {
+    let posts = await assemblePosts(userId, rows);
+    if (filter === "sem-resposta") {
         posts = posts.filter((p) => p.comentarios === 0).slice(0, 30);
-    } else if (filtro === "em-alta") {
+    } else if (filter === "em-alta") {
         posts = posts
             .sort(
                 (x, y) =>
@@ -230,15 +229,15 @@ export async function feed(userId: string, filtro: FiltroFeed, tag: string | nul
 
 const TAG_RE = /^[a-z0-9-]{2,40}$/;
 
-export async function criarPost(userId: string, dados: DadosPost) {
-    // Anexar imagem é benefício de apoiador; barra aqui também (não só no upload)
-    // para que uma URL reaproveitada de outro post não fure a regra.
-    if (dados.imageUrl && !(await apoiadorAtivo(userId))) {
-        throw new AppError(403, "Enviar imagens na comunidade é um benefício de apoiador.");
+export async function insertPost(userId: string, data: PostInput) {
+    // Attaching an image is a supporter benefit; blocked here too (not only at
+    // upload) so a URL reused from another post cannot bypass the rule.
+    if (data.imageUrl && !(await apoiadorAtivo(userId))) {
+        throw new AppError(403, "community.imagesForSupporters");
     }
-    const tagsLimpa = [
+    const cleanTags = [
         ...new Set(
-            (dados.tags ?? []).map((t) => t.trim().toLowerCase()).filter((t) => TAG_RE.test(t)),
+            (data.tags ?? []).map((t) => t.trim().toLowerCase()).filter((t) => TAG_RE.test(t)),
         ),
     ].slice(0, 5);
 
@@ -246,53 +245,53 @@ export async function criarPost(userId: string, dados: DadosPost) {
         .insert(communityPosts)
         .values({
             userId,
-            kind: dados.kind,
-            content: dados.content.trim(),
-            code: dados.code?.trim() || null,
-            codeLanguage: dados.code?.trim() ? (dados.codeLanguage ?? null) : null,
-            imageUrl: dados.imageUrl ?? null,
+            kind: data.kind,
+            content: data.content.trim(),
+            code: data.code?.trim() || null,
+            codeLanguage: data.code?.trim() ? (data.codeLanguage ?? null) : null,
+            imageUrl: data.imageUrl ?? null,
         })
         .returning();
-    if (tagsLimpa.length) {
+    if (cleanTags.length) {
         await db
             .insert(communityPostTags)
-            .values(tagsLimpa.map((tag) => ({ postId: post.id, tag })))
+            .values(cleanTags.map((tag) => ({ postId: post.id, tag })))
             .onConflictDoNothing();
     }
     return { id: post.id };
 }
 
-export async function alternarCurtida(userId: string, postId: string) {
+export async function togglePostLike(userId: string, postId: string) {
     const [post] = await db
         .select({ id: communityPosts.id })
         .from(communityPosts)
         .where(eq(communityPosts.id, postId));
-    if (!post) throw new AppError(404, "Publicação não encontrada");
+    if (!post) throw new AppError(404, "community.postNotFound");
 
-    const removidas = await db
+    const removed = await db
         .delete(communityLikes)
         .where(and(eq(communityLikes.postId, postId), eq(communityLikes.userId, userId)))
         .returning({ id: communityLikes.id });
-    if (removidas.length === 0) {
+    if (removed.length === 0) {
         await db.insert(communityLikes).values({ postId, userId }).onConflictDoNothing();
     }
     const [{ n }] = await db
         .select({ n: count() })
         .from(communityLikes)
         .where(eq(communityLikes.postId, postId));
-    return { curtido: removidas.length === 0, likes: Number(n) };
+    return { curtido: removed.length === 0, likes: Number(n) };
 }
 
-export async function detalhePost(userId: string, postId: string) {
-    const linhas = (await db
-        .select(COLUNAS_POST)
+export async function postDetail(userId: string, postId: string) {
+    const rows = (await db
+        .select(POST_COLUMNS)
         .from(communityPosts)
         .innerJoin(users, eq(users.id, communityPosts.userId))
-        .where(eq(communityPosts.id, postId))) as LinhaPost[];
-    const [post] = await montarPosts(userId, linhas);
-    if (!post) throw new AppError(404, "Publicação não encontrada");
+        .where(eq(communityPosts.id, postId))) as PostRow[];
+    const [post] = await assemblePosts(userId, rows);
+    if (!post) throw new AppError(404, "community.postNotFound");
 
-    const comentariosBrutos = await db
+    const rawComments = await db
         .select({
             id: communityComments.id,
             userId: communityComments.userId,
@@ -308,92 +307,94 @@ export async function detalhePost(userId: string, postId: string) {
         .where(eq(communityComments.postId, postId))
         .orderBy(communityComments.createdAt);
 
-    const idsComentarios = comentariosBrutos.map((c) => c.id);
-    const [niveis, likesComentarios, curtidosPorMim] = await Promise.all([
-        niveisDeUsuarios([...new Set(comentariosBrutos.map((c) => c.userId))]),
-        idsComentarios.length
+    const commentIds = rawComments.map((c) => c.id);
+    const [levels, commentLikeRows, likedByMeRows] = await Promise.all([
+        userLevels([...new Set(rawComments.map((c) => c.userId))]),
+        commentIds.length
             ? db
                   .select({ commentId: communityCommentLikes.commentId, n: count() })
                   .from(communityCommentLikes)
-                  .where(inArray(communityCommentLikes.commentId, idsComentarios))
+                  .where(inArray(communityCommentLikes.commentId, commentIds))
                   .groupBy(communityCommentLikes.commentId)
             : [],
-        idsComentarios.length
+        commentIds.length
             ? db
                   .select({ commentId: communityCommentLikes.commentId })
                   .from(communityCommentLikes)
                   .where(
                       and(
                           eq(communityCommentLikes.userId, userId),
-                          inArray(communityCommentLikes.commentId, idsComentarios),
+                          inArray(communityCommentLikes.commentId, commentIds),
                       ),
                   )
             : [],
     ]);
-    const likesPorComentario = new Map(likesComentarios.map((l) => [l.commentId, Number(l.n)]));
-    const curtidosSet = new Set(curtidosPorMim.map((c) => c.commentId));
+    const likesByComment = new Map(commentLikeRows.map((l) => [l.commentId, Number(l.n)]));
+    const likedSet = new Set(likedByMeRows.map((l) => l.commentId));
 
     return {
         ...post,
-        comentariosLista: comentariosBrutos.map((c) => ({
+        comentariosLista: rawComments.map((c) => ({
             id: c.id,
             parentId: c.parentId,
             content: c.content,
             createdAt: c.createdAt,
-            likes: likesPorComentario.get(c.id) ?? 0,
-            curtido: curtidosSet.has(c.id),
+            likes: likesByComment.get(c.id) ?? 0,
+            curtido: likedSet.has(c.id),
             autor: {
                 name: c.authorName,
                 username: c.authorUsername,
                 avatarUrl: c.authorAvatar,
-                level: niveis.get(c.userId) ?? 1,
+                level: levels.get(c.userId) ?? 1,
             },
         })),
     };
 }
 
-export async function comentar(
+export async function insertComment(
     userId: string,
     postId: string,
-    dados: z.infer<typeof comentarSchema>,
+    data: z.infer<typeof commentSchema>,
 ) {
     const [post] = await db
         .select({ id: communityPosts.id })
         .from(communityPosts)
         .where(eq(communityPosts.id, postId));
-    if (!post) throw new AppError(404, "Publicação não encontrada");
+    if (!post) throw new AppError(404, "community.postNotFound");
 
-    // Resposta a comentário: a thread tem um nível só, então responder a uma
-    // resposta pendura no comentário de primeiro nível dela.
+    // Reply to a comment: the thread is one level deep, so replying to a reply
+    // hangs off that reply's top-level comment.
     let parentId: string | null = null;
-    if (dados.parentId) {
-        const [pai] = await db
+    if (data.parentId) {
+        const [parent] = await db
             .select({
                 id: communityComments.id,
                 postId: communityComments.postId,
                 parentId: communityComments.parentId,
             })
             .from(communityComments)
-            .where(eq(communityComments.id, dados.parentId));
-        if (!pai || pai.postId !== postId) throw new AppError(404, "Comentário não encontrado");
-        parentId = pai.parentId ?? pai.id;
+            .where(eq(communityComments.id, data.parentId));
+        if (!parent || parent.postId !== postId) {
+            throw new AppError(404, "community.commentNotFound");
+        }
+        parentId = parent.parentId ?? parent.id;
     }
 
     const [c] = await db
         .insert(communityComments)
-        .values({ postId, userId, parentId, content: dados.content.trim() })
+        .values({ postId, userId, parentId, content: data.content.trim() })
         .returning({ id: communityComments.id });
     return { id: c.id };
 }
 
-export async function alternarCurtidaComentario(userId: string, commentId: string) {
-    const [comentario] = await db
+export async function toggleCommentLike(userId: string, commentId: string) {
+    const [comment] = await db
         .select({ id: communityComments.id })
         .from(communityComments)
         .where(eq(communityComments.id, commentId));
-    if (!comentario) throw new AppError(404, "Comentário não encontrado");
+    if (!comment) throw new AppError(404, "community.commentNotFound");
 
-    const removidas = await db
+    const removed = await db
         .delete(communityCommentLikes)
         .where(
             and(
@@ -402,39 +403,39 @@ export async function alternarCurtidaComentario(userId: string, commentId: strin
             ),
         )
         .returning({ id: communityCommentLikes.id });
-    if (removidas.length === 0) {
+    if (removed.length === 0) {
         await db.insert(communityCommentLikes).values({ commentId, userId }).onConflictDoNothing();
     }
     const [{ n }] = await db
         .select({ n: count() })
         .from(communityCommentLikes)
         .where(eq(communityCommentLikes.commentId, commentId));
-    return { curtido: removidas.length === 0, likes: Number(n) };
+    return { curtido: removed.length === 0, likes: Number(n) };
 }
 
-// Dúvidas em aberto: posts do tipo dúvida que ainda não têm nenhum comentário.
-export async function duvidasAbertas(): Promise<number> {
-    const semResposta = db.select({ postId: communityComments.postId }).from(communityComments);
-    const [linha] = await db
+// Open questions: duvida posts that do not have any comment yet.
+export async function openQuestions(): Promise<number> {
+    const withComments = db.select({ postId: communityComments.postId }).from(communityComments);
+    const [row] = await db
         .select({ n: count() })
         .from(communityPosts)
-        .where(and(eq(communityPosts.kind, "duvida"), notInArray(communityPosts.id, semResposta)));
-    return Number(linha?.n ?? 0);
+        .where(and(eq(communityPosts.kind, "duvida"), notInArray(communityPosts.id, withComments)));
+    return Number(row?.n ?? 0);
 }
 
-export async function tagsPopulares() {
-    const linhas = await db
+export async function popularTags() {
+    const rows = await db
         .select({ tag: communityPostTags.tag, n: count() })
         .from(communityPostTags)
         .groupBy(communityPostTags.tag)
         .orderBy(desc(count()))
         .limit(6);
-    return linhas.map((l) => ({ tag: l.tag, count: Number(l.n) }));
+    return rows.map((r) => ({ tag: r.tag, count: Number(r.n) }));
 }
 
-// Discussões em alta: posts recentes com mais respostas.
-export async function discussoesEmAlta() {
-    const linhas = await db
+// Hot discussions: recent posts with the most replies.
+export async function hotDiscussions() {
+    const rows = await db
         .select({
             id: communityPosts.id,
             content: communityPosts.content,
@@ -450,25 +451,25 @@ export async function discussoesEmAlta() {
         .groupBy(communityPosts.id)
         .orderBy(desc(count(communityComments.id)), desc(communityPosts.createdAt))
         .limit(4);
-    return linhas
-        .filter((l) => Number(l.comentarios) > 0)
-        .map((l) => ({
-            id: l.id,
-            titulo: l.content.length > 70 ? l.content.slice(0, 70) + "..." : l.content,
-            comentarios: Number(l.comentarios),
-            tag: l.tag,
+    return rows
+        .filter((r) => Number(r.comentarios) > 0)
+        .map((r) => ({
+            id: r.id,
+            titulo: r.content.length > 70 ? r.content.slice(0, 70) + "..." : r.content,
+            comentarios: Number(r.comentarios),
+            tag: r.tag,
         }));
 }
 
-// Sugestões para seguir: usuários com perfil público que o usuário ainda não segue.
-export async function sugestoesParaSeguir(userId: string) {
-    const seguidos = await db
+// Follow suggestions: public-profile users the user does not follow yet.
+export async function followSuggestions(userId: string) {
+    const followedRows = await db
         .select({ id: userFollows.followingId })
         .from(userFollows)
         .where(eq(userFollows.followerId, userId));
-    const excluir = [...seguidos.map((s) => s.id), userId];
+    const exclude = [...followedRows.map((f) => f.id), userId];
 
-    const candidatos = await db
+    const candidates = await db
         .select({
             id: users.id,
             name: users.name,
@@ -476,70 +477,73 @@ export async function sugestoesParaSeguir(userId: string) {
             avatarUrl: users.avatarUrl,
         })
         .from(users)
-        .where(and(notInArray(users.id, excluir), isNotNull(users.username)))
+        .where(and(notInArray(users.id, exclude), isNotNull(users.username)))
         .orderBy(desc(users.createdAt))
         .limit(30);
-    if (candidatos.length === 0) return [];
+    if (candidates.length === 0) return [];
 
-    const ids = candidatos.map((c) => c.id);
-    const [niveis, respostas] = await Promise.all([
-        niveisDeUsuarios(ids),
+    const ids = candidates.map((c) => c.id);
+    const [levels, answers] = await Promise.all([
+        userLevels(ids),
         db
             .select({ userId: communityComments.userId, n: count() })
             .from(communityComments)
             .where(inArray(communityComments.userId, ids))
             .groupBy(communityComments.userId),
     ]);
-    const respostasMap = new Map(respostas.map((r) => [r.userId, Number(r.n)]));
+    const answersMap = new Map(answers.map((a) => [a.userId, Number(a.n)]));
 
-    return candidatos
+    return candidates
         .map((c) => ({
             username: c.username,
             name: c.name,
             avatarUrl: c.avatarUrl,
-            level: niveis.get(c.id) ?? 1,
-            respostas: respostasMap.get(c.id) ?? 0,
+            level: levels.get(c.id) ?? 1,
+            respostas: answersMap.get(c.id) ?? 0,
         }))
         .sort((a, b) => b.level - a.level || b.respostas - a.respostas)
         .slice(0, 3);
 }
 
-export async function estadoSeguir(
+export async function followState(
     followerId: string,
     username: string,
 ): Promise<{ seguindo: boolean }> {
-    const [alvo] = await db
+    const [target] = await db
         .select({ id: users.id })
         .from(users)
         .where(eq(users.username, username));
-    if (!alvo) throw new AppError(404, "Usuário não encontrado");
-    if (alvo.id === followerId) return { seguindo: false };
+    if (!target) throw new AppError(404, "user.notFound");
+    if (target.id === followerId) return { seguindo: false };
     const [rel] = await db
         .select({ id: userFollows.id })
         .from(userFollows)
-        .where(and(eq(userFollows.followerId, followerId), eq(userFollows.followingId, alvo.id)));
+        .where(and(eq(userFollows.followerId, followerId), eq(userFollows.followingId, target.id)));
     return { seguindo: Boolean(rel) };
 }
 
-export async function seguir(followerId: string, username: string) {
-    const [alvo] = await db
+export async function follow(followerId: string, username: string) {
+    const [target] = await db
         .select({ id: users.id })
         .from(users)
         .where(eq(users.username, username));
-    if (!alvo) throw new AppError(404, "Usuário não encontrado");
-    if (alvo.id === followerId) throw new AppError(400, "Você não pode seguir a si mesmo.");
-    await db.insert(userFollows).values({ followerId, followingId: alvo.id }).onConflictDoNothing();
+    if (!target) throw new AppError(404, "user.notFound");
+    if (target.id === followerId) throw new AppError(400, "community.cannotFollowSelf");
+    await db
+        .insert(userFollows)
+        .values({ followerId, followingId: target.id })
+        .onConflictDoNothing();
     return { seguindo: true };
 }
 
-export async function deixarDeSeguir(followerId: string, username: string) {
-    const [alvo] = await db
+export async function unfollow(followerId: string, username: string) {
+    const [target] = await db
         .select({ id: users.id })
         .from(users)
         .where(eq(users.username, username));
-    if (!alvo) throw new AppError(404, "Usuário não encontrado");
+    if (!target) throw new AppError(404, "user.notFound");
     await db
         .delete(userFollows)
-        .where(and(eq(userFollows.followerId, followerId), eq(userFollows.followingId, alvo.id)));
+        .where(and(eq(userFollows.followerId, followerId), eq(userFollows.followingId, target.id)));
     return { seguindo: false };
 }

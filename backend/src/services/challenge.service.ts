@@ -19,7 +19,7 @@ import { runOnRunner } from "./runner.client.ts";
 import { gradeChallenge, outputMatches, returnMatches, dayIndex } from "../domain/challenge.ts";
 import { challengeXp } from "../domain/xp.ts";
 import { checkAchievements } from "./achievement.service.ts";
-import { niveisDeUsuarios } from "./comunidade.service.ts";
+import { userLevels } from "./community.service.ts";
 
 type RunInput = z.infer<typeof runChallengeSchema>;
 type ChallengeData = z.infer<typeof createChallengeSchema>;
@@ -394,7 +394,7 @@ export async function findChallengeSolutions(userId: string, id: string) {
             asc(challengeSubmissions.language),
             desc(challengeSubmissions.createdAt),
         );
-    const levels = await niveisDeUsuarios([...new Set(rows.map((l) => l.userId))]);
+    const levels = await userLevels([...new Set(rows.map((l) => l.userId))]);
     const sortedRows = [...rows].sort((a, b) => {
         const aOwn = a.userId === userId ? 0 : 1;
         const bOwn = b.userId === userId ? 0 : 1;
@@ -433,7 +433,7 @@ export async function findChallengeComments(userId: string, id: string) {
         .innerJoin(users, eq(users.id, challengeComments.userId))
         .where(eq(challengeComments.challengeId, id))
         .orderBy(asc(challengeComments.createdAt));
-    const levels = await niveisDeUsuarios([...new Set(rows.map((l) => l.userId))]);
+    const levels = await userLevels([...new Set(rows.map((l) => l.userId))]);
     return rows.map((l) => ({
         id: l.id,
         content: l.content,
