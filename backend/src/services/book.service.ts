@@ -35,7 +35,7 @@ const LEVEL_LABELS: Record<string, string> = {
     avancado: "Nível avançado",
 };
 
-type Figure = { caminho: string; conteudo: Buffer; tipo: string };
+type Figure = { path: string; content: Buffer; type: string };
 
 const IMAGE_TYPES: Record<string, string> = {
     png: "image/png",
@@ -56,15 +56,15 @@ async function fetchImage(url: string): Promise<Figure | null> {
     try {
         if (url.startsWith("/uploads/")) {
             const content = await readFile(path.join(UPLOADS_DIR, url.slice("/uploads/".length)));
-            return { caminho: fileName, conteudo: content, tipo: mimeType };
+            return { path: fileName, content, type: mimeType };
         }
         if (/^https?:\/\//.test(url)) {
             const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return {
-                caminho: fileName,
-                conteudo: Buffer.from(await response.arrayBuffer()),
-                tipo: mimeType,
+                path: fileName,
+                content: Buffer.from(await response.arrayBuffer()),
+                type: mimeType,
             };
         }
     } catch (err) {
@@ -158,14 +158,14 @@ export async function buildTrailBook(trailId: string, lang?: string) {
         arr.push({
             statement: q.statement,
             explanation: q.explanation,
-            opcoes: optionsByQuestion.get(q.id) ?? [],
+            options: optionsByQuestion.get(q.id) ?? [],
         });
         quizByLesson.set(q.lessonId, arr);
     }
 
     const signature = JSON.stringify({
-        VERSAO_GERADOR: GENERATOR_VERSION,
-        trilha: {
+        generatorVersion: GENERATOR_VERSION,
+        trail: {
             name: trail.name,
             description: trail.description,
             level: trail.trailLevel,
@@ -174,14 +174,14 @@ export async function buildTrailBook(trailId: string, lang?: string) {
             workloadHours: trail.workloadHours,
         },
         mods,
-        aulas: bookLessons,
+        lessons: bookLessons,
         quiz: [...quizByLesson.entries()],
     });
     const hash = createHash("sha1").update(signature).digest("hex").slice(0, 12);
     const fileName = `${slug(trail.name)}${language ? `-${slug(language)}` : ""}.epub`;
     const cachedPath = path.join(BOOKS_DIR, `${trailId}-${language ?? "unico"}-${hash}.epub`);
     try {
-        return { buffer: await readFile(cachedPath), nome: fileName };
+        return { buffer: await readFile(cachedPath), filename: fileName };
     } catch (err) {
         if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
             console.warn("Cached book unreadable, building it again:", cachedPath, err);
@@ -198,16 +198,16 @@ export async function buildTrailBook(trailId: string, lang?: string) {
             const figure = await fetchImage(b.value);
             if (!figure) continue;
             figures.set(b.value, figure);
-            imagePathByUrl.set(b.value, figure.caminho);
+            imagePathByUrl.set(b.value, figure.path);
         }
     }
 
     const usedFiles = new Set<string>();
     const chapters: {
         id: string;
-        arquivo: string;
-        titulo: string;
-        moduloId: string;
+        file: string;
+        title: string;
+        moduleId: string;
         xhtml: string;
     }[] = [];
     for (const lesson of bookLessons) {
@@ -225,9 +225,9 @@ export async function buildTrailBook(trailId: string, lang?: string) {
         usedFiles.add(chapterFile);
         chapters.push({
             id: `ch-${slug(lesson.title)}-${lesson.id.slice(0, 8)}`,
-            arquivo: chapterFile,
-            titulo: lesson.title,
-            moduloId: lesson.moduleId,
+            file: chapterFile,
+            title: lesson.title,
+            moduleId: lesson.moduleId,
             xhtml: chapterToXhtml(
                 lesson,
                 moduleLabel,
@@ -271,10 +271,10 @@ ${levelLabel ? `<li>${escapeXml(levelLabel)}</li>` : ""}
 
     const navItems = mods
         .map((m) => {
-            const moduleChapters = chapters.filter((c) => c.moduloId === m.id);
+            const moduleChapters = chapters.filter((c) => c.moduleId === m.id);
             if (moduleChapters.length === 0) return "";
             const children = moduleChapters
-                .map((c) => `      <li><a href="text/${c.arquivo}">${escapeXml(c.titulo)}</a></li>`)
+                .map((c) => `      <li><a href="text/${c.file}">${escapeXml(c.title)}</a></li>`)
                 .join("\n");
             return `  <li><span class="sumario-modulo">${escapeXml(m.title)}</span>\n    <ol>\n${children}\n    </ol>\n  </li>`;
         })
@@ -292,7 +292,7 @@ ${navItems}
 <nav epub:type="landmarks" id="landmarks" hidden="hidden">
 <ol>
   <li><a epub:type="titlepage" href="text/capa.xhtml">Capa</a></li>
-  <li><a epub:type="bodymatter" href="text/${chapters[0].arquivo}">Começo do conteúdo</a></li>
+  <li><a epub:type="bodymatter" href="text/${chapters[0].file}">Começo do conteúdo</a></li>
 </ol>
 </nav>`,
         "css/livro.css",
@@ -303,7 +303,7 @@ ${navItems}
         `    <navPoint id="nav-sobre" playOrder="${playOrder++}"><navLabel><text>Sobre este livro</text></navLabel><content src="text/sobre.xhtml"/></navPoint>`,
     ];
     for (const m of mods) {
-        const moduleChapters = chapters.filter((c) => c.moduloId === m.id);
+        const moduleChapters = chapters.filter((c) => c.moduleId === m.id);
         if (moduleChapters.length === 0) continue;
         // The module's playOrder comes before its chapters, otherwise the reader
         // gets the same order twice and navigates out of sequence.
@@ -311,11 +311,11 @@ ${navItems}
         const children = moduleChapters
             .map(
                 (c) =>
-                    `      <navPoint id="nav-${c.id}" playOrder="${playOrder++}"><navLabel><text>${escapeXml(c.titulo)}</text></navLabel><content src="text/${c.arquivo}"/></navPoint>`,
+                    `      <navPoint id="nav-${c.id}" playOrder="${playOrder++}"><navLabel><text>${escapeXml(c.title)}</text></navLabel><content src="text/${c.file}"/></navPoint>`,
             )
             .join("\n");
         navPoints.push(
-            `    <navPoint id="nav-mod-${slug(m.title)}" playOrder="${modulePlayOrder}"><navLabel><text>${escapeXml(m.title)}</text></navLabel><content src="text/${moduleChapters[0].arquivo}"/>\n${children}\n    </navPoint>`,
+            `    <navPoint id="nav-mod-${slug(m.title)}" playOrder="${modulePlayOrder}"><navLabel><text>${escapeXml(m.title)}</text></navLabel><content src="text/${moduleChapters[0].file}"/>\n${children}\n    </navPoint>`,
         );
     }
     const ncx = `<?xml version="1.0" encoding="UTF-8"?>
@@ -342,10 +342,10 @@ ${navPoints.join("\n")}
         `    <item id="sobre" href="text/sobre.xhtml" media-type="application/xhtml+xml"/>`,
         ...chapters.map(
             (c) =>
-                `    <item id="${c.id}" href="text/${c.arquivo}" media-type="application/xhtml+xml"${c.xhtml.includes("<math") ? ' properties="mathml"' : ""}/>`,
+                `    <item id="${c.id}" href="text/${c.file}" media-type="application/xhtml+xml"${c.xhtml.includes("<math") ? ' properties="mathml"' : ""}/>`,
         ),
         ...[...figures.values()].map(
-            (f, i) => `    <item id="img-${i}" href="${f.caminho}" media-type="${f.tipo}"/>`,
+            (f, i) => `    <item id="img-${i}" href="${f.path}" media-type="${f.type}"/>`,
         ),
     ].join("\n");
     const spine = [
@@ -381,8 +381,8 @@ ${spine}
     zip.file("OEBPS/css/livro.css", CSS);
     zip.file("OEBPS/text/capa.xhtml", cover);
     zip.file("OEBPS/text/sobre.xhtml", about);
-    for (const c of chapters) zip.file(`OEBPS/text/${c.arquivo}`, c.xhtml);
-    for (const f of figures.values()) zip.file(`OEBPS/${f.caminho}`, f.conteudo);
+    for (const c of chapters) zip.file(`OEBPS/text/${c.file}`, c.xhtml);
+    for (const f of figures.values()) zip.file(`OEBPS/${f.path}`, f.content);
     zip.file("OEBPS/nav.xhtml", nav);
     zip.file("OEBPS/toc.ncx", ncx);
     zip.file("OEBPS/content.opf", opf);
@@ -407,5 +407,5 @@ ${spine}
     } catch (err) {
         console.warn("Could not cache the book, going on with the download:", err);
     }
-    return { buffer, nome: fileName };
+    return { buffer, filename: fileName };
 }

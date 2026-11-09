@@ -33,8 +33,8 @@ if (achadas.length > 1) {
     process.exit(1);
 }
 
-const { buffer, nome } = await buildTrailBook(achadas[0].id, lang);
-const destino = path.join(BOOKS_DIR, nome);
+const { buffer, filename } = await buildTrailBook(achadas[0].id, lang);
+const destino = path.join(BOOKS_DIR, filename);
 await writeFile(destino, buffer);
 console.log(`${achadas[0].name}: ${destino} (${(buffer.length / 1024).toFixed(0)} KB)`);
 process.exit(0);
