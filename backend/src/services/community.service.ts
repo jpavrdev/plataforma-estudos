@@ -13,7 +13,7 @@ import {
     challengeSubmissions,
 } from "../../schema.ts";
 import { computeXp, levelFromXp } from "../domain/xp.ts";
-import { apoiadoresAtivos, apoiadorAtivo } from "./supporter.service.ts";
+import { activeSupporters, supportActive } from "./supporter.service.ts";
 import { AppError } from "../errors/AppError.ts";
 import type { z } from "zod";
 import type { createPostSchema, commentSchema } from "../schemas/community.schema.ts";
@@ -118,7 +118,7 @@ async function assemblePosts(userId: string, rows: PostRow[]) {
             .from(communityLikes)
             .where(and(eq(communityLikes.userId, userId), inArray(communityLikes.postId, ids))),
         userLevels(authors),
-        apoiadoresAtivos(),
+        activeSupporters(),
     ]);
 
     const tagsByPost = new Map<string, string[]>();
@@ -232,7 +232,7 @@ const TAG_RE = /^[a-z0-9-]{2,40}$/;
 export async function insertPost(userId: string, data: PostInput) {
     // Attaching an image is a supporter benefit; blocked here too (not only at
     // upload) so a URL reused from another post cannot bypass the rule.
-    if (data.imageUrl && !(await apoiadorAtivo(userId))) {
+    if (data.imageUrl && !(await supportActive(userId))) {
         throw new AppError(403, "community.imagesForSupporters");
     }
     const cleanTags = [

@@ -22,7 +22,7 @@ router.patch("/me/fundo", authenticate, setBackgroundDim);
 
 router.get("/studio/assinaturas", authenticate, requireAdmin, listSubscriptionsAdmin);
 
-// Chamado pelo AbacatePay; valida o segredo combinado na criação do webhook.
+// Called by AbacatePay; validates the secret agreed when the webhook was created.
 router.post("/webhooks/abacatepay", gatewayWebhook);
 
 export default router;

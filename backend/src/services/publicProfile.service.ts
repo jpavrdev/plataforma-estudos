@@ -6,7 +6,7 @@ import { computeUserStats } from "./stats.service.ts";
 import { findUserStreak } from "./streak.ts";
 import { listUserAchievements } from "./achievement.service.ts";
 import { findUserTrails } from "./trail.service.ts";
-import { apoiadorAtivo } from "./supporter.service.ts";
+import { supportActive } from "./supporter.service.ts";
 
 // Only what anyone may see: no email, phone or birth date.
 export async function findPublicProfile(username: string) {
@@ -20,7 +20,7 @@ export async function findPublicProfile(username: string) {
         findUserStreak(user.id),
         listUserAchievements(user.id),
         findUserTrails(user.id),
-        apoiadorAtivo(user.id),
+        supportActive(user.id),
         db
             .select({
                 code: certificates.code,

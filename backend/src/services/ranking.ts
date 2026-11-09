@@ -8,7 +8,7 @@ import {
     challengeSubmissions,
 } from "../../schema.ts";
 import { findAllStreaks, todayInSaoPaulo } from "./streak.ts";
-import { apoiadoresAtivos } from "./supporter.service.ts";
+import { activeSupporters } from "./supporter.service.ts";
 import { computeXp, levelFromXp } from "../domain/xp.ts";
 
 // Grava o snapshot do dia (1x por dia, na primeira visualização) e devolve, por
@@ -130,7 +130,7 @@ export async function rankingGlobal(periodo: string, currentUserId: string | und
                   .groupBy(challengeSubmissions.userId)
             : Promise.resolve(null),
         findAllStreaks(),
-        apoiadoresAtivos(),
+        activeSupporters(),
     ]);
 
     // n vem como number (count) ou string (sum de xp); Number() normaliza os dois.

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { createPostSchema, commentSchema } from "../schemas/community.schema.ts";
 import { saveImage } from "../services/images.ts";
-import { apoiadorAtivo } from "../services/supporter.service.ts";
+import { supportActive } from "../services/supporter.service.ts";
 import { COMMUNITY_DIR } from "../config/paths.ts";
 import {
     feed,
@@ -54,7 +54,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
 
 export const uploadImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!(await apoiadorAtivo(req.userId!))) {
+        if (!(await supportActive(req.userId!))) {
             return res.status(403).json({ erro: "community.imagesForSupporters" });
         }
         const saved = await saveImage(req.body?.image, COMMUNITY_DIR, "/uploads/comunidade");
