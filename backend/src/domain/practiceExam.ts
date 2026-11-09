@@ -12,13 +12,13 @@ export function isQuestionCorrect(marked: Set<string>, correct: Set<string>): bo
 }
 
 export function gradePracticeExam(
-    questions: { id: string; corretas: Set<string> }[],
+    questions: { id: string; correctIds: Set<string> }[],
     answers: Map<string, Set<string>>,
     passPercent: number,
 ): { acertos: number; total: number; score: number; passed: boolean } {
     let hits = 0;
     for (const q of questions) {
-        if (isQuestionCorrect(answers.get(q.id) ?? new Set(), q.corretas)) hits++;
+        if (isQuestionCorrect(answers.get(q.id) ?? new Set(), q.correctIds)) hits++;
     }
     const total = questions.length;
     const score = total === 0 ? 0 : Math.round((hits / total) * 100);
@@ -27,14 +27,14 @@ export function gradePracticeExam(
 
 // Groups only the topics with mistakes, most missed first, to recommend what to review.
 export function summaryByTopic(
-    questions: { topic: string | null; correta: boolean }[],
+    questions: { topic: string | null; correct: boolean }[],
 ): { topic: string; erradas: number; total: number }[] {
     const byTopic = new Map<string, { erradas: number; total: number }>();
     for (const q of questions) {
         const topic = q.topic ?? "Outros";
         const current = byTopic.get(topic) ?? { erradas: 0, total: 0 };
         current.total++;
-        if (!q.correta) current.erradas++;
+        if (!q.correct) current.erradas++;
         byTopic.set(topic, current);
     }
     return [...byTopic.entries()]
