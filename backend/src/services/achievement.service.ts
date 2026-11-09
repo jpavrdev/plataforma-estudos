@@ -15,52 +15,52 @@ import { findActiveDays } from "./streak.ts";
 import { longestStreak } from "../domain/streak.ts";
 import { findUserTrails } from "./trail.service.ts";
 
-type DadosConquista = z.infer<typeof createAchievementSchema>;
+type AchievementData = z.infer<typeof createAchievementSchema>;
 
-// ===================== Catálogo (admin) =====================
-export async function listarConquistas() {
+// ===================== Catalog (admin) =====================
+export async function findAchievements() {
     return db.select().from(achievements).orderBy(asc(achievements.threshold));
 }
 
-export async function criarConquista(dados: DadosConquista) {
-    const [existe] = await db
+export async function insertAchievement(data: AchievementData) {
+    const [existing] = await db
         .select({ id: achievements.id })
         .from(achievements)
-        .where(eq(achievements.name, dados.name));
-    if (existe) {
-        throw new AppError(409, "Já existe uma conquista com esse nome");
+        .where(eq(achievements.name, data.name));
+    if (existing) {
+        throw new AppError(409, "achievement.nameTaken");
     }
-    const [a] = await db.insert(achievements).values(dados).returning();
+    const [a] = await db.insert(achievements).values(data).returning();
     return a;
 }
 
-export async function atualizarConquista(id: string, dados: DadosConquista) {
-    const [conflito] = await db
+export async function editAchievement(id: string, data: AchievementData) {
+    const [conflict] = await db
         .select({ id: achievements.id })
         .from(achievements)
-        .where(eq(achievements.name, dados.name));
-    if (conflito && conflito.id !== id) {
-        throw new AppError(409, "Já existe uma conquista com esse nome");
+        .where(eq(achievements.name, data.name));
+    if (conflict && conflict.id !== id) {
+        throw new AppError(409, "achievement.nameTaken");
     }
-    const [a] = await db.update(achievements).set(dados).where(eq(achievements.id, id)).returning();
+    const [a] = await db.update(achievements).set(data).where(eq(achievements.id, id)).returning();
     if (!a) {
-        throw new AppError(404, "Conquista não encontrada");
+        throw new AppError(404, "achievement.notFound");
     }
     return a;
 }
 
-export async function excluirConquista(id: string) {
+export async function removeAchievement(id: string) {
     await db.transaction(async (tx) => {
         await tx.delete(userAchievements).where(eq(userAchievements.achievementId, id));
         await tx.delete(achievements).where(eq(achievements.id, id));
     });
 }
 
-// Desafios de código resolvidos (distintos), contados por dificuldade.
-async function desafiosPorDificuldade(userId: string) {
-    const linhas = await db
+// Code challenges solved (distinct), counted by difficulty.
+async function challengesByDifficulty(userId: string) {
+    const rows = await db
         .select({
-            dificuldade: challenges.difficulty,
+            difficulty: challenges.difficulty,
             n: sql<number>`count(distinct ${challengeSubmissions.challengeId})`,
         })
         .from(challengeSubmissions)
@@ -69,67 +69,68 @@ async function desafiosPorDificuldade(userId: string) {
             and(eq(challengeSubmissions.userId, userId), eq(challengeSubmissions.status, "passed")),
         )
         .groupBy(challenges.difficulty);
-    const por: Record<string, number> = { facil: 0, medio: 0, dificil: 0 };
-    for (const l of linhas) por[l.dificuldade] = Number(l.n);
-    return por;
+    const byDifficulty: Record<string, number> = { facil: 0, medio: 0, dificil: 0 };
+    for (const row of rows) byDifficulty[row.difficulty] = Number(row.n);
+    return byDifficulty;
 }
 
-// Trilhas concluídas 100% pelo usuário (mesma régua do selo, do roadmap e do certificado).
-async function trilhasCompletadas(userId: string): Promise<Set<string>> {
-    const trilhas = await findUserTrails(userId);
+// Trails the user completed 100% (same rule as the badge, the roadmap and the certificate).
+async function completedTrailIds(userId: string): Promise<Set<string>> {
+    const userTrails = await findUserTrails(userId);
     return new Set(
-        trilhas
+        userTrails
             .filter((t) => t.totalLessons > 0 && t.completedLessons >= t.totalLessons)
             .map((t) => t.id),
     );
 }
 
-// ===================== Premiação automática =====================
-// Desbloqueia (idempotente) as conquistas cujo critério o usuário já atingiu.
-export async function verificarConquistas(userId: string) {
-    const [stats, dias, desafios, completadas] = await Promise.all([
+// ===================== Automatic awarding =====================
+// Unlocks (idempotently) the achievements whose criteria the user already met.
+export async function checkAchievements(userId: string) {
+    const [userStats, activeDays, solvedCounts, completedTrails] = await Promise.all([
         computeUserStats(userId),
         findActiveDays(userId),
-        desafiosPorDificuldade(userId),
-        trilhasCompletadas(userId),
+        challengesByDifficulty(userId),
+        completedTrailIds(userId),
     ]);
-    const valor: Record<string, number> = {
-        xp_total: stats.xp,
-        lessons_completed: stats.lessonsCompleted,
-        questions_correct: stats.questionsCorrect,
-        // Recorde de dias seguidos: quem já atingiu a marca não perde a conquista se o streak cair.
-        streak_days: longestStreak(dias),
-        challenges_facil: desafios.facil,
-        challenges_medio: desafios.medio,
-        challenges_dificil: desafios.dificil,
+    const values: Record<string, number> = {
+        xp_total: userStats.xp,
+        lessons_completed: userStats.lessonsCompleted,
+        questions_correct: userStats.questionsCorrect,
+        // Streak record: whoever already hit the mark keeps the achievement if the streak drops.
+        streak_days: longestStreak(activeDays),
+        challenges_facil: solvedCounts.facil,
+        challenges_medio: solvedCounts.medio,
+        challenges_dificil: solvedCounts.dificil,
     };
-    const catalogo = await db.select().from(achievements);
-    const merecidas = catalogo.filter((a) => {
-        // "special" (ocasião especial) nunca é automática: só concedida à mão pelo admin.
+    const catalog = await db.select().from(achievements);
+    const deserved = catalog.filter((a) => {
+        // "special" (special occasion) is never automatic: granted by hand by the admin.
         if (a.criteriaType === "special") return false;
-        // Conclusão de trilha casa pela trilha referenciada, não por um contador global.
+        // Trail completion matches by the referenced trail, not a global counter.
         if (a.criteriaType === "trail_completed")
-            return a.refId != null && completadas.has(a.refId);
-        return (valor[a.criteriaType] ?? 0) >= a.threshold;
+            return a.refId != null && completedTrails.has(a.refId);
+        return (values[a.criteriaType] ?? 0) >= a.threshold;
     });
-    if (merecidas.length === 0) return;
+    if (deserved.length === 0) return;
     await db
         .insert(userAchievements)
-        .values(merecidas.map((a) => ({ userId, achievementId: a.id })))
+        .values(deserved.map((a) => ({ userId, achievementId: a.id })))
         .onConflictDoNothing();
 }
 
-// ===================== Notificação de desbloqueio (estilo Steam) =====================
-// Verifica pendências e devolve as conquistas ainda não notificadas, marcando-as como
-// vistas na mesma operação (UPDATE ... RETURNING) para o toast disparar uma única vez.
-export async function conquistasNaoVistas(userId: string) {
-    await verificarConquistas(userId);
-    const marcadas = await db
+// ===================== Unlock notification (Steam style) =====================
+// Checks pending unlocks and returns the achievements not yet notified, marking
+// them as seen in the same operation (UPDATE ... RETURNING) so the toast fires
+// only once.
+export async function unseenAchievements(userId: string) {
+    await checkAchievements(userId);
+    const marked = await db
         .update(userAchievements)
         .set({ notified: true })
         .where(and(eq(userAchievements.userId, userId), eq(userAchievements.notified, false)))
         .returning({ achievementId: userAchievements.achievementId });
-    if (marcadas.length === 0) return [];
+    if (marked.length === 0) return [];
     return db
         .select({
             id: achievements.id,
@@ -141,25 +142,25 @@ export async function conquistasNaoVistas(userId: string) {
         .where(
             inArray(
                 achievements.id,
-                marcadas.map((m) => m.achievementId),
+                marked.map((m) => m.achievementId),
             ),
         )
         .orderBy(asc(achievements.threshold));
 }
 
-// ===================== Concessão manual (ocasião especial) =====================
-export async function concederConquista(achievementId: string, userId: string) {
-    const [conquista] = await db
+// ===================== Manual grant (special occasion) =====================
+export async function grantAchievementTo(achievementId: string, userId: string) {
+    const [achievementRow] = await db
         .select({ id: achievements.id })
         .from(achievements)
         .where(eq(achievements.id, achievementId));
-    if (!conquista) throw new AppError(404, "Conquista não encontrada");
-    const [usuario] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId));
-    if (!usuario) throw new AppError(404, "Usuário não encontrado");
+    if (!achievementRow) throw new AppError(404, "achievement.notFound");
+    const [userRow] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId));
+    if (!userRow) throw new AppError(404, "user.notFound");
     await db.insert(userAchievements).values({ userId, achievementId }).onConflictDoNothing();
 }
 
-export async function revogarConquista(achievementId: string, userId: string) {
+export async function revokeAchievementFrom(achievementId: string, userId: string) {
     await db
         .delete(userAchievements)
         .where(
@@ -170,8 +171,8 @@ export async function revogarConquista(achievementId: string, userId: string) {
         );
 }
 
-// Quem já tem a conquista, para o admin gerenciar as de ocasião especial.
-export async function usuariosComConquista(achievementId: string) {
+// Whoever already has the achievement, so the admin can manage the special-occasion ones.
+export async function usersWithAchievement(achievementId: string) {
     return db
         .select({
             userId: users.id,
@@ -185,25 +186,25 @@ export async function usuariosComConquista(achievementId: string) {
         .orderBy(desc(userAchievements.earnedAt));
 }
 
-// Catálogo de conquistas com a marcação do que o usuário já desbloqueou.
-export async function conquistasDoUsuario(userId: string) {
-    await verificarConquistas(userId);
-    const catalogo = await db.select().from(achievements).orderBy(asc(achievements.threshold));
-    const ganhas = await db
+// Achievement catalog with a flag for what the user already unlocked.
+export async function listUserAchievements(userId: string) {
+    await checkAchievements(userId);
+    const catalog = await db.select().from(achievements).orderBy(asc(achievements.threshold));
+    const earnedRows = await db
         .select()
         .from(userAchievements)
         .where(eq(userAchievements.userId, userId));
-    const quando = new Map(ganhas.map((g) => [g.achievementId, g.earnedAt]));
-    return catalogo.map((a) => ({
+    const when = new Map(earnedRows.map((g) => [g.achievementId, g.earnedAt]));
+    return catalog.map((a) => ({
         ...a,
-        earned: quando.has(a.id),
-        earnedAt: quando.get(a.id) ?? null,
+        earned: when.has(a.id),
+        earnedAt: when.get(a.id) ?? null,
     }));
 }
 
-// ===================== Feed da comunidade =====================
-// Quem desbloqueou cada conquista, mais recentes primeiro.
-export async function feedComunidade() {
+// ===================== Community feed =====================
+// Who unlocked each achievement, most recent first.
+export async function communityFeed() {
     return db
         .select({
             name: users.name,

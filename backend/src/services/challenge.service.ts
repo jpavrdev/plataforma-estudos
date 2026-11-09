@@ -18,7 +18,7 @@ import { todayInSaoPaulo } from "./streak.ts";
 import { runOnRunner } from "./runner.client.ts";
 import { gradeChallenge, outputMatches, returnMatches, dayIndex } from "../domain/challenge.ts";
 import { challengeXp } from "../domain/xp.ts";
-import { verificarConquistas } from "./achievement.service.ts";
+import { checkAchievements } from "./achievement.service.ts";
 import { niveisDeUsuarios } from "./comunidade.service.ts";
 
 type RunInput = z.infer<typeof runChallengeSchema>;
@@ -349,7 +349,7 @@ export async function gradeChallengeSubmission(userId: string, id: string, input
     });
 
     // A passed challenge may unlock an achievement (for challenges or for the streak).
-    if (grading.aprovado) await verificarConquistas(userId);
+    if (grading.aprovado) await checkAchievements(userId);
 
     return {
         status,
