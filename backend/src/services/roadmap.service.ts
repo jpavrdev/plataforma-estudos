@@ -659,7 +659,7 @@ export async function saveStageCompletion(stageId: string, userId: string) {
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
         .where(eq(roadmapStages.id, stageId));
-    if (!foundStage) throw new AppError(404, "Estágio não encontrado");
+    if (!foundStage) throw new AppError(404, "roadmap.stageNotFound");
     await db.insert(roadmapStageCompletions).values({ stageId, userId }).onConflictDoNothing();
 
     // The stage's tracks and modules are completed too: manual progress, no XP.
@@ -706,7 +706,7 @@ export async function findRoadmapsForStudio() {
 // Raw structure of a roadmap for editing in the studio (by id, without student progress).
 export async function findStudioRoadmap(id: string) {
     const [roadmap] = await db.select().from(roadmaps).where(eq(roadmaps.id, id));
-    if (!roadmap) throw new AppError(404, "Roadmap não encontrado");
+    if (!roadmap) throw new AppError(404, "roadmap.notFound");
 
     const stageRows = await db
         .select()
@@ -754,12 +754,12 @@ export async function findStudioRoadmap(id: string) {
 
 export async function insertRoadmap(data: CreateRoadmapData) {
     const slug = (data.slug?.trim() || slugify(data.name)).slice(0, 80);
-    if (!slug) throw new AppError(400, "Não foi possível gerar um slug a partir do nome");
+    if (!slug) throw new AppError(400, "common.slugFromNameFailed");
     const [existing] = await db
         .select({ id: roadmaps.id })
         .from(roadmaps)
         .where(eq(roadmaps.slug, slug));
-    if (existing) throw new AppError(409, "Já existe um roadmap com esse slug");
+    if (existing) throw new AppError(409, "roadmap.slugTaken");
 
     let position = data.position;
     if (position === undefined) {
@@ -788,7 +788,7 @@ export async function insertRoadmap(data: CreateRoadmapData) {
 
 export async function editRoadmap(id: string, data: UpdateRoadmapData) {
     const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, id));
-    if (!rm) throw new AppError(404, "Roadmap não encontrado");
+    if (!rm) throw new AppError(404, "roadmap.notFound");
 
     const sets: Partial<typeof roadmaps.$inferInsert> = {};
     if (data.slug !== undefined) {
@@ -797,7 +797,7 @@ export async function editRoadmap(id: string, data: UpdateRoadmapData) {
             .select({ id: roadmaps.id })
             .from(roadmaps)
             .where(eq(roadmaps.slug, s));
-        if (other && other.id !== id) throw new AppError(409, "Já existe um roadmap com esse slug");
+        if (other && other.id !== id) throw new AppError(409, "roadmap.slugTaken");
         sets.slug = s;
     }
     if (data.name !== undefined) sets.name = data.name;
@@ -807,7 +807,7 @@ export async function editRoadmap(id: string, data: UpdateRoadmapData) {
     if (data.position !== undefined) sets.position = data.position;
     if (data.premium !== undefined) sets.premium = data.premium;
     if (data.published !== undefined) sets.published = data.published;
-    if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
+    if (Object.keys(sets).length === 0) throw new AppError(400, "common.nothingToUpdate");
 
     const [updated] = await db.update(roadmaps).set(sets).where(eq(roadmaps.id, id)).returning();
     return updated;
@@ -815,7 +815,7 @@ export async function editRoadmap(id: string, data: UpdateRoadmapData) {
 
 export async function removeRoadmap(id: string) {
     const [rm] = await db.select({ id: roadmaps.id }).from(roadmaps).where(eq(roadmaps.id, id));
-    if (!rm) throw new AppError(404, "Roadmap não encontrado");
+    if (!rm) throw new AppError(404, "roadmap.notFound");
     await db.transaction(async (tx) => {
         const stageRows = await tx
             .select({ id: roadmapStages.id })
@@ -835,7 +835,7 @@ export async function insertStage(roadmapId: string, data: CreateStageData) {
         .select({ id: roadmaps.id })
         .from(roadmaps)
         .where(eq(roadmaps.id, roadmapId));
-    if (!rm) throw new AppError(404, "Roadmap não encontrado");
+    if (!rm) throw new AppError(404, "roadmap.notFound");
 
     let position = data.position;
     if (position === undefined) {
@@ -866,7 +866,7 @@ export async function editStage(id: string, data: UpdateStageData) {
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
         .where(eq(roadmapStages.id, id));
-    if (!st) throw new AppError(404, "Estágio não encontrado");
+    if (!st) throw new AppError(404, "roadmap.stageNotFound");
 
     const sets: Partial<typeof roadmapStages.$inferInsert> = {};
     if (data.phase !== undefined) sets.phase = data.phase;
@@ -874,7 +874,7 @@ export async function editStage(id: string, data: UpdateStageData) {
     if (data.description !== undefined) sets.description = data.description;
     if (data.tags !== undefined) sets.tags = data.tags;
     if (data.position !== undefined) sets.position = data.position;
-    if (Object.keys(sets).length === 0) throw new AppError(400, "Nada para atualizar");
+    if (Object.keys(sets).length === 0) throw new AppError(400, "common.nothingToUpdate");
 
     const [updated] = await db
         .update(roadmapStages)
@@ -889,7 +889,7 @@ export async function removeStage(id: string) {
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
         .where(eq(roadmapStages.id, id));
-    if (!st) throw new AppError(404, "Estágio não encontrado");
+    if (!st) throw new AppError(404, "roadmap.stageNotFound");
     await db.transaction(async (tx) => {
         await tx.delete(roadmapStageRefs).where(eq(roadmapStageRefs.stageId, id));
         await tx.delete(roadmapStages).where(eq(roadmapStages.id, id));
@@ -901,12 +901,12 @@ export async function insertStageRef(stageId: string, data: CreateRefData) {
         .select({ id: roadmapStages.id })
         .from(roadmapStages)
         .where(eq(roadmapStages.id, stageId));
-    if (!st) throw new AppError(404, "Estágio não encontrado");
+    if (!st) throw new AppError(404, "roadmap.stageNotFound");
 
     // Checks that the referenced content exists, so it never creates a dangling ref.
     const info = await resolveRefs([{ refType: data.refType, refId: data.refId }]);
     if (!info.has(data.refType + ":" + data.refId)) {
-        throw new AppError(400, "O conteúdo referenciado não existe");
+        throw new AppError(400, "roadmap.refContentMissing");
     }
 
     let position = data.position;
@@ -931,6 +931,6 @@ export async function removeStageRef(id: string) {
         .select({ id: roadmapStageRefs.id })
         .from(roadmapStageRefs)
         .where(eq(roadmapStageRefs.id, id));
-    if (!ref) throw new AppError(404, "Referência não encontrada");
+    if (!ref) throw new AppError(404, "roadmap.refNotFound");
     await db.delete(roadmapStageRefs).where(eq(roadmapStageRefs.id, id));
 }
