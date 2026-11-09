@@ -11,7 +11,7 @@
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { db } from "../db.ts";
 import { subscriptions, users } from "../schema.ts";
-import { PLANOS } from "../src/services/apoiador.service.ts";
+import { PLANOS } from "../src/services/supporter.service.ts";
 import { consultarPixQrCode, gatewayConfigurado } from "../src/services/abacatepay.client.ts";
 
 const reais = (cents: number) => `R$ ${(cents / 100).toFixed(2).replace(".", ",")}`;

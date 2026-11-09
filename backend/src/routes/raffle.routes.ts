@@ -9,7 +9,7 @@ import {
     updateRaffle,
     deleteRaffle,
     postDraw,
-} from "../controllers/SorteioController.ts";
+} from "../controllers/RaffleController.ts";
 
 const router = Router();
 

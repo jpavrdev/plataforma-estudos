@@ -11,7 +11,7 @@ import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import Anthropic from "@anthropic-ai/sdk";
 import { env } from "../../config/env.ts";
-import type { Prioridade, ResultadoAnalise, Sugestao } from "./heuristica.ts";
+import type { Prioridade, ResultadoAnalise, Sugestao } from "./heuristic.ts";
 
 export interface Refinamento {
     sugestoes: Sugestao[];
@@ -124,18 +124,19 @@ async function viaApi(mensagem: string): Promise<string | null> {
     // dois: o DeepSeek só aceita `effort` em output_config e já vem com o próprio
     // modo de raciocínio ligado. Sem o schema a saída deixa de ser JSON garantido,
     // e é o parser tolerante (o mesmo do modo cli) que segura.
-    let hostApiBaseUrl = "";
+    let hostApiBaseUrl: string;
     try {
         hostApiBaseUrl = new URL(env.ATS_API_BASE_URL).hostname.toLowerCase();
     } catch {
         hostApiBaseUrl = "";
     }
-    const soAnthropic = hostApiBaseUrl === "api.anthropic.com"
-        ? {
-              thinking: { type: "adaptive" as const },
-              output_config: { format: { type: "json_schema" as const, schema: ESQUEMA } },
-          }
-        : {};
+    const soAnthropic =
+        hostApiBaseUrl === "api.anthropic.com"
+            ? {
+                  thinking: { type: "adaptive" as const },
+                  output_config: { format: { type: "json_schema" as const, schema: ESQUEMA } },
+              }
+            : {};
 
     const resposta = await cliente.messages.create({
         model: env.ATS_MODELO,

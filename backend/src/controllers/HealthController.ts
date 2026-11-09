@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { checkDependencies } from "../services/dependencias.service.ts";
+import { checkDependencies } from "../services/dependencies.service.ts";
 
 export const getHealth = (_req: Request, res: Response) => {
     res.json({ status: "ok" });

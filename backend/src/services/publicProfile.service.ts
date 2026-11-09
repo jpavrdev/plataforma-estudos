@@ -6,7 +6,7 @@ import { computeUserStats } from "./stats.service.ts";
 import { findUserStreak } from "./streak.ts";
 import { listUserAchievements } from "./achievement.service.ts";
 import { findUserTrails } from "./trail.service.ts";
-import { apoiadorAtivo } from "./apoiador.service.ts";
+import { apoiadorAtivo } from "./supporter.service.ts";
 
 // Only what anyone may see: no email, phone or birth date.
 export async function findPublicProfile(username: string) {

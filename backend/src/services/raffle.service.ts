@@ -8,7 +8,7 @@ import type { Contacts } from "../domain/contacts.ts";
 import { periodsOverlap, isValidPeriod, raffleStatus } from "../domain/raffle.ts";
 import type { Period } from "../domain/raffle.ts";
 import { pickRandom } from "../domain/pickRandom.ts";
-import type { updateRaffleSchema, createRaffleSchema } from "../schemas/sorteio.schema.ts";
+import type { updateRaffleSchema, createRaffleSchema } from "../schemas/raffle.schema.ts";
 
 type CreateRaffleData = z.infer<typeof createRaffleSchema>;
 type UpdateRaffleData = z.infer<typeof updateRaffleSchema>;

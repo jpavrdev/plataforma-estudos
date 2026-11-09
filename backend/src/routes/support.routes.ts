@@ -9,7 +9,7 @@ import {
     cancelSupport,
     setBackgroundDim,
     listSubscriptionsAdmin,
-} from "../controllers/ApoioController.ts";
+} from "../controllers/SupportController.ts";
 
 const router = Router();
 

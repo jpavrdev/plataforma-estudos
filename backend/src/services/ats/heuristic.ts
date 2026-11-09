@@ -2,7 +2,7 @@
 // É ele quem produz a nota; a IA, quando ligada, só reescreve as sugestões e
 // revisa a classificação das palavras-chave.
 
-import { TERMOS } from "./dicionario.ts";
+import { TERMOS } from "./dictionary.ts";
 import {
     PALAVRAS_VAZIAS,
     contemPalavra,
@@ -10,7 +10,7 @@ import {
     normalizar,
     tokenizar,
     tokenizarOriginal,
-} from "./normalizar.ts";
+} from "./normalize.ts";
 
 export type Tom = "bom" | "atencao" | "ruim";
 export type Prioridade = "alta" | "media" | "baixa";

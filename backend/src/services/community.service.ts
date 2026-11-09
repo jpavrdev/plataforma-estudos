@@ -13,7 +13,7 @@ import {
     challengeSubmissions,
 } from "../../schema.ts";
 import { computeXp, levelFromXp } from "../domain/xp.ts";
-import { apoiadoresAtivos, apoiadorAtivo } from "./apoiador.service.ts";
+import { apoiadoresAtivos, apoiadorAtivo } from "./supporter.service.ts";
 import { AppError } from "../errors/AppError.ts";
 import type { z } from "zod";
 import type { createPostSchema, commentSchema } from "../schemas/community.schema.ts";

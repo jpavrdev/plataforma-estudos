@@ -3,7 +3,7 @@ import PDFDocument from "pdfkit";
 import QRCode from "qrcode";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { certificates, lessonProgress, lessons, modules, trails, users } from "../../schema.ts";
+import { certificates, lessonProgress, lessons, modules, trails } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
 import { env } from "../config/env.ts";
 

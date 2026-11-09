@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { createPostSchema, commentSchema } from "../schemas/community.schema.ts";
 import { saveImage } from "../services/images.ts";
-import { apoiadorAtivo } from "../services/apoiador.service.ts";
+import { apoiadorAtivo } from "../services/supporter.service.ts";
 import { COMMUNITY_DIR } from "../config/paths.ts";
 import {
     feed,
