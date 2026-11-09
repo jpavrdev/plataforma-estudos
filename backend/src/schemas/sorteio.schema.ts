@@ -1,15 +1,15 @@
 import { z } from "zod";
 import { normalizeContacts } from "../domain/contacts.ts";
 
-export const idSorteioSchema = z.uuid("Sorteio inválido");
+export const raffleIdSchema = z.uuid("Sorteio inválido");
 
-// Exige o fuso (Z ou ±hh:mm), como sai do toISOString(): sem ele a mesma hora
-// cairia em instantes diferentes conforme o fuso do servidor.
-const data = z.iso
+// Requires the timezone (Z or ±hh:mm), as toISOString() outputs: without it the
+// same time would land on different instents depending on the server's timezone.
+const datetime = z.iso
     .datetime({ offset: true, error: "Use data e hora em ISO 8601, com fuso" })
-    .transform((valor) => new Date(valor));
+    .transform((value) => new Date(value));
 
-export const criarSorteioSchema = z.object({
+export const createRaffleSchema = z.object({
     titulo: z
         .string("Informe o título")
         .trim()
@@ -20,16 +20,16 @@ export const criarSorteioSchema = z.object({
         .trim()
         .min(1, "Informe a descrição")
         .max(2000, "A descrição deve ter no máximo 2000 caracteres"),
-    inicio: data,
-    fim: data,
+    inicio: datetime,
+    fim: datetime,
 });
 
-// O fim depois do início é conferido no service, que conhece as datas já gravadas
-// quando a edição muda só uma delas.
-export const atualizarSorteioSchema = criarSorteioSchema.partial();
+// End after start is checked in the service, which knows the stored dates when
+// the edit changes only one of them.
+export const updateRaffleSchema = createRaffleSchema.partial();
 
-// Os tetos aqui só barram entrada absurda; a regra de cada campo está em domain/contatos.
-const contatoSchema = z.discriminatedUnion(
+// The ceilings here only block absurd input; each field's rule lives in domain/contacts.
+const contactSchema = z.discriminatedUnion(
     "canal",
     [
         z.object({
@@ -50,13 +50,13 @@ const contatoSchema = z.discriminatedUnion(
     { error: "Escolha o canal: whatsapp, instagram ou email" },
 );
 
-export const participacaoSchema = z
-    .object({ primario: contatoSchema, secundario: contatoSchema.nullish() })
-    .transform((entrada, ctx) => {
-        const resultado = normalizeContacts(entrada);
-        if (resultado.ok) return resultado.contatos;
-        for (const { caminho, mensagem } of resultado.problemas) {
-            ctx.addIssue({ code: "custom", path: caminho, message: mensagem, input: entrada });
+export const raffleEntrySchema = z
+    .object({ primario: contactSchema, secundario: contactSchema.nullish() })
+    .transform((input, ctx) => {
+        const result = normalizeContacts(input);
+        if (result.ok) return result.contatos;
+        for (const { caminho, mensagem } of result.problemas) {
+            ctx.addIssue({ code: "custom", path: caminho, message: mensagem, input });
         }
         return z.NEVER;
     });
