@@ -8,22 +8,22 @@ import type { Contacts } from "../domain/contacts.ts";
 import { periodsOverlap, isValidPeriod, raffleStatus } from "../domain/raffle.ts";
 import type { Period } from "../domain/raffle.ts";
 import { pickRandom } from "../domain/pickRandom.ts";
-import type { atualizarSorteioSchema, criarSorteioSchema } from "../schemas/sorteio.schema.ts";
+import type { updateRaffleSchema, createRaffleSchema } from "../schemas/sorteio.schema.ts";
 
-type DadosCriar = z.infer<typeof criarSorteioSchema>;
-type DadosAtualizar = z.infer<typeof atualizarSorteioSchema>;
-type Transacao = Parameters<Parameters<typeof db.transaction>[0]>[0];
+type CreateRaffleData = z.infer<typeof createRaffleSchema>;
+type UpdateRaffleData = z.infer<typeof updateRaffleSchema>;
+type DbTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-const GANHADORES = 3;
+const WINNER_COUNT = 3;
 
-const participacaoDoAluno = {
+const studentEntry = {
     contatos: sorteioParticipacoes.contatos,
     inscritoEm: sorteioParticipacoes.createdAt,
 };
 
-export async function sorteioAtivo(userId: string) {
-    const agora = new Date();
-    // Como os períodos não se sobrepõem, só o último sorteio a começar pode estar aberto.
+export async function activeRaffle(userId: string) {
+    const now = new Date();
+    // Since periods never overlap, only the last raffle to start can still be open.
     const [sorteio] = await db
         .select({
             id: sorteios.id,
@@ -34,13 +34,13 @@ export async function sorteioAtivo(userId: string) {
             sorteadoEm: sorteios.sorteadoEm,
         })
         .from(sorteios)
-        .where(lte(sorteios.inicio, agora))
+        .where(lte(sorteios.inicio, now))
         .orderBy(desc(sorteios.inicio))
         .limit(1);
-    if (!sorteio || raffleStatus(sorteio, agora) !== "aberto") return null;
+    if (!sorteio || raffleStatus(sorteio, now) !== "aberto") return null;
 
-    const [participacao] = await db
-        .select(participacaoDoAluno)
+    const [entry] = await db
+        .select(studentEntry)
         .from(sorteioParticipacoes)
         .where(
             and(
@@ -54,52 +54,52 @@ export async function sorteioAtivo(userId: string) {
         descricao: sorteio.descricao,
         inicio: sorteio.inicio,
         fim: sorteio.fim,
-        participacao: participacao ?? null,
+        participacao: entry ?? null,
     };
 }
 
-// O FOR SHARE segura a linha até o fim da transação: o UPDATE que abre o sorteio
-// espera a inscrição em curso terminar, e a que chega depois dele já encontra
-// sorteado_em preenchido.
-async function exigirInscricoesAbertas(tx: Transacao, sorteioId: string) {
+// FOR SHARE holds the row until the end of the transaction: the UPDATE that marks
+// the draw waits for the entry in flight to finish, and the one arriving after it
+// already finds sorteado_em filled.
+async function requireOpenEntries(tx: DbTransaction, sorteioId: string) {
     const [sorteio] = await tx
         .select({ inicio: sorteios.inicio, fim: sorteios.fim, sorteadoEm: sorteios.sorteadoEm })
         .from(sorteios)
         .where(eq(sorteios.id, sorteioId))
         .for("share");
-    if (!sorteio) throw new AppError(404, "Sorteio não encontrado");
+    if (!sorteio) throw new AppError(404, "raffle.notFound");
     if (raffleStatus(sorteio, new Date()) !== "aberto") {
-        throw new AppError(409, "As inscrições deste sorteio estão fechadas");
+        throw new AppError(409, "raffle.signupClosed");
     }
 }
 
-// A inscrição é definitiva: não há edição nem saída depois de confirmada.
-export async function inscrever(sorteioId: string, userId: string, contatos: Contacts) {
+// An entry is final: there is no editing or leaving after it is confirmed.
+export async function enterRaffle(sorteioId: string, userId: string, contatos: Contacts) {
     return db.transaction(async (tx) => {
-        await exigirInscricoesAbertas(tx, sorteioId);
-        // A tela manda completar o perfil antes; sem @ o ganhador não teria como ser anunciado.
-        const [aluno] = await tx
+        await requireOpenEntries(tx, sorteioId);
+        // The screen asks for a complete profile first; without an @ the winner could not be announced.
+        const [student] = await tx
             .select({ username: users.username })
             .from(users)
             .where(eq(users.id, userId));
-        if (!aluno?.username) throw new AppError(403, "Complete o perfil com um @ para participar");
+        if (!student?.username) throw new AppError(403, "raffle.usernameRequired");
 
-        // Sem linha devolvida, o unique(sorteio_id, user_id) barrou: já havia inscrição.
-        const [participacao] = await tx
+        // No row returned means the unique(sorteio_id, user_id) blocked it: already entered.
+        const [entry] = await tx
             .insert(sorteioParticipacoes)
             .values({ sorteioId, userId, contatos })
             .onConflictDoNothing({
                 target: [sorteioParticipacoes.sorteioId, sorteioParticipacoes.userId],
             })
-            .returning(participacaoDoAluno);
-        if (!participacao) throw new AppError(409, "Você já está inscrito neste sorteio");
-        return participacao;
+            .returning(studentEntry);
+        if (!entry) throw new AppError(409, "raffle.alreadyEntered");
+        return entry;
     });
 }
 
-export async function listarSorteios() {
-    const agora = new Date();
-    const linhas = await db
+export async function listRaffles() {
+    const now = new Date();
+    const rows = await db
         .select({
             id: sorteios.id,
             titulo: sorteios.titulo,
@@ -112,14 +112,14 @@ export async function listarSorteios() {
         .leftJoin(sorteioParticipacoes, eq(sorteioParticipacoes.sorteioId, sorteios.id))
         .groupBy(sorteios.id)
         .orderBy(desc(sorteios.inicio));
-    return linhas.map(({ participantes, ...sorteio }) => ({
+    return rows.map(({ participantes, ...sorteio }) => ({
         ...sorteio,
-        situacao: raffleStatus(sorteio, agora),
+        situacao: raffleStatus(sorteio, now),
         participantes,
     }));
 }
 
-export async function detalharSorteio(id: string) {
+export async function raffleDetail(id: string) {
     const [sorteio] = await db
         .select({
             id: sorteios.id,
@@ -131,9 +131,9 @@ export async function detalharSorteio(id: string) {
         })
         .from(sorteios)
         .where(eq(sorteios.id, id));
-    if (!sorteio) throw new AppError(404, "Sorteio não encontrado");
+    if (!sorteio) throw new AppError(404, "raffle.notFound");
 
-    const inscritos = await db
+    const entries = await db
         .select({
             posicao: sorteioParticipacoes.posicao,
             username: users.username,
@@ -146,7 +146,7 @@ export async function detalharSorteio(id: string) {
         .where(eq(sorteioParticipacoes.sorteioId, id))
         .orderBy(asc(sorteioParticipacoes.createdAt), asc(sorteioParticipacoes.id));
 
-    const ganhadores = inscritos
+    const ganhadores = entries
         .flatMap(({ posicao, username, nome, contatos }) =>
             posicao === null ? [] : [{ posicao, username, nome, contatos }],
         )
@@ -156,7 +156,7 @@ export async function detalharSorteio(id: string) {
         ...sorteio,
         situacao: raffleStatus(sorteio, new Date()),
         ganhadores,
-        participantes: inscritos.map(({ username, nome, inscritoEm, contatos }) => ({
+        participantes: entries.map(({ username, nome, inscritoEm, contatos }) => ({
             username,
             nome,
             inscritoEm,
@@ -165,72 +165,73 @@ export async function detalharSorteio(id: string) {
     };
 }
 
-// Um sorteio por período. O lock da transação põe criações e edições em fila:
-// sem ele, duas podiam conferir a agenda ao mesmo tempo e gravar períodos sobrepostos.
-async function garantirPeriodoLivre(tx: Transacao, periodo: Period, ignorarId?: string) {
-    if (!isValidPeriod(periodo)) throw new AppError(400, "O fim deve ser depois do início");
+// One raffle per period. The transaction lock queues creations and edits: without
+// it two of them could check the schedule at the same time and save overlapping periods.
+async function ensureFreePeriod(tx: DbTransaction, period: Period, ignoreId?: string) {
+    if (!isValidPeriod(period)) throw new AppError(400, "raffle.endBeforeStart");
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext('sorteios_periodo'))`);
-    const outros = await tx
+    const others = await tx
         .select({ inicio: sorteios.inicio, fim: sorteios.fim })
         .from(sorteios)
-        .where(ignorarId ? ne(sorteios.id, ignorarId) : undefined);
-    if (outros.some((outro) => periodsOverlap(outro, periodo))) {
-        throw new AppError(409, "Já existe um sorteio nesse período");
+        .where(ignoreId ? ne(sorteios.id, ignoreId) : undefined);
+    if (others.some((other) => periodsOverlap(other, period))) {
+        throw new AppError(409, "raffle.periodTaken");
     }
 }
 
-export async function criarSorteio(dados: DadosCriar) {
+export async function insertRaffle(data: CreateRaffleData) {
     const id = await db.transaction(async (tx) => {
-        await garantirPeriodoLivre(tx, dados);
-        const [criado] = await tx.insert(sorteios).values(dados).returning({ id: sorteios.id });
-        return criado.id;
+        await ensureFreePeriod(tx, data);
+        const [created] = await tx.insert(sorteios).values(data).returning({ id: sorteios.id });
+        return created.id;
     });
-    return detalharSorteio(id);
+    return raffleDetail(id);
 }
 
-export async function atualizarSorteio(id: string, dados: DadosAtualizar) {
-    if (Object.keys(dados).length === 0) throw new AppError(400, "Nada para atualizar");
+export async function editRaffle(id: string, data: UpdateRaffleData) {
+    if (Object.keys(data).length === 0) throw new AppError(400, "common.nothingToUpdate");
     await db.transaction(async (tx) => {
-        // O FOR UPDATE impede que um sorteio feito durante a edição seja alterado depois.
-        const [atual] = await tx
+        // FOR UPDATE keeps a raffle drawn during the edit from being changed afterwards.
+        const [current] = await tx
             .select({ inicio: sorteios.inicio, fim: sorteios.fim, sorteadoEm: sorteios.sorteadoEm })
             .from(sorteios)
             .where(eq(sorteios.id, id))
             .for("update");
-        if (!atual) throw new AppError(404, "Sorteio não encontrado");
-        if (atual.sorteadoEm) throw new AppError(409, "Um sorteio já feito não pode ser editado");
-        if (dados.inicio || dados.fim) {
-            const periodo = { inicio: dados.inicio ?? atual.inicio, fim: dados.fim ?? atual.fim };
-            await garantirPeriodoLivre(tx, periodo, id);
+        if (!current) throw new AppError(404, "raffle.notFound");
+        if (current.sorteadoEm) throw new AppError(409, "raffle.drawnNotEditable");
+        if (data.inicio || data.fim) {
+            const period = { inicio: data.inicio ?? current.inicio, fim: data.fim ?? current.fim };
+            await ensureFreePeriod(tx, period, id);
         }
         await tx
             .update(sorteios)
-            .set({ ...dados, updatedAt: new Date() })
+            .set({ ...data, updatedAt: new Date() })
             .where(eq(sorteios.id, id));
     });
-    return detalharSorteio(id);
+    return raffleDetail(id);
 }
 
-export async function excluirSorteio(id: string) {
+export async function removeRaffle(id: string) {
     await db.delete(sorteios).where(eq(sorteios.id, id));
     return { ok: true };
 }
 
-async function motivoDaRecusa(tx: Transacao, id: string) {
+async function refusalReason(tx: DbTransaction, id: string) {
     const [sorteio] = await tx
         .select({ sorteadoEm: sorteios.sorteadoEm })
         .from(sorteios)
         .where(eq(sorteios.id, id));
-    if (!sorteio) return new AppError(404, "Sorteio não encontrado");
-    if (sorteio.sorteadoEm) return new AppError(409, "Este sorteio já foi feito");
-    return new AppError(409, "O sorteio só pode ser feito depois do fim das inscrições");
+    if (!sorteio) return new AppError(404, "raffle.notFound");
+    if (sorteio.sorteadoEm) return new AppError(409, "raffle.alreadyDrawn");
+    return new AppError(409, "raffle.drawAfterEnd");
 }
 
-export async function realizarSorteio(id: string) {
+export async function drawRaffle(id: string) {
     await db.transaction(async (tx) => {
-        // Marcar e travar no mesmo UPDATE: o segundo clique espera este terminar e
-        // não encontra mais a linha, e a inscrição atrasada já lê sorteado_em.
-        const [marcado] = await tx
+        // Mark and lock in the same UPDATE: the second click waits for this one to
+        // finish and no longer finds the row, and the late entry already reads
+        // sorteado_em.
+        const [marked] = await tx
             .update(sorteios)
             .set({ sorteadoEm: sql`now()`, updatedAt: sql`now()` })
             .where(
@@ -241,27 +242,27 @@ export async function realizarSorteio(id: string) {
                 ),
             )
             .returning({ id: sorteios.id });
-        if (!marcado) throw await motivoDaRecusa(tx, id);
+        if (!marked) throw await refusalReason(tx, id);
 
-        const inscritos = await tx
+        const entries = await tx
             .select({ id: sorteioParticipacoes.id })
             .from(sorteioParticipacoes)
             .where(eq(sorteioParticipacoes.sorteioId, id))
             .orderBy(asc(sorteioParticipacoes.createdAt), asc(sorteioParticipacoes.id));
-        if (inscritos.length === 0) throw new AppError(409, "Ninguém se inscreveu neste sorteio");
+        if (entries.length === 0) throw new AppError(409, "raffle.noEntries");
 
-        const ganhadores = pickRandom(
-            inscritos.map((inscrito) => inscrito.id),
-            GANHADORES,
-            (limite) => randomInt(limite),
+        const winners = pickRandom(
+            entries.map((entry) => entry.id),
+            WINNER_COUNT,
+            (limit) => randomInt(limit),
         );
-        for (const [indice, participacaoId] of ganhadores.entries()) {
+        for (const [index, entryId] of winners.entries()) {
             await tx
                 .update(sorteioParticipacoes)
-                .set({ posicao: indice + 1, updatedAt: sql`now()` })
-                .where(eq(sorteioParticipacoes.id, participacaoId));
+                .set({ posicao: index + 1, updatedAt: sql`now()` })
+                .where(eq(sorteioParticipacoes.id, entryId));
         }
-        // Minimização (LGPD): quem não ganhou segue como inscrito, mas sem contato.
+        // Data minimization (LGPD): whoever did not win stays as an entry, but without contacts.
         await tx
             .update(sorteioParticipacoes)
             .set({ contatos: null, updatedAt: sql`now()` })
@@ -269,5 +270,5 @@ export async function realizarSorteio(id: string) {
                 and(eq(sorteioParticipacoes.sorteioId, id), isNull(sorteioParticipacoes.posicao)),
             );
     });
-    return detalharSorteio(id);
+    return raffleDetail(id);
 }

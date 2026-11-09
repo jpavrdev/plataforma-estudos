@@ -1,85 +1,85 @@
 import type { Request, Response, NextFunction } from "express";
 import {
-    idSorteioSchema,
-    criarSorteioSchema,
-    atualizarSorteioSchema,
-    participacaoSchema,
+    raffleIdSchema,
+    createRaffleSchema,
+    updateRaffleSchema,
+    raffleEntrySchema,
 } from "../schemas/sorteio.schema.ts";
 import {
-    sorteioAtivo,
-    inscrever,
-    listarSorteios,
-    detalharSorteio,
-    criarSorteio,
-    atualizarSorteio,
-    excluirSorteio,
-    realizarSorteio,
+    activeRaffle,
+    enterRaffle,
+    listRaffles,
+    raffleDetail,
+    insertRaffle,
+    editRaffle,
+    removeRaffle,
+    drawRaffle,
 } from "../services/sorteio.service.ts";
 
-export const getSorteioAtivo = async (req: Request, res: Response, next: NextFunction) => {
+export const getActiveRaffle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await sorteioAtivo(req.userId!));
+        res.json(await activeRaffle(req.userId!));
     } catch (err) {
         next(err);
     }
 };
 
-export const postParticipacao = async (req: Request, res: Response, next: NextFunction) => {
+export const postEntry = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = idSorteioSchema.parse(req.params.id);
-        const contatos = participacaoSchema.parse(req.body);
-        res.status(201).json(await inscrever(id, req.userId!, contatos));
+        const id = raffleIdSchema.parse(req.params.id);
+        const contatos = raffleEntrySchema.parse(req.body);
+        res.status(201).json(await enterRaffle(id, req.userId!, contatos));
     } catch (err) {
         next(err);
     }
 };
 
-export const listSorteiosStudio = async (_req: Request, res: Response, next: NextFunction) => {
+export const listStudioRaffles = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarSorteios());
+        res.json(await listRaffles());
     } catch (err) {
         next(err);
     }
 };
 
-export const getSorteioStudio = async (req: Request, res: Response, next: NextFunction) => {
+export const getStudioRaffle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await detalharSorteio(idSorteioSchema.parse(req.params.id)));
+        res.json(await raffleDetail(raffleIdSchema.parse(req.params.id)));
     } catch (err) {
         next(err);
     }
 };
 
-export const createSorteio = async (req: Request, res: Response, next: NextFunction) => {
+export const createRaffle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = criarSorteioSchema.parse(req.body);
-        res.status(201).json(await criarSorteio(dados));
+        const data = createRaffleSchema.parse(req.body);
+        res.status(201).json(await insertRaffle(data));
     } catch (err) {
         next(err);
     }
 };
 
-export const updateSorteio = async (req: Request, res: Response, next: NextFunction) => {
+export const updateRaffle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = idSorteioSchema.parse(req.params.id);
-        const dados = atualizarSorteioSchema.parse(req.body);
-        res.json(await atualizarSorteio(id, dados));
+        const id = raffleIdSchema.parse(req.params.id);
+        const data = updateRaffleSchema.parse(req.body);
+        res.json(await editRaffle(id, data));
     } catch (err) {
         next(err);
     }
 };
 
-export const deleteSorteio = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteRaffle = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await excluirSorteio(idSorteioSchema.parse(req.params.id)));
+        res.json(await removeRaffle(raffleIdSchema.parse(req.params.id)));
     } catch (err) {
         next(err);
     }
 };
 
-export const postSortear = async (req: Request, res: Response, next: NextFunction) => {
+export const postDraw = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await realizarSorteio(idSorteioSchema.parse(req.params.id)));
+        res.json(await drawRaffle(raffleIdSchema.parse(req.params.id)));
     } catch (err) {
         next(err);
     }

@@ -7,7 +7,7 @@ import { limparBanco } from "./helpers/db.ts";
 let server: Awaited<ReturnType<typeof startTestServer>>;
 
 let seq = 0;
-const novoUsuario = () => ({
+const newUser = () => ({
     name: `Aluno ${++seq}`,
     email: `sorteio_${seq}_${Math.round(performance.now() * 1000)}@email.com`,
     username: `sorteio_${seq}`,
@@ -17,57 +17,57 @@ const novoUsuario = () => ({
     phone: "11999998888",
 });
 
-async function ajustarUsuario(email: string, campos: Record<string, unknown>) {
+async function updateUserFields(email: string, fields: Record<string, unknown>) {
     const { db } = await import("../db.ts");
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
-    await db.update(users).set(campos).where(eq(users.email, email));
+    await db.update(users).set(fields).where(eq(users.email, email));
 }
 
-async function criarUsuarioLogado(admin = false) {
-    const dados = novoUsuario();
-    await server.request("POST", "/register", { body: dados });
-    await ajustarUsuario(dados.email, {
+async function createLoggedInUser(admin = false) {
+    const data = newUser();
+    await server.request("POST", "/register", { body: data });
+    await updateUserFields(data.email, {
         emailVerifiedAt: new Date(),
         ...(admin ? { role: "admin" } : {}),
     });
     const login = await server.request("POST", "/login", {
-        body: { email: dados.email, password: dados.password },
+        body: { email: data.email, password: data.password },
     });
-    return { email: dados.email, username: dados.username, token: login.body.token as string };
+    return { email: data.email, username: data.username, token: login.body.token as string };
 }
 
-async function chamar(metodo: string, caminho: string, token: string, corpo?: unknown) {
-    const res = await fetch(`${server.base}${caminho}`, {
-        method: metodo,
+async function call(method: string, path: string, token: string, body?: unknown) {
+    const res = await fetch(`${server.base}${path}`, {
+        method,
         headers: {
             Authorization: `Bearer ${token}`,
-            ...(corpo === undefined ? {} : { "Content-Type": "application/json" }),
+            ...(body === undefined ? {} : { "Content-Type": "application/json" }),
         },
-        body: corpo === undefined ? undefined : JSON.stringify(corpo),
+        body: body === undefined ? undefined : JSON.stringify(body),
     });
     return { status: res.status, body: await res.json().catch(() => null) };
 }
 
-// As regras dependem do relógio de verdade, então as datas são relativas a agora.
-const daquiA = (minutos: number) => new Date(Date.now() + minutos * 60_000).toISOString();
+// The rules depend on the real clock, so dates are relative to now.
+const minutesFromNow = (minutes: number) => new Date(Date.now() + minutes * 60_000).toISOString();
 
-const dadosDoSorteio = (inicio: number, fim: number, titulo = "Sorteio de teste") => ({
+const raffleData = (inicio: number, fim: number, titulo = "Sorteio de teste") => ({
     titulo,
     descricao: "Três prêmios.\nBoa sorte!",
-    inicio: daquiA(inicio),
-    fim: daquiA(fim),
+    inicio: minutesFromNow(inicio),
+    fim: minutesFromNow(fim),
 });
 
-async function criarSorteio(admin: string, inicio: number, fim: number, titulo?: string) {
-    const res = await chamar("POST", "/sorteios", admin, dadosDoSorteio(inicio, fim, titulo));
+async function createRaffle(admin: string, inicio: number, fim: number, titulo?: string) {
+    const res = await call("POST", "/sorteios", admin, raffleData(inicio, fim, titulo));
     assert.equal(res.status, 201);
     return res.body;
 }
 
-// Fecha as inscrições trazendo o fim para o passado, como o admin faria pela edição.
-async function encerrar(admin: string, id: string) {
-    const res = await chamar("PATCH", `/sorteios/${id}`, admin, { fim: daquiA(-1) });
+// Closes entries by moving the end into the past, as the admin would through the edit.
+async function closeEntries(admin: string, id: string) {
+    const res = await call("PATCH", `/sorteios/${id}`, admin, { fim: minutesFromNow(-1) });
     assert.equal(res.status, 200);
     assert.equal(res.body.situacao, "encerrado");
 }
@@ -76,13 +76,10 @@ const ZAP = { canal: "whatsapp", pais: "BR", ddd: "(11)", numero: "98765-4321" }
 const INSTA = { canal: "instagram", usuario: "@Fulano.Dev" };
 const EMAIL = { canal: "email", email: " Fulano@Email.com " };
 
-const inscrever = (
-    token: string,
-    id: string,
-    corpo: unknown = { primario: ZAP, secundario: INSTA },
-) => chamar("POST", `/sorteios/${id}/participacao`, token, corpo);
+const enter = (token: string, id: string, body: unknown = { primario: ZAP, secundario: INSTA }) =>
+    call("POST", `/sorteios/${id}/participacao`, token, body);
 
-const ativo = async (token: string) => (await chamar("GET", "/sorteios/ativo", token)).body;
+const activeRaffle = async (token: string) => (await call("GET", "/sorteios/ativo", token)).body;
 
 before(async () => {
     server = await startTestServer();
@@ -94,17 +91,17 @@ beforeEach(async () => {
     await limparBanco();
 });
 
-describe("Sorteios: aluno", () => {
-    test("vê só o sorteio aberto; agendado e encerrado não aparecem", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        await criarSorteio(admin.token, -120, -60);
-        await criarSorteio(admin.token, 60, 120);
-        assert.equal(await ativo(aluno.token), null);
+describe("Raffles: student", () => {
+    test("sees only the open raffle; scheduled and closed ones do not show up", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        await createRaffle(admin.token, -120, -60);
+        await createRaffle(admin.token, 60, 120);
+        assert.equal(await activeRaffle(student.token), null);
 
-        const aberto = await criarSorteio(admin.token, -30, 30);
-        const corpo = await ativo(aluno.token);
-        assert.deepEqual(Object.keys(corpo).sort(), [
+        const open = await createRaffle(admin.token, -30, 30);
+        const body = await activeRaffle(student.token);
+        assert.deepEqual(Object.keys(body).sort(), [
             "descricao",
             "fim",
             "id",
@@ -112,55 +109,55 @@ describe("Sorteios: aluno", () => {
             "participacao",
             "titulo",
         ]);
-        assert.equal(corpo.id, aberto.id);
-        assert.equal(corpo.descricao, "Três prêmios.\nBoa sorte!");
-        assert.equal(corpo.participacao, null);
+        assert.equal(body.id, open.id);
+        assert.equal(body.descricao, "Três prêmios.\nBoa sorte!");
+        assert.equal(body.participacao, null);
     });
 
-    test("inscrição cria com 201 e normaliza os contatos; a segunda dá 409 e nada muda", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
+    test("entering creates with 201 and normalizes the contacts; the second one gets 409 and nothing changes", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const raffle = await createRaffle(admin.token, -30, 30);
 
-        const primeira = await inscrever(aluno.token, sorteio.id);
-        assert.equal(primeira.status, 201);
-        assert.deepEqual(Object.keys(primeira.body).sort(), ["contatos", "inscritoEm"]);
-        assert.deepEqual(primeira.body.contatos, {
+        const first = await enter(student.token, raffle.id);
+        assert.equal(first.status, 201);
+        assert.deepEqual(Object.keys(first.body).sort(), ["contatos", "inscritoEm"]);
+        assert.deepEqual(first.body.contatos, {
             primario: { canal: "whatsapp", pais: "BR", ddi: "55", ddd: "11", numero: "987654321" },
             secundario: { canal: "instagram", usuario: "fulano.dev" },
         });
-        assert.ok(primeira.body.inscritoEm);
+        assert.ok(first.body.inscritoEm);
 
-        const segunda = await inscrever(aluno.token, sorteio.id, { primario: EMAIL });
-        assert.equal(segunda.status, 409);
-        assert.equal(segunda.body.erro, "Você já está inscrito neste sorteio");
+        const second = await enter(student.token, raffle.id, { primario: EMAIL });
+        assert.equal(second.status, 409);
+        assert.equal(second.body.erro, "Você já está inscrito neste sorteio");
 
-        assert.deepEqual((await ativo(aluno.token)).participacao, primeira.body);
-        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
-        assert.equal(detalhe.body.participantes.length, 1);
-        assert.deepEqual(detalhe.body.participantes[0].contatos, primeira.body.contatos);
+        assert.deepEqual((await activeRaffle(student.token)).participacao, first.body);
+        const detail = await call("GET", `/studio/sorteios/${raffle.id}`, admin.token);
+        assert.equal(detail.body.participantes.length, 1);
+        assert.deepEqual(detail.body.participantes[0].contatos, first.body.contatos);
     });
 
-    test("dois envios ao mesmo tempo inscrevem uma vez só", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
+    test("two submissions at the same time enter only once", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const raffle = await createRaffle(admin.token, -30, 30);
 
-        const respostas = await Promise.all([
-            inscrever(aluno.token, sorteio.id),
-            inscrever(aluno.token, sorteio.id),
+        const responses = await Promise.all([
+            enter(student.token, raffle.id),
+            enter(student.token, raffle.id),
         ]);
-        assert.deepEqual(respostas.map((r) => r.status).sort(), [201, 409]);
-        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
-        assert.equal(detalhe.body.participantes.length, 1);
+        assert.deepEqual(responses.map((r) => r.status).sort(), [201, 409]);
+        const detail = await call("GET", `/studio/sorteios/${raffle.id}`, admin.token);
+        assert.equal(detail.body.participantes.length, 1);
     });
 
-    test("inscrição só com o principal guarda o secundário como null", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
+    test("entering with only the primary contact stores the secondary as null", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const raffle = await createRaffle(admin.token, -30, 30);
 
-        const res = await inscrever(aluno.token, sorteio.id, { primario: INSTA });
+        const res = await enter(student.token, raffle.id, { primario: INSTA });
         assert.equal(res.status, 201);
         assert.deepEqual(res.body.contatos, {
             primario: { canal: "instagram", usuario: "fulano.dev" },
@@ -168,12 +165,12 @@ describe("Sorteios: aluno", () => {
         });
     });
 
-    test("contato inválido dá 400 e não inscreve", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
+    test("an invalid contact gives 400 and does not enter", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const raffle = await createRaffle(admin.token, -30, 30);
 
-        const invalidos = [
+        const invalid = [
             { primario: { ...ZAP, ddd: "20" } },
             { primario: { ...ZAP, numero: "8765-4321" } },
             { primario: { canal: "whatsapp", pais: "XX", numero: "912345678" } },
@@ -184,130 +181,130 @@ describe("Sorteios: aluno", () => {
             { primario: { canal: "telegram", usuario: "fulano" } },
             { secundario: INSTA },
         ];
-        for (const corpo of invalidos) {
-            const res = await inscrever(aluno.token, sorteio.id, corpo);
-            assert.equal(res.status, 400, JSON.stringify(corpo));
+        for (const body of invalid) {
+            const res = await enter(student.token, raffle.id, body);
+            assert.equal(res.status, 400, JSON.stringify(body));
         }
-        assert.equal((await ativo(aluno.token)).participacao, null);
+        assert.equal((await activeRaffle(student.token)).participacao, null);
     });
 
-    test("fora do período dá 409; sorteio inexistente dá 404", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const agendado = await criarSorteio(admin.token, 60, 120);
-        const encerrado = await criarSorteio(admin.token, -120, -60);
+    test("outside the period gives 409; a nonexistent raffle gives 404", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const scheduled = await createRaffle(admin.token, 60, 120);
+        const closed = await createRaffle(admin.token, -120, -60);
 
-        for (const sorteio of [agendado, encerrado]) {
-            assert.equal((await inscrever(aluno.token, sorteio.id)).status, 409);
+        for (const raffle of [scheduled, closed]) {
+            assert.equal((await enter(student.token, raffle.id)).status, 409);
         }
 
-        assert.equal((await inscrever(aluno.token, randomUUID())).status, 404);
-        assert.equal((await inscrever(aluno.token, "nao-e-um-id")).status, 400);
+        assert.equal((await enter(student.token, randomUUID())).status, 404);
+        assert.equal((await enter(student.token, "nao-e-um-id")).status, 400);
     });
 
-    test("aluno sem @ não se inscreve", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
-        await ajustarUsuario(aluno.email, { username: null });
+    test("a student without an @ cannot enter", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const raffle = await createRaffle(admin.token, -30, 30);
+        await updateUserFields(student.email, { username: null });
 
-        assert.equal((await inscrever(aluno.token, sorteio.id)).status, 403);
+        assert.equal((await enter(student.token, raffle.id)).status, 403);
     });
 });
 
-describe("Sorteios: estúdio", () => {
-    test("admin cria; período sobreposto dá 409 e período emendado passa", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const criado = await chamar("POST", "/sorteios", admin.token, {
-            ...dadosDoSorteio(10, 20),
+describe("Raffles: studio", () => {
+    test("admin creates; an overlapping period gives 409 and a back-to-back one passes", async () => {
+        const admin = await createLoggedInUser(true);
+        const created = await call("POST", "/sorteios", admin.token, {
+            ...raffleData(10, 20),
             titulo: "  Sorteio de novembro  ",
         });
-        assert.equal(criado.status, 201);
-        assert.equal(criado.body.titulo, "Sorteio de novembro");
-        assert.equal(criado.body.situacao, "agendado");
-        assert.equal(criado.body.sorteadoEm, null);
-        assert.deepEqual(criado.body.ganhadores, []);
-        assert.deepEqual(criado.body.participantes, []);
+        assert.equal(created.status, 201);
+        assert.equal(created.body.titulo, "Sorteio de novembro");
+        assert.equal(created.body.situacao, "agendado");
+        assert.equal(created.body.sorteadoEm, null);
+        assert.deepEqual(created.body.ganhadores, []);
+        assert.deepEqual(created.body.participantes, []);
 
-        const sobreposto = await chamar("POST", "/sorteios", admin.token, dadosDoSorteio(15, 25));
-        assert.equal(sobreposto.status, 409);
+        const overlapping = await call("POST", "/sorteios", admin.token, raffleData(15, 25));
+        assert.equal(overlapping.status, 409);
 
-        const emendado = await chamar("POST", "/sorteios", admin.token, {
-            ...dadosDoSorteio(0, 30),
-            inicio: criado.body.fim,
+        const backToBack = await call("POST", "/sorteios", admin.token, {
+            ...raffleData(0, 30),
+            inicio: created.body.fim,
         });
-        assert.equal(emendado.status, 201);
+        assert.equal(backToBack.status, 201);
 
-        const invadindo = await chamar("PATCH", `/sorteios/${emendado.body.id}`, admin.token, {
-            inicio: daquiA(19),
+        const intruding = await call("PATCH", `/sorteios/${backToBack.body.id}`, admin.token, {
+            inicio: minutesFromNow(19),
         });
-        assert.equal(invadindo.status, 409);
+        assert.equal(intruding.status, 409);
     });
 
-    test("valida título, descrição e datas", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const criado = await criarSorteio(admin.token, 10, 20);
-        const invalidos = [
-            { ...dadosDoSorteio(40, 50), titulo: "ab" },
-            { ...dadosDoSorteio(40, 50), titulo: "x".repeat(121) },
-            { ...dadosDoSorteio(40, 50), descricao: "   " },
-            { ...dadosDoSorteio(40, 50), descricao: "x".repeat(2001) },
-            { ...dadosDoSorteio(40, 50), inicio: "2026-12-01T10:00", fim: "2026-12-02T10:00" },
-            dadosDoSorteio(50, 40),
+    test("validates title, description and dates", async () => {
+        const admin = await createLoggedInUser(true);
+        const created = await createRaffle(admin.token, 10, 20);
+        const invalid = [
+            { ...raffleData(40, 50), titulo: "ab" },
+            { ...raffleData(40, 50), titulo: "x".repeat(121) },
+            { ...raffleData(40, 50), descricao: "   " },
+            { ...raffleData(40, 50), descricao: "x".repeat(2001) },
+            { ...raffleData(40, 50), inicio: "2026-12-01T10:00", fim: "2026-12-02T10:00" },
+            raffleData(50, 40),
         ];
-        for (const corpo of invalidos) {
-            const res = await chamar("POST", "/sorteios", admin.token, corpo);
-            assert.equal(res.status, 400, JSON.stringify(corpo).slice(0, 120));
+        for (const body of invalid) {
+            const res = await call("POST", "/sorteios", admin.token, body);
+            assert.equal(res.status, 400, JSON.stringify(body).slice(0, 120));
         }
 
-        // Só o fim na edição, antes do início que já estava gravado.
-        const edicao = await chamar("PATCH", `/sorteios/${criado.id}`, admin.token, {
-            fim: daquiA(5),
+        // Only the end in the edit, before the start that was already stored.
+        const edit = await call("PATCH", `/sorteios/${created.id}`, admin.token, {
+            fim: minutesFromNow(5),
         });
-        assert.equal(edicao.status, 400);
-        const vazia = await chamar("PATCH", `/sorteios/${criado.id}`, admin.token, {});
-        assert.equal(vazia.status, 400);
+        assert.equal(edit.status, 400);
+        const empty = await call("PATCH", `/sorteios/${created.id}`, admin.token, {});
+        assert.equal(empty.status, 400);
     });
 
-    test("aluno comum leva 403 nas rotas do admin", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const { id } = await criarSorteio(admin.token, -30, 30);
+    test("a common student gets 403 on the admin routes", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const { id } = await createRaffle(admin.token, -30, 30);
 
-        const rotas: Array<[string, string, unknown?]> = [
+        const routes: Array<[string, string, unknown?]> = [
             ["GET", "/studio/sorteios"],
             ["GET", `/studio/sorteios/${id}`],
-            ["POST", "/sorteios", dadosDoSorteio(60, 120)],
+            ["POST", "/sorteios", raffleData(60, 120)],
             ["PATCH", `/sorteios/${id}`, { titulo: "Outro título" }],
             ["DELETE", `/sorteios/${id}`],
             ["POST", `/sorteios/${id}/sortear`],
         ];
-        for (const [metodo, caminho, corpo] of rotas) {
-            const res = await chamar(metodo, caminho, aluno.token, corpo);
-            assert.equal(res.status, 403, `${metodo} ${caminho}`);
+        for (const [method, path, body] of routes) {
+            const res = await call(method, path, student.token, body);
+            assert.equal(res.status, 403, `${method} ${path}`);
         }
     });
 
-    test("lista traz situação e inscritos, do início mais recente para o mais antigo", async () => {
-        const admin = await criarUsuarioLogado(true);
-        await criarSorteio(admin.token, -120, -60, "Passado");
-        const aberto = await criarSorteio(admin.token, -30, 30, "Atual");
-        await criarSorteio(admin.token, 60, 120, "Futuro");
-        for (const aluno of [await criarUsuarioLogado(), await criarUsuarioLogado()]) {
-            await inscrever(aluno.token, aberto.id);
+    test("the list brings status and entries, from the most recent start to the oldest", async () => {
+        const admin = await createLoggedInUser(true);
+        await createRaffle(admin.token, -120, -60, "Passado");
+        const open = await createRaffle(admin.token, -30, 30, "Atual");
+        await createRaffle(admin.token, 60, 120, "Futuro");
+        for (const student of [await createLoggedInUser(), await createLoggedInUser()]) {
+            await enter(student.token, open.id);
         }
 
-        const lista = await chamar("GET", "/studio/sorteios", admin.token);
-        assert.equal(lista.status, 200);
+        const list = await call("GET", "/studio/sorteios", admin.token);
+        assert.equal(list.status, 200);
         assert.deepEqual(
-            lista.body.map((s: any) => [s.titulo, s.situacao, s.participantes]),
+            list.body.map((s: any) => [s.titulo, s.situacao, s.participantes]),
             [
                 ["Futuro", "agendado", 0],
                 ["Atual", "aberto", 2],
                 ["Passado", "encerrado", 0],
             ],
         );
-        assert.deepEqual(Object.keys(lista.body[0]).sort(), [
+        assert.deepEqual(Object.keys(list.body[0]).sort(), [
             "fim",
             "id",
             "inicio",
@@ -318,18 +315,18 @@ describe("Sorteios: estúdio", () => {
         ]);
     });
 
-    test("excluir leva as inscrições junto", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const aluno = await criarUsuarioLogado();
-        const sorteio = await criarSorteio(admin.token, -30, 30);
-        await inscrever(aluno.token, sorteio.id);
+    test("deleting takes the entries along", async () => {
+        const admin = await createLoggedInUser(true);
+        const student = await createLoggedInUser();
+        const raffle = await createRaffle(admin.token, -30, 30);
+        await enter(student.token, raffle.id);
 
-        const res = await chamar("DELETE", `/sorteios/${sorteio.id}`, admin.token);
+        const res = await call("DELETE", `/sorteios/${raffle.id}`, admin.token);
         assert.equal(res.status, 200);
         assert.deepEqual(res.body, { ok: true });
-        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
-        assert.equal(detalhe.status, 404);
-        assert.equal(await ativo(aluno.token), null);
+        const detail = await call("GET", `/studio/sorteios/${raffle.id}`, admin.token);
+        assert.equal(detail.status, 404);
+        assert.equal(await activeRaffle(student.token), null);
 
         const { db } = await import("../db.ts");
         const { sorteioParticipacoes } = await import("../schema.ts");
@@ -337,34 +334,34 @@ describe("Sorteios: estúdio", () => {
     });
 });
 
-describe("Sorteios: sortear", () => {
-    async function sorteioComInscritos(admin: string, quantos: number) {
-        const sorteio = await criarSorteio(admin, -60, 60);
-        const alunos = [];
-        for (let i = 0; i < quantos; i++) {
-            const aluno = await criarUsuarioLogado();
-            assert.equal((await inscrever(aluno.token, sorteio.id)).status, 201);
-            alunos.push(aluno);
+describe("Raffles: drawing", () => {
+    async function raffleWithEntries(admin: string, howMany: number) {
+        const raffle = await createRaffle(admin, -60, 60);
+        const students = [];
+        for (let i = 0; i < howMany; i++) {
+            const student = await createLoggedInUser();
+            assert.equal((await enter(student.token, raffle.id)).status, 201);
+            students.push(student);
         }
-        return { sorteio, alunos };
+        return { raffle, students };
     }
 
-    test("antes do fim dá 409", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const { sorteio } = await sorteioComInscritos(admin.token, 1);
+    test("before the end gives 409", async () => {
+        const admin = await createLoggedInUser(true);
+        const { raffle } = await raffleWithEntries(admin.token, 1);
 
-        const res = await chamar("POST", `/sorteios/${sorteio.id}/sortear`, admin.token);
+        const res = await call("POST", `/sorteios/${raffle.id}/sortear`, admin.token);
         assert.equal(res.status, 409);
-        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
-        assert.equal(detalhe.body.situacao, "aberto");
+        const detail = await call("GET", `/studio/sorteios/${raffle.id}`, admin.token);
+        assert.equal(detail.body.situacao, "aberto");
     });
 
-    test("com 5 inscritos saem 3 ganhadores e os demais perdem o contato", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const { sorteio, alunos } = await sorteioComInscritos(admin.token, 5);
-        await encerrar(admin.token, sorteio.id);
+    test("with 5 entries 3 winners come out and the rest lose their contacts", async () => {
+        const admin = await createLoggedInUser(true);
+        const { raffle, students } = await raffleWithEntries(admin.token, 5);
+        await closeEntries(admin.token, raffle.id);
 
-        const res = await chamar("POST", `/sorteios/${sorteio.id}/sortear`, admin.token);
+        const res = await call("POST", `/sorteios/${raffle.id}/sortear`, admin.token);
         assert.equal(res.status, 200);
         assert.equal(res.body.situacao, "sorteado");
         assert.ok(res.body.sorteadoEm);
@@ -372,51 +369,51 @@ describe("Sorteios: sortear", () => {
             res.body.ganhadores.map((g: any) => g.posicao),
             [1, 2, 3],
         );
-        const ganhadores = res.body.ganhadores.map((g: any) => g.username);
-        assert.equal(new Set(ganhadores).size, 3);
-        for (const ganhador of res.body.ganhadores) {
-            assert.ok(ganhador.nome);
-            assert.equal(ganhador.contatos.primario.canal, "whatsapp");
+        const winners = res.body.ganhadores.map((g: any) => g.username);
+        assert.equal(new Set(winners).size, 3);
+        for (const winner of res.body.ganhadores) {
+            assert.ok(winner.nome);
+            assert.equal(winner.contatos.primario.canal, "whatsapp");
         }
 
         assert.deepEqual(
             res.body.participantes.map((p: any) => p.username),
-            alunos.map((a) => a.username),
+            students.map((a) => a.username),
         );
-        for (const participante of res.body.participantes) {
-            const ganhou = ganhadores.includes(participante.username);
-            assert.equal(participante.contatos === null, !ganhou, participante.username);
+        for (const participant of res.body.participantes) {
+            const won = winners.includes(participant.username);
+            assert.equal(participant.contatos === null, !won, participant.username);
         }
 
-        const repetido = await chamar("POST", `/sorteios/${sorteio.id}/sortear`, admin.token);
-        assert.equal(repetido.status, 409);
-        const edicao = await chamar("PATCH", `/sorteios/${sorteio.id}`, admin.token, {
+        const repeat = await call("POST", `/sorteios/${raffle.id}/sortear`, admin.token);
+        assert.equal(repeat.status, 409);
+        const edit = await call("PATCH", `/sorteios/${raffle.id}`, admin.token, {
             titulo: "Outro título",
         });
-        assert.equal(edicao.status, 409);
+        assert.equal(edit.status, 409);
     });
 
-    test("dois cliques ao mesmo tempo sorteiam uma vez só", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const { sorteio } = await sorteioComInscritos(admin.token, 4);
-        await encerrar(admin.token, sorteio.id);
+    test("two clicks at the same time draw only once", async () => {
+        const admin = await createLoggedInUser(true);
+        const { raffle } = await raffleWithEntries(admin.token, 4);
+        await closeEntries(admin.token, raffle.id);
 
-        const caminho = `/sorteios/${sorteio.id}/sortear`;
-        const respostas = await Promise.all([
-            chamar("POST", caminho, admin.token),
-            chamar("POST", caminho, admin.token),
+        const path = `/sorteios/${raffle.id}/sortear`;
+        const responses = await Promise.all([
+            call("POST", path, admin.token),
+            call("POST", path, admin.token),
         ]);
-        assert.deepEqual(respostas.map((r) => r.status).sort(), [200, 409]);
-        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
-        assert.equal(detalhe.body.ganhadores.length, 3);
+        assert.deepEqual(responses.map((r) => r.status).sort(), [200, 409]);
+        const detail = await call("GET", `/studio/sorteios/${raffle.id}`, admin.token);
+        assert.equal(detail.body.ganhadores.length, 3);
     });
 
-    test("com 2 inscritos saem 2 ganhadores", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const { sorteio } = await sorteioComInscritos(admin.token, 2);
-        await encerrar(admin.token, sorteio.id);
+    test("with 2 entries 2 winners come out", async () => {
+        const admin = await createLoggedInUser(true);
+        const { raffle } = await raffleWithEntries(admin.token, 2);
+        await closeEntries(admin.token, raffle.id);
 
-        const res = await chamar("POST", `/sorteios/${sorteio.id}/sortear`, admin.token);
+        const res = await call("POST", `/sorteios/${raffle.id}/sortear`, admin.token);
         assert.equal(res.status, 200);
         assert.deepEqual(
             res.body.ganhadores.map((g: any) => g.posicao),
@@ -428,20 +425,20 @@ describe("Sorteios: sortear", () => {
         );
     });
 
-    test("sem inscritos dá 409 e o sorteio segue encerrado", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const sorteio = await criarSorteio(admin.token, -120, -60);
+    test("with no entries gives 409 and the raffle stays closed", async () => {
+        const admin = await createLoggedInUser(true);
+        const raffle = await createRaffle(admin.token, -120, -60);
 
-        const res = await chamar("POST", `/sorteios/${sorteio.id}/sortear`, admin.token);
+        const res = await call("POST", `/sorteios/${raffle.id}/sortear`, admin.token);
         assert.equal(res.status, 409);
-        const detalhe = await chamar("GET", `/studio/sorteios/${sorteio.id}`, admin.token);
-        assert.equal(detalhe.body.situacao, "encerrado");
-        assert.equal(detalhe.body.sorteadoEm, null);
+        const detail = await call("GET", `/studio/sorteios/${raffle.id}`, admin.token);
+        assert.equal(detail.body.situacao, "encerrado");
+        assert.equal(detail.body.sorteadoEm, null);
     });
 
-    test("sorteio inexistente dá 404", async () => {
-        const admin = await criarUsuarioLogado(true);
-        const res = await chamar("POST", `/sorteios/${randomUUID()}/sortear`, admin.token);
+    test("a nonexistent raffle gives 404", async () => {
+        const admin = await createLoggedInUser(true);
+        const res = await call("POST", `/sorteios/${randomUUID()}/sortear`, admin.token);
         assert.equal(res.status, 404);
     });
 });
