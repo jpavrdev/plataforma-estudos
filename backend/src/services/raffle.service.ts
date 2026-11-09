@@ -146,7 +146,7 @@ export async function raffleDetail(id: string) {
         .where(eq(sorteioParticipacoes.sorteioId, id))
         .orderBy(asc(sorteioParticipacoes.createdAt), asc(sorteioParticipacoes.id));
 
-    const ganhadores = entries
+    const winners = entries
         .flatMap(({ posicao, username, nome, contatos }) =>
             posicao === null ? [] : [{ posicao, username, nome, contatos }],
         )
@@ -155,7 +155,7 @@ export async function raffleDetail(id: string) {
     return {
         ...sorteio,
         situacao: raffleStatus(sorteio, new Date()),
-        ganhadores,
+        ganhadores: winners,
         participantes: entries.map(({ username, nome, inscritoEm, contatos }) => ({
             username,
             nome,
