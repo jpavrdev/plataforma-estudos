@@ -5,28 +5,28 @@ import { subscriptions, users } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
 import { env } from "../config/env.ts";
 import {
-    gatewayConfigurado,
-    criarPixTransparente,
-    criarCheckoutAssinatura,
-    consultarPixQrCode,
-    PIX_TTL_SEGUNDOS,
+    gatewayConfigured,
+    createTransparentPix,
+    createSubscriptionCheckout,
+    queryPixQrCode,
+    PIX_TTL_SECONDS,
 } from "./abacatepay.client.ts";
 
-export const PLANOS = {
-    mensal: { valorCents: 500, dias: 30, descricao: "Apoio mensal ao Ensina Dev" },
-    trimestral: { valorCents: 1400, dias: 90, descricao: "Apoio trimestral ao Ensina Dev" },
-    anual: { valorCents: 5000, dias: 365, descricao: "Apoio anual ao Ensina Dev" },
-    pix_auto: { valorCents: 500, dias: 30, descricao: "Apoio mensal recorrente ao Ensina Dev" },
+export const PLANS = {
+    mensal: { priceCents: 500, days: 30, description: "Apoio mensal ao Ensina Dev" },
+    trimestral: { priceCents: 1400, days: 90, description: "Apoio trimestral ao Ensina Dev" },
+    anual: { priceCents: 5000, days: 365, description: "Apoio anual ao Ensina Dev" },
+    pix_auto: { priceCents: 500, days: 30, description: "Apoio mensal recorrente ao Ensina Dev" },
 } as const;
 
-// Planos que o usuário escolhe na tela; pix_auto nasce de outro fluxo.
-export type PlanoAvulso = "mensal" | "trimestral" | "anual";
+// Plans the user picks on the screen; pix_auto comes from a separate flow.
+export type SinglePlan = "mensal" | "trimestral" | "anual";
 
 export const ACCENTS = ["#2D6BF5", "#7C3AED", "#DB2777", "#E0532F", "#1C8F5A", "#B7791F"];
 
-// Cancelada com validade futura ainda conta: o período pago vale até o fim.
-export async function apoiadorAtivo(userId: string): Promise<boolean> {
-    const [linha] = await db
+// Cancelled with a future expiry still counts: the paid period lasts until the end.
+export async function supportActive(userId: string): Promise<boolean> {
+    const [row] = await db
         .select({ id: subscriptions.id })
         .from(subscriptions)
         .where(
@@ -37,12 +37,12 @@ export async function apoiadorAtivo(userId: string): Promise<boolean> {
             ),
         )
         .limit(1);
-    return Boolean(linha);
+    return Boolean(row);
 }
 
-// Conjunto de apoiadores ativos, para marcar o selo em listas (ranking, perfis).
-export async function apoiadoresAtivos(): Promise<Set<string>> {
-    const linhas = await db
+// Set of active supporters, to badge them in lists (ranking, profiles).
+export async function activeSupporters(): Promise<Set<string>> {
+    const rows = await db
         .selectDistinct({ userId: subscriptions.userId })
         .from(subscriptions)
         .where(
@@ -51,40 +51,41 @@ export async function apoiadoresAtivos(): Promise<Set<string>> {
                 gt(subscriptions.expiresAt, new Date()),
             ),
         );
-    return new Set(linhas.map((l) => l.userId));
+    return new Set(rows.map((r) => r.userId));
 }
 
-// Marca o apoio como pago e calcula até quando vale. Renovação estende a partir
-// do vencimento atual; pagamento novo conta da data em que o dinheiro entrou.
-async function ativarAssinatura(
-    alvo: {
+// Marks the support as paid and computes how long it lasts. A renewal extends
+// from the current expiry; a new payment counts from the date the money came in.
+async function activateSubscription(
+    target: {
         id: string;
-        plan: keyof typeof PLANOS;
+        plan: keyof typeof PLANS;
         paidAt: Date | null;
         expiresAt: Date | null;
     },
-    pagoEm: Date,
-    renovacao = false,
+    paidOn: Date,
+    renewal = false,
 ) {
-    const base = renovacao && alvo.expiresAt && alvo.expiresAt > pagoEm ? alvo.expiresAt : pagoEm;
-    const expiresAt = new Date(base.getTime() + PLANOS[alvo.plan].dias * 86400000);
-    // Fora de renovação, exigir paid_at nulo torna a ativação idempotente: o
-    // webhook e a consulta ao gateway podem chegar juntos sem se atropelar.
-    const condicoes = [eq(subscriptions.id, alvo.id)];
-    if (!renovacao) condicoes.push(isNull(subscriptions.paidAt));
+    const base =
+        renewal && target.expiresAt && target.expiresAt > paidOn ? target.expiresAt : paidOn;
+    const expiresAt = new Date(base.getTime() + PLANS[target.plan].days * 86400000);
+    // Outside a renewal, requiring a null paid_at makes activation idempotent:
+    // the webhook and the gateway poll can arrive together without a race.
+    const conditions = [eq(subscriptions.id, target.id)];
+    if (!renewal) conditions.push(isNull(subscriptions.paidAt));
     await db
         .update(subscriptions)
-        .set({ status: "ativa", paidAt: alvo.paidAt ?? pagoEm, expiresAt })
-        .where(and(...condicoes));
+        .set({ status: "ativa", paidAt: target.paidAt ?? paidOn, expiresAt })
+        .where(and(...conditions));
 }
 
-// Pergunta ao gateway se as cobranças que ainda estão pendentes aqui já foram
-// pagas. O webhook é o caminho rápido, e este é o que garante que um webhook
-// perdido não deixe quem pagou sem o apoio. Só consulta cobrança que ainda pode
-// ser paga, para não bater no gateway a cada abertura da página.
-export async function confirmarPagamentosPendentes(userId: string) {
-    if (!gatewayConfigurado()) return;
-    const pendentes = await db
+// Asks the gateway whether charges still pending here were already paid. The
+// webhook is the fast path; this is what guarantees a lost webhook does not
+// leave someone who paid without their support. Only queries charges that can
+// still be paid, to avoid hitting the gateway on every page load.
+export async function confirmPendingPayments(userId: string) {
+    if (!gatewayConfigured()) return;
+    const pending = await db
         .select()
         .from(subscriptions)
         .where(
@@ -93,24 +94,24 @@ export async function confirmarPagamentosPendentes(userId: string) {
                 eq(subscriptions.status, "pendente"),
                 isNull(subscriptions.paidAt),
                 isNotNull(subscriptions.gatewayId),
-                gt(subscriptions.createdAt, new Date(Date.now() - PIX_TTL_SEGUNDOS * 1000)),
+                gt(subscriptions.createdAt, new Date(Date.now() - PIX_TTL_SECONDS * 1000)),
             ),
         );
-    for (const pendente of pendentes) {
+    for (const row of pending) {
         try {
-            const cobranca = await consultarPixQrCode(pendente.gatewayId!);
-            if (cobranca.pago) await ativarAssinatura(pendente, cobranca.pagoEm ?? new Date());
+            const charge = await queryPixQrCode(row.gatewayId!);
+            if (charge.paid) await activateSubscription(row, charge.paidAt ?? new Date());
         } catch (err) {
-            // Gateway fora do ar não pode derrubar a tela de apoio: a próxima
-            // consulta ou o webhook resolvem.
-            console.error("Falha ao confirmar cobrança no gateway:", pendente.gatewayId, err);
+            // A gateway outage must not take down the support page: the next
+            // poll or the webhook sorts it out.
+            console.error("Failed to confirm charge with the gateway:", row.gatewayId, err);
         }
     }
 }
 
-export async function statusApoio(userId: string) {
-    await confirmarPagamentosPendentes(userId);
-    const [ativa] = await db
+export async function supportStatus(userId: string) {
+    await confirmPendingPayments(userId);
+    const [active] = await db
         .select({
             plan: subscriptions.plan,
             status: subscriptions.status,
@@ -127,17 +128,17 @@ export async function statusApoio(userId: string) {
         .orderBy(desc(subscriptions.expiresAt))
         .limit(1);
     return {
-        apoiador: Boolean(ativa),
-        plano: ativa?.plan ?? null,
-        expiresAt: ativa?.expiresAt ?? null,
-        cancelada: ativa?.status === "cancelada",
-        disponivel: gatewayConfigurado(),
+        apoiador: Boolean(active),
+        plano: active?.plan ?? null,
+        expiresAt: active?.expiresAt ?? null,
+        cancelada: active?.status === "cancelada",
+        disponivel: gatewayConfigured(),
         pixAutomatico: Boolean(env.ABACATEPAY_PRODUCT_PIX_AUTO),
     };
 }
 
-export async function criarCobranca(userId: string, plan: PlanoAvulso) {
-    const [pendentes] = await db
+export async function insertCharge(userId: string, plan: SinglePlan) {
+    const [open] = await db
         .select({ n: count() })
         .from(subscriptions)
         .where(
@@ -148,17 +149,18 @@ export async function criarCobranca(userId: string, plan: PlanoAvulso) {
                 gt(subscriptions.createdAt, new Date(Date.now() - 3600000)),
             ),
         );
-    if (Number(pendentes?.n ?? 0) >= 3) {
-        throw new AppError(429, "Muitas cobranças geradas. Aguarde um pouco e tente de novo.");
+    if (Number(open?.n ?? 0) >= 3) {
+        throw new AppError(429, "support.tooManyCharges");
     }
-    if (!gatewayConfigurado()) {
-        throw new AppError(503, "O apoio ainda não está disponível. Volte em breve!");
+    if (!gatewayConfigured()) {
+        throw new AppError(503, "support.unavailable");
     }
-    // O id nasce aqui para viajar no metadata da cobrança, e a linha só é gravada
-    // depois que o gateway responde. Assim uma falha na criação do Pix não deixa
-    // pendência órfã, que além de sujar o histórico contaria contra o limite acima.
+    // The id is born here so it can travel in the charge metadata, and the row
+    // is only written after the gateway responds. That way a failure creating
+    // the Pix leaves no orphan pending row, which besides dirtying the history
+    // would count against the limit above.
     const id = randomUUID();
-    const pix = await criarPixTransparente(PLANOS[plan].valorCents, PLANOS[plan].descricao, {
+    const pix = await createTransparentPix(PLANS[plan].priceCents, PLANS[plan].description, {
         subscriptionId: id,
     });
     await db.insert(subscriptions).values({
@@ -166,27 +168,24 @@ export async function criarCobranca(userId: string, plan: PlanoAvulso) {
         userId,
         plan,
         status: "pendente",
-        amountCents: PLANOS[plan].valorCents,
+        amountCents: PLANS[plan].priceCents,
         gatewayId: pix.gatewayId || null,
     });
 
     return {
         subscriptionId: id,
-        valorCents: PLANOS[plan].valorCents,
+        valorCents: PLANS[plan].priceCents,
         brCode: pix.brCode,
         brCodeBase64: pix.brCodeBase64,
     };
 }
 
-export async function criarAssinaturaRecorrente(userId: string) {
-    if (!gatewayConfigurado() || !env.ABACATEPAY_PRODUCT_PIX_AUTO) {
-        throw new AppError(
-            503,
-            "O Pix Automático ainda não está disponível. Use o plano mensal ou anual.",
-        );
+export async function insertRecurringSubscription(userId: string) {
+    if (!gatewayConfigured() || !env.ABACATEPAY_PRODUCT_PIX_AUTO) {
+        throw new AppError(503, "support.pixAutoUnavailable");
     }
     const id = randomUUID();
-    const checkout = await criarCheckoutAssinatura(
+    const checkout = await createSubscriptionCheckout(
         env.ABACATEPAY_PRODUCT_PIX_AUTO,
         `${env.FRONTEND_URL}/apoie`,
         `${env.FRONTEND_URL}/apoie?pago=1`,
@@ -197,23 +196,23 @@ export async function criarAssinaturaRecorrente(userId: string) {
         userId,
         plan: "pix_auto",
         status: "pendente",
-        amountCents: PLANOS.pix_auto.valorCents,
+        amountCents: PLANS.pix_auto.priceCents,
         gatewayId: checkout.gatewayId || null,
     });
 
     return { url: checkout.url };
 }
 
-// Caça o identificador da nossa assinatura no payload, que muda de formato por evento.
-function extrairReferencias(payload: Record<string, unknown>): string[] {
+// Hunts for our subscription identifier in the payload, which changes shape per event.
+function extractReferences(payload: Record<string, unknown>): string[] {
     const refs: string[] = [];
-    const visitar = (v: unknown) => {
+    const visit = (v: unknown) => {
         if (!v || typeof v !== "object") return;
         const o = v as Record<string, unknown>;
         if (typeof o.subscriptionId === "string") refs.push(o.subscriptionId);
         if (typeof o.externalId === "string") refs.push(o.externalId);
         if (typeof o.id === "string") refs.push(o.id);
-        for (const chave of [
+        for (const key of [
             "metadata",
             "data",
             "pixQrCode",
@@ -222,14 +221,14 @@ function extrairReferencias(payload: Record<string, unknown>): string[] {
             "subscription",
             "billing",
         ]) {
-            visitar(o[chave]);
+            visit(o[key]);
         }
     };
-    visitar(payload);
+    visit(payload);
     return refs;
 }
 
-const EVENTOS_PAGAMENTO = new Set([
+const PAYMENT_EVENTS = new Set([
     "transparent.completed",
     "checkout.completed",
     "billing.paid",
@@ -237,69 +236,70 @@ const EVENTOS_PAGAMENTO = new Set([
     "subscription.renewed",
 ]);
 
-export async function processarWebhook(payload: Record<string, unknown>) {
-    const evento = String(payload.event ?? payload.type ?? "");
-    const refs = extrairReferencias(payload);
+export async function processWebhook(payload: Record<string, unknown>) {
+    const event = String(payload.event ?? payload.type ?? "");
+    const refs = extractReferences(payload);
     if (refs.length === 0) {
-        console.warn("Webhook do gateway sem referência reconhecível:", evento);
+        console.warn("Gateway webhook without a recognizable reference:", event);
         return { ok: true };
     }
 
     const uuids = refs.filter((r) => /^[0-9a-f-]{36}$/i.test(r));
-    const condicoes = [inArray(subscriptions.gatewayId, refs)];
-    if (uuids.length > 0) condicoes.push(inArray(subscriptions.id, uuids));
-    const candidatas = await db
+    const conditions = [inArray(subscriptions.gatewayId, refs)];
+    if (uuids.length > 0) conditions.push(inArray(subscriptions.id, uuids));
+    const candidates = await db
         .select()
         .from(subscriptions)
-        .where(or(...condicoes));
-    const alvo = candidatas.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
-    if (!alvo) {
-        console.warn("Webhook do gateway sem assinatura correspondente:", evento, refs.join(","));
+        .where(or(...conditions));
+    const target = candidates.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
+    if (!target) {
+        console.warn("Gateway webhook without a matching subscription:", event, refs.join(","));
         return { ok: true };
     }
 
-    if (EVENTOS_PAGAMENTO.has(evento)) {
-        // Só a assinatura recorrente renova; plano avulso pago não estende.
-        const renovacao = evento === "subscription.renewed" && alvo.plan === "pix_auto";
-        if (alvo.paidAt && !renovacao) {
+    if (PAYMENT_EVENTS.has(event)) {
+        // Only the recurring subscription renews; a paid single plan does not extend.
+        const renewal = event === "subscription.renewed" && target.plan === "pix_auto";
+        if (target.paidAt && !renewal) {
             return { ok: true };
         }
-        // O segredo da URL autentica o webhook, mas o pagamento é conferido no
-        // gateway: assim nem um webhook forjado com o segredo ativa cobrança que não
-        // foi paga. Por ora só o Pix direto tem consulta; gateway fora do ar vira
-        // erro, e a AbacatePay reenvia mais tarde.
-        let pagoEm = new Date();
-        if (gatewayConfigurado() && alvo.plan !== "pix_auto" && alvo.gatewayId) {
-            const cobranca = await consultarPixQrCode(alvo.gatewayId);
-            if (!cobranca.pago) {
-                console.warn("Webhook de pagamento sem confirmação no gateway:", evento, alvo.id);
+        // The secret in the URL authenticates the webhook, but the payment is
+        // verified with the gateway: that way not even a forged webhook with the
+        // secret activates a charge that was never paid. For now only direct Pix
+        // can be queried; a gateway outage becomes an error and AbacatePay
+        // resends later.
+        let paidOn = new Date();
+        if (gatewayConfigured() && target.plan !== "pix_auto" && target.gatewayId) {
+            const charge = await queryPixQrCode(target.gatewayId);
+            if (!charge.paid) {
+                console.warn("Payment webhook without gateway confirmation:", event, target.id);
                 return { ok: true };
             }
-            pagoEm = cobranca.pagoEm ?? pagoEm;
+            paidOn = charge.paidAt ?? paidOn;
         }
-        await ativarAssinatura(alvo, pagoEm, renovacao);
-    } else if (evento === "subscription.cancelled") {
+        await activateSubscription(target, paidOn, renewal);
+    } else if (event === "subscription.cancelled") {
         await db
             .update(subscriptions)
             .set({ status: "cancelada" })
-            .where(eq(subscriptions.id, alvo.id));
+            .where(eq(subscriptions.id, target.id));
     } else {
-        console.warn("Webhook do gateway com evento não tratado:", evento);
+        console.warn("Gateway webhook with an unhandled event:", event);
     }
     return { ok: true };
 }
 
-export async function definirAccent(userId: string, accent: string | null) {
-    if (accent !== null && !(await apoiadorAtivo(userId))) {
-        throw new AppError(403, "Cores personalizadas são um benefício de apoiador.");
+export async function editAccent(userId: string, accent: string | null) {
+    if (accent !== null && !(await supportActive(userId))) {
+        throw new AppError(403, "support.colorsForSupporters");
     }
     await db.update(users).set({ accent }).where(eq(users.id, userId));
     return { accent };
 }
 
-// Cancela o que estiver valendo: nada renova, e o período já pago segue até o fim.
-export async function cancelarApoio(userId: string) {
-    const canceladas = await db
+// Cancels whatever is still valid: nothing renews, and the paid period runs until the end.
+export async function cancelActiveSupport(userId: string) {
+    const cancelled = await db
         .update(subscriptions)
         .set({ status: "cancelada" })
         .where(
@@ -310,65 +310,65 @@ export async function cancelarApoio(userId: string) {
             ),
         )
         .returning({ plan: subscriptions.plan, expiresAt: subscriptions.expiresAt });
-    if (canceladas.length === 0) {
-        throw new AppError(404, "Você não tem uma assinatura ativa.");
+    if (cancelled.length === 0) {
+        throw new AppError(404, "support.noActiveSubscription");
     }
-    const pixAuto = canceladas.some((c) => c.plan === "pix_auto");
-    const expiresAt = canceladas
+    const pixAuto = cancelled.some((c) => c.plan === "pix_auto");
+    const expiresAt = cancelled
         .map((c) => c.expiresAt)
         .filter((d): d is Date => d !== null)
         .sort((a, b) => b.getTime() - a.getTime())[0];
     return { ok: true, expiresAt: expiresAt ?? null, pixAuto };
 }
 
-export async function definirVeuFundo(userId: string, dim: number) {
-    if (!(await apoiadorAtivo(userId))) {
-        throw new AppError(403, "Imagem de fundo é um benefício de apoiador.");
+export async function editBackgroundDim(userId: string, dim: number) {
+    if (!(await supportActive(userId))) {
+        throw new AppError(403, "support.backgroundForSupporters");
     }
     await db.update(users).set({ backgroundDim: dim }).where(eq(users.id, userId));
     return { backgroundDim: dim };
 }
 
 const TZ_SP = "America/Sao_Paulo";
-const diaSP = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: TZ_SP });
+const spDay = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: TZ_SP });
 
-// Visão do admin: quem paga, quando começou e termina, e o recebido por período.
 /**
- * Marca como expirada toda cobrança pendente cujo QRCode Pix já venceu.
+ * Marks as expired every pending charge whose Pix QR code has already expired.
  *
- * Não é limpeza cosmética: o próprio gateway define PIX_TTL_SEGUNDOS, e passado
- * esse prazo a cobrança NÃO PODE mais ser paga. Deixá-la como pendente faz o
- * painel mostrar dezenas de cobranças que nunca vão virar nada, e some com o
- * sinal do que de fato está aberto agora.
+ * This is not cosmetic cleanup: the gateway itself defines PIX_TTL_SECONDS, and
+ * past that window the charge can NO LONGER be paid. Leaving it as pending makes
+ * the dashboard show dozens of charges that will never become anything, and
+ * drowns out the signal of what is actually open right now.
  *
- * A folga de 10 minutos existe porque o webhook do gateway pode chegar atrasado:
- * é melhor esperar um pouco mais do que expirar algo que acabou de ser pago.
+ * The 10 minute slack exists because the gateway webhook can arrive late: it is
+ * better to wait a bit longer than to expire something that was just paid.
  *
- * Roda antes de listar, então o painel sempre reflete a realidade sem depender de
- * agendador. Idempotente por natureza: quem já está expirada não é tocada.
+ * Runs before listing, so the dashboard always reflects reality without a
+ * scheduler. Naturally idempotent: rows already expired are not touched.
  */
-export async function expirarPendentesVencidas(): Promise<number> {
-    const corte = new Date(Date.now() - (PIX_TTL_SEGUNDOS + 600) * 1000);
-    const alteradas = await db
+export async function expireStalePending(): Promise<number> {
+    const cutoff = new Date(Date.now() - (PIX_TTL_SECONDS + 600) * 1000);
+    const updated = await db
         .update(subscriptions)
         .set({ status: "expirada" })
         .where(
             and(
                 eq(subscriptions.status, "pendente"),
-                lt(subscriptions.createdAt, corte),
+                lt(subscriptions.createdAt, cutoff),
                 isNull(subscriptions.paidAt),
             ),
         )
         .returning({ id: subscriptions.id });
-    return alteradas.length;
+    return updated.length;
 }
 
-export async function assinaturasAdmin() {
-    // O painel precisa ver o estado real, não o estado congelado no momento em que
-    // a cobrança nasceu.
-    await expirarPendentesVencidas();
+// Admin view: who pays, when it started and ends, and revenue per period.
+export async function listAdminSubscriptions() {
+    // The dashboard needs the real state, not the state frozen at the moment
+    // the charge was born.
+    await expireStalePending();
 
-    const linhas = await db
+    const rows = await db
         .select({
             id: subscriptions.id,
             plan: subscriptions.plan,
@@ -385,43 +385,43 @@ export async function assinaturasAdmin() {
         .innerJoin(users, eq(users.id, subscriptions.userId))
         .orderBy(desc(subscriptions.createdAt));
 
-    const agora = new Date();
-    const hoje = diaSP(agora);
-    const pagas = linhas.filter((l) => l.paidAt !== null);
-    const janela = (dias: number) =>
-        pagas.filter((l) => l.paidAt! >= new Date(agora.getTime() - dias * 86400000));
-    const soma = (arr: { amountCents: number }[]) => arr.reduce((t, l) => t + l.amountCents, 0);
+    const now = new Date();
+    const today = spDay(now);
+    const paid = rows.filter((r) => r.paidAt !== null);
+    const window = (days: number) =>
+        paid.filter((r) => r.paidAt! >= new Date(now.getTime() - days * 86400000));
+    const sum = (arr: { amountCents: number }[]) => arr.reduce((t, r) => t + r.amountCents, 0);
 
-    const porDiaMapa = new Map<string, number>();
-    for (const l of pagas) {
-        const d = diaSP(l.paidAt!);
-        porDiaMapa.set(d, (porDiaMapa.get(d) ?? 0) + l.amountCents);
+    const perDayMap = new Map<string, number>();
+    for (const r of paid) {
+        const d = spDay(r.paidAt!);
+        perDayMap.set(d, (perDayMap.get(d) ?? 0) + r.amountCents);
     }
-    const porDia = [...porDiaMapa.entries()]
+    const porDia = [...perDayMap.entries()]
         .map(([d, cents]) => ({ d, cents }))
         .sort((a, b) => (a.d < b.d ? -1 : 1));
 
-    const ativosSet = new Set(
-        linhas
+    const activeSet = new Set(
+        rows
             .filter(
-                (l) =>
-                    (l.status === "ativa" || l.status === "cancelada") &&
-                    l.expiresAt !== null &&
-                    l.expiresAt > agora,
+                (r) =>
+                    (r.status === "ativa" || r.status === "cancelada") &&
+                    r.expiresAt !== null &&
+                    r.expiresAt > now,
             )
-            .map((l) => l.email),
+            .map((r) => r.email),
     );
 
     return {
         totais: {
-            hojeCents: soma(pagas.filter((l) => diaSP(l.paidAt!) === hoje)),
-            semanaCents: soma(janela(7)),
-            mesCents: soma(janela(30)),
-            totalCents: soma(pagas),
-            apoiadoresAtivos: ativosSet.size,
-            pagamentos: pagas.length,
+            hojeCents: sum(paid.filter((r) => spDay(r.paidAt!) === today)),
+            semanaCents: sum(window(7)),
+            mesCents: sum(window(30)),
+            totalCents: sum(paid),
+            apoiadoresAtivos: activeSet.size,
+            pagamentos: paid.length,
         },
         porDia,
-        assinaturas: linhas,
+        assinaturas: rows,
     };
 }

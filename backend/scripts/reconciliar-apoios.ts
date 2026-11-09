@@ -11,13 +11,13 @@
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { db } from "../db.ts";
 import { subscriptions, users } from "../schema.ts";
-import { PLANOS } from "../src/services/supporter.service.ts";
-import { consultarPixQrCode, gatewayConfigurado } from "../src/services/abacatepay.client.ts";
+import { PLANS } from "../src/services/supporter.service.ts";
+import { queryPixQrCode, gatewayConfigured } from "../src/services/abacatepay.client.ts";
 
 const reais = (cents: number) => `R$ ${(cents / 100).toFixed(2).replace(".", ",")}`;
 
 async function reconciliar() {
-    if (!gatewayConfigurado()) {
+    if (!gatewayConfigured()) {
         console.error("Sem ABACATEPAY_API_KEY: não há como consultar o gateway.");
         process.exit(1);
     }
@@ -59,18 +59,18 @@ async function reconciliar() {
             continue;
         }
         try {
-            const cobranca = await consultarPixQrCode(p.gatewayId!);
-            if (!cobranca.pago) {
+            const charge = await queryPixQrCode(p.gatewayId!);
+            if (!charge.paid) {
                 console.log(`${quem}: ${p.plan} de ${reais(p.amountCents)} segue sem pagamento.`);
                 continue;
             }
-            if (cobranca.amountCents !== p.amountCents) {
+            if (charge.amountCents !== p.amountCents) {
                 console.warn(
-                    `${quem}: valor divergente, cobramos ${reais(p.amountCents)} e o gateway registrou ${reais(cobranca.amountCents)}.`,
+                    `${quem}: valor divergente, cobramos ${reais(p.amountCents)} e o gateway registrou ${reais(charge.amountCents)}.`,
                 );
             }
-            const pagoEm = cobranca.pagoEm ?? new Date();
-            const expiresAt = new Date(pagoEm.getTime() + PLANOS[p.plan].dias * 86400000);
+            const pagoEm = charge.paidAt ?? new Date();
+            const expiresAt = new Date(pagoEm.getTime() + PLANS[p.plan].days * 86400000);
             const feito = await db
                 .update(subscriptions)
                 .set({ status: "ativa", paidAt: pagoEm, expiresAt })

@@ -6,7 +6,7 @@ import { db } from "../../db.ts";
 import { resumeAnalyses } from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
 import { env } from "../config/env.ts";
-import { apoiadorAtivo } from "./supporter.service.ts";
+import { supportActive } from "./supporter.service.ts";
 import { analisar, type ItemResumo, type ResultadoAnalise } from "./ats/heuristic.ts";
 import { iaAtiva, refinar, type Refinamento } from "./ats/ia.ts";
 import { extrairTextoPdf } from "./ats/pdf.ts";
@@ -25,7 +25,7 @@ export interface EntradaAnalise {
 
 export async function statusAts(userId: string) {
     const [apoiador, usadas] = await Promise.all([
-        apoiadorAtivo(userId),
+        supportActive(userId),
         analisesNoPeriodo(userId),
     ]);
     return {
@@ -38,7 +38,7 @@ export async function statusAts(userId: string) {
 }
 
 export async function analisarCurriculo(userId: string, entrada: EntradaAnalise) {
-    if (!(await apoiadorAtivo(userId))) {
+    if (!(await supportActive(userId))) {
         throw new AppError(403, "A análise de currículo é um benefício de apoiador.");
     }
 
