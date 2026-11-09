@@ -11,7 +11,7 @@ export type Block = { type: string; value: string };
 export type Question = {
     statement: string;
     explanation: string | null;
-    opcoes: { text: string; isCorrect: boolean }[];
+    options: { text: string; isCorrect: boolean }[];
 };
 
 const md = new MarkdownIt({ html: false, xhtmlOut: true, linkify: false, typographer: false });
@@ -99,7 +99,7 @@ export function tableToXhtml(value: string): string {
 // with the correct option first, so without this the answer key comes out all A.
 // The seed is the statement: the same question always lands in the same order, and
 // the answer key, built from the same list, keeps matching the letters.
-const shuffledOptions = (q: Question) => seededShuffle(q.opcoes, q.statement);
+const shuffledOptions = (q: Question) => seededShuffle(q.options, q.statement);
 
 export function quizToXhtml(questions: Question[]): string {
     const questionsHtml = questions

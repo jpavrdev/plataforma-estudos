@@ -86,7 +86,7 @@ describe("quizToXhtml", () => {
         {
             statement: "Qual opção está certa?",
             explanation: "Porque sim.",
-            opcoes: [
+            options: [
                 { text: "errada", isCorrect: false },
                 { text: "certa", isCorrect: true },
             ],
@@ -124,7 +124,7 @@ describe("quizToXhtml", () => {
     const fourOptions = (n: number) => ({
         statement: `Enunciado da questão ${n}?`,
         explanation: null,
-        opcoes: [
+        options: [
             { text: `certa ${n}`, isCorrect: true },
             { text: `errada ${n} um`, isCorrect: false },
             { text: `errada ${n} dois`, isCorrect: false },
