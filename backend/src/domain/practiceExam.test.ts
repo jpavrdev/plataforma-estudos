@@ -34,9 +34,9 @@ describe("isQuestionCorrect", () => {
 
 describe("gradePracticeExam", () => {
     const questions = [
-        { id: "q1", corretas: new Set(["a"]) },
-        { id: "q2", corretas: new Set(["a", "b"]) },
-        { id: "q3", corretas: new Set(["c"]) },
+        { id: "q1", correctIds: new Set(["a"]) },
+        { id: "q2", correctIds: new Set(["a", "b"]) },
+        { id: "q3", correctIds: new Set(["c"]) },
     ];
 
     test("all right is 100 and passes", () => {
@@ -75,7 +75,7 @@ describe("gradePracticeExam", () => {
     test("an exact cut of 70 passes", () => {
         const ten = Array.from({ length: 10 }, (_, i) => ({
             id: `q${i}`,
-            corretas: new Set([`o${i}`]),
+            correctIds: new Set([`o${i}`]),
         }));
         const answers = new Map(ten.slice(0, 7).map((q) => [q.id, new Set([`o${q.id.slice(1)}`])]));
         const r = gradePracticeExam(ten, answers, 70);
@@ -96,11 +96,11 @@ describe("gradePracticeExam", () => {
 describe("summaryByTopic", () => {
     test("groups only topics with mistakes, most missed first", () => {
         const r = summaryByTopic([
-            { topic: "A", correta: false },
-            { topic: "A", correta: false },
-            { topic: "A", correta: true },
-            { topic: "B", correta: false },
-            { topic: "C", correta: true },
+            { topic: "A", correct: false },
+            { topic: "A", correct: false },
+            { topic: "A", correct: true },
+            { topic: "B", correct: false },
+            { topic: "C", correct: true },
         ]);
         assert.deepEqual(r, [
             { topic: "A", erradas: 2, total: 3 },
@@ -109,11 +109,11 @@ describe("summaryByTopic", () => {
     });
 
     test("all right returns an empty list", () => {
-        assert.deepEqual(summaryByTopic([{ topic: "A", correta: true }]), []);
+        assert.deepEqual(summaryByTopic([{ topic: "A", correct: true }]), []);
     });
 
     test("a null topic becomes Outros", () => {
-        assert.deepEqual(summaryByTopic([{ topic: null, correta: false }]), [
+        assert.deepEqual(summaryByTopic([{ topic: null, correct: false }]), [
             { topic: "Outros", erradas: 1, total: 1 },
         ]);
     });

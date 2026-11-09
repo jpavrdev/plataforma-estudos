@@ -117,7 +117,7 @@ async function buildExam(over: Record<string, unknown> = {}) {
     await addQuestion([false, true], "Tema A"); // single answer
     const multiId = await addQuestion([true, true, false], "Tema B"); // multiple (2 right)
 
-    return { slug: s.slug as string, corretas: correctIds, multiId };
+    return { slug: s.slug as string, correctIds, multiId };
 }
 
 before(async () => {
@@ -175,7 +175,7 @@ describe("Practice exam: start and security", () => {
 describe("Practice exam: answering, submitting and grading", () => {
     test("getting everything right passes with 100 and reveals the answer key", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds } = await buildExam();
+        const { slug, correctIds } = await buildExam();
 
         const attempt = await post(`/simulados/${slug}/attempts`, student.token);
         const id = attempt.body.attemptId;
@@ -199,7 +199,7 @@ describe("Practice exam: answering, submitting and grading", () => {
 
     test("marking only one option of the multiple-answer question fails that question", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds, multiId } = await buildExam();
+        const { slug, correctIds, multiId } = await buildExam();
 
         const attempt = await post(`/simulados/${slug}/attempts`, student.token);
         const id = attempt.body.attemptId;
@@ -219,7 +219,7 @@ describe("Practice exam: answering, submitting and grading", () => {
 
     test("the result groups the mistakes by topic and reveals the topic", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds, multiId } = await buildExam();
+        const { slug, correctIds, multiId } = await buildExam();
         const attempt = await post(`/simulados/${slug}/attempts`, student.token);
         const id = attempt.body.attemptId;
 
@@ -250,7 +250,7 @@ describe("Practice exam: answering, submitting and grading", () => {
 
     test("the history lists the submitted attempt", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds } = await buildExam();
+        const { slug, correctIds } = await buildExam();
         const attempt = await post(`/simulados/${slug}/attempts`, student.token);
         const id = attempt.body.attemptId;
         for (const q of attempt.body.questions) {
@@ -271,7 +271,7 @@ describe("Practice exam: answering, submitting and grading", () => {
 describe("Practice exam: practice mode", () => {
     test("checks right away, reveals the answer key and locks the answer", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds } = await buildExam();
+        const { slug, correctIds } = await buildExam();
 
         const attempt = await post(`/simulados/${slug}/attempts`, student.token, { pratica: true });
         assert.equal(attempt.status, 201);
@@ -335,7 +335,7 @@ describe("Practice exam: practice mode", () => {
 
     test("a regular attempt does not reveal the answer key through the check", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds } = await buildExam();
+        const { slug, correctIds } = await buildExam();
         const attempt = await post(`/simulados/${slug}/attempts`, student.token);
         const id = attempt.body.attemptId;
         const q = attempt.body.questions[0];
@@ -356,7 +356,7 @@ describe("Practice exam: practice mode", () => {
 
     test("practice shows as practice in the history and is still scored", async () => {
         const student = await createSignedInUser();
-        const { slug, corretas: correctIds } = await buildExam();
+        const { slug, correctIds } = await buildExam();
         const attempt = await post(`/simulados/${slug}/attempts`, student.token, { pratica: true });
         const id = attempt.body.attemptId;
         for (const q of attempt.body.questions) {
