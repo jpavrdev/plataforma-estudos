@@ -456,6 +456,27 @@
       "when": 1793833268055,
       "tag": "0064_simulado_favoritos",
       "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1793884370740,
+      "tag": "0065_two_factor",
+      "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "7",
+      "when": 1793897054198,
+      "tag": "0066_user_locale",
+      "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1793994569038,
+      "tag": "0067_otp_channel",
+      "breakpoints": true
     }
   ]
 }

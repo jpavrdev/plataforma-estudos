@@ -17,7 +17,7 @@ import type {
     saveLessonStudioSchema,
 } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
-import { QUIZ_MIN_ACERTOS } from "./quiz.service.ts";
+import { QUIZ_MIN_CORRECT } from "./quiz.service.ts";
 
 type DadosModulo = z.infer<typeof createModuleSchema>;
 type DadosAula = z.infer<typeof createLessonSchema>;
@@ -303,10 +303,10 @@ export async function salvarAulaEstudio(lessonId: string, dados: DadosSalvarAula
     }
 
     if (dados.published) {
-        if (dados.questions.length < QUIZ_MIN_ACERTOS) {
+        if (dados.questions.length < QUIZ_MIN_CORRECT) {
             throw new AppError(
                 400,
-                `Para publicar, a aula precisa de ao menos ${QUIZ_MIN_ACERTOS} questões.`,
+                `Para publicar, a aula precisa de ao menos ${QUIZ_MIN_CORRECT} questões.`,
             );
         }
         for (const [i, q] of dados.questions.entries()) {

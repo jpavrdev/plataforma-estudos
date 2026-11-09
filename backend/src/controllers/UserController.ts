@@ -1,30 +1,31 @@
 import type { Request, Response, NextFunction } from "express";
 import { db } from "../../db.ts";
-import { users, tokens, languages as languagesTable } from "../../schema.ts";
+import { users, tokens, twoFactorAuth, languages as languagesTable } from "../../schema.ts";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import {
     updateMeSchema,
-    completarPerfilSchema,
-    metaSemanalSchema,
-    trocarTelefoneSchema,
-    codigoTelefoneSchema,
+    completeProfileSchema,
+    weeklyGoalSchema,
+    changePhoneSchema,
+    phoneCodeSchema,
 } from "../schemas/auth.schema.ts";
 import { authService } from "../services/auth.service.ts";
 import { emailService } from "../services/email.service.ts";
-import { verificarSenha } from "../services/password.service.ts";
+import { verifyPassword } from "../services/password.service.ts";
 import { whatsappService } from "../services/whatsapp.service.ts";
-import { AVATARS_DIR, COVERS_DIR, FUNDOS_DIR } from "../config/paths.ts";
-import { salvarImagem, removerArquivoLocal } from "../services/imagens.ts";
-import { streakDoUsuario } from "../services/streak.ts";
-import { calcularEstatisticas } from "../services/stats.service.ts";
-import { perfilPublico } from "../services/perfil-publico.service.ts";
+import { AVATARS_DIR, COVERS_DIR, BACKGROUNDS_DIR } from "../config/paths.ts";
+import { saveImage, removeLocalFile } from "../services/images.ts";
+import { findUserStreak } from "../services/streak.ts";
+import { computeUserStats } from "../services/stats.service.ts";
+import { findPublicProfile } from "../services/publicProfile.service.ts";
 import {
-    progressoDoUsuario,
-    definirMetaSemanal,
-    limparMetaSemanal,
-} from "../services/progresso.service.ts";
+    findUserProgress,
+    saveWeeklyGoal,
+    removeWeeklyGoal,
+} from "../services/progress.service.ts";
 import { apoiadorAtivo } from "../services/apoiador.service.ts";
 import { featuresDoUsuario } from "../services/feature-flag.service.ts";
+import { pendingTwoFactor } from "../middlewares/auth.ts";
 
 const publicUserColumns = {
     id: users.id,
@@ -56,70 +57,92 @@ export const getMe = async (req: Request, res: Response) => {
     const userId = req.userId;
 
     if (!userId) {
-        return res.status(404).json({ erro: "Usuário não encontrado" });
+        return res.status(404).json({ erro: "user.notFound" });
     }
 
     // temSenha diz ao front se trocar o telefone pede a senha atual.
-    const encontrados = await db
-        .select({ ...publicUserColumns, temSenha: sql<boolean>`${users.passwordHash} is not null` })
+    const found = await db
+        .select({
+            ...publicUserColumns,
+            temSenha: sql<boolean>`${users.passwordHash} is not null`,
+            locale: users.locale,
+        })
         .from(users)
         .where(eq(users.id, userId));
 
-    const user = encontrados[0];
+    const user = found[0];
 
     if (!user) {
-        return res.status(404).json({ erro: "Usuário não encontrado" });
+        return res.status(404).json({ erro: "user.notFound" });
     }
 
-    // streak e nível são derivados: se falharem, logamos e seguimos com o fallback
-    // em vez de quebrar o perfil inteiro.
+    // Streak and level are derived: if they fail, it logs and goes on with the fallback
+    // instead of breaking the whole profile.
     let streak = 0;
     try {
-        streak = await streakDoUsuario(userId);
+        streak = await findUserStreak(userId);
     } catch (e) {
-        console.error("getMe: falha ao calcular streak", e);
+        console.error("getMe: failed to compute the streak", e);
     }
 
     let level = 1;
     try {
-        level = (await calcularEstatisticas(userId)).level;
+        level = (await computeUserStats(userId)).level;
     } catch (e) {
-        console.error("getMe: falha ao calcular nível", e);
+        console.error("getMe: failed to compute the level", e);
     }
 
-    let apoiador = false;
+    let isSupporter = false;
     try {
-        apoiador = await apoiadorAtivo(userId);
+        isSupporter = await apoiadorAtivo(userId);
     } catch (e) {
-        console.error("getMe: falha ao checar apoio", e);
+        console.error("getMe: failed to check the support", e);
     }
 
     let features: string[] = [];
     try {
         features = await featuresDoUsuario(userId);
     } catch (e) {
-        console.error("getMe: falha ao listar features", e);
+        console.error("getMe: failed to list the features", e);
     }
 
-    res.json({ ...user, streak, level, apoiador, features });
+    let pendingTwoFactorStep: ReturnType<typeof pendingTwoFactor> = null;
+    if (user.role === "admin") {
+        const [twoFactor] = await db
+            .select({ enabledAt: twoFactorAuth.enabledAt })
+            .from(twoFactorAuth)
+            .where(eq(twoFactorAuth.userId, userId));
+        pendingTwoFactorStep = pendingTwoFactor(twoFactor?.enabledAt ?? null, req.mfa);
+    }
+
+    res.json({
+        ...user,
+        streak,
+        level,
+        apoiador: isSupporter,
+        features,
+        pendingTwoFactor: pendingTwoFactorStep,
+    });
 };
 
-// Atualiza o próprio perfil (campos editáveis). Não toca em campos sensíveis.
+// Updates the user's own profile (editable fields). It does not touch sensitive fields.
 export const updateMe = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
     if (!userId) {
-        return res.status(401).json({ erro: "Não autenticado" });
+        return res.status(401).json({ erro: "common.notAuthenticated" });
     }
     try {
-        const dados = updateMeSchema.parse(req.body);
-        // Linguagens precisam existir no conjunto canonico (gerenciado no admin),
-        // pra manter os dados padronizados para analises futuras.
-        if (dados.languages && dados.languages.length > 0) {
-            const validas = await db.select({ name: languagesTable.name }).from(languagesTable);
-            const conjunto = new Set(validas.map((l) => l.name));
-            const invalida = dados.languages.find((l) => !conjunto.has(l));
-            if (invalida) {
-                return res.status(400).json({ erro: `Linguagem inválida: ${invalida}` });
+        const input = updateMeSchema.parse(req.body);
+        // Languages have to exist in the canonical set (managed in the admin), to keep
+        // the data standardized for future analysis.
+        if (input.languages && input.languages.length > 0) {
+            const validLanguages = await db
+                .select({ name: languagesTable.name })
+                .from(languagesTable);
+            const validNames = new Set(validLanguages.map((l) => l.name));
+            const invalidLanguage = input.languages.find((l) => !validNames.has(l));
+            if (invalidLanguage) {
+                return res.status(400).json({ erro: `Linguagem inválida: ${invalidLanguage}` });
             }
         }
         const sets: {
@@ -134,47 +157,49 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
             linkedin?: string;
             x?: string;
         } = {};
-        if (dados.name !== undefined) sets.name = dados.name;
-        if (dados.bio !== undefined) sets.bio = dados.bio;
-        if (dados.location !== undefined) sets.location = dados.location;
-        if (dados.occupation !== undefined) sets.occupation = dados.occupation;
-        if (dados.languages !== undefined) sets.languages = dados.languages;
-        if (dados.github !== undefined) sets.github = dados.github;
-        if (dados.linkedin !== undefined) sets.linkedin = dados.linkedin;
-        if (dados.x !== undefined) sets.x = dados.x;
+        if (input.name !== undefined) sets.name = input.name;
+        if (input.bio !== undefined) sets.bio = input.bio;
+        if (input.location !== undefined) sets.location = input.location;
+        if (input.occupation !== undefined) sets.occupation = input.occupation;
+        if (input.languages !== undefined) sets.languages = input.languages;
+        if (input.github !== undefined) sets.github = input.github;
+        if (input.linkedin !== undefined) sets.linkedin = input.linkedin;
+        if (input.x !== undefined) sets.x = input.x;
 
-        // Username: só troca uma vez a cada 30 dias (a primeira troca é livre).
-        if (dados.username !== undefined) {
-            const novo = dados.username.toLowerCase();
-            const [atual] = await db
+        // Username: changes only once every 30 days (the first change is free).
+        if (input.username !== undefined) {
+            const newUsername = input.username.toLowerCase();
+            const [current] = await db
                 .select({ username: users.username, usernameChangedAt: users.usernameChangedAt })
                 .from(users)
                 .where(eq(users.id, userId));
-            if (atual && novo !== atual.username) {
-                const TRAVA_MS = 30 * 24 * 60 * 60 * 1000;
-                if (atual.usernameChangedAt) {
-                    const desde = Date.now() - atual.usernameChangedAt.getTime();
-                    if (desde < TRAVA_MS) {
-                        const libera = new Date(atual.usernameChangedAt.getTime() + TRAVA_MS);
+            if (current && newUsername !== current.username) {
+                const USERNAME_LOCK_MS = 30 * 24 * 60 * 60 * 1000;
+                if (current.usernameChangedAt) {
+                    const since = Date.now() - current.usernameChangedAt.getTime();
+                    if (since < USERNAME_LOCK_MS) {
+                        const unlockAt = new Date(
+                            current.usernameChangedAt.getTime() + USERNAME_LOCK_MS,
+                        );
                         return res.status(429).json({
-                            erro: `Você só poderá mudar o usuário novamente em ${libera.toLocaleDateString("pt-BR")}.`,
+                            erro: `Você só poderá mudar o usuário novamente em ${unlockAt.toLocaleDateString("pt-BR")}.`,
                         });
                     }
                 }
-                const [existe] = await db
+                const [existing] = await db
                     .select({ id: users.id })
                     .from(users)
-                    .where(eq(users.username, novo));
-                if (existe && existe.id !== userId) {
-                    return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
+                    .where(eq(users.username, newUsername));
+                if (existing && existing.id !== userId) {
+                    return res.status(409).json({ erro: "auth.usernameTaken" });
                 }
-                sets.username = novo;
+                sets.username = newUsername;
                 sets.usernameChangedAt = new Date();
             }
         }
 
         if (Object.keys(sets).length === 0) {
-            return res.status(400).json({ erro: "Nada para atualizar" });
+            return res.status(400).json({ erro: "common.nothingToUpdate" });
         }
         const [user] = await db
             .update(users)
@@ -187,42 +212,40 @@ export const updateMe = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
-const soDigitos = (telefone: string) => telefone.replace(/\D/g, "");
+const digitsOnly = (phone: string) => phone.replace(/\D/g, "");
 
-// Completa nascimento, gênero e telefone (ex.: após o primeiro login social).
-export const completarPerfil = async (req: Request, res: Response, next: NextFunction) => {
+// Fills in birth date, gender and phone (e.g. after the first social login).
+export const completeProfile = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
     if (!userId) {
-        return res.status(401).json({ erro: "Não autenticado" });
+        return res.status(401).json({ erro: "common.notAuthenticated" });
     }
     try {
-        const dados = completarPerfilSchema.parse(req.body);
-        const username = dados.username.toLowerCase();
-        const [existeUsername] = await db
+        const input = completeProfileSchema.parse(req.body);
+        const username = input.username.toLowerCase();
+        const [usernameTaken] = await db
             .select({ id: users.id })
             .from(users)
             .where(eq(users.username, username));
-        if (existeUsername && existeUsername.id !== userId) {
-            return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
+        if (usernameTaken && usernameTaken.id !== userId) {
+            return res.status(409).json({ erro: "auth.usernameTaken" });
         }
-        // Aqui o telefone só entra quando ainda não existe; trocar pede a senha
-        // atual e passa pelo PUT /me/telefone.
-        const [atual] = await db
+        // Here the phone only goes in when there is none yet; changing it asks for the
+        // current password and goes through PUT /me/telefone.
+        const [current] = await db
             .select({ phone: users.phone })
             .from(users)
             .where(eq(users.id, userId));
-        if (atual?.phone && soDigitos(atual.phone) !== soDigitos(dados.phone)) {
-            return res
-                .status(403)
-                .json({ erro: "Para trocar o telefone, use a página de Perfil." });
+        if (current?.phone && digitsOnly(current.phone) !== digitsOnly(input.phone)) {
+            return res.status(403).json({ erro: "profile.usePhoneSettings" });
         }
         const [user] = await db
             .update(users)
             .set({
                 username,
-                birthDate: dados.birthDate,
-                gender: dados.gender,
-                phone: dados.phone,
+                birthDate: input.birthDate,
+                gender: input.gender,
+                phone: input.phone,
             })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
@@ -232,35 +255,40 @@ export const completarPerfil = async (req: Request, res: Response, next: NextFun
     }
 };
 
-// Troca o telefone de recuperação. Conta com senha confirma a senha atual: quem
-// pegasse uma sessão por alguns minutos não deixa ali um canal de recuperação seu.
-// O número novo nasce sem verificar, e o email da conta recebe um aviso.
-export const trocarTelefone = async (req: Request, res: Response, next: NextFunction) => {
+// Changes the recovery phone. An account with a password confirms the current one:
+// whoever got hold of a session for a few minutes cannot leave their own recovery
+// channel there. The new number starts unverified, and the account email gets a notice.
+export const changePhone = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Não autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const dados = trocarTelefoneSchema.parse(req.body);
+        const input = changePhoneSchema.parse(req.body);
         const [user] = await db
-            .select({ email: users.email, phone: users.phone, passwordHash: users.passwordHash })
+            .select({
+                email: users.email,
+                phone: users.phone,
+                passwordHash: users.passwordHash,
+                locale: users.locale,
+            })
             .from(users)
             .where(eq(users.id, userId));
-        if (!user) return res.status(404).json({ erro: "Usuário não encontrado" });
+        if (!user) return res.status(404).json({ erro: "user.notFound" });
 
-        const senhaConfere =
+        const passwordMatches =
             !user.passwordHash ||
-            (!!dados.senhaAtual && (await verificarSenha(user.passwordHash, dados.senhaAtual)));
-        if (!senhaConfere) return res.status(403).json({ erro: "Senha atual incorreta." });
+            (!!input.senhaAtual && (await verifyPassword(user.passwordHash, input.senhaAtual)));
+        if (!passwordMatches) return res.status(403).json({ erro: "auth.wrongCurrentPassword" });
 
-        if (user.phone && soDigitos(user.phone) === soDigitos(dados.phone)) {
-            const [mesmo] = await db
+        if (user.phone && digitsOnly(user.phone) === digitsOnly(input.phone)) {
+            const [same] = await db
                 .select(publicUserColumns)
                 .from(users)
                 .where(eq(users.id, userId));
-            return res.json(mesmo);
+            return res.json(same);
         }
 
-        const [atualizado] = await db.transaction(async (tx) => {
-            // Código pedido para o número antigo não confirma o novo.
+        const [updated] = await db.transaction(async (tx) => {
+            // A code asked for the old number does not confirm the new one.
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
@@ -273,55 +301,57 @@ export const trocarTelefone = async (req: Request, res: Response, next: NextFunc
                 );
             return tx
                 .update(users)
-                .set({ phone: dados.phone, phoneVerifiedAt: null })
+                .set({ phone: input.phone, phoneVerifiedAt: null })
                 .where(eq(users.id, userId))
                 .returning(publicUserColumns);
         });
-        if (user.phone) await emailService.enviarAvisoTelefoneAlterado(user.email);
-        res.json(atualizado);
+        if (user.phone) await emailService.sendPhoneChangedNotice(user.email, user.locale);
+        res.json(updated);
     } catch (err) {
         next(err);
     }
 };
 
-// Manda por WhatsApp o código que confirma o telefone de recuperação.
-export const pedirCodigoTelefone = async (req: Request, res: Response, next: NextFunction) => {
+// Sends over WhatsApp the code that confirms the recovery phone.
+export const requestPhoneCode = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Não autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
         const [user] = await db
-            .select({ phone: users.phone, phoneVerifiedAt: users.phoneVerifiedAt })
+            .select({
+                phone: users.phone,
+                phoneVerifiedAt: users.phoneVerifiedAt,
+                locale: users.locale,
+            })
             .from(users)
             .where(eq(users.id, userId));
         if (!user?.phone) {
-            return res.status(400).json({ erro: "Cadastre um telefone antes de verificar." });
+            return res.status(400).json({ erro: "profile.phoneRequired" });
         }
         if (user.phoneVerifiedAt) {
-            return res.status(409).json({ erro: "Este telefone já está verificado." });
+            return res.status(409).json({ erro: "profile.phoneAlreadyVerified" });
         }
-        const codigo = await authService.gerarCodigoTelefone(userId);
-        if (!codigo) {
-            return res
-                .status(429)
-                .json({ erro: "Espere um pouco para pedir outro código: é um por minuto." });
+        const code = await authService.createPhoneCode(userId);
+        if (!code) {
+            return res.status(429).json({ erro: "profile.codeCooldown" });
         }
-        await whatsappService.enviarCodigoTelefone(user.phone, codigo);
-        res.json({ mensagem: "Enviamos um código por WhatsApp para o seu telefone." });
+        await whatsappService.sendPhoneCode(user.phone, code, user.locale);
+        res.json({ mensagem: "profile.whatsappCodeSent" });
     } catch (err) {
         next(err);
     }
 };
 
-export const verificarTelefone = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyPhone = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Não autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const { codigo } = codigoTelefoneSchema.parse(req.body);
-        const tokenId = await authService.conferirCodigoTelefone(userId, codigo);
+        const { codigo: code } = phoneCodeSchema.parse(req.body);
+        const tokenId = await authService.checkPhoneCode(userId, code);
         if (!tokenId) {
-            return res.status(400).json({ erro: "Código inválido ou expirado. Peça um novo." });
+            return res.status(400).json({ erro: "auth.invalidCode" });
         }
-        const [atualizado] = await db.transaction(async (tx) => {
+        const [updated] = await db.transaction(async (tx) => {
             await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, tokenId));
             return tx
                 .update(users)
@@ -329,7 +359,7 @@ export const verificarTelefone = async (req: Request, res: Response, next: NextF
                 .where(eq(users.id, userId))
                 .returning(publicUserColumns);
         });
-        res.json(atualizado);
+        res.json(updated);
     } catch (err) {
         next(err);
     }
@@ -337,11 +367,11 @@ export const verificarTelefone = async (req: Request, res: Response, next: NextF
 
 export const uploadAvatar = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const r = await salvarImagem(req.body?.image, AVATARS_DIR, "/uploads/avatars");
+        const r = await saveImage(req.body?.image, AVATARS_DIR, "/uploads/avatars");
         if (!r.ok) return res.status(400).json({ erro: r.erro });
-        const [atual] = await db
+        const [current] = await db
             .select({ avatarUrl: users.avatarUrl })
             .from(users)
             .where(eq(users.id, userId));
@@ -350,7 +380,7 @@ export const uploadAvatar = async (req: Request, res: Response, next: NextFuncti
             .set({ avatarUrl: r.url })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
-        await removerArquivoLocal(atual?.avatarUrl ?? null);
+        await removeLocalFile(current?.avatarUrl ?? null);
         res.json(user);
     } catch (err) {
         next(err);
@@ -359,11 +389,11 @@ export const uploadAvatar = async (req: Request, res: Response, next: NextFuncti
 
 export const uploadCover = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const r = await salvarImagem(req.body?.image, COVERS_DIR, "/uploads/covers");
+        const r = await saveImage(req.body?.image, COVERS_DIR, "/uploads/covers");
         if (!r.ok) return res.status(400).json({ erro: r.erro });
-        const [atual] = await db
+        const [current] = await db
             .select({ coverUrl: users.coverUrl })
             .from(users)
             .where(eq(users.id, userId));
@@ -372,18 +402,18 @@ export const uploadCover = async (req: Request, res: Response, next: NextFunctio
             .set({ coverUrl: r.url })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
-        await removerArquivoLocal(atual?.coverUrl ?? null);
+        await removeLocalFile(current?.coverUrl ?? null);
         res.json(user);
     } catch (err) {
         next(err);
     }
 };
 
-export const removerAvatar = async (req: Request, res: Response, next: NextFunction) => {
+export const removeAvatar = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const [atual] = await db
+        const [current] = await db
             .select({ avatarUrl: users.avatarUrl })
             .from(users)
             .where(eq(users.id, userId));
@@ -392,18 +422,18 @@ export const removerAvatar = async (req: Request, res: Response, next: NextFunct
             .set({ avatarUrl: null })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
-        await removerArquivoLocal(atual?.avatarUrl ?? null);
+        await removeLocalFile(current?.avatarUrl ?? null);
         res.json(user);
     } catch (err) {
         next(err);
     }
 };
 
-export const removerCover = async (req: Request, res: Response, next: NextFunction) => {
+export const removeCover = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const [atual] = await db
+        const [current] = await db
             .select({ coverUrl: users.coverUrl })
             .from(users)
             .where(eq(users.id, userId));
@@ -412,7 +442,7 @@ export const removerCover = async (req: Request, res: Response, next: NextFuncti
             .set({ coverUrl: null })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
-        await removerArquivoLocal(atual?.coverUrl ?? null);
+        await removeLocalFile(current?.coverUrl ?? null);
         res.json(user);
     } catch (err) {
         next(err);
@@ -427,7 +457,7 @@ export const listUsers = async (_req: Request, res: Response) => {
 
 export const getPublicProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await perfilPublico(String(req.params.username)));
+        res.json(await findPublicProfile(String(req.params.username)));
     } catch (err) {
         next(err);
     }
@@ -435,13 +465,13 @@ export const getPublicProfile = async (req: Request, res: Response, next: NextFu
 
 export const getMyProgress = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const bruto = String(req.query.periodo ?? "30");
-        let periodo: number | null = bruto === "7" ? 7 : bruto === "tudo" ? null : 30;
-        // Períodos longos são benefício de apoiador; sem apoio, cai no padrão de 30.
-        if (bruto === "90" || bruto === "365") {
-            periodo = (await apoiadorAtivo(req.userId!)) ? Number(bruto) : 30;
+        const rawPeriod = String(req.query.periodo ?? "30");
+        let period: number | null = rawPeriod === "7" ? 7 : rawPeriod === "tudo" ? null : 30;
+        // Long periods are a supporter benefit; without it, it falls back to the default of 30.
+        if (rawPeriod === "90" || rawPeriod === "365") {
+            period = (await apoiadorAtivo(req.userId!)) ? Number(rawPeriod) : 30;
         }
-        res.json(await progressoDoUsuario(req.userId!, periodo));
+        res.json(await findUserProgress(req.userId!, period));
     } catch (err) {
         next(err);
     }
@@ -449,8 +479,8 @@ export const getMyProgress = async (req: Request, res: Response, next: NextFunct
 
 export const setWeeklyGoal = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { kind, target } = metaSemanalSchema.parse(req.body);
-        await definirMetaSemanal(req.userId!, kind, target);
+        const { kind, target } = weeklyGoalSchema.parse(req.body);
+        await saveWeeklyGoal(req.userId!, kind, target);
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -459,7 +489,7 @@ export const setWeeklyGoal = async (req: Request, res: Response, next: NextFunct
 
 export const clearWeeklyGoal = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await limparMetaSemanal(req.userId!);
+        await removeWeeklyGoal(req.userId!);
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -468,19 +498,19 @@ export const clearWeeklyGoal = async (req: Request, res: Response, next: NextFun
 
 export const uploadBackground = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
         if (!(await apoiadorAtivo(userId))) {
-            return res.status(403).json({ erro: "Imagem de fundo é um benefício de apoiador." });
+            return res.status(403).json({ erro: "support.backgroundForSupporters" });
         }
-        const r = await salvarImagem(
+        const r = await saveImage(
             req.body?.image,
-            FUNDOS_DIR,
+            BACKGROUNDS_DIR,
             "/uploads/fundos",
             10 * 1024 * 1024,
         );
         if (!r.ok) return res.status(400).json({ erro: r.erro });
-        const [atual] = await db
+        const [current] = await db
             .select({ backgroundUrl: users.backgroundUrl })
             .from(users)
             .where(eq(users.id, userId));
@@ -489,18 +519,18 @@ export const uploadBackground = async (req: Request, res: Response, next: NextFu
             .set({ backgroundUrl: r.url })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
-        await removerArquivoLocal(atual?.backgroundUrl ?? null);
+        await removeLocalFile(current?.backgroundUrl ?? null);
         res.json(user);
     } catch (err) {
         next(err);
     }
 };
 
-export const removerBackground = async (req: Request, res: Response, next: NextFunction) => {
+export const removeBackground = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.userId;
-    if (!userId) return res.status(401).json({ erro: "Nao autenticado" });
+    if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        const [atual] = await db
+        const [current] = await db
             .select({ backgroundUrl: users.backgroundUrl })
             .from(users)
             .where(eq(users.id, userId));
@@ -509,7 +539,7 @@ export const removerBackground = async (req: Request, res: Response, next: NextF
             .set({ backgroundUrl: null })
             .where(eq(users.id, userId))
             .returning(publicUserColumns);
-        await removerArquivoLocal(atual?.backgroundUrl ?? null);
+        await removeLocalFile(current?.backgroundUrl ?? null);
         res.json(user);
     } catch (err) {
         next(err);

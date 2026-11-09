@@ -14,6 +14,8 @@ export ABACATEPAY_WEBHOOK_SECRET="segredo_webhook_teste"
 export CERT_RAZAO_SOCIAL="Ensina Dev Treinamentos"
 export CERT_CNPJ="00.000.000/0001-00"
 export CERT_RESPONSAVEL="Joao Paulo Avelino"
+# Admin tests are not about 2FA; two-factor.test.ts turns the requirement on.
+export ADMIN_REQUIRE_2FA="false"
 
 cleanup() {
   docker rm -f "$CONTAINER" >/dev/null 2>&1 || true

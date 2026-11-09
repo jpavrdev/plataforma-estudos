@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
@@ -13,30 +14,20 @@ import {
 import { SocialAuth } from '../../components/auth/SocialAuth';
 import { Avatar } from '../../components/Avatar';
 import { Check } from '../../components/Icons';
+import {
+  PasswordChecklist,
+  PASSWORD_MIN,
+  isValidPassword,
+} from '../../components/auth/PasswordChecklist';
 import { mensagemErro } from '../../utils/erro';
 
-const BENEFITS = [
-  'Um desafio novo todos os dias',
-  'Mantenha seu streak e ganhe XP',
-  'Suba no ranking global',
-  'Acompanhe seu progresso por trilhas',
-];
+const BENEFITS = ['daily', 'streak', 'ranking', 'progress'] as const;
 
-type Erros = Record<string, string>;
-
-// Requisitos da senha (espelham o registerSchema do backend, que é a fonte de verdade).
-const SENHA_MIN = 12;
-const REGRAS_SENHA: { ok: (s: string) => boolean; label: string }[] = [
-  { ok: (s) => s.length >= SENHA_MIN, label: `Ao menos ${SENHA_MIN} caracteres` },
-  { ok: (s) => /[A-Z]/.test(s), label: 'Uma letra maiúscula' },
-  { ok: (s) => /[a-z]/.test(s), label: 'Uma letra minúscula' },
-  { ok: (s) => /[0-9]/.test(s), label: 'Um número' },
-  { ok: (s) => /[^A-Za-z0-9]/.test(s), label: 'Um caractere especial' },
-];
-const senhaValida = (s: string) => REGRAS_SENHA.every((r) => r.ok(s));
+type FieldErrors = Record<string, string>;
 
 export function Register() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
@@ -46,23 +37,23 @@ export function Register() {
   const [gender, setGender] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
-  const [errors, setErrors] = useState<Erros>({});
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const limparErro = (campo: string) =>
-    setErrors((prev) => (prev[campo] ? { ...prev, [campo]: '' } : prev));
+  const clearError = (field: string) =>
+    setErrors((prev) => (prev[field] ? { ...prev, [field]: '' } : prev));
 
-  // Validação no cliente para dar feedback por campo; o backend valida de novo.
-  function validar(): Erros {
-    const e: Erros = {};
-    if (name.trim().length < 2) e.name = 'Nome deve ter ao menos 2 caracteres';
+  // Client-side validation for per-field feedback; the backend validates again.
+  function validate(): FieldErrors {
+    const e: FieldErrors = {};
+    if (name.trim().length < 2) e.name = t('register.errors.name');
 
     const profileErrors = validateProfileCompletionFields({ username, birthDate, gender, phone });
     Object.assign(e, profileErrors);
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = 'Email inválido';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = t('register.errors.email');
 
-    if (!senhaValida(password)) e.password = 'A senha não cumpre todos os requisitos';
+    if (!isValidPassword(password)) e.password = t('auth.weakPassword');
 
     return e;
   }
@@ -70,7 +61,7 @@ export function Register() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
-    const errs = validar();
+    const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
     const birthDateIso = birthDateDisplayToIso(birthDate);
@@ -87,18 +78,19 @@ export function Register() {
         gender,
         phone: phone.trim(),
       });
-      // Leva o aviso de confirmar o email junto: o login recusa quem ainda não
-      // confirmou, e sem esse texto a pessoa não entende por que voltou para cá.
+      // Carries the confirm-your-email notice along: sign-in refuses whoever has not
+      // confirmed yet, and without this text the person does not understand why they
+      // came back here. (`notice` is the state key the sign-in screen reads.)
       navigate('/entrar', {
         state: {
-          aviso: data?.mensagem ?? 'Conta criada. Verifique seu email para ativar o acesso.',
+          notice: data?.mensagem ?? t('register.accountCreated'),
           email: email.trim(),
         },
       });
     } catch (e: unknown) {
-      // Mapeia os erros conhecidos do backend (409) para o campo certo.
-      const msg = mensagemErro(e, 'Erro ao criar conta. Tente novamente.');
-      if (/usu[aá]rio/i.test(msg)) setErrors((prev) => ({ ...prev, username: msg }));
+      // Maps the known backend errors (409) to the right field, in either language.
+      const msg = mensagemErro(e, t('register.errors.generic'));
+      if (/usu[aá]rio|username/i.test(msg)) setErrors((prev) => ({ ...prev, username: msg }));
       else if (/email/i.test(msg)) setErrors((prev) => ({ ...prev, email: msg }));
       else setError(msg);
     } finally {
@@ -106,23 +98,19 @@ export function Register() {
     }
   }
 
-  const reqsSenha = REGRAS_SENHA.map((r) => ({ ok: r.ok(password), label: r.label }));
-
   const brand = (
     <AuthBrand glow="register">
       <div className="auth__brand-body">
-        <h1 className="auth__headline auth__headline--single">Comece sua jornada dev hoje.</h1>
-        <p className="auth__lede">
-          Crie sua conta gratuita e desbloqueie um novo desafio a cada dia.
-        </p>
+        <h1 className="auth__headline auth__headline--single">{t('register.brandTitle')}</h1>
+        <p className="auth__lede">{t('register.brandLede')}</p>
 
         <ul className="benefits">
-          {BENEFITS.map((b) => (
-            <li key={b} className="benefits__item">
+          {BENEFITS.map((benefit) => (
+            <li key={benefit} className="benefits__item">
               <span className="benefits__check">
                 <Check size={14} />
               </span>
-              {b}
+              {t(`register.benefits.${benefit}`)}
             </li>
           ))}
         </ul>
@@ -136,9 +124,7 @@ export function Register() {
           <span className="avatar avatar--sm avatars__more">+9k</span>
         </div>
         <p>
-          Junte-se a <b>12.482</b> devs
-          <br />
-          aprendendo agora.
+          <Trans i18nKey="register.socialProof" components={{ b: <b />, br: <br /> }} />
         </p>
       </div>
     </AuthBrand>
@@ -149,32 +135,32 @@ export function Register() {
       <div className="auth__logo-m">
         <Logo variant="solid" size={22} />
       </div>
-      <h2 className="auth__title">Crie sua conta</h2>
-      <p className="auth__subtitle">Leva menos de um minuto.</p>
+      <h2 className="auth__title">{t('register.title')}</h2>
+      <p className="auth__subtitle">{t('register.subtitle')}</p>
 
       {error && <div className="auth__alert">{error}</div>}
 
       <form className="form" onSubmit={handleSubmit} noValidate>
         <FormField
-          label="Nome"
-          placeholder="Seu nome"
+          label={t('register.name')}
+          placeholder={t('register.namePlaceholder')}
           value={name}
           onChange={(e) => {
             setName(e.target.value);
-            limparErro('name');
+            clearError('name');
           }}
           required
           error={errors.name}
         />
         <FormField
-          label="E-mail"
+          label={t('auth.email')}
           type="email"
           autoComplete="email"
-          placeholder="voce@email.com"
+          placeholder={t('auth.emailPlaceholder')}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-            limparErro('email');
+            clearError('email');
           }}
           required
           error={errors.email}
@@ -189,52 +175,44 @@ export function Register() {
           phone={phone}
           onPhoneChange={setPhone}
           errors={errors}
-          onClearError={limparErro}
+          onClearError={clearError}
           required
         />
         <FormField
-          label="Senha"
+          label={t('auth.password')}
           type="password"
           autoComplete="new-password"
-          placeholder={`mínimo ${SENHA_MIN} caracteres`}
+          placeholder={t('register.passwordPlaceholder', { min: PASSWORD_MIN })}
           value={password}
           onChange={(e) => {
             setPassword(e.target.value);
-            limparErro('password');
+            clearError('password');
           }}
           required
           error={errors.password}
         >
-          <ul className="pw-reqs">
-            {reqsSenha.map((r) => (
-              <li key={r.label} className={`pw-reqs__item${r.ok ? ' pw-reqs__item--ok' : ''}`}>
-                <Check size={12} /> {r.label}
-              </li>
-            ))}
-          </ul>
+          <PasswordChecklist value={password} />
         </FormField>
         <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
-          {submitting ? 'Criando conta...' : 'Criar conta grátis'}
+          {submitting ? t('register.submitting') : t('register.submit')}
         </button>
       </form>
 
       <SocialAuth />
 
       <p className="auth__terms">
-        Ao criar a conta, você concorda com os{' '}
-        <Link className="link" to="/termos">
-          Termos
-        </Link>{' '}
-        e a{' '}
-        <Link className="link" to="/privacidade">
-          Política de Privacidade
-        </Link>
-        .
+        <Trans
+          i18nKey="register.terms"
+          components={{
+            terms: <Link className="link" to="/termos" />,
+            privacy: <Link className="link" to="/privacidade" />,
+          }}
+        />
       </p>
       <p className="auth__foot">
-        Já tem conta?{' '}
+        {t('register.haveAccount')}{' '}
         <Link className="link" to="/entrar">
-          Entrar
+          {t('register.signIn')}
         </Link>
       </p>
     </AuthShell>

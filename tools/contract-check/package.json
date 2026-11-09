@@ -1,0 +1,9 @@
+{
+    "name": "contract-check",
+    "private": true,
+    "type": "module",
+    "description": "Checks that a pure rename keeps the API, database and URL contracts intact",
+    "devDependencies": {
+        "ts-morph": "^28.0.0"
+    }
+}

@@ -1,31 +1,31 @@
 import { Router } from "express";
-import { autenticar } from "../middlewares/auth.ts";
+import { authenticate } from "../middlewares/auth.ts";
 import {
-    getResumo,
-    getBaralhos,
-    getEstatisticas,
-    getHistorico,
-    getPontosFracos,
-    getFila,
-    getRevisaoTrilha,
-    getContagemTrilha,
-    postResposta,
-    postReporte,
+    getSummary,
+    getDecks,
+    getStatistics,
+    getHistory,
+    getWeakPoints,
+    getQueue,
+    getTrailReview,
+    getTrailReviewCount,
+    postAnswer,
+    postReport,
 } from "../controllers/FlashcardController.ts";
 
 const router = Router();
 
-router.get("/flashcards/resumo", autenticar, getResumo);
-router.get("/flashcards/fila", autenticar, getFila);
-router.get("/flashcards/baralhos", autenticar, getBaralhos);
-router.get("/flashcards/estatisticas", autenticar, getEstatisticas);
-router.get("/flashcards/historico", autenticar, getHistorico);
-router.get("/flashcards/pontos-fracos", autenticar, getPontosFracos);
-// Revisão de uma trilha inteira, oferecida ao concluí-la. A contagem vem antes na
-// ordem das rotas para "contagem" não ser lido como um trailId.
-router.get("/flashcards/trilha/:trailId/contagem", autenticar, getContagemTrilha);
-router.get("/flashcards/trilha/:trailId", autenticar, getRevisaoTrilha);
-router.post("/flashcards/:id/responder", autenticar, postResposta);
-router.post("/flashcards/:id/reportar", autenticar, postReporte);
+router.get("/flashcards/resumo", authenticate, getSummary);
+router.get("/flashcards/fila", authenticate, getQueue);
+router.get("/flashcards/baralhos", authenticate, getDecks);
+router.get("/flashcards/estatisticas", authenticate, getStatistics);
+router.get("/flashcards/historico", authenticate, getHistory);
+router.get("/flashcards/pontos-fracos", authenticate, getWeakPoints);
+// Review of a whole trail, offered on completing it. The count route comes first
+// so "contagem" is not read as a trailId.
+router.get("/flashcards/trilha/:trailId/contagem", authenticate, getTrailReviewCount);
+router.get("/flashcards/trilha/:trailId", authenticate, getTrailReview);
+router.post("/flashcards/:id/responder", authenticate, postAnswer);
+router.post("/flashcards/:id/reportar", authenticate, postReport);
 
 export default router;

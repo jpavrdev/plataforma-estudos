@@ -15,7 +15,8 @@ import {
     numeric,
     smallint,
 } from "drizzle-orm/pg-core";
-import type { Contatos } from "./src/domain/contatos.ts";
+import type { Contacts } from "./src/domain/contacts.ts";
+import type { Locale } from "./src/i18n/locale.ts";
 
 export const userRole = pgEnum("user_role", ["user", "admin", "moderator"]);
 export const trailLevel = pgEnum("trail_level", ["iniciante", "intermediario", "avancado"]);
@@ -78,6 +79,9 @@ export const users = pgTable("users", {
     // por cima dela (0-100; nulo = padrão de 60).
     backgroundUrl: varchar("background_url", { length: 300 }),
     backgroundDim: integer("background_dim"),
+    // Language of the screens and of the emails ("pt-BR" or "en"). Accounts created
+    // before the platform had two languages used Portuguese, hence the default.
+    locale: varchar("locale", { length: 5 }).$type<Locale>().default("pt-BR").notNull(),
 });
 
 // Identidades de login social vinculadas a um usuário. Um usuário pode ter mais de
@@ -112,8 +116,42 @@ export const tokens = pgTable(
         expiredAt: timestamp("expired_at", { withTimezone: true }).notNull(),
         // Erros no código de 6 dígitos; o código é apagado ao chegar no limite.
         tentativas: smallint("tentativas").notNull().default(0),
+        // Channel the recovery code was asked on (email/whatsapp). The one-minute
+        // window is per channel, so switching channels still delivers. Null on
+        // rows written before this column existed.
+        channel: varchar("channel", { length: 10 }),
     },
     (table) => [index("tokens_user_id_idx").on(table.userId)],
+);
+
+// Two-factor authentication with an authenticator app (TOTP). Secrets are stored
+// encrypted (services/secretBox.ts). The pending one belongs to a setup in
+// progress and only becomes the secret once the first code matches.
+export const twoFactorAuth = pgTable("two_factor_auth", {
+    userId: uuid("user_id")
+        .primaryKey()
+        .references(() => users.id, { onDelete: "cascade" }),
+    secret: text("secret"),
+    pendingSecret: text("pending_secret"),
+    enabledAt: timestamp("enabled_at", { withTimezone: true }),
+    // Last accepted 30-second step: the same code is never accepted twice.
+    lastStep: integer("last_step"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+// Single-use 2FA recovery codes, stored only as hashes.
+export const twoFactorRecoveryCodes = pgTable(
+    "two_factor_recovery_codes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        codeHash: varchar("code_hash", { length: 64 }).notNull().unique(),
+        usedAt: timestamp("used_at", { withTimezone: true }),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [index("two_factor_recovery_codes_user_id_idx").on(table.userId)],
 );
 
 export const trails = pgTable("trails", {
@@ -1157,7 +1195,7 @@ export const sorteioParticipacoes = pgTable(
         userId: uuid("user_id")
             .references(() => users.id, { onDelete: "cascade" })
             .notNull(),
-        contatos: jsonb("contatos").$type<Contatos>(),
+        contatos: jsonb("contatos").$type<Contacts>(),
         // Colocação de 1 a 3, só nos ganhadores.
         posicao: smallint("posicao"),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

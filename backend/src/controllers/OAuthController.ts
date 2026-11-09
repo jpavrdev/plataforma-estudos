@@ -1,19 +1,25 @@
 import type { Request, Response } from "express";
 import { randomBytes } from "node:crypto";
 import { env } from "../config/env.ts";
+import { parseLocale } from "../i18n/locale.ts";
 import { authService } from "../services/auth.service.ts";
-import { vincularContaSocial } from "../services/contaSocial.service.ts";
+import { linkSocialAccount } from "../services/socialAccount.service.ts";
+import { twoFactorService } from "../services/twoFactor.service.ts";
 import {
-    provedorValido,
-    provedorConfigurado,
-    urlAutorizacao,
-    trocarCodePorUsuario,
+    isValidProvider,
+    isProviderConfigured,
+    authorizationUrl,
+    exchangeCodeForUser,
 } from "../services/oauth.service.ts";
 
 const STATE_COOKIE = "oauth_state";
+// The screen language goes along with the state: the callback is a redirect from
+// the provider, without the X-Locale header, and a new account is born in it.
+const LOCALE_COOKIE = "oauth_locale";
 
-// O state precisa voltar no callback, que é um redirect vindo do provedor (cross-site).
-// Por isso o cookie é Lax (Strict não seria enviado nesse redirect e quebraria a validação).
+// The state has to come back in the callback, which is a redirect from the provider
+// (cross-site). Hence a Lax cookie: Strict would not be sent on that redirect and
+// would break the check.
 const stateCookieOpts = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
@@ -22,7 +28,7 @@ const stateCookieOpts = {
     path: "/",
 };
 
-// Mesmo cookie de refresh do login normal (as chamadas de /refresh são same-site).
+// The same refresh cookie as the regular login (the /refresh calls are same-site).
 const refreshCookieOpts = {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
@@ -31,48 +37,60 @@ const refreshCookieOpts = {
     path: "/",
 };
 
-export const iniciarOAuth = (req: Request, res: Response) => {
+export const startOAuth = (req: Request, res: Response) => {
     const provider = String(req.params.provider);
-    if (!provedorValido(provider) || !provedorConfigurado(provider)) {
+    if (!isValidProvider(provider) || !isProviderConfigured(provider)) {
         return res.redirect(`${env.FRONTEND_URL}/?erro=provedor_indisponivel`);
     }
     const state = randomBytes(16).toString("hex");
     res.cookie(STATE_COOKIE, state, stateCookieOpts);
-    res.redirect(urlAutorizacao(provider, state));
+    const locale = typeof req.query.locale === "string" ? req.query.locale : undefined;
+    res.cookie(LOCALE_COOKIE, parseLocale(locale), stateCookieOpts);
+    res.redirect(authorizationUrl(provider, state));
 };
 
-export const callbackOAuth = async (req: Request, res: Response) => {
+export const oauthCallback = async (req: Request, res: Response) => {
     const provider = String(req.params.provider);
     const code = typeof req.query.code === "string" ? req.query.code : null;
     const state = typeof req.query.state === "string" ? req.query.state : null;
     const stateCookie = req.cookies?.[STATE_COOKIE] ?? null;
+    const locale = parseLocale(req.cookies?.[LOCALE_COOKIE]);
     res.clearCookie(STATE_COOKIE, { path: "/" });
+    res.clearCookie(LOCALE_COOKIE, { path: "/" });
 
-    const falhar = (motivo: string) => res.redirect(`${env.FRONTEND_URL}/?erro=${motivo}`);
+    const fail = (reason: string) => res.redirect(`${env.FRONTEND_URL}/?erro=${reason}`);
 
-    if (!provedorValido(provider) || !provedorConfigurado(provider)) {
-        return falhar("provedor_indisponivel");
+    if (!isValidProvider(provider) || !isProviderConfigured(provider)) {
+        return fail("provedor_indisponivel");
     }
     if (!code || !state || !stateCookie || state !== stateCookie) {
-        return falhar("oauth_invalido");
+        return fail("oauth_invalido");
     }
 
-    let dados;
+    let providerUser;
     try {
-        dados = await trocarCodePorUsuario(provider, code);
+        providerUser = await exchangeCodeForUser(provider, code);
     } catch (e) {
-        console.error("OAuth: erro ao trocar o code por usuário", e);
-        return falhar("oauth_falhou");
+        console.error("OAuth: failed to exchange the code for a user", e);
+        return fail("oauth_falhou");
     }
-    if (!dados) return falhar("oauth_sem_email");
+    if (!providerUser) return fail("oauth_sem_email");
 
-    const user = await vincularContaSocial(provider, dados);
-    if (!user) return falhar("oauth_falhou");
+    const user = await linkSocialAccount(provider, providerUser, locale);
+    if (!user) return fail("oauth_falhou");
 
-    const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
+    const needsProfile = !user.username || !user.birthDate || !user.gender || !user.phone;
+    const destination = needsProfile ? "completar-perfil" : "home";
+
+    // With 2FA the provider counts as the password: the session only comes after the code.
+    if (await twoFactorService.isEnabled(user.id)) {
+        const challenge = await twoFactorService.createChallenge(user.id);
+        return res.redirect(
+            `${env.FRONTEND_URL}/auth/callback#challenge=${challenge}&destino=${destination}`,
+        );
+    }
+
+    const { accessToken, refreshToken } = await authService.issueSessionTokens(user.id);
     res.cookie("refreshToken", refreshToken, refreshCookieOpts);
-
-    const precisaCompletar = !user.username || !user.birthDate || !user.gender || !user.phone;
-    const destino = precisaCompletar ? "completar-perfil" : "home";
-    res.redirect(`${env.FRONTEND_URL}/auth/callback#token=${accessToken}&destino=${destino}`);
+    res.redirect(`${env.FRONTEND_URL}/auth/callback#token=${accessToken}&destino=${destination}`);
 };

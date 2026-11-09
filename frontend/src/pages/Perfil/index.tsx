@@ -49,6 +49,8 @@ import { urlImagem } from '../../utils/urlImagem';
 
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 import { TelefoneRecuperacao } from './TelefoneRecuperacao';
+import { LanguageCard } from './LanguageCard';
+import { TwoFactorCard } from './TwoFactorCard';
 
 // Só carrega o recortador quando o usuário vai trocar foto ou capa.
 const ImageCropper = lazy(() => import('../../components/ImageCropper'));
@@ -679,6 +681,8 @@ export function Perfil() {
                   </div>
                 </div>
                 <TelefoneRecuperacao />
+                <LanguageCard />
+                {authUser?.role === 'admin' && <TwoFactorCard />}
               </div>
 
               <div className="pf-col">

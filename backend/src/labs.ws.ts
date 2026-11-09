@@ -1,70 +1,71 @@
 import type { Server } from "node:http";
 import { WebSocketServer, WebSocket } from "ws";
 import { env } from "./config/env.ts";
-import { consumirTicket } from "./services/lab.service.ts";
+import { consumeTicket } from "./services/lab.service.ts";
 
-// Ponte entre o navegador e o serviço de labs. O backend fica no meio para
-// conferir de quem é a sessão: o serviço de labs não é exposto, e quem chega
-// nele já passou por aqui. Os bytes do terminal só atravessam.
-export function ligarTerminalLabs(server: Server) {
+// Bridge between the browser and the labs service. The backend sits in the middle
+// to check who owns the session: the labs service is not exposed, and whoever
+// reaches it has already gone through here. The terminal bytes only pass through.
+export function attachLabTerminal(server: Server) {
     const wss = new WebSocketServer({ noServer: true });
 
     server.on("upgrade", (req, socket, head) => {
         const url = new URL(req.url ?? "/", "http://localhost");
         if (url.pathname !== "/labs/terminal") return;
 
-        const userId = consumirTicket(url.searchParams.get("ticket") ?? "");
+        const userId = consumeTicket(url.searchParams.get("ticket") ?? "");
         if (!userId) {
             socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
             socket.destroy();
             return;
         }
 
-        wss.handleUpgrade(req, socket, head, (navegador) => {
-            // De quem é a sessão vai por cabeçalho na conexão interna, para o
-            // serviço de labs poder limitar uma sessão por aluno.
+        wss.handleUpgrade(req, socket, head, (browser) => {
+            // Who owns the session goes in a header on the internal connection, so
+            // the labs service can limit each student to one session.
             const lab = new WebSocket(`${env.LABS_URL}/sessao`, {
                 headers: { "x-user-id": userId },
             });
-            // O que o aluno digita antes do lab responder o handshake não pode
-            // sumir, senão a primeira tecla se perde.
-            const pendentes: Array<Buffer | string> = [];
+            // What the student types before the lab answers the handshake cannot
+            // vanish, or the first keystroke is lost.
+            const pending: Array<Buffer | string> = [];
 
-            navegador.on("message", (dados, ehBinario) => {
-                const carga = ehBinario ? (dados as Buffer) : dados.toString();
-                if (lab.readyState === WebSocket.OPEN) lab.send(carga);
-                else pendentes.push(carga);
+            browser.on("message", (data, isBinary) => {
+                const payload = isBinary ? (data as Buffer) : data.toString();
+                if (lab.readyState === WebSocket.OPEN) lab.send(payload);
+                else pending.push(payload);
             });
             lab.on("open", () => {
-                for (const p of pendentes) lab.send(p);
-                pendentes.length = 0;
+                for (const p of pending) lab.send(p);
+                pending.length = 0;
             });
-            lab.on("message", (dados, ehBinario) => {
-                if (navegador.readyState === WebSocket.OPEN)
-                    navegador.send(ehBinario ? (dados as Buffer) : dados.toString());
+            lab.on("message", (data, isBinary) => {
+                if (browser.readyState === WebSocket.OPEN)
+                    browser.send(isBinary ? (data as Buffer) : data.toString());
             });
 
-            const fechar = () => {
+            const close = () => {
                 if (lab.readyState === WebSocket.OPEN) lab.close();
-                if (navegador.readyState === WebSocket.OPEN) navegador.close();
+                if (browser.readyState === WebSocket.OPEN) browser.close();
             };
-            navegador.on("close", fechar);
-            lab.on("close", fechar);
-            navegador.on("error", (e) => {
-                console.error("[labs] erro no socket do navegador:", e.message);
-                fechar();
+            browser.on("close", close);
+            lab.on("close", close);
+            browser.on("error", (e) => {
+                console.error("[labs] browser socket error:", e.message);
+                close();
             });
             lab.on("error", (e) => {
-                console.error("[labs] serviço de labs indisponível:", e.message);
-                if (navegador.readyState === WebSocket.OPEN) {
-                    navegador.send(
+                console.error("[labs] labs service unavailable:", e.message);
+                if (browser.readyState === WebSocket.OPEN) {
+                    browser.send(
                         JSON.stringify({
                             tipo: "erro",
-                            mensagem: "O laboratório está indisponível. Tente de novo em instantes.",
+                            mensagem:
+                                "O laboratório está indisponível. Tente de novo em instantes.",
                         }),
                     );
                 }
-                fechar();
+                close();
             });
         });
     });

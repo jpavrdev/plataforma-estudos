@@ -8,6 +8,7 @@ import { Landing } from './pages/Landing';
 import { ComunicadoPrompt } from './components/ComunicadoPrompt';
 import { BottomNav } from './components/BottomNav';
 import { ConquistaToaster } from './components/ConquistaToaster';
+import { TwoFactorGate } from './components/auth/TwoFactorGate';
 
 // Cada página é baixada só quando a rota abre. A Landing fica no pacote principal
 // por ser a primeira tela de quem chega. As páginas exportam por nome, e o lazy
@@ -82,11 +83,11 @@ const DesafioEditor = lazy(() =>
 const VerifyEmail = lazy(() =>
   import('./pages/VerifyEmail').then((m) => ({ default: m.VerifyEmail })),
 );
-const RecuperarSenha = lazy(() =>
-  import('./pages/RecuperarSenha').then((m) => ({ default: m.RecuperarSenha })),
+const ForgotPassword = lazy(() =>
+  import('./pages/ForgotPassword').then((m) => ({ default: m.ForgotPassword })),
 );
-const RedefinirSenha = lazy(() =>
-  import('./pages/RedefinirSenha').then((m) => ({ default: m.RedefinirSenha })),
+const ResetPassword = lazy(() =>
+  import('./pages/ResetPassword').then((m) => ({ default: m.ResetPassword })),
 );
 const OAuthCallback = lazy(() =>
   import('./pages/OAuthCallback').then((m) => ({ default: m.OAuthCallback })),
@@ -108,8 +109,8 @@ const Comunidade = lazy(() =>
 const Apoie = lazy(() => import('./pages/Apoie').then((m) => ({ default: m.Apoie })));
 const Curriculo = lazy(() => import('./pages/Curriculo').then((m) => ({ default: m.Curriculo })));
 const Sorteio = lazy(() => import('./pages/Sorteio').then((m) => ({ default: m.Sorteio })));
-const CompletarPerfil = lazy(() =>
-  import('./pages/CompletarPerfil').then((m) => ({ default: m.CompletarPerfil })),
+const CompleteProfile = lazy(() =>
+  import('./pages/CompleteProfile').then((m) => ({ default: m.CompleteProfile })),
 );
 
 function AuthRoute({ children }: { children: React.JSX.Element }) {
@@ -135,7 +136,9 @@ function AdminRoute({ children }: { children: React.JSX.Element }) {
   if (loading) return <div>Carregando...</div>;
   if (!isAuthenticated) return <Navigate to="/entrar" />;
   if (!user?.username) return <Navigate to="/completar-perfil" replace />;
-  return user?.role === 'admin' ? children : <Navigate to="/home" />;
+  if (user.role !== 'admin') return <Navigate to="/home" />;
+  if (user.pendingTwoFactor) return <TwoFactorGate reason={user.pendingTwoFactor} />;
+  return children;
 }
 
 // A URL canônica do perfil é /username: o dono vê a versão editável, os demais a pública.
@@ -168,8 +171,8 @@ function AppRoutes() {
             element={isAuthenticated ? <Navigate to="/home" /> : <Register />}
           />
           <Route path="/verificar-email" element={<VerifyEmail />} />
-          <Route path="/recuperar-senha" element={<RecuperarSenha />} />
-          <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+          <Route path="/recuperar-senha" element={<ForgotPassword />} />
+          <Route path="/redefinir-senha" element={<ResetPassword />} />
           <Route path="/auth/callback" element={<OAuthCallback />} />
           <Route path="/certificados/:code" element={<CertificadoValidar />} />
           {/* Públicas mesmo logado: são documentos, e o link do rodapé leva aqui. */}
@@ -179,7 +182,7 @@ function AppRoutes() {
             path="/completar-perfil"
             element={
               <AuthRoute>
-                <CompletarPerfil />
+                <CompleteProfile />
               </AuthRoute>
             }
           />

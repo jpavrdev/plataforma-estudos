@@ -13,36 +13,36 @@ import {
 } from "../schema.ts";
 import { and, eq } from "drizzle-orm";
 import {
-    abrirCartoesDaAula,
-    baralhos,
-    contarRevisaoDaTrilha,
-    filaDoDia,
-    responder,
-    revisaoDaTrilha,
+    openLessonCards,
+    decks,
+    countTrailReview,
+    dailyQueue,
+    answerCard,
+    trailReview,
 } from "../src/services/flashcard.service.ts";
 
 /**
- * Trilha com dois trilhos de linguagem: a mesma aula existe duas vezes, uma em
- * JavaScript e outra em Python, na mesma posição. O cartão conceitual ("O que é um
- * algoritmo?") vale para os dois e por isso foi semeado nas duas aulas, em linhas
- * diferentes com a mesma pergunta. Cada trilho ainda tem o cartão de sintaxe dele.
+ * A trail with two language tracks: the same lesson exists twice, one in
+ * JavaScript and one in Python, at the same position. The conceptual card ("O que
+ * é um algoritmo?") applies to both and was therefore seeded in both lessons, in
+ * different rows with the same question. Each track also has its own syntax card.
  */
-async function montarTrilhaComDoisTrilhos() {
-    const [trilha] = await db
+async function buildTrailWithTwoTracks() {
+    const [trail] = await db
         .insert(trails)
         .values({ name: "Lógica", trailLevel: "iniciante", description: "trilha de teste" })
         .returning();
-    const [modulo] = await db
+    const [module] = await db
         .insert(modules)
-        .values({ trailId: trilha.id, title: "Módulo 1", position: 1 })
+        .values({ trailId: trail.id, title: "Módulo 1", position: 1 })
         .returning();
 
-    const aulaDe = async (language: string) => {
-        const [aula] = await db
+    const lessonFor = async (language: string) => {
+        const [lesson] = await db
             .insert(lessons)
             .values({
-                trailId: trilha.id,
-                moduleId: modulo.id,
+                trailId: trail.id,
+                moduleId: module.id,
                 title: `Algoritmos em ${language}`,
                 position: 1,
                 published: true,
@@ -51,26 +51,26 @@ async function montarTrilhaComDoisTrilhos() {
             .returning();
         await db.insert(flashcards).values([
             {
-                lessonId: aula.id,
+                lessonId: lesson.id,
                 frente: "O que é um algoritmo?",
                 verso: "Sequência de passos",
                 position: 0,
             },
             {
-                lessonId: aula.id,
+                lessonId: lesson.id,
                 frente: `Como declarar variável em ${language}?`,
                 verso: "Depende da linguagem",
                 position: 1,
             },
         ]);
-        return aula;
+        return lesson;
     };
 
-    return { trilha, js: await aulaDe("javascript"), py: await aulaDe("python") };
+    return { trilha: trail, js: await lessonFor("javascript"), py: await lessonFor("python") };
 }
 
-async function novoAluno() {
-    const [aluno] = await db
+async function newUser() {
+    const [student] = await db
         .insert(users)
         .values({
             name: "Aluno",
@@ -78,87 +78,87 @@ async function novoAluno() {
             passwordHash: "x",
         })
         .returning();
-    return aluno;
+    return student;
 }
 
-async function concluir(userId: string, lessonId: string) {
+async function complete(userId: string, lessonId: string) {
     await db.insert(lessonProgress).values({ userId, lessonId, completedAt: new Date() });
-    await abrirCartoesDaAula(userId, lessonId);
+    await openLessonCards(userId, lessonId);
 }
 
-describe("cartões em trilha com trilhos de linguagem", () => {
+describe("cards in a trail with language tracks", () => {
     beforeEach(limparBanco);
 
-    test("aluno que estudou os dois trilhos recebe a pergunta comum uma vez só", async () => {
-        const { js, py } = await montarTrilhaComDoisTrilhos();
-        const aluno = await novoAluno();
+    test("a student who studied both tracks gets the common question only once", async () => {
+        const { js, py } = await buildTrailWithTwoTracks();
+        const student = await newUser();
 
-        await concluir(aluno.id, js.id);
-        await concluir(aluno.id, py.id);
+        await complete(student.id, js.id);
+        await complete(student.id, py.id);
 
-        const fila = await filaDoDia(aluno.id);
-        const perguntas = fila.map((c) => c.frente).sort();
+        const queue = await dailyQueue(student.id);
+        const questions = queue.map((c) => c.frente).sort();
 
-        assert.deepEqual(perguntas, [
+        assert.deepEqual(questions, [
             "Como declarar variável em javascript?",
             "Como declarar variável em python?",
             "O que é um algoritmo?",
         ]);
     });
 
-    test("aluno de um trilho só continua recebendo a pergunta comum", async () => {
-        const { py } = await montarTrilhaComDoisTrilhos();
-        const aluno = await novoAluno();
+    test("a student of a single track still gets the common question", async () => {
+        const { py } = await buildTrailWithTwoTracks();
+        const student = await newUser();
 
-        await concluir(aluno.id, py.id);
+        await complete(student.id, py.id);
 
-        const perguntas = (await filaDoDia(aluno.id)).map((c) => c.frente).sort();
-        assert.deepEqual(perguntas, ["Como declarar variável em python?", "O que é um algoritmo?"]);
+        const questions = (await dailyQueue(student.id)).map((c) => c.frente).sort();
+        assert.deepEqual(questions, ["Como declarar variável em python?", "O que é um algoritmo?"]);
     });
 
-    test("a revisão da trilha não repete a pergunta comum", async () => {
-        const { trilha, js, py } = await montarTrilhaComDoisTrilhos();
-        const aluno = await novoAluno();
+    test("the trail review does not repeat the common question", async () => {
+        const { trilha: trail, js, py } = await buildTrailWithTwoTracks();
+        const student = await newUser();
 
-        await concluir(aluno.id, js.id);
-        await concluir(aluno.id, py.id);
+        await complete(student.id, js.id);
+        await complete(student.id, py.id);
 
-        const cartoes = await revisaoDaTrilha(trilha.id);
-        const perguntas = cartoes.map((c) => c.frente);
+        const cards = await trailReview(trail.id);
+        const questions = cards.map((c) => c.frente);
 
-        assert.equal(new Set(perguntas).size, perguntas.length, "pergunta repetida na revisão");
-        assert.equal(perguntas.length, 3);
+        assert.equal(new Set(questions).size, questions.length, "question repeated in review");
+        assert.equal(questions.length, 3);
     });
 
-    test("a contagem da trilha bate com o que a revisão entrega", async () => {
-        const { trilha, js, py } = await montarTrilhaComDoisTrilhos();
-        const aluno = await novoAluno();
+    test("the trail count matches what the review delivers", async () => {
+        const { trilha: trail, js, py } = await buildTrailWithTwoTracks();
+        const student = await newUser();
 
-        await concluir(aluno.id, js.id);
-        await concluir(aluno.id, py.id);
+        await complete(student.id, js.id);
+        await complete(student.id, py.id);
 
-        const { total } = await contarRevisaoDaTrilha(trilha.id);
-        const cartoes = await revisaoDaTrilha(trilha.id);
+        const { total } = await countTrailReview(trail.id);
+        const cards = await trailReview(trail.id);
 
-        assert.equal(total, cartoes.length);
+        assert.equal(total, cards.length);
     });
 });
 
-/** Uma aula com N cartas numeradas, todas já abertas no baralho do aluno. */
-async function aulaCom(quantas: number, userId: string) {
-    const [trilha] = await db
+/** A lesson with N numbered cards, all already open in the student's deck. */
+async function lessonWith(howMany: number, userId: string) {
+    const [trail] = await db
         .insert(trails)
         .values({ name: "Trilha", trailLevel: "iniciante", description: "x" })
         .returning();
-    const [modulo] = await db
+    const [module] = await db
         .insert(modules)
-        .values({ trailId: trilha.id, title: "M1", position: 1 })
+        .values({ trailId: trail.id, title: "M1", position: 1 })
         .returning();
-    const [aula] = await db
+    const [lesson] = await db
         .insert(lessons)
         .values({
-            trailId: trilha.id,
-            moduleId: modulo.id,
+            trailId: trail.id,
+            moduleId: module.id,
             title: "Aula",
             position: 1,
             published: true,
@@ -166,50 +166,50 @@ async function aulaCom(quantas: number, userId: string) {
         .returning();
 
     await db.insert(flashcards).values(
-        Array.from({ length: quantas }, (_, i) => ({
-            lessonId: aula.id,
+        Array.from({ length: howMany }, (_, i) => ({
+            lessonId: lesson.id,
             frente: `Pergunta ${i}?`,
             verso: `Resposta ${i}`,
             position: i,
         })),
     );
-    await db.insert(lessonProgress).values({ userId, lessonId: aula.id });
-    await abrirCartoesDaAula(userId, aula.id);
-    return { trilha, aula };
+    await db.insert(lessonProgress).values({ userId, lessonId: lesson.id });
+    await openLessonCards(userId, lesson.id);
+    return { trilha: trail, aula: lesson };
 }
 
-/** Vence a carta de uma pergunta há tantos dias. */
-async function vencerHa(userId: string, frente: string, dias: number) {
+/** Makes the card of a question due this many days ago. */
+async function dueDaysAgo(userId: string, frente: string, days: number) {
     const [card] = await db.select().from(flashcards).where(eq(flashcards.frente, frente));
     await db
         .update(userCards)
-        .set({ proximaRevisao: new Date(Date.now() - dias * 86400000) })
+        .set({ proximaRevisao: new Date(Date.now() - days * 86400000) })
         .where(and(eq(userCards.userId, userId), eq(userCards.origemId, card.id)));
 }
 
-describe("a fila serve a trilha inteira, e não só o que venceu", () => {
+describe("the queue serves the whole trail, not only what is due", () => {
     beforeEach(limparBanco);
 
-    test("carta agendada para o futuro continua na fila", async () => {
-        const aluno = await novoAluno();
-        await aulaCom(5, aluno.id);
-        // Tudo agendado para daqui a uma semana: pela regra antiga, fila vazia.
+    test("a card scheduled for the future stays in the queue", async () => {
+        const student = await newUser();
+        await lessonWith(5, student.id);
+        // Everything scheduled for a week from now: under the old rule, empty queue.
         await db
             .update(userCards)
             .set({ proximaRevisao: new Date(Date.now() + 7 * 86400000) })
-            .where(eq(userCards.userId, aluno.id));
+            .where(eq(userCards.userId, student.id));
 
-        const fila = await filaDoDia(aluno.id);
+        const queue = await dailyQueue(student.id);
 
-        assert.equal(fila.length, 5, "a fila tem de servir o que ainda não venceu");
+        assert.equal(queue.length, 5, "the queue must serve what is not due yet");
     });
 
-    test("a sala e a revisão da trilha entregam a mesma quantidade", async () => {
-        const aluno = await novoAluno();
-        const { trilha } = await aulaCom(8, aluno.id);
-        // Metade vencida, metade no futuro: o total não pode depender disso.
-        const cartas = await db.select().from(userCards).where(eq(userCards.userId, aluno.id));
-        for (const [i, c] of cartas.entries())
+    test("the room and the trail review deliver the same amount", async () => {
+        const student = await newUser();
+        const { trilha: trail } = await lessonWith(8, student.id);
+        // Half due, half in the future: the total cannot depend on that.
+        const cards = await db.select().from(userCards).where(eq(userCards.userId, student.id));
+        for (const [i, c] of cards.entries())
             await db
                 .update(userCards)
                 .set({
@@ -217,223 +217,223 @@ describe("a fila serve a trilha inteira, e não só o que venceu", () => {
                 })
                 .where(eq(userCards.id, c.id));
 
-        const sala = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
-        const daTrilha = await revisaoDaTrilha(trilha.id);
+        const room = await dailyQueue(student.id, 500, { trilhas: [trail.id] });
+        const fromTrail = await trailReview(trail.id);
 
-        assert.equal(sala.length, daTrilha.length);
+        assert.equal(room.length, fromTrail.length);
         assert.deepEqual(
-            new Set(sala.map((c) => c.frente)),
-            new Set(daTrilha.map((c) => c.frente)),
+            new Set(room.map((c) => c.frente)),
+            new Set(fromTrail.map((c) => c.frente)),
         );
     });
 
-    test("a gêmea não conta duas vezes na fila da sala", async () => {
-        const { trilha, js, py } = await montarTrilhaComDoisTrilhos();
-        const aluno = await novoAluno();
-        await concluir(aluno.id, js.id);
-        await concluir(aluno.id, py.id);
-        // Simula o baralho sujo de antes da correção, com a gêmea aberta na mão.
-        const [gemea] = await db
+    test("the twin is not counted twice in the room queue", async () => {
+        const { trilha: trail, js, py } = await buildTrailWithTwoTracks();
+        const student = await newUser();
+        await complete(student.id, js.id);
+        await complete(student.id, py.id);
+        // Simulates the dirty deck from before the fix, with the twin opened by hand.
+        const [twin] = await db
             .select()
             .from(flashcards)
             .where(eq(flashcards.frente, "O que é um algoritmo?"));
         await db
             .insert(userCards)
-            .values({ userId: aluno.id, origem: "flashcard", origemId: gemea.id })
+            .values({ userId: student.id, origem: "flashcard", origemId: twin.id })
             .onConflictDoNothing();
 
-        const sala = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
-        const perguntas = sala.map((c) => c.frente);
+        const room = await dailyQueue(student.id, 500, { trilhas: [trail.id] });
+        const questions = room.map((c) => c.frente);
 
-        assert.equal(new Set(perguntas).size, perguntas.length, "pergunta repetida na sala");
+        assert.equal(new Set(questions).size, questions.length, "question repeated in the room");
     });
 
-    test("o limite continua priorizando o mais atrasado", async () => {
-        const aluno = await novoAluno();
-        await aulaCom(6, aluno.id);
-        for (let i = 0; i < 6; i++) await vencerHa(aluno.id, `Pergunta ${i}?`, 30 - i * 10);
+    test("the limit still prioritizes the most overdue", async () => {
+        const student = await newUser();
+        await lessonWith(6, student.id);
+        for (let i = 0; i < 6; i++) await dueDaysAgo(student.id, `Pergunta ${i}?`, 30 - i * 10);
 
-        const fila = await filaDoDia(aluno.id, 2);
+        const queue = await dailyQueue(student.id, 2);
 
-        assert.equal(fila.length, 2);
+        assert.equal(queue.length, 2);
         assert.deepEqual(
-            new Set(fila.map((c) => c.frente)),
+            new Set(queue.map((c) => c.frente)),
             new Set(["Pergunta 0?", "Pergunta 1?"]),
         );
     });
 });
 
 /**
- * Uma trilha publicada com N cartas e ninguém matriculado: nenhum progresso,
- * nenhuma carta em baralho. É o cenário da revisão livre.
+ * A published trail with N cards and nobody enrolled: no progress, no cards in a
+ * deck. This is the free review scenario.
  */
-async function trilhaCrua(quantas: number, nome = "Área nova") {
-    const [trilha] = await db
+async function freshTrail(howMany: number, name = "Área nova") {
+    const [trail] = await db
         .insert(trails)
-        .values({ name: nome, trailLevel: "iniciante", description: "x" })
+        .values({ name: name, trailLevel: "iniciante", description: "x" })
         .returning();
-    const [modulo] = await db
+    const [module] = await db
         .insert(modules)
-        .values({ trailId: trilha.id, title: "M1", position: 1 })
+        .values({ trailId: trail.id, title: "M1", position: 1 })
         .returning();
-    const [aula] = await db
+    const [lesson] = await db
         .insert(lessons)
         .values({
-            trailId: trilha.id,
-            moduleId: modulo.id,
+            trailId: trail.id,
+            moduleId: module.id,
             title: "Aula",
             position: 1,
             published: true,
         })
         .returning();
     await db.insert(flashcards).values(
-        Array.from({ length: quantas }, (_, i) => ({
-            lessonId: aula.id,
+        Array.from({ length: howMany }, (_, i) => ({
+            lessonId: lesson.id,
             frente: `Crua ${i}?`,
             verso: `Resposta ${i}`,
             position: i,
         })),
     );
-    return { trilha, aula };
+    return { trilha: trail, aula: lesson };
 }
 
-describe("revisar uma área sem ter feito a trilha", () => {
+describe("reviewing an area without having taken the trail", () => {
     beforeEach(limparBanco);
 
-    test("a revisão da trilha entrega tudo mesmo sem nenhuma aula concluída", async () => {
-        const aluno = await novoAluno();
-        const { trilha } = await trilhaCrua(7);
+    test("the trail review delivers everything even with no lesson completed", async () => {
+        const student = await newUser();
+        const { trilha: trail } = await freshTrail(7);
 
-        const cartoes = await revisaoDaTrilha(trilha.id);
+        const cards = await trailReview(trail.id);
 
-        assert.equal(cartoes.length, 7);
-        assert.equal((await contarRevisaoDaTrilha(trilha.id)).total, 7);
-        // O baralho continua intocado: só responder é que abre carta.
-        const meu = await db.select().from(userCards).where(eq(userCards.userId, aluno.id));
-        assert.equal(meu.length, 0);
+        assert.equal(cards.length, 7);
+        assert.equal((await countTrailReview(trail.id)).total, 7);
+        // The deck stays untouched: only answering opens a card.
+        const mine = await db.select().from(userCards).where(eq(userCards.userId, student.id));
+        assert.equal(mine.length, 0);
     });
 
-    test("a sala serve a área escolhida mesmo sem progresso nela", async () => {
-        const aluno = await novoAluno();
-        const { trilha } = await trilhaCrua(5);
+    test("the room serves the chosen area even with no progress in it", async () => {
+        const student = await newUser();
+        const { trilha: trail } = await freshTrail(5);
 
-        const fila = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
+        const queue = await dailyQueue(student.id, 500, { trilhas: [trail.id] });
 
-        assert.equal(fila.length, 5);
+        assert.equal(queue.length, 5);
     });
 
-    test("a área escolhida mistura o que já é do aluno com o que falta", async () => {
-        const aluno = await novoAluno();
-        const { trilha, aula } = await trilhaCrua(6);
-        // Três cartas já no baralho; as outras três continuam só no catálogo.
-        const cartas = await db.select().from(flashcards).where(eq(flashcards.lessonId, aula.id));
+    test("the chosen area mixes what is already the student's with what is missing", async () => {
+        const student = await newUser();
+        const { trilha: trail, aula: lesson } = await freshTrail(6);
+        // Three cards already in the deck; the other three remain catalog only.
+        const cards = await db.select().from(flashcards).where(eq(flashcards.lessonId, lesson.id));
         await db.insert(userCards).values(
-            cartas.slice(0, 3).map((c) => ({
-                userId: aluno.id,
+            cards.slice(0, 3).map((c) => ({
+                userId: student.id,
                 origem: "flashcard" as const,
                 origemId: c.id,
                 proximaRevisao: new Date(),
             })),
         );
 
-        const fila = await filaDoDia(aluno.id, 500, { trilhas: [trilha.id] });
-        const perguntas = fila.map((c) => c.frente);
+        const queue = await dailyQueue(student.id, 500, { trilhas: [trail.id] });
+        const questions = queue.map((c) => c.frente);
 
-        assert.equal(perguntas.length, 6, "a fila tem de somar baralho e catálogo");
-        assert.equal(new Set(perguntas).size, 6, "carta do baralho não pode vir duplicada");
+        assert.equal(questions.length, 6, "the queue must add deck and catalog");
+        assert.equal(new Set(questions).size, 6, "a deck card cannot come duplicated");
     });
 
-    test("sem escolher área, a fila continua sendo só o baralho do aluno", async () => {
-        const aluno = await novoAluno();
-        await aulaCom(4, aluno.id);
-        await trilhaCrua(9, "Área que ele nunca viu");
+    test("without choosing an area, the queue is still only the student's deck", async () => {
+        const student = await newUser();
+        await lessonWith(4, student.id);
+        await freshTrail(9, "Área que ele nunca viu");
 
-        const fila = await filaDoDia(aluno.id);
+        const queue = await dailyQueue(student.id);
 
-        assert.equal(fila.length, 4, "o baralho inteiro não pode virar o catálogo inteiro");
+        assert.equal(queue.length, 4, "the whole deck cannot become the whole catalog");
     });
 
-    test("responder carta de aula nunca estudada abre ela no baralho", async () => {
-        const aluno = await novoAluno();
-        const { aula } = await trilhaCrua(3);
-        const [carta] = await db.select().from(flashcards).where(eq(flashcards.lessonId, aula.id));
+    test("answering a card from an unstudied lesson opens it in the deck", async () => {
+        const student = await newUser();
+        const { aula: lesson } = await freshTrail(3);
+        const [card] = await db.select().from(flashcards).where(eq(flashcards.lessonId, lesson.id));
 
-        await responder(aluno.id, "flashcard", carta.id, "facil");
+        await answerCard(student.id, "flashcard", card.id, "facil");
 
-        const [aberta] = await db
+        const [opened] = await db
             .select()
             .from(userCards)
-            .where(and(eq(userCards.userId, aluno.id), eq(userCards.origemId, carta.id)));
-        assert.ok(aberta, "a carta tinha de entrar no baralho na primeira resposta");
-        assert.equal(aberta.repeticoes, 1);
+            .where(and(eq(userCards.userId, student.id), eq(userCards.origemId, card.id)));
+        assert.ok(opened, "the card had to enter the deck on the first answer");
+        assert.equal(opened.repeticoes, 1);
     });
 
-    test("a lista de áreas traz trilha que o aluno nunca abriu", async () => {
-        const aluno = await novoAluno();
-        const { trilha } = await trilhaCrua(11, "Zebra");
+    test("the area list brings a trail the student never opened", async () => {
+        const student = await newUser();
+        const { trilha: trail } = await freshTrail(11, "Zebra");
 
-        const { trilhas } = await baralhos(aluno.id);
-        const zebra = trilhas.find((t) => t.id === trilha.id);
+        const { trilhas: deckList } = await decks(student.id);
+        const zebra = deckList.find((t) => t.id === trail.id);
 
-        assert.ok(zebra, "a área tinha de aparecer para escolher");
-        assert.equal(zebra.total, 0, "ele não tem carta dela no baralho");
-        assert.equal(zebra.disponiveis, 11, "e a área inteira está disponível");
+        assert.ok(zebra, "the area had to show up to choose");
+        assert.equal(zebra.total, 0, "he has none of its cards in the deck");
+        assert.equal(zebra.disponiveis, 11, "and the whole area is available");
     });
 });
 
-describe("ordem da fila de revisão", () => {
+describe("review queue order", () => {
     beforeEach(limparBanco);
 
-    test("o limite continua escolhendo as cartas mais atrasadas", async () => {
-        const aluno = await novoAluno();
-        await aulaCom(6, aluno.id);
-        // Quanto maior o índice, mais recente o vencimento.
-        for (let i = 0; i < 6; i++) await vencerHa(aluno.id, `Pergunta ${i}?`, 30 - i * 5);
+    test("the limit still picks the most overdue cards", async () => {
+        const student = await newUser();
+        await lessonWith(6, student.id);
+        // The higher the index, the more recent the due date.
+        for (let i = 0; i < 6; i++) await dueDaysAgo(student.id, `Pergunta ${i}?`, 30 - i * 5);
 
-        const fila = await filaDoDia(aluno.id, 3);
+        const queue = await dailyQueue(student.id, 3);
 
-        assert.equal(fila.length, 3);
+        assert.equal(queue.length, 3);
         assert.deepEqual(
-            new Set(fila.map((c) => c.frente)),
+            new Set(queue.map((c) => c.frente)),
             new Set(["Pergunta 0?", "Pergunta 1?", "Pergunta 2?"]),
-            "o corte tem de pegar as três mais atrasadas, e não três quaisquer",
+            "the cut must take the three most overdue, not any three",
         );
     });
 
-    test("a ordem em que as cartas aparecem varia entre sessões", async () => {
-        const aluno = await novoAluno();
-        await aulaCom(10, aluno.id);
+    test("the order the cards appear in varies between sessions", async () => {
+        const student = await newUser();
+        await lessonWith(10, student.id);
 
-        const ordens = new Set<string>();
+        const orders = new Set<string>();
         for (let i = 0; i < 6; i++) {
-            ordens.add((await filaDoDia(aluno.id)).map((c) => c.frente).join("|"));
+            orders.add((await dailyQueue(student.id)).map((c) => c.frente).join("|"));
         }
 
-        // Seis sorteios de dez cartas caindo todos na mesma ordem é praticamente
-        // impossível: se acontecer, é porque não há sorteio nenhum.
-        assert.ok(ordens.size > 1, "a fila saiu na mesma ordem nas seis vezes");
+        // Six draws of ten cards all landing in the same order is practically
+        // impossible: if it happens, there is no drawing at all.
+        assert.ok(orders.size > 1, "the queue came out in the same order all six times");
     });
 
-    test("a revisão da trilha também sai sorteada", async () => {
-        const aluno = await novoAluno();
-        const { trilha } = await aulaCom(10, aluno.id);
+    test("the trail review is also shuffled", async () => {
+        const student = await newUser();
+        const { trilha: trail } = await lessonWith(10, student.id);
 
-        const ordens = new Set<string>();
+        const orders = new Set<string>();
         for (let i = 0; i < 6; i++) {
-            ordens.add((await revisaoDaTrilha(trilha.id)).map((c) => c.frente).join("|"));
+            orders.add((await trailReview(trail.id)).map((c) => c.frente).join("|"));
         }
 
-        assert.ok(ordens.size > 1, "a revisão da trilha saiu na mesma ordem nas seis vezes");
+        assert.ok(orders.size > 1, "the trail review came out in the same order all six times");
     });
 
-    test("sortear não perde nem duplica carta", async () => {
-        const aluno = await novoAluno();
-        await aulaCom(10, aluno.id);
+    test("shuffling neither loses nor duplicates a card", async () => {
+        const student = await newUser();
+        await lessonWith(10, student.id);
 
-        const fila = await filaDoDia(aluno.id);
-        const perguntas = fila.map((c) => c.frente);
+        const queue = await dailyQueue(student.id);
+        const questions = queue.map((c) => c.frente);
 
-        assert.equal(perguntas.length, 10);
-        assert.equal(new Set(perguntas).size, 10);
+        assert.equal(questions.length, 10);
+        assert.equal(new Set(questions).size, 10);
     });
 });

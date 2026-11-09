@@ -1,39 +1,41 @@
 import argon2 from "argon2";
 import bcrypt from "bcrypt";
 
-// Argon2id é o algoritmo recomendado (OWASP) para hash de senha, e é o default do
-// node-argon2 (com custo de memória/tempo já fortes). Hashes antigos em bcrypt
-// continuam sendo verificados e migram para argon2 no login (rehash transparente),
-// então ninguém precisa redefinir a senha por causa da troca.
-export async function hashSenha(senha: string): Promise<string> {
-    return argon2.hash(senha);
+// Argon2id is the recommended algorithm (OWASP) for password hashing, and the
+// node-argon2 default (with strong memory/time costs). Old bcrypt hashes are still
+// verified and move to argon2 at login (transparent rehash), so nobody has to
+// reset their password because of the switch.
+export async function hashPassword(password: string): Promise<string> {
+    return argon2.hash(password);
 }
 
-export async function verificarSenha(hash: string, senha: string): Promise<boolean> {
+export async function verifyPassword(hash: string, password: string): Promise<boolean> {
     try {
-        if (hash.startsWith("$argon2")) return await argon2.verify(hash, senha);
-        if (hash.startsWith("$2")) return await bcrypt.compare(senha, hash); // bcrypt legado
+        if (hash.startsWith("$argon2")) return await argon2.verify(hash, password);
+        if (hash.startsWith("$2")) return await bcrypt.compare(password, hash); // legacy bcrypt
         return false;
-    } catch {
+    } catch (e) {
+        console.error("Could not check the password hash", e);
         return false;
     }
 }
 
-// Precisa reescrever o hash? bcrypt antigo (ou formato desconhecido), ou os
-// parâmetros do argon2 mudaram desde que ele foi gerado.
-export function precisaRehash(hash: string): boolean {
+// Does the hash need rewriting? An old bcrypt one (or an unknown format), or the
+// argon2 parameters changed since it was created.
+export function needsRehash(hash: string): boolean {
     if (!hash.startsWith("$argon2")) return true;
     try {
         return argon2.needsRehash(hash);
-    } catch {
+    } catch (e) {
+        console.error("Could not read the password hash parameters", e);
         return true;
     }
 }
 
-// Hash "dummy" para o login gastar um tempo parecido quando o usuário não existe
-// (mitiga enumeração por timing). Calculado uma vez, sob demanda.
+// "Dummy" hash so the login takes a similar time when the user does not exist
+// (it mitigates enumeration by timing). Computed once, on demand.
 let dummy: Promise<string> | null = null;
 export function getDummyHash(): Promise<string> {
-    if (!dummy) dummy = hashSenha("uma_senha_qualquer_dummy_para_timing");
+    if (!dummy) dummy = hashPassword("uma_senha_qualquer_dummy_para_timing");
     return dummy;
 }

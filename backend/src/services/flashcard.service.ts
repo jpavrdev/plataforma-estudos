@@ -15,219 +15,218 @@ import { and, asc, count, desc, eq, inArray, isNotNull, lte, notInArray, sql } f
 import { AppError } from "../errors/AppError.ts";
 
 /**
- * Agendador baseado na curva do esquecimento de Ebbinghaus.
+ * Scheduler based on the Ebbinghaus forgetting curve.
  *
- * A curva diz que a lembrança cai de forma exponencial com o tempo, e que a queda é
- * mais lenta quanto mais estável está a memória:
+ * The curve says recall drops exponentially with time, and that the drop is
+ * slower the more stable the memory is:
  *
  *     R(t) = e^(-t/S)
  *
- * onde R é a chance de lembrar, t é o tempo desde o último contato e S é a
- * estabilidade da memória. Aqui S está reparametrizado em dias até a retenção cair
- * ao alvo, o que deixa a conta direta de ler:
+ * where R is the chance of recalling, t is the time since the last contact and S
+ * is the stability of the memory. Here S is reparametrized as days until recall
+ * drops to the target, which keeps the formula direct to read:
  *
- *     R(t) = ALVO^(t/S)
+ *     R(t) = TARGET^(t/S)
  *
- * Em t = S a retenção é exatamente o alvo, e é aí que o cartão volta. Com alvo de
- * 90%, o intervalo fica em torno de 10% do tempo que a memória duraria até se
- * apagar, que é a janela de revisão única que a literatura da curva aponta como a
- * mais eficiente.
+ * At t = S retention is exactly the target, and that is where the card comes
+ * back. With a 90% target, the interval lands around 10% of the time the memory
+ * would last before fading away, which is the single-review window the curve
+ * literature points to as the most efficient.
  *
- * Três coisas mexem em S, e as três saem da teoria:
+ * Three things move S, and all three come from the theory:
  *
- * 1. Repetir espaça. Cada acerto multiplica S, então o cartão volta cada vez mais
- *    tarde.
- * 2. Material fácil é esquecido mais devagar. "Fácil" multiplica S bem mais que
- *    "intermediária", e por isso o cartão que o aluno domina some quase de vez da fila.
- * 3. Acertar já esquecendo vale mais. Se o cartão foi respondido atrasado, a
- *    retenção no momento da revisão estava abaixo do alvo, e recuperar a memória
- *    nesse ponto consolida mais do que revisar recém-estudado. Responder cedo
- *    demais vale menos, pela mesma razão.
+ * 1. Repetition spaces. Each hit multiplies S, so the card comes back later and
+ *    later.
+ * 2. Easy material is forgotten more slowly. "Easy" multiplies S far more than
+ *    "medium", which is why a card the student masters nearly leaves the queue.
+ * 3. Recalling what was almost forgotten is worth more. When a card is answered
+ *    late, retention at review time was below the target, and recovering the
+ *    memory there consolidates more than reviewing freshly studied material.
+ *    Answering too early is worth less, for the same reason.
  */
-export type Resposta = "errei" | "dificil" | "intermediaria" | "facil";
+export type Answer = "errei" | "dificil" | "intermediaria" | "facil";
 
 /**
- * De onde a carta veio. O agendador não olha para isto: ele guarda estado por
- * (origem, origemId) e trata as três iguais. Quem precisa distinguir é só quem lê o
- * conteúdo da carta, porque cada origem mora numa tabela diferente.
+ * Where the card came from. The scheduler does not look at this: it keeps state by
+ * (source, sourceId) and treats the three alike. Only the code that reads the card
+ * content needs to tell them apart, because each source lives in a different table.
  */
-export type Origem = "flashcard" | "glossario" | "entrevista";
+export type CardSource = "flashcard" | "glossario" | "entrevista";
 
-// Revisar quando a chance de lembrar cair para 90%. Alvo mais alto significa
-// revisar mais vezes e esquecer menos; mais baixo, o contrário.
-const RETENCAO_ALVO = 0.9;
-// Teto de um ano: cartão dominado sai de circulação, mas não some para sempre.
-const ESTABILIDADE_MAXIMA = 365;
-const ESTABILIDADE_MINIMA = 0.5;
-const FACILIDADE_MINIMA = 1.3;
-const FACILIDADE_PADRAO = 2.5;
-const FACILIDADE_MAXIMA = 3.2;
+// Review when the chance of recalling drops to 90%. A higher target means
+// reviewing more often and forgetting less; lower, the opposite.
+const TARGET_RETENTION = 0.9;
+// One-year ceiling: a mastered card leaves circulation, but is not gone forever.
+const MAX_STABILITY = 365;
+const MIN_STABILITY = 0.5;
+const MIN_EASE = 1.3;
+const DEFAULT_EASE = 2.5;
+const MAX_EASE = 3.2;
 
-// Quanto a facilidade do cartão muda por resposta. Errar pesa mais que acertar bem,
-// porque um cartão que falhou já provou que o intervalo estava longo demais.
-const AJUSTE_FACILIDADE: Record<Resposta, number> = {
+// How much the card ease changes per answer. Missing weighs more than an easy hit,
+// because a card that failed has already proven the interval was too long.
+const EASE_ADJUSTMENT: Record<Answer, number> = {
     errei: -0.2,
     dificil: -0.15,
     intermediaria: 0,
     facil: 0.15,
 };
 
-// Estabilidade inicial, em dias, no primeiro acerto do cartão.
-const PRIMEIRA_ESTABILIDADE: Record<Exclude<Resposta, "errei">, number> = {
+// Initial stability, in days, on the card's first hit.
+const FIRST_STABILITY: Record<Exclude<Answer, "errei">, number> = {
     dificil: 1,
     intermediaria: 2,
     facil: 4,
 };
 
-// Quanto a estabilidade cresce a cada acerto, para um cartão de facilidade média.
-// A distância entre "intermediária" e "fácil" é o que faz o conteúdo dominado rarear.
-const GANHO: Record<Exclude<Resposta, "errei">, number> = {
+// How much stability grows on each hit, for a card of average ease. The gap
+// between "medium" and "easy" is what makes mastered content rare.
+const GAIN: Record<Exclude<Answer, "errei">, number> = {
     dificil: 1.3,
     intermediaria: 2.4,
     facil: 3.6,
 };
 
-// Errar não zera a memória, encurta: parte do que foi aprendido continua lá.
-const APOS_ERRO = 0.4;
+// Missing does not erase the memory, it shortens it: part of what was learned is
+// still there.
+const AFTER_ERROR = 0.4;
 
-const entre = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 /**
- * Fisher-Yates na ordem de APRESENTAÇÃO. Roda sempre depois de o limite já ter
- * cortado a fila: quem entra na sessão continua sendo decidido pela data de
- * vencimento, que é trabalho do agendador. Sortear antes do corte faria a carta
- * atrasada há duas semanas perder a vaga para uma que venceu hoje.
+ * Fisher-Yates on the PRESENTATION order. It always runs after the limit has
+ * already cut the queue: who enters the session keeps being decided by the due
+ * date, which is the scheduler's job. Drawing before the cut would make a card
+ * two weeks overdue lose its seat to one due today.
  *
- * Por que embaralhar: em ordem fixa a carta anterior vira pista da seguinte, e o
- * aluno passa a responder a sequência em vez da pergunta. Isso infla a nota que
- * ele dá, e a nota é justamente o que define a estabilidade e a próxima data. A
- * ordem fixa não deixa a revisão só monótona, ela distorce o agendador. De
- * quebra, misturar as aulas é prática intercalada em vez de em bloco, que rende
- * mais retenção mesmo parecendo mais difícil na hora.
+ * Why shuffle: in a fixed order the previous card becomes a hint for the next,
+ * and the student starts answering the sequence instead of the question. That
+ * inflates the grade they give, and the grade is exactly what defines stability
+ * and the next date. A fixed order does not just make the review monotonous, it
+ * distorts the scheduler. As a bonus, mixing lessons is interleaved practice
+ * instead of blocked, which yields more retention even though it feels harder
+ * in the moment.
  */
-function embaralhar<T>(itens: T[]): T[] {
-    for (let i = itens.length - 1; i > 0; i--) {
+function shuffle<T>(items: T[]): T[] {
+    for (let i = items.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [itens[i], itens[j]] = [itens[j], itens[i]];
+        [items[i], items[j]] = [items[j], items[i]];
     }
-    return itens;
+    return items;
 }
 
-/** A curva: chance de lembrar depois de tantos dias sem rever o cartão. */
-export function retencao(estabilidade: number, dias: number): number {
-    if (estabilidade <= 0) return 0;
-    return Math.pow(RETENCAO_ALVO, dias / estabilidade);
+/** The curve: chance of recalling after this many days without reviewing the card. */
+export function retention(stability: number, days: number): number {
+    if (stability <= 0) return 0;
+    return Math.pow(TARGET_RETENTION, days / stability);
 }
 
-interface Estado {
+interface CardState {
     estabilidade: number;
     facilidade: number;
     repeticoes: number;
     lapsos: number;
 }
 
-export function proximoEstado(atual: Estado, resposta: Resposta, diasDesdeRevisao: number) {
-    const facilidade = entre(
-        atual.facilidade + AJUSTE_FACILIDADE[resposta],
-        FACILIDADE_MINIMA,
-        FACILIDADE_MAXIMA,
-    );
+export function nextState(current: CardState, answer: Answer, daysSinceReview: number) {
+    const ease = clamp(current.facilidade + EASE_ADJUSTMENT[answer], MIN_EASE, MAX_EASE);
 
-    if (resposta === "errei") {
+    if (answer === "errei") {
         return {
-            estabilidade: Math.max(ESTABILIDADE_MINIMA, atual.estabilidade * APOS_ERRO),
-            facilidade,
+            estabilidade: Math.max(MIN_STABILITY, current.estabilidade * AFTER_ERROR),
+            facilidade: ease,
             repeticoes: 0,
-            lapsos: atual.lapsos + 1,
+            lapsos: current.lapsos + 1,
             intervaloDias: 0,
         };
     }
 
-    let estabilidade: number;
-    if (atual.estabilidade <= 0) {
-        estabilidade = PRIMEIRA_ESTABILIDADE[resposta];
+    let stability: number;
+    if (current.estabilidade <= 0) {
+        stability = FIRST_STABILITY[answer];
     } else {
-        // A facilidade do cartão modula o ganho: um cartão difícil para esta pessoa
-        // cresce mais devagar que a média, e um fácil cresce mais rápido.
-        const ganho = 1 + (GANHO[resposta] - 1) * (facilidade / FACILIDADE_PADRAO);
-        // Bônus pela retenção no momento da revisão. Em dia dá 1, atrasado passa de
-        // 1, adiantado fica abaixo. Os limites evitam que maratonar cartões no mesmo
-        // dia, ou sumir por meses, distorça a estabilidade.
-        const r = retencao(atual.estabilidade, diasDesdeRevisao);
-        const bonus = entre(1 + (RETENCAO_ALVO - r) * 2, 0.6, 1.6);
-        estabilidade = Math.min(ESTABILIDADE_MAXIMA, atual.estabilidade * ganho * bonus);
+        // The card ease modulates the gain: a card that is hard for this person
+        // grows more slowly than average, and an easy one grows faster.
+        const gain = 1 + (GAIN[answer] - 1) * (ease / DEFAULT_EASE);
+        // Bonus for the retention at review time. On schedule it gives 1, overdue
+        // goes above 1, early stays below. The limits keep marathon-running cards
+        // on the same day, or vanishing for months, from distorting stability.
+        const r = retention(current.estabilidade, daysSinceReview);
+        const bonus = clamp(1 + (TARGET_RETENTION - r) * 2, 0.6, 1.6);
+        stability = Math.min(MAX_STABILITY, current.estabilidade * gain * bonus);
     }
 
     return {
-        estabilidade,
-        facilidade,
-        repeticoes: atual.repeticoes + 1,
-        lapsos: atual.lapsos,
-        intervaloDias: Math.max(1, Math.round(estabilidade)),
+        estabilidade: stability,
+        facilidade: ease,
+        repeticoes: current.repeticoes + 1,
+        lapsos: current.lapsos,
+        intervaloDias: Math.max(1, Math.round(stability)),
     };
 }
 
-function diasDesde(quando: Date | null): number {
-    if (!quando) return 0;
-    return Math.max(0, (Date.now() - quando.getTime()) / 86400000);
+function daysSince(when: Date | null): number {
+    if (!when) return 0;
+    return Math.max(0, (Date.now() - when.getTime()) / 86400000);
 }
 
-function emDias(dias: number): Date {
-    // Intervalo zero significa "de novo hoje", com um respiro de 10 minutos para o
-    // cartão não reaparecer na cara do aluno no mesmo instante.
-    const ms = dias === 0 ? 10 * 60 * 1000 : dias * 86400000;
+function inDays(days: number): Date {
+    // A zero interval means "again today", with a 10-minute breather so the card
+    // does not pop back in the student's face at the same instant.
+    const ms = days === 0 ? 10 * 60 * 1000 : days * 86400000;
     return new Date(Date.now() + ms);
 }
 
-/** Linha de user_cards no formato que o agendador entende. */
-function paraEstado(linha: {
+/** A user_cards row in the format the scheduler understands. */
+function toState(row: {
     estabilidade: string;
     facilidade: string;
     repeticoes: number;
     lapsos: number;
-}): Estado {
+}): CardState {
     return {
-        estabilidade: Number(linha.estabilidade),
-        facilidade: Number(linha.facilidade),
-        repeticoes: linha.repeticoes,
-        lapsos: linha.lapsos,
+        estabilidade: Number(row.estabilidade),
+        facilidade: Number(row.facilidade),
+        repeticoes: row.repeticoes,
+        lapsos: row.lapsos,
     };
 }
 
 /**
- * Termos do glossário que aparecem no texto da aula.
+ * Glossary terms that appear in the lesson text.
  *
- * A fronteira usa lookaround com classe unicode em vez de \b pelo mesmo motivo do
- * destaque no front: o \b do JavaScript só conhece [A-Za-z0-9_], então termo com
- * acento nunca casaria.
+ * The boundary uses a lookaround with a unicode class instead of \b for the same
+ * reason as the highlight on the front end: JavaScript's \b only knows
+ * [A-Za-z0-9_], so an accented term would never match.
  */
-async function termosDaAula(lessonId: string): Promise<string[]> {
-    const [aula] = await db
+async function lessonTerms(lessonId: string): Promise<string[]> {
+    const [lesson] = await db
         .select({ blocos: lessons.contentBlocks, titulo: lessons.title })
         .from(lessons)
         .where(eq(lessons.id, lessonId));
-    if (!aula) return [];
+    if (!lesson) return [];
 
-    const texto = [aula.titulo, ...(aula.blocos ?? []).map((b) => b.value ?? "")].join("\n");
-    const termos = await db.select({ id: glossary.id, term: glossary.term }).from(glossary);
-    const LETRA = "[\\p{L}\\p{N}_]";
-    return termos
+    const text = [lesson.titulo, ...(lesson.blocos ?? []).map((b) => b.value ?? "")].join("\n");
+    const terms = await db.select({ id: glossary.id, term: glossary.term }).from(glossary);
+    const LETTER = "[\\p{L}\\p{N}_]";
+    return terms
         .filter((t) => {
-            const escapado = t.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-            return new RegExp(`(?<!${LETRA})${escapado}(?!${LETRA})`, "iu").test(texto);
+            const escaped = t.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            return new RegExp(`(?<!${LETTER})${escaped}(?!${LETTER})`, "iu").test(text);
         })
         .map((t) => t.id);
 }
 
 /**
- * As perguntas que o aluno já tem abertas nesta trilha.
+ * The questions the student already has open in this trail.
  *
- * A identidade de um cartão dentro da trilha é a pergunta, não a linha: o QC do
- * seeder proíbe frente repetida na mesma trilha, então frente igual é sempre o
- * mesmo cartão. É o que permite reconhecer a gêmea de outro trilho de linguagem.
+ * A card's identity within a trail is the question, not the row: the seeder QC
+ * forbids a repeated front in the same trail, so an equal front is always the
+ * same card. That is what makes it possible to recognize the twin from another
+ * language track.
  */
-async function frentesAbertas(userId: string, trailId: string): Promise<Set<string>> {
-    const linhas = await db
+async function openFronts(userId: string, trailId: string): Promise<Set<string>> {
+    const rows = await db
         .select({ frente: flashcards.frente })
         .from(userCards)
         .innerJoin(
@@ -236,42 +235,43 @@ async function frentesAbertas(userId: string, trailId: string): Promise<Set<stri
         )
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .where(and(eq(userCards.userId, userId), eq(lessons.trailId, trailId)));
-    return new Set(linhas.map((l) => l.frente));
+    return new Set(rows.map((l) => l.frente));
 }
 
 /**
- * Cria o estado dos cartões de uma aula que o aluno acabou de concluir. Cartão de
- * aula não estudada nunca entra: entregaria a resposta antes da hora.
+ * Creates the state of the cards of a lesson the student has just completed. A
+ * card from an unstudied lesson never enters: it would give away the answer
+ * early.
  *
- * Junto entram os termos do glossário citados na aula, que viram cartão de termo e
- * definição. É a mesma regra: o aluno só recebe o que já leu.
+ * The glossary terms cited in the lesson come along, becoming term-and-definition
+ * cards. Same rule: the student only gets what they have already read.
  */
-export async function abrirCartoesDaAula(userId: string, lessonId: string) {
-    const [[aula], cartoes, idsGlossario] = await Promise.all([
+export async function openLessonCards(userId: string, lessonId: string) {
+    const [[lesson], cards, glossaryIds] = await Promise.all([
         db.select({ trailId: lessons.trailId }).from(lessons).where(eq(lessons.id, lessonId)),
         db
             .select({ id: flashcards.id, frente: flashcards.frente })
             .from(flashcards)
             .where(eq(flashcards.lessonId, lessonId)),
-        termosDaAula(lessonId),
+        lessonTerms(lessonId),
     ]);
 
-    // Trilha com trilhos de linguagem tem a mesma aula duas vezes, uma por
-    // linguagem, e o cartão conceitual foi semeado nas duas: são linhas
-    // diferentes com a MESMA pergunta. Quem estudou os dois trilhos abriria as
-    // duas e veria a pergunta repetida na revisão. A pergunta que o aluno já tem
-    // na trilha barra a gêmea.
-    const jaPerguntadas = aula ? await frentesAbertas(userId, aula.trailId) : new Set<string>();
+    // A trail with language tracks has the same lesson twice, one per language,
+    // and the conceptual card was seeded in both: different rows with the SAME
+    // question. Whoever studied both tracks would open both and see the question
+    // repeated in review. A question the student already has in the trail bars
+    // the twin.
+    const alreadyAsked = lesson ? await openFronts(userId, lesson.trailId) : new Set<string>();
 
-    const candidatos = [
-        ...cartoes
-            .filter((c) => !jaPerguntadas.has(c.frente))
+    const candidates = [
+        ...cards
+            .filter((c) => !alreadyAsked.has(c.frente))
             .map((c) => ({ origem: "flashcard" as const, origemId: c.id })),
-        ...idsGlossario.map((id) => ({ origem: "glossario" as const, origemId: id })),
+        ...glossaryIds.map((id) => ({ origem: "glossario" as const, origemId: id })),
     ];
-    if (!candidatos.length) return 0;
+    if (!candidates.length) return 0;
 
-    const jaTem = new Set(
+    const owned = new Set(
         (
             await db
                 .select({ origem: userCards.origem, origemId: userCards.origemId })
@@ -281,140 +281,146 @@ export async function abrirCartoesDaAula(userId: string, lessonId: string) {
                         eq(userCards.userId, userId),
                         inArray(
                             userCards.origemId,
-                            candidatos.map((c) => c.origemId),
+                            candidates.map((c) => c.origemId),
                         ),
                     ),
                 )
         ).map((r) => `${r.origem}:${r.origemId}`),
     );
 
-    const novos = candidatos.filter((c) => !jaTem.has(`${c.origem}:${c.origemId}`));
-    if (!novos.length) return 0;
+    const fresh = candidates.filter((c) => !owned.has(`${c.origem}:${c.origemId}`));
+    if (!fresh.length) return 0;
     await db
         .insert(userCards)
-        .values(novos.map((c) => ({ userId, ...c, proximaRevisao: new Date() })));
-    return novos.length;
+        .values(fresh.map((c) => ({ userId, ...c, proximaRevisao: new Date() })));
+    return fresh.length;
 }
 
-interface CartaoNaFila {
+interface QueuedCard {
     id: string;
     frente: string;
     verso: string;
-    origem: Origem;
+    origem: CardSource;
     trilha: string | null;
     aula: string | null;
-    // De onde a carta saiu. Vai junto para o verso virar link e o aluno poder reler
-    // a aula na hora em que descobriu que não lembra. Nulo em termo de glossário.
+    // Where the card came from. It goes along so the back can become a link and
+    // the student can reread the lesson the moment they find out they do not
+    // remember it. Null on a glossary term.
     trilhaId: string | null;
     aulaId: string | null;
-    // Só em carta de entrevista: o assunto e o nível que ela cobra. A carta de
-    // entrevista não tem trilha nem aula para onde voltar, e é isto que aparece no
-    // lugar delas.
+    // Interview cards only: the topic and the level it asks about. An interview
+    // card has no trail or lesson to go back to, and this is what shows in their
+    // place.
     topico: string | null;
     nivel: string | null;
 }
 
-/** O mínimo que a fila precisa saber de cada carta: quem ela é e quando vence. */
-interface NaFila {
-    origem: Origem;
+/** The least the queue needs to know about each card: who it is and when it is due. */
+interface QueueEntry {
+    origem: CardSource;
     origemId: string;
     proximaRevisao: Date;
-    // Carta que ainda não existe no baralho, vinda direto do catálogo. Só serve de
-    // desempate na ordenação, para a carta com histórico ganhar da gêmea sem estado.
+    // A card that does not exist in the deck yet, coming straight from the
+    // catalog. It only breaks ties in the ordering, so the card with history wins
+    // over the stateless twin.
     novo?: boolean;
 }
 
 /**
- * As cartas do catálogo das trilhas escolhidas que ainda não estão no baralho.
+ * Catalog cards from the chosen trails that are not in the deck yet.
  *
- * É o que permite revisar uma área inteira sem ter feito a trilha. Elas entram
- * vencendo agora, que é o mesmo que o baralho faz com carta recém-aberta, e só
- * viram linha em user_cards quando o aluno responde a primeira vez.
+ * This is what allows reviewing a whole area without having taken the trail.
+ * They enter due right now, the same the deck does with a freshly opened card,
+ * and only become a user_cards row when the student answers for the first time.
  */
-async function novasDoCatalogo(
+async function newFromCatalog(
     userId: string,
-    trilhas: string[],
-    limite: number,
-): Promise<NaFila[]> {
-    const jaNoBaralho = db
+    deckList: string[],
+    limit: number,
+): Promise<QueueEntry[]> {
+    const alreadyInDeck = db
         .select({ id: userCards.origemId })
         .from(userCards)
         .where(and(eq(userCards.userId, userId), eq(userCards.origem, "flashcard")));
 
-    const linhas = await db
+    const rows = await db
         .select({ id: flashcards.id })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .where(
             and(
-                inArray(lessons.trailId, trilhas),
+                inArray(lessons.trailId, deckList),
                 eq(lessons.published, true),
-                notInArray(flashcards.id, jaNoBaralho),
+                notInArray(flashcards.id, alreadyInDeck),
             ),
         )
-        .limit(limite);
+        .limit(limit);
 
-    const agora = new Date();
-    return linhas.map((l) => ({
+    const now = new Date();
+    return rows.map((l) => ({
         origem: "flashcard" as const,
         origemId: l.id,
-        proximaRevisao: agora,
+        proximaRevisao: now,
         novo: true,
     }));
 }
 
 /**
- * A fila de revisão do conteúdo escolhido.
+ * The review queue of the chosen content.
  *
- * Serve TUDO do conteúdo escolhido, e não só o que venceu hoje. A tela da trilha
- * sempre funcionou assim, e ver "4 cartas" na sala de revisão e "116" no botão da
- * trilha, para o mesmo conteúdo, é diferença que ninguém consegue explicar para
- * quem está estudando. As duas fazem a mesma coisa, então entregam o mesmo número.
+ * It serves EVERYTHING of the chosen content, not only what is due today. The
+ * trail screen has always worked this way, and seeing "4 cards" in the review
+ * room and "116" on the trail button, for the same content, is a difference
+ * nobody can explain to whoever is studying. The two do the same thing, so they
+ * deliver the same number.
  *
- * Escolher uma trilha não exige tê-la estudado: o que o aluno ainda não tem no
- * baralho entra do catálogo, como carta nova. Sem escolha, a fila continua sendo o
- * baralho dele e nada mais, porque ali o pedido é "o meu", não "aquela área".
+ * Choosing a trail does not require having studied it: what the student does not
+ * have in the deck yet enters from the catalog, as a new card. Without a choice,
+ * the queue keeps being their deck and nothing else, because there the request
+ * is "mine", not "that area".
  *
- * Sem teto de sessão de propósito: quem quiser vara o baralho de uma vez, e quem não
- * quiser para na hora que cansar, que dá no mesmo. O limite alto que sobra é só uma
- * trava de payload, para um baralho gigante não virar uma resposta de megabytes.
+ * No session ceiling on purpose: whoever wants to plow through the deck in one
+ * go can, and whoever does not can stop when tired, which amounts to the same.
+ * The high limit that remains is only a payload brake, so a giant deck does not
+ * turn into a multi-megabyte response.
  *
- * O agendador não sai de cena, muda de papel: ele deixa de trancar o que aparece e
- * passa a mandar na PRIORIDADE. A ordem é do mais atrasado para o mais adiantado,
- * então quando o aluno pede um número de cartas, quem entra no corte é o que está
- * mais perto de ser esquecido. Responder continua reagendando cada carta pela
- * curva, e responder adiantado continua rendendo menos estabilidade, pelo bônus
- * abaixo de 1.
+ * The scheduler does not leave the stage, it changes role: it stops locking what
+ * shows up and starts ruling the PRIORITY. The order runs from most overdue to
+ * most ahead, so when the student asks for a number of cards, what enters the
+ * cut is what is closest to being forgotten. Answering keeps rescheduling each
+ * card by the curve, and answering early still earns less stability, from the
+ * bonus below 1.
  */
-export async function filaDoDia(
+export async function dailyQueue(
     userId: string,
-    limite = 500,
-    filtro?: { trilhas?: string[]; glossario?: boolean },
-): Promise<CartaoNaFila[]> {
-    const meus = eq(userCards.userId, userId);
-    const doBaralho = {
+    limit = 500,
+    filter?: { trilhas?: string[]; glossario?: boolean },
+): Promise<QueuedCard[]> {
+    const mine = eq(userCards.userId, userId);
+    const deckFields = {
         origem: userCards.origem,
         origemId: userCards.origemId,
         proximaRevisao: userCards.proximaRevisao,
     };
 
-    // Sem filtro a fila é o baralho inteiro. Com filtro, a seleção de trilhas e o
-    // glossário são somados: dá para revisar duas trilhas juntas, ou só o glossário.
-    const escolheu = filtro && (filtro.trilhas?.length || filtro.glossario);
-    let linhas: NaFila[];
-    if (!escolheu) {
-        linhas = await db
-            .select(doBaralho)
+    // Without a filter the queue is the whole deck. With one, the trail selection
+    // and the glossary are summed: two trails can be reviewed together, or the
+    // glossary alone.
+    const hasFilter = filter && (filter.trilhas?.length || filter.glossario);
+    let rows: QueueEntry[];
+    if (!hasFilter) {
+        rows = await db
+            .select(deckFields)
             .from(userCards)
-            .where(meus)
+            .where(mine)
             .orderBy(asc(userCards.proximaRevisao))
-            .limit(limite);
+            .limit(limit);
     } else {
-        const partes: Promise<NaFila[]>[] = [];
-        if (filtro.trilhas?.length) {
-            partes.push(
+        const parts: Promise<QueueEntry[]>[] = [];
+        if (filter.trilhas?.length) {
+            parts.push(
                 db
-                    .select(doBaralho)
+                    .select(deckFields)
                     .from(userCards)
                     .innerJoin(
                         flashcards,
@@ -424,81 +430,79 @@ export async function filaDoDia(
                         ),
                     )
                     .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
-                    .where(and(meus, inArray(lessons.trailId, filtro.trilhas)))
+                    .where(and(mine, inArray(lessons.trailId, filter.trilhas)))
                     .orderBy(asc(userCards.proximaRevisao))
-                    .limit(limite),
+                    .limit(limit),
             );
-            partes.push(novasDoCatalogo(userId, filtro.trilhas, limite));
+            parts.push(newFromCatalog(userId, filter.trilhas, limit));
         }
-        if (filtro.glossario) {
-            partes.push(
+        if (filter.glossario) {
+            parts.push(
                 db
-                    .select(doBaralho)
+                    .select(deckFields)
                     .from(userCards)
-                    .where(and(meus, eq(userCards.origem, "glossario")))
+                    .where(and(mine, eq(userCards.origem, "glossario")))
                     .orderBy(asc(userCards.proximaRevisao))
-                    .limit(limite),
+                    .limit(limit),
             );
         }
-        linhas = (await Promise.all(partes))
+        rows = (await Promise.all(parts))
             .flat()
             .sort(
                 (a, b) =>
                     a.proximaRevisao.getTime() - b.proximaRevisao.getTime() ||
                     Number(a.novo ?? false) - Number(b.novo ?? false),
             )
-            .slice(0, limite);
+            .slice(0, limit);
     }
-    if (!linhas.length) return [];
+    if (!rows.length) return [];
 
-    // A ordem por vencimento acima escolheu QUAIS cartas entram. Daqui para frente
-    // a ordem é sorteada, senão a fila sai em blocos por aula, sempre na mesma
-    // sequência em que as cartas foram autoradas.
-    return montarCartoes(embaralhar(await semGemeas(linhas)));
+    // The due-date ordering above chose WHICH cards enter. From here on the order
+    // is drawn, otherwise the queue comes out in per-lesson blocks, always in the
+    // same sequence the cards were authored.
+    return buildCards(shuffle(await dropTwins(rows)));
 }
 
 /**
- * Tira da fila a carta gêmea: a mesma pergunta duas vezes na mesma trilha, uma por
- * trilho de linguagem.
+ * Removes the twin card from the queue: the same question twice in the same
+ * trail, one per language track.
  *
- * O código já não abre mais gêmea (ver abrirCartoesDaAula) e existe script para
- * limpar as antigas, mas enquanto sobrar uma no baralho de alguém ela apareceria
- * repetida na sessão, e o total da sala não bateria com o da trilha. Como as linhas
- * chegam ordenadas por vencimento, a que fica é a mais atrasada.
+ * The code no longer opens twins (see openLessonCards) and there is a script to
+ * clean the old ones, but while one remains in somebody's deck it would show up
+ * repeated in the session, and the room total would not match the trail's. Since
+ * the rows arrive ordered by due date, the one that stays is the most overdue.
  *
- * Cartão de glossário passa direto: o id dele já é único por termo.
+ * Glossary cards pass right through: their id is already unique per term.
  */
-async function semGemeas<T extends { origem: Origem; origemId: string }>(
-    linhas: T[],
+async function dropTwins<T extends { origem: CardSource; origemId: string }>(
+    rows: T[],
 ): Promise<T[]> {
-    const ids = linhas.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
-    if (!ids.length) return linhas;
+    const ids = rows.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
+    if (!ids.length) return rows;
 
-    const dados = await db
+    const data = await db
         .select({ id: flashcards.id, frente: flashcards.frente, trailId: lessons.trailId })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .where(inArray(flashcards.id, ids));
-    const porId = new Map(dados.map((d) => [d.id, `${d.trailId}:${d.frente}`]));
+    const byId = new Map(data.map((d) => [d.id, `${d.trailId}:${d.frente}`]));
 
-    const vistas = new Set<string>();
-    return linhas.filter((l) => {
+    const seen = new Set<string>();
+    return rows.filter((l) => {
         if (l.origem !== "flashcard") return true;
-        const chave = porId.get(l.origemId);
-        if (!chave) return true;
-        if (vistas.has(chave)) return false;
-        vistas.add(chave);
+        const key = byId.get(l.origemId);
+        if (!key) return true;
+        if (seen.has(key)) return false;
+        seen.add(key);
         return true;
     });
 }
 
-async function montarCartoes(
-    linhas: { origem: Origem; origemId: string }[],
-): Promise<CartaoNaFila[]> {
-    const idsCard = linhas.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
-    const idsGloss = linhas.filter((l) => l.origem === "glossario").map((l) => l.origemId);
+async function buildCards(rows: { origem: CardSource; origemId: string }[]): Promise<QueuedCard[]> {
+    const cardIds = rows.filter((l) => l.origem === "flashcard").map((l) => l.origemId);
+    const glossIds = rows.filter((l) => l.origem === "glossario").map((l) => l.origemId);
 
-    const cards = idsCard.length
+    const cards = cardIds.length
         ? await db
               .select({
                   id: flashcards.id,
@@ -512,19 +516,19 @@ async function montarCartoes(
               .from(flashcards)
               .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
               .innerJoin(trails, eq(trails.id, lessons.trailId))
-              .where(inArray(flashcards.id, idsCard))
+              .where(inArray(flashcards.id, cardIds))
         : [];
-    const termos = idsGloss.length
+    const terms = glossIds.length
         ? await db
               .select({ id: glossary.id, frente: glossary.term, verso: glossary.definition })
               .from(glossary)
-              .where(inArray(glossary.id, idsGloss))
+              .where(inArray(glossary.id, glossIds))
         : [];
-    // Carta de entrevista que o aluno já abriu volta pela fila do dia como qualquer
-    // outra. O modo entrevista serve para escolher assunto e nível; depois de
-    // respondida uma vez, a carta é do baralho e a agenda manda nela.
-    const idsEntrevista = linhas.filter((l) => l.origem === "entrevista").map((l) => l.origemId);
-    const perguntas = idsEntrevista.length
+    // An interview card the student already opened comes back through the daily
+    // queue like any other. Interview mode exists to pick topic and level; after
+    // being answered once, the card belongs to the deck and the schedule rules it.
+    const interviewIds = rows.filter((l) => l.origem === "entrevista").map((l) => l.origemId);
+    const questions = interviewIds.length
         ? await db
               .select({
                   id: interviewCards.id,
@@ -535,12 +539,12 @@ async function montarCartoes(
               })
               .from(interviewCards)
               .innerJoin(interviewTopics, eq(interviewTopics.id, interviewCards.topicoId))
-              .where(inArray(interviewCards.id, idsEntrevista))
+              .where(inArray(interviewCards.id, interviewIds))
         : [];
 
-    const porId = new Map<string, CartaoNaFila>();
+    const byId = new Map<string, QueuedCard>();
     for (const c of cards)
-        porId.set(c.id, {
+        byId.set(c.id, {
             id: c.id,
             frente: c.frente,
             verso: c.verso,
@@ -552,8 +556,8 @@ async function montarCartoes(
             topico: null,
             nivel: null,
         });
-    for (const t of termos)
-        porId.set(t.id, {
+    for (const t of terms)
+        byId.set(t.id, {
             id: t.id,
             frente: t.frente,
             verso: t.verso,
@@ -565,8 +569,8 @@ async function montarCartoes(
             topico: null,
             nivel: null,
         });
-    for (const p of perguntas)
-        porId.set(p.id, {
+    for (const p of questions)
+        byId.set(p.id, {
             id: p.id,
             frente: p.frente,
             verso: p.verso,
@@ -579,105 +583,106 @@ async function montarCartoes(
             nivel: p.nivel,
         });
 
-    // Mantém a ordem da fila, e descarta o que sumiu do catálogo.
-    return linhas.map((l) => porId.get(l.origemId)).filter((c): c is CartaoNaFila => !!c);
+    // Keeps the queue order, and drops whatever is gone from the catalog.
+    return rows.map((l) => byId.get(l.origemId)).filter((c): c is QueuedCard => !!c);
 }
 
-/** Registra a resposta e reagenda o cartão. */
-export async function responder(
+/** Records the answer and reschedules the card. */
+export async function answerCard(
     userId: string,
-    origem: Origem,
-    origemId: string,
-    resposta: Resposta,
+    source: CardSource,
+    sourceId: string,
+    answer: Answer,
     tempoMs?: number,
 ) {
-    const [atual] = await db
+    const [current] = await db
         .select()
         .from(userCards)
         .where(
             and(
                 eq(userCards.userId, userId),
-                eq(userCards.origem, origem),
-                eq(userCards.origemId, origemId),
+                eq(userCards.origem, source),
+                eq(userCards.origemId, sourceId),
             ),
         );
 
-    // Sem estado, o cartão entra no baralho agora. É por aqui que a revisão livre
-    // materializa a carta: ela é servida do catálogo e só vira linha de user_cards
-    // quando o aluno se avalia pela primeira vez.
-    const estado = atual ?? (await abrirCartaoAvulso(userId, origem, origemId));
+    // Without state, the card enters the deck now. This is how free review
+    // materializes the card: it is served from the catalog and only becomes a
+    // user_cards row when the student grades themselves for the first time.
+    const state = current ?? (await openSingleCard(userId, source, sourceId));
 
-    const dias = diasDesde(estado.ultimaRevisao);
-    const antes = paraEstado(estado);
-    const novo = proximoEstado(antes, resposta, dias);
+    const days = daysSince(state.ultimaRevisao);
+    const previous = toState(state);
+    const next = nextState(previous, answer, days);
 
     await db.insert(cardReviews).values({
         userId,
-        origem,
-        origemId,
-        resposta,
+        origem: source,
+        origemId: sourceId,
+        resposta: answer,
         retencaoPrevista:
-            antes.estabilidade > 0 ? retencao(antes.estabilidade, dias).toFixed(3) : null,
-        estabilidadeAntes: antes.estabilidade.toFixed(2),
-        estabilidadeDepois: novo.estabilidade.toFixed(2),
-        intervaloDias: novo.intervaloDias,
+            previous.estabilidade > 0 ? retention(previous.estabilidade, days).toFixed(3) : null,
+        estabilidadeAntes: previous.estabilidade.toFixed(2),
+        estabilidadeDepois: next.estabilidade.toFixed(2),
+        intervaloDias: next.intervaloDias,
         tempoMs: tempoMs ?? null,
     });
 
     await db
         .update(userCards)
         .set({
-            estabilidade: novo.estabilidade.toFixed(2),
-            intervaloDias: novo.intervaloDias,
-            facilidade: novo.facilidade.toFixed(2),
-            repeticoes: novo.repeticoes,
-            lapsos: novo.lapsos,
-            proximaRevisao: emDias(novo.intervaloDias),
+            estabilidade: next.estabilidade.toFixed(2),
+            intervaloDias: next.intervaloDias,
+            facilidade: next.facilidade.toFixed(2),
+            repeticoes: next.repeticoes,
+            lapsos: next.lapsos,
+            proximaRevisao: inDays(next.intervaloDias),
             ultimaRevisao: new Date(),
         })
-        .where(eq(userCards.id, estado.id));
+        .where(eq(userCards.id, state.id));
 
-    return { intervaloDias: novo.intervaloDias, proximaRevisao: emDias(novo.intervaloDias) };
+    return { intervaloDias: next.intervaloDias, proximaRevisao: inDays(next.intervaloDias) };
 }
 
 /**
- * Abre um cartão solto no baralho, na primeira vez que o aluno responde a ele.
+ * Opens a loose card in the deck, on the first time the student answers it.
  *
- * Cobre os dois caminhos que chegam sem linha em user_cards: o cartão autorado
- * depois de a aula ter sido concluída, e a carta de área que o aluno escolheu
- * revisar sem ter feito a trilha. Basta a aula estar publicada; termo de glossário
- * nunca passa por aqui porque só nasce junto da aula que o cita.
+ * It covers the two paths that arrive without a user_cards row: a card authored
+ * after the lesson was already completed, and the area card the student chose to
+ * review without having taken the trail. The lesson only needs to be published;
+ * a glossary term never goes through here because it is only born with the lesson
+ * that cites it.
  */
-async function abrirCartaoAvulso(userId: string, origem: Origem, origemId: string) {
-    // Carta de entrevista não tem gêmea nem trilho de linguagem: a pergunta existe
-    // uma vez só, num tópico só. Basta conferir que ela existe e abrir.
-    if (origem === "entrevista") {
-        const [existe] = await db
+async function openSingleCard(userId: string, source: CardSource, sourceId: string) {
+    // An interview card has no twin and no language track: the question exists
+    // only once, in a single topic. It is enough to check it exists and open it.
+    if (source === "entrevista") {
+        const [exists] = await db
             .select({ id: interviewCards.id })
             .from(interviewCards)
-            .where(eq(interviewCards.id, origemId));
-        if (!existe) throw new AppError(404, "Cartão não encontrado.");
-        const [aberto] = await db
+            .where(eq(interviewCards.id, sourceId));
+        if (!exists) throw new AppError(404, "flashcard.notFound");
+        const [opened] = await db
             .insert(userCards)
-            .values({ userId, origem, origemId, proximaRevisao: new Date() })
+            .values({ userId, origem: source, origemId: sourceId, proximaRevisao: new Date() })
             .returning();
-        return aberto;
+        return opened;
     }
 
-    if (origem !== "flashcard") throw new AppError(404, "Cartão não encontrado no seu baralho.");
+    if (source !== "flashcard") throw new AppError(404, "flashcard.notInDeck");
 
-    const [permitido] = await db
+    const [allowed] = await db
         .select({ frente: flashcards.frente, trailId: lessons.trailId })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
-        .where(and(eq(flashcards.id, origemId), eq(lessons.published, true)));
-    if (!permitido) throw new AppError(404, "Cartão não encontrado.");
+        .where(and(eq(flashcards.id, sourceId), eq(lessons.published, true)));
+    if (!allowed) throw new AppError(404, "flashcard.notFound");
 
-    // Se a mesma pergunta já está aberta pelo outro trilho de linguagem, responder
-    // aqui mexe naquele cartão em vez de abrir um segundo. Sem isso a gêmea
-    // renasceria no baralho pela porta de trás, que é o caminho da revisão de
-    // trilha (ela lê o catálogo, não o baralho).
-    const [gemea] = await db
+    // If the same question is already open through the other language track,
+    // answering here moves that card instead of opening a second one. Without
+    // this the twin would be reborn in the deck through the back door, which is
+    // the trail review path (it reads the catalog, not the deck).
+    const [twin] = await db
         .select({ uc: userCards })
         .from(userCards)
         .innerJoin(
@@ -688,32 +693,32 @@ async function abrirCartaoAvulso(userId: string, origem: Origem, origemId: strin
         .where(
             and(
                 eq(userCards.userId, userId),
-                eq(lessons.trailId, permitido.trailId),
-                eq(flashcards.frente, permitido.frente),
+                eq(lessons.trailId, allowed.trailId),
+                eq(flashcards.frente, allowed.frente),
             ),
         )
         .limit(1);
-    if (gemea) return gemea.uc;
+    if (twin) return twin.uc;
 
-    const [criado] = await db
+    const [created] = await db
         .insert(userCards)
-        .values({ userId, origem, origemId, proximaRevisao: new Date() })
+        .values({ userId, origem: source, origemId: sourceId, proximaRevisao: new Date() })
         .returning();
-    return criado;
+    return created;
 }
 
 /**
- * Revisão de uma trilha inteira, oferecida ao concluí-la e disponível a qualquer
- * momento. Diferente da fila do dia, aqui não importa a data: o objetivo é passar
- * pelo conteúdo todo de uma vez, e por isso a ordem é a das aulas, não a do
- * agendador.
+ * Review of a whole trail, offered on completing it and available at any time.
+ * Unlike the daily queue, the date does not matter here: the goal is to go
+ * through the whole content at once, so the order is the lessons' order, not the
+ * scheduler's.
  *
- * Não exige progresso na trilha. Quem quiser revisar uma área que nunca estudou
- * recebe o baralho inteiro dela, e cada carta entra no baralho pessoal quando for
- * respondida.
+ * It does not require progress in the trail. Whoever wants to review an area they
+ * never studied gets that area's whole catalog, and each card enters the personal
+ * deck as it is answered.
  */
-export async function revisaoDaTrilha(trailId: string) {
-    const cartoes = await db
+export async function trailReview(trailId: string) {
+    const cards = await db
         .select({
             id: flashcards.id,
             frente: flashcards.frente,
@@ -730,53 +735,55 @@ export async function revisaoDaTrilha(trailId: string) {
         .where(and(eq(lessons.trailId, trailId), eq(lessons.published, true)))
         .orderBy(asc(modules.position), asc(lessons.position), asc(flashcards.position));
 
-    // Aqui a leitura é do catálogo, e não do baralho, então a gêmea do outro
-    // trilho de linguagem chega mesmo depois do baralho limpo. Fica a primeira na
-    // ordem da trilha, que é estável.
-    const vistas = new Set<string>();
-    const unicos = cartoes.filter((c) => {
-        if (vistas.has(c.frente)) return false;
-        vistas.add(c.frente);
+    // Here the read is from the catalog, not the deck, so the twin from the other
+    // language track arrives even after the deck is cleaned. The first one in
+    // trail order stays, which is stable.
+    const seen = new Set<string>();
+    const deduped = cards.filter((c) => {
+        if (seen.has(c.frente)) return false;
+        seen.add(c.frente);
         return true;
     });
 
-    // A ordem da trilha acima serve ao dedup, que precisa ser estável. A revisão em
-    // si sai sorteada: aqui o objetivo é retenção, não refazer o caminho da trilha.
-    return embaralhar(unicos).map((c) => ({ ...c, origem: "flashcard" as const }));
+    // The trail order above serves the dedup, which needs to be stable. The
+    // review itself comes out shuffled: here the goal is retention, not redoing
+    // the trail path.
+    return shuffle(deduped).map((c) => ({ ...c, origem: "flashcard" as const }));
 }
 
-/** Quantos cartões a trilha tem para revisar. Alimenta a chamada de revisão. */
-export async function contarRevisaoDaTrilha(trailId: string) {
-    const [linha] = await db
-        // Conta pergunta distinta, e não linha, pelo mesmo motivo do dedup em
-        // revisaoDaTrilha: senão o botão promete mais cartas do que vai mostrar.
+/** How many cards the trail has to review. Feeds the review call. */
+export async function countTrailReview(trailId: string) {
+    const [row] = await db
+        // Counts distinct questions, not rows, for the same reason as the dedup in
+        // trailReview: otherwise the button promises more cards than it will show.
         .select({ n: sql<number>`count(distinct ${flashcards.frente})` })
         .from(flashcards)
         .innerJoin(lessons, eq(lessons.id, flashcards.lessonId))
         .where(and(eq(lessons.trailId, trailId), eq(lessons.published, true)));
-    return { total: Number(linha?.n ?? 0) };
+    return { total: Number(row?.n ?? 0) };
 }
 
 /**
- * As áreas que o aluno pode revisar: toda trilha publicada que tem carta, mais o
- * glossário. É a lista que a aba mostra para ele escolher o que revisar, sozinho ou
- * misturado.
+ * The areas the student can review: every published trail that has cards, plus
+ * the glossary. It is the list the tab shows for them to choose what to review,
+ * alone or mixed.
  *
- * Vem o catálogo inteiro, e não só o que ele já estudou, porque escolher a área não
- * depende mais de ter feito a trilha. Cada linha diz as duas coisas: `total` é o que
- * ele já tem no baralho daquela trilha e `disponiveis` é o tamanho da área. Quem
- * nunca abriu a trilha aparece com total zero e o baralho cheio esperando.
+ * The whole catalog comes, not only what they already studied, because choosing
+ * an area no longer depends on having taken the trail. Each row says both things:
+ * `total` is what they already have in that trail's deck and `disponiveis` is the
+ * size of the area. Whoever never opened the trail shows up with total zero and
+ * the full deck waiting.
  */
-export async function baralhos(userId: string) {
-    const agora = new Date();
-    const vencido = sql<number>`count(*) filter (where ${userCards.proximaRevisao} <= ${agora})`;
+export async function decks(userId: string) {
+    const now = new Date();
+    const dueCount = sql<number>`count(*) filter (where ${userCards.proximaRevisao} <= ${now})`;
 
-    const [porTrilha, catalogo, [gloss]] = await Promise.all([
+    const [perTrail, catalog, [glossStats]] = await Promise.all([
         db
             .select({
                 trilhaId: trails.id,
                 nome: trails.name,
-                vencidos: vencido,
+                vencidos: dueCount,
                 total: count(),
             })
             .from(userCards)
@@ -789,8 +796,8 @@ export async function baralhos(userId: string) {
             .where(eq(userCards.userId, userId))
             .groupBy(trails.id, trails.name)
             .orderBy(trails.name),
-        // Pergunta distinta, e não linha, pelo mesmo motivo de contarRevisaoDaTrilha:
-        // trilha com trilho de linguagem tem a mesma carta duas vezes.
+        // Distinct questions, not rows, for the same reason as countTrailReview:
+        // a trail with language tracks has the same card twice.
         db
             .select({
                 trilhaId: trails.id,
@@ -804,26 +811,27 @@ export async function baralhos(userId: string) {
             .groupBy(trails.id, trails.name)
             .orderBy(trails.name),
         db
-            .select({ vencidos: vencido, total: count() })
+            .select({ vencidos: dueCount, total: count() })
             .from(userCards)
             .where(and(eq(userCards.userId, userId), eq(userCards.origem, "glossario"))),
     ]);
 
-    const meus = new Map(porTrilha.map((t) => [t.trilhaId, t]));
-    const trilhas = catalogo.map((c) => ({
+    const mine = new Map(perTrail.map((t) => [t.trilhaId, t]));
+    const deckList = catalog.map((c) => ({
         id: c.trilhaId,
         nome: c.nome,
-        vencidos: Number(meus.get(c.trilhaId)?.vencidos ?? 0),
-        total: Number(meus.get(c.trilhaId)?.total ?? 0),
+        vencidos: Number(mine.get(c.trilhaId)?.vencidos ?? 0),
+        total: Number(mine.get(c.trilhaId)?.total ?? 0),
         disponiveis: Number(c.disponiveis),
     }));
 
-    // Trilha despublicada some do catálogo mas pode ter deixado carta no baralho de
-    // alguém. Some no fim para o aluno ainda conseguir revisar o que já é dele.
-    const noCatalogo = new Set(trilhas.map((t) => t.id));
-    for (const t of porTrilha) {
-        if (noCatalogo.has(t.trilhaId)) continue;
-        trilhas.push({
+    // An unpublished trail leaves the catalog but may have left cards in
+    // somebody's deck. It goes at the end so the student can still review what is
+    // already theirs.
+    const inCatalog = new Set(deckList.map((t) => t.id));
+    for (const t of perTrail) {
+        if (inCatalog.has(t.trilhaId)) continue;
+        deckList.push({
             id: t.trilhaId,
             nome: t.nome,
             vencidos: Number(t.vencidos),
@@ -831,20 +839,24 @@ export async function baralhos(userId: string) {
             disponiveis: Number(t.total),
         });
     }
-    trilhas.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    deckList.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
     return {
-        trilhas,
-        glossario: { vencidos: Number(gloss?.vencidos ?? 0), total: Number(gloss?.total ?? 0) },
+        trilhas: deckList,
+        glossario: {
+            vencidos: Number(glossStats?.vencidos ?? 0),
+            total: Number(glossStats?.total ?? 0),
+        },
     };
 }
 
 /**
- * Estatísticas das respostas. Sai do histórico em card_reviews, não do estado atual
- * dos cartões: o estado é sobrescrito a cada revisão e não conta o que houve antes.
+ * Statistics of the answers. They come from the card_reviews history, not from
+ * the current card state: the state is overwritten on each review and does not
+ * count what happened before.
  */
-export async function estatisticas(userId: string) {
-    const [porResposta, ultimos30, [maturidade], [tempos]] = await Promise.all([
+export async function statistics(userId: string) {
+    const [byAnswer, last30, [maturity], [tempos]] = await Promise.all([
         db
             .select({ resposta: cardReviews.resposta, n: count() })
             .from(cardReviews)
@@ -872,8 +884,8 @@ export async function estatisticas(userId: string) {
             })
             .from(userCards)
             .where(eq(userCards.userId, userId)),
-        // A mediana conta melhor que a média aqui: uma carta que ficou aberta
-        // enquanto a pessoa foi fazer café puxaria a média sozinha.
+        // The median tells more than the mean here: one card left open while the
+        // person went for coffee would drag the mean alone.
         db
             .select({
                 mediana: sql<number>`coalesce(percentile_cont(0.5) within group (order by ${cardReviews.tempoMs}), 0)`,
@@ -883,47 +895,45 @@ export async function estatisticas(userId: string) {
             .where(and(eq(cardReviews.userId, userId), isNotNull(cardReviews.tempoMs))),
     ]);
 
-    const contagem = { errei: 0, dificil: 0, intermediaria: 0, facil: 0 } as Record<
-        Resposta,
-        number
-    >;
-    for (const r of porResposta) contagem[r.resposta] = Number(r.n);
-    const respostas = Object.values(contagem).reduce((s, n) => s + n, 0);
-    const acertos = respostas - contagem.errei;
+    const counts = { errei: 0, dificil: 0, intermediaria: 0, facil: 0 } as Record<Answer, number>;
+    for (const r of byAnswer) counts[r.resposta] = Number(r.n);
+    const totalAnswers = Object.values(counts).reduce((s, n) => s + n, 0);
+    const correctAnswers = totalAnswers - counts.errei;
 
     return {
-        respostas,
-        acertos,
-        // Taxa de acerto: proporção de cartões que o aluno lembrou na hora. É a
-        // medida direta de se o agendador está acertando o momento da revisão; muito
-        // acima do alvo significa revisar cedo demais.
-        taxaAcerto: respostas ? Math.round((acertos / respostas) * 100) : 0,
-        porResposta: contagem,
-        diasAtivos: ultimos30.length,
-        porDia: ultimos30.map((d) => ({ dia: d.dia, n: Number(d.n) })),
-        emAprendizado: Number(maturidade?.emAprendizado ?? 0),
-        dominados: Number(maturidade?.dominados ?? 0),
-        // Quanto tempo, em média, a memória do baralho dura até a retenção cair ao alvo.
-        estabilidadeMedia: Math.round(Number(maturidade?.mediaEstabilidade ?? 0)),
+        respostas: totalAnswers,
+        acertos: correctAnswers,
+        // Hit rate: share of cards the student recalled on the spot. It is the
+        // direct measure of whether the scheduler is getting the review moment
+        // right; far above the target means reviewing too early.
+        taxaAcerto: totalAnswers ? Math.round((correctAnswers / totalAnswers) * 100) : 0,
+        porResposta: counts,
+        diasAtivos: last30.length,
+        porDia: last30.map((d) => ({ dia: d.dia, n: Number(d.n) })),
+        emAprendizado: Number(maturity?.emAprendizado ?? 0),
+        dominados: Number(maturity?.dominados ?? 0),
+        // How long, on average, the deck memory lasts until retention drops to the
+        // target.
+        estabilidadeMedia: Math.round(Number(maturity?.mediaEstabilidade ?? 0)),
         tempoTipicoMs: Math.round(Number(tempos?.mediana ?? 0)),
         tempoTotalMs: Number(tempos?.total ?? 0),
     };
 }
 
 /**
- * As cartas em que o aluno mais tropeça.
+ * The cards the student stumbles on the most.
  *
- * Ordena por lapsos e desempata pela facilidade porque as duas contam coisas
- * diferentes: lapso é quantas vezes a memória já falhou, facilidade é o quanto o
- * agendador aprendeu que aquela carta é dura para esta pessoa. Uma carta com dois
- * lapsos e facilidade no piso incomoda mais que outra com dois lapsos e facilidade
- * média.
+ * It sorts by lapses and breaks ties by ease because the two count different
+ * things: a lapse is how many times the memory has already failed, ease is how
+ * much the scheduler has learned that card is hard for this person. A card with
+ * two lapses and ease at the floor bothers more than one with two lapses and
+ * average ease.
  *
- * Vem com a aula de origem junto: insistir na carta resolve menos que reler o
- * trecho que não ficou.
+ * The origin lesson comes along: insisting on the card solves less than rereading
+ * the part that did not stick.
  */
-export async function pontosFracos(userId: string, limite = 5) {
-    const cartoes = await db
+export async function weakPoints(userId: string, limit = 5) {
+    const cards = await db
         .select({
             id: userCards.origemId,
             origem: userCards.origem,
@@ -944,10 +954,10 @@ export async function pontosFracos(userId: string, limite = 5) {
         .innerJoin(trails, eq(trails.id, lessons.trailId))
         .where(and(eq(userCards.userId, userId), sql`${userCards.lapsos} > 0`))
         .orderBy(desc(userCards.lapsos), asc(userCards.facilidade))
-        .limit(limite);
+        .limit(limit);
 
-    // Termo de glossário também erra, e não tem aula para linkar.
-    const termos = await db
+    // Glossary terms get missed too, and have no lesson to link.
+    const terms = await db
         .select({
             id: userCards.origemId,
             origem: userCards.origem,
@@ -962,11 +972,11 @@ export async function pontosFracos(userId: string, limite = 5) {
         )
         .where(and(eq(userCards.userId, userId), sql`${userCards.lapsos} > 0`))
         .orderBy(desc(userCards.lapsos), asc(userCards.facilidade))
-        .limit(limite);
+        .limit(limit);
 
     return [
-        ...cartoes.map((c) => ({ ...c, facilidade: Number(c.facilidade) })),
-        ...termos.map((t) => ({
+        ...cards.map((c) => ({ ...c, facilidade: Number(c.facilidade) })),
+        ...terms.map((t) => ({
             ...t,
             facilidade: Number(t.facilidade),
             aula: null as string | null,
@@ -976,22 +986,24 @@ export async function pontosFracos(userId: string, limite = 5) {
         })),
     ]
         .sort((a, b) => b.lapsos - a.lapsos || a.facilidade - b.facilidade)
-        .slice(0, limite);
+        .slice(0, limit);
 }
 
-// Silêncio que separa uma sessão da seguinte. Não existe registro de "começou" e
-// "terminou": a sessão é reconstruída do histórico, e este é o corte que decide se
-// duas revisões seguidas foram a mesma sentada ou duas visitas diferentes.
-const INTERVALO_ENTRE_SESSOES = "30 minutes";
+// The silence separating one session from the next. There is no "started" and
+// "ended" record: the session is rebuilt from the history, and this is the cut
+// that decides whether two consecutive reviews were the same sitting or two
+// different visits.
+const SESSION_GAP = "30 minutes";
 
 /**
- * Histórico de sessões, reconstruído a partir das respostas.
+ * Session history, rebuilt from the answers.
  *
- * Agrupar em vez de registrar tem uma vantagem que decidiu a escolha: funciona para
- * trás, sobre tudo o que já foi respondido, e não depende de o aluno "fechar" a
- * sessão, coisa que ninguém faz (fecha a aba, o telefone dorme, a bateria acaba).
+ * Grouping instead of recording has one advantage that settled the choice: it
+ * works backwards, over everything already answered, and does not depend on the
+ * student "closing" the session, which nobody does (the tab closes, the phone
+ * sleeps, the battery dies).
  */
-export async function historicoSessoes(userId: string, limite = 20) {
+export async function sessionHistory(userId: string, limit = 20) {
     const { rows } = await db.execute<{
         inicio: string;
         fim: string;
@@ -1013,7 +1025,7 @@ export async function historicoSessoes(userId: string, limite = 20) {
                 case
                     when lag(cr.criado_em) over (order by cr.criado_em) is null
                       or cr.criado_em - lag(cr.criado_em) over (order by cr.criado_em)
-                         > ${sql.raw(`interval '${INTERVALO_ENTRE_SESSOES}'`)}
+                         > ${sql.raw(`interval '${SESSION_GAP}'`)}
                     then 1 else 0
                 end as nova
             from card_reviews cr
@@ -1044,16 +1056,16 @@ export async function historicoSessoes(userId: string, limite = 20) {
         from com_conteudo
         group by sessao
         order by inicio desc
-        limit ${limite}
+        limit ${limit}
     `);
 
     return rows.map((s) => {
-        const inicio = new Date(s.inicio);
-        const fim = new Date(s.fim);
-        const respondendo = Number(s.tempo_respondendo);
+        const start = new Date(s.inicio);
+        const end = new Date(s.fim);
+        const answering = Number(s.tempo_respondendo);
         return {
-            inicio: inicio.toISOString(),
-            fim: fim.toISOString(),
+            inicio: start.toISOString(),
+            fim: end.toISOString(),
             cartas: Number(s.cartas),
             porResposta: {
                 errei: Number(s.errei),
@@ -1061,61 +1073,64 @@ export async function historicoSessoes(userId: string, limite = 20) {
                 intermediaria: Number(s.intermediaria),
                 facil: Number(s.facil),
             },
-            // O conteúdo sai do que de fato caiu, e não da escolha guardada: a escolha
-            // pode ter sido "tudo", e saber que caiu Lógica e glossário diz mais.
+            // The content comes from what actually came up, not from the stored
+            // choice: the choice may have been "everything", and knowing that
+            // Logic and the glossary came up says more.
             conteudos: s.conteudos ?? [],
-            // Duração do relógio, do primeiro ao último cartão. Numa sessão de uma
-            // carta só ela daria zero, então o tempo somado de resposta serve de piso.
-            duracaoMs: Math.max(fim.getTime() - inicio.getTime(), respondendo),
-            tempoRespondendoMs: respondendo,
+            // Clock duration, from the first to the last card. In a one-card
+            // session it would be zero, so the summed answer time serves as a
+            // floor.
+            duracaoMs: Math.max(end.getTime() - start.getTime(), answering),
+            tempoRespondendoMs: answering,
         };
     });
 }
 
 /**
- * Sinaliza uma carta com problema.
+ * Flags a card with a problem.
  *
- * Antes exigia a carta no baralho, o que virou trava boba com a revisão livre: na
- * área que o aluno nunca estudou a carta só entra no baralho quando ele responde, e
- * o erro que ele quer reportar costuma estar na primeira que aparece. Basta a carta
- * existir; quem está vendo uma carta pode reportá-la.
+ * It used to require the card in the deck, which became a silly lock with free
+ * review: in an area the student never studied, the card only enters the deck
+ * when they answer, and the error they want to report is usually in the first
+ * one that shows up. The card only needs to exist; whoever is seeing a card can
+ * report it.
  */
-export async function reportarCartao(
+export async function reportCard(
     userId: string,
-    origem: Origem,
-    origemId: string,
-    comentario?: string,
+    source: CardSource,
+    sourceId: string,
+    comment?: string,
 ) {
-    const [existe] =
-        origem === "flashcard"
+    const [exists] =
+        source === "flashcard"
             ? await db
                   .select({ id: flashcards.id })
                   .from(flashcards)
-                  .where(eq(flashcards.id, origemId))
-            : origem === "entrevista"
+                  .where(eq(flashcards.id, sourceId))
+            : source === "entrevista"
               ? await db
                     .select({ id: interviewCards.id })
                     .from(interviewCards)
-                    .where(eq(interviewCards.id, origemId))
+                    .where(eq(interviewCards.id, sourceId))
               : await db
                     .select({ id: glossary.id })
                     .from(glossary)
-                    .where(eq(glossary.id, origemId));
-    if (!existe) throw new AppError(404, "Cartão não encontrado.");
+                    .where(eq(glossary.id, sourceId));
+    if (!exists) throw new AppError(404, "flashcard.notFound");
 
     await db
         .insert(cardReports)
-        .values({ userId, origem, origemId, comentario: comentario ?? null })
+        .values({ userId, origem: source, origemId: sourceId, comentario: comment ?? null })
         .onConflictDoUpdate({
             target: [cardReports.userId, cardReports.origem, cardReports.origemId],
-            set: { comentario: comentario ?? null, criadoEm: new Date(), resolvidoEm: null },
+            set: { comentario: comment ?? null, criadoEm: new Date(), resolvidoEm: null },
         });
     return { reportado: true };
 }
 
-/** Números da aba: quantos vencidos hoje, quantos no baralho, quantos dominados. */
-export async function resumo(userId: string) {
-    const [[venc], [total], [dominados]] = await Promise.all([
+/** Numbers for the tab: how many due today, how many in the deck, how many mastered. */
+export async function summary(userId: string) {
+    const [[due], [total], [mastered]] = await Promise.all([
         db
             .select({ n: count() })
             .from(userCards)
@@ -1127,16 +1142,16 @@ export async function resumo(userId: string) {
             .where(
                 and(
                     eq(userCards.userId, userId),
-                    // 21 dias é o ponto em que o intervalo já é longo o bastante para
-                    // a memória ser considerada firme; é o mesmo corte que o Anki usa
-                    // para chamar um cartão de maduro.
+                    // 21 days is the point where the interval is already long
+                    // enough for the memory to be considered firm; it is the same
+                    // cutoff Anki uses to call a card mature.
                     sql`${userCards.intervaloDias} >= 21`,
                 ),
             ),
     ]);
     return {
-        vencidos: Number(venc?.n ?? 0),
+        vencidos: Number(due?.n ?? 0),
         total: Number(total?.n ?? 0),
-        dominados: Number(dominados?.n ?? 0),
+        dominados: Number(mastered?.n ?? 0),
     };
 }

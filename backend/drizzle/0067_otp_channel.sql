@@ -1,0 +1,1 @@
+ALTER TABLE "tokens" ADD COLUMN "channel" varchar(10);

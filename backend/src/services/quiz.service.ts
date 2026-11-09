@@ -1,5 +1,5 @@
 import { db } from "../../db.ts";
-import { abrirCartoesDaAula } from "./flashcard.service.ts";
+import { openLessonCards } from "./flashcard.service.ts";
 import {
     lessons,
     questions,
@@ -11,23 +11,23 @@ import { eq, and, inArray, sql } from "drizzle-orm";
 import type { z } from "zod";
 import type { submitQuizSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
-import { ehAdmin } from "./usuario.service.ts";
+import { isAdmin } from "./user.service.ts";
 import { verificarConquistas } from "./achievement.service.ts";
 
-// Mínimo de acertos para concluir a aula (e de questões para poder publicá-la).
-export const QUIZ_MIN_ACERTOS = 4;
+// Minimum of right answers to complete the lesson (and of questions to publish it).
+export const QUIZ_MIN_CORRECT = 4;
 
-type RespostasQuiz = z.infer<typeof submitQuizSchema>;
+type QuizAnswers = z.infer<typeof submitQuizSchema>;
 
-// Recebe as respostas, corrige no servidor e conclui a aula se acertar o mínimo.
-export async function corrigirQuiz(userId: string, lessonId: string, dados: RespostasQuiz) {
-    const [aula] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+// Receives the answers, grades them on the server and completes the lesson when enough are right.
+export async function gradeQuiz(userId: string, lessonId: string, data: QuizAnswers) {
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
 
-    if (!aula.published) {
-        throw new AppError(404, "Aula não encontrada");
+    if (!lesson.published) {
+        throw new AppError(404, "lesson.notFound");
     }
 
     const qs = await db
@@ -36,141 +36,143 @@ export async function corrigirQuiz(userId: string, lessonId: string, dados: Resp
         .where(eq(questions.lessonId, lessonId));
     const qIds = qs.map((q) => q.id);
     if (qIds.length === 0) {
-        throw new AppError(400, "Esta aula não tem questões");
+        throw new AppError(400, "quiz.noQuestions");
     }
 
     const opts = await db
         .select()
         .from(questionOptions)
         .where(inArray(questionOptions.questionId, qIds));
-    const corretaPorQuestao = new Map<string, string>();
+    const correctByQuestion = new Map<string, string>();
     for (const o of opts) {
-        if (o.isCorrect) corretaPorQuestao.set(o.questionId, o.id);
+        if (o.isCorrect) correctByQuestion.set(o.questionId, o.id);
     }
 
-    // Uma resposta para cada questão da aula, sem faltar nenhuma. Antes, a mesma
-    // questão certa repetida somava um acerto por cópia e concluía a aula sozinha.
+    // One answer for each question of the lesson, none missing. Before, the same right
+    // question sent several times counted one hit per copy and completed the lesson alone.
     const qIdSet = new Set(qIds);
-    const respondidas = new Set(
-        dados.answers.map((r) => r.questionId).filter((id) => qIdSet.has(id)),
+    const answeredIds = new Set(
+        data.answers.map((r) => r.questionId).filter((id) => qIdSet.has(id)),
     );
-    if (respondidas.size !== qIds.length) {
-        throw new AppError(400, "Responda todas as questões da aula.");
+    if (answeredIds.size !== qIds.length) {
+        throw new AppError(400, "quiz.answerAll");
     }
 
-    let acertos = 0;
-    for (const resp of dados.answers) {
-        if (corretaPorQuestao.get(resp.questionId) === resp.optionId) acertos++;
+    let correctCount = 0;
+    for (const answer of data.answers) {
+        if (correctByQuestion.get(answer.questionId) === answer.optionId) correctCount++;
     }
 
-    // Cada questão tem uma linha por aluno, e ela guarda duas coisas diferentes.
+    // Each question has one row per student, and it keeps two different things.
     //
-    // A ÚLTIMA tentativa (selected_option_id e is_correct) é sobrescrita a cada
-    // envio, porque é ela que a aula restaura quando o aluno volta. Sem isso, quem
-    // errava, refazia e acertava continuava vendo o placar do primeiro chute.
+    // The LAST attempt (selected_option_id and is_correct) is overwritten on every
+    // submission, because it is what the lesson restores when the student comes back.
+    // Without it, whoever got it wrong, redid it and got it right kept seeing the score
+    // of the first guess.
     //
-    // O PRIMEIRO acerto (acertou_em) nunca é reescrito depois de gravado. É ele que
-    // vale para XP, ranking, domínio e estatísticas, então refazer e acertar rende
-    // os 10 XP uma vez só, e refazer e errar não tira XP nem posição de ninguém.
-    const idsValidos = new Set(opts.map((o) => o.id));
-    const agora = new Date();
-    for (const resp of dados.answers) {
-        if (!qIdSet.has(resp.questionId) || !idsValidos.has(resp.optionId)) continue;
-        const certa = corretaPorQuestao.get(resp.questionId) === resp.optionId;
+    // The FIRST right answer (acertou_em) is never rewritten once saved. It is what
+    // counts for XP, ranking, mastery and statistics, so redoing and getting it right
+    // earns the 10 XP only once, and redoing and getting it wrong takes no XP or
+    // position from anyone.
+    const validOptionIds = new Set(opts.map((o) => o.id));
+    const now = new Date();
+    for (const answer of data.answers) {
+        if (!qIdSet.has(answer.questionId) || !validOptionIds.has(answer.optionId)) continue;
+        const isRight = correctByQuestion.get(answer.questionId) === answer.optionId;
         await db
             .insert(questionAnswers)
             .values({
                 userId,
-                questionId: resp.questionId,
-                selectedOptionId: resp.optionId,
-                isCorrect: certa,
-                answeredAt: agora,
-                acertouEm: certa ? agora : null,
+                questionId: answer.questionId,
+                selectedOptionId: answer.optionId,
+                isCorrect: isRight,
+                answeredAt: now,
+                acertouEm: isRight ? now : null,
             })
             .onConflictDoUpdate({
                 target: [questionAnswers.userId, questionAnswers.questionId],
                 set: {
-                    selectedOptionId: resp.optionId,
-                    isCorrect: certa,
-                    answeredAt: agora,
-                    acertouEm: certa
-                        ? sql`coalesce(${questionAnswers.acertouEm}, ${agora})`
+                    selectedOptionId: answer.optionId,
+                    isCorrect: isRight,
+                    answeredAt: now,
+                    acertouEm: isRight
+                        ? sql`coalesce(${questionAnswers.acertouEm}, ${now})`
                         : sql`${questionAnswers.acertouEm}`,
                 },
             });
     }
 
     const total = qIds.length;
-    const passou = acertos >= QUIZ_MIN_ACERTOS;
+    const passed = correctCount >= QUIZ_MIN_CORRECT;
 
-    let aulaConcluida = false;
-    if (passou) {
-        const [existe] = await db
+    let lessonCompleted = false;
+    if (passed) {
+        const [existing] = await db
             .select({ id: lessonProgress.id, manual: lessonProgress.manual })
             .from(lessonProgress)
             .where(and(eq(lessonProgress.userId, userId), eq(lessonProgress.lessonId, lessonId)));
-        if (!existe) {
+        if (!existing) {
             await db.insert(lessonProgress).values({ userId, lessonId });
-        } else if (existe.manual) {
+        } else if (existing.manual) {
             await db
                 .update(lessonProgress)
                 .set({ manual: false, completedAt: new Date() })
-                .where(eq(lessonProgress.id, existe.id));
+                .where(eq(lessonProgress.id, existing.id));
         }
-        aulaConcluida = true;
-        // Os cartões desta aula entram no baralho de revisão agora. Só aqui: cartão
-        // de aula não estudada entregaria a resposta antes da hora. Falha em
-        // silêncio de propósito, porque nunca deve impedir a conclusão da aula.
+        lessonCompleted = true;
+        // The cards of this lesson join the review deck now. Only here: a card from a
+        // lesson not studied yet would give the answer away too early. It fails
+        // silently on purpose, because it must never block completing the lesson.
         try {
-            await abrirCartoesDaAula(userId, lessonId);
+            await openLessonCards(userId, lessonId);
         } catch (e) {
-            console.error("Falha ao abrir os flashcards da aula", e);
+            console.error("Failed to open the lesson flashcards", e);
         }
     }
 
     await verificarConquistas(userId);
 
-    return { correct: acertos, total, passed: passou, lessonCompleted: aulaConcluida };
+    return { correct: correctCount, total, passed: passed, lessonCompleted: lessonCompleted };
 }
 
-// Confere uma única resposta sem revelar o gabarito das outras questões.
-// Não grava nada: a conclusão da aula continua sendo decidida no corrigirQuiz.
-export async function conferirResposta(
+// Checks a single answer without revealing the answer key of the other questions.
+// It saves nothing: completing the lesson is still decided in gradeQuiz.
+export async function verifyAnswer(
     userId: string,
     lessonId: string,
     questionId: string,
     optionId: string,
 ) {
-    const [aula] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
-    if (!aula) {
-        throw new AppError(404, "Aula não encontrada");
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
+    if (!lesson) {
+        throw new AppError(404, "lesson.notFound");
     }
-    if (!aula.published && !(await ehAdmin(userId))) {
-        throw new AppError(404, "Aula não encontrada");
+    if (!lesson.published && !(await isAdmin(userId))) {
+        throw new AppError(404, "lesson.notFound");
     }
 
-    // A questão precisa pertencer a esta aula.
-    const [questao] = await db
+    // The question has to belong to this lesson.
+    const [question] = await db
         .select({ id: questions.id, explanation: questions.explanation })
         .from(questions)
         .where(and(eq(questions.id, questionId), eq(questions.lessonId, lessonId)));
-    if (!questao) {
-        throw new AppError(404, "Questão não encontrada");
+    if (!question) {
+        throw new AppError(404, "quiz.questionNotFound");
     }
 
-    const [correta] = await db
+    const [correctOption] = await db
         .select({ id: questionOptions.id })
         .from(questionOptions)
         .where(
             and(eq(questionOptions.questionId, questionId), eq(questionOptions.isCorrect, true)),
         );
-    if (!correta) {
-        throw new AppError(500, "Questão sem gabarito");
+    if (!correctOption) {
+        throw new AppError(500, "quiz.noAnswerKey");
     }
 
     return {
-        correct: correta.id === optionId,
-        correctOptionId: correta.id,
-        explanation: questao.explanation ?? null,
+        correct: correctOption.id === optionId,
+        correctOptionId: correctOption.id,
+        explanation: question.explanation ?? null,
     };
 }

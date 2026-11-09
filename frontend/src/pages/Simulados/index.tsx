@@ -9,7 +9,7 @@ import {
   alternarFavorito,
   type SimuladoResumo,
 } from '../../services/simulados';
-import { provedorDe, nomeLimpo, nivelClasse, ORDEM_PROV } from './provedores';
+import { provedorDe, chaveProvedor, nomeLimpo, nivelClasse, ORDEM_PROV } from './provedores';
 
 type Melhor = { score: number; passed: boolean };
 
@@ -60,7 +60,7 @@ export function Simulados() {
   const contagem = useMemo(() => {
     const c: Record<string, number> = {};
     for (const e of exams) {
-      const p = e.provider ?? 'outros';
+      const p = chaveProvedor(e.provider);
       c[p] = (c[p] ?? 0) + 1;
     }
     return c;
@@ -78,7 +78,7 @@ export function Simulados() {
     const q = busca.trim().toLowerCase();
     return exams.filter((e) => {
       if (soFavoritos && !(favoritoAlterado[e.slug] ?? e.favorito)) return false;
-      if (filtro && (e.provider ?? 'outros') !== filtro) return false;
+      if (filtro && chaveProvedor(e.provider) !== filtro) return false;
       if (!q) return true;
       const prov = provedorDe(e.provider).nome.toLowerCase();
       return (

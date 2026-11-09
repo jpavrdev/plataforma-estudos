@@ -1,13 +1,11 @@
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { FormField } from './FormField';
 import { SelectField } from './SelectField';
 import { formatPhone } from '../utils/phone';
 
-const GENDER_OPTIONS = [
-  { value: 'feminino', label: 'Feminino' },
-  { value: 'masculino', label: 'Masculino' },
-  { value: 'outro', label: 'Outro' },
-  { value: 'prefiro_nao_dizer', label: 'Prefiro não dizer' },
-];
+// The values are what the API stores; only the labels change with the language.
+const GENDER_VALUES = ['feminino', 'masculino', 'outro', 'prefiro_nao_dizer'] as const;
 
 const USERNAME_MIN = 3;
 const USERNAME_MAX = 20;
@@ -56,24 +54,24 @@ export function validateProfileCompletionFields(
   const errors: Partial<Record<ProfileFieldKey, string>> = {};
   const username = values.username.trim();
   if (username.length < USERNAME_MIN) {
-    errors.username = 'Usuário deve ter ao menos 3 caracteres';
+    errors.username = i18n.t('profileFields.errors.usernameTooShort', { min: USERNAME_MIN });
   } else if (username.length > USERNAME_MAX) {
-    errors.username = 'Usuário deve ter no máximo 20 caracteres';
+    errors.username = i18n.t('profileFields.errors.usernameTooLong', { max: USERNAME_MAX });
   } else if (!USERNAME_REGEX.test(username)) {
-    errors.username = 'Use apenas letras, números e underscore';
+    errors.username = i18n.t('profileFields.errors.usernameChars');
   }
   if (!values.birthDate.trim()) {
-    errors.birthDate = 'Informe sua data de nascimento';
+    errors.birthDate = i18n.t('profileFields.errors.birthDateRequired');
   } else if (!birthDateDisplayToIso(values.birthDate)) {
-    errors.birthDate = 'Data inválida';
+    errors.birthDate = i18n.t('profileFields.errors.birthDateInvalid');
   }
   if (!values.gender) {
-    errors.gender = 'Selecione o gênero';
+    errors.gender = i18n.t('profileFields.errors.genderRequired');
   }
   if (!values.phone.trim()) {
-    errors.phone = 'Informe seu telefone';
+    errors.phone = i18n.t('profileFields.errors.phoneRequired');
   } else if (values.phone.replace(/\D/g, '').length < 10) {
-    errors.phone = 'Telefone inválido';
+    errors.phone = i18n.t('profileFields.errors.phoneInvalid');
   }
   return errors;
 }
@@ -105,11 +103,17 @@ export function ProfileCompletionFields({
   onClearError,
   required = true,
 }: ProfileCompletionFieldsProps) {
+  const { t } = useTranslation();
+  const genderOptions = GENDER_VALUES.map((value) => ({
+    value,
+    label: t(`profileFields.genders.${value}`),
+  }));
+
   return (
     <>
       <FormField
-        label="Nome de usuário"
-        placeholder="seu_usuario"
+        label={t('profileFields.username')}
+        placeholder={t('profileFields.usernamePlaceholder')}
         value={username}
         onChange={(e) => {
           onUsernameChange(normalizeUsername(e.target.value));
@@ -119,9 +123,9 @@ export function ProfileCompletionFields({
         error={errors?.username}
       />
       <FormField
-        label="Data de nascimento"
+        label={t('profileFields.birthDate')}
         type="text"
-        placeholder="dd/mm/aaaa"
+        placeholder={t('profileFields.birthDatePlaceholder')}
         autoComplete="bday"
         value={birthDate}
         onChange={(e) => {
@@ -132,19 +136,19 @@ export function ProfileCompletionFields({
         error={errors?.birthDate}
       />
       <SelectField
-        label="Gênero"
+        label={t('profileFields.gender')}
         value={gender}
         onChange={(e) => {
           onGenderChange(e.target.value);
           onClearError?.('gender');
         }}
-        options={GENDER_OPTIONS}
-        placeholder="Selecione"
+        options={genderOptions}
+        placeholder={t('profileFields.genderPlaceholder')}
         required={required}
         error={errors?.gender}
       />
       <FormField
-        label="Telefone"
+        label={t('profileFields.phone')}
         type="tel"
         autoComplete="tel"
         placeholder="(11) 98888-7777"

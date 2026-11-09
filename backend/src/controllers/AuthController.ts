@@ -7,9 +7,9 @@ import {
     resetPasswordOtpSchema,
 } from "../schemas/auth.schema.ts";
 import {
-    hashSenha,
-    verificarSenha,
-    precisaRehash,
+    hashPassword,
+    verifyPassword,
+    needsRehash,
     getDummyHash,
 } from "../services/password.service.ts";
 import { db } from "../../db.ts";
@@ -17,55 +17,51 @@ import { users, tokens, oauthAccounts } from "../../schema.ts";
 import { eq, and, isNull } from "drizzle-orm";
 import type { Request, Response, NextFunction } from "express";
 import { env } from "../config/env.ts";
-import { authService } from "../services/auth.service.ts";
+import { authService, refreshCookieOptions } from "../services/auth.service.ts";
+import { twoFactorService } from "../services/twoFactor.service.ts";
+import { twoFactorLoginSchema } from "../schemas/twoFactor.schema.ts";
 import { createHash } from "node:crypto";
 import { emailService } from "../services/email.service.ts";
 import { whatsappService } from "../services/whatsapp.service.ts";
 
-// Lockout de conta: trava temporariamente após muitas senhas erradas.
-const MAX_TENTATIVAS = 5;
-const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutos
-
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // Validação dos dados que chegam
-        const dados = registerSchema.parse(req.body);
+        const input = registerSchema.parse(req.body);
 
-        // Username normalizado (minúsculo) e único. O regex no schema já barra
-        // qualquer caractere fora de [a-zA-Z0-9_], então é seguro contra injection.
-        const username = dados.username.toLowerCase();
-        const [existeUsername] = await db
+        // The username is lowercased and unique. The schema regex already blocks any
+        // character outside [a-zA-Z0-9_], so it is safe against injection.
+        const username = input.username.toLowerCase();
+        const [usernameTaken] = await db
             .select({ id: users.id })
             .from(users)
             .where(eq(users.username, username));
-        if (existeUsername) {
-            return res.status(409).json({ erro: "Esse nome de usuário já está em uso" });
+        if (usernameTaken) {
+            return res.status(409).json({ erro: "auth.usernameTaken" });
         }
 
-        const [existeEmail] = await db
+        const [emailTaken] = await db
             .select({ id: users.id })
             .from(users)
-            .where(eq(users.email, dados.email));
-        if (existeEmail) {
-            return res.status(409).json({ erro: "Este email já está em uso" });
+            .where(eq(users.email, input.email));
+        if (emailTaken) {
+            return res.status(409).json({ erro: "auth.emailTaken" });
         }
 
-        // Criptografia da senha
-        const passwordHash = await hashSenha(dados.password);
+        const passwordHash = await hashPassword(input.password);
 
-        // Transação atômica: Cria o usuário e gera os tokens iniciais
-        const novoUsuario = await db.transaction(async (tx) => {
-            // Cria o usuário
-            const [usuarioCriado] = await tx
+        // Atomic: creates the user and the first tokens together.
+        const created = await db.transaction(async (tx) => {
+            const [createdUser] = await tx
                 .insert(users)
                 .values({
-                    name: dados.name,
+                    name: input.name,
                     username,
-                    email: dados.email,
+                    email: input.email,
                     passwordHash,
-                    birthDate: dados.birthDate,
-                    gender: dados.gender,
-                    phone: dados.phone,
+                    birthDate: input.birthDate,
+                    gender: input.gender,
+                    phone: input.phone,
+                    locale: req.locale,
                 })
                 .returning({
                     id: users.id,
@@ -77,17 +73,17 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
                     phone: users.phone,
                 });
 
-            const verificationToken = await authService.gerarTokenVerificacao(usuarioCriado.id, tx);
+            const verificationToken = await authService.createVerificationToken(createdUser.id, tx);
 
-            return { user: usuarioCriado, verificationToken };
+            return { user: createdUser, verificationToken };
         });
 
-        const { user, verificationToken } = novoUsuario;
+        const { user, verificationToken } = created;
 
-        await emailService.enviarVerificacao(user.email, verificationToken);
+        await emailService.sendVerification(user.email, verificationToken, req.locale);
 
         res.status(201).json({
-            mensagem: "Conta criada. Verifique seu email para ativar o acesso.",
+            mensagem: "auth.accountCreated",
             user,
         });
     } catch (err) {
@@ -97,65 +93,51 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const dados = loginSchema.parse(req.body);
+        const input = loginSchema.parse(req.body);
 
-        const encontrados = await db.select().from(users).where(eq(users.email, dados.email));
-        const user = encontrados[0];
+        const found = await db.select().from(users).where(eq(users.email, input.email));
+        const user = found[0];
 
-        // Conta travada? Recusa antes de gastar o hash. Mensagem genérica (igual ao
-        // rate limit) para não distinguir "travada" de "muitas tentativas por IP".
+        // Locked account? Refuses before spending the hash. Generic message (the same as the
+        // rate limit) so "locked" cannot be told apart from "too many attempts from this IP".
         if (user?.lockedUntil && user.lockedUntil > new Date()) {
-            return res.status(429).json({ erro: "Muitas tentativas. Tente novamente mais tarde." });
+            return res.status(429).json({ erro: "auth.tooManyAttempts" });
         }
 
-        // Definimos qual hash será comparado. Usuário com senha usa a dele; sem usuário
-        // (ou conta só de login social, sem senha) cai num hash dummy e a comparação falha.
-        const hashParaComparar = user?.passwordHash ?? (await getDummyHash());
+        // Picks the hash to compare. A user with a password uses theirs; no user (or a
+        // social-only account without a password) falls on a dummy hash and the comparison fails.
+        const hashToCompare = user?.passwordHash ?? (await getDummyHash());
 
-        const senhaCorreta = await verificarSenha(hashParaComparar, dados.password);
+        const passwordMatches = await verifyPassword(hashToCompare, input.password);
 
-        if (!user || !senhaCorreta) {
-            // Conta tentativas falhas só para usuário existente. Ao atingir o limite,
-            // trava por LOCKOUT_MS e zera o contador (a próxima janela começa limpa).
-            if (user) {
-                const tentativas = user.failedLoginAttempts + 1;
-                if (tentativas >= MAX_TENTATIVAS) {
-                    await db
-                        .update(users)
-                        .set({
-                            failedLoginAttempts: 0,
-                            lockedUntil: new Date(Date.now() + LOCKOUT_MS),
-                        })
-                        .where(eq(users.id, user.id));
-                } else {
-                    await db
-                        .update(users)
-                        .set({ failedLoginAttempts: tentativas })
-                        .where(eq(users.id, user.id));
-                }
-            }
-            return res.status(401).json({ erro: "Credenciais inválidas" });
+        if (!user || !passwordMatches) {
+            // Failed attempts only count for existing users; the fifth one locks the account.
+            if (user) await authService.recordFailedLogin(user.id);
+            return res.status(401).json({ erro: "auth.invalidCredentials" });
         }
 
-        // Senha correta: zera o contador se havia tentativas/lock pendentes.
-        if (user.failedLoginAttempts > 0 || user.lockedUntil) {
-            await db
-                .update(users)
-                .set({ failedLoginAttempts: 0, lockedUntil: null })
-                .where(eq(users.id, user.id));
+        // A right password resets the counter, except with 2FA: then only a right
+        // code does, or a right password plus wrong codes would never lock the account.
+        const hasTwoFactor = await twoFactorService.isEnabled(user.id);
+        if (!hasTwoFactor && (user.failedLoginAttempts > 0 || user.lockedUntil)) {
+            await authService.resetFailedLogins(user.id);
         }
 
-        // Migração transparente do hash: um bcrypt antigo vira argon2 no primeiro login.
-        if (user.passwordHash && precisaRehash(user.passwordHash)) {
-            const novoHash = await hashSenha(dados.password);
-            await db.update(users).set({ passwordHash: novoHash }).where(eq(users.id, user.id));
+        // Transparent hash migration: an old bcrypt hash becomes argon2 on the first login.
+        if (user.passwordHash && needsRehash(user.passwordHash)) {
+            const newHash = await hashPassword(input.password);
+            await db.update(users).set({ passwordHash: newHash }).where(eq(users.id, user.id));
         }
 
         if (!user.emailVerifiedAt) {
-            return res.status(403).json({ erro: "Verifique seu email antes de entrar" });
+            return res.status(403).json({ erro: "auth.verifyEmailFirst" });
         }
 
-        const { accessToken, refreshToken } = await authService.gerarEGravarTokens(user.id);
+        if (hasTwoFactor) {
+            return res.json({ challenge: await twoFactorService.createChallenge(user.id) });
+        }
+
+        const { accessToken, refreshToken } = await authService.issueSessionTokens(user.id);
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
@@ -171,57 +153,89 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
+// Second login step for 2FA accounts: the challenge opened by the password (or
+// by the social login) plus an app code or a recovery code.
+export const loginTwoFactor = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const data = twoFactorLoginSchema.parse(req.body);
+        const { userId, method } = await twoFactorService.resolveChallenge(
+            data.challenge,
+            data.code,
+        );
+        const [user] = await db
+            .select({ name: users.name, email: users.email })
+            .from(users)
+            .where(eq(users.id, userId));
+        const { accessToken, refreshToken } = await authService.issueSessionTokens(userId, db, {
+            mfa: true,
+        });
+        res.cookie("refreshToken", refreshToken, refreshCookieOptions);
+        res.json({
+            name: user.name,
+            email: user.email,
+            token: accessToken,
+            ...(method === "recovery"
+                ? {
+                      recoveryCodesLeft: (await twoFactorService.status(userId)).recoveryCodesLeft,
+                  }
+                : {}),
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const refresh = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // VAlida a entrada
         const refreshToken = req.cookies.refreshToken;
 
         if (!refreshToken) {
-            return res.status(401).json({ erro: "Refresh token inválido." });
+            return res.status(401).json({ erro: "auth.invalidRefreshToken" });
         }
 
-        // Hasheia igual ao token que gravamos no banco
-        const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
+        // Hashed the same way as the stored token.
+        const computedHash = createHash("sha256").update(refreshToken).digest("hex");
 
-        // Só token de sessão: os de verificação e de senha (inclusive o código de
-        // 6 dígitos, cujo hash é de "<userId>:<código>") viriam pelo mesmo cookie.
-        const [registro] = await db
+        // Session tokens only: the verification and password ones (including the 6-digit
+        // code, whose hash is of "<userId>:<code>") could come through the same cookie.
+        const [record] = await db
             .select({
                 userId: tokens.userId,
                 expiredAt: tokens.expiredAt,
                 usedAt: tokens.usedAt,
             })
             .from(tokens)
-            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "refresh")));
+            .where(and(eq(tokens.tokenHash, computedHash), eq(tokens.type, "refresh")));
 
-        // Caso não encontre
-        if (!registro) {
-            return res.status(401).json({ erro: "Refresh token inválido. " });
+        if (!record) {
+            return res.status(401).json({ erro: "auth.invalidRefreshToken" });
         }
 
-        // Expiração
-        if (registro.expiredAt < new Date()) {
-            return res.status(401).json({ erro: "Refresh token inválido. " });
+        if (record.expiredAt < new Date()) {
+            return res.status(401).json({ erro: "auth.invalidRefreshToken" });
         }
 
-        // Existe, não expirou, mas já foi usado
-        if (registro.usedAt !== null) {
-            // Roubo presumido. Revoga todos os tokens do usuário.
-            await db.delete(tokens).where(eq(tokens.userId, registro.userId));
-            return res.status(401).json({ erro: "Refresh token inválido" });
+        // It exists and has not expired, but was already used
+        if (record.usedAt !== null) {
+            // Presumed theft. Revokes all the user's tokens.
+            await db.delete(tokens).where(eq(tokens.userId, record.userId));
+            return res.status(401).json({ erro: "auth.invalidRefreshToken" });
         }
 
-        // Deletar token antigo e Gerar novo token (atomicidade)
-        const novosTokens = await db.transaction(async (tx) => {
+        const mfa = await twoFactorService.isEnabled(record.userId);
+
+        // Drops the old token and creates the new one atomically.
+        const newTokens = await db.transaction(async (tx) => {
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
-                .where(eq(tokens.tokenHash, hashCalculado));
-            return await authService.gerarEGravarTokens(registro.userId, tx);
+                .where(eq(tokens.tokenHash, computedHash));
+            // With 2FA on, every live session went through the code: the older ones
+            // are dropped when it gets enabled.
+            return await authService.issueSessionTokens(record.userId, tx, { mfa });
         });
 
-        // Adicionar novo token no cookie
-        res.cookie("refreshToken", novosTokens.refreshToken, {
+        res.cookie("refreshToken", newTokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === "production",
             sameSite: "strict",
@@ -229,9 +243,9 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
             path: "/",
         });
 
-        // Dar resposta no mesmo formato do login
+        // The same answer format as the login.
         res.json({
-            token: novosTokens.accessToken,
+            token: newTokens.accessToken,
         });
     } catch (err) {
         next(err);
@@ -242,12 +256,11 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const refreshToken = req.cookies.refreshToken;
 
-        // Revoga o token do banco se existir
         if (refreshToken) {
-            const hashCalculado = createHash("sha256").update(refreshToken).digest("hex");
+            const computedHash = createHash("sha256").update(refreshToken).digest("hex");
             await db
                 .delete(tokens)
-                .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "refresh")));
+                .where(and(eq(tokens.tokenHash, computedHash), eq(tokens.type, "refresh")));
         }
 
         res.clearCookie("refreshToken", {
@@ -268,48 +281,48 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
         const { token } = req.body;
 
         if (!token) {
-            return res.status(400).json({ erro: "Token não fornecido" });
+            return res.status(400).json({ erro: "auth.missingToken" });
         }
 
-        // Hasheia igual ao token que gravamos no banco
-        const hashCalculado = createHash("sha256").update(token).digest("hex");
+        // Hashed the same way as the stored token.
+        const computedHash = createHash("sha256").update(token).digest("hex");
 
-        // Busca pelo hash E pelo tipo (impede usar um refresh token aqui)
-        const [registro] = await db
+        // Looks up by hash AND type (a refresh token cannot be used here).
+        const [record] = await db
             .select({
                 userId: tokens.userId,
                 expiredAt: tokens.expiredAt,
                 usedAt: tokens.usedAt,
             })
             .from(tokens)
-            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "email_verification")));
+            .where(and(eq(tokens.tokenHash, computedHash), eq(tokens.type, "email_verification")));
 
-        if (!registro) {
-            return res.status(400).json({ erro: "Token inválido" });
+        if (!record) {
+            return res.status(400).json({ erro: "auth.invalidToken" });
         }
 
-        if (registro.expiredAt < new Date()) {
-            return res.status(400).json({ erro: "Token inválido" });
+        if (record.expiredAt < new Date()) {
+            return res.status(400).json({ erro: "auth.invalidToken" });
         }
 
-        if (registro.usedAt !== null) {
-            return res.status(400).json({ erro: "Token inválido" });
+        if (record.usedAt !== null) {
+            return res.status(400).json({ erro: "auth.invalidToken" });
         }
 
-        // Marca o token como usado e o email como verificado (atomicidade)
+        // Marks the token as used and the email as verified, atomically.
         await db.transaction(async (tx) => {
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
-                .where(eq(tokens.tokenHash, hashCalculado));
+                .where(eq(tokens.tokenHash, computedHash));
 
             await tx
                 .update(users)
                 .set({ emailVerifiedAt: new Date() })
-                .where(eq(users.id, registro.userId));
+                .where(eq(users.id, record.userId));
         });
 
-        res.json({ mensagem: "Email verificado com sucesso. Você já pode fazer login." });
+        res.json({ mensagem: "auth.emailVerified" });
     } catch (err) {
         next(err);
     }
@@ -319,73 +332,77 @@ export const resendVerification = async (req: Request, res: Response, next: Next
     try {
         const { email } = forgotPasswordSchema.parse(req.body);
 
-        // Resposta genérica, para não revelar se o email tem conta ou já foi verificado.
-        const resposta = {
-            mensagem:
-                "Se houver uma conta pendente de confirmação com esse email, reenviamos o link.",
+        // Generic answer, so it does not reveal whether the email has an account or was already verified.
+        const genericAnswer = {
+            mensagem: "auth.verificationResent",
         };
 
         const [user] = await db
-            .select({ id: users.id, email: users.email, emailVerifiedAt: users.emailVerifiedAt })
+            .select({
+                id: users.id,
+                email: users.email,
+                emailVerifiedAt: users.emailVerifiedAt,
+                locale: users.locale,
+            })
             .from(users)
             .where(eq(users.email, email));
 
-        // Só reenvia quando a conta existe e ainda não foi verificada.
+        // Only resends when the account exists and is not verified yet.
         if (user && !user.emailVerifiedAt) {
-            const token = await authService.gerarTokenVerificacao(user.id);
-            await emailService.enviarVerificacao(user.email, token);
+            const token = await authService.createVerificationToken(user.id);
+            await emailService.sendVerification(user.email, token, user.locale);
         }
 
-        res.json(resposta);
+        res.json(genericAnswer);
     } catch (err) {
         next(err);
     }
 };
 
-// Por qual provedor a conta entra hoje, só para o email falar a língua de quem lê
-// ("sua conta entra pelo Google"). Devolve nulo quando não há nenhum, e aí o texto
-// cai para a forma genérica.
-const NOME_PROVEDOR: Record<string, string> = { google: "Google", github: "GitHub" };
+// Which provider the account signs in with today, only so the email speaks the
+// reader's terms ("your account signs in with Google"). Returns null when there is
+// none, and the text falls back to the generic form.
+const PROVIDER_NAMES: Record<string, string> = { google: "Google", github: "GitHub" };
 
-async function provedorDe(userId: string): Promise<string | null> {
-    const [conta] = await db
+async function providerOf(userId: string): Promise<string | null> {
+    const [account] = await db
         .select({ provider: oauthAccounts.provider })
         .from(oauthAccounts)
         .where(eq(oauthAccounts.userId, userId))
         .limit(1);
-    if (!conta) return null;
-    return NOME_PROVEDOR[conta.provider] ?? conta.provider;
+    if (!account) return null;
+    return PROVIDER_NAMES[account.provider] ?? account.provider;
 }
 
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = forgotPasswordSchema.parse(req.body);
 
-        // Resposta sempre genérica, para não revelar se o email tem conta.
-        const resposta = {
-            mensagem:
-                "Se houver uma conta com esse email, enviamos um link para redefinir a senha.",
+        // Always a generic answer, so it does not reveal whether the email has an account.
+        const genericAnswer = {
+            mensagem: "auth.resetLinkSent",
         };
 
         const [user] = await db
-            .select({ id: users.id, passwordHash: users.passwordHash })
+            .select({ id: users.id, passwordHash: users.passwordHash, locale: users.locale })
             .from(users)
             .where(eq(users.email, email));
 
-        // Conta que entrou por login social não tem senha para redefinir, mas tem para
-        // CRIAR. Antes o pedido dela era descartado em silêncio: a pessoa recebia a
-        // mensagem de que o link foi enviado e nada chegava nunca. Agora o link sai
-        // igual, só com o texto certo para o caso dela.
+        // An account that came through social login has no password to reset, but has one
+        // to CREATE. Its request used to be dropped silently: the person was told the link
+        // had been sent and nothing ever arrived. Now the link goes out the same way, only
+        // with the right text for that case.
         if (user) {
-            const token = await authService.gerarTokenResetSenha(user.id);
+            const token = await authService.createPasswordResetToken(user.id);
             if (user.passwordHash) {
-                await emailService.enviarResetSenha(email, token);
+                await emailService.sendPasswordReset(email, token, user.locale);
             } else {
-                await emailService.enviarCriarSenha(email, token, await provedorDe(user.id));
+                const provider = await providerOf(user.id);
+                await emailService.sendCreatePassword(email, token, provider, user.locale);
             }
         }
 
-        res.json(resposta);
+        res.json(genericAnswer);
     } catch (err) {
         next(err);
     }
@@ -395,8 +412,8 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     try {
         const { token, password } = resetPasswordSchema.parse(req.body);
 
-        const hashCalculado = createHash("sha256").update(token).digest("hex");
-        const [registro] = await db
+        const computedHash = createHash("sha256").update(token).digest("hex");
+        const [record] = await db
             .select({
                 id: tokens.id,
                 userId: tokens.userId,
@@ -404,53 +421,50 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
                 usedAt: tokens.usedAt,
             })
             .from(tokens)
-            .where(and(eq(tokens.tokenHash, hashCalculado), eq(tokens.type, "password_reset")));
+            .where(and(eq(tokens.tokenHash, computedHash), eq(tokens.type, "password_reset")));
 
-        if (!registro || registro.expiredAt < new Date() || registro.usedAt !== null) {
-            return res.status(400).json({ erro: "Link inválido ou expirado. Peça um novo." });
+        if (!record || record.expiredAt < new Date() || record.usedAt !== null) {
+            return res.status(400).json({ erro: "auth.invalidLink" });
         }
 
-        const passwordHash = await hashSenha(password);
+        const passwordHash = await hashPassword(password);
 
         await db.transaction(async (tx) => {
-            // Consome o token de reset.
-            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, registro.id));
-            // Troca a senha.
-            await tx.update(users).set({ passwordHash }).where(eq(users.id, registro.userId));
-            // Revoga as sessões abertas (refresh tokens) por segurança.
+            await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, record.id));
+            await tx.update(users).set({ passwordHash }).where(eq(users.id, record.userId));
+            // Revokes the open sessions (refresh tokens) for safety.
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
                 .where(
                     and(
-                        eq(tokens.userId, registro.userId),
+                        eq(tokens.userId, record.userId),
                         eq(tokens.type, "refresh"),
                         isNull(tokens.usedAt),
                     ),
                 );
         });
 
-        const [dono] = await db
-            .select({ email: users.email })
+        const [owner] = await db
+            .select({ email: users.email, locale: users.locale })
             .from(users)
-            .where(eq(users.id, registro.userId));
-        if (dono) await emailService.enviarAvisoSenhaRedefinida(dono.email);
+            .where(eq(users.id, record.userId));
+        if (owner) await emailService.sendPasswordChangedNotice(owner.email, owner.locale);
 
-        res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
+        res.json({ mensagem: "auth.passwordReset" });
     } catch (err) {
         next(err);
     }
 };
 
-// Recuperação por código (OTP): o usuário escolhe receber por email ou WhatsApp.
+// Recovery by code (OTP): the user chooses to receive it by email or WhatsApp.
 export const forgotPasswordOtp = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, canal } = forgotPasswordOtpSchema.parse(req.body);
+        const { email, canal: channel } = forgotPasswordOtpSchema.parse(req.body);
 
-        // Resposta genérica, para não revelar se o email tem conta.
-        const resposta = {
-            mensagem:
-                "Se houver uma conta com esse email, enviamos um código para redefinir a senha.",
+        // Generic answer, so it does not reveal whether the email has an account.
+        const genericAnswer = {
+            mensagem: "auth.resetCodeSent",
         };
 
         const [user] = await db
@@ -459,28 +473,31 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
                 phone: users.phone,
                 phoneVerifiedAt: users.phoneVerifiedAt,
                 passwordHash: users.passwordHash,
+                locale: users.locale,
             })
             .from(users)
             .where(eq(users.email, email));
 
-        // Sem código novo (pedido repetido em menos de um minuto ou limite do dia),
-        // a resposta é a mesma: o código anterior segue valendo até expirar.
-        const otp = user ? await authService.gerarOtpResetSenha(user.id) : null;
+        // Without a new code (a repeated request within a minute on the same
+        // channel, or the daily limit), the answer is the same: the previous
+        // code stays valid until it expires.
+        const otp = user ? await authService.createPasswordResetCode(user.id, channel) : null;
         if (user && otp) {
-            // WhatsApp só para telefone verificado: número nunca confirmado pode ser de
-            // outra pessoa. Sem ele, cai no email para o código não se perder.
-            if (canal === "whatsapp" && user.phone && user.phoneVerifiedAt) {
-                await whatsappService.enviarOtpReset(user.phone, otp);
+            // WhatsApp only for a verified phone: a number never confirmed may belong to
+            // someone else. Without it, it falls back to email so the code is not lost.
+            if (channel === "whatsapp" && user.phone && user.phoneVerifiedAt) {
+                await whatsappService.sendResetCode(user.phone, otp, user.locale);
             } else if (user.passwordHash) {
-                await emailService.enviarOtpReset(email, otp);
+                await emailService.sendResetCode(email, otp, user.locale);
             } else {
-                // Mesma correção do caminho por link: conta sem senha recebe o código
-                // para criar uma, em vez de o pedido morrer em silêncio.
-                await emailService.enviarOtpCriarSenha(email, otp, await provedorDe(user.id));
+                // Same fix as the link path: an account without a password gets the code to
+                // create one, instead of the request dying silently.
+                const provider = await providerOf(user.id);
+                await emailService.sendCreatePasswordCode(email, otp, provider, user.locale);
             }
         }
 
-        res.json(resposta);
+        res.json(genericAnswer);
     } catch (err) {
         next(err);
     }
@@ -489,20 +506,23 @@ export const forgotPasswordOtp = async (req: Request, res: Response, next: NextF
 export const resetPasswordOtp = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, otp, password } = resetPasswordOtpSchema.parse(req.body);
-        const generico = { erro: "Código inválido ou expirado. Peça um novo." };
+        const genericError = { erro: "auth.invalidCode" };
 
-        const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
-        if (!user) return res.status(400).json(generico);
+        const [user] = await db
+            .select({ id: users.id, locale: users.locale })
+            .from(users)
+            .where(eq(users.email, email));
+        if (!user) return res.status(400).json(genericError);
 
-        const tokenId = await authService.conferirOtpResetSenha(user.id, otp);
-        if (!tokenId) return res.status(400).json(generico);
+        const tokenId = await authService.checkPasswordResetCode(user.id, otp);
+        if (!tokenId) return res.status(400).json(genericError);
 
-        const passwordHash = await hashSenha(password);
+        const passwordHash = await hashPassword(password);
 
         await db.transaction(async (tx) => {
             await tx.update(tokens).set({ usedAt: new Date() }).where(eq(tokens.id, tokenId));
             await tx.update(users).set({ passwordHash }).where(eq(users.id, user.id));
-            // Revoga as sessões abertas (refresh tokens) por segurança.
+            // Revokes the open sessions (refresh tokens) for safety.
             await tx
                 .update(tokens)
                 .set({ usedAt: new Date() })
@@ -515,9 +535,9 @@ export const resetPasswordOtp = async (req: Request, res: Response, next: NextFu
                 );
         });
 
-        await emailService.enviarAvisoSenhaRedefinida(email);
+        await emailService.sendPasswordChangedNotice(email, user.locale);
 
-        res.json({ mensagem: "Senha redefinida com sucesso. Você já pode fazer login." });
+        res.json({ mensagem: "auth.passwordReset" });
     } catch (err) {
         next(err);
     }

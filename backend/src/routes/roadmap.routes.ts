@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autenticar, exigirAdmin } from "../middlewares/auth.ts";
+import { authenticate, requireAdmin } from "../middlewares/auth.ts";
 import {
     listRoadmaps,
     getRoadmap,
@@ -14,35 +14,35 @@ import {
     createStageRef,
     deleteStageRef,
     completeStage,
-    getProximaTrilha,
-    seguir,
-    registrarEntrada,
+    getNextTrail,
+    followRoadmap,
+    recordRoadmapEntry,
 } from "../controllers/RoadmapController.ts";
 
 const router = Router();
 
-// Leitura (qualquer logado)
-router.get("/roadmaps", autenticar, listRoadmaps);
-router.get("/roadmaps/proxima-trilha/:trailId", autenticar, getProximaTrilha);
+// Reading (any logged-in user)
+router.get("/roadmaps", authenticate, listRoadmaps);
+router.get("/roadmaps/proxima-trilha/:trailId", authenticate, getNextTrail);
 
-// Gestão pelo estúdio (admin). Vem antes de "/roadmaps/:slug" e usa o prefixo
-// "/studio" para não colidir com a rota de detalhe do aluno.
-router.get("/studio/roadmaps", autenticar, exigirAdmin, listRoadmapsStudio);
-router.get("/studio/roadmaps/:id", autenticar, exigirAdmin, getRoadmapStudio);
-router.post("/roadmaps", autenticar, exigirAdmin, createRoadmap);
-router.patch("/roadmaps/:id", autenticar, exigirAdmin, updateRoadmap);
-router.delete("/roadmaps/:id", autenticar, exigirAdmin, deleteRoadmap);
-router.post("/roadmaps/:id/stages", autenticar, exigirAdmin, createStage);
-router.patch("/roadmap-stages/:id", autenticar, exigirAdmin, updateStage);
-router.delete("/roadmap-stages/:id", autenticar, exigirAdmin, deleteStage);
-router.post("/roadmap-stages/:id/concluir", autenticar, completeStage);
-router.post("/roadmap-stages/:id/refs", autenticar, exigirAdmin, createStageRef);
-router.delete("/roadmap-stage-refs/:id", autenticar, exigirAdmin, deleteStageRef);
+// Management from the studio (admin). It comes before "/roadmaps/:slug" and uses the
+// "/studio" prefix so it does not collide with the student's detail route.
+router.get("/studio/roadmaps", authenticate, requireAdmin, listRoadmapsStudio);
+router.get("/studio/roadmaps/:id", authenticate, requireAdmin, getRoadmapStudio);
+router.post("/roadmaps", authenticate, requireAdmin, createRoadmap);
+router.patch("/roadmaps/:id", authenticate, requireAdmin, updateRoadmap);
+router.delete("/roadmaps/:id", authenticate, requireAdmin, deleteRoadmap);
+router.post("/roadmaps/:id/stages", authenticate, requireAdmin, createStage);
+router.patch("/roadmap-stages/:id", authenticate, requireAdmin, updateStage);
+router.delete("/roadmap-stages/:id", authenticate, requireAdmin, deleteStage);
+router.post("/roadmap-stages/:id/concluir", authenticate, completeStage);
+router.post("/roadmap-stages/:id/refs", authenticate, requireAdmin, createStageRef);
+router.delete("/roadmap-stage-refs/:id", authenticate, requireAdmin, deleteStageRef);
 
-router.post("/roadmaps/:slug/seguir", autenticar, seguir);
-router.post("/roadmaps/:slug/entrei", autenticar, registrarEntrada);
+router.post("/roadmaps/:slug/seguir", authenticate, followRoadmap);
+router.post("/roadmaps/:slug/entrei", authenticate, recordRoadmapEntry);
 
-// Detalhe do aluno por slug (por último, para não capturar as rotas acima).
-router.get("/roadmaps/:slug", autenticar, getRoadmap);
+// Student detail by slug (last, so it does not capture the routes above).
+router.get("/roadmaps/:slug", authenticate, getRoadmap);
 
 export default router;

@@ -1,7 +1,7 @@
 /**
- * Erro de domínio com status HTTP e mensagem própria.
- * Os services lançam AppError para sinalizar 404/409/etc. sem depender
- * de req/res; o middleware de erro converte em resposta JSON.
+ * Domain error with an HTTP status and its own message (a catalog key or text).
+ * The services throw AppError to signal 404/409/etc. without depending on
+ * req/res; the error middleware turns it into a JSON response.
  */
 export class AppError extends Error {
     status: number;

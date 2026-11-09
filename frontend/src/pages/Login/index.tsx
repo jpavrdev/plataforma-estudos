@@ -1,75 +1,90 @@
 import { useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthShell } from '../../components/auth/AuthShell';
 import { AuthBrand } from '../../components/auth/AuthBrand';
 import { Logo } from '../../components/Logo';
 import { FormField } from '../../components/FormField';
 import { SocialAuth } from '../../components/auth/SocialAuth';
+import { TwoFactorLogin } from '../../components/auth/TwoFactorLogin';
 import { Flame, Trophy } from '../../components/Icons';
 import api from '../../services/api';
 import { mensagemErro, statusErro } from '../../utils/erro';
 
-// Mensagens dos erros que o callback do OAuth manda via ?erro= ao voltar pro login.
-const ERROS_OAUTH: Record<string, string> = {
-  provedor_indisponivel: 'Esse login social não está disponível no momento.',
-  oauth_invalido: 'Não foi possível validar o login. Tente de novo.',
-  oauth_falhou: 'Falha ao entrar com o provedor. Tente de novo.',
-  oauth_sem_email: 'Não foi possível obter um email verificado da sua conta.',
-};
+// The social login callback comes back here with ?erro=<code> when it fails.
+const OAUTH_ERRORS = {
+  provedor_indisponivel: 'providerUnavailable',
+  oauth_invalido: 'invalid',
+  oauth_falhou: 'failed',
+  oauth_sem_email: 'noEmail',
+} as const;
+
+type OAuthErrorCode = keyof typeof OAUTH_ERRORS;
+const isOAuthError = (code: string | null): code is OAuthErrorCode =>
+  !!code && Object.hasOwn(OAUTH_ERRORS, code);
 
 export function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useTranslation();
 
   const [searchParams] = useSearchParams();
-  const erroOAuth = ERROS_OAUTH[searchParams.get('erro') ?? ''] ?? '';
+  const oauthCode = searchParams.get('erro');
+  const oauthError = isOAuthError(oauthCode)
+    ? t(`login.oauthErrors.${OAUTH_ERRORS[oauthCode]}`)
+    : '';
 
-  // Quem acabou de se cadastrar chega aqui com o aviso de confirmar o email e com o
-  // endereço já preenchido; sem isso a pessoa cai numa tela de login sem entender por
-  // que foi parar nela.
-  const vindoDoCadastro = useLocation().state as { aviso?: string; email?: string } | null;
-  const [avisoCadastro, setAvisoCadastro] = useState(vindoDoCadastro?.aviso ?? '');
+  // Whoever just signed up arrives with the confirm-your-email notice and the
+  // address filled in; without it the person lands on a sign-in screen without
+  // understanding why.
+  const fromSignUp = useLocation().state as { notice?: string; email?: string } | null;
+  const [signUpNotice, setSignUpNotice] = useState(fromSignUp?.notice ?? '');
 
-  const [email, setEmail] = useState(vindoDoCadastro?.email ?? '');
+  const [email, setEmail] = useState(fromSignUp?.email ?? '');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  // Login bloqueado por email não confirmado (403): oferece reenviar a verificação.
-  const [naoVerificado, setNaoVerificado] = useState(false);
-  const [reenviando, setReenviando] = useState(false);
-  const [reenvioMsg, setReenvioMsg] = useState('');
+  // 2FA account: after the password, the screen asks for the code.
+  const [challenge, setChallenge] = useState<string | null>(null);
+  // Sign-in blocked because the email is not confirmed (403): offers to resend it.
+  const [unverified, setUnverified] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState('');
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
-    setAvisoCadastro('');
-    setNaoVerificado(false);
-    setReenvioMsg('');
+    setSignUpNotice('');
+    setUnverified(false);
+    setResendMessage('');
     setSubmitting(true);
     try {
-      await login(email, password);
+      const result = await login(email, password);
+      if (result.challenge) {
+        setChallenge(result.challenge);
+        return;
+      }
       navigate('/home');
     } catch (e: unknown) {
-      setError(mensagemErro(e, 'Erro ao fazer login. Tente novamente.'));
-      setNaoVerificado(statusErro(e) === 403);
+      setError(mensagemErro(e, t('login.errors.generic')));
+      setUnverified(statusErro(e) === 403);
     } finally {
       setSubmitting(false);
     }
   }
 
-  async function reenviarVerificacao() {
-    if (reenviando || !email) return;
-    setReenviando(true);
+  async function resendVerification() {
+    if (resending || !email) return;
+    setResending(true);
     try {
       const { data } = await api.post('/resend-verification', { email });
-      setReenvioMsg(
-        data.mensagem ?? 'Se houver uma conta pendente, reenviamos o link de confirmação.',
-      );
-    } catch {
-      setReenvioMsg('Não foi possível reenviar agora. Tente de novo em instantes.');
+      setResendMessage(data.mensagem ?? t('login.resent'));
+    } catch (e: unknown) {
+      console.error('Could not resend the verification email', e);
+      setResendMessage(t('login.resendFailed'));
     } finally {
-      setReenviando(false);
+      setResending(false);
     }
   }
 
@@ -78,14 +93,14 @@ export function Login() {
       <div className="auth__brand-body">
         <h1 className="auth__headline">
           <span className="auth__kicker">
-            <span className="auth__kicker-soft">todo </span>dia
+            <Trans
+              i18nKey="login.kicker"
+              components={{ soft: <span className="auth__kicker-soft" /> }}
+            />
           </span>
-          <span className="auth__headline-main">Resolva um desafio</span>
+          <span className="auth__headline-main">{t('login.headline')}</span>
         </h1>
-        <p className="auth__lede">
-          Aprenda programação na prática com problemas diários, streaks e um ranking que mantém você
-          no ritmo.
-        </p>
+        <p className="auth__lede">{t('login.lede')}</p>
 
         <div className="code-window">
           <div className="code-window__dots">
@@ -94,7 +109,8 @@ export function Login() {
             <i />
           </div>
           <div>
-            <span className="tok">function</span> <span className="tok-fn">soma</span>(a, b) {'{'}
+            <span className="tok">function</span>{' '}
+            <span className="tok-fn">{t('login.sampleFunction')}</span>(a, b) {'{'}
           </div>
           <div className="code-window__indent">
             <span className="tok">return</span> a + b;
@@ -106,7 +122,7 @@ export function Login() {
 
       <div className="auth__chips">
         <span className="chip">
-          <Flame size={14} /> 12 dias
+          <Flame size={14} /> {t('login.streakChip')}
         </span>
         <span className="chip">
           <Trophy size={13} /> Top 4
@@ -115,44 +131,62 @@ export function Login() {
     </AuthBrand>
   );
 
+  if (challenge) {
+    return (
+      <AuthShell brand={brand}>
+        <div className="auth__logo-m">
+          <Logo variant="solid" size={22} />
+        </div>
+        <TwoFactorLogin
+          challenge={challenge}
+          onDone={() => navigate('/home')}
+          onBack={() => {
+            setChallenge(null);
+            setPassword('');
+          }}
+        />
+      </AuthShell>
+    );
+  }
+
   return (
     <AuthShell brand={brand}>
       <div className="auth__logo-m">
         <Logo variant="solid" size={22} />
       </div>
-      <h2 className="auth__title">Bem-vindo de volta</h2>
-      <p className="auth__subtitle">Continue de onde você parou.</p>
+      <h2 className="auth__title">{t('login.title')}</h2>
+      <p className="auth__subtitle">{t('login.subtitle')}</p>
 
-      {avisoCadastro && <div className="auth__alert auth__alert--ok">{avisoCadastro}</div>}
+      {signUpNotice && <div className="auth__alert auth__alert--ok">{signUpNotice}</div>}
 
-      {(error || erroOAuth) && <div className="auth__alert">{error || erroOAuth}</div>}
+      {(error || oauthError) && <div className="auth__alert">{error || oauthError}</div>}
 
-      {naoVerificado &&
-        (reenvioMsg ? (
-          <div className="auth__alert auth__alert--ok">{reenvioMsg}</div>
+      {unverified &&
+        (resendMessage ? (
+          <div className="auth__alert auth__alert--ok">{resendMessage}</div>
         ) : (
           <button
             type="button"
             className="btn btn--ghost btn--block"
-            onClick={reenviarVerificacao}
-            disabled={reenviando}
+            onClick={resendVerification}
+            disabled={resending}
           >
-            {reenviando ? 'Reenviando...' : 'Reenviar email de verificação'}
+            {resending ? t('login.resending') : t('login.resend')}
           </button>
         ))}
 
       <form className="form" onSubmit={handleSubmit} noValidate>
         <FormField
-          label="E-mail"
+          label={t('auth.email')}
           type="email"
           autoComplete="email"
-          placeholder="voce@email.com"
+          placeholder={t('auth.emailPlaceholder')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <FormField
-          label="Senha"
+          label={t('auth.password')}
           type="password"
           autoComplete="current-password"
           placeholder="••••••••••"
@@ -161,21 +195,21 @@ export function Login() {
           required
           labelAddon={
             <Link className="link" to="/recuperar-senha">
-              Esqueceu a senha?
+              {t('login.forgotPassword')}
             </Link>
           }
         />
         <button className="btn btn--accent btn--block" type="submit" disabled={submitting}>
-          {submitting ? 'Entrando...' : 'Entrar'}
+          {submitting ? t('login.submitting') : t('login.submit')}
         </button>
       </form>
 
       <SocialAuth />
 
       <p className="auth__foot">
-        Não tem conta?{' '}
+        {t('login.noAccount')}{' '}
         <Link className="link" to="/cadastro">
-          Criar conta grátis
+          {t('login.createAccount')}
         </Link>
       </p>
     </AuthShell>

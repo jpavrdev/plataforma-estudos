@@ -1,65 +1,65 @@
-// Lógica pura de streak. Recebe os dias ativos (YYYY-MM-DD) e o "hoje" já resolvido,
-// então é determinística e testável, sem depender do relógio nem do fuso.
+// Pure streak logic. It receives the active days (YYYY-MM-DD) and an already
+// resolved "today", so it is deterministic and testable, with no clock or time zone.
 
-const LETRAS = ["D", "S", "T", "Q", "Q", "S", "S"]; // domingo..sábado
+const LETTERS = ["D", "S", "T", "Q", "Q", "S", "S"]; // Sunday..Saturday, Portuguese initials
 
-// Dia anterior a uma data YYYY-MM-DD, na aritmética UTC.
-export function diaAnterior(dia: string): string {
-    return new Date(Date.parse(dia + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
+// The day before a YYYY-MM-DD date, in UTC arithmetic.
+export function previousDay(day: string): string {
+    return new Date(Date.parse(day + "T00:00:00Z") - 86400000).toISOString().slice(0, 10);
 }
 
-// Dia seguinte a uma data YYYY-MM-DD, na aritmética UTC.
-export function diaSeguinte(dia: string): string {
-    return new Date(Date.parse(dia + "T00:00:00Z") + 86400000).toISOString().slice(0, 10);
+// The day after a YYYY-MM-DD date, in UTC arithmetic.
+export function nextDay(day: string): string {
+    return new Date(Date.parse(day + "T00:00:00Z") + 86400000).toISOString().slice(0, 10);
 }
 
-// Maior sequência de dias consecutivos com atividade, em qualquer época (o recorde).
-// Diferente de calcularStreak, que só conta a sequência que termina hoje/ontem.
-export function recordeStreak(dias: Set<string>): number {
-    let recorde = 0;
-    for (const d of dias) {
-        // Só arranca de um início de sequência (dia sem o anterior ativo).
-        if (dias.has(diaAnterior(d))) continue;
+// Longest run of consecutive active days, at any time (the record).
+// Unlike computeStreak, which only counts the run that ends today or yesterday.
+export function longestStreak(days: Set<string>): number {
+    let record = 0;
+    for (const d of days) {
+        // Only start from the beginning of a run (a day whose previous day is not active).
+        if (days.has(previousDay(d))) continue;
         let n = 0;
         let cursor = d;
-        while (dias.has(cursor)) {
+        while (days.has(cursor)) {
             n++;
-            cursor = diaSeguinte(cursor);
+            cursor = nextDay(cursor);
         }
-        recorde = Math.max(recorde, n);
+        record = Math.max(record, n);
     }
-    return recorde;
+    return record;
 }
 
-// Dias consecutivos terminando em hoje (ou ontem, se ainda não houve atividade hoje).
-export function calcularStreak(dias: Set<string>, hoje: string): number {
-    if (dias.size === 0) return 0;
-    let cursor = hoje;
-    if (!dias.has(cursor)) {
-        cursor = diaAnterior(cursor);
-        if (!dias.has(cursor)) return 0;
+// Consecutive days ending today (or yesterday, if there was no activity today yet).
+export function computeStreak(days: Set<string>, today: string): number {
+    if (days.size === 0) return 0;
+    let cursor = today;
+    if (!days.has(cursor)) {
+        cursor = previousDay(cursor);
+        if (!days.has(cursor)) return 0;
     }
     let n = 0;
-    while (dias.has(cursor)) {
+    while (days.has(cursor)) {
         n++;
-        cursor = diaAnterior(cursor);
+        cursor = previousDay(cursor);
     }
     return n;
 }
 
-// Últimos 7 dias (mais antigo -> hoje) com flag de atividade, para o card da home.
-export function semanaAtividade(
-    dias: Set<string>,
-    hoje: string,
+// Last 7 days (oldest -> today) with an activity flag, for the home card.
+export function weekActivity(
+    days: Set<string>,
+    today: string,
 ): { label: string; active: boolean }[] {
-    const ult7: string[] = [];
-    let cursor = hoje;
+    const last7: string[] = [];
+    let cursor = today;
     for (let i = 0; i < 7; i++) {
-        ult7.unshift(cursor);
-        cursor = diaAnterior(cursor);
+        last7.unshift(cursor);
+        cursor = previousDay(cursor);
     }
-    return ult7.map((d) => ({
-        label: LETRAS[new Date(d + "T00:00:00Z").getUTCDay()],
-        active: dias.has(d),
+    return last7.map((d) => ({
+        label: LETTERS[new Date(d + "T00:00:00Z").getUTCDay()],
+        active: days.has(d),
     }));
 }
