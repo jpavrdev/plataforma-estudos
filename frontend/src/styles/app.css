@@ -2030,6 +2030,14 @@
   .filtro-mobile--status .filtro-btn {
     width: auto;
   }
+  /* Roadmaps não tem busca: o gatilho de nível e o pill de favoritos
+     dividem a linha em duas metades, como no mock. */
+  .trilhas-page--roadmaps .fav-pill {
+    order: 0;
+    margin-left: 0;
+    flex: 0 1 calc(50% - 6px);
+    justify-content: center;
+  }
 }
 
 /* Folha de filtro (celular): sobe de baixo com scrim, como nos mocks. */
