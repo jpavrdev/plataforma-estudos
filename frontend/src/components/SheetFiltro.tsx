@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, Search, X } from './Icons';
+import { useTravaFundo } from '../hooks/useTravaFundo';
 
 export type OpcaoSheet = { valor: string; label: string; contagem?: number };
 
@@ -30,33 +31,16 @@ export function SheetFiltro({
   const arrasteRef = useRef(0);
   const inicioY = useRef<number | null>(null);
 
+  useTravaFundo(aberto);
+
   useEffect(() => {
     if (!aberto) return;
     const aoTeclar = (e: KeyboardEvent) => {
       if (e.key === 'Escape') aoFechar();
     };
-    // Travar o fundo: no navegador do celular o scroll nativo começa no
-    // touchstart e os touchmove chegam não canceláveis, então nem overflow
-    // hidden nem preventDefault seguram. O fix do body (position fixed com
-    // compensação do scroll) é o que fecha essa porta de vez.
-    const y = window.scrollY;
-    const { style } = document.body;
-    style.position = 'fixed';
-    style.top = `-${y}px`;
-    style.left = '0';
-    style.right = '0';
-    style.width = '100%';
-    document.documentElement.style.overflow = 'hidden';
     document.addEventListener('keydown', aoTeclar);
     return () => {
       document.removeEventListener('keydown', aoTeclar);
-      document.documentElement.style.overflow = '';
-      style.position = '';
-      style.top = '';
-      style.left = '';
-      style.right = '';
-      style.width = '';
-      window.scrollTo(0, y);
       // Ao fechar, a busca interna volta vazia para a próxima abertura.
       setBusca('');
     };

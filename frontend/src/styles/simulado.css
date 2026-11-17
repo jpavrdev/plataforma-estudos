@@ -1976,6 +1976,13 @@
 .sim-modal__card--form {
   max-width: 560px;
   text-align: left;
+  /* No celular o formulário passa da altura da tela: o card rola por dentro
+     e o arraste não escorre para a página de trás. */
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 .sim-modal__card--form .sim-modal__title,
 .sim-modal__card--form .sim-modal__text {

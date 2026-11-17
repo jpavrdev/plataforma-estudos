@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Alert } from '../../components/Icons';
+import { useTravaFundo } from '../../hooks/useTravaFundo';
 
 export function ConfirmModal({
   title,
@@ -18,6 +19,8 @@ export function ConfirmModal({
   onCancel: () => void;
   loading?: boolean;
 }) {
+  // Monta só com o modal aberto: trava o fundo enquanto ele existir.
+  useTravaFundo(true);
   return (
     <div
       className="sim-modal"
