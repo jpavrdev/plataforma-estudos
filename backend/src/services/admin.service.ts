@@ -193,8 +193,8 @@ export async function crmUsers(
     `);
 
     const users = (rows as Record<string, unknown>[]).map((r) => {
-        const aulas = r.aulas as number;
-        const questoes = r.questoes as number;
+        const lessons = r.aulas as number;
+        const questions = r.questoes as number;
         return {
             id: r.id as string,
             name: r.name as string,
@@ -204,15 +204,15 @@ export async function crmUsers(
             provider: (r.provider as string | null) ?? null,
             criadoEm: r.created_at as string,
             ultimaAtividade: (r.ultima_atividade as string | null) ?? null,
-            aulas,
+            aulas: lessons,
             trilhas: r.trilhas as number,
             simulados: r.simulados as number,
             desafios: r.desafios as number,
             conquistas: r.conquistas as number,
-            questoesCertas: questoes,
+            questoesCertas: questions,
             xp: computeXp({
-                lessons: aulas,
-                questions: questoes,
+                lessons,
+                questions,
                 challengesXp: r.desafios_xp as number,
             }),
         };
