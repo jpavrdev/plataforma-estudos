@@ -15,6 +15,7 @@ import {
   type RoadmapResumo,
   type Nivel,
 } from '../../services/roadmaps';
+import { Dropdown } from '../../components/Dropdown';
 
 const NIVEL_LABEL: Record<Nivel, string> = {
   iniciante: 'Iniciante',
@@ -175,16 +176,13 @@ export function Roadmaps() {
           )}
 
           <div className="filters">
-            <label className="select-filtro">
-              <span className="filters__label">Nível</span>
-              <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
-                {NIVEIS.map((n) => (
-                  <option key={n.v} value={n.v}>
-                    {n.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Dropdown
+              ariaLabel="Nível"
+              placeholder="Nível"
+              valor={nivel}
+              aoEscolher={setNivel}
+              opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+            />
             {(totalFavoritos > 0 || soFavoritos) && (
               <button
                 type="button"
