@@ -2058,6 +2058,31 @@
   /* start: expandir um card com "ler mais" não estica os vizinhos da linha. */
   align-items: start;
 }
+
+/* Catálogo de trilhas (mocks PC/celular): mais respiro entre os cards, card mais
+   arejado e título maior. As classes base são compartilhadas com a tela de roadmaps,
+   por isso o ajuste é escopado aqui. */
+.trilhas-catalog {
+  gap: 24px;
+}
+.trilhas-catalog .track {
+  padding: 24px;
+}
+.trilhas-page--catalog .trilhas-page__title {
+  font-size: 28px;
+}
+@media (max-width: 640px) {
+  .trilhas-catalog {
+    gap: 16px;
+  }
+  .trilhas-catalog .track {
+    padding: 18px;
+  }
+  .trilhas-catalog .track__desc {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
 .track {
   display: flex;
   flex-direction: column;

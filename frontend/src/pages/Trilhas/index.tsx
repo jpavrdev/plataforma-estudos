@@ -209,7 +209,7 @@ export function Trilhas() {
           />
         </header>
 
-        <div className="trilhas-page">
+        <div className="trilhas-page trilhas-page--catalog">
           {/* Título + stats */}
           <div className="trilhas-page__head">
             <div>
@@ -370,7 +370,7 @@ export function Trilhas() {
           )}
 
           {/* Grade */}
-          <div className="track-grid">
+          <div className="track-grid trilhas-catalog">
             {trilhasFiltradas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
