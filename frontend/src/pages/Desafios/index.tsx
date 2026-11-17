@@ -12,21 +12,40 @@ import {
 import { Dropdown } from '../../components/Dropdown';
 import { SheetFiltro, type OpcaoSheet } from '../../components/SheetFiltro';
 import { useRequisicao } from '../../hooks/useRequisicao';
+import { Trans, useTranslation } from 'react-i18next';
 import { getDesafioDoDia, getDesafios } from '../../services/desafios';
 import type { DesafioResumo, StatusDesafio } from '../../services/desafios';
 
-const DIFFS = ['Todas', 'Fácil', 'Médio', 'Difícil'];
-const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
+type DiffKey = 'desafios.diffAll' | 'desafios.diffEasy' | 'desafios.diffMedium' | 'desafios.diffHard';
+
+// Difficulties carry a stable value; the label is an i18n key.
+const DIFFS: { v: string; label: DiffKey }[] = [
+  { v: '', label: 'desafios.diffAll' },
+  { v: 'facil', label: 'desafios.diffEasy' },
+  { v: 'medio', label: 'desafios.diffMedium' },
+  { v: 'dificil', label: 'desafios.diffHard' },
+];
+const DIF_LABEL: Record<string, DiffKey> = {
+  facil: 'desafios.diffEasy',
+  medio: 'desafios.diffMedium',
+  dificil: 'desafios.diffHard',
+};
 const DIFF_COLOR: Record<string, string> = {
   facil: 'var(--success)',
   medio: 'var(--amber)',
   dificil: 'var(--av-red)',
 };
-const STATUSES: { key: StatusDesafio | 'all'; label: string }[] = [
-  { key: 'all', label: 'Todos' },
-  { key: 'solved', label: 'Resolvidos' },
-  { key: 'attempted', label: 'Tentados' },
-  { key: 'todo', label: 'Não iniciados' },
+type StatusKey =
+  | 'desafios.statusAll'
+  | 'desafios.statusSolved'
+  | 'desafios.statusAttempted'
+  | 'desafios.statusTodo';
+
+const STATUSES: { key: StatusDesafio | 'all'; label: StatusKey }[] = [
+  { key: 'all', label: 'desafios.statusAll' },
+  { key: 'solved', label: 'desafios.statusSolved' },
+  { key: 'attempted', label: 'desafios.statusAttempted' },
+  { key: 'todo', label: 'desafios.statusTodo' },
 ];
 const PAGE_SIZE = 10;
 const TEMAS_COLAPSADOS = 8;
@@ -80,6 +99,7 @@ function StatusIcon({ status }: { status: StatusDesafio }) {
 }
 
 export function Desafios() {
+  const { t } = useTranslation();
   const { dados } = useRequisicao(() => Promise.all([getDesafioDoDia(), getDesafios()]), []);
   const daily = dados?.[0] ?? null;
   const lista = dados?.[1];
@@ -88,7 +108,7 @@ export function Desafios() {
 
   const buscaRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
-  const [diff, setDiff] = useState('Todas');
+  const [diff, setDiff] = useState('');
   const [status, setStatus] = useState<StatusDesafio | 'all'>('all');
   const [topic, setTopic] = useState('Todos');
   const [page, setPage] = useState(1);
@@ -128,7 +148,7 @@ export function Desafios() {
     return items.filter((c) => {
       const busca = `${c.number ?? ''} ${c.title} ${c.topic ?? ''}`.toLowerCase();
       if (query && !busca.includes(query.toLowerCase())) return false;
-      if (diff !== 'Todas' && DIF_LABEL[c.difficulty] !== diff) return false;
+      if (diff && c.difficulty !== diff) return false;
       if (status !== 'all' && c.status !== status) return false;
       if (topic !== 'Todos' && !(c.topic ?? '').toLowerCase().includes(topic.toLowerCase()))
         return false;
@@ -147,11 +167,11 @@ export function Desafios() {
     };
   const ringOffset = Math.round(151 * (1 - progress.pct / 100));
 
-  const filtrosAtivos = !!(query.trim() || diff !== 'Todas' || status !== 'all' || topic !== 'Todos');
+  const filtrosAtivos = !!(query.trim() || diff || status !== 'all' || topic !== 'Todos');
 
   function limparFiltros() {
     setQuery('');
-    setDiff('Todas');
+    setDiff('');
     setStatus('all');
     setTopic('Todos');
     setPage(1);
@@ -160,18 +180,15 @@ export function Desafios() {
   const totalTemas = chips.length - 1;
   const chipsVisiveis = temasAbertos ? chips : chips.slice(0, TEMAS_COLAPSADOS + 1);
 
-  const opcoesTema: OpcaoSheet[] = chips.map((t) => ({
-    valor: t.name === 'Todos' ? '' : t.name,
-    label: t.name,
-    contagem: t.count ?? items.length,
+  const opcoesTema: OpcaoSheet[] = chips.map((c) => ({
+    valor: c.name === 'Todos' ? '' : c.name,
+    label: c.name === 'Todos' ? t('desafios.topicAll') : c.name,
+    contagem: c.count ?? items.length,
   }));
-  const opcoesDificuldade: OpcaoSheet[] = [
-    { valor: '', label: 'Todas' },
-    ...DIFFS.slice(1).map((d) => ({ valor: d, label: d })),
-  ];
+  const opcoesDificuldade: OpcaoSheet[] = DIFFS.map((d) => ({ valor: d.v, label: t(d.label) }));
   const opcoesStatus: OpcaoSheet[] = STATUSES.map((s) => ({
     valor: s.key === 'all' ? '' : s.key,
-    label: s.label,
+    label: t(s.label),
   }));
 
   return (
@@ -180,10 +197,8 @@ export function Desafios() {
       <div className="ch">
         <div className="ch-head">
           <div>
-            <h1 className="ch-title">Desafios</h1>
-            <p className="ch-sub">
-              Pratique com problemas de código no estilo das entrevistas. Um novo desafio todo dia.
-            </p>
+            <h1 className="ch-title">{t('desafios.title')}</h1>
+            <p className="ch-sub">{t('desafios.sub')}</p>
           </div>
           <div className="ch-progress">
             <div className="ch-ring">
@@ -217,20 +232,20 @@ export function Desafios() {
             </div>
             <div>
               <div className="ch-progress__count">
-                {progress.solved} <span>/ {progress.total} resolvidos</span>
+                {progress.solved} <span>{t('desafios.solvedOf', { total: progress.total })}</span>
               </div>
               <div className="ch-progress__legend">
                 <span>
                   <i style={{ background: 'var(--success)' }} />
-                  {progress.easy} fáceis
+                  {progress.easy} {t('desafios.easy')}
                 </span>
                 <span>
                   <i style={{ background: 'var(--amber)' }} />
-                  {progress.medium} médios
+                  {progress.medium} {t('desafios.medium')}
                 </span>
                 <span>
                   <i style={{ background: 'var(--av-red)' }} />
-                  {progress.hard} difíceis
+                  {progress.hard} {t('desafios.hard')}
                 </span>
               </div>
             </div>
@@ -244,18 +259,18 @@ export function Desafios() {
               <Play size={24} />
             </span>
             <div className="ch-daily__meta">
-              <div className="ch-daily__kicker">Desafio do dia · mantém seu streak</div>
+              <div className="ch-daily__kicker">{t('desafios.dailyKicker')}</div>
               <div className="ch-daily__name">
                 {daily.number != null ? `${daily.number}. ` : ''}
                 {daily.title}
               </div>
               <div className="ch-daily__sub">
-                {DIF_LABEL[daily.difficulty]} · +{daily.xp} XP
-                {daily.solved ? ' · resolvido' : ' · resolva antes da meia-noite'}
+                {t(DIF_LABEL[daily.difficulty])} · +{daily.xp} XP
+                {daily.solved ? ` · ${t('desafios.dailySolved')}` : ` · ${t('desafios.dailyDeadline')}`}
               </div>
             </div>
             <Link to={`/desafios/${daily.id}`} className="ch-daily__btn">
-              <Play size={13} /> {daily.solved ? 'Revisar' : 'Resolver agora'}
+              <Play size={13} /> {daily.solved ? t('desafios.dailyReview') : t('desafios.dailySolveNow')}
             </Link>
           </div>
         )}
@@ -267,13 +282,13 @@ export function Desafios() {
               ref={buscaRef}
               value={query}
               onChange={(e) => reset(setQuery)(e.target.value)}
-              placeholder="Buscar desafio por nome ou tema..."
+              placeholder={t('desafios.searchPlaceholder')}
             />
             {query ? (
               <button
                 type="button"
                 className="trilhas-search__clear"
-                aria-label="Limpar busca"
+                aria-label={t('filters.clearSearch')}
                 onClick={() => reset(setQuery)('')}
               >
                 <X size={13} />
@@ -283,24 +298,24 @@ export function Desafios() {
             )}
           </label>
 
-          <div className="level-pills" role="group" aria-label="Dificuldade">
+          <div className="level-pills" role="group" aria-label={t('filters.difficulty')}>
             {DIFFS.map((d) => (
               <button
-                key={d}
+                key={d.v}
                 type="button"
-                className={`level-pill${diff === d ? ' level-pill--active' : ''}`}
-                aria-pressed={diff === d}
-                onClick={() => reset(setDiff)(d)}
+                className={`level-pill${diff === d.v ? ' level-pill--active' : ''}`}
+                aria-pressed={diff === d.v}
+                onClick={() => reset(setDiff)(d.v)}
               >
-                {d}
+                {t(d.label)}
               </button>
             ))}
           </div>
 
           <div className="filtro-desktop">
             <Dropdown
-              ariaLabel="Status"
-              placeholder="Status"
+              ariaLabel={t('filters.status')}
+              placeholder={t('filters.status')}
               valor={status === 'all' ? '' : status}
               aoEscolher={(v) => reset(setStatus)((v || 'all') as StatusDesafio | 'all')}
               opcoes={opcoesStatus}
@@ -314,17 +329,17 @@ export function Desafios() {
               className={`filtro-btn${topic !== 'Todos' ? ' filtro-btn--on' : ''}`}
               onClick={() => setFolha('tema')}
             >
-              <span>{topic !== 'Todos' ? topic : 'Tema'}</span>
+              <span>{topic !== 'Todos' ? topic : t('filters.topic')}</span>
               <ChevronDown size={13} />
             </button>
           </div>
           <div className="filtro-mobile">
             <button
               type="button"
-              className={`filtro-btn${diff !== 'Todas' ? ' filtro-btn--on' : ''}`}
+              className={`filtro-btn${diff ? ' filtro-btn--on' : ''}`}
               onClick={() => setFolha('dificuldade')}
             >
-              <span>{diff !== 'Todas' ? diff : 'Dificuldade'}</span>
+              <span>{diff ? t(DIF_LABEL[diff]) : t('filters.difficulty')}</span>
               <ChevronDown size={13} />
             </button>
           </div>
@@ -333,14 +348,14 @@ export function Desafios() {
         </div>
 
         <div className="fchips">
-          {chipsVisiveis.map((t) => (
+          {chipsVisiveis.map((c) => (
             <button
-              key={t.name}
-              className={`fchip${topic === t.name ? ' fchip--active' : ''}`}
-              onClick={() => reset(setTopic)(t.name)}
+              key={c.name}
+              className={`fchip${topic === c.name ? ' fchip--active' : ''}`}
+              onClick={() => reset(setTopic)(c.name)}
             >
-              {t.name}
-              {t.count != null && <span className="fchip__n">{t.count}</span>}
+              {c.name === 'Todos' ? t('desafios.topicAll') : c.name}
+              {c.count != null && <span className="fchip__n">{c.count}</span>}
             </button>
           ))}
           {totalTemas > TEMAS_COLAPSADOS && (
@@ -349,7 +364,9 @@ export function Desafios() {
               className="fchips__ver"
               onClick={() => setTemasAbertos((v) => !v)}
             >
-              {temasAbertos ? 'Recolher' : `Ver os ${totalTemas} temas`}
+              {temasAbertos
+                ? t('desafios.collapse')
+                : t('desafios.seeTopics', { count: totalTemas })}
               <span
                 className="fchips__ver-seta"
                 style={temasAbertos ? { transform: 'rotate(180deg)' } : undefined}
@@ -369,18 +386,18 @@ export function Desafios() {
               aria-hidden={!filtrosAtivos}
               onClick={limparFiltros}
             >
-              <span className="tx-completo">Limpar filtros</span>
-              <span className="tx-curto">Limpar</span>
+              <span className="tx-completo">{t('filters.clear')}</span>
+              <span className="tx-curto">{t('filters.clearShort')}</span>
             </button>
             <span className="filters__count">
               {filtrosAtivos ? (
-                <>
-                  <b>{filtered.length}</b> de {items.length} desafios
-                </>
+                <Trans
+                  i18nKey="desafios.countFiltered"
+                  values={{ shown: filtered.length, total: items.length }}
+                  components={{ b: <b /> }}
+                />
               ) : (
-                <>
-                  {items.length} {items.length === 1 ? 'desafio' : 'desafios'}
-                </>
+                <>{t('desafios.countAll', { count: items.length })}</>
               )}
             </span>
           </div>
@@ -390,7 +407,7 @@ export function Desafios() {
               className={`filtro-btn${status !== 'all' ? ' filtro-btn--on' : ''}`}
               onClick={() => setFolha('status')}
             >
-              <span>{status !== 'all' ? STATUSES.find((s) => s.key === status)!.label : 'Status'}</span>
+              <span>{status !== 'all' ? t(STATUSES.find((s) => s.key === status)!.label) : t('filters.status')}</span>
               <ChevronDown size={13} />
             </button>
           </div>
@@ -398,12 +415,12 @@ export function Desafios() {
 
         <div className="ch-table">
           <div className="ch-table__head">
-            <div>Status</div>
-            <div>Desafio</div>
-            <div>Tema</div>
-            <div>Dificuldade</div>
-            <div className="ch-right">Aceitação</div>
-            <div className="ch-right">XP</div>
+            <div>{t('desafios.tableStatus')}</div>
+            <div>{t('desafios.tableChallenge')}</div>
+            <div>{t('desafios.tableTopic')}</div>
+            <div>{t('desafios.tableDifficulty')}</div>
+            <div className="ch-right">{t('desafios.tableAcceptance')}</div>
+            <div className="ch-right">{t('desafios.tableXp')}</div>
           </div>
 
           {shown.map((c) => (
@@ -411,14 +428,18 @@ export function Desafios() {
           ))}
 
           {shown.length === 0 && (
-            <div className="ch-empty">Nenhum desafio encontrado com esses filtros.</div>
+            <div className="ch-empty">{t('desafios.empty')}</div>
           )}
 
           <div className="ch-pager">
             <span className="ch-pager__info">
               {filtered.length === 0
-                ? 'Nenhum resultado'
-                : `Mostrando ${(pageSafe - 1) * PAGE_SIZE + 1}–${Math.min(pageSafe * PAGE_SIZE, filtered.length)} de ${filtered.length} desafios`}
+                ? t('desafios.noResults')
+                : t('desafios.pagerInfo', {
+                    from: (pageSafe - 1) * PAGE_SIZE + 1,
+                    to: Math.min(pageSafe * PAGE_SIZE, filtered.length),
+                    total: filtered.length,
+                  })}
             </span>
             <div className="ch-pager__nav">
               <button
@@ -449,24 +470,24 @@ export function Desafios() {
         </div>
 
         <SheetFiltro
-          titulo="Tema"
+          titulo={t('filters.topic')}
           aberto={folha === 'tema'}
           aoFechar={() => setFolha(null)}
           valor={topic === 'Todos' ? '' : topic}
           aoEscolher={(v) => reset(setTopic)(v || 'Todos')}
           opcoes={opcoesTema}
-          placeholderBusca="Buscar tema"
+          placeholderBusca={t('desafios.searchTopic')}
         />
         <SheetFiltro
-          titulo="Dificuldade"
+          titulo={t('filters.difficulty')}
           aberto={folha === 'dificuldade'}
           aoFechar={() => setFolha(null)}
-          valor={diff === 'Todas' ? '' : diff}
-          aoEscolher={(v) => reset(setDiff)(v || 'Todas')}
+          valor={diff}
+          aoEscolher={(v) => reset(setDiff)(v || '')}
           opcoes={opcoesDificuldade}
         />
         <SheetFiltro
-          titulo="Status"
+          titulo={t('filters.status')}
           aberto={folha === 'status'}
           aoFechar={() => setFolha(null)}
           valor={status === 'all' ? '' : status}
@@ -479,6 +500,7 @@ export function Desafios() {
 }
 
 function Row({ c }: { c: DesafioResumo }) {
+  const { t } = useTranslation();
   return (
     <div className={`ch-row${c.isToday ? ' ch-row--daily' : ''}`}>
       <div className="ch-row__status">
@@ -493,18 +515,18 @@ function Row({ c }: { c: DesafioResumo }) {
           >
             {c.title}
           </Link>
-          {c.isToday && <span className="ch-row__today">HOJE</span>}
+          {c.isToday && <span className="ch-row__today">{t('desafios.today')}</span>}
         </div>
         {/* No celular o tema e a dificuldade viram sublinha do título. */}
         <div className="ch-row__sub">
           {c.topic ?? '—'} ·{' '}
-          <span style={{ color: DIFF_COLOR[c.difficulty] }}>{DIF_LABEL[c.difficulty]}</span>
+          <span style={{ color: DIFF_COLOR[c.difficulty] }}>{t(DIF_LABEL[c.difficulty])}</span>
         </div>
       </div>
       <div className="ch-row__topic">{c.topic ?? '—'}</div>
       <div className="ch-row__diffcell">
         <span className="ch-row__diff" style={{ color: DIFF_COLOR[c.difficulty] }}>
-          {DIF_LABEL[c.difficulty]}
+          {t(DIF_LABEL[c.difficulty])}
         </span>
       </div>
       <div className="ch-row__accept">{c.acceptance == null ? '—' : `${c.acceptance}%`}</div>

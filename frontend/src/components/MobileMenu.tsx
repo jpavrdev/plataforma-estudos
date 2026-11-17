@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './Logo';
 import { X } from './Icons';
+import { useTranslation } from 'react-i18next';
 import { useNavPrincipal } from '../hooks/useNavPrincipal';
 
 // Hambúrguer + drawer lateral, visíveis só no telefone (controlados por CSS).
 export function MobileMenu({ items }: { items?: { to: string; label: string }[] }) {
+  const { t } = useTranslation();
   const navPrincipal = useNavPrincipal();
   const itens = items ?? navPrincipal;
   const [aberto, setAberto] = useState(false);
@@ -18,7 +20,7 @@ export function MobileMenu({ items }: { items?: { to: string; label: string }[] 
 
   return (
     <>
-      <button className="hamburguer" aria-label="Abrir menu" onClick={() => setAberto(true)}>
+      <button className="hamburguer" aria-label={t("mobileMenu.open")} onClick={() => setAberto(true)}>
         <svg
           width="20"
           height="20"
@@ -40,7 +42,7 @@ export function MobileMenu({ items }: { items?: { to: string; label: string }[] 
           <nav className="drawer">
             <div className="drawer__head">
               <Logo variant="solid" size={18} to="/home" />
-              <button className="drawer__close" aria-label="Fechar menu" onClick={fechar}>
+              <button className="drawer__close" aria-label={t("mobileMenu.close")} onClick={fechar}>
                 <X size={20} />
               </button>
             </div>

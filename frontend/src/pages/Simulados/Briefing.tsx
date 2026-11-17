@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
+import { Trans, useTranslation } from 'react-i18next';
 import { SimTopbar } from './SimTopbar';
 import {
   ClockExam,
@@ -24,8 +25,9 @@ import { provedorDe, nomeLimpo, nivelClasse, LABEL_NIVEL } from './provedores';
 import { ConfirmModal } from './ConfirmModal';
 import { MontarModal } from './MontarModal';
 
-function formatData(iso: string) {
-  return new Date(iso).toLocaleDateString('pt-BR', {
+// Date format follows the active language, as decided in the vault note.
+function formatData(iso: string, language: string) {
+  return new Date(iso).toLocaleDateString(language === 'en' ? 'en-US' : 'pt-BR', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -33,6 +35,7 @@ function formatData(iso: string) {
 }
 
 export function SimuladoBriefing() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { dados, carregando } = useRequisicao(
@@ -70,10 +73,10 @@ export function SimuladoBriefing() {
   // O botão principal aparece duas vezes no celular: dentro do card no desktop
   // e preso no rodapé no celular. Mesma ação e mesmo rótulo nas duas casas.
   const rotuloCta = emAndamento
-    ? 'Voltar para a prova'
+    ? t('simulados.briefing.backToExam')
     : tentativas.length > 0
-      ? 'Refazer simulado'
-      : 'Iniciar simulado';
+      ? t('simulados.briefing.redo')
+      : t('simulados.briefing.start');
   const aoClicarCta = () =>
     emAndamento
       ? navigate(`/simulados/tentativa/${emAndamento.attemptId}`)
@@ -85,7 +88,7 @@ export function SimuladoBriefing() {
         <SimTopbar />
         <div className="sim sim--brief">
           <button className="sim-back" onClick={() => navigate('/simulados')}>
-            <ChevronLeft size={14} /> Voltar aos simulados
+            <ChevronLeft size={14} /> {t('simulados.briefing.back')}
           </button>
 
           {carregando ? (
@@ -106,7 +109,7 @@ export function SimuladoBriefing() {
                       <span
                         className={`simc__level simc__level--${nivelClasse(exam.level)}`}
                       >
-                        {LABEL_NIVEL[nivelClasse(exam.level)]}
+                        {t(LABEL_NIVEL[nivelClasse(exam.level)])}
                       </span>
                     )}
                   </h1>
@@ -116,28 +119,28 @@ export function SimuladoBriefing() {
 
               <div className="sim-brief__grid">
                 <div className="card sim-rules">
-                  <div className="sim-rules__title">Como funciona o simulado</div>
-                  <div className="sim-rules__sub">Leia antes de começar.</div>
+                  <div className="sim-rules__title">{t('simulados.briefing.rulesTitle')}</div>
+                  <div className="sim-rules__sub">{t('simulados.briefing.rulesSub')}</div>
                   <div className="sim-rules__grid">
                     <Regra
                       icon={<ClockExam size={18} />}
-                      t={`${exam.durationMinutes} minutos`}
-                      d="Tempo total da prova."
+                      t={t('simulados.briefing.rulesTimeTitle', { count: exam.durationMinutes })}
+                      d={t('simulados.briefing.rulesTime')}
                     />
                     <Regra
                       icon={<Check size={17} />}
-                      t={`${exam.questionCount} questões`}
-                      d="Múltipla escolha; algumas pedem mais de uma resposta."
+                      t={t('simulados.briefing.rulesQuestionsTitle', { count: exam.questionCount })}
+                      d={t('simulados.briefing.rulesQuestions')}
                     />
                     <Regra
                       icon={<Target size={17} />}
-                      t={`${exam.passPercent}% para passar`}
-                      d="Cada questão vale igual; múltiplas contam tudo-ou-nada."
+                      t={t('simulados.briefing.rulesPassTitle', { percent: exam.passPercent })}
+                      d={t('simulados.briefing.rulesPass')}
                     />
                     <Regra
                       icon={<BookOpen size={17} />}
-                      t="Revisão ao final"
-                      d="Veja o que acertou, o que errou e o assunto de cada questão."
+                      t={t('simulados.briefing.rulesReviewTitle')}
+                      d={t('simulados.briefing.rulesReview')}
                     />
                   </div>
 
@@ -147,15 +150,12 @@ export function SimuladoBriefing() {
                     </span>
                     <div>
                       {emAndamento ? (
-                        <>
-                          <b>Você tem uma tentativa em andamento.</b> Termine ou envie ela antes de
-                          começar outra.
-                        </>
+                        <Trans
+                          i18nKey="simulados.briefing.warnOngoing"
+                          components={{ b: <b /> }}
+                        />
                       ) : (
-                        <>
-                          <b>Uma vez iniciado, o cronômetro não para.</b> Se o tempo acabar, o
-                          simulado é enviado automaticamente com as respostas marcadas até aí.
-                        </>
+                        <Trans i18nKey="simulados.briefing.warnTimer" components={{ b: <b /> }} />
                       )}
                     </div>
                   </div>
@@ -165,9 +165,9 @@ export function SimuladoBriefing() {
                 </div>
 
                 <div className="card">
-                  <div className="sim-attempts__title">Suas últimas tentativas</div>
+                  <div className="sim-attempts__title">{t('simulados.briefing.attemptsTitle')}</div>
                   {tentativas.length === 0 ? (
-                    <p className="sim-empty">Você ainda não fez este simulado.</p>
+                    <p className="sim-empty">{t('simulados.briefing.attemptsEmpty')}</p>
                   ) : (
                     <div className="sim-attempts">
                       {tentativas.slice(0, 6).map((a) => (
@@ -188,7 +188,7 @@ export function SimuladoBriefing() {
 
               {!emAndamento && (
                 <section className="sim-formas">
-                  <h2 className="sim-formas__title">Outras formas de estudar</h2>
+                  <h2 className="sim-formas__title">{t('simulados.briefing.otherWays')}</h2>
                   <div className="sim-formas__grid">
                     <button
                       className="card sim-forma"
@@ -198,10 +198,8 @@ export function SimuladoBriefing() {
                       }}
                     >
                       <span className="sim-forma__txt">
-                        <span className="sim-forma__t">Modo de prática</span>
-                        <span className="sim-forma__d">
-                          Confira a resposta na hora, questão por questão, sem cronômetro.
-                        </span>
+                        <span className="sim-forma__t">{t('simulados.briefing.practiceTitle')}</span>
+                        <span className="sim-forma__d">{t('simulados.briefing.practiceDesc')}</span>
                       </span>
                       <ChevronRight size={16} />
                     </button>
@@ -213,10 +211,8 @@ export function SimuladoBriefing() {
                       }}
                     >
                       <span className="sim-forma__txt">
-                        <span className="sim-forma__t">Monte do seu jeito</span>
-                        <span className="sim-forma__d">
-                          Escolha a quantidade, o tempo e os assuntos da tentativa.
-                        </span>
+                        <span className="sim-forma__t">{t('simulados.briefing.customTitle')}</span>
+                        <span className="sim-forma__d">{t('simulados.briefing.customDesc')}</span>
                       </span>
                       <ChevronRight size={16} />
                     </button>
@@ -242,25 +238,28 @@ export function SimuladoBriefing() {
 
           {confirmando && exam && (
             <ConfirmModal
-              title="Iniciar o simulado?"
-              confirmLabel="Sim, iniciar"
+              title={t('simulados.briefing.confirmStartTitle')}
+              confirmLabel={t('simulados.briefing.confirmStartYes')}
               onConfirm={() => iniciar()}
               onCancel={() => setConfirmando(false)}
               loading={iniciando}
             >
-              Assim que você iniciar, o cronômetro de <b>{exam.durationMinutes} minutos</b> começa a
-              contar e não para. Tem certeza que quer começar agora?
+              <Trans
+                i18nKey="simulados.briefing.confirmStartBody"
+                values={{ minutes: exam.durationMinutes }}
+                components={{ b: <b /> }}
+              />
             </ConfirmModal>
           )}
 
           {voltarPara && (
             <ConfirmModal
-              title="Tentativa em andamento"
-              confirmLabel="Voltar para a prova"
+              title={t('simulados.briefing.ongoingTitle')}
+              confirmLabel={t('simulados.briefing.ongoingYes')}
               onConfirm={() => navigate(`/simulados/tentativa/${voltarPara}`)}
               onCancel={() => setVoltarPara(null)}
             >
-              Você tem uma tentativa em andamento com o cronômetro rodando. Deseja voltar para ela?
+              {t('simulados.briefing.ongoingBody')}
             </ConfirmModal>
           )}
         </div>
@@ -282,29 +281,31 @@ function Regra({ icon, t, d }: { icon: ReactNode; t: string; d: string }) {
 }
 
 function ItemTentativa({ a, onClick }: { a: TentativaHistorico; onClick: () => void }) {
+  const { t, i18n } = useTranslation();
   const enviado = a.submittedAt != null;
   const cancelada = enviado && a.score == null;
   const ok = a.passed === true;
   const estado = cancelada ? 'cancel' : !enviado ? 'wip' : ok ? 'ok' : 'no';
   const rotulo = cancelada
-    ? 'Cancelada'
+    ? t('simulados.briefing.attemptCancelled')
     : !enviado
-      ? 'Em andamento'
+      ? t('simulados.briefing.attemptWip')
       : ok
-        ? 'Aprovado'
-        : 'Reprovado';
+        ? t('simulados.briefing.attemptOk')
+        : t('simulados.briefing.attemptNo');
   return (
     <button className={`sim-attempt${cancelada ? ' sim-attempt--off' : ''}`} onClick={onClick}>
       <span className={`sim-attempt__score sim-attempt__score--${estado}`}>
         {enviado && !cancelada ? `${a.score}%` : '—'}
       </span>
       <div className="sim-attempt__id">
-        <div className="sim-attempt__exam">{formatData(a.startedAt)}</div>
+        <div className="sim-attempt__exam">{formatData(a.startedAt, i18n.language)}</div>
         {a.personalizado && (
           <div className="sim-attempt__tag">
-            {a.pratica ? 'prática' : 'treino'} · {a.questoes} questões
-            {!a.comTempo && !a.pratica && ' · sem tempo'}
-            {a.topicos && a.topicos.length > 0 && ` · ${a.topicos.length} assunto(s)`}
+            {a.pratica ? t('simulados.briefing.attemptPractice') : t('simulados.briefing.attemptTraining')}{' '}
+            · {a.questoes} {t('simulados.briefing.attemptQuestions')}
+            {!a.comTempo && !a.pratica && ` · ${t('simulados.briefing.attemptNoTime')}`}
+            {a.topicos && a.topicos.length > 0 && ` · ${t('simulados.briefing.attemptTopics', { count: a.topicos.length })}`}
           </div>
         )}
       </div>

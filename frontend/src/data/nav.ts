@@ -1,18 +1,20 @@
 // Itens da navegação principal, compartilhados por todas as abas para não divergirem.
-// As telas leem pelo useNavPrincipal, que acrescenta o sorteio quando há um aberto.
+// As telas leem pelo useNavPrincipal, que acrescenta o sorteio quando há um aberto
+// e traduz o rótulo pela chave. NAV_ESTUDIO ainda não migrou: o estúdio segue com
+// rótulo fixo em português até a própria área ser traduzida.
 export const NAV_PRINCIPAL = [
-  { label: 'Início', to: '/home' },
-  { label: 'Roadmaps', to: '/roadmaps' },
-  { label: 'Trilhas', to: '/trilhas' },
-  { label: 'Simulados', to: '/simulados' },
-  { label: 'Desafios', to: '/desafios' },
-  { label: 'Revisão', to: '/revisao' },
-  { label: 'Ranking', to: '/ranking' },
-  { label: 'Comunidade', to: '/comunidade' },
-  { label: 'Apoiar', to: '/apoie' },
-];
+  { key: 'home', to: '/home' },
+  { key: 'roadmaps', to: '/roadmaps' },
+  { key: 'tracks', to: '/trilhas' },
+  { key: 'exams', to: '/simulados' },
+  { key: 'challenges', to: '/desafios' },
+  { key: 'review', to: '/revisao' },
+  { key: 'ranking', to: '/ranking' },
+  { key: 'community', to: '/comunidade' },
+  { key: 'support', to: '/apoie' },
+] as const;
 
-export const NAV_SORTEIO = { label: 'Sorteio', to: '/sorteio' };
+export const NAV_SORTEIO = { key: 'giveaway', to: '/sorteio' } as const;
 
 export const NAV_ESTUDIO = [
   { label: 'Trilhas', to: '/estudio' },

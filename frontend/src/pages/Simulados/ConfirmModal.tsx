@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Alert } from '../../components/Icons';
 import { useTravaFundo } from '../../hooks/useTravaFundo';
+import { useTranslation } from 'react-i18next';
 
 export function ConfirmModal({
   title,
@@ -21,6 +22,7 @@ export function ConfirmModal({
 }) {
   // Monta só com o modal aberto: trava o fundo enquanto ele existir.
   useTravaFundo(true);
+  const { t } = useTranslation();
   return (
     <div
       className="sim-modal"
@@ -47,7 +49,7 @@ export function ConfirmModal({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? 'Aguarde...' : confirmLabel}
+            {loading ? t('simulados.builder.wait') : confirmLabel}
           </button>
         </div>
       </div>

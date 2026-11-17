@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { urlImagem } from '../utils/urlImagem';
 
@@ -11,6 +12,7 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ initials, level, name, email }: UserMenuProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Abrir menu do usuário"
+        aria-label={t("userMenu.open")}
       >
         {foto ? <img className="avatar__img" src={foto} alt={name} /> : initials}
         <span className="avatar__level">Lv{level}</span>
@@ -76,7 +78,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
             className="user-menu__item"
             onClick={() => go(user?.username ? `/${user.username}` : '/perfil')}
           >
-            Perfil
+            {t('userMenu.profile')}
           </button>
           <button
             type="button"
@@ -84,7 +86,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
             className="user-menu__item"
             onClick={() => go('/progresso')}
           >
-            Meu progresso
+            {t('userMenu.progress')}
           </button>
           <button
             type="button"
@@ -92,7 +94,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
             className="user-menu__item"
             onClick={() => go('/conquistas')}
           >
-            Conquistas
+            {t('userMenu.achievements')}
           </button>
           {user?.apoiador && (
             <button
@@ -101,7 +103,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
               className="user-menu__item"
               onClick={() => go('/curriculo')}
             >
-              Analisar currículo
+              {t('userMenu.resumeAnalyzer')}
             </button>
           )}
           <button
@@ -110,7 +112,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
             className="user-menu__item"
             onClick={() => go('/apoie')}
           >
-            {user?.apoiador ? 'Minha assinatura' : 'Apoiar o projeto'}
+            {user?.apoiador ? t('userMenu.subscription') : t('userMenu.supportProject')}
           </button>
           {user?.role === 'admin' && (
             <button
@@ -119,7 +121,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
               className="user-menu__item user-menu__item--accent"
               onClick={() => go('/estudio')}
             >
-              Estúdio
+              {t('userMenu.studio')}
             </button>
           )}
           {user?.role === 'admin' && (
@@ -129,7 +131,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
               className="user-menu__item"
               onClick={() => go('/configuracoes')}
             >
-              Configurações
+              {t('userMenu.settings')}
             </button>
           )}
           <div className="user-menu__divider" />
@@ -139,7 +141,7 @@ export function UserMenu({ initials, level, name, email }: UserMenuProps) {
             className="user-menu__item user-menu__item--danger"
             onClick={handleLogout}
           >
-            Sair
+            {t('userMenu.signOut')}
           </button>
         </div>
       )}

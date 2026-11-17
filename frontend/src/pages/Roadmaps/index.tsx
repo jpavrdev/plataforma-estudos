@@ -10,6 +10,7 @@ import { SheetFiltro } from '../../components/SheetFiltro';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
+import { Trans, useTranslation } from 'react-i18next';
 import {
   listarRoadmaps,
   alternarFavoritoRoadmap,
@@ -17,10 +18,12 @@ import {
   type Nivel,
 } from '../../services/roadmaps';
 
-const NIVEL_LABEL: Record<Nivel, string> = {
-  iniciante: 'Iniciante',
-  intermediario: 'Intermediário',
-  avancado: 'Avançado',
+type LevelKey = 'levels.beginner' | 'levels.intermediate' | 'levels.advanced';
+
+const NIVEL_LABEL: Record<Nivel, LevelKey> = {
+  iniciante: 'levels.beginner',
+  intermediario: 'levels.intermediate',
+  avancado: 'levels.advanced',
 };
 
 // Cada nível tem sua cor, como nas trilhas, para dar variedade aos cards.
@@ -30,11 +33,11 @@ const LEVEL_HUE: Record<Nivel, string> = {
   avancado: '#D9536B',
 };
 
-const NIVEIS: { v: string; label: string }[] = [
-  { v: '', label: 'Todos' },
-  { v: 'iniciante', label: 'Iniciante' },
-  { v: 'intermediario', label: 'Intermediário' },
-  { v: 'avancado', label: 'Avançado' },
+const NIVEIS: { v: string; label: 'filters.allM' | LevelKey }[] = [
+  { v: '', label: 'filters.allM' },
+  { v: 'iniciante', label: 'levels.beginner' },
+  { v: 'intermediario', label: 'levels.intermediate' },
+  { v: 'avancado', label: 'levels.advanced' },
 ];
 
 function glyph(name: string): string {
@@ -46,13 +49,16 @@ function glyph(name: string): string {
   return partes.map((p) => p[0]?.toUpperCase() ?? '').join('') || 'RM';
 }
 
-const CTA: Record<RoadmapResumo['status'], string> = {
-  nao_iniciado: 'Começar',
-  em_progresso: 'Continuar',
-  concluido: 'Revisar',
+type CtaKey = 'roadmaps.ctaStart' | 'roadmaps.ctaContinue' | 'roadmaps.ctaReview';
+
+const CTA: Record<RoadmapResumo['status'], CtaKey> = {
+  nao_iniciado: 'roadmaps.ctaStart',
+  em_progresso: 'roadmaps.ctaContinue',
+  concluido: 'roadmaps.ctaReview',
 };
 
 export function Roadmaps() {
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
 
@@ -61,7 +67,7 @@ export function Roadmaps() {
 
   const [roadmaps, setRoadmaps] = useState<RoadmapResumo[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  const [erro, setErro] = useState(false);
   const [nivel, setNivel] = useState('');
   const [soFavoritos, setSoFavoritos] = useState(false);
   const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
@@ -70,7 +76,7 @@ export function Roadmaps() {
   useEffect(() => {
     listarRoadmaps()
       .then(setRoadmaps)
-      .catch(() => setErro('Não foi possível carregar os roadmaps.'))
+      .catch(() => setErro(true))
       .finally(() => setCarregando(false));
   }, []);
 
@@ -117,7 +123,7 @@ export function Roadmaps() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav__item${item.label === 'Roadmaps' ? ' nav__item--active' : ''}`}
+                className={`nav__item${item.to === '/roadmaps' ? ' nav__item--active' : ''}`}
               >
                 {item.label}
               </Link>
@@ -139,20 +145,17 @@ export function Roadmaps() {
         <div className="trilhas-page trilhas-page--roadmaps">
           <div className="trilhas-page__head">
             <div>
-              <h1 className="trilhas-page__title">Roadmaps de carreira</h1>
-              <p className="trilhas-page__sub">
-                Trilhas guiadas do zero à vaga. Escolha um caminho e siga estágio por estágio, no seu
-                ritmo.
-              </p>
+              <h1 className="trilhas-page__title">{t('roadmaps.title')}</h1>
+              <p className="trilhas-page__sub">{t('roadmaps.sub')}</p>
             </div>
             <div className="trilhas-page__stats">
-              <Metric value={String(roadmaps.length)} label="roadmaps" />
+              <Metric value={String(roadmaps.length)} label={t('roadmaps.total')} />
               <span className="trilhas-page__divider" />
-              <Metric value={String(emAndamento)} label="em progresso" accent />
+              <Metric value={String(emAndamento)} label={t('roadmaps.ongoing')} accent />
               {concluidos > 0 && (
                 <>
                   <span className="trilhas-page__divider" />
-                  <Metric value={String(concluidos)} label="concluídos" />
+                  <Metric value={String(concluidos)} label={t('roadmaps.done')} />
                 </>
               )}
             </div>
@@ -162,11 +165,9 @@ export function Roadmaps() {
             <div className="continue-card">
               <span className="continue-card__glow" />
               <div className="continue-card__body">
-                <div className="continue-card__kicker">Continuar de onde parou</div>
+                <div className="continue-card__kicker">{t('roadmaps.continueKicker')}</div>
                 <h2 className="continue-card__title">{continuar.name}</h2>
-                <p className="continue-card__next">
-                  {continuar.stagesDone} de {continuar.stagesTotal} estágios concluídos
-                </p>
+                <p className="continue-card__next">{t('roadmaps.continueStages', { done: continuar.stagesDone, total: continuar.stagesTotal })}</p>
                 <div className="continue-card__progress">
                   <div className="continue-card__track">
                     <span style={{ width: `${continuar.percent}%` }} />
@@ -177,13 +178,13 @@ export function Roadmaps() {
                 </div>
               </div>
               <Link to={`/roadmaps/${continuar.slug}`} className="continue-card__btn">
-                <Play size={13} /> Continuar
+                <Play size={13} /> {t('roadmaps.continueCta')}
               </Link>
             </div>
           )}
 
           <div className="filters">
-            <div className="level-pills" role="group" aria-label="Nível">
+            <div className="level-pills" role="group" aria-label={t('filters.level')}>
               {NIVEIS.map((n) => (
                 <button
                   key={n.v}
@@ -204,7 +205,7 @@ export function Roadmaps() {
                 className={`filtro-btn${nivel ? ' filtro-btn--on' : ''}`}
                 onClick={() => setFolhaNivel(true)}
               >
-                <span>{nivel ? (NIVEIS.find((n) => n.v === nivel)?.label ?? 'Nível') : 'Nível'}</span>
+                <span>{nivel ? t(NIVEIS.find((n) => n.v === nivel)?.label ?? 'filters.level') : t('filters.level')}</span>
                 <ChevronDown size={13} />
               </button>
             </div>
@@ -216,7 +217,7 @@ export function Roadmaps() {
                 aria-pressed={soFavoritos}
                 onClick={() => setSoFavoritos((v) => !v)}
               >
-                <Star size={13} /> Favoritos <span className="fav-pill__n">{totalFavoritos}</span>
+                <Star size={13} /> {t('roadmaps.favorites')} <span className="fav-pill__n">{totalFavoritos}</span>
               </button>
             )}
             <div className="topbar__spacer" />
@@ -228,26 +229,28 @@ export function Roadmaps() {
                 aria-hidden={!filtrosAtivos}
                 onClick={limparFiltros}
               >
-                <span className="tx-completo">Limpar filtros</span>
-                <span className="tx-curto">Limpar</span>
+                <span className="tx-completo">{t('filters.clear')}</span>
+                <span className="tx-curto">{t('filters.clearShort')}</span>
               </button>
               <span className="filters__count">
                 {filtrosAtivos ? (
-                  <>
-                    <b>{filtrados.length}</b> de {roadmaps.length} roadmaps
-                  </>
+                  <Trans
+                    i18nKey="roadmaps.countFiltered"
+                    values={{ shown: filtrados.length, total: roadmaps.length }}
+                    components={{ b: <b /> }}
+                  />
                 ) : (
-                  <>{filtrados.length} roadmaps</>
+                  <>{t('roadmaps.countAll', { count: roadmaps.length })}</>
                 )}
               </span>
             </div>
           </div>
 
-          {carregando && <p className="track__desc">Carregando roadmaps...</p>}
-          {erro && <div className="auth__alert">{erro}</div>}
+          {carregando && <p className="track__desc">{t('roadmaps.loading')}</p>}
+          {erro && <div className="auth__alert">{t('roadmaps.loadError')}</div>}
           {!carregando && !erro && filtrados.length === 0 && (
             <p className="track__desc">
-              {nivel ? 'Nenhum roadmap com esse nível.' : 'Nenhum roadmap disponível ainda.'}
+              {nivel ? t('roadmaps.emptyFilter') : t('roadmaps.empty')}
             </p>
           )}
 
@@ -271,17 +274,17 @@ export function Roadmaps() {
                       </Link>
                       <div className="track__row">
                         <span className="track__level roadmap-card__level">
-                          {NIVEL_LABEL[r.level]}
+                          {t(NIVEL_LABEL[r.level])}
                         </span>
-                        <span className="track__lessons">{r.stagesTotal} estágios</span>
+                        <span className="track__lessons">{t('roadmaps.stages', { count: r.stagesTotal })}</span>
                       </div>
                     </div>
                     <button
                       type="button"
                       className={`track__fav${ehFavorito(r) ? ' track__fav--on' : ''}`}
                       aria-pressed={ehFavorito(r)}
-                      aria-label={ehFavorito(r) ? 'Remover dos favoritos' : 'Favoritar'}
-                      title={ehFavorito(r) ? 'Remover dos favoritos' : 'Favoritar'}
+                      aria-label={ehFavorito(r) ? t('filters.unfavorite') : t('filters.favorite')}
+                      title={ehFavorito(r) ? t('filters.unfavorite') : t('filters.favorite')}
                       onClick={() => alternarFavorito(r)}
                     >
                       <Star size={15} />
@@ -313,7 +316,7 @@ export function Roadmaps() {
                       className="track__cta roadmap-card__cta"
                       style={started ? { color: hue } : undefined}
                     >
-                      {r.premium ? 'Desbloquear' : CTA[r.status]} <ChevronRight size={15} />
+                      {r.premium ? t('roadmaps.ctaUnlock') : t(CTA[r.status])} <ChevronRight size={15} />
                     </span>
                   </div>
                 </div>
@@ -322,7 +325,7 @@ export function Roadmaps() {
           </div>
 
           <SheetFiltro
-            titulo="Nível"
+            titulo={t('filters.level')}
             aberto={folhaNivel}
             aoFechar={() => setFolhaNivel(false)}
             valor={nivel}
