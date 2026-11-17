@@ -1647,15 +1647,17 @@
   color: var(--bg);
 }
 
-.cat-pill {
+/* Dropdown customizado (o popup do select nativo não se estiliza nem anima). */
+.dropdown {
   position: relative;
   display: inline-flex;
-  align-items: center;
 }
-.cat-pill select {
-  appearance: none;
+.dropdown__gatilho {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   height: 44px;
-  padding: 0 32px 0 16px;
+  padding: 0 14px 0 16px;
   border-radius: 999px;
   border: 1px solid var(--border-strong);
   background: var(--input);
@@ -1665,48 +1667,82 @@
   font-weight: 500;
   cursor: pointer;
 }
-.cat-pill select:focus {
-  outline: none;
+.dropdown__gatilho:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
-.cat-pill svg {
-  position: absolute;
-  right: 13px;
-  pointer-events: none;
+.dropdown__gatilho:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.dropdown__rotulo--vazio {
   color: var(--muted);
+}
+.dropdown__seta {
+  display: inline-flex;
+  color: var(--muted);
+  transition: transform 0.18s ease;
+}
+.dropdown__gatilho[aria-expanded='true'] .dropdown__seta {
+  transform: rotate(180deg);
+}
+.dropdown__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 100%;
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  box-shadow: 0 14px 34px color-mix(in srgb, #000 16%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top left;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    visibility 0.16s ease;
+}
+.dropdown__menu--aberto {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+.dropdown__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dropdown__item:hover {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+.dropdown__item--sel {
+  color: var(--accent);
+  font-weight: 600;
 }
 
-/* No celular as pills de nível viram um select, como no mock. */
+/* No celular as pills de nível viram um dropdown, como no mock. */
 .filtro-mobile {
-  position: relative;
   display: none;
-  align-items: center;
-}
-.filtro-mobile select {
-  appearance: none;
-  width: 100%;
-  height: 44px;
-  padding: 0 32px 0 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border-strong);
-  background: var(--input);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-.filtro-mobile select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
-}
-.filtro-mobile svg {
-  position: absolute;
-  right: 13px;
-  pointer-events: none;
-  color: var(--muted);
 }
 
 /* Pill de favoritas: mesmo papel dos filtros, mas é um botão de alternar.
@@ -1810,7 +1846,9 @@
   }
   .level-pill,
   .fav-pill,
-  .filters__clear {
+  .filters__clear,
+  .dropdown__seta,
+  .dropdown__menu {
     transition: none;
   }
 }
@@ -1824,13 +1862,17 @@
     display: none;
   }
   .filtro-mobile {
-    display: inline-flex;
+    display: block;
     flex: 1 1 0;
     min-width: 0;
   }
-  .cat-pill {
+  .filtro-mobile .dropdown {
     flex: 1 1 0;
     min-width: 0;
+  }
+  .filtro-mobile .dropdown__gatilho {
+    width: 100%;
+    justify-content: space-between;
   }
   .filters__meta {
     order: 3;

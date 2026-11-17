@@ -6,7 +6,8 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Play, ChevronRight, Star, Search, X, ChevronDown } from '../../components/Icons';
+import { Flame, Play, ChevronRight, Star, Search, X } from '../../components/Icons';
+import { Dropdown } from '../../components/Dropdown';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
@@ -305,28 +306,25 @@ export function Trilhas() {
                 </button>
               ))}
             </div>
-            <label className="cat-pill">
-              <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-                <option value="">Categoria</option>
-                {tagsDisp.map((t) => (
-                  <option key={t.id} value={t.name}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={12} />
-            </label>
-            <label className="filtro-mobile filtro-mobile--nivel">
-              <select value={nivel} onChange={(e) => setNivel(e.target.value)} aria-label="Nível">
-                <option value="">Nível</option>
-                {NIVEIS.filter((n) => n.v).map((n) => (
-                  <option key={n.v} value={n.v}>
-                    {n.label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={12} />
-            </label>
+            <Dropdown
+              ariaLabel="Categoria"
+              placeholder="Categoria"
+              valor={categoria}
+              aoEscolher={setCategoria}
+              opcoes={[
+                { valor: '', label: 'Todas' },
+                ...tagsDisp.map((t) => ({ valor: t.name, label: t.name })),
+              ]}
+            />
+            <div className="filtro-mobile">
+              <Dropdown
+                ariaLabel="Nível"
+                placeholder="Nível"
+                valor={nivel}
+                aoEscolher={setNivel}
+                opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+              />
+            </div>
 
             {(totalFavoritas > 0 || soFavoritas) && (
               <button
