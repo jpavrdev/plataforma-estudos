@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from './SimTopbar';
-import { SheetFiltro, type OpcaoSheet } from './SheetFiltro';
+import { SheetFiltro, type OpcaoSheet } from '../../components/SheetFiltro';
 import { Search, Play, Info, Star, X, ChevronDown } from '../../components/Icons';
 import {
   listarSimulados,
@@ -240,7 +240,7 @@ export function Simulados() {
                 <div className="filtro-mobile">
                   <button
                     type="button"
-                    className={`sim-filtro-btn${filtro ? ' sim-filtro-btn--on' : ''}`}
+                    className={`filtro-btn${filtro ? ' filtro-btn--on' : ''}`}
                     onClick={() => setFolha('prov')}
                   >
                     <span>{filtro ? provedorDe(filtro).label : 'Provedor'}</span>
@@ -250,7 +250,7 @@ export function Simulados() {
                 <div className="filtro-mobile">
                   <button
                     type="button"
-                    className={`sim-filtro-btn${nivel ? ' sim-filtro-btn--on' : ''}`}
+                    className={`filtro-btn${nivel ? ' filtro-btn--on' : ''}`}
                     onClick={() => setFolha('nivel')}
                   >
                     <span>{nivel ? LABEL_NIVEL[nivel] : 'Nível'}</span>
@@ -278,7 +278,8 @@ export function Simulados() {
                     aria-hidden={!filtrosAtivos}
                     onClick={limparFiltros}
                   >
-                    Limpar filtros
+                    <span className="tx-completo">Limpar filtros</span>
+                    <span className="tx-curto">Limpar</span>
                   </button>
                   <span className="filters__count">
                     {filtrosAtivos ? (

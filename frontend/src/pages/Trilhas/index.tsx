@@ -6,8 +6,9 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Play, ChevronRight, Star, Search, X } from '../../components/Icons';
+import { Flame, Play, ChevronRight, Star, Search, X, ChevronDown } from '../../components/Icons';
 import { Dropdown } from '../../components/Dropdown';
+import { SheetFiltro } from '../../components/SheetFiltro';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
@@ -96,6 +97,7 @@ export function Trilhas() {
   const [busca, setBusca] = useState('');
   const [soFavoritas, setSoFavoritas] = useState(false);
   const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
+  const [folha, setFolha] = useState<'nivel' | 'categoria' | null>(null);
 
   const ehFavorito = (t: TrailComId) => favoritoAlterado[t.id] ?? t.favorito ?? false;
   const totalFavoritas = trilhas.filter(ehFavorito).length;
@@ -134,10 +136,10 @@ export function Trilhas() {
   }, []);
 
   useEffect(() => {
-    listarTrilhas(nivel || undefined, categoria || undefined)
+    listarTrilhas()
       .then(setTrilhas)
       .catch(() => setErro('Não foi possível carregar as trilhas.'));
-  }, [nivel, categoria]);
+  }, []);
 
   // Card de destaque: a trilha em andamento mais avançada (mas nao concluida).
   const continuar = minhas
@@ -156,6 +158,8 @@ export function Trilhas() {
   const filtrosAtivos = !!(termoBusca || nivel || categoria || soFavoritas);
   const trilhasFiltradas = trilhas.filter((t) => {
     if (soFavoritas && !ehFavorito(t)) return false;
+    if (nivel && normalizar(t.level) !== nivel) return false;
+    if (categoria && !t.tags.includes(categoria)) return false;
     if (termoBusca && !normalizar(t.name).includes(termoBusca)) return false;
     return true;
   });
@@ -166,6 +170,11 @@ export function Trilhas() {
     setCategoria('');
     setSoFavoritas(false);
   }
+
+  const opcoesCategoria = [
+    { valor: '', label: 'Todas' },
+    ...tagsDisp.map((t) => ({ valor: t.name, label: t.name })),
+  ];
 
   // "/" fora de um campo de texto leva o foco para a busca.
   useEffect(() => {
@@ -311,19 +320,30 @@ export function Trilhas() {
               placeholder="Categoria"
               valor={categoria}
               aoEscolher={setCategoria}
-              opcoes={[
-                { valor: '', label: 'Todas' },
-                ...tagsDisp.map((t) => ({ valor: t.name, label: t.name })),
-              ]}
+              opcoes={opcoesCategoria}
             />
+            {/* No celular, nível e categoria abrem a folha que sobe de baixo. */}
             <div className="filtro-mobile">
-              <Dropdown
-                ariaLabel="Nível"
-                placeholder="Nível"
-                valor={nivel}
-                aoEscolher={setNivel}
-                opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
-              />
+              <button
+                type="button"
+                className={`filtro-btn${nivel ? ' filtro-btn--on' : ''}`}
+                onClick={() => setFolha('nivel')}
+              >
+                <span>
+                  {nivel ? (NIVEIS.find((n) => n.v === nivel)?.label ?? 'Nível') : 'Nível'}
+                </span>
+                <ChevronDown size={13} />
+              </button>
+            </div>
+            <div className="filtro-mobile">
+              <button
+                type="button"
+                className={`filtro-btn${categoria ? ' filtro-btn--on' : ''}`}
+                onClick={() => setFolha('categoria')}
+              >
+                <span>{categoria || 'Categoria'}</span>
+                <ChevronDown size={13} />
+              </button>
             </div>
 
             {(totalFavoritas > 0 || soFavoritas) && (
@@ -345,7 +365,8 @@ export function Trilhas() {
                 tabIndex={filtrosAtivos ? 0 : -1}
                 aria-hidden={!filtrosAtivos}
               >
-                Limpar filtros
+                <span className="tx-completo">Limpar filtros</span>
+                <span className="tx-curto">Limpar</span>
               </button>
               <span className="filters__count">
                 {filtrosAtivos ? (
@@ -462,6 +483,23 @@ export function Trilhas() {
               );
             })}
           </div>
+
+          <SheetFiltro
+            titulo="Nível"
+            aberto={folha === 'nivel'}
+            aoFechar={() => setFolha(null)}
+            valor={nivel}
+            aoEscolher={setNivel}
+            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+          />
+          <SheetFiltro
+            titulo="Categoria"
+            aberto={folha === 'categoria'}
+            aoFechar={() => setFolha(null)}
+            valor={categoria}
+            aoEscolher={setCategoria}
+            opcoes={opcoesCategoria}
+          />
         </div>
       </div>
     </div>

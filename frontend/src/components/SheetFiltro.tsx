@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { Check, X } from '../../components/Icons';
+import { Check, X } from './Icons';
 
 export type OpcaoSheet = { valor: string; label: string; contagem?: number };
 
-// Folha que sobe de baixo da tela para escolher provedor ou nível no celular,
-// como no mock. No desktop os filtros ficam direto na barra.
+// Folha que sobe de baixo da tela para escolher um filtro no celular, como nos
+// mocks de trilhas e simulados. No desktop os filtros ficam direto na barra.
 export function SheetFiltro({
   titulo,
   aberto,
