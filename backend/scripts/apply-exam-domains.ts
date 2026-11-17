@@ -7,7 +7,7 @@
 // Idempotente: escreve sempre o mesmo domínio para o mesmo topic. Rodar depois de
 // semear questões novas.
 //
-// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/aplicar-dominios-simulados.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/apply-exam-domains.ts
 import { readFileSync } from "node:fs";
 import { db } from "../db.ts";
 import { simulados, simuladoQuestions } from "../schema.ts";

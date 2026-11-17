@@ -160,7 +160,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash -s <<'PASSO'
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
-            docker compose -f docker-compose.prod.yml run --rm --no-deps -T backend node scripts/aplicar-seeds-producao.ts </dev/null
+            docker compose -f docker-compose.prod.yml run --rm --no-deps -T backend node scripts/apply-production-seeds.ts </dev/null
           PASSO
 
       - name: Deploy no servidor

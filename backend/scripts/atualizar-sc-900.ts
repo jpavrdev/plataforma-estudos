@@ -47,7 +47,7 @@ function diferenca(atual: QuestaoDb, seed: Questao): string | null {
     if ((atual.topic ?? "") !== seed.topic) return "tópico";
     if (atual.options.length !== seed.options.length) return "número de alternativas";
     // Compara por texto, e não pela position, porque a ordem gravada não é a
-    // ordem de autoria: o scripts/embaralhar-alternativas.ts embaralha a
+    // ordem de autoria: o scripts/shuffle-options.ts embaralha a
     // position para a correta não ficar sempre na frente. Comparar por position
     // dava questão "alterada" em toda rodada, e alternativa reescrita apaga as
     // respostas que as tentativas deram nela.

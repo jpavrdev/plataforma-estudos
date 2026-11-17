@@ -16,7 +16,7 @@
 // As correções ficam em scripts/correcoes/<trilha>.json; o seed da trilha já traz
 // as mesmas mudanças, para uma base nova nascer certa.
 //
-// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/aplicar-correcoes-conteudo.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/apply-content-fixes.ts
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";

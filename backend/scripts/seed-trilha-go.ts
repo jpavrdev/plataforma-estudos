@@ -2061,7 +2061,7 @@ async function seed() {
     );
 }
 
-// Só semeia quando executado direto. Se for importado (ex.: sincronizar-questoes-trilha),
+// Só semeia quando executado direto. Se for importado (ex.: sync-trail-questions),
 // expõe MODULOS/NOME sem rodar o seed nem chamar process.exit.
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     seed()

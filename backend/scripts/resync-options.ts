@@ -1,5 +1,5 @@
 // Resync do TEXTO das alternativas de uma trilha, a partir de um seed ja atualizado.
-// Uso: docker compose exec -T backend node scripts/resync-opcoes.ts scripts/seed-trilha-X.ts
+// Uso: docker compose exec -T backend node scripts/resync-options.ts scripts/seed-trilha-X.ts
 //
 // Casa cada questao do seed com a do banco pelo ENUNCIADO e atualiza o texto das 4
 // opcoes por POSICAO. Atualiza SOMENTE o texto: nunca mexe em id nem em isCorrect,
@@ -14,7 +14,7 @@ import { readFileSync } from "node:fs";
 
 const seedPath = process.argv[2];
 if (!seedPath) {
-    console.error("uso: node scripts/resync-opcoes.ts <caminho do seed .ts>");
+    console.error("uso: node scripts/resync-options.ts <caminho do seed .ts>");
     process.exit(1);
 }
 

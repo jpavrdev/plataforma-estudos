@@ -1,7 +1,7 @@
 // Detecção e cerca de blocos de código em enunciados de quiz. Sem cerca de código, o
 // markdown inline (TextoMath) colapsa os espaços e quebra a indentação, o que é crítico
-// em Python. Usado pelo backfill do banco (cercar-codigo-questoes.ts) e pelo codemod dos
-// seeds (cercar-codigo-seeds.ts), para manter banco e fonte consistentes.
+// em Python. Usado pelo backfill do banco (fence-code-questions.ts) e pelo codemod dos
+// seeds (fence-code-seeds.ts), para manter banco e fonte consistentes.
 
 // Uma linha é "código" se está indentada, começa com uma construção de código, ou tem
 // pontuação/atribuição de código. Pergunta (termina em ?) é sempre prosa.

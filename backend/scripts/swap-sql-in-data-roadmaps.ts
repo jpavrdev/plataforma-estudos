@@ -19,7 +19,7 @@
 // Idempotente: rodar de novo não muda nada. Se a trilha nova ainda não existir, o
 // script avisa e não altera coisa alguma.
 //
-// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/trocar-sql-nos-roadmaps-de-dados.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/swap-sql-in-data-roadmaps.ts
 import { db } from "../db.ts";
 import { roadmaps, roadmapStages, roadmapStageRefs, trails } from "../schema.ts";
 import { eq, and } from "drizzle-orm";

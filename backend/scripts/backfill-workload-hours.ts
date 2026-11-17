@@ -20,8 +20,8 @@
 // Não sobrescreve quem já tem carga definida: quatro trilhas usam 24h para 35 aulas
 // por decisão editorial, e o script não tem opinião sobre isso.
 //
-// Confere sem gravar:  node scripts/backfill-carga-horaria.ts
-// Aplica:              node scripts/backfill-carga-horaria.ts --aplicar
+// Confere sem gravar:  node scripts/backfill-workload-hours.ts
+// Aplica:              node scripts/backfill-workload-hours.ts --aplicar
 import { db } from "../db.ts";
 import { lessons, trails } from "../schema.ts";
 import { and, eq, isNull } from "drizzle-orm";

@@ -11,9 +11,9 @@
 // entrada é canônica (id da alternativa), então rodar de novo devolve
 // exatamente a mesma ordem, e dev e produção ficam iguais.
 //
-// Rodar em dev:  node --env-file=.env scripts/embaralhar-alternativas.ts
+// Rodar em dev:  node --env-file=.env scripts/shuffle-options.ts
 // Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend \
-//                  node --env-file=.env.prod scripts/embaralhar-alternativas.ts
+//                  node --env-file=.env.prod scripts/shuffle-options.ts
 import { asc, sql } from "drizzle-orm";
 import { db } from "../db.ts";
 import { questionOptions, simuladoOptions } from "../schema.ts";
