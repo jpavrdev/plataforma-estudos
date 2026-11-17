@@ -10,6 +10,7 @@ export interface Trail {
   desc: string;
   tags: string[];
   workloadHours?: number | null;
+  favorito?: boolean;
 }
 
 export const trilhaFilters = [

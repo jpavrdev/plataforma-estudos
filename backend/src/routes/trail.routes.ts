@@ -48,6 +48,7 @@ import {
     getRanking,
     getMyStreak,
     getPublicStats,
+    toggleFavorite,
 } from "../controllers/TrailController.ts";
 
 const router = Router();
@@ -93,6 +94,7 @@ router.post("/lessons/:id/questions", authenticate, requireAdmin, createQuestion
 router.patch("/lessons/:id/published", authenticate, requireAdmin, setLessonPublished);
 router.get("/trails", authenticate, listTrails);
 router.get("/trails/:id", authenticate, getTrail);
+router.post("/trails/:id/favorite", authenticate, toggleFavorite);
 // The track as an EPUB book: same access rule as the content (being signed in is enough).
 router.get("/trails/:id/epub", authenticate, getTrailEpub);
 router.post("/trails/:id/review", authenticate, submitTrailReview);

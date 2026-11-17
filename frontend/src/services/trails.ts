@@ -13,6 +13,7 @@ interface TrailApi {
   progress?: number;
   workloadHours?: number | null;
   tags?: { id: string; name: string }[];
+  favorito?: boolean;
 }
 
 const LEVEL_LABEL: Record<TrailApi['trailLevel'], TrailLevel> = {
@@ -47,6 +48,7 @@ function adaptar(t: TrailApi): Trail & { id: string } {
     desc: t.description,
     tags: t.tags?.map((tg) => tg.name) ?? [],
     workloadHours: t.workloadHours ?? null,
+    favorito: t.favorito ?? false,
   };
 }
 
@@ -61,6 +63,12 @@ export async function listarTrilhas(level?: string, categoria?: string) {
 export async function listarMinhasTrilhas() {
   const { data } = await api.get<TrailApi[]>('/me/trails');
   return data.map(adaptar);
+}
+
+// Fixa (ou solta) a trilha na aba de favoritas.
+export async function alternarFavoritoTrilha(id: string) {
+  const { data } = await api.post<{ favorito: boolean }>(`/trails/${id}/favorite`);
+  return data;
 }
 
 export type LessonState = 'done' | 'current' | 'locked';

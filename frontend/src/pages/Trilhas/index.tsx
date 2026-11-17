@@ -6,7 +6,9 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Play, ChevronRight } from '../../components/Icons';
+import { Flame, Play, ChevronRight, Star, Search, X, ChevronDown } from '../../components/Icons';
+import { Dropdown } from '../../components/Dropdown';
+import { SheetFiltro } from '../../components/SheetFiltro';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
@@ -16,6 +18,7 @@ import {
   obterTrilha,
   obterXp,
   listarTags,
+  alternarFavoritoTrilha,
   type Tag,
 } from '../../services/trails';
 import { getTrailLang } from '../../utils/trailLang';
@@ -88,9 +91,29 @@ export function Trilhas() {
   const [erro, setErro] = useState('');
   const [xp, setXp] = useState(0);
   const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
+  const buscaRef = useRef<HTMLInputElement>(null);
   const [nivel, setNivel] = useState('');
   const [categoria, setCategoria] = useState('');
   const [busca, setBusca] = useState('');
+  const [soFavoritas, setSoFavoritas] = useState(false);
+  const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
+  const [folha, setFolha] = useState<'nivel' | 'categoria' | null>(null);
+
+  const ehFavorito = (t: TrailComId) => favoritoAlterado[t.id] ?? t.favorito ?? false;
+  const totalFavoritas = trilhas.filter(ehFavorito).length;
+
+  // Otimista como nos simulados: a estrela muda na hora e volta se o servidor recusar.
+  async function alternarFavorito(t: TrailComId) {
+    const era = ehFavorito(t);
+    setFavoritoAlterado((prev) => ({ ...prev, [t.id]: !era }));
+    try {
+      const r = await alternarFavoritoTrilha(t.id);
+      setFavoritoAlterado((prev) => ({ ...prev, [t.id]: r.favorito }));
+    } catch (err) {
+      console.error('Falha ao favoritar a trilha:', err);
+      setFavoritoAlterado((prev) => ({ ...prev, [t.id]: era }));
+    }
+  }
 
   useEffect(() => {
     async function carregar() {
@@ -113,10 +136,10 @@ export function Trilhas() {
   }, []);
 
   useEffect(() => {
-    listarTrilhas(nivel || undefined, categoria || undefined)
+    listarTrilhas()
       .then(setTrilhas)
       .catch(() => setErro('Não foi possível carregar as trilhas.'));
-  }, [nivel, categoria]);
+  }, []);
 
   // Card de destaque: a trilha em andamento mais avançada (mas nao concluida).
   const continuar = minhas
@@ -132,9 +155,38 @@ export function Trilhas() {
       .replace(/[̀-ͯ]/g, '')
       .toLowerCase();
   const termoBusca = normalizar(busca.trim());
-  const trilhasFiltradas = termoBusca
-    ? trilhas.filter((t) => normalizar(t.name).includes(termoBusca))
-    : trilhas;
+  const filtrosAtivos = !!(termoBusca || nivel || categoria || soFavoritas);
+  const trilhasFiltradas = trilhas.filter((t) => {
+    if (soFavoritas && !ehFavorito(t)) return false;
+    if (nivel && normalizar(t.level) !== nivel) return false;
+    if (categoria && !t.tags.includes(categoria)) return false;
+    if (termoBusca && !normalizar(t.name).includes(termoBusca)) return false;
+    return true;
+  });
+
+  function limparFiltros() {
+    setBusca('');
+    setNivel('');
+    setCategoria('');
+    setSoFavoritas(false);
+  }
+
+  const opcoesCategoria = [
+    { valor: '', label: 'Todas' },
+    ...tagsDisp.map((t) => ({ valor: t.name, label: t.name })),
+  ];
+
+  // "/" fora de um campo de texto leva o foco para a busca.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      const alvo = e.target as HTMLElement | null;
+      if (e.key !== '/' || /^(input|textarea|select)$/i.test(alvo?.tagName ?? '')) return;
+      e.preventDefault();
+      buscaRef.current?.focus();
+    };
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, []);
 
   return (
     <div className="home-shell">
@@ -167,7 +219,7 @@ export function Trilhas() {
           />
         </header>
 
-        <div className="trilhas-page">
+        <div className="trilhas-page trilhas-page--catalog">
           {/* Título + stats */}
           <div className="trilhas-page__head">
             <div>
@@ -227,39 +279,105 @@ export function Trilhas() {
 
           {/* Filtros */}
           <div className="filters">
-            <label className="select-filtro">
-              <span className="filters__label">Buscar</span>
+            <label className="trilhas-search">
+              <Search size={16} />
               <input
-                className="filters__search"
+                ref={buscaRef}
                 type="text"
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
-                placeholder="Nome da trilha"
+                placeholder="Buscar trilha por nome"
               />
+              {busca ? (
+                <button
+                  type="button"
+                  className="trilhas-search__clear"
+                  aria-label="Limpar busca"
+                  onClick={() => setBusca('')}
+                >
+                  <X size={13} />
+                </button>
+              ) : (
+                <kbd className="trilhas-search__kbd">/</kbd>
+              )}
             </label>
-            <label className="select-filtro">
-              <span className="filters__label">Nível</span>
-              <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
-                {NIVEIS.map((n) => (
-                  <option key={n.v} value={n.v}>
-                    {n.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="select-filtro">
-              <span className="filters__label">Categoria</span>
-              <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-                <option value="">Todas</option>
-                {tagsDisp.map((t) => (
-                  <option key={t.id} value={t.name}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+
+            <div className="level-pills" role="group" aria-label="Nível">
+              {NIVEIS.map((n) => (
+                <button
+                  key={n.v}
+                  type="button"
+                  className={`level-pill${nivel === n.v ? ' level-pill--active' : ''}`}
+                  aria-pressed={nivel === n.v}
+                  onClick={() => setNivel(n.v)}
+                >
+                  {n.label}
+                </button>
+              ))}
+            </div>
+            <Dropdown
+              ariaLabel="Categoria"
+              placeholder="Categoria"
+              valor={categoria}
+              aoEscolher={setCategoria}
+              opcoes={opcoesCategoria}
+            />
+            {/* No celular, nível e categoria abrem a folha que sobe de baixo. */}
+            <div className="filtro-mobile">
+              <button
+                type="button"
+                className={`filtro-btn${nivel ? ' filtro-btn--on' : ''}`}
+                onClick={() => setFolha('nivel')}
+              >
+                <span>
+                  {nivel ? (NIVEIS.find((n) => n.v === nivel)?.label ?? 'Nível') : 'Nível'}
+                </span>
+                <ChevronDown size={13} />
+              </button>
+            </div>
+            <div className="filtro-mobile">
+              <button
+                type="button"
+                className={`filtro-btn${categoria ? ' filtro-btn--on' : ''}`}
+                onClick={() => setFolha('categoria')}
+              >
+                <span>{categoria || 'Categoria'}</span>
+                <ChevronDown size={13} />
+              </button>
+            </div>
+
+            {(totalFavoritas > 0 || soFavoritas) && (
+              <button
+                type="button"
+                className={`fav-pill${soFavoritas ? ' fav-pill--active' : ''}`}
+                aria-pressed={soFavoritas}
+                onClick={() => setSoFavoritas((v) => !v)}
+              >
+                <Star size={13} /> Favoritas <span className="fav-pill__n">{totalFavoritas}</span>
+              </button>
+            )}
             <div className="topbar__spacer" />
-            <span className="filters__count">{trilhasFiltradas.length} trilhas</span>
+            <div className="filters__meta">
+              <button
+                type="button"
+                className={`filters__clear${filtrosAtivos ? '' : ' filters__clear--off'}`}
+                onClick={limparFiltros}
+                tabIndex={filtrosAtivos ? 0 : -1}
+                aria-hidden={!filtrosAtivos}
+              >
+                <span className="tx-completo">Limpar filtros</span>
+                <span className="tx-curto">Limpar</span>
+              </button>
+              <span className="filters__count">
+                {filtrosAtivos ? (
+                  <>
+                    <b>{trilhasFiltradas.length}</b> de {trilhas.length} trilhas
+                  </>
+                ) : (
+                  <>{trilhas.length} trilhas</>
+                )}
+              </span>
+            </div>
           </div>
 
           {carregando && <p className="track__desc">Carregando trilhas...</p>}
@@ -275,7 +393,7 @@ export function Trilhas() {
           )}
 
           {/* Grade */}
-          <div className="track-grid">
+          <div className="track-grid trilhas-catalog">
             {trilhasFiltradas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
@@ -311,6 +429,16 @@ export function Trilhas() {
                         <span className="track__lessons">{t.lessons} aulas</span>
                       </div>
                     </div>
+                    <button
+                      type="button"
+                      className={`track__fav${ehFavorito(t) ? ' track__fav--on' : ''}`}
+                      aria-pressed={ehFavorito(t)}
+                      aria-label={ehFavorito(t) ? 'Remover dos favoritos' : 'Favoritar'}
+                      title={ehFavorito(t) ? 'Remover dos favoritos' : 'Favoritar'}
+                      onClick={() => alternarFavorito(t)}
+                    >
+                      <Star size={15} />
+                    </button>
                   </div>
                   <TrilhaDesc>{t.desc}</TrilhaDesc>
                   <div className="progress">
@@ -355,6 +483,23 @@ export function Trilhas() {
               );
             })}
           </div>
+
+          <SheetFiltro
+            titulo="Nível"
+            aberto={folha === 'nivel'}
+            aoFechar={() => setFolha(null)}
+            valor={nivel}
+            aoEscolher={setNivel}
+            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+          />
+          <SheetFiltro
+            titulo="Categoria"
+            aberto={folha === 'categoria'}
+            aoFechar={() => setFolha(null)}
+            valor={categoria}
+            aoEscolher={setCategoria}
+            opcoes={opcoesCategoria}
+          />
         </div>
       </div>
     </div>

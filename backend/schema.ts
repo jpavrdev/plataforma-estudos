@@ -188,6 +188,25 @@ export const trailReviews = pgTable(
     ],
 );
 
+// Favorite trails: each user pins tracks they want at hand (favorites tab).
+export const trailFavorites = pgTable(
+    "trail_favorites",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.trailId, table.userId),
+        index("trail_favorites_user_id_idx").on(table.userId),
+    ],
+);
+
 export const modules = pgTable(
     "modules",
     {
@@ -731,6 +750,25 @@ export const userRoadmaps = pgTable(
         unique().on(table.userId, table.roadmapId),
         index("user_roadmaps_user_id_idx").on(table.userId),
         index("user_roadmaps_roadmap_id_idx").on(table.roadmapId),
+    ],
+);
+
+// Favorite roadmaps: pinned by the user, independent of following (user_roadmaps).
+export const roadmapFavorites = pgTable(
+    "roadmap_favorites",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        roadmapId: uuid("roadmap_id")
+            .references(() => roadmaps.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.roadmapId, table.userId),
+        index("roadmap_favorites_user_id_idx").on(table.userId),
     ],
 );
 

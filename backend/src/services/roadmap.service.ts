@@ -13,6 +13,7 @@ import {
     challenges,
     challengeSubmissions,
     userRoadmaps,
+    roadmapFavorites,
 } from "../../schema.ts";
 import { eq, and, asc, desc, inArray, count, countDistinct } from "drizzle-orm";
 import type { z } from "zod";
@@ -236,6 +237,14 @@ export async function findRoadmaps(userId?: string) {
         );
     }
 
+    const favoriteRows = userId
+        ? await db
+              .select({ roadmapId: roadmapFavorites.roadmapId })
+              .from(roadmapFavorites)
+              .where(eq(roadmapFavorites.userId, userId))
+        : [];
+    const favoriteSet = new Set(favoriteRows.map((f) => f.roadmapId));
+
     const refsByStage = new Map<string, typeof refs>();
     for (const r of refs) {
         const arr = refsByStage.get(r.stageId) ?? [];
@@ -271,8 +280,21 @@ export async function findRoadmaps(userId?: string) {
             stagesDone: done,
             percent: total ? Math.round((done / total) * 100) : 0,
             status: statusFromProgress(done, total),
+            favorito: favoriteSet.has(r.id),
         };
     });
+}
+
+// Pins (or unpins) a roadmap for the user: the favorites filter of the catalog.
+export async function toggleRoadmapFavorite(userId: string, roadmapId: string) {
+    const removed = await db
+        .delete(roadmapFavorites)
+        .where(and(eq(roadmapFavorites.roadmapId, roadmapId), eq(roadmapFavorites.userId, userId)))
+        .returning({ id: roadmapFavorites.id });
+    if (removed.length === 0) {
+        await db.insert(roadmapFavorites).values({ roadmapId, userId }).onConflictDoNothing();
+    }
+    return { favorito: removed.length === 0 };
 }
 
 export async function findRoadmapBySlug(slug: string, userId?: string) {

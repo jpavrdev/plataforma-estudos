@@ -5,11 +5,17 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, ChevronRight, Lock, Play } from '../../components/Icons';
+import { Flame, ChevronRight, Lock, Play, Star, ChevronDown } from '../../components/Icons';
+import { SheetFiltro } from '../../components/SheetFiltro';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
-import { listarRoadmaps, type RoadmapResumo, type Nivel } from '../../services/roadmaps';
+import {
+  listarRoadmaps,
+  alternarFavoritoRoadmap,
+  type RoadmapResumo,
+  type Nivel,
+} from '../../services/roadmaps';
 
 const NIVEL_LABEL: Record<Nivel, string> = {
   iniciante: 'Iniciante',
@@ -41,7 +47,7 @@ function glyph(name: string): string {
 }
 
 const CTA: Record<RoadmapResumo['status'], string> = {
-  nao_iniciado: 'Começar roadmap',
+  nao_iniciado: 'Começar',
   em_progresso: 'Continuar',
   concluido: 'Revisar',
 };
@@ -57,6 +63,9 @@ export function Roadmaps() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
   const [nivel, setNivel] = useState('');
+  const [soFavoritos, setSoFavoritos] = useState(false);
+  const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
+  const [folhaNivel, setFolhaNivel] = useState(false);
 
   useEffect(() => {
     listarRoadmaps()
@@ -65,7 +74,32 @@ export function Roadmaps() {
       .finally(() => setCarregando(false));
   }, []);
 
-  const filtrados = roadmaps.filter((r) => !nivel || r.level === nivel);
+  const ehFavorito = (r: RoadmapResumo) => favoritoAlterado[r.id] ?? r.favorito;
+  const totalFavoritos = roadmaps.filter(ehFavorito).length;
+
+  // Otimista como nas trilhas: a estrela muda na hora e volta se o servidor recusar.
+  async function alternarFavorito(r: RoadmapResumo) {
+    const era = ehFavorito(r);
+    setFavoritoAlterado((prev) => ({ ...prev, [r.id]: !era }));
+    try {
+      const res = await alternarFavoritoRoadmap(r.slug);
+      setFavoritoAlterado((prev) => ({ ...prev, [r.id]: res.favorito }));
+    } catch (err) {
+      console.error('Falha ao favoritar o roadmap:', err);
+      setFavoritoAlterado((prev) => ({ ...prev, [r.id]: era }));
+    }
+  }
+
+  const filtrados = roadmaps.filter((r) => {
+    if (soFavoritos && !ehFavorito(r)) return false;
+    return !nivel || r.level === nivel;
+  });
+  const filtrosAtivos = !!(nivel || soFavoritos);
+
+  function limparFiltros() {
+    setNivel('');
+    setSoFavoritos(false);
+  }
   const continuar = roadmaps
     .filter((r) => r.status === 'em_progresso')
     .sort((a, b) => b.percent - a.percent)[0];
@@ -102,7 +136,7 @@ export function Roadmaps() {
           />
         </header>
 
-        <div className="trilhas-page">
+        <div className="trilhas-page trilhas-page--roadmaps">
           <div className="trilhas-page__head">
             <div>
               <h1 className="trilhas-page__title">Roadmaps de carreira</h1>
@@ -149,18 +183,64 @@ export function Roadmaps() {
           )}
 
           <div className="filters">
-            <label className="select-filtro">
-              <span className="filters__label">Nível</span>
-              <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
-                {NIVEIS.map((n) => (
-                  <option key={n.v} value={n.v}>
-                    {n.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="level-pills" role="group" aria-label="Nível">
+              {NIVEIS.map((n) => (
+                <button
+                  key={n.v}
+                  type="button"
+                  className={`level-pill${nivel === n.v ? ' level-pill--active' : ''}`}
+                  aria-pressed={nivel === n.v}
+                  onClick={() => setNivel(n.v)}
+                >
+                  {n.label}
+                </button>
+              ))}
+            </div>
+
+            {/* No celular o nível abre a folha e divide a linha com os favoritos. */}
+            <div className="filtro-mobile">
+              <button
+                type="button"
+                className={`filtro-btn${nivel ? ' filtro-btn--on' : ''}`}
+                onClick={() => setFolhaNivel(true)}
+              >
+                <span>{nivel ? (NIVEIS.find((n) => n.v === nivel)?.label ?? 'Nível') : 'Nível'}</span>
+                <ChevronDown size={13} />
+              </button>
+            </div>
+
+            {(totalFavoritos > 0 || soFavoritos) && (
+              <button
+                type="button"
+                className={`fav-pill${soFavoritos ? ' fav-pill--active' : ''}`}
+                aria-pressed={soFavoritos}
+                onClick={() => setSoFavoritos((v) => !v)}
+              >
+                <Star size={13} /> Favoritos <span className="fav-pill__n">{totalFavoritos}</span>
+              </button>
+            )}
             <div className="topbar__spacer" />
-            <span className="filters__count">{filtrados.length} roadmaps</span>
+            <div className="filters__meta">
+              <button
+                type="button"
+                className={`filters__clear${filtrosAtivos ? '' : ' filters__clear--off'}`}
+                tabIndex={filtrosAtivos ? 0 : -1}
+                aria-hidden={!filtrosAtivos}
+                onClick={limparFiltros}
+              >
+                <span className="tx-completo">Limpar filtros</span>
+                <span className="tx-curto">Limpar</span>
+              </button>
+              <span className="filters__count">
+                {filtrosAtivos ? (
+                  <>
+                    <b>{filtrados.length}</b> de {roadmaps.length} roadmaps
+                  </>
+                ) : (
+                  <>{filtrados.length} roadmaps</>
+                )}
+              </span>
+            </div>
           </div>
 
           {carregando && <p className="track__desc">Carregando roadmaps...</p>}
@@ -196,6 +276,16 @@ export function Roadmaps() {
                         <span className="track__lessons">{r.stagesTotal} estágios</span>
                       </div>
                     </div>
+                    <button
+                      type="button"
+                      className={`track__fav${ehFavorito(r) ? ' track__fav--on' : ''}`}
+                      aria-pressed={ehFavorito(r)}
+                      aria-label={ehFavorito(r) ? 'Remover dos favoritos' : 'Favoritar'}
+                      title={ehFavorito(r) ? 'Remover dos favoritos' : 'Favoritar'}
+                      onClick={() => alternarFavorito(r)}
+                    >
+                      <Star size={15} />
+                    </button>
                   </div>
                   <p className="track__desc track__desc--full">{r.description}</p>
                   <div className="progress">
@@ -230,6 +320,15 @@ export function Roadmaps() {
               );
             })}
           </div>
+
+          <SheetFiltro
+            titulo="Nível"
+            aberto={folhaNivel}
+            aoFechar={() => setFolhaNivel(false)}
+            valor={nivel}
+            aoEscolher={setNivel}
+            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+          />
         </div>
       </div>
     </div>

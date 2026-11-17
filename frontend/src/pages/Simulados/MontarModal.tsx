@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { MontagemTentativa, OpcoesSimulado } from '../../services/simulados';
+import { useTravaFundo } from '../../hooks/useTravaFundo';
 
 export function MontarModal({
   opcoes,
@@ -14,6 +15,9 @@ export function MontarModal({
   loading?: boolean;
   praticaInicial?: boolean;
 }) {
+  // O componente só monta com o modal aberto, então o fundo fica travado
+  // enquanto ele existir.
+  useTravaFundo(true);
   const [temas, setTemas] = useState<string[]>([]);
   const [qtd, setQtd] = useState(opcoes.oficial.questionCount);
   const [comTempo, setComTempo] = useState(true);

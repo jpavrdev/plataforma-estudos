@@ -2,7 +2,16 @@ import { useState, type ReactNode } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from './SimTopbar';
-import { ClockExam, Check, Target, BookOpen, Alert, Play } from '../../components/Icons';
+import {
+  ClockExam,
+  Check,
+  Target,
+  BookOpen,
+  Alert,
+  Play,
+  ChevronLeft,
+  ChevronRight,
+} from '../../components/Icons';
 import {
   listarSimulados,
   historicoSimulados,
@@ -11,7 +20,7 @@ import {
   type MontagemTentativa,
   type TentativaHistorico,
 } from '../../services/simulados';
-import { provedorDe, nomeLimpo, nivelClasse } from './provedores';
+import { provedorDe, nomeLimpo, nivelClasse, LABEL_NIVEL } from './provedores';
 import { ConfirmModal } from './ConfirmModal';
 import { MontarModal } from './MontarModal';
 
@@ -58,13 +67,25 @@ export function SimuladoBriefing() {
 
   const p = exam ? provedorDe(exam.provider) : null;
 
+  // O botão principal aparece duas vezes no celular: dentro do card no desktop
+  // e preso no rodapé no celular. Mesma ação e mesmo rótulo nas duas casas.
+  const rotuloCta = emAndamento
+    ? 'Voltar para a prova'
+    : tentativas.length > 0
+      ? 'Refazer simulado'
+      : 'Iniciar simulado';
+  const aoClicarCta = () =>
+    emAndamento
+      ? navigate(`/simulados/tentativa/${emAndamento.attemptId}`)
+      : setConfirmando(true);
+
   return (
     <div className="home-shell">
       <div className="home">
         <SimTopbar />
         <div className="sim sim--brief">
           <button className="sim-back" onClick={() => navigate('/simulados')}>
-            ← Voltar aos simulados
+            <ChevronLeft size={14} /> Voltar aos simulados
           </button>
 
           {carregando ? (
@@ -79,27 +100,29 @@ export function SimuladoBriefing() {
                 </span>
                 <div className="sim-brief__id">
                   <div className="simc__vendor">{p.nome}</div>
-                  <h1 className="sim-brief__code">{exam.code ?? exam.name}</h1>
+                  <h1 className="sim-brief__code">
+                    {exam.code ?? exam.name}
+                    {exam.level && (
+                      <span
+                        className={`simc__level simc__level--${nivelClasse(exam.level)}`}
+                      >
+                        {LABEL_NIVEL[nivelClasse(exam.level)]}
+                      </span>
+                    )}
+                  </h1>
                   <div className="sim-brief__name">{nomeLimpo(exam.name, exam.code)}</div>
                 </div>
-                {exam.level && (
-                  <span className={`simc__level simc__level--${nivelClasse(exam.level)}`}>
-                    {exam.level}
-                  </span>
-                )}
               </header>
 
               <div className="sim-brief__grid">
                 <div className="card sim-rules">
                   <div className="sim-rules__title">Como funciona o simulado</div>
-                  <div className="sim-rules__sub">
-                    Leia antes de começar. O cronômetro inicia assim que você iniciar.
-                  </div>
+                  <div className="sim-rules__sub">Leia antes de começar.</div>
                   <div className="sim-rules__grid">
                     <Regra
                       icon={<ClockExam size={18} />}
                       t={`${exam.durationMinutes} minutos`}
-                      d="O cronômetro começa ao iniciar e não pausa até enviar."
+                      d="Tempo total da prova."
                     />
                     <Regra
                       icon={<Check size={17} />}
@@ -118,61 +141,27 @@ export function SimuladoBriefing() {
                     />
                   </div>
 
-                  {emAndamento ? (
-                    <>
-                      <div className="sim-warn">
-                        <span className="sim-warn__icon">
-                          <Alert size={18} />
-                        </span>
-                        <div>
+                  <div className="sim-warn">
+                    <span className="sim-warn__icon">
+                      <Alert size={18} />
+                    </span>
+                    <div>
+                      {emAndamento ? (
+                        <>
                           <b>Você tem uma tentativa em andamento.</b> Termine ou envie ela antes de
                           começar outra.
-                        </div>
-                      </div>
-                      <button
-                        className="sim-start"
-                        onClick={() => navigate(`/simulados/tentativa/${emAndamento.attemptId}`)}
-                      >
-                        <Play size={15} /> Voltar para a prova
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="sim-warn">
-                        <span className="sim-warn__icon">
-                          <Alert size={18} />
-                        </span>
-                        <div>
+                        </>
+                      ) : (
+                        <>
                           <b>Uma vez iniciado, o cronômetro não para.</b> Se o tempo acabar, o
-                          simulado é enviado automaticamente com as respostas marcadas até ali.
-                        </div>
-                      </div>
-                      <button className="sim-start" onClick={() => setConfirmando(true)}>
-                        <Play size={15} />{' '}
-                        {tentativas.length > 0 ? 'Refazer simulado' : 'Iniciar simulado'}
-                      </button>
-                      <div className="sim-start__par">
-                        <button
-                          className="sim-start sim-start--alt"
-                          onClick={() => {
-                            setPraticaInicial(true);
-                            setMontando(true);
-                          }}
-                        >
-                          Modo de prática
-                        </button>
-                        <button
-                          className="sim-start sim-start--alt"
-                          onClick={() => {
-                            setPraticaInicial(false);
-                            setMontando(true);
-                          }}
-                        >
-                          Monte do seu jeito
-                        </button>
-                      </div>
-                    </>
-                  )}
+                          simulado é enviado automaticamente com as respostas marcadas até aí.
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <button className="sim-start sim-start--card" onClick={aoClicarCta}>
+                    <Play size={15} /> {rotuloCta}
+                  </button>
                 </div>
 
                 <div className="card">
@@ -196,6 +185,48 @@ export function SimuladoBriefing() {
                   )}
                 </div>
               </div>
+
+              {!emAndamento && (
+                <section className="sim-formas">
+                  <h2 className="sim-formas__title">Outras formas de estudar</h2>
+                  <div className="sim-formas__grid">
+                    <button
+                      className="card sim-forma"
+                      onClick={() => {
+                        setPraticaInicial(true);
+                        setMontando(true);
+                      }}
+                    >
+                      <span className="sim-forma__txt">
+                        <span className="sim-forma__t">Modo de prática</span>
+                        <span className="sim-forma__d">
+                          Confira a resposta na hora, questão por questão, sem cronômetro.
+                        </span>
+                      </span>
+                      <ChevronRight size={16} />
+                    </button>
+                    <button
+                      className="card sim-forma"
+                      onClick={() => {
+                        setPraticaInicial(false);
+                        setMontando(true);
+                      }}
+                    >
+                      <span className="sim-forma__txt">
+                        <span className="sim-forma__t">Monte do seu jeito</span>
+                        <span className="sim-forma__d">
+                          Escolha a quantidade, o tempo e os assuntos da tentativa.
+                        </span>
+                      </span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                </section>
+              )}
+
+              <button className="sim-start sim-start--fixo" onClick={aoClicarCta}>
+                <Play size={15} /> {rotuloCta}
+              </button>
             </>
           )}
 
