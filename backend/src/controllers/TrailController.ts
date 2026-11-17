@@ -51,6 +51,7 @@ import {
     findUserTrails,
     findTrailDetail,
     saveTrailReview,
+    toggleTrailFavorite,
 } from "../services/trail.service.ts";
 import { findLessonDetail } from "../services/lesson.service.ts";
 import { gradeQuiz, verifyAnswer } from "../services/quiz.service.ts";
@@ -316,7 +317,16 @@ export const listTrails = async (req: Request, res: Response, next: NextFunction
     try {
         const level = typeof req.query.level === "string" ? req.query.level : undefined;
         const category = typeof req.query.categoria === "string" ? req.query.categoria : undefined;
-        res.json(await findTrails({ level, categoria: category }));
+        res.json(await findTrails({ level, categoria: category }, req.userId));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Pins/unpins a trail for the signed-in user (favorites tab).
+export const toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await toggleTrailFavorite(req.userId!, String(req.params.id)));
     } catch (err) {
         next(err);
     }

@@ -1547,6 +1547,40 @@
   margin-right: 2px;
 }
 
+/* Pill de favoritas: mesmo papel dos filtros, mas é um botão de alternar. */
+.fav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fav-pill:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.fav-pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.fav-pill--active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+.fav-pill__n {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
 .select-filtro {
   display: inline-flex;
   align-items: center;
@@ -1843,6 +1877,40 @@
 .track__meta {
   min-width: 0;
   flex: 1;
+}
+.track__fav {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.track__fav svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.track__fav:hover {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+.track__fav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.track__fav--on {
+  color: var(--gold);
+}
+.track__fav--on svg {
+  fill: currentColor;
 }
 .track__name {
   font-size: 15.5px;

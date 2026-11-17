@@ -174,6 +174,47 @@ describe("Catalog (admin)", () => {
     });
 });
 
+describe("Trail favorites", () => {
+    test("favoriting a track shows in the catalog only for whoever favorited it", async () => {
+        const admin = await createSignedInUser(true);
+        const { trailId } = await buildTrail(admin.token);
+        const student = await createSignedInUser();
+        const other = await createSignedInUser();
+
+        const r = await post(`/trails/${trailId}/favorite`, student.token);
+        assert.equal(r.status, 200);
+        assert.equal(r.body.favorito, true);
+
+        const mine = await get("/trails", student.token);
+        assert.equal(mine.body.find((t: any) => t.id === trailId).favorito, true);
+        const theirs = await get("/trails", other.token);
+        assert.equal(theirs.body.find((t: any) => t.id === trailId).favorito, false);
+    });
+
+    test("favoriting again removes the favorite", async () => {
+        const admin = await createSignedInUser(true);
+        const { trailId } = await buildTrail(admin.token);
+        const student = await createSignedInUser();
+
+        await post(`/trails/${trailId}/favorite`, student.token);
+        const off = await post(`/trails/${trailId}/favorite`, student.token);
+        assert.equal(off.status, 200);
+        assert.equal(off.body.favorito, false);
+
+        const after = await get("/trails", student.token);
+        assert.equal(after.body.find((t: any) => t.id === trailId).favorito, false);
+    });
+
+    test("a missing track returns 404", async () => {
+        const student = await createSignedInUser();
+        const r = await post(
+            `/trails/00000000-0000-0000-0000-000000000000/favorite`,
+            student.token,
+        );
+        assert.equal(r.status, 404);
+    });
+});
+
 describe("GET /lessons/:id (security)", () => {
     test("does not reveal which option is the right one", async () => {
         const admin = await createSignedInUser(true);

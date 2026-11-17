@@ -477,6 +477,13 @@
       "when": 1793994569038,
       "tag": "0067_otp_channel",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1794915121831,
+      "tag": "0068_trail_favorites",
+      "breakpoints": true
     }
   ]
 }

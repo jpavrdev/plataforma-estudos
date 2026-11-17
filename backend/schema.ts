@@ -188,6 +188,25 @@ export const trailReviews = pgTable(
     ],
 );
 
+// Favorite trails: each user pins tracks they want at hand (favorites tab).
+export const trailFavorites = pgTable(
+    "trail_favorites",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.trailId, table.userId),
+        index("trail_favorites_user_id_idx").on(table.userId),
+    ],
+);
+
 export const modules = pgTable(
     "modules",
     {

@@ -6,7 +6,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Play, ChevronRight } from '../../components/Icons';
+import { Flame, Play, ChevronRight, Star } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
@@ -16,6 +16,7 @@ import {
   obterTrilha,
   obterXp,
   listarTags,
+  alternarFavoritoTrilha,
   type Tag,
 } from '../../services/trails';
 import { getTrailLang } from '../../utils/trailLang';
@@ -91,6 +92,24 @@ export function Trilhas() {
   const [nivel, setNivel] = useState('');
   const [categoria, setCategoria] = useState('');
   const [busca, setBusca] = useState('');
+  const [soFavoritas, setSoFavoritas] = useState(false);
+  const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
+
+  const ehFavorito = (t: TrailComId) => favoritoAlterado[t.id] ?? t.favorito ?? false;
+  const totalFavoritas = trilhas.filter(ehFavorito).length;
+
+  // Otimista como nos simulados: a estrela muda na hora e volta se o servidor recusar.
+  async function alternarFavorito(t: TrailComId) {
+    const era = ehFavorito(t);
+    setFavoritoAlterado((prev) => ({ ...prev, [t.id]: !era }));
+    try {
+      const r = await alternarFavoritoTrilha(t.id);
+      setFavoritoAlterado((prev) => ({ ...prev, [t.id]: r.favorito }));
+    } catch (err) {
+      console.error('Falha ao favoritar a trilha:', err);
+      setFavoritoAlterado((prev) => ({ ...prev, [t.id]: era }));
+    }
+  }
 
   useEffect(() => {
     async function carregar() {
@@ -132,9 +151,11 @@ export function Trilhas() {
       .replace(/[̀-ͯ]/g, '')
       .toLowerCase();
   const termoBusca = normalizar(busca.trim());
-  const trilhasFiltradas = termoBusca
-    ? trilhas.filter((t) => normalizar(t.name).includes(termoBusca))
-    : trilhas;
+  const trilhasFiltradas = trilhas.filter((t) => {
+    if (soFavoritas && !ehFavorito(t)) return false;
+    if (termoBusca && !normalizar(t.name).includes(termoBusca)) return false;
+    return true;
+  });
 
   return (
     <div className="home-shell">
@@ -258,6 +279,16 @@ export function Trilhas() {
                 ))}
               </select>
             </label>
+            {(totalFavoritas > 0 || soFavoritas) && (
+              <button
+                type="button"
+                className={`fav-pill${soFavoritas ? ' fav-pill--active' : ''}`}
+                aria-pressed={soFavoritas}
+                onClick={() => setSoFavoritas((v) => !v)}
+              >
+                <Star size={13} /> Favoritas <span className="fav-pill__n">{totalFavoritas}</span>
+              </button>
+            )}
             <div className="topbar__spacer" />
             <span className="filters__count">{trilhasFiltradas.length} trilhas</span>
           </div>
@@ -311,6 +342,16 @@ export function Trilhas() {
                         <span className="track__lessons">{t.lessons} aulas</span>
                       </div>
                     </div>
+                    <button
+                      type="button"
+                      className={`track__fav${ehFavorito(t) ? ' track__fav--on' : ''}`}
+                      aria-pressed={ehFavorito(t)}
+                      aria-label={ehFavorito(t) ? 'Remover dos favoritos' : 'Favoritar'}
+                      title={ehFavorito(t) ? 'Remover dos favoritos' : 'Favoritar'}
+                      onClick={() => alternarFavorito(t)}
+                    >
+                      <Star size={15} />
+                    </button>
                   </div>
                   <TrilhaDesc>{t.desc}</TrilhaDesc>
                   <div className="progress">

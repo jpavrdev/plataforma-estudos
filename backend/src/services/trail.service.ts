@@ -13,6 +13,7 @@ import {
     roadmapStages,
     roadmapStageRefs,
     trailReviews,
+    trailFavorites,
     users,
 } from "../../schema.ts";
 import { eq, asc, desc, countDistinct, inArray, and, isNotNull } from "drizzle-orm";
@@ -84,10 +85,7 @@ export async function editTrail(trailId: string, data: TrailUpdateData) {
 
 // Deletes the whole track (modules, lessons, questions and progress).
 export async function removeTrail(trailId: string) {
-    const [trail] = await db
-        .select({ id: trails.id })
-        .from(trails)
-        .where(eq(trails.id, trailId));
+    const [trail] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
     if (!trail) {
         throw new AppError(404, "trail.notFound");
     }
@@ -120,7 +118,10 @@ export async function removeTrail(trailId: string) {
 
 const VALID_LEVELS = new Set(["iniciante", "intermediario", "avancado"]);
 
-export async function findTrails(filters: { level?: string; categoria?: string } = {}) {
+export async function findTrails(
+    filters: { level?: string; categoria?: string } = {},
+    userId?: string,
+) {
     const levelFilter =
         filters.level && VALID_LEVELS.has(filters.level)
             ? eq(trails.trailLevel, filters.level as "iniciante" | "intermediario" | "avancado")
@@ -178,11 +179,34 @@ export async function findTrails(filters: { level?: string; categoria?: string }
         arr.push({ id: v.id, name: v.name });
         tagsByTrail.set(v.trailId, arr);
     }
+    const favoriteRows = userId
+        ? await db
+              .select({ trailId: trailFavorites.trailId })
+              .from(trailFavorites)
+              .where(eq(trailFavorites.userId, userId))
+        : [];
+    const favoriteSet = new Set(favoriteRows.map((f) => f.trailId));
     return trailRows.map((t) => ({
         ...t,
         totalLessons: totalLessonsOf(t.id),
         tags: tagsByTrail.get(t.id) ?? [],
+        favorito: favoriteSet.has(t.id),
     }));
+}
+
+// Pins (or unpins) a trail for the user: the favorites tab of the catalog.
+export async function toggleTrailFavorite(userId: string, trailId: string) {
+    const [trail] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
+    if (!trail) throw new AppError(404, "trail.notFound");
+
+    const removed = await db
+        .delete(trailFavorites)
+        .where(and(eq(trailFavorites.trailId, trailId), eq(trailFavorites.userId, userId)))
+        .returning({ id: trailFavorites.id });
+    if (removed.length === 0) {
+        await db.insert(trailFavorites).values({ trailId, userId }).onConflictDoNothing();
+    }
+    return { favorito: removed.length === 0 };
 }
 
 // Tracks where the user already has progress, with the completion percentage.
@@ -446,7 +470,10 @@ export async function saveTrailReview(
         throw new AppError(404, "trail.notFound");
     }
 
-    const ls = await db.select({ id: lessons.id }).from(lessons).where(eq(lessons.trailId, trailId));
+    const ls = await db
+        .select({ id: lessons.id })
+        .from(lessons)
+        .where(eq(lessons.trailId, trailId));
     const lessonIds = ls.map((l) => l.id);
     const progressRows = lessonIds.length
         ? await db
