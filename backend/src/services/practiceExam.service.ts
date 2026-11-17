@@ -7,7 +7,7 @@ import {
     simuladoAttemptQuestions,
     simuladoAttemptAnswers,
     simuladoFavoritos,
-    type SnapshotQuestaoRevisao,
+    type ReviewQuestionSnapshot,
 } from "../../schema.ts";
 import { eq, and, sql, inArray, desc, isNull, isNotNull, count, ne } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
@@ -278,7 +278,7 @@ export async function findAttemptState(userId: string, attemptId: string) {
         topic?: string | null;
         explanation?: string | null;
     };
-    const forSummary: { topic: string | null; correta: boolean }[] = [];
+    const forSummary: { topic: string | null; correct: boolean }[] = [];
     let questions: ReviewQuestion[];
 
     if (frozen) {
@@ -294,7 +294,7 @@ export async function findAttemptState(userId: string, attemptId: string) {
             });
             forSummary.push({
                 topic: snap.topic,
-                correta: isQuestionCorrect(markedSet, correctSet),
+                correct: isQuestionCorrect(markedSet, correctSet),
             });
             return {
                 id: l.questionId ?? l.id,
@@ -354,7 +354,7 @@ export async function findAttemptState(userId: string, attemptId: string) {
                 const markedSet = new Set(marked.get(q.id) ?? []);
                 forSummary.push({
                     topic: q.topic,
-                    correta: isQuestionCorrect(markedSet, correctSet),
+                    correct: isQuestionCorrect(markedSet, correctSet),
                 });
             }
             return {
@@ -597,7 +597,7 @@ export async function gradeAttempt(userId: string, attemptId: string) {
     const answersByQuestion = groupPairs(allAnswerRows.map((r) => [r.questionId, r.optionId]));
     const questionRows = questionIds.map((id) => ({
         id,
-        corretas: correctByQuestion.get(id) ?? new Set<string>(),
+        correctIds: correctByQuestion.get(id) ?? new Set<string>(),
     }));
 
     const result = gradePracticeExam(questionRows, answersByQuestion, exam.passPercent);
@@ -610,7 +610,7 @@ export async function gradeAttempt(userId: string, attemptId: string) {
             allOptionRows.filter((o) => o.questionId === q.questionId),
             attemptId + q.questionId,
         );
-        const snapshot: SnapshotQuestaoRevisao = {
+        const snapshot: ReviewQuestionSnapshot = {
             statement: q.statement,
             explanation: q.explanation,
             topic: q.topic,

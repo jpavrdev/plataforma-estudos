@@ -17,6 +17,7 @@ export interface RoadmapResumo {
   stagesDone: number;
   percent: number;
   status: RoadmapStatus;
+  favorito: boolean;
 }
 
 export interface RoadmapRef {
@@ -85,6 +86,12 @@ export async function proximaTrilhaRoadmap(trailId: string) {
 /** Declara que o aluno segue este roadmap. Idempotente. */
 export async function seguirRoadmap(slug: string) {
   await api.post(`/roadmaps/${slug}/seguir`);
+}
+
+// Fixa (ou solta) o roadmap na aba de favoritas.
+export async function alternarFavoritoRoadmap(slug: string) {
+  const { data } = await api.post<{ favorito: boolean }>(`/roadmaps/${slug}/favorite`);
+  return data;
 }
 
 /**

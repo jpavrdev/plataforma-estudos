@@ -3,69 +3,69 @@ import { languages } from "../../schema.ts";
 import { eq, asc, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 
-export async function listarLinguagens() {
+export async function findLanguages() {
     return db.select().from(languages).orderBy(asc(languages.name));
 }
 
-export async function criarLinguagem(nome: string) {
-    const [existe] = await db
+export async function insertLanguage(name: string) {
+    const [existing] = await db
         .select({ id: languages.id })
         .from(languages)
-        .where(eq(languages.name, nome));
-    if (existe) {
-        throw new AppError(409, "Já existe uma linguagem com esse nome");
+        .where(eq(languages.name, name));
+    if (existing) {
+        throw new AppError(409, "language.nameTaken");
     }
-    const [lang] = await db.insert(languages).values({ name: nome }).returning();
+    const [lang] = await db.insert(languages).values({ name }).returning();
     return lang;
 }
 
-export async function atualizarLinguagem(id: string, nome: string) {
-    const [atual] = await db
+export async function editLanguage(id: string, name: string) {
+    const [current] = await db
         .select({ name: languages.name })
         .from(languages)
         .where(eq(languages.id, id));
-    if (!atual) {
-        throw new AppError(404, "Linguagem não encontrada");
+    if (!current) {
+        throw new AppError(404, "language.notFound");
     }
-    const [conflito] = await db
+    const [conflict] = await db
         .select({ id: languages.id })
         .from(languages)
-        .where(eq(languages.name, nome));
-    if (conflito && conflito.id !== id) {
-        throw new AppError(409, "Já existe uma linguagem com esse nome");
+        .where(eq(languages.name, name));
+    if (conflict && conflict.id !== id) {
+        throw new AppError(409, "language.nameTaken");
     }
     return db.transaction(async (tx) => {
-        const [atualizada] = await tx
+        const [updated] = await tx
             .update(languages)
-            .set({ name: nome })
+            .set({ name })
             .where(eq(languages.id, id))
             .returning();
-        // Renomeou: propaga o novo nome para os perfis que usavam o antigo.
-        if (atual.name !== nome) {
+        // Renamed: propagate the new name to the profiles that used the old one.
+        if (current.name !== name) {
             await tx.execute(sql`
                 UPDATE users
                 SET languages = (
-                    SELECT jsonb_agg(CASE WHEN elem = ${JSON.stringify(atual.name)}::jsonb THEN ${JSON.stringify(nome)}::jsonb ELSE elem END)
+                    SELECT jsonb_agg(CASE WHEN elem = ${JSON.stringify(current.name)}::jsonb THEN ${JSON.stringify(name)}::jsonb ELSE elem END)
                     FROM jsonb_array_elements(languages) AS elem
                 )
-                WHERE languages @> ${JSON.stringify([atual.name])}::jsonb
+                WHERE languages @> ${JSON.stringify([current.name])}::jsonb
             `);
         }
-        return atualizada;
+        return updated;
     });
 }
 
-export async function excluirLinguagem(id: string) {
+export async function removeLanguage(id: string) {
     const [lang] = await db
         .select({ name: languages.name })
         .from(languages)
         .where(eq(languages.id, id));
     if (!lang) {
-        throw new AppError(404, "Linguagem não encontrada");
+        throw new AppError(404, "language.notFound");
     }
     await db.transaction(async (tx) => {
         await tx.delete(languages).where(eq(languages.id, id));
-        // Remove o nome dos perfis que a usavam, mantendo os dados padronizados.
+        // Drop the name from the profiles that used it, keeping the data tidy.
         await tx.execute(sql`
             UPDATE users
             SET languages = COALESCE((

@@ -33,9 +33,9 @@ export async function computeUserStats(userId: string) {
     const challengesCompleted = Number(challengeRows?.n ?? 0);
     const challengeXpTotal = Number(challengeRows?.xp ?? 0);
     const xp = computeXp({
-        aulas: lessonsCompleted,
-        questoes: questionsCorrect,
-        desafiosXp: challengeXpTotal,
+        lessons: lessonsCompleted,
+        questions: questionsCorrect,
+        challengesXp: challengeXpTotal,
     });
     return {
         xp,
@@ -60,10 +60,10 @@ export type PublicStats = {
 };
 
 const PUBLIC_CACHE_MS = 5 * 60 * 1000;
-let publicCache: { dados: PublicStats; expiraEm: number } | null = null;
+let publicCache: { data: PublicStats; expiresAt: number } | null = null;
 
 export async function findPublicStats(): Promise<PublicStats> {
-    if (publicCache && publicCache.expiraEm > Date.now()) return publicCache.dados;
+    if (publicCache && publicCache.expiresAt > Date.now()) return publicCache.data;
     const [
         trackRows,
         lessonRows,
@@ -93,6 +93,6 @@ export async function findPublicStats(): Promise<PublicStats> {
         exerciciosResolvidos: Number(answerRows[0]?.n ?? 0),
         aulasConcluidas: Number(completedRows[0]?.n ?? 0),
     };
-    publicCache = { dados: data, expiraEm: Date.now() + PUBLIC_CACHE_MS };
+    publicCache = { data, expiresAt: Date.now() + PUBLIC_CACHE_MS };
     return data;
 }

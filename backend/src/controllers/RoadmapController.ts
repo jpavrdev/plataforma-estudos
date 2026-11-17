@@ -17,6 +17,7 @@ import {
     saveFollow,
     saveVisit,
     saveEntryFromRoadmap,
+    toggleRoadmapFavorite,
 } from "../services/roadmap.service.ts";
 import {
     createRoadmapSchema,
@@ -73,6 +74,18 @@ export const recordRoadmapEntry = async (req: Request, res: Response, next: Next
         if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
         await saveEntryFromRoadmap(req.userId!, roadmap.id);
         res.status(204).end();
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Pins/unpins a roadmap for the signed-in user (favorites filter).
+export const toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const slug = typeof req.params.slug === "string" ? req.params.slug : "";
+        const roadmap = await findRoadmapBySlug(slug, req.userId);
+        if (!roadmap) return res.status(404).json({ erro: "Roadmap não encontrado" });
+        res.json(await toggleRoadmapFavorite(req.userId!, roadmap.id));
     } catch (err) {
         next(err);
     }

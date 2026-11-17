@@ -14,15 +14,15 @@ export function challengeXp(difficulty: string): number {
     return CHALLENGE_XP_BY_DIFFICULTY[difficulty] ?? CHALLENGE_XP_BY_DIFFICULTY.facil;
 }
 
-// desafiosXp is already summed in XP (not a count), since each challenge is worth a different amount.
+// challengesXp is already summed in XP (not a count), since each challenge is worth a different amount.
 export function computeXp({
-    aulas: lessons,
-    questoes: questions,
-    desafiosXp: challengesXp = 0,
+    lessons,
+    questions,
+    challengesXp = 0,
 }: {
-    aulas: number;
-    questoes: number;
-    desafiosXp?: number;
+    lessons: number;
+    questions: number;
+    challengesXp?: number;
 }): number {
     return lessons * XP_PER_LESSON + questions * XP_PER_QUESTION + challengesXp;
 }

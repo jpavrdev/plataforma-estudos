@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { z } from "zod";
-import { analisarCurriculo, analiseAts, historicoAts, statusAts } from "../services/ats.service.ts";
+import { analyzeResume, atsAnalysis, atsHistory, atsStatus } from "../services/ats.service.ts";
 
-const analiseSchema = z.object({
+const analysisSchema = z.object({
     vaga: z.string(),
     tituloVaga: z.string().max(160).nullish(),
     pdf: z.string(),
@@ -10,34 +10,34 @@ const analiseSchema = z.object({
 
 export const getAtsStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await statusAts(req.userId!));
+        res.json(await atsStatus(req.userId!));
     } catch (err) {
         next(err);
     }
 };
 
-export const createAnalise = async (req: Request, res: Response, next: NextFunction) => {
+export const createAnalysis = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { vaga, tituloVaga, pdf } = analiseSchema.parse(req.body);
+        const { vaga, tituloVaga, pdf } = analysisSchema.parse(req.body);
         res.status(201).json(
-            await analisarCurriculo(req.userId!, { vaga, tituloVaga, pdfBase64: pdf }),
+            await analyzeResume(req.userId!, { vaga, tituloVaga, pdfBase64: pdf }),
         );
     } catch (err) {
         next(err);
     }
 };
 
-export const listAnalises = async (req: Request, res: Response, next: NextFunction) => {
+export const listAnalyses = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await historicoAts(req.userId!));
+        res.json(await atsHistory(req.userId!));
     } catch (err) {
         next(err);
     }
 };
 
-export const getAnalise = async (req: Request, res: Response, next: NextFunction) => {
+export const getAnalysis = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await analiseAts(req.userId!, String(req.params.id)));
+        res.json(await atsAnalysis(req.userId!, String(req.params.id)));
     } catch (err) {
         next(err);
     }

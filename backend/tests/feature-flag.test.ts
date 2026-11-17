@@ -6,7 +6,7 @@ import { limparBanco } from "./helpers/db.ts";
 let server: Awaited<ReturnType<typeof startTestServer>>;
 
 let seq = 0;
-const novoUsuario = () => ({
+const newUser = () => ({
     name: "Aluno Beta",
     email: `flag_${++seq}_${Math.round(performance.now() * 1000)}@email.com`,
     username: `flag_${seq}`,
@@ -16,21 +16,21 @@ const novoUsuario = () => ({
     phone: "11999998888",
 });
 
-async function ajustarUsuario(email: string, campos: Record<string, unknown>) {
+async function updateUserFields(email: string, fields: Record<string, unknown>) {
     const { db } = await import("../db.ts");
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
-    await db.update(users).set(campos).where(eq(users.email, email));
+    await db.update(users).set(fields).where(eq(users.email, email));
 }
 
-async function criarUsuarioLogado() {
-    const dados = novoUsuario();
-    await server.request("POST", "/register", { body: dados });
-    await ajustarUsuario(dados.email, { emailVerifiedAt: new Date() });
+async function createLoggedInUser() {
+    const data = newUser();
+    await server.request("POST", "/register", { body: data });
+    await updateUserFields(data.email, { emailVerifiedAt: new Date() });
     const login = await server.request("POST", "/login", {
-        body: { email: dados.email, password: dados.password },
+        body: { email: data.email, password: data.password },
     });
-    return { email: dados.email, token: login.body.token };
+    return { email: data.email, token: login.body.token };
 }
 
 function auth(token: string) {
@@ -41,7 +41,7 @@ async function get(path: string, token?: string) {
     return { status: res.status, body: await res.json().catch(() => null) };
 }
 
-async function criarFlag(key: string, status: "off" | "beta" | "on") {
+async function createFlag(key: string, status: "off" | "beta" | "on") {
     const { db } = await import("../db.ts");
     const { featureFlags } = await import("../schema.ts");
     const [flag] = await db
@@ -51,18 +51,18 @@ async function criarFlag(key: string, status: "off" | "beta" | "on") {
     return flag;
 }
 
-async function idPorEmail(email: string) {
+async function idByEmail(email: string) {
     const { db } = await import("../db.ts");
     const { users } = await import("../schema.ts");
     const { eq } = await import("drizzle-orm");
-    const [u] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
-    return u.id;
+    const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+    return user.id;
 }
 
-async function liberar(flagId: string, email: string) {
+async function allowFlag(flagId: string, email: string) {
     const { db } = await import("../db.ts");
     const { featureFlagUsers } = await import("../schema.ts");
-    await db.insert(featureFlagUsers).values({ flagId, userId: await idPorEmail(email) });
+    await db.insert(featureFlagUsers).values({ flagId, userId: await idByEmail(email) });
 }
 
 before(async () => {
@@ -76,50 +76,50 @@ beforeEach(async () => {
 });
 
 describe("Feature flags", () => {
-    test("sem flags o /me vem com features vazio", async () => {
-        const aluno = await criarUsuarioLogado();
-        const me = await get("/me", aluno.token);
+    test("with no flags /me returns an empty features list", async () => {
+        const student = await createLoggedInUser();
+        const me = await get("/me", student.token);
         assert.equal(me.status, 200);
         assert.deepEqual(me.body.features, []);
     });
 
-    test("flag on aparece no /me de qualquer usuário", async () => {
-        await criarFlag("recurso-novo", "on");
-        const aluno = await criarUsuarioLogado();
-        const me = await get("/me", aluno.token);
+    test("an on flag shows up in any user's /me", async () => {
+        await createFlag("recurso-novo", "on");
+        const student = await createLoggedInUser();
+        const me = await get("/me", student.token);
         assert.deepEqual(me.body.features, ["recurso-novo"]);
     });
 
-    test("flag beta só aparece pra quem está na allowlist", async () => {
-        const flag = await criarFlag("recurso-novo", "beta");
-        const dentro = await criarUsuarioLogado();
-        const fora = await criarUsuarioLogado();
-        await liberar(flag.id, dentro.email);
+    test("a beta flag only shows up for allowlisted users", async () => {
+        const flag = await createFlag("recurso-novo", "beta");
+        const inside = await createLoggedInUser();
+        const outside = await createLoggedInUser();
+        await allowFlag(flag.id, inside.email);
 
-        const meDentro = await get("/me", dentro.token);
-        const meFora = await get("/me", fora.token);
-        assert.deepEqual(meDentro.body.features, ["recurso-novo"]);
-        assert.deepEqual(meFora.body.features, []);
+        const meInside = await get("/me", inside.token);
+        const meOutside = await get("/me", outside.token);
+        assert.deepEqual(meInside.body.features, ["recurso-novo"]);
+        assert.deepEqual(meOutside.body.features, []);
     });
 
-    test("flag off esconde até de quem está na allowlist (kill switch)", async () => {
-        const flag = await criarFlag("recurso-novo", "off");
-        const aluno = await criarUsuarioLogado();
-        await liberar(flag.id, aluno.email);
+    test("an off flag hides even from allowlisted users (kill switch)", async () => {
+        const flag = await createFlag("recurso-novo", "off");
+        const student = await createLoggedInUser();
+        await allowFlag(flag.id, student.email);
 
-        const me = await get("/me", aluno.token);
+        const me = await get("/me", student.token);
         assert.deepEqual(me.body.features, []);
     });
 
-    test("temFeature segue a mesma régua do /me", async () => {
-        const { temFeature } = await import("../src/services/feature-flag.service.ts");
-        const flag = await criarFlag("recurso-novo", "beta");
-        const aluno = await criarUsuarioLogado();
-        const uid = await idPorEmail(aluno.email);
+    test("hasFeature follows the same rule as /me", async () => {
+        const { hasFeature } = await import("../src/services/feature-flag.service.ts");
+        const flag = await createFlag("recurso-novo", "beta");
+        const student = await createLoggedInUser();
+        const uid = await idByEmail(student.email);
 
-        assert.equal(await temFeature(uid, "recurso-novo"), false);
-        await liberar(flag.id, aluno.email);
-        assert.equal(await temFeature(uid, "recurso-novo"), true);
-        assert.equal(await temFeature(uid, "flag-inexistente"), false);
+        assert.equal(await hasFeature(uid, "recurso-novo"), false);
+        await allowFlag(flag.id, student.email);
+        assert.equal(await hasFeature(uid, "recurso-novo"), true);
+        assert.equal(await hasFeature(uid, "flag-inexistente"), false);
     });
 });

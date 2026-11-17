@@ -12,7 +12,7 @@ import type { z } from "zod";
 import type { submitQuizSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
 import { isAdmin } from "./user.service.ts";
-import { verificarConquistas } from "./achievement.service.ts";
+import { checkAchievements } from "./achievement.service.ts";
 
 // Minimum of right answers to complete the lesson (and of questions to publish it).
 export const QUIZ_MIN_CORRECT = 4;
@@ -130,7 +130,7 @@ export async function gradeQuiz(userId: string, lessonId: string, data: QuizAnsw
         }
     }
 
-    await verificarConquistas(userId);
+    await checkAchievements(userId);
 
     return { correct: correctCount, total, passed: passed, lessonCompleted: lessonCompleted };
 }

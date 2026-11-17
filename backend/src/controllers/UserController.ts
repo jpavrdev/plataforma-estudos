@@ -23,8 +23,8 @@ import {
     saveWeeklyGoal,
     removeWeeklyGoal,
 } from "../services/progress.service.ts";
-import { apoiadorAtivo } from "../services/apoiador.service.ts";
-import { featuresDoUsuario } from "../services/feature-flag.service.ts";
+import { supportActive } from "../services/supporter.service.ts";
+import { userFeatures } from "../services/feature-flag.service.ts";
 import { pendingTwoFactor } from "../middlewares/auth.ts";
 
 const publicUserColumns = {
@@ -60,7 +60,7 @@ export const getMe = async (req: Request, res: Response) => {
         return res.status(404).json({ erro: "user.notFound" });
     }
 
-    // temSenha diz ao front se trocar o telefone pede a senha atual.
+    // temSenha tells the front end whether changing the phone asks for the current password.
     const found = await db
         .select({
             ...publicUserColumns,
@@ -94,14 +94,14 @@ export const getMe = async (req: Request, res: Response) => {
 
     let isSupporter = false;
     try {
-        isSupporter = await apoiadorAtivo(userId);
+        isSupporter = await supportActive(userId);
     } catch (e) {
         console.error("getMe: failed to check the support", e);
     }
 
     let features: string[] = [];
     try {
-        features = await featuresDoUsuario(userId);
+        features = await userFeatures(userId);
     } catch (e) {
         console.error("getMe: failed to list the features", e);
     }
@@ -469,7 +469,7 @@ export const getMyProgress = async (req: Request, res: Response, next: NextFunct
         let period: number | null = rawPeriod === "7" ? 7 : rawPeriod === "tudo" ? null : 30;
         // Long periods are a supporter benefit; without it, it falls back to the default of 30.
         if (rawPeriod === "90" || rawPeriod === "365") {
-            period = (await apoiadorAtivo(req.userId!)) ? Number(rawPeriod) : 30;
+            period = (await supportActive(req.userId!)) ? Number(rawPeriod) : 30;
         }
         res.json(await findUserProgress(req.userId!, period));
     } catch (err) {
@@ -500,7 +500,7 @@ export const uploadBackground = async (req: Request, res: Response, next: NextFu
     const userId = req.userId;
     if (!userId) return res.status(401).json({ erro: "common.notAuthenticated" });
     try {
-        if (!(await apoiadorAtivo(userId))) {
+        if (!(await supportActive(userId))) {
             return res.status(403).json({ erro: "support.backgroundForSupporters" });
         }
         const r = await saveImage(

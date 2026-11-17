@@ -5,33 +5,33 @@ import type { z } from "zod";
 import type { glossaryTermSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
 
-type DadosTermo = z.infer<typeof glossaryTermSchema>;
+type TermData = z.infer<typeof glossaryTermSchema>;
 
-export async function listarGlossario() {
+export async function findGlossary() {
     return db.select().from(glossary).orderBy(asc(glossary.term));
 }
 
-export async function criarTermo(dados: DadosTermo) {
-    const [existe] = await db
+export async function insertTerm(data: TermData) {
+    const [existing] = await db
         .select({ id: glossary.id })
         .from(glossary)
-        .where(eq(glossary.term, dados.term));
-    if (existe) throw new AppError(409, "Já existe um termo com esse nome");
-    const [t] = await db.insert(glossary).values(dados).returning();
+        .where(eq(glossary.term, data.term));
+    if (existing) throw new AppError(409, "glossary.termTaken");
+    const [t] = await db.insert(glossary).values(data).returning();
     return t;
 }
 
-export async function atualizarTermo(id: string, dados: DadosTermo) {
-    const [conflito] = await db
+export async function editTerm(id: string, data: TermData) {
+    const [conflict] = await db
         .select({ id: glossary.id })
         .from(glossary)
-        .where(eq(glossary.term, dados.term));
-    if (conflito && conflito.id !== id) throw new AppError(409, "Já existe um termo com esse nome");
-    const [t] = await db.update(glossary).set(dados).where(eq(glossary.id, id)).returning();
-    if (!t) throw new AppError(404, "Termo não encontrado");
+        .where(eq(glossary.term, data.term));
+    if (conflict && conflict.id !== id) throw new AppError(409, "glossary.termTaken");
+    const [t] = await db.update(glossary).set(data).where(eq(glossary.id, id)).returning();
+    if (!t) throw new AppError(404, "glossary.termNotFound");
     return t;
 }
 
-export async function excluirTermo(id: string) {
+export async function removeTerm(id: string) {
     await db.delete(glossary).where(eq(glossary.id, id));
 }

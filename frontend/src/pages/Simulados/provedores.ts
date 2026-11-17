@@ -41,3 +41,16 @@ export function nivelClasse(level: string) {
   if (l.includes('prof') || l.includes('expert')) return 'prof';
   return 'fund';
 }
+
+// O filtro de nível trabalha por classe (fund/assoc/prof), não pela string
+// crua, porque provedores escrevem o nível de jeitos um pouco diferente.
+export type LevelKey =
+  | 'simulados.levels.fundamental'
+  | 'simulados.levels.associate'
+  | 'simulados.levels.professional';
+
+export const LABEL_NIVEL: Record<string, LevelKey> = {
+  fund: 'simulados.levels.fundamental',
+  assoc: 'simulados.levels.associate',
+  prof: 'simulados.levels.professional',
+};

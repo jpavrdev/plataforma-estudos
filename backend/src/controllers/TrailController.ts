@@ -19,35 +19,30 @@ import {
     glossaryTermSchema,
 } from "../schemas/trail.schemas.ts";
 import { summarizeWeek } from "../services/streak.ts";
-import { rankingGlobal } from "../services/ranking.ts";
-import { atividadeRecente } from "../services/activity.service.ts";
+import { globalRanking } from "../services/ranking.ts";
+import { recentActivity } from "../services/activity.service.ts";
 import { buildTrailBook } from "../services/book.service.ts";
-import { listarTags, criarTag, atualizarTag, excluirTag } from "../services/tag.service.ts";
+import { findTags, insertTag, editTag, removeTag } from "../services/tag.service.ts";
 import {
-    listarLinguagens,
-    criarLinguagem,
-    atualizarLinguagem,
-    excluirLinguagem,
+    findLanguages,
+    insertLanguage,
+    editLanguage,
+    removeLanguage,
 } from "../services/language.service.ts";
 import { computeUserStats, findPublicStats } from "../services/stats.service.ts";
 import {
-    listarConquistas,
-    criarConquista,
-    atualizarConquista,
-    excluirConquista,
-    concederConquista,
-    revogarConquista,
-    usuariosComConquista,
-    conquistasDoUsuario,
-    conquistasNaoVistas,
-    feedComunidade,
+    findAchievements,
+    insertAchievement,
+    editAchievement,
+    removeAchievement,
+    grantAchievementTo,
+    revokeAchievementFrom,
+    usersWithAchievement,
+    listUserAchievements,
+    unseenAchievements,
+    communityFeed,
 } from "../services/achievement.service.ts";
-import {
-    listarGlossario,
-    criarTermo,
-    atualizarTermo,
-    excluirTermo,
-} from "../services/glossary.service.ts";
+import { findGlossary, insertTerm, editTerm, removeTerm } from "../services/glossary.service.ts";
 import {
     insertTrail,
     editTrail,
@@ -56,20 +51,21 @@ import {
     findUserTrails,
     findTrailDetail,
     saveTrailReview,
+    toggleTrailFavorite,
 } from "../services/trail.service.ts";
 import { findLessonDetail } from "../services/lesson.service.ts";
 import { gradeQuiz, verifyAnswer } from "../services/quiz.service.ts";
 import {
-    criarModulo,
-    excluirModulo,
-    criarAula,
-    criarQuestao,
-    definirPublicacao,
-    estruturaDoEstudio,
-    aulaParaEdicao,
-    excluirAula,
-    salvarAulaEstudio,
-} from "../services/estudio.service.ts";
+    insertModule,
+    removeModule,
+    insertLesson,
+    insertQuestion,
+    setPublished,
+    studioStructure,
+    lessonForEditing,
+    removeLesson,
+    saveStudioLesson,
+} from "../services/studio.service.ts";
 
 export const createTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -83,7 +79,7 @@ export const createTrail = async (req: Request, res: Response, next: NextFunctio
 // ===================== TAGS (track categories) =====================
 export const listTags = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarTags());
+        res.json(await findTags());
     } catch (err) {
         next(err);
     }
@@ -92,7 +88,7 @@ export const listTags = async (_req: Request, res: Response, next: NextFunction)
 export const createTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = createTagSchema.parse(req.body);
-        res.status(201).json(await criarTag(data.name));
+        res.status(201).json(await insertTag(data.name));
     } catch (err) {
         next(err);
     }
@@ -102,7 +98,7 @@ export const updateTag = async (req: Request, res: Response, next: NextFunction)
     try {
         const id = String(req.params.id);
         const data = updateTagSchema.parse(req.body);
-        res.json(await atualizarTag(id, data.name));
+        res.json(await editTag(id, data.name));
     } catch (err) {
         next(err);
     }
@@ -110,7 +106,7 @@ export const updateTag = async (req: Request, res: Response, next: NextFunction)
 
 export const deleteTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirTag(String(req.params.id));
+        await removeTag(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -120,7 +116,7 @@ export const deleteTag = async (req: Request, res: Response, next: NextFunction)
 // ===================== LANGUAGES (the profile's canonical list) =====================
 export const listLanguages = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarLinguagens());
+        res.json(await findLanguages());
     } catch (err) {
         next(err);
     }
@@ -129,7 +125,7 @@ export const listLanguages = async (_req: Request, res: Response, next: NextFunc
 export const createLanguage = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = createLanguageSchema.parse(req.body);
-        res.status(201).json(await criarLinguagem(data.name));
+        res.status(201).json(await insertLanguage(data.name));
     } catch (err) {
         next(err);
     }
@@ -139,7 +135,7 @@ export const updateLanguage = async (req: Request, res: Response, next: NextFunc
     try {
         const id = String(req.params.id);
         const data = updateLanguageSchema.parse(req.body);
-        res.json(await atualizarLinguagem(id, data.name));
+        res.json(await editLanguage(id, data.name));
     } catch (err) {
         next(err);
     }
@@ -147,7 +143,7 @@ export const updateLanguage = async (req: Request, res: Response, next: NextFunc
 
 export const deleteLanguage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirLinguagem(String(req.params.id));
+        await removeLanguage(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -157,7 +153,7 @@ export const deleteLanguage = async (req: Request, res: Response, next: NextFunc
 // ===================== ACHIEVEMENTS (catalog, admin) =====================
 export const listAchievements = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarConquistas());
+        res.json(await findAchievements());
     } catch (err) {
         next(err);
     }
@@ -166,7 +162,7 @@ export const listAchievements = async (_req: Request, res: Response, next: NextF
 export const createAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = createAchievementSchema.parse(req.body);
-        res.status(201).json(await criarConquista(data));
+        res.status(201).json(await insertAchievement(data));
     } catch (err) {
         next(err);
     }
@@ -176,7 +172,7 @@ export const updateAchievement = async (req: Request, res: Response, next: NextF
     try {
         const id = String(req.params.id);
         const data = updateAchievementSchema.parse(req.body);
-        res.json(await atualizarConquista(id, data));
+        res.json(await editAchievement(id, data));
     } catch (err) {
         next(err);
     }
@@ -184,7 +180,7 @@ export const updateAchievement = async (req: Request, res: Response, next: NextF
 
 export const deleteAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirConquista(String(req.params.id));
+        await removeAchievement(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -196,7 +192,7 @@ export const grantAchievement = async (req: Request, res: Response, next: NextFu
     try {
         const id = String(req.params.id);
         const { userId } = grantAchievementSchema.parse(req.body);
-        await concederConquista(id, userId);
+        await grantAchievementTo(id, userId);
         res.status(201).json({ ok: true });
     } catch (err) {
         next(err);
@@ -205,7 +201,7 @@ export const grantAchievement = async (req: Request, res: Response, next: NextFu
 
 export const revokeAchievement = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await revogarConquista(String(req.params.id), String(req.params.userId));
+        await revokeAchievementFrom(String(req.params.id), String(req.params.userId));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -214,7 +210,7 @@ export const revokeAchievement = async (req: Request, res: Response, next: NextF
 
 export const listAchievementHolders = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await usuariosComConquista(String(req.params.id)));
+        res.json(await usersWithAchievement(String(req.params.id)));
     } catch (err) {
         next(err);
     }
@@ -223,7 +219,7 @@ export const listAchievementHolders = async (req: Request, res: Response, next: 
 // ===================== Glossary =====================
 export const listGlossary = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await listarGlossario());
+        res.json(await findGlossary());
     } catch (err) {
         next(err);
     }
@@ -232,7 +228,7 @@ export const listGlossary = async (_req: Request, res: Response, next: NextFunct
 export const createGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = glossaryTermSchema.parse(req.body);
-        res.status(201).json(await criarTermo(data));
+        res.status(201).json(await insertTerm(data));
     } catch (err) {
         next(err);
     }
@@ -241,7 +237,7 @@ export const createGlossaryTerm = async (req: Request, res: Response, next: Next
 export const updateGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = glossaryTermSchema.parse(req.body);
-        res.json(await atualizarTermo(String(req.params.id), data));
+        res.json(await editTerm(String(req.params.id), data));
     } catch (err) {
         next(err);
     }
@@ -249,7 +245,7 @@ export const updateGlossaryTerm = async (req: Request, res: Response, next: Next
 
 export const deleteGlossaryTerm = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirTermo(String(req.params.id));
+        await removeTerm(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -281,7 +277,7 @@ export const createModule = async (req: Request, res: Response, next: NextFuncti
     try {
         const trailId = String(req.params.id);
         const data = createModuleSchema.parse(req.body);
-        res.status(201).json(await criarModulo(trailId, data));
+        res.status(201).json(await insertModule(trailId, data));
     } catch (err) {
         next(err);
     }
@@ -290,7 +286,7 @@ export const createModule = async (req: Request, res: Response, next: NextFuncti
 // Deletes a module and all its lessons (questions, options and progress).
 export const deleteModule = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirModulo(String(req.params.id));
+        await removeModule(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -301,7 +297,7 @@ export const createLesson = async (req: Request, res: Response, next: NextFuncti
     try {
         const moduleId = String(req.params.id);
         const data = createLessonSchema.parse(req.body);
-        res.status(201).json(await criarAula(moduleId, data));
+        res.status(201).json(await insertLesson(moduleId, data));
     } catch (err) {
         next(err);
     }
@@ -311,7 +307,7 @@ export const createQuestion = async (req: Request, res: Response, next: NextFunc
     try {
         const lessonId = String(req.params.id);
         const data = createQuestionSchema.parse(req.body);
-        res.status(201).json(await criarQuestao(lessonId, data));
+        res.status(201).json(await insertQuestion(lessonId, data));
     } catch (err) {
         next(err);
     }
@@ -321,7 +317,16 @@ export const listTrails = async (req: Request, res: Response, next: NextFunction
     try {
         const level = typeof req.query.level === "string" ? req.query.level : undefined;
         const category = typeof req.query.categoria === "string" ? req.query.categoria : undefined;
-        res.json(await findTrails({ level, categoria: category }));
+        res.json(await findTrails({ level, categoria: category }, req.userId));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Pins/unpins a trail for the signed-in user (favorites tab).
+export const toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await toggleTrailFavorite(req.userId!, String(req.params.id)));
     } catch (err) {
         next(err);
     }
@@ -356,7 +361,7 @@ export const getTrail = async (req: Request, res: Response, next: NextFunction) 
 export const getTrailEpub = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        const { buffer, nome: fileName } = await buildTrailBook(String(req.params.id), lang);
+        const { buffer, filename: fileName } = await buildTrailBook(String(req.params.id), lang);
         res.setHeader("Content-Type", "application/epub+zip");
         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
         res.setHeader("Content-Length", String(buffer.length));
@@ -424,7 +429,7 @@ export const getPublicStats = async (_req: Request, res: Response, next: NextFun
 // Achievement catalog, marking what the user already unlocked.
 export const getMyAchievements = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await conquistasDoUsuario(req.userId!));
+        res.json(await listUserAchievements(req.userId!));
     } catch (err) {
         next(err);
     }
@@ -433,7 +438,7 @@ export const getMyAchievements = async (req: Request, res: Response, next: NextF
 // Newly unlocked achievements not notified yet (they feed the Steam-style toast).
 export const getUnseenAchievements = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await conquistasNaoVistas(req.userId!));
+        res.json(await unseenAchievements(req.userId!));
     } catch (err) {
         next(err);
     }
@@ -442,7 +447,7 @@ export const getUnseenAchievements = async (req: Request, res: Response, next: N
 // Derived recent activity: completed lessons + unlocked achievements.
 export const getMyActivity = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await atividadeRecente(req.userId!));
+        res.json(await recentActivity(req.userId!));
     } catch (err) {
         next(err);
     }
@@ -455,7 +460,7 @@ export const getCommunityAchievements = async (
     next: NextFunction,
 ) => {
     try {
-        res.json(await feedComunidade());
+        res.json(await communityFeed());
     } catch (err) {
         next(err);
     }
@@ -466,7 +471,7 @@ export const getCommunityAchievements = async (
 export const getRanking = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const period = String(req.query.period ?? "all");
-        res.json(await rankingGlobal(period, req.userId));
+        res.json(await globalRanking(period, req.userId));
     } catch (err) {
         next(err);
     }
@@ -503,7 +508,7 @@ export const setLessonPublished = async (req: Request, res: Response, next: Next
             return res.status(400).json({ erro: "trail.publishedMustBeBoolean" });
         }
 
-        res.json(await definirPublicacao(lessonId, published));
+        res.json(await setPublished(lessonId, published));
     } catch (err) {
         next(err);
     }
@@ -514,7 +519,7 @@ export const setLessonPublished = async (req: Request, res: Response, next: Next
 // Course structure for the editor: ordered modules with their lessons (drafts included).
 export const getTrailStudio = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await estruturaDoEstudio(String(req.params.id)));
+        res.json(await studioStructure(String(req.params.id)));
     } catch (err) {
         next(err);
     }
@@ -523,7 +528,7 @@ export const getTrailStudio = async (req: Request, res: Response, next: NextFunc
 // Full lesson for editing: includes the answer key and the difficulty (admin only).
 export const getLessonStudio = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await aulaParaEdicao(String(req.params.id)));
+        res.json(await lessonForEditing(String(req.params.id)));
     } catch (err) {
         next(err);
     }
@@ -532,7 +537,7 @@ export const getLessonStudio = async (req: Request, res: Response, next: NextFun
 // Deletes a lesson and everything that depends on it.
 export const deleteLesson = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await excluirAula(String(req.params.id));
+        await removeLesson(String(req.params.id));
         res.json({ ok: true });
     } catch (err) {
         next(err);
@@ -545,7 +550,7 @@ export const saveLessonStudio = async (req: Request, res: Response, next: NextFu
     try {
         const lessonId = String(req.params.id);
         const data = saveLessonStudioSchema.parse(req.body);
-        await salvarAulaEstudio(lessonId, data);
+        await saveStudioLesson(lessonId, data);
         res.json({ ok: true });
     } catch (err) {
         next(err);

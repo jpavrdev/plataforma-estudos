@@ -17,6 +17,7 @@ import {
     getNextTrail,
     followRoadmap,
     recordRoadmapEntry,
+    toggleFavorite,
 } from "../controllers/RoadmapController.ts";
 
 const router = Router();
@@ -41,6 +42,7 @@ router.delete("/roadmap-stage-refs/:id", authenticate, requireAdmin, deleteStage
 
 router.post("/roadmaps/:slug/seguir", authenticate, followRoadmap);
 router.post("/roadmaps/:slug/entrei", authenticate, recordRoadmapEntry);
+router.post("/roadmaps/:slug/favorite", authenticate, toggleFavorite);
 
 // Student detail by slug (last, so it does not capture the routes above).
 router.get("/roadmaps/:slug", authenticate, getRoadmap);

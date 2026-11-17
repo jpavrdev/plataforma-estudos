@@ -1,16 +1,16 @@
 import { env } from "../config/env.ts";
 import { AppError } from "../errors/AppError.ts";
 
-export function gatewayConfigurado() {
+export function gatewayConfigured() {
     return Boolean(env.ABACATEPAY_API_KEY);
 }
 
-// Validade do QRCode Pix. Passado esse prazo a cobrança não pode mais ser paga,
-// então nem vale consultar o gateway sobre ela.
-export const PIX_TTL_SEGUNDOS = 1800;
+// Pix QR code validity. Past this window the charge can no longer be paid,
+// so it is not even worth querying the gateway about it.
+export const PIX_TTL_SECONDS = 1800;
 
-async function chamar(caminho: string, body: unknown) {
-    const resposta = await fetch(`${env.ABACATEPAY_API_URL}${caminho}`, {
+async function post(path: string, body: unknown) {
+    const response = await fetch(`${env.ABACATEPAY_API_URL}${path}`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${env.ABACATEPAY_API_KEY}`,
@@ -18,73 +18,70 @@ async function chamar(caminho: string, body: unknown) {
         },
         body: JSON.stringify(body),
     });
-    const dados = await resposta.json().catch(() => null);
-    if (!resposta.ok) {
-        console.error("AbacatePay respondeu erro:", resposta.status, JSON.stringify(dados));
-        throw new AppError(502, "O gateway de pagamento não respondeu. Tente de novo em instantes.");
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+        console.error("AbacatePay responded with an error:", response.status, JSON.stringify(data));
+        throw new AppError(502, "payment.gatewayTimeout");
     }
-    return dados as Record<string, unknown>;
+    return data as Record<string, unknown>;
 }
 
-// Estado de um QRCode Pix já criado (v1). É como sabemos que o dinheiro entrou
-// sem depender do webhook: PENDING enquanto ninguém paga, PAID depois.
-export async function consultarPixQrCode(id: string) {
-    const resposta = await fetch(
+// Status of an already created Pix QR code (v1). This is how we learn the money
+// landed without depending on the webhook: PENDING until someone pays, PAID after.
+export async function queryPixQrCode(id: string) {
+    const response = await fetch(
         `${env.ABACATEPAY_API_URL}/pixQrCode/check?id=${encodeURIComponent(id)}`,
         { headers: { Authorization: `Bearer ${env.ABACATEPAY_API_KEY}` } },
     );
-    const dados = await resposta.json().catch(() => null);
-    if (!resposta.ok) {
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
         console.error(
-            "AbacatePay respondeu erro ao consultar cobrança:",
+            "AbacatePay responded with an error while checking a charge:",
             id,
-            resposta.status,
-            JSON.stringify(dados),
+            response.status,
+            JSON.stringify(data),
         );
-        throw new AppError(
-            502,
-            "O gateway de pagamento não respondeu. Tente de novo em instantes.",
-        );
+        throw new AppError(502, "payment.gatewayTimeout");
     }
-    const d = ((dados as Record<string, unknown>)?.data ?? dados) as Record<string, unknown>;
+    const d = ((data as Record<string, unknown>)?.data ?? data) as Record<string, unknown>;
     return {
-        pago: String(d.status ?? "") === "PAID",
+        paid: String(d.status ?? "") === "PAID",
         amountCents: Number(d.amount ?? 0),
-        // updatedAt é quando a cobrança virou PAID. Vale mais que a hora da
-        // reconciliação: é o instante em que o aluno pagou de verdade.
-        pagoEm: d.updatedAt ? new Date(String(d.updatedAt)) : null,
+        // updatedAt is when the charge became PAID. It beats the reconciliation
+        // time: that is the moment the student actually paid.
+        paidAt: d.updatedAt ? new Date(String(d.updatedAt)) : null,
     };
 }
 
-// QRCode Pix direto (v1): devolve o QR (imagem base64) e o copia-e-cola.
-// Sem customer de propósito: no Pix quem paga já se identifica no banco.
-export async function criarPixTransparente(
+// Direct Pix QR code (v1): returns the QR (base64 image) and the copy-and-paste code.
+// No customer on purpose: with Pix the payer already identifies themselves at the bank.
+export async function createTransparentPix(
     amountCents: number,
     description: string,
     metadata: Record<string, string>,
 ) {
-    const r = await chamar("/pixQrCode/create", {
+    const r = await post("/pixQrCode/create", {
         amount: amountCents,
         description,
-        expiresIn: PIX_TTL_SEGUNDOS,
+        expiresIn: PIX_TTL_SECONDS,
         metadata,
     });
-    const dados = (r.data ?? r) as Record<string, unknown>;
+    const data = (r.data ?? r) as Record<string, unknown>;
     return {
-        gatewayId: String(dados.id ?? ""),
-        brCode: String(dados.brCode ?? ""),
-        brCodeBase64: String(dados.brCodeBase64 ?? ""),
+        gatewayId: String(data.id ?? ""),
+        brCode: String(data.brCode ?? ""),
+        brCodeBase64: String(data.brCodeBase64 ?? ""),
     };
 }
 
-// Cobrança hospedada (v1): devolve a URL de redirecionamento para o checkout deles.
-export async function criarCheckoutAssinatura(
+// Hosted charge (v1): returns the redirect URL to their checkout.
+export async function createSubscriptionCheckout(
     productId: string,
     returnUrl: string,
     completionUrl: string,
     externalId: string,
 ) {
-    const r = await chamar("/billing/create", {
+    const r = await post("/billing/create", {
         frequency: "MULTIPLE_PAYMENTS",
         methods: ["PIX"],
         products: [
@@ -100,9 +97,9 @@ export async function criarCheckoutAssinatura(
         completionUrl,
         metadata: { subscriptionId: externalId },
     });
-    const dados = (r.data ?? r) as Record<string, unknown>;
+    const data = (r.data ?? r) as Record<string, unknown>;
     return {
-        gatewayId: String(dados.id ?? ""),
-        url: String(dados.url ?? ""),
+        gatewayId: String(data.id ?? ""),
+        url: String(data.url ?? ""),
     };
 }

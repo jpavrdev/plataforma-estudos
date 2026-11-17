@@ -4,9 +4,9 @@ import { desc, eq } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
 import { computeUserStats } from "./stats.service.ts";
 import { findUserStreak } from "./streak.ts";
-import { conquistasDoUsuario } from "./achievement.service.ts";
+import { listUserAchievements } from "./achievement.service.ts";
 import { findUserTrails } from "./trail.service.ts";
-import { apoiadorAtivo } from "./apoiador.service.ts";
+import { supportActive } from "./supporter.service.ts";
 
 // Only what anyone may see: no email, phone or birth date.
 export async function findPublicProfile(username: string) {
@@ -18,9 +18,9 @@ export async function findPublicProfile(username: string) {
     const [stats, streak, achievements, userTrails, isSupporter, certs] = await Promise.all([
         computeUserStats(user.id),
         findUserStreak(user.id),
-        conquistasDoUsuario(user.id),
+        listUserAchievements(user.id),
         findUserTrails(user.id),
-        apoiadorAtivo(user.id),
+        supportActive(user.id),
         db
             .select({
                 code: certificates.code,

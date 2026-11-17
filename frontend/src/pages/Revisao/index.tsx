@@ -531,7 +531,7 @@ export function Revisao() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav__item${item.label === 'Revisão' ? ' nav__item--active' : ''}`}
+                className={`nav__item${item.to === '/revisao' ? ' nav__item--active' : ''}`}
               >
                 {item.label}
               </Link>

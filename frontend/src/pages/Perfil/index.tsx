@@ -17,7 +17,6 @@ import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import {
   Flame,
-  Search,
   Pencil,
   Check,
   X,
@@ -344,10 +343,6 @@ export function Perfil() {
             ))}
           </nav>
           <div className="topbar__spacer" />
-          <div className="searchbar">
-            <Search size={16} />
-            <span>Buscar exercício…</span>
-          </div>
           <div className="streak-pill">
             <Flame size={16} /> {authUser?.streak ?? 0}
           </div>

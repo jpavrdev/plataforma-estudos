@@ -188,6 +188,25 @@ export const trailReviews = pgTable(
     ],
 );
 
+// Favorite trails: each user pins tracks they want at hand (favorites tab).
+export const trailFavorites = pgTable(
+    "trail_favorites",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.trailId, table.userId),
+        index("trail_favorites_user_id_idx").on(table.userId),
+    ],
+);
+
 export const modules = pgTable(
     "modules",
     {
@@ -484,9 +503,9 @@ export const simuladoAttempts = pgTable(
         // Marca o treino montado pelo aluno, para não se confundir com a prova
         // completa no histórico.
         personalizado: boolean("personalizado").default(false).notNull(),
-    // Modo de prática: o aluno confere a resposta questão por questão, em vez de
-    // só no fim. Nunca tem cronômetro, porque ler a explicação leva tempo.
-    pratica: boolean("pratica").default(false).notNull(),
+        // Modo de prática: o aluno confere a resposta questão por questão, em vez de
+        // só no fim. Nunca tem cronômetro, porque ler a explicação leva tempo.
+        pratica: boolean("pratica").default(false).notNull(),
         topicos: jsonb("topicos").$type<string[]>(),
     },
     (table) => [
@@ -513,11 +532,9 @@ export const simuladoFavoritos = pgTable(
     ],
 );
 
-// Snapshot das questões sorteadas para a tentativa (ordem fixa, sobrevive a
-// mudanças no banco de questões).
-// Revisão congelada no envio: a prova como o aluno viu, imune a atualizações
-// posteriores do banco de questões.
-export type SnapshotQuestaoRevisao = {
+// Frozen review on submission: the exam as the student saw it, immune to later
+// changes in the question bank.
+export type ReviewQuestionSnapshot = {
     statement: string;
     explanation: string | null;
     topic: string | null;
@@ -535,7 +552,7 @@ export const simuladoAttemptQuestions = pgTable(
         // preserva a revisão.
         questionId: uuid("question_id").references(() => simuladoQuestions.id),
         position: integer("position").notNull(),
-        snapshot: jsonb("snapshot").$type<SnapshotQuestaoRevisao>(),
+        snapshot: jsonb("snapshot").$type<ReviewQuestionSnapshot>(),
         // Quando o aluno conferiu o gabarito desta questão, no modo de prática.
         // Conferida trava a resposta: sem isso a nota do fim não valeria nada.
         revealedAt: timestamp("revealed_at", { withTimezone: true }),
@@ -733,6 +750,25 @@ export const userRoadmaps = pgTable(
         unique().on(table.userId, table.roadmapId),
         index("user_roadmaps_user_id_idx").on(table.userId),
         index("user_roadmaps_roadmap_id_idx").on(table.roadmapId),
+    ],
+);
+
+// Favorite roadmaps: pinned by the user, independent of following (user_roadmaps).
+export const roadmapFavorites = pgTable(
+    "roadmap_favorites",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        roadmapId: uuid("roadmap_id")
+            .references(() => roadmaps.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.roadmapId, table.userId),
+        index("roadmap_favorites_user_id_idx").on(table.userId),
     ],
 );
 

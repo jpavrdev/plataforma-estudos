@@ -14,7 +14,7 @@
 }
 .sim__title {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -25,7 +25,7 @@
 }
 .sim__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   align-items: stretch;
 }
@@ -1382,8 +1382,8 @@
   flex-shrink: 0;
 }
 .sim-stat {
-  min-width: 74px;
-  padding: 9px 16px;
+  min-width: 84px;
+  padding: 10px 18px;
   text-align: center;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1391,7 +1391,7 @@
 }
 .sim-stat b {
   display: block;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -1399,76 +1399,11 @@
   font-size: 11px;
   color: var(--muted);
 }
-.sim__toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-.sim__search {
-  flex: 1;
-  min-width: 220px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  height: 42px;
-  padding: 0 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  color: var(--muted);
-}
-.sim__search input {
-  flex: 1;
-  border: none;
-  background: none;
-  outline: none;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--text);
-}
-.sim__filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.sim-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  height: 42px;
-  padding: 0 16px;
-  border-radius: var(--r-lg);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-.sim-pill--active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-.sim-pill__n {
-  font-size: 11px;
-  opacity: 0.7;
-}
-.sim-pill--active .sim-pill__n {
-  opacity: 0.85;
-}
-.sim__count {
-  font-size: 12.5px;
-  color: var(--muted);
-  margin-bottom: 14px;
-}
+
 .simc {
   display: flex;
   flex-direction: column;
-  padding: 16px 18px 18px;
+  padding: 20px 22px 22px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
@@ -1476,18 +1411,18 @@
 .simc__top {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
 }
 .simc__logo {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
-  border-radius: var(--r-md);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
 }
 .simc__id {
@@ -1667,21 +1602,28 @@
 }
 @media (max-width: 1040px) {
   .sim__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+/* Mesmo corte da barra de filtros das trilhas: pills e chips saem, gatilhos entram. */
 @media (max-width: 680px) {
   .sim {
     padding: 20px 16px 32px;
   }
   .sim__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .sim__stats {
     width: 100%;
+    gap: 18px;
   }
   .sim-stat {
-    flex: 1;
+    flex: none;
+    min-width: 0;
+    padding: 0;
+    text-align: left;
+    background: none;
+    border: 0;
   }
 }
 
@@ -1718,6 +1660,10 @@
 }
 .sim-brief__code {
   margin: 2px 0 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -1738,9 +1684,93 @@
   gap: 18px;
   align-items: start;
 }
+
+/* Botão de ação preso no rodapé: só existe no celular, onde o botão do card
+   some e a ação principal precisa estar sempre ao alcance do polegar. */
+.sim-start--fixo {
+  display: none;
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  width: auto;
+  margin-top: 0;
+  z-index: 40;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* As outras formas de estudar viram cards de atalho abaixo da grade, no lugar
+   dos botões alternativos que ficavam colados no CTA. */
+.sim-formas {
+  margin-top: 22px;
+}
+.sim-formas__title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sim-formas__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 12px;
+}
+.sim-forma {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.sim-forma:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.sim-forma > svg {
+  flex-shrink: 0;
+  color: var(--muted);
+}
+.sim-forma:hover > svg {
+  color: var(--accent);
+}
+.sim-forma__txt {
+  display: grid;
+  gap: 3px;
+}
+.sim-forma__t {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.sim-forma__d {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+@media (max-width: 900px) {
+  .sim-formas__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 760px) {
   .sim-brief__grid {
     grid-template-columns: 1fr;
+  }
+  .sim--brief .sim-start--card {
+    display: none;
+  }
+  .sim-start--fixo {
+    display: flex;
+  }
+  /* Respiro no fim da página para o conteúdo não descer atrás do botão fixo. */
+  .sim--brief {
+    padding-bottom: 84px;
   }
 }
 
@@ -2034,27 +2064,15 @@
 .sim-modal__card--form {
   max-width: 560px;
   text-align: left;
+  /* No celular o formulário passa da altura da tela: o card rola por dentro
+     e o arraste não escorre para a página de trás. */
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 .sim-modal__card--form .sim-modal__title,
 .sim-modal__card--form .sim-modal__text {
   text-align: left;
-}
-.sim-start__par {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-}
-.sim-start__par .sim-start {
-  flex: 1;
-  margin-top: 0;
-}
-.sim-start--alt {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent);
-}
-@media (max-width: 640px) {
-  .sim-start__par {
-    flex-direction: column;
-  }
 }

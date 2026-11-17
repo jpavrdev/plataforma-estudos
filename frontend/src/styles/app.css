@@ -1547,6 +1547,669 @@
   margin-right: 2px;
 }
 
+/* Barra de filtros da tela de trilhas: busca larga, níveis em pills segmentadas,
+   categoria em pill e o pill de favoritas. */
+.trilhas-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  /* Sem crescer: quem absorva as mudanças de largura dos vizinhos é o espaçador,
+     então nada na fila se reposiciona quando um filtro entra ou sai. */
+  flex: 0 1 380px;
+  min-width: 220px;
+  max-width: 480px;
+  height: 44px;
+  padding: 0 10px 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--muted);
+}
+.trilhas-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.trilhas-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.trilhas-search input::placeholder {
+  color: var(--muted);
+}
+/* Largura igual à do botão de limpar: a troca kbd <-> x não mexe no input. */
+.trilhas-search__kbd {
+  box-sizing: border-box;
+  width: 26px;
+  text-align: center;
+  font-family: var(--font-code);
+  font-size: 12px;
+  color: var(--muted);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 1px 0;
+}
+.trilhas-search__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.trilhas-search__clear:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.level-pills {
+  display: inline-flex;
+  gap: 2px;
+  height: 44px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+}
+.level-pill {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.level-pill:hover {
+  color: var(--accent);
+}
+.level-pill--active {
+  background: var(--text);
+  color: var(--bg);
+}
+.level-pill--active:hover {
+  color: var(--bg);
+}
+
+/* Dropdown customizado (o popup do select nativo não se estiliza nem anima). */
+.dropdown {
+  position: relative;
+  display: inline-flex;
+}
+.dropdown__gatilho {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 44px;
+  padding: 0 14px 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.dropdown__gatilho:hover {
+  border-color: var(--accent);
+}
+.dropdown__gatilho:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.dropdown__rotulo--vazio {
+  color: var(--muted);
+}
+.dropdown__seta {
+  display: inline-flex;
+  color: var(--muted);
+  transition: transform 0.18s ease;
+}
+.dropdown__gatilho[aria-expanded='true'] .dropdown__seta {
+  transform: rotate(180deg);
+}
+.dropdown__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 100%;
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  box-shadow: 0 14px 34px color-mix(in srgb, #000 16%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top left;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    visibility 0.16s ease;
+}
+.dropdown__menu--aberto {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+.dropdown__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dropdown__item:hover {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+.dropdown__item--sel {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* No celular as pills de nível saem da barra e os filtros viram gatilhos da folha. */
+.filtro-mobile {
+  display: none;
+}
+
+/* Inverso do de cima: filtro que só existe no desktop (vira gatilho da folha). */
+.filtro-desktop {
+  display: inline-flex;
+}
+
+/* Chips de filtro da segunda linha (provedores nos simulados, temas nos desafios). */
+.fchips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: -8px 0 16px;
+}
+.fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.fchip:hover {
+  border-color: var(--accent);
+}
+.fchip--active,
+.fchip--active:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.fchip__n {
+  font-size: 11.5px;
+  line-height: 1;
+  font-weight: 500;
+  opacity: 0.65;
+}
+.fchips__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.fchips__ver:hover {
+  text-decoration: underline;
+}
+.fchips__ver-seta {
+  display: inline-flex;
+  transition: transform 0.18s ease;
+}
+
+/* Gatilho de filtro que abre a folha no celular (Nível, Categoria, Provedor...). */
+.filtro-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.filtro-btn:hover {
+  border-color: var(--accent);
+}
+.filtro-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.filtro-btn--on,
+.filtro-btn--on:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* Pill de favoritas: mesmo papel dos filtros, mas é um botão de alternar.
+   Entra com um fade curto em vez de estourar na fila. */
+@keyframes fav-pill-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.fav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  animation: fav-pill-in 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.fav-pill:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.fav-pill:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.fav-pill--active {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.fav-pill--active svg {
+  color: var(--gold);
+}
+.fav-pill--active:hover {
+  color: var(--bg);
+  border-color: var(--text);
+}
+.fav-pill__n {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.filters__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+/* Sempre montado: aparece e some com fade, sem empurrar a fila ao entrar. */
+.filters__clear {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+.filters__clear:hover {
+  opacity: 0.8;
+}
+.filters__clear--off {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+/* Largura estável para "X de Y trilhas": o texto muda sem remexer a barra. */
+.filters__count {
+  min-width: 112px;
+  text-align: right;
+}
+.filters__count b {
+  font-weight: 700;
+}
+/* No celular o rótulo encurta para "Limpar", como nos mocks. */
+.filters__clear .tx-curto {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fav-pill {
+    animation: none;
+  }
+  .level-pill,
+  .fav-pill,
+  .filters__clear,
+  .dropdown__seta,
+  .dropdown__menu,
+  .sheet,
+  .sheet-scrim {
+    transition: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .trilhas-search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .level-pills {
+    display: none;
+  }
+  .filtro-mobile {
+    display: block;
+    min-width: 0;
+    /* Meia linha menos metade do gap: com o par de dropdowns a linha fecha
+       exata e o contador/favoritas caem para a linha de baixo. */
+    flex: 0 1 calc(50% - 6px);
+  }
+  .filters .dropdown {
+    flex: 0 1 calc(50% - 6px);
+    min-width: 0;
+  }
+  .filters .dropdown__gatilho {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .filters__meta {
+    order: 3;
+  }
+  .fav-pill {
+    order: 4;
+    margin-left: auto;
+  }
+  /* Em linha própria o espaço reservado não ajuda: some de vez quando inativo. */
+  .filters__clear--off {
+    display: none;
+  }
+  .filters__count {
+    min-width: 0;
+  }
+  /* Nos mocks mobile o contador vem antes do "Limpar", encurtado. */
+  .filters__clear {
+    order: 2;
+  }
+  /* Sem o espaçador, o contador fica na esquerda e o pill de favoritas na direita. */
+  .filters > .topbar__spacer {
+    display: none;
+  }
+  .filters__clear .tx-completo {
+    display: none;
+  }
+  .filters__clear .tx-curto {
+    display: inline;
+  }
+  /* Na tela de trilhas o dropdown de categoria sai da barra: vira gatilho da folha. */
+  .trilhas-page--catalog .filters .dropdown {
+    display: none;
+  }
+  .filtro-desktop {
+    display: none;
+  }
+  /* Chips da segunda linha saem no celular: os temas/provedores viram folha. */
+  .fchips {
+    display: none;
+  }
+  /* Gatilho de filtro solto na linha do contador (Status nos desafios). */
+  .filtro-mobile--status {
+    flex: 0 0 auto;
+  }
+  .filtro-mobile--status .filtro-btn {
+    width: auto;
+  }
+  /* Roadmaps não tem busca: o gatilho de nível e o pill de favoritos
+     dividem a linha em duas metades, como no mock. */
+  .trilhas-page--roadmaps .fav-pill {
+    order: 0;
+    margin-left: 0;
+    flex: 0 1 calc(50% - 6px);
+    justify-content: center;
+  }
+}
+
+/* Folha de filtro (celular): sobe de baixo com scrim, como nos mocks. */
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: color-mix(in srgb, #000 34%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s;
+  /* O toque no fundo não pode rolar a página atrás da folha. */
+  touch-action: none;
+}
+.sheet-scrim--on {
+  opacity: 1;
+  visibility: visible;
+}
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  max-height: 78vh;
+  padding: 6px 18px 16px;
+  background: var(--input);
+  border: 1px solid var(--border-strong);
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -14px 44px color-mix(in srgb, #000 16%, transparent);
+  transform: translateY(102%);
+  visibility: hidden;
+  /* Curva de aceleração forte no início: a folha responde ao toque na hora
+     e desacelera ao assentar, em vez de arrastar o ease padrão. */
+  transition:
+    transform 0.22s cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0.22s;
+}
+.sheet--on {
+  transform: translateY(0);
+  visibility: visible;
+}
+/* Alça + cabeçalho: área que arrasta para baixo fecha a folha. */
+.sheet__topo {
+  touch-action: none;
+}
+.sheet__handle {
+  width: 40px;
+  height: 4px;
+  margin: 6px auto 10px;
+  border-radius: 99px;
+  background: var(--border-strong);
+}
+.sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.sheet__head h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sheet__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.sheet__close:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+.sheet__list {
+  display: flex;
+  flex-direction: column;
+  /* scroll (e não auto): mesmo com poucas opções a lista é um container de
+     scroll próprio, e o contain não deixa o gesto vazar para a página. */
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+.sheet__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.sheet__item:last-child {
+  border-bottom: 0;
+}
+.sheet__item-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.sheet__radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+}
+.sheet__item--sel .sheet__radio {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+/* Campo de busca interno (lista longa de temas dos desafios). */
+.sheet__busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  margin: 4px 0 6px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.sheet__busca:focus-within {
+  border-color: var(--accent);
+}
+.sheet__busca input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+}
+.sheet__vazio {
+  padding: 18px 4px;
+  font-size: 13.5px;
+  color: var(--muted);
+  text-align: center;
+}
+
 .select-filtro {
   display: inline-flex;
   align-items: center;
@@ -1810,10 +2473,37 @@
 
 .track-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0, 1fr): sem o 0 explícito, o nome da trilha (nowrap com reticências)
+     vira a largura mínima do card e estoura a tela do celular pro lado. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   /* start: expandir um card com "ler mais" não estica os vizinhos da linha. */
   align-items: start;
+}
+
+/* Catálogo de trilhas (mocks PC/celular): mais respiro entre os cards, card mais
+   arejado e título maior. As classes base são compartilhadas com a tela de roadmaps,
+   por isso o ajuste é escopado aqui. */
+.trilhas-catalog {
+  gap: 24px;
+}
+.trilhas-catalog .track {
+  padding: 24px;
+}
+.trilhas-page--catalog .trilhas-page__title {
+  font-size: 28px;
+}
+@media (max-width: 640px) {
+  .trilhas-catalog {
+    gap: 16px;
+  }
+  .trilhas-catalog .track {
+    padding: 18px;
+  }
+  .trilhas-catalog .track__desc {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
 }
 .track {
   display: flex;
@@ -1843,6 +2533,44 @@
 .track__meta {
   min-width: 0;
   flex: 1;
+}
+.track__fav {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.track__fav svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  transition: transform 0.15s ease;
+}
+.track__fav:hover {
+  color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+.track__fav:hover svg {
+  transform: scale(1.2);
+}
+.track__fav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.track__fav--on {
+  color: var(--gold);
+}
+.track__fav--on svg {
+  fill: currentColor;
 }
 .track__name {
   font-size: 15.5px;
@@ -1910,6 +2638,9 @@
 }
 .track__tags {
   display: flex;
+  /* Sem o wrap a soma mínima dos chips vira a largura mínima do card, que
+     estoura a tela do celular pro lado. */
+  flex-wrap: wrap;
   gap: 6px;
 }
 .track__cta {
@@ -1939,7 +2670,7 @@
     gap: 18px;
   }
   .track-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -2604,7 +3335,8 @@
   outline-offset: 2px;
 }
 .track--clickable .track__more,
-.track--clickable .track__tags a {
+.track--clickable .track__tags a,
+.track--clickable .track__fav {
   position: relative;
   z-index: 1;
 }
