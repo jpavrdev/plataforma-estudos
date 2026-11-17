@@ -24,7 +24,6 @@ export function SheetFiltro({
   placeholderBusca?: string;
 }) {
   const [busca, setBusca] = useState('');
-  const folhaRef = useRef<HTMLDivElement>(null);
   // Distância que a folha desceu no gesto de arrastar para fechar. O valor do
   // gesto fica num ref: no touchend o estado ainda pode estar defasado.
   const [arraste, setArraste] = useState(0);
@@ -36,21 +35,28 @@ export function SheetFiltro({
     const aoTeclar = (e: KeyboardEvent) => {
       if (e.key === 'Escape') aoFechar();
     };
-    // Travar o fundo: overflow hidden sozinho não segura o arraste no
-    // navegador do celular. O toque dentro da lista segue rolando a lista.
-    const aoArrastarFundo = (e: TouchEvent) => {
-      if ((e.target as HTMLElement | null)?.closest('.sheet__list')) return;
-      e.preventDefault();
-    };
-    document.addEventListener('keydown', aoTeclar);
-    document.addEventListener('touchmove', aoArrastarFundo, { passive: false });
+    // Travar o fundo: no navegador do celular o scroll nativo começa no
+    // touchstart e os touchmove chegam não canceláveis, então nem overflow
+    // hidden nem preventDefault seguram. O fix do body (position fixed com
+    // compensação do scroll) é o que fecha essa porta de vez.
+    const y = window.scrollY;
+    const { style } = document.body;
+    style.position = 'fixed';
+    style.top = `-${y}px`;
+    style.left = '0';
+    style.right = '0';
+    style.width = '100%';
     document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', aoTeclar);
     return () => {
       document.removeEventListener('keydown', aoTeclar);
-      document.removeEventListener('touchmove', aoArrastarFundo);
       document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+      style.position = '';
+      style.top = '';
+      style.left = '';
+      style.right = '';
+      style.width = '';
+      window.scrollTo(0, y);
       // Ao fechar, a busca interna volta vazia para a próxima abertura.
       setBusca('');
     };
@@ -86,7 +92,6 @@ export function SheetFiltro({
         aria-hidden="true"
       />
       <div
-        ref={folhaRef}
         className={`sheet${aberto ? ' sheet--on' : ''}`}
         role="dialog"
         aria-modal="true"

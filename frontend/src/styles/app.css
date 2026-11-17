@@ -2127,9 +2127,11 @@
 .sheet__list {
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  /* Rolar até o fim da lista não arrasta a página de trás junto. */
+  /* scroll (e não auto): mesmo com poucas opções a lista é um container de
+     scroll próprio, e o contain não deixa o gesto vazar para a página. */
+  overflow-y: scroll;
   overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 .sheet__item {
   display: flex;
