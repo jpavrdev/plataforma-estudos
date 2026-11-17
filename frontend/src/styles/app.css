@@ -1553,7 +1553,9 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  flex: 1 1 380px;
+  /* Sem crescer: quem absorva as mudanças de largura dos vizinhos é o espaçador,
+     então nada na fila se reposiciona quando um filtro entra ou sai. */
+  flex: 0 1 380px;
   min-width: 220px;
   max-width: 480px;
   height: 44px;
@@ -1580,13 +1582,17 @@
 .trilhas-search input::placeholder {
   color: var(--muted);
 }
+/* Largura igual à do botão de limpar: a troca kbd <-> x não mexe no input. */
 .trilhas-search__kbd {
+  box-sizing: border-box;
+  width: 26px;
+  text-align: center;
   font-family: var(--font-code);
   font-size: 12px;
   color: var(--muted);
   border: 1px solid var(--border-strong);
   border-radius: 6px;
-  padding: 1px 7px;
+  padding: 1px 0;
 }
 .trilhas-search__clear {
   display: inline-flex;
@@ -1626,6 +1632,9 @@
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 .level-pill:hover {
   color: var(--accent);
@@ -1700,7 +1709,18 @@
   color: var(--muted);
 }
 
-/* Pill de favoritas: mesmo papel dos filtros, mas é um botão de alternar. */
+/* Pill de favoritas: mesmo papel dos filtros, mas é um botão de alternar.
+   Entra com um fade curto em vez de estourar na fila. */
+@keyframes fav-pill-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 .fav-pill {
   display: inline-flex;
   align-items: center;
@@ -1715,6 +1735,11 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  animation: fav-pill-in 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
 .fav-pill:hover {
   border-color: var(--gold);
@@ -1746,6 +1771,7 @@
   align-items: center;
   gap: 12px;
 }
+/* Sempre montado: aparece e some com fade, sem empurrar a fila ao entrar. */
 .filters__clear {
   border: 0;
   background: none;
@@ -1756,12 +1782,37 @@
   font-weight: 500;
   text-decoration: underline;
   cursor: pointer;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
 }
 .filters__clear:hover {
   opacity: 0.8;
 }
+.filters__clear--off {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+/* Largura estável para "X de Y trilhas": o texto muda sem remexer a barra. */
+.filters__count {
+  min-width: 112px;
+  text-align: right;
+}
 .filters__count b {
   font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fav-pill {
+    animation: none;
+  }
+  .level-pill,
+  .fav-pill,
+  .filters__clear {
+    transition: none;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1787,6 +1838,13 @@
   .fav-pill {
     order: 4;
     margin-left: auto;
+  }
+  /* Em linha própria o espaço reservado não ajuda: some de vez quando inativo. */
+  .filters__clear--off {
+    display: none;
+  }
+  .filters__count {
+    min-width: 0;
   }
 }
 

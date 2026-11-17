@@ -340,11 +340,15 @@ export function Trilhas() {
             )}
             <div className="topbar__spacer" />
             <div className="filters__meta">
-              {filtrosAtivos && (
-                <button type="button" className="filters__clear" onClick={limparFiltros}>
-                  Limpar filtros
-                </button>
-              )}
+              <button
+                type="button"
+                className={`filters__clear${filtrosAtivos ? '' : ' filters__clear--off'}`}
+                onClick={limparFiltros}
+                tabIndex={filtrosAtivos ? 0 : -1}
+                aria-hidden={!filtrosAtivos}
+              >
+                Limpar filtros
+              </button>
               <span className="filters__count">
                 {filtrosAtivos ? (
                   <>
