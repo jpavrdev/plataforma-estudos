@@ -6,7 +6,7 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Play, ChevronRight, Star } from '../../components/Icons';
+import { Flame, Play, ChevronRight, Star, Search, X, ChevronDown } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { type Trail, type TrailLevel } from '../../data/trails';
@@ -89,6 +89,7 @@ export function Trilhas() {
   const [erro, setErro] = useState('');
   const [xp, setXp] = useState(0);
   const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
+  const buscaRef = useRef<HTMLInputElement>(null);
   const [nivel, setNivel] = useState('');
   const [categoria, setCategoria] = useState('');
   const [busca, setBusca] = useState('');
@@ -151,11 +152,31 @@ export function Trilhas() {
       .replace(/[̀-ͯ]/g, '')
       .toLowerCase();
   const termoBusca = normalizar(busca.trim());
+  const filtrosAtivos = !!(termoBusca || nivel || categoria || soFavoritas);
   const trilhasFiltradas = trilhas.filter((t) => {
     if (soFavoritas && !ehFavorito(t)) return false;
     if (termoBusca && !normalizar(t.name).includes(termoBusca)) return false;
     return true;
   });
+
+  function limparFiltros() {
+    setBusca('');
+    setNivel('');
+    setCategoria('');
+    setSoFavoritas(false);
+  }
+
+  // "/" fora de um campo de texto leva o foco para a busca.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      const alvo = e.target as HTMLElement | null;
+      if (e.key !== '/' || /^(input|textarea|select)$/i.test(alvo?.tagName ?? '')) return;
+      e.preventDefault();
+      buscaRef.current?.focus();
+    };
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, []);
 
   return (
     <div className="home-shell">
@@ -248,37 +269,65 @@ export function Trilhas() {
 
           {/* Filtros */}
           <div className="filters">
-            <label className="select-filtro">
-              <span className="filters__label">Buscar</span>
+            <label className="trilhas-search">
+              <Search size={16} />
               <input
-                className="filters__search"
+                ref={buscaRef}
                 type="text"
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
-                placeholder="Nome da trilha"
+                placeholder="Buscar trilha por nome"
               />
+              {busca ? (
+                <button
+                  type="button"
+                  className="trilhas-search__clear"
+                  aria-label="Limpar busca"
+                  onClick={() => setBusca('')}
+                >
+                  <X size={13} />
+                </button>
+              ) : (
+                <kbd className="trilhas-search__kbd">/</kbd>
+              )}
             </label>
-            <label className="select-filtro">
-              <span className="filters__label">Nível</span>
-              <select value={nivel} onChange={(e) => setNivel(e.target.value)}>
-                {NIVEIS.map((n) => (
-                  <option key={n.v} value={n.v}>
-                    {n.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="select-filtro">
-              <span className="filters__label">Categoria</span>
+
+            <div className="level-pills" role="group" aria-label="Nível">
+              {NIVEIS.map((n) => (
+                <button
+                  key={n.v}
+                  type="button"
+                  className={`level-pill${nivel === n.v ? ' level-pill--active' : ''}`}
+                  aria-pressed={nivel === n.v}
+                  onClick={() => setNivel(n.v)}
+                >
+                  {n.label}
+                </button>
+              ))}
+            </div>
+            <label className="cat-pill">
               <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-                <option value="">Todas</option>
+                <option value="">Categoria</option>
                 {tagsDisp.map((t) => (
                   <option key={t.id} value={t.name}>
                     {t.name}
                   </option>
                 ))}
               </select>
+              <ChevronDown size={12} />
             </label>
+            <label className="filtro-mobile filtro-mobile--nivel">
+              <select value={nivel} onChange={(e) => setNivel(e.target.value)} aria-label="Nível">
+                <option value="">Nível</option>
+                {NIVEIS.filter((n) => n.v).map((n) => (
+                  <option key={n.v} value={n.v}>
+                    {n.label}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={12} />
+            </label>
+
             {(totalFavoritas > 0 || soFavoritas) && (
               <button
                 type="button"
@@ -290,7 +339,22 @@ export function Trilhas() {
               </button>
             )}
             <div className="topbar__spacer" />
-            <span className="filters__count">{trilhasFiltradas.length} trilhas</span>
+            <div className="filters__meta">
+              {filtrosAtivos && (
+                <button type="button" className="filters__clear" onClick={limparFiltros}>
+                  Limpar filtros
+                </button>
+              )}
+              <span className="filters__count">
+                {filtrosAtivos ? (
+                  <>
+                    <b>{trilhasFiltradas.length}</b> de {trilhas.length} trilhas
+                  </>
+                ) : (
+                  <>{trilhas.length} trilhas</>
+                )}
+              </span>
+            </div>
           </div>
 
           {carregando && <p className="track__desc">Carregando trilhas...</p>}

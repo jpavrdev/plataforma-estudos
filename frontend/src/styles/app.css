@@ -1547,14 +1547,167 @@
   margin-right: 2px;
 }
 
+/* Barra de filtros da tela de trilhas: busca larga, níveis em pills segmentadas,
+   categoria em pill e o pill de favoritas. */
+.trilhas-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1 1 380px;
+  min-width: 220px;
+  max-width: 480px;
+  height: 44px;
+  padding: 0 8px 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--muted);
+}
+.trilhas-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.trilhas-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.trilhas-search input::placeholder {
+  color: var(--muted);
+}
+.trilhas-search__kbd {
+  font-family: var(--font-code);
+  font-size: 12px;
+  color: var(--muted);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 1px 7px;
+}
+.trilhas-search__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.trilhas-search__clear:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.level-pills {
+  display: inline-flex;
+  gap: 2px;
+  height: 44px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+}
+.level-pill {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.level-pill:hover {
+  color: var(--accent);
+}
+.level-pill--active {
+  background: var(--text);
+  color: var(--bg);
+}
+.level-pill--active:hover {
+  color: var(--bg);
+}
+
+.cat-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.cat-pill select {
+  appearance: none;
+  height: 44px;
+  padding: 0 32px 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.cat-pill select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.cat-pill svg {
+  position: absolute;
+  right: 13px;
+  pointer-events: none;
+  color: var(--muted);
+}
+
+/* No celular as pills de nível viram um select, como no mock. */
+.filtro-mobile {
+  position: relative;
+  display: none;
+  align-items: center;
+}
+.filtro-mobile select {
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  padding: 0 32px 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.filtro-mobile select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.filtro-mobile svg {
+  position: absolute;
+  right: 13px;
+  pointer-events: none;
+  color: var(--muted);
+}
+
 /* Pill de favoritas: mesmo papel dos filtros, mas é um botão de alternar. */
 .fav-pill {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 40px;
+  height: 44px;
   padding: 0 14px;
-  border-radius: var(--r-lg);
+  border-radius: 999px;
   border: 1px solid var(--border-strong);
   background: var(--input);
   color: var(--text);
@@ -1572,13 +1725,69 @@
   outline-offset: 2px;
 }
 .fav-pill--active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: #fff;
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.fav-pill--active svg {
+  color: var(--gold);
+}
+.fav-pill--active:hover {
+  color: var(--bg);
+  border-color: var(--text);
 }
 .fav-pill__n {
   font-size: 12px;
   opacity: 0.8;
+}
+
+.filters__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.filters__clear {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.filters__clear:hover {
+  opacity: 0.8;
+}
+.filters__count b {
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .trilhas-search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .level-pills {
+    display: none;
+  }
+  .filtro-mobile {
+    display: inline-flex;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .cat-pill {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .filters__meta {
+    order: 3;
+  }
+  .fav-pill {
+    order: 4;
+    margin-left: auto;
+  }
 }
 
 .select-filtro {
@@ -1897,10 +2106,14 @@
   stroke: currentColor;
   stroke-width: 2;
   stroke-linejoin: round;
+  transition: transform 0.15s ease;
 }
 .track__fav:hover {
   color: var(--gold);
   background: color-mix(in srgb, var(--gold) 12%, transparent);
+}
+.track__fav:hover svg {
+  transform: scale(1.2);
 }
 .track__fav:focus-visible {
   outline: 2px solid var(--accent);
@@ -2672,7 +2885,8 @@
   outline-offset: 2px;
 }
 .track--clickable .track__more,
-.track--clickable .track__tags a {
+.track--clickable .track__tags a,
+.track--clickable .track__fav {
   position: relative;
   z-index: 1;
 }

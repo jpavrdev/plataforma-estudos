@@ -141,6 +141,54 @@ beforeEach(async () => {
     await limparBanco();
 });
 
+describe("Roadmap: favorites", () => {
+    test("favoriting shows in the catalog only for whoever favorited it", async () => {
+        const admin = await createLoggedUser(true);
+        const rm = await post("/roadmaps", admin.token, {
+            name: "Backend",
+            description: "Do zero ao backend.",
+            level: "iniciante",
+            published: true,
+        });
+        const student = await createLoggedUser();
+        const other = await createLoggedUser();
+
+        const r = await post(`/roadmaps/${rm.body.slug}/favorite`, student.token);
+        assert.equal(r.status, 200);
+        assert.equal(r.body.favorito, true);
+
+        const mine = await get("/roadmaps", student.token);
+        assert.equal(mine.body.find((x: any) => x.slug === rm.body.slug).favorito, true);
+        const theirs = await get("/roadmaps", other.token);
+        assert.equal(theirs.body.find((x: any) => x.slug === rm.body.slug).favorito, false);
+    });
+
+    test("favoriting again removes the favorite", async () => {
+        const admin = await createLoggedUser(true);
+        const rm = await post("/roadmaps", admin.token, {
+            name: "Backend",
+            description: "Do zero ao backend.",
+            level: "iniciante",
+            published: true,
+        });
+        const student = await createLoggedUser();
+
+        await post(`/roadmaps/${rm.body.slug}/favorite`, student.token);
+        const off = await post(`/roadmaps/${rm.body.slug}/favorite`, student.token);
+        assert.equal(off.status, 200);
+        assert.equal(off.body.favorito, false);
+
+        const after = await get("/roadmaps", student.token);
+        assert.equal(after.body.find((x: any) => x.slug === rm.body.slug).favorito, false);
+    });
+
+    test("a missing roadmap returns 404", async () => {
+        const student = await createLoggedUser();
+        const r = await post(`/roadmaps/nao-existe/favorite`, student.token);
+        assert.equal(r.status, 404);
+    });
+});
+
 describe("Roadmap: manual stage completion", () => {
     test("completing marks the stage, unlocks the next one and is idempotent", async () => {
         const admin = await createLoggedUser(true);

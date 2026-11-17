@@ -753,6 +753,25 @@ export const userRoadmaps = pgTable(
     ],
 );
 
+// Favorite roadmaps: pinned by the user, independent of following (user_roadmaps).
+export const roadmapFavorites = pgTable(
+    "roadmap_favorites",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        roadmapId: uuid("roadmap_id")
+            .references(() => roadmaps.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.roadmapId, table.userId),
+        index("roadmap_favorites_user_id_idx").on(table.userId),
+    ],
+);
+
 // Cartão de revisão de uma aula. Autorado, não derivado das questões do quiz: a aula
 // ensina bem mais que os cinco fatos que o quiz cobra, e o cartão existe para pegar
 // justamente o que sobrou.
