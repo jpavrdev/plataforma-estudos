@@ -5,7 +5,7 @@
 // Antes de inserir, roda um QC (5 questões por aula, 4 opções, 1 correta, sem enunciado
 // duplicado, correta não é a mais longa nas novas). Idempotente e com --dry.
 //
-// Rodar: docker compose exec -T backend node scripts/sincronizar-questoes-trilha.ts <java|cpp|go> [--dry]
+// Rodar: docker compose exec -T backend node scripts/sync-trail-questions.ts <java|cpp|go> [--dry]
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq, asc } from "drizzle-orm";
@@ -46,7 +46,7 @@ async function main() {
     const nome = process.argv.slice(2).find((a) => !a.startsWith("--"));
     const dry = process.argv.includes("--dry");
     if (!nome) {
-        console.error("uso: node scripts/sincronizar-questoes-trilha.ts <java|cpp|go> [--dry]");
+        console.error("uso: node scripts/sync-trail-questions.ts <java|cpp|go> [--dry]");
         process.exit(1);
     }
 

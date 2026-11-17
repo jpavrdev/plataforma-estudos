@@ -4,12 +4,12 @@
 // Idempotente (pula quem já tem ```) e conservador (só mexe em enunciado com linha
 // indentada). Casa a linguagem da aula na cerca.
 //
-// Rodar:      docker compose exec -T backend node scripts/cercar-codigo-questoes.ts [--dry]
-// Em prod:    docker compose -f docker-compose.prod.yml exec -T backend node scripts/cercar-codigo-questoes.ts [--dry]
+// Rodar:      docker compose exec -T backend node scripts/fence-code-questions.ts [--dry]
+// Em prod:    docker compose -f docker-compose.prod.yml exec -T backend node scripts/fence-code-questions.ts [--dry]
 import { db } from "../db.ts";
 import { questions, lessons } from "../schema.ts";
 import { eq } from "drizzle-orm";
-import { cercarCodigo } from "./cercar-codigo.lib.ts";
+import { cercarCodigo } from "./fence-code.lib.ts";
 
 async function main() {
     const dry = process.argv.includes("--dry");

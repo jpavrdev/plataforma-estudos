@@ -24,7 +24,7 @@
 //
 //   docker compose -f docker-compose.prod.yml exec -T db pg_dump -U <user> -Fc <db> > antes-backfill.dump
 //
-// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/backfill-roadmap-seguido.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/backfill-followed-roadmap.ts
 import { db } from "../db.ts";
 import {
     roadmaps,

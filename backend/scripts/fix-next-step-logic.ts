@@ -3,7 +3,7 @@
 // roadmaps (Back-end, Ciência de Dados, Engenharia de Dados), o texto passa a ser neutro.
 // Idempotente: só altera aulas que ainda tenham o texto antigo. Vale para as versões JS e Python.
 //
-// Rodar: docker compose exec -T backend node scripts/fix-logica-proximo-passo.ts
+// Rodar: docker compose exec -T backend node scripts/fix-next-step-logic.ts
 import { db } from "../db.ts";
 import { trails, lessons } from "../schema.ts";
 import { eq } from "drizzle-orm";

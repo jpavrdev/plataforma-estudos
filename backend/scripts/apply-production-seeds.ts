@@ -9,7 +9,7 @@
 // Release de conteúdo acrescenta os seeds dela antes de seed-detalhes-trilhas e
 // seed-conquistas-trilhas, que dependem das trilhas já criadas.
 //
-// Rodar à mão: docker compose -f docker-compose.prod.yml exec -T backend node scripts/aplicar-seeds-producao.ts
+// Rodar à mão: docker compose -f docker-compose.prod.yml exec -T backend node scripts/apply-production-seeds.ts
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import path from "node:path";
@@ -22,7 +22,7 @@ const SEEDS = [
     "seed-trilha-machine-learning.ts",
     "seed-trilha-ml-na-pratica.ts",
     "seed-trilha-do-modelo-ao-produto.ts",
-    "aplicar-correcoes-conteudo.ts",
+    "apply-content-fixes.ts",
     "seed-detalhes-trilhas.ts",
     "seed-conquistas-trilhas.ts",
 ];

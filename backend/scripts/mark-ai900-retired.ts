@@ -2,7 +2,7 @@
 // exame em 30/06/2026 e o substituiu pelo AI-901). Idempotente: só prefixa o
 // aviso se ainda não estiver lá. Não apaga o conteúdo nem o progresso de ninguém.
 //
-// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/marcar-ai900-aposentada.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/mark-ai900-retired.ts
 import { db } from "../db.ts";
 import { trails, simulados } from "../schema.ts";
 import { eq } from "drizzle-orm";

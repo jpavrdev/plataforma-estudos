@@ -6,7 +6,7 @@
 import { db } from "../db.ts";
 import { trails, modules, lessons, questions, questionOptions } from "../schema.ts";
 import { eq } from "drizzle-orm";
-import { backfillExplicacoes, mesclarSolucoes } from "./backfill-explicacoes.ts";
+import { backfillExplicacoes, mesclarSolucoes } from "./backfill-explanations.ts";
 
 const NOME = "Do Modelo ao Produto";
 const LEVEL: "iniciante" | "intermediario" | "avancado" = "avancado";

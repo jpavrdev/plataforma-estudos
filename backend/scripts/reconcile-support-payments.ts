@@ -7,7 +7,7 @@
 // Idempotente: só mexe em linha pendente com paid_at nulo, e só quando o gateway
 // diz PAID. Rodar de novo não estende validade de ninguém.
 //
-// Rodar em prod: docker compose -f docker-compose.prod.yml run --rm -T --no-deps backend node scripts/reconciliar-apoios.ts
+// Rodar em prod: docker compose -f docker-compose.prod.yml run --rm -T --no-deps backend node scripts/reconcile-support-payments.ts
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { db } from "../db.ts";
 import { subscriptions, users } from "../schema.ts";

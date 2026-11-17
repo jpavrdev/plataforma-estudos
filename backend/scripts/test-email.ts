@@ -3,7 +3,7 @@
 //   uma URL de preview do email renderizado.
 // - Com SMTP configurado (ex.: em produção): envia de verdade para o endereço dado.
 //
-// Uso:  node scripts/testar-email.ts [email-de-destino] [pt-BR|en]
+// Uso:  node scripts/test-email.ts [email-de-destino] [pt-BR|en]
 import nodemailer from "nodemailer";
 
 async function main() {

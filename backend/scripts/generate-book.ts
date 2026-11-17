@@ -1,6 +1,6 @@
 // Gera o livro (EPUB) de uma trilha em arquivo, para conferir o resultado fora
 // da plataforma. O endpoint do aluno usa o mesmo gerador.
-// Uso: node scripts/gerar-livro.ts <id-ou-parte-do-nome-da-trilha> [linguagem]
+// Uso: node scripts/generate-book.ts <id-ou-parte-do-nome-da-trilha> [linguagem]
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { eq, ilike } from "drizzle-orm";
@@ -11,7 +11,7 @@ import { BOOKS_DIR } from "../src/config/paths.ts";
 
 const [alvo, lang] = process.argv.slice(2);
 if (!alvo) {
-    console.error("uso: node scripts/gerar-livro.ts <id-ou-parte-do-nome-da-trilha> [linguagem]");
+    console.error("uso: node scripts/generate-book.ts <id-ou-parte-do-nome-da-trilha> [linguagem]");
     process.exit(1);
 }
 

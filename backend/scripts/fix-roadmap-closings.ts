@@ -5,7 +5,7 @@
 // Casa o texto atual por âncora (não por string exata) e sincroniza banco + arquivo de seed.
 // Idempotente: só altera o que ainda tem o texto antigo.
 //
-// Rodar: docker compose exec -T backend node scripts/fix-fechamentos-roadmap.ts
+// Rodar: docker compose exec -T backend node scripts/fix-roadmap-closings.ts
 import { readFileSync, writeFileSync } from "node:fs";
 import { db } from "../db.ts";
 import { trails, lessons, questions, questionOptions } from "../schema.ts";

@@ -11,8 +11,8 @@
 // As aulas puramente conceituais também ficam de fora: sem comando para rodar,
 // o terminal seria enfeite.
 //
-// Rodar:   docker compose exec -T backend node scripts/adicionar-labs-linux.ts [--dry]
-// Em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/adicionar-labs-linux.ts [--dry]
+// Rodar:   docker compose exec -T backend node scripts/add-linux-labs.ts [--dry]
+// Em prod: docker compose -f docker-compose.prod.yml exec -T backend node scripts/add-linux-labs.ts [--dry]
 import { db } from "../db.ts";
 import { trails, modules, lessons } from "../schema.ts";
 import { eq, asc } from "drizzle-orm";

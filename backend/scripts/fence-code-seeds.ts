@@ -2,9 +2,9 @@
 // nascerem com a indentação preservada. Espelha o backfill do banco (mesma lib) e é
 // idempotente. Usa cerca simples (```), que renderiza igual à cerca com linguagem.
 //
-// Rodar: docker compose exec -T backend node scripts/cercar-codigo-seeds.ts [--dry] <arquivo...>
+// Rodar: docker compose exec -T backend node scripts/fence-code-seeds.ts [--dry] <arquivo...>
 import { readFileSync, writeFileSync } from "node:fs";
-import { cercarCodigo } from "./cercar-codigo.lib.ts";
+import { cercarCodigo } from "./fence-code.lib.ts";
 
 const args = process.argv.slice(2);
 const dry = args.includes("--dry");
