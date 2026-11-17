@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
+import { Trans, useTranslation } from 'react-i18next';
 import { SimTopbar } from './SimTopbar';
 import { SheetFiltro, type OpcaoSheet } from '../../components/SheetFiltro';
 import { Search, Play, Info, Star, X, ChevronDown } from '../../components/Icons';
@@ -24,6 +25,7 @@ type Melhor = { score: number; passed: boolean };
 const ORDEM_NIVEL = ['fund', 'assoc', 'prof'];
 
 export function Simulados() {
+  const { t } = useTranslation();
   const { dados, carregando } = useRequisicao(
     () =>
       Promise.all([listarSimulados(), historicoSimulados()]).then(([exams, historico]) => ({
@@ -146,7 +148,7 @@ export function Simulados() {
   );
 
   const opcoesProvedor: OpcaoSheet[] = [
-    { valor: '', label: 'Todos', contagem: exams.length },
+    { valor: '', label: t('filters.allM'), contagem: exams.length },
     ...provedores.map((p) => ({
       valor: p,
       label: provedorDe(p).label,
@@ -154,7 +156,7 @@ export function Simulados() {
     })),
   ];
   const opcoesNivel: OpcaoSheet[] = [
-    { valor: '', label: 'Todos', contagem: exams.length },
+    { valor: '', label: t('filters.allM'), contagem: exams.length },
     ...niveis,
   ];
 
@@ -165,32 +167,29 @@ export function Simulados() {
         <div className="sim">
           <div className="sim__head">
             <div>
-              <h1 className="sim__title">Simulados de certificação</h1>
-              <p className="sim__sub">
-                Pratique com provas cronometradas no formato oficial e chegue confiante no dia do
-                exame.
-              </p>
+              <h1 className="sim__title">{t('simulados.title')}</h1>
+              <p className="sim__sub">{t('simulados.sub')}</p>
             </div>
             <div className="sim__stats">
               <div className="sim-stat">
                 <b>{exams.length}</b>
-                <span>simulados</span>
+                <span>{t('simulados.exams')}</span>
               </div>
               <div className="sim-stat">
                 <b>{provedores.length}</b>
-                <span>provedores</span>
+                <span>{t('simulados.providers')}</span>
               </div>
               <div className="sim-stat">
                 <b>{aprovados}</b>
-                <span>aprovados</span>
+                <span>{t('simulados.passedStat')}</span>
               </div>
             </div>
           </div>
 
           {carregando ? (
-            <p className="sim-empty">Carregando simulados...</p>
+            <p className="sim-empty">{t('simulados.loading')}</p>
           ) : exams.length === 0 ? (
-            <p className="sim-empty">Nenhum simulado disponível ainda.</p>
+            <p className="sim-empty">{t('simulados.empty')}</p>
           ) : (
             <>
               <div className="filters">
@@ -200,13 +199,13 @@ export function Simulados() {
                     ref={buscaRef}
                     value={busca}
                     onChange={(e) => setBusca(e.target.value)}
-                    placeholder="Buscar por código, nome ou provedor..."
+                    placeholder={t('simulados.searchPlaceholder')}
                   />
                   {busca ? (
                     <button
                       type="button"
                       className="trilhas-search__clear"
-                      aria-label="Limpar busca"
+                      aria-label={t('filters.clearSearch')}
                       onClick={() => setBusca('')}
                     >
                       <X size={13} />
@@ -222,7 +221,7 @@ export function Simulados() {
                     className={`level-pill${nivel === '' ? ' level-pill--active' : ''}`}
                     onClick={() => setNivel('')}
                   >
-                    Todos
+                    {t('filters.allM')}
                   </button>
                   {niveis.map((n) => (
                     <button
@@ -231,7 +230,7 @@ export function Simulados() {
                       className={`level-pill${nivel === n.valor ? ' level-pill--active' : ''}`}
                       onClick={() => setNivel(n.valor)}
                     >
-                      {n.label}
+                      {t(n.label)}
                     </button>
                   ))}
                 </div>
@@ -243,7 +242,7 @@ export function Simulados() {
                     className={`filtro-btn${filtro ? ' filtro-btn--on' : ''}`}
                     onClick={() => setFolha('prov')}
                   >
-                    <span>{filtro ? provedorDe(filtro).label : 'Provedor'}</span>
+                    <span>{filtro ? provedorDe(filtro).label : t('filters.provider')}</span>
                     <ChevronDown size={13} />
                   </button>
                 </div>
@@ -253,7 +252,7 @@ export function Simulados() {
                     className={`filtro-btn${nivel ? ' filtro-btn--on' : ''}`}
                     onClick={() => setFolha('nivel')}
                   >
-                    <span>{nivel ? LABEL_NIVEL[nivel] : 'Nível'}</span>
+                    <span>{nivel ? t(LABEL_NIVEL[nivel]) : t('filters.level')}</span>
                     <ChevronDown size={13} />
                   </button>
                 </div>
@@ -264,7 +263,7 @@ export function Simulados() {
                     aria-pressed={soFavoritos}
                     onClick={() => setSoFavoritos((v) => !v)}
                   >
-                    <Star size={13} /> Favoritos <span className="fav-pill__n">{totalFavoritos}</span>
+                    <Star size={13} /> {t('simulados.favorites')} <span className="fav-pill__n">{totalFavoritos}</span>
                   </button>
                 )}
 
@@ -278,18 +277,18 @@ export function Simulados() {
                     aria-hidden={!filtrosAtivos}
                     onClick={limparFiltros}
                   >
-                    <span className="tx-completo">Limpar filtros</span>
-                    <span className="tx-curto">Limpar</span>
+                    <span className="tx-completo">{t('filters.clear')}</span>
+                    <span className="tx-curto">{t('filters.clearShort')}</span>
                   </button>
                   <span className="filters__count">
                     {filtrosAtivos ? (
-                      <>
-                        <b>{filtrados.length}</b> de {exams.length} simulados
-                      </>
+                      <Trans
+                        i18nKey="simulados.countFiltered"
+                        values={{ shown: filtrados.length, total: exams.length }}
+                        components={{ b: <b /> }}
+                      />
                     ) : (
-                      <>
-                        {filtrados.length} {filtrados.length === 1 ? 'simulado' : 'simulados'}
-                      </>
+                      <>{t('simulados.countAll', { count: filtrados.length })}</>
                     )}
                   </span>
                 </div>
@@ -300,7 +299,7 @@ export function Simulados() {
                   className={`fchip${filtro === null ? ' fchip--active' : ''}`}
                   onClick={() => setFiltro(null)}
                 >
-                  Todos <span className="fchip__n">{exams.length}</span>
+                  {t('filters.allM')} <span className="fchip__n">{exams.length}</span>
                 </button>
                 {provedores.map((p) => (
                   <button
@@ -314,7 +313,7 @@ export function Simulados() {
               </div>
 
               {filtrados.length === 0 ? (
-                <p className="sim-empty">Nenhum simulado encontrado.</p>
+                <p className="sim-empty">{t('simulados.emptySearch')}</p>
               ) : (
                 <div className="sim__grid">
                   {filtrados.map((e) => (
@@ -335,14 +334,12 @@ export function Simulados() {
                   <Info size={18} />
                 </span>
                 <div>
-                  <b>Provas no formato oficial, cronometradas.</b> O relógio inicia ao começar e não
-                  para. Ao enviar, você recebe o percentual, a aprovação e a explicação de cada
-                  questão.
+                  <b>{t('simulados.footerTitle')}</b> {t('simulados.footerBody')}
                 </div>
               </div>
 
               <SheetFiltro
-                titulo="Provedor"
+                titulo={t('filters.provider')}
                 aberto={folha === 'prov'}
                 aoFechar={() => setFolha(null)}
                 valor={filtro ?? ''}
@@ -350,7 +347,7 @@ export function Simulados() {
                 opcoes={opcoesProvedor}
               />
               <SheetFiltro
-                titulo="Nível"
+                titulo={t('filters.level')}
                 aberto={folha === 'nivel'}
                 aoFechar={() => setFolha(null)}
                 valor={nivel}
@@ -378,6 +375,7 @@ function CardSimulado({
   favorito: boolean;
   onFavoritar: () => void;
 }) {
+  const { t } = useTranslation();
   const p = provedorDe(e.provider);
   const feito = !!melhor;
   const aprovado = melhor?.passed === true;
@@ -393,15 +391,15 @@ function CardSimulado({
         </div>
         {e.level && (
           <span className={`simc__level simc__level--${nivelClasse(e.level)}`}>
-            {LABEL_NIVEL[nivelClasse(e.level)]}
+            {t(LABEL_NIVEL[nivelClasse(e.level)])}
           </span>
         )}
         <button
           type="button"
           className={`simc__fav${favorito ? ' simc__fav--on' : ''}`}
           aria-pressed={favorito}
-          aria-label={favorito ? 'Remover dos favoritos' : 'Favoritar'}
-          title={favorito ? 'Remover dos favoritos' : 'Favoritar'}
+          aria-label={favorito ? t('filters.unfavorite') : t('filters.favorite')}
+          title={favorito ? t('filters.unfavorite') : t('filters.favorite')}
           onClick={onFavoritar}
         >
           <Star size={17} />
@@ -410,13 +408,13 @@ function CardSimulado({
       <div className="simc__name">{nomeLimpo(e.name, e.code)}</div>
       <div className="simc__meta">
         <span>
-          <b>{e.questionCount}</b> questões
+          <b>{e.questionCount}</b> {t('simulados.questions')}
         </span>
         <span>
-          <b>{e.durationMinutes}</b> min
+          <b>{e.durationMinutes}</b> {t('simulados.min')}
         </span>
         <span>
-          <b>{e.passPercent}%</b> p/ passar
+          <b>{e.passPercent}%</b> {t('simulados.toPass')}
         </span>
       </div>
       <div className="simc__divider" />
@@ -425,9 +423,9 @@ function CardSimulado({
           <>
             <div className="simc__status-row">
               <span className={`simc__verdict simc__verdict--${aprovado ? 'ok' : 'no'}`}>
-                {aprovado ? 'Aprovado' : 'Reprovado'}
+                {aprovado ? t('simulados.passed') : t('simulados.failed')}
               </span>
-              <span className="simc__best">melhor {melhor!.score}%</span>
+              <span className="simc__best">{t('simulados.best', { score: melhor!.score })}</span>
             </div>
             <div className="simc__bar">
               <span
@@ -437,11 +435,11 @@ function CardSimulado({
             </div>
           </>
         ) : (
-          <div className="simc__notstarted">Não iniciado</div>
+          <div className="simc__notstarted">{t('simulados.notStarted')}</div>
         )}
       </div>
       <Link to={href} className={`simc__btn${feito ? ' simc__btn--redo' : ''}`}>
-        <Play size={13} /> {feito ? 'Refazer' : 'Iniciar'}
+        <Play size={13} /> {feito ? t('simulados.redo') : t('simulados.start')}
       </Link>
     </div>
   );

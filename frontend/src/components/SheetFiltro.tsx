@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Check, Search, X } from './Icons';
 import { useTravaFundo } from '../hooks/useTravaFundo';
+import { useTranslation } from 'react-i18next';
 
 export type OpcaoSheet = { valor: string; label: string; contagem?: number };
 
@@ -24,6 +25,7 @@ export function SheetFiltro({
   // Com a lista longa (temas dos desafios) a folha ganha um campo de busca.
   placeholderBusca?: string;
 }) {
+  const { t } = useTranslation();
   const [busca, setBusca] = useState('');
   // Distância que a folha desceu no gesto de arrastar para fechar. O valor do
   // gesto fica num ref: no touchend o estado ainda pode estar defasado.
@@ -97,7 +99,7 @@ export function SheetFiltro({
           <div className="sheet__handle" />
           <header className="sheet__head">
             <h3>{titulo}</h3>
-            <button type="button" className="sheet__close" aria-label="Fechar" onClick={aoFechar}>
+            <button type="button" className="sheet__close" aria-label={t("sheet.close")} onClick={aoFechar}>
               <X size={15} />
             </button>
           </header>
@@ -133,7 +135,7 @@ export function SheetFiltro({
             </button>
           ))}
           {visiveis.length === 0 && (
-            <div className="sheet__vazio">Nada encontrado com essa busca.</div>
+            <div className="sheet__vazio">{t('sheet.emptySearch')}</div>
           )}
         </div>
       </div>

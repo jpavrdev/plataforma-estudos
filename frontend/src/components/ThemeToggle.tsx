@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface ThemeToggleProps {
@@ -5,6 +6,7 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ inline = false }: ThemeToggleProps) {
+  const { t } = useTranslation();
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -12,7 +14,7 @@ export function ThemeToggle({ inline = false }: ThemeToggleProps) {
       type="button"
       className={`theme-toggle${inline ? ' theme-toggle--inline' : ''}`}
       onClick={toggleTheme}
-      aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
+      aria-label={theme === 'dark' ? t('themeToggle.toLight') : t('themeToggle.toDark')}
     >
       {theme === 'dark' ? '☀' : '☾'}
     </button>

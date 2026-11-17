@@ -137,7 +137,7 @@ export function Aula() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav__item${item.label === 'Trilhas' ? ' nav__item--active' : ''}`}
+                className={`nav__item${item.to === '/trilhas' ? ' nav__item--active' : ''}`}
               >
                 {item.label}
               </Link>

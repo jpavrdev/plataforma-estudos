@@ -27,6 +27,7 @@ import { ehCliqueSimples } from '../../utils/cliqueSimples';
 type TrailComId = Trail & { id: string };
 
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
+import { Trans, useTranslation } from 'react-i18next';
 
 type Tint = { fg: string; bg: string };
 
@@ -43,12 +44,22 @@ const LEVEL_TINT: Record<'light' | 'dark', Record<TrailLevel, Tint>> = {
   },
 };
 
-const NIVEIS: { v: string; label: string }[] = [
-  { v: '', label: 'Todos' },
-  { v: 'iniciante', label: 'Iniciante' },
-  { v: 'intermediario', label: 'Intermediário' },
-  { v: 'avancado', label: 'Avançado' },
+const NIVEIS: { v: string; label: 'filters.allM' | LevelKey }[] = [
+  { v: '', label: 'filters.allM' },
+  { v: 'iniciante', label: 'levels.beginner' },
+  { v: 'intermediario', label: 'levels.intermediate' },
+  { v: 'avancado', label: 'levels.advanced' },
 ];
+
+type LevelKey = 'levels.beginner' | 'levels.intermediate' | 'levels.advanced';
+
+// The API still returns levels in Portuguese (content translation is a later
+// phase), so the card badge maps the value to a catalog key for display.
+const LEVEL_KEY: Record<TrailLevel, LevelKey> = {
+  Iniciante: 'levels.beginner',
+  Intermediário: 'levels.intermediate',
+  Avançado: 'levels.advanced',
+};
 
 function Metric({ value, label, accent }: { value: string; label: string; accent?: boolean }) {
   return (
@@ -62,6 +73,7 @@ function Metric({ value, label, accent }: { value: string; label: string; accent
 }
 
 export function Trilhas() {
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
   const { theme } = useTheme();
@@ -88,7 +100,7 @@ export function Trilhas() {
   const [trilhas, setTrilhas] = useState<TrailComId[]>([]);
   const [minhas, setMinhas] = useState<TrailComId[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  const [erro, setErro] = useState(false);
   const [xp, setXp] = useState(0);
   const [tagsDisp, setTagsDisp] = useState<Tag[]>([]);
   const buscaRef = useRef<HTMLInputElement>(null);
@@ -127,7 +139,7 @@ export function Trilhas() {
         setXp(stats.xp);
         setTagsDisp(tg);
       } catch {
-        setErro('Não foi possível carregar as trilhas.');
+        setErro(true);
       } finally {
         setCarregando(false);
       }
@@ -138,7 +150,7 @@ export function Trilhas() {
   useEffect(() => {
     listarTrilhas()
       .then(setTrilhas)
-      .catch(() => setErro('Não foi possível carregar as trilhas.'));
+      .catch(() => setErro(true));
   }, []);
 
   // Card de destaque: a trilha em andamento mais avançada (mas nao concluida).
@@ -172,7 +184,7 @@ export function Trilhas() {
   }
 
   const opcoesCategoria = [
-    { valor: '', label: 'Todas' },
+    { valor: '', label: t('filters.allF') },
     ...tagsDisp.map((t) => ({ valor: t.name, label: t.name })),
   ];
 
@@ -200,7 +212,7 @@ export function Trilhas() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav__item${item.label === 'Trilhas' ? ' nav__item--active' : ''}`}
+                className={`nav__item${item.to === '/trilhas' ? ' nav__item--active' : ''}`}
               >
                 {item.label}
               </Link>
@@ -223,18 +235,15 @@ export function Trilhas() {
           {/* Título + stats */}
           <div className="trilhas-page__head">
             <div>
-              <h1 className="trilhas-page__title">Trilhas de aprendizado</h1>
-              <p className="trilhas-page__sub">
-                Aprenda passo a passo, da lógica aos algoritmos. Conclua aulas para subir de nível e
-                ganhar XP.
-              </p>
+              <h1 className="trilhas-page__title">{t('trilhas.title')}</h1>
+              <p className="trilhas-page__sub">{t('trilhas.sub')}</p>
             </div>
             <div className="trilhas-page__stats">
-              <Metric value={String(emAndamento)} label="em andamento" />
+              <Metric value={String(emAndamento)} label={t('trilhas.ongoing')} />
               <span className="trilhas-page__divider" />
-              <Metric value={String(aulasConcluidas)} label="aulas concluídas" />
+              <Metric value={String(aulasConcluidas)} label={t('trilhas.lessonsDone')} />
               <span className="trilhas-page__divider" />
-              <Metric value={String(xp)} label="XP em trilhas" accent />
+              <Metric value={String(xp)} label={t('trilhas.xp')} accent />
             </div>
           </div>
 
@@ -243,11 +252,9 @@ export function Trilhas() {
             <div className="continue-card">
               <span className="continue-card__glow" />
               <div className="continue-card__body">
-                <div className="continue-card__kicker">Continuar de onde parou</div>
+                <div className="continue-card__kicker">{t('trilhas.continueKicker')}</div>
                 <h2 className="continue-card__title">{continuar.name}</h2>
-                <p className="continue-card__next">
-                  {continuar.done} de {continuar.lessons} aulas concluídas
-                </p>
+                <p className="continue-card__next">{t('trilhas.continueLessons', { done: continuar.done, total: continuar.lessons })}</p>
                 <div className="continue-card__progress">
                   <div className="continue-card__track">
                     <span
@@ -272,7 +279,7 @@ export function Trilhas() {
                   abrirTrilha(continuar.id);
                 }}
               >
-                <Play size={13} /> Continuar aula
+                <Play size={13} /> {t('trilhas.continueCta')}
               </Link>
             </div>
           )}
@@ -286,13 +293,13 @@ export function Trilhas() {
                 type="text"
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
-                placeholder="Buscar trilha por nome"
+                placeholder={t('trilhas.searchPlaceholder')}
               />
               {busca ? (
                 <button
                   type="button"
                   className="trilhas-search__clear"
-                  aria-label="Limpar busca"
+                  aria-label={t('filters.clearSearch')}
                   onClick={() => setBusca('')}
                 >
                   <X size={13} />
@@ -302,7 +309,7 @@ export function Trilhas() {
               )}
             </label>
 
-            <div className="level-pills" role="group" aria-label="Nível">
+            <div className="level-pills" role="group" aria-label={t('filters.level')}>
               {NIVEIS.map((n) => (
                 <button
                   key={n.v}
@@ -311,13 +318,13 @@ export function Trilhas() {
                   aria-pressed={nivel === n.v}
                   onClick={() => setNivel(n.v)}
                 >
-                  {n.label}
+                  {t(n.label)}
                 </button>
               ))}
             </div>
             <Dropdown
-              ariaLabel="Categoria"
-              placeholder="Categoria"
+              ariaLabel={t('filters.category')}
+              placeholder={t('filters.category')}
               valor={categoria}
               aoEscolher={setCategoria}
               opcoes={opcoesCategoria}
@@ -330,7 +337,9 @@ export function Trilhas() {
                 onClick={() => setFolha('nivel')}
               >
                 <span>
-                  {nivel ? (NIVEIS.find((n) => n.v === nivel)?.label ?? 'Nível') : 'Nível'}
+                  {nivel
+                    ? t(NIVEIS.find((n) => n.v === nivel)?.label ?? 'filters.level')
+                    : t('filters.level')}
                 </span>
                 <ChevronDown size={13} />
               </button>
@@ -341,7 +350,7 @@ export function Trilhas() {
                 className={`filtro-btn${categoria ? ' filtro-btn--on' : ''}`}
                 onClick={() => setFolha('categoria')}
               >
-                <span>{categoria || 'Categoria'}</span>
+                <span>{categoria || t('filters.category')}</span>
                 <ChevronDown size={13} />
               </button>
             </div>
@@ -365,30 +374,32 @@ export function Trilhas() {
                 tabIndex={filtrosAtivos ? 0 : -1}
                 aria-hidden={!filtrosAtivos}
               >
-                <span className="tx-completo">Limpar filtros</span>
-                <span className="tx-curto">Limpar</span>
+                <span className="tx-completo">{t('filters.clear')}</span>
+                <span className="tx-curto">{t('filters.clearShort')}</span>
               </button>
               <span className="filters__count">
                 {filtrosAtivos ? (
-                  <>
-                    <b>{trilhasFiltradas.length}</b> de {trilhas.length} trilhas
-                  </>
+                  <Trans
+                    i18nKey="trilhas.countFiltered"
+                    values={{ shown: trilhasFiltradas.length, total: trilhas.length }}
+                    components={{ b: <b /> }}
+                  />
                 ) : (
-                  <>{trilhas.length} trilhas</>
+                  <>{t('trilhas.countAll', { count: trilhas.length })}</>
                 )}
               </span>
             </div>
           </div>
 
-          {carregando && <p className="track__desc">Carregando trilhas...</p>}
-          {erro && <div className="auth__alert">{erro}</div>}
+          {carregando && <p className="track__desc">{t('trilhas.loading')}</p>}
+          {erro && <div className="auth__alert">{t('trilhas.loadError')}</div>}
           {!carregando && !erro && trilhasFiltradas.length === 0 && (
             <p className="track__desc">
               {busca
-                ? 'Nenhuma trilha encontrada.'
+                ? t('trilhas.emptySearch')
                 : nivel || categoria
-                  ? 'Nenhuma trilha com esse filtro.'
-                  : 'Nenhuma trilha disponível ainda.'}
+                  ? t('trilhas.emptyFilter')
+                  : t('trilhas.empty')}
             </p>
           )}
 
@@ -397,50 +408,50 @@ export function Trilhas() {
             {trilhasFiltradas.map((catalogo) => {
               // Cruza o catalogo com o progresso do usuario (done vem de /me/trails).
               const progresso = minhas.find((m) => m.id === catalogo.id);
-              const t = {
+              const card = {
                 ...catalogo,
                 done: progresso?.done ?? 0,
                 lessons: progresso?.lessons ?? catalogo.lessons,
               };
-              const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
-              const started = t.done > 0;
-              const completed = t.done >= t.lessons;
-              const lv = tint[t.level];
+              const pct = card.lessons > 0 ? Math.round((card.done / card.lessons) * 100) : 0;
+              const started = card.done > 0;
+              const completed = card.done >= card.lessons;
+              const lv = tint[card.level];
               return (
-                <div key={t.id} className="track track--clickable">
+                <div key={card.id} className="track track--clickable">
                   <div className="track__head">
                     <span
                       className="track__icon"
                       style={{
-                        color: t.hue,
-                        background: `color-mix(in srgb, ${t.hue} 16%, transparent)`,
+                        color: card.hue,
+                        background: `color-mix(in srgb, ${card.hue} 16%, transparent)`,
                       }}
                     >
-                      {t.glyph}
+                      {card.glyph}
                     </span>
                     <div className="track__meta">
-                      <Link to={`/trilhas/${t.id}`} className="track__name link-esticado">
-                        {t.name}
+                      <Link to={`/trilhas/${card.id}`} className="track__name link-esticado">
+                        {card.name}
                       </Link>
                       <div className="track__row">
                         <span className="track__level" style={{ color: lv.fg, background: lv.bg }}>
-                          {t.level}
+                          {t(LEVEL_KEY[card.level])}
                         </span>
-                        <span className="track__lessons">{t.lessons} aulas</span>
+                        <span className="track__lessons">{t('trilhas.lessonsCount', { count: card.lessons })}</span>
                       </div>
                     </div>
                     <button
                       type="button"
-                      className={`track__fav${ehFavorito(t) ? ' track__fav--on' : ''}`}
-                      aria-pressed={ehFavorito(t)}
-                      aria-label={ehFavorito(t) ? 'Remover dos favoritos' : 'Favoritar'}
-                      title={ehFavorito(t) ? 'Remover dos favoritos' : 'Favoritar'}
-                      onClick={() => alternarFavorito(t)}
+                      className={`track__fav${ehFavorito(card) ? ' track__fav--on' : ''}`}
+                      aria-pressed={ehFavorito(card)}
+                      aria-label={ehFavorito(card) ? t('filters.unfavorite') : t('filters.favorite')}
+                      title={ehFavorito(card) ? t('filters.unfavorite') : t('filters.favorite')}
+                      onClick={() => alternarFavorito(card)}
                     >
                       <Star size={15} />
                     </button>
                   </div>
-                  <TrilhaDesc>{t.desc}</TrilhaDesc>
+                  <TrilhaDesc>{card.desc}</TrilhaDesc>
                   <div className="progress">
                     <div className="progress__track">
                       <span
@@ -456,18 +467,18 @@ export function Trilhas() {
                   <hr className="rule" />
                   <div className="track__foot">
                     <div className="track__tags">
-                      {t.tags.map((tag) => (
+                      {card.tags.map((tag) => (
                         <span key={tag} className="chip--outline">
                           {tag}
                         </span>
                       ))}
                       {authUser?.role === 'admin' && (
                         <Link
-                          to={`/estudio/${t.id}`}
+                          to={`/estudio/${card.id}`}
                           className="chip--outline"
                           style={{ textDecoration: 'none' }}
                         >
-                          Editar
+                          {t('common.edit')}
                         </Link>
                       )}
                     </div>
@@ -475,7 +486,11 @@ export function Trilhas() {
                       className="track__cta"
                       style={{ color: started ? 'var(--accent)' : 'var(--text)' }}
                     >
-                      {completed ? 'Revisar' : started ? 'Continuar' : 'Começar'}{' '}
+                      {completed
+                        ? t('common.review')
+                        : started
+                          ? t('common.continue')
+                          : t('common.start')}{' '}
                       <ChevronRight size={15} />
                     </span>
                   </div>
@@ -485,7 +500,7 @@ export function Trilhas() {
           </div>
 
           <SheetFiltro
-            titulo="Nível"
+            titulo={t('filters.level')}
             aberto={folha === 'nivel'}
             aoFechar={() => setFolha(null)}
             valor={nivel}
@@ -493,7 +508,7 @@ export function Trilhas() {
             opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
           />
           <SheetFiltro
-            titulo="Categoria"
+            titulo={t('filters.category')}
             aberto={folha === 'categoria'}
             aoFechar={() => setFolha(null)}
             valor={categoria}
@@ -509,6 +524,7 @@ export function Trilhas() {
 // Descrição do card com "ler mais": mostra o botão só quando o texto passa de 3 linhas,
 // e expande apenas este card (estado próprio), sem mexer nos vizinhos.
 function TrilhaDesc({ children }: { children: string }) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLParagraphElement>(null);
   const [truncado, setTruncado] = useState(false);
   const [aberto, setAberto] = useState(false);
@@ -530,7 +546,7 @@ function TrilhaDesc({ children }: { children: string }) {
       <div className="track__more-row">
         {(truncado || aberto) && (
           <button type="button" className="track__more" onClick={() => setAberto((v) => !v)}>
-            {aberto ? 'Ler menos' : 'Ler mais'}
+            {aberto ? t('trilhas.readLess') : t('trilhas.readMore')}
           </button>
         )}
       </div>

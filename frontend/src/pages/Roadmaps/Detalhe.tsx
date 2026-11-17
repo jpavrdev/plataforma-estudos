@@ -151,7 +151,7 @@ export function RoadmapDetalhe() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav__item${item.label === 'Roadmaps' ? ' nav__item--active' : ''}`}
+                className={`nav__item${item.to === '/roadmaps' ? ' nav__item--active' : ''}`}
               >
                 {item.label}
               </Link>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { MontagemTentativa, OpcoesSimulado } from '../../services/simulados';
 import { useTravaFundo } from '../../hooks/useTravaFundo';
+import { useTranslation } from 'react-i18next';
 
 export function MontarModal({
   opcoes,
@@ -18,6 +19,7 @@ export function MontarModal({
   // O componente só monta com o modal aberto, então o fundo fica travado
   // enquanto ele existir.
   useTravaFundo(true);
+  const { t } = useTranslation();
   const [temas, setTemas] = useState<string[]>([]);
   const [qtd, setQtd] = useState(opcoes.oficial.questionCount);
   const [comTempo, setComTempo] = useState(true);
@@ -44,11 +46,11 @@ export function MontarModal({
       onClick={() => !loading && onCancel()}
     >
       <div className="sim-modal__card sim-modal__card--form" onClick={(ev) => ev.stopPropagation()}>
-        <h2 className="sim-modal__title">{pratica ? 'Modo de prática' : 'Monte do seu jeito'}</h2>
+        <h2 className="sim-modal__title">
+          {pratica ? t('simulados.builder.titlePractice') : t('simulados.builder.titleCustom')}
+        </h2>
         <p className="sim-modal__text">
-          {pratica
-            ? 'Escolha o tamanho e os assuntos. Você confere cada questão na hora, e a tentativa fica marcada como prática no seu histórico.'
-            : 'Escolha o tamanho, o tempo e os assuntos. A tentativa fica marcada como treino no seu histórico.'}
+          {pratica ? t('simulados.builder.textPractice') : t('simulados.builder.textCustom')}
         </p>
 
         <div className="sim-montar__corpo">
@@ -59,17 +61,14 @@ export function MontarModal({
               onChange={(e) => setPratica(e.target.checked)}
             />
             <span>
-              <b>Modo de prática</b>
-              <small>
-                Confira a resposta na hora, questão por questão, com a explicação. Sem cronômetro, e
-                a questão conferida não muda mais de resposta.
-              </small>
+              <b>{t('simulados.builder.practiceLabel')}</b>
+              <small>{t('simulados.builder.practiceDesc')}</small>
             </span>
           </label>
 
           <div className="sim-montar__campo">
             <div className="sim-montar__rotulo">
-              <label htmlFor="mm-qtd">Quantidade de questões</label>
+              <label htmlFor="mm-qtd">{t('simulados.builder.quantity')}</label>
               <input
                 id="mm-qtd"
                 className="sim-montar__num"
@@ -91,7 +90,7 @@ export function MontarModal({
             />
             <div className="sim-montar__limites">
               <span>{opcoes.minQuestoes}</span>
-              <span>{teto} disponíveis</span>
+              <span>{t('simulados.builder.available', { count: teto })}</span>
             </div>
           </div>
 
@@ -103,12 +102,12 @@ export function MontarModal({
                 disabled={pratica}
                 onChange={(e) => setComTempo(e.target.checked)}
               />
-              <span>Com cronômetro</span>
+              <span>{t('simulados.builder.withTimer')}</span>
             </label>
-            {pratica && <p className="sim-montar__nota">A prática não tem cronômetro.</p>}
+            {pratica && <p className="sim-montar__nota">{t('simulados.builder.noTimerNote')}</p>}
             {comTempo && !pratica && (
               <div className="sim-montar__rotulo">
-                <label htmlFor="mm-min">Tempo em minutos</label>
+                <label htmlFor="mm-min">{t('simulados.builder.minutes')}</label>
                 <input
                   id="mm-min"
                   className="sim-montar__num"
@@ -126,9 +125,11 @@ export function MontarModal({
           {opcoes.temas.length > 0 && (
             <div className="sim-montar__campo">
               <div className="sim-montar__rotulo">
-                <span>Assuntos</span>
+                <span>{t('simulados.builder.topics')}</span>
                 <span className="sim-montar__valor">
-                  {temas.length === 0 ? 'todos' : `${temas.length} escolhidos`}
+                  {temas.length === 0
+                    ? t('simulados.builder.allTopics')
+                    : t('simulados.builder.chosenTopics', { count: temas.length })}
                 </span>
               </div>
               <div className="sim-montar__temas">
@@ -153,7 +154,7 @@ export function MontarModal({
             onClick={onCancel}
             disabled={loading}
           >
-            Cancelar
+            {t('simulados.builder.cancel')}
           </button>
           <button
             className="sim-modal__btn sim-modal__btn--primary"
@@ -169,7 +170,11 @@ export function MontarModal({
               })
             }
           >
-            {loading ? 'Aguarde...' : pratica ? 'Iniciar prática' : 'Iniciar treino'}
+            {loading
+              ? t('simulados.builder.wait')
+              : pratica
+                ? t('simulados.builder.startPractice')
+                : t('simulados.builder.startCustom')}
           </button>
         </div>
       </div>
