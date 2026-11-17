@@ -1,11 +1,16 @@
 /* Página de Roadmaps: cartões de carreira com cor por nível, uma faixa de
    destaque no topo e um grid de cards maiores que o das trilhas. */
 
-/* Cards de largura limitada e alinhados à esquerda: some ou muitos roadmaps,
-   nunca fica um card esticado sozinho ocupando a linha inteira. */
+/* Três colunas que esticam até a borda direita, como nas trilhas. A quebra
+   para duas vem mais cedo que nas trilhas: com cards estreitos as tags dos
+   roadmaps não cabem numa linha ao lado do CTA. */
 .rm-grid {
-  grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
-  justify-content: start;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 1280px) {
+  .rm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .roadmap-card {
@@ -46,14 +51,32 @@
 .roadmap-card__level {
   color: var(--rm-hue, var(--accent));
 }
+/* Chips e CTA mais enxutos: as três tags cabem numa linha ao lado da ação. */
+.roadmap-card .chip--outline {
+  padding: 4px 9px;
+  font-size: 11.5px;
+}
+/* Se o CTA cair para a linha de baixo (celular), fica alinhado à direita. */
+.roadmap-card .track__cta {
+  margin-left: auto;
+}
 
 @media (max-width: 760px) {
   .rm-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .roadmap-card:hover {
     transform: none;
     box-shadow: none;
+  }
+  /* Sem espaço para tags e CTA lado a lado: empilha e alinha a ação à direita. */
+  .roadmap-card .track__foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .roadmap-card .track__cta {
+    align-self: flex-end;
   }
 }
 

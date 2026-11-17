@@ -47,7 +47,7 @@ function glyph(name: string): string {
 }
 
 const CTA: Record<RoadmapResumo['status'], string> = {
-  nao_iniciado: 'Começar roadmap',
+  nao_iniciado: 'Começar',
   em_progresso: 'Continuar',
   concluido: 'Revisar',
 };
