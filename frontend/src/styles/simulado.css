@@ -14,7 +14,7 @@
 }
 .sim__title {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -25,7 +25,7 @@
 }
 .sim__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   align-items: stretch;
 }
@@ -1382,8 +1382,8 @@
   flex-shrink: 0;
 }
 .sim-stat {
-  min-width: 74px;
-  padding: 9px 16px;
+  min-width: 84px;
+  padding: 10px 18px;
   text-align: center;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1391,7 +1391,7 @@
 }
 .sim-stat b {
   display: block;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -1399,76 +1399,210 @@
   font-size: 11px;
   color: var(--muted);
 }
-.sim__toolbar {
+/* Chips de provedor, linha abaixo da barra de filtros (só desktop; no celular
+   o provedor vira a folha que sobe de baixo). */
+.prov-chips {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-.sim__search {
-  flex: 1;
-  min-width: 220px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  height: 42px;
-  padding: 0 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  color: var(--muted);
-}
-.sim__search input {
-  flex: 1;
-  border: none;
-  background: none;
-  outline: none;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--text);
-}
-.sim__filters {
-  display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  margin: -8px 0 16px;
 }
-.sim-pill {
+.prov-chip {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 42px;
-  padding: 0 16px;
-  border-radius: var(--r-lg);
-  border: 1px solid var(--border);
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
   background: var(--surface);
   color: var(--text);
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
-.sim-pill--active {
-  background: var(--accent);
+.prov-chip:hover {
   border-color: var(--accent);
-  color: #fff;
 }
-.sim-pill__n {
-  font-size: 11px;
-  opacity: 0.7;
+.prov-chip--active,
+.prov-chip--active:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
 }
-.sim-pill--active .sim-pill__n {
-  opacity: 0.85;
+.prov-chip__n {
+  font-size: 11.5px;
+  line-height: 1;
+  font-weight: 500;
+  opacity: 0.65;
 }
-.sim__count {
-  font-size: 12.5px;
+
+/* Gatilhos de Provedor/Nível que só aparecem no celular. */
+.sim-filtro-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  padding: 0 14px 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--input);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sim-filtro-btn:hover {
+  border-color: var(--accent);
+}
+.sim-filtro-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.sim-filtro-btn--on,
+.sim-filtro-btn--on:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* Folha de filtro (mobile): sobe de baixo com scrim, como no mock. */
+.sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: color-mix(in srgb, #000 34%, transparent);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+.sheet-scrim--on {
+  opacity: 1;
+  visibility: visible;
+}
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  max-height: 78vh;
+  padding: 6px 18px 16px;
+  background: var(--input);
+  border: 1px solid var(--border-strong);
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -14px 44px color-mix(in srgb, #000 16%, transparent);
+  transform: translateY(102%);
+  visibility: hidden;
+  transition:
+    transform 0.24s ease,
+    visibility 0.24s ease;
+}
+.sheet--on {
+  transform: translateY(0);
+  visibility: visible;
+}
+.sheet__handle {
+  width: 40px;
+  height: 4px;
+  margin: 6px auto 10px;
+  border-radius: 99px;
+  background: var(--border-strong);
+}
+.sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.sheet__head h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sheet__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   color: var(--muted);
-  margin-bottom: 14px;
+  cursor: pointer;
+}
+.sheet__close:hover {
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+}
+.sheet__list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sheet__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.sheet__item:last-child {
+  border-bottom: 0;
+}
+.sheet__item-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.sheet__radio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+}
+.sheet__item--sel .sheet__radio {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
 }
 .simc {
   display: flex;
   flex-direction: column;
-  padding: 16px 18px 18px;
+  padding: 20px 22px 22px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
@@ -1476,18 +1610,18 @@
 .simc__top {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
 }
 .simc__logo {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
-  border-radius: var(--r-md);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
 }
 .simc__id {
@@ -1667,7 +1801,13 @@
 }
 @media (max-width: 1040px) {
   .sim__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Mesmo corte da barra de filtros das trilhas: pills e chips saem, gatilhos entram. */
+@media (max-width: 900px) {
+  .prov-chips {
+    display: none;
   }
 }
 @media (max-width: 680px) {
@@ -1675,13 +1815,26 @@
     padding: 20px 16px 32px;
   }
   .sim__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .sim__stats {
     width: 100%;
+    gap: 18px;
   }
   .sim-stat {
-    flex: 1;
+    flex: none;
+    min-width: 0;
+    padding: 0;
+    text-align: left;
+    background: none;
+    border: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .prov-chip,
+  .sheet,
+  .sheet-scrim {
+    transition: none;
   }
 }
 

@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from './SimTopbar';
-import { Search, Play, Info, Star } from '../../components/Icons';
+import { SheetFiltro, type OpcaoSheet } from './SheetFiltro';
+import { Search, Play, Info, Star, X, ChevronDown } from '../../components/Icons';
 import {
   listarSimulados,
   historicoSimulados,
@@ -12,6 +13,15 @@ import {
 import { provedorDe, chaveProvedor, nomeLimpo, nivelClasse, ORDEM_PROV } from './provedores';
 
 type Melhor = { score: number; passed: boolean };
+
+// O filtro de nível trabalha por classe (fund/assoc/prof), não pela string
+// crua, porque provedores escrevem o nível de jeitos um pouco diferentes.
+const LABEL_NIVEL: Record<string, string> = {
+  fund: 'Fundamental',
+  assoc: 'Associate',
+  prof: 'Professional',
+};
+const ORDEM_NIVEL = ['fund', 'assoc', 'prof'];
 
 export function Simulados() {
   const { dados, carregando } = useRequisicao(
@@ -27,8 +37,25 @@ export function Simulados() {
 
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState<string | null>(null);
+  const [nivel, setNivel] = useState('');
   const [soFavoritos, setSoFavoritos] = useState(false);
   const [favoritoAlterado, setFavoritoAlterado] = useState<Record<string, boolean>>({});
+  const [folha, setFolha] = useState<'prov' | 'nivel' | null>(null);
+
+  const buscaRef = useRef<HTMLInputElement>(null);
+
+  // "/" foca a busca, igual à tela de trilhas.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      const alvo = e.target as HTMLElement;
+      if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(alvo.tagName)) {
+        e.preventDefault();
+        buscaRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', aoTeclar);
+    return () => document.removeEventListener('keydown', aoTeclar);
+  }, []);
 
   const ehFavorito = (e: SimuladoResumo) => favoritoAlterado[e.slug] ?? e.favorito;
   const totalFavoritos = exams.filter(ehFavorito).length;
@@ -74,11 +101,26 @@ export function Simulados() {
     [contagem],
   );
 
+  const niveis = useMemo(() => {
+    const cont: Record<string, number> = {};
+    for (const e of exams) {
+      if (!e.level) continue;
+      const c = nivelClasse(e.level);
+      cont[c] = (cont[c] ?? 0) + 1;
+    }
+    return ORDEM_NIVEL.filter((c) => cont[c]).map((c) => ({
+      valor: c,
+      label: LABEL_NIVEL[c],
+      contagem: cont[c],
+    }));
+  }, [exams]);
+
   const filtrados = useMemo(() => {
     const q = busca.trim().toLowerCase();
     return exams.filter((e) => {
       if (soFavoritos && !(favoritoAlterado[e.slug] ?? e.favorito)) return false;
       if (filtro && chaveProvedor(e.provider) !== filtro) return false;
+      if (nivel && nivelClasse(e.level ?? '') !== nivel) return false;
       if (!q) return true;
       const prov = provedorDe(e.provider).nome.toLowerCase();
       return (
@@ -87,12 +129,34 @@ export function Simulados() {
         prov.includes(q)
       );
     });
-  }, [exams, busca, filtro, soFavoritos, favoritoAlterado]);
+  }, [exams, busca, filtro, nivel, soFavoritos, favoritoAlterado]);
+
+  const filtrosAtivos = !!(busca.trim() || filtro || nivel || soFavoritos);
+
+  function limparFiltros() {
+    setBusca('');
+    setFiltro(null);
+    setNivel('');
+    setSoFavoritos(false);
+  }
 
   const aprovados = useMemo(
     () => Object.values(melhorPorSlug).filter((m) => m.passed).length,
     [melhorPorSlug],
   );
+
+  const opcoesProvedor: OpcaoSheet[] = [
+    { valor: '', label: 'Todos', contagem: exams.length },
+    ...provedores.map((p) => ({
+      valor: p,
+      label: provedorDe(p).label,
+      contagem: contagem[p],
+    })),
+  ];
+  const opcoesNivel: OpcaoSheet[] = [
+    { valor: '', label: 'Todos', contagem: exams.length },
+    ...niveis,
+  ];
 
   return (
     <div className="home-shell">
@@ -129,46 +193,123 @@ export function Simulados() {
             <p className="sim-empty">Nenhum simulado disponível ainda.</p>
           ) : (
             <>
-              <div className="sim__toolbar">
-                <label className="sim__search">
+              <div className="filters">
+                <label className="trilhas-search">
                   <Search size={16} />
                   <input
+                    ref={buscaRef}
                     value={busca}
                     onChange={(e) => setBusca(e.target.value)}
                     placeholder="Buscar por código, nome ou provedor..."
                   />
-                </label>
-                <div className="sim__filters">
-                  <button
-                    className={`sim-pill${filtro === null ? ' sim-pill--active' : ''}`}
-                    onClick={() => setFiltro(null)}
-                  >
-                    Todos <span className="sim-pill__n">{exams.length}</span>
-                  </button>
-                  {(totalFavoritos > 0 || soFavoritos) && (
+                  {busca ? (
                     <button
-                      className={`sim-pill${soFavoritos ? ' sim-pill--active' : ''}`}
-                      aria-pressed={soFavoritos}
-                      onClick={() => setSoFavoritos((v) => !v)}
+                      type="button"
+                      className="trilhas-search__clear"
+                      aria-label="Limpar busca"
+                      onClick={() => setBusca('')}
                     >
-                      <Star size={13} /> Favoritos{' '}
-                      <span className="sim-pill__n">{totalFavoritos}</span>
+                      <X size={13} />
                     </button>
+                  ) : (
+                    <kbd className="trilhas-search__kbd">/</kbd>
                   )}
-                  {provedores.map((p) => (
+                </label>
+
+                <div className="level-pills">
+                  <button
+                    type="button"
+                    className={`level-pill${nivel === '' ? ' level-pill--active' : ''}`}
+                    onClick={() => setNivel('')}
+                  >
+                    Todos
+                  </button>
+                  {niveis.map((n) => (
                     <button
-                      key={p}
-                      className={`sim-pill${filtro === p ? ' sim-pill--active' : ''}`}
-                      onClick={() => setFiltro(p)}
+                      key={n.valor}
+                      type="button"
+                      className={`level-pill${nivel === n.valor ? ' level-pill--active' : ''}`}
+                      onClick={() => setNivel(n.valor)}
                     >
-                      {provedorDe(p).label} <span className="sim-pill__n">{contagem[p]}</span>
+                      {n.label}
                     </button>
                   ))}
                 </div>
+
+                {/* No celular, nível e provedor viram botões que abrem a folha. */}
+                <div className="filtro-mobile">
+                  <button
+                    type="button"
+                    className={`sim-filtro-btn${filtro ? ' sim-filtro-btn--on' : ''}`}
+                    onClick={() => setFolha('prov')}
+                  >
+                    <span>{filtro ? provedorDe(filtro).label : 'Provedor'}</span>
+                    <ChevronDown size={13} />
+                  </button>
+                </div>
+                <div className="filtro-mobile">
+                  <button
+                    type="button"
+                    className={`sim-filtro-btn${nivel ? ' sim-filtro-btn--on' : ''}`}
+                    onClick={() => setFolha('nivel')}
+                  >
+                    <span>{nivel ? LABEL_NIVEL[nivel] : 'Nível'}</span>
+                    <ChevronDown size={13} />
+                  </button>
+                </div>
+
+                {(totalFavoritos > 0 || soFavoritos) && (
+                  <button
+                    className={`fav-pill${soFavoritos ? ' fav-pill--active' : ''}`}
+                    aria-pressed={soFavoritos}
+                    onClick={() => setSoFavoritos((v) => !v)}
+                  >
+                    <Star size={13} /> Favoritos <span className="fav-pill__n">{totalFavoritos}</span>
+                  </button>
+                )}
+
+                <div className="topbar__spacer" />
+
+                <div className="filters__meta">
+                  <button
+                    type="button"
+                    className={`filters__clear${filtrosAtivos ? '' : ' filters__clear--off'}`}
+                    tabIndex={filtrosAtivos ? 0 : -1}
+                    aria-hidden={!filtrosAtivos}
+                    onClick={limparFiltros}
+                  >
+                    Limpar filtros
+                  </button>
+                  <span className="filters__count">
+                    {filtrosAtivos ? (
+                      <>
+                        <b>{filtrados.length}</b> de {exams.length} simulados
+                      </>
+                    ) : (
+                      <>
+                        {filtrados.length} {filtrados.length === 1 ? 'simulado' : 'simulados'}
+                      </>
+                    )}
+                  </span>
+                </div>
               </div>
 
-              <div className="sim__count">
-                {filtrados.length} {filtrados.length === 1 ? 'simulado' : 'simulados'}
+              <div className="prov-chips">
+                <button
+                  className={`prov-chip${filtro === null ? ' prov-chip--active' : ''}`}
+                  onClick={() => setFiltro(null)}
+                >
+                  Todos <span className="prov-chip__n">{exams.length}</span>
+                </button>
+                {provedores.map((p) => (
+                  <button
+                    key={p}
+                    className={`prov-chip${filtro === p ? ' prov-chip--active' : ''}`}
+                    onClick={() => setFiltro(p)}
+                  >
+                    {provedorDe(p).label} <span className="prov-chip__n">{contagem[p]}</span>
+                  </button>
+                ))}
               </div>
 
               {filtrados.length === 0 ? (
@@ -198,6 +339,23 @@ export function Simulados() {
                   questão.
                 </div>
               </div>
+
+              <SheetFiltro
+                titulo="Provedor"
+                aberto={folha === 'prov'}
+                aoFechar={() => setFolha(null)}
+                valor={filtro ?? ''}
+                aoEscolher={(v) => setFiltro(v || null)}
+                opcoes={opcoesProvedor}
+              />
+              <SheetFiltro
+                titulo="Nível"
+                aberto={folha === 'nivel'}
+                aoFechar={() => setFolha(null)}
+                valor={nivel}
+                aoEscolher={setNivel}
+                opcoes={opcoesNivel}
+              />
             </>
           )}
         </div>
@@ -233,7 +391,9 @@ function CardSimulado({
           <div className="simc__code">{e.code ?? e.name}</div>
         </div>
         {e.level && (
-          <span className={`simc__level simc__level--${nivelClasse(e.level)}`}>{e.level}</span>
+          <span className={`simc__level simc__level--${nivelClasse(e.level)}`}>
+            {LABEL_NIVEL[nivelClasse(e.level)]}
+          </span>
         )}
         <button
           type="button"
