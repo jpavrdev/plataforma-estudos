@@ -26,8 +26,13 @@ import { ehCliqueSimples } from '../../utils/cliqueSimples';
 import { getDesafioDoDia, type DesafioDetalhe } from '../../services/desafios';
 import type { Trail } from '../../data/trails';
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
+import { Trans, useTranslation } from 'react-i18next';
 
-const DIF_LABEL: Record<string, string> = { facil: 'Fácil', medio: 'Médio', dificil: 'Difícil' };
+const DIF_LABEL: Record<string, 'desafios.diffEasy' | 'desafios.diffMedium' | 'desafios.diffHard'> = {
+  facil: 'desafios.diffEasy',
+  medio: 'desafios.diffMedium',
+  dificil: 'desafios.diffHard',
+};
 
 // Trilha sugerida para quem ainda não começou nada. Se ela não existir, a home cai
 // na primeira trilha de nível iniciante que encontrar.
@@ -50,8 +55,8 @@ function previaCodigo(starter: Partial<Record<'javascript' | 'python', string>>)
   return code.split('\n').slice(0, 10).join('\n');
 }
 
-function dataPorExtenso(): string {
-  const s = new Date().toLocaleDateString('pt-BR', {
+function dataPorExtenso(language: string): string {
+  const s = new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'pt-BR', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -71,6 +76,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 }
 
 export function Home() {
+  const { t, i18n } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
 
@@ -208,12 +214,14 @@ export function Home() {
               <>
                 {destaque && <div className="inicio__veu" onClick={fecharDestaque} />}
                 <section className={`inicio${destaque ? ' inicio--destaque' : ''}`}>
-                  <span className="inicio__tag">Primeiros passos</span>
-                  <h2 className="inicio__title">Nunca programou? Comece por aqui.</h2>
+                  <span className="inicio__tag">{t('home.firstStepsTag')}</span>
+                  <h2 className="inicio__title">{t('home.firstStepsTitle')}</h2>
                   <p className="inicio__desc">
-                    <b>{trilhaInicial.name}</b> é o ponto de partida da plataforma, sem
-                    pré-requisito nenhum. São {trilhaInicial.lessons} aulas curtas, cada uma com um
-                    quiz no fim para fixar o que você acabou de ler.
+                    <Trans
+                      i18nKey="home.firstStepsDesc"
+                      values={{ name: trilhaInicial.name, lessons: trilhaInicial.lessons }}
+                      components={{ b: <b /> }}
+                    />
                   </p>
                   <div className="inicio__acoes">
                     <Link
@@ -221,10 +229,10 @@ export function Home() {
                       to={`/trilhas/${trilhaInicial.id}`}
                       onClick={fecharDestaque}
                     >
-                      Ver a trilha e começar
+                      {t('home.firstStepsCta')}
                     </Link>
                     <Link className="link" to="/trilhas" onClick={fecharDestaque}>
-                      Prefiro escolher outra trilha
+                      {t('home.firstStepsAlt')}
                     </Link>
                   </div>
                 </section>
@@ -235,8 +243,8 @@ export function Home() {
             {desafioHoje && (
               <section>
                 <div className="section-head">
-                  <h2 className="section-title">Desafio do dia</h2>
-                  <span className="section-meta">{dataPorExtenso()}</span>
+                  <h2 className="section-title">{t('home.dailyTitle')}</h2>
+                  <span className="section-meta">{dataPorExtenso(i18n.language)}</span>
                 </div>
 
                 <article className="challenge">
@@ -245,9 +253,9 @@ export function Home() {
                       {desafioHoje.number != null && (
                         <span className="tag tag--id">{desafioHoje.number}</span>
                       )}
-                      <span className="tag tag--success">{DIF_LABEL[desafioHoje.difficulty]}</span>
+                      <span className="tag tag--success">{t(DIF_LABEL[desafioHoje.difficulty])}</span>
                       <span className="tag tag--accent">+{desafioHoje.xp} XP</span>
-                      {desafioHoje.solved && <span className="tag tag--success">Resolvido</span>}
+                      {desafioHoje.solved && <span className="tag tag--success">{t('home.solvedTag')}</span>}
                     </div>
                     <h3 className="challenge__title">{desafioHoje.title}</h3>
                     <p className="challenge__desc">
@@ -267,11 +275,14 @@ export function Home() {
                     <hr className="rule" />
                     <div className="challenge__footer">
                       {desafioHoje.acceptance != null && (
-                        <Stat value={`${desafioHoje.acceptance}%`} label="aceitação" />
+                        <Stat value={`${desafioHoje.acceptance}%`} label={t('home.acceptance')} />
                       )}
                       <div className="topbar__spacer" />
                       <Link className="btn btn--accent" to={`/desafios/${desafioHoje.id}`}>
-                        <Play size={13} /> {desafioHoje.solved ? 'Revisar' : 'Resolver agora'}
+                        <Play size={13} />{' '}
+                        {desafioHoje.solved
+                          ? t('desafios.dailyReview')
+                          : t('desafios.dailySolveNow')}
                       </Link>
                     </div>
                   </div>
@@ -293,35 +304,35 @@ export function Home() {
             <section>
               <div className="section-head">
                 <h2 className="section-title">
-                  {mostrandoEmAndamento ? 'Continue suas trilhas' : 'Trilhas disponíveis'}
+                  {mostrandoEmAndamento ? t('home.continueTitle') : t('home.availableTitle')}
                 </h2>
                 <Link className="link" to="/trilhas">
-                  Ver todas
+                  {t('home.seeAllF')}
                 </Link>
               </div>
               {carregando ? (
-                <p className="track__desc">Carregando trilhas...</p>
+                <p className="track__desc">{t('trilhas.loading')}</p>
               ) : listaTrilhas.length === 0 ? (
-                <p className="track__desc">Nenhuma trilha disponível ainda.</p>
+                <p className="track__desc">{t('trilhas.empty')}</p>
               ) : (
                 <div className="trilhas">
-                  {listaTrilhas.map((t) => {
-                    const pct = t.lessons > 0 ? Math.round((t.done / t.lessons) * 100) : 0;
+                  {listaTrilhas.map((tr) => {
+                    const pct = tr.lessons > 0 ? Math.round((tr.done / tr.lessons) * 100) : 0;
                     return (
-                      <div key={t.id} className="trilha">
+                      <div key={tr.id} className="trilha">
                         <div className="trilha__head">
                           <span
                             className="trilha__icon"
                             style={{
-                              color: t.hue,
-                              background: `color-mix(in srgb, ${t.hue} 16%, transparent)`,
+                              color: tr.hue,
+                              background: `color-mix(in srgb, ${tr.hue} 16%, transparent)`,
                             }}
                           >
-                            {t.glyph}
+                            {tr.glyph}
                           </span>
                           <div className="trilha__meta">
                             <Link
-                              to={`/trilhas/${t.id}`}
+                              to={`/trilhas/${tr.id}`}
                               className="trilha__name link-esticado"
                               onClick={(e) => {
                                 // Em andamento, o clique simples pula direto para a próxima aula
@@ -329,15 +340,15 @@ export function Home() {
                                 // botão do meio seguem o href e abrem a trilha em nova guia.
                                 if (!mostrandoEmAndamento || !ehCliqueSimples(e)) return;
                                 e.preventDefault();
-                                abrirTrilha(t.id);
+                                abrirTrilha(tr.id);
                               }}
                             >
-                              {t.name}
+                              {tr.name}
                             </Link>
                             <div className="trilha__sub">
-                              {t.done > 0
-                                ? `${t.done} de ${t.lessons} aulas`
-                                : `${t.lessons} aulas · ${t.level}`}
+                              {tr.done > 0
+                                ? t('home.lessonsOf', { done: tr.done, total: tr.lessons })
+                                : `${t('trilhas.lessonsCount', { count: tr.lessons })} · ${tr.level}`}
                             </div>
                           </div>
                         </div>
@@ -364,8 +375,12 @@ export function Home() {
                   <Flame size={24} />
                 </span>
                 <div>
-                  <div className="streak__count">{streakInfo.streak} dias</div>
-                  <div className="streak__label">de streak seguido</div>
+                  <div className="streak__count">
+                    {streakInfo.streak === 1
+                      ? t('home.streakDays_one', { count: 1 })
+                      : t('home.streakDays_other', { count: streakInfo.streak })}
+                  </div>
+                  <div className="streak__label">{t('home.streakLabel')}</div>
                 </div>
               </div>
               <div className="week">
@@ -378,21 +393,19 @@ export function Home() {
                   </div>
                 ))}
               </div>
-              <p className="streak__note">
-                Você está pegando fogo! Resolva o desafio de hoje para manter o streak.
-              </p>
+              <p className="streak__note">{t('home.streakNote')}</p>
             </div>
 
             {/* Ranking */}
             <div className="card">
               <div className="card__head">
-                <h3 className="card__title">Ranking global</h3>
+                <h3 className="card__title">{t('home.rankingTitle')}</h3>
                 <Link className="link" to="/ranking">
-                  Ver tudo
+                  {t('home.seeAllM')}
                 </Link>
               </div>
               {rankingGlobal.length === 0 ? (
-                <p className="track__desc">Ranking ainda vazio.</p>
+                <p className="track__desc">{t('home.rankingEmpty')}</p>
               ) : (
                 rankingGlobal.slice(0, 5).map((p) => (
                   <div key={p.position} className={`rank-row${p.you ? ' rank-row--you' : ''}`}>
@@ -420,9 +433,9 @@ export function Home() {
 
             {/* Comunidade */}
             <div className="card">
-              <h3 className="card__title card__title--mb">Comunidade</h3>
+              <h3 className="card__title card__title--mb">{t('nav.community')}</h3>
               {feedComunidade.length === 0 ? (
-                <p className="track__desc">Ainda não há conquistas na comunidade.</p>
+                <p className="track__desc">{t('home.communityEmpty')}</p>
               ) : (
                 <div className="feed">
                   {feedComunidade.map((f, i) => (
@@ -433,8 +446,10 @@ export function Home() {
                       />
                       <p className="feed__text">
                         <b>{f.name}</b>{' '}
-                        <span className="feed__muted">desbloqueou {f.achievement}</span>{' '}
-                        <span className="feed__time">· {tempoRelativo(f.at)}</span>
+                        <span className="feed__muted">
+                          {t('home.unlocked', { achievement: f.achievement })}
+                        </span>{' '}
+                        <span className="feed__time">· {tempoRelativo(f.at, i18n.language)}</span>
                       </p>
                     </div>
                   ))}

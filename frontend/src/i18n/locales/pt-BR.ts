@@ -519,6 +519,31 @@ export const ptBR = {
     },
   },
 
+  home: {
+    firstStepsTag: 'Primeiros passos',
+    firstStepsTitle: 'Nunca programou? Comece por aqui.',
+    firstStepsDesc:
+      '<b>{{name}}</b> é o ponto de partida da plataforma, sem pré-requisito nenhum. São {{lessons}} aulas curtas, cada uma com um quiz no fim para fixar o que você acabou de ler.',
+    firstStepsCta: 'Ver a trilha e começar',
+    firstStepsAlt: 'Prefiro escolher outra trilha',
+    dailyTitle: 'Desafio do dia',
+    solvedTag: 'Resolvido',
+    acceptance: 'aceitação',
+    continueTitle: 'Continue suas trilhas',
+    availableTitle: 'Trilhas disponíveis',
+    seeAllF: 'Ver todas',
+    seeAllM: 'Ver tudo',
+    lessonsOf: '{{done}} de {{total}} aulas',
+    streakDays_one: '{{count}} dia',
+    streakDays_other: '{{count}} dias',
+    streakLabel: 'de streak seguido',
+    streakNote: 'Você está pegando fogo! Resolva o desafio de hoje para manter o streak.',
+    rankingTitle: 'Ranking global',
+    rankingEmpty: 'Ranking ainda vazio.',
+    communityEmpty: 'Ainda não há conquistas na comunidade.',
+    unlocked: 'desbloqueou {{achievement}}',
+  },
+
   desafios: {
     title: 'Desafios',
     sub: 'Pratique com problemas de código no estilo das entrevistas. Um novo desafio todo dia.',

@@ -518,6 +518,31 @@ export const en: typeof ptBR = {
     },
   },
 
+  home: {
+    firstStepsTag: 'First steps',
+    firstStepsTitle: 'Never coded? Start here.',
+    firstStepsDesc:
+      '<b>{{name}}</b> is the starting point of the platform, with no prerequisites. It has {{lessons}} short lessons, each ending with a quiz to lock in what you just read.',
+    firstStepsCta: 'See the track and start',
+    firstStepsAlt: 'I would rather pick another track',
+    dailyTitle: 'Challenge of the day',
+    solvedTag: 'Solved',
+    acceptance: 'acceptance',
+    continueTitle: 'Continue your tracks',
+    availableTitle: 'Available tracks',
+    seeAllF: 'See all',
+    seeAllM: 'See all',
+    lessonsOf: '{{done}} of {{total}} lessons',
+    streakDays_one: '{{count}} day',
+    streakDays_other: '{{count}} days',
+    streakLabel: 'current streak',
+    streakNote: 'You are on fire! Solve today\'s challenge to keep the streak going.',
+    rankingTitle: 'Global leaderboard',
+    rankingEmpty: 'The leaderboard is still empty.',
+    communityEmpty: 'No achievements in the community yet.',
+    unlocked: 'unlocked {{achievement}}',
+  },
+
   desafios: {
     title: 'Challenges',
     sub: 'Practice with interview-style coding problems. A new challenge every day.',
