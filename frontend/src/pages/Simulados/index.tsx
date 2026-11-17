@@ -10,17 +10,17 @@ import {
   alternarFavorito,
   type SimuladoResumo,
 } from '../../services/simulados';
-import { provedorDe, chaveProvedor, nomeLimpo, nivelClasse, ORDEM_PROV } from './provedores';
+import {
+  provedorDe,
+  chaveProvedor,
+  nomeLimpo,
+  nivelClasse,
+  LABEL_NIVEL,
+  ORDEM_PROV,
+} from './provedores';
 
 type Melhor = { score: number; passed: boolean };
 
-// O filtro de nível trabalha por classe (fund/assoc/prof), não pela string
-// crua, porque provedores escrevem o nível de jeitos um pouco diferentes.
-const LABEL_NIVEL: Record<string, string> = {
-  fund: 'Fundamental',
-  assoc: 'Associate',
-  prof: 'Professional',
-};
 const ORDEM_NIVEL = ['fund', 'assoc', 'prof'];
 
 export function Simulados() {
