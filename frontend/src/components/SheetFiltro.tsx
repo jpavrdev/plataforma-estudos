@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Check, X } from './Icons';
+import { useEffect, useState } from 'react';
+import { Check, Search, X } from './Icons';
 
 export type OpcaoSheet = { valor: string; label: string; contagem?: number };
 
@@ -12,6 +12,7 @@ export function SheetFiltro({
   valor,
   aoEscolher,
   opcoes,
+  placeholderBusca,
 }: {
   titulo: string;
   aberto: boolean;
@@ -19,7 +20,11 @@ export function SheetFiltro({
   valor: string;
   aoEscolher: (valor: string) => void;
   opcoes: OpcaoSheet[];
+  // Com a lista longa (temas dos desafios) a folha ganha um campo de busca.
+  placeholderBusca?: string;
 }) {
+  const [busca, setBusca] = useState('');
+
   useEffect(() => {
     if (!aberto) return;
     const aoTeclar = (e: KeyboardEvent) => {
@@ -30,8 +35,13 @@ export function SheetFiltro({
     return () => {
       document.removeEventListener('keydown', aoTeclar);
       document.body.style.overflow = '';
+      // Ao fechar, a busca interna volta vazia para a próxima abertura.
+      setBusca('');
     };
   }, [aberto, aoFechar]);
+
+  const q = busca.trim().toLowerCase();
+  const visiveis = q ? opcoes.filter((o) => o.label.toLowerCase().includes(q)) : opcoes;
 
   return (
     <>
@@ -54,8 +64,18 @@ export function SheetFiltro({
             <X size={15} />
           </button>
         </header>
+        {placeholderBusca && (
+          <label className="sheet__busca">
+            <Search size={15} />
+            <input
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder={placeholderBusca}
+            />
+          </label>
+        )}
         <div className="sheet__list" role="listbox" aria-label={titulo}>
-          {opcoes.map((o) => (
+          {visiveis.map((o) => (
             <button
               key={o.valor}
               type="button"
@@ -74,6 +94,9 @@ export function SheetFiltro({
               </span>
             </button>
           ))}
+          {visiveis.length === 0 && (
+            <div className="sheet__vazio">Nada encontrado com essa busca.</div>
+          )}
         </div>
       </div>
     </>

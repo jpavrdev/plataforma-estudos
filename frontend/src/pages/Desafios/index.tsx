@@ -1,7 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DesTopbar } from './DesTopbar';
-import { Search, Play, ChevronLeft, ChevronRight } from '../../components/Icons';
+import {
+  Search,
+  Play,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  X,
+} from '../../components/Icons';
+import { Dropdown } from '../../components/Dropdown';
+import { SheetFiltro, type OpcaoSheet } from '../../components/SheetFiltro';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { getDesafioDoDia, getDesafios } from '../../services/desafios';
 import type { DesafioResumo, StatusDesafio } from '../../services/desafios';
@@ -20,6 +29,7 @@ const STATUSES: { key: StatusDesafio | 'all'; label: string }[] = [
   { key: 'todo', label: 'Não iniciados' },
 ];
 const PAGE_SIZE = 10;
+const TEMAS_COLAPSADOS = 8;
 
 function StatusIcon({ status }: { status: StatusDesafio }) {
   if (status === 'solved') {
@@ -62,14 +72,7 @@ function StatusIcon({ status }: { status: StatusDesafio }) {
   }
   return (
     <span className="ch-status ch-status--todo">
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <circle cx="12" cy="12" r="9" />
       </svg>
     </span>
@@ -83,11 +86,26 @@ export function Desafios() {
   const items = useMemo(() => lista?.items ?? [], [lista]);
   const progress = lista?.progress ?? { solved: 0, total: 0, pct: 0, easy: 0, medium: 0, hard: 0 };
 
+  const buscaRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [diff, setDiff] = useState('Todas');
   const [status, setStatus] = useState<StatusDesafio | 'all'>('all');
   const [topic, setTopic] = useState('Todos');
   const [page, setPage] = useState(1);
+  const [folha, setFolha] = useState<'tema' | 'dificuldade' | 'status' | null>(null);
+  const [temasAbertos, setTemasAbertos] = useState(false);
+
+  // "/" fora de um campo de texto leva o foco para a busca.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      const alvo = e.target as HTMLElement | null;
+      if (e.key !== '/' || /^(input|textarea|select)$/i.test(alvo?.tagName ?? '')) return;
+      e.preventDefault();
+      buscaRef.current?.focus();
+    };
+    window.addEventListener('keydown', aoTeclar);
+    return () => window.removeEventListener('keydown', aoTeclar);
+  }, []);
 
   // Chips de tema derivados dos temas dos desafios (contagem por tema).
   const chips = useMemo(() => {
@@ -128,6 +146,33 @@ export function Desafios() {
       setPage(1);
     };
   const ringOffset = Math.round(151 * (1 - progress.pct / 100));
+
+  const filtrosAtivos = !!(query.trim() || diff !== 'Todas' || status !== 'all' || topic !== 'Todos');
+
+  function limparFiltros() {
+    setQuery('');
+    setDiff('Todas');
+    setStatus('all');
+    setTopic('Todos');
+    setPage(1);
+  }
+
+  const totalTemas = chips.length - 1;
+  const chipsVisiveis = temasAbertos ? chips : chips.slice(0, TEMAS_COLAPSADOS + 1);
+
+  const opcoesTema: OpcaoSheet[] = chips.map((t) => ({
+    valor: t.name === 'Todos' ? '' : t.name,
+    label: t.name,
+    contagem: t.count ?? items.length,
+  }));
+  const opcoesDificuldade: OpcaoSheet[] = [
+    { valor: '', label: 'Todas' },
+    ...DIFFS.slice(1).map((d) => ({ valor: d, label: d })),
+  ];
+  const opcoesStatus: OpcaoSheet[] = STATUSES.map((s) => ({
+    valor: s.key === 'all' ? '' : s.key,
+    label: s.label,
+  }));
 
   return (
     <div className="home">
@@ -215,42 +260,140 @@ export function Desafios() {
           </div>
         )}
 
-        <div className="ch-toolbar">
-          <label className="ch-search">
+        <div className="filters">
+          <label className="trilhas-search">
             <Search size={16} />
             <input
+              ref={buscaRef}
               value={query}
               onChange={(e) => reset(setQuery)(e.target.value)}
-              placeholder="Buscar desafio por nome ou tema…"
+              placeholder="Buscar desafio por nome ou tema..."
             />
+            {query ? (
+              <button
+                type="button"
+                className="trilhas-search__clear"
+                aria-label="Limpar busca"
+                onClick={() => reset(setQuery)('')}
+              >
+                <X size={13} />
+              </button>
+            ) : (
+              <kbd className="trilhas-search__kbd">/</kbd>
+            )}
           </label>
-          <Dropdown
-            label="Dificuldade"
-            value={diff}
-            options={DIFFS}
-            onChange={reset(setDiff)}
-            allLabel="Todas"
-          />
-          <Dropdown
-            label="Status"
-            value={STATUSES.find((s) => s.key === status)!.label}
-            options={STATUSES.map((s) => s.label)}
-            onChange={(lbl) => reset(setStatus)(STATUSES.find((s) => s.label === lbl)!.key)}
-            allLabel="Todos"
-          />
+
+          <div className="level-pills" role="group" aria-label="Dificuldade">
+            {DIFFS.map((d) => (
+              <button
+                key={d}
+                type="button"
+                className={`level-pill${diff === d ? ' level-pill--active' : ''}`}
+                aria-pressed={diff === d}
+                onClick={() => reset(setDiff)(d)}
+              >
+                {d}
+              </button>
+            ))}
+          </div>
+
+          <div className="filtro-desktop">
+            <Dropdown
+              ariaLabel="Status"
+              placeholder="Status"
+              valor={status === 'all' ? '' : status}
+              aoEscolher={(v) => reset(setStatus)((v || 'all') as StatusDesafio | 'all')}
+              opcoes={opcoesStatus}
+            />
+          </div>
+
+          {/* No celular, tema e dificuldade abrem a folha que sobe de baixo. */}
+          <div className="filtro-mobile">
+            <button
+              type="button"
+              className={`filtro-btn${topic !== 'Todos' ? ' filtro-btn--on' : ''}`}
+              onClick={() => setFolha('tema')}
+            >
+              <span>{topic !== 'Todos' ? topic : 'Tema'}</span>
+              <ChevronDown size={13} />
+            </button>
+          </div>
+          <div className="filtro-mobile">
+            <button
+              type="button"
+              className={`filtro-btn${diff !== 'Todas' ? ' filtro-btn--on' : ''}`}
+              onClick={() => setFolha('dificuldade')}
+            >
+              <span>{diff !== 'Todas' ? diff : 'Dificuldade'}</span>
+              <ChevronDown size={13} />
+            </button>
+          </div>
+
+          <div className="topbar__spacer" />
         </div>
 
-        <div className="ch-chips">
-          {chips.map((t) => (
+        <div className="fchips">
+          {chipsVisiveis.map((t) => (
             <button
               key={t.name}
-              className={`ch-chip${topic === t.name ? ' ch-chip--active' : ''}`}
+              className={`fchip${topic === t.name ? ' fchip--active' : ''}`}
               onClick={() => reset(setTopic)(t.name)}
             >
               {t.name}
-              {t.count != null && <span className="ch-chip__count">{t.count}</span>}
+              {t.count != null && <span className="fchip__n">{t.count}</span>}
             </button>
           ))}
+          {totalTemas > TEMAS_COLAPSADOS && (
+            <button
+              type="button"
+              className="fchips__ver"
+              onClick={() => setTemasAbertos((v) => !v)}
+            >
+              {temasAbertos ? 'Recolher' : `Ver os ${totalTemas} temas`}
+              <span
+                className="fchips__ver-seta"
+                style={temasAbertos ? { transform: 'rotate(180deg)' } : undefined}
+              >
+                <ChevronDown size={13} />
+              </span>
+            </button>
+          )}
+        </div>
+
+        <div className="ch-meta">
+          <div className="filters__meta">
+            <button
+              type="button"
+              className={`filters__clear${filtrosAtivos ? '' : ' filters__clear--off'}`}
+              tabIndex={filtrosAtivos ? 0 : -1}
+              aria-hidden={!filtrosAtivos}
+              onClick={limparFiltros}
+            >
+              <span className="tx-completo">Limpar filtros</span>
+              <span className="tx-curto">Limpar</span>
+            </button>
+            <span className="filters__count">
+              {filtrosAtivos ? (
+                <>
+                  <b>{filtered.length}</b> de {items.length} desafios
+                </>
+              ) : (
+                <>
+                  {items.length} {items.length === 1 ? 'desafio' : 'desafios'}
+                </>
+              )}
+            </span>
+          </div>
+          <div className="filtro-mobile filtro-mobile--status">
+            <button
+              type="button"
+              className={`filtro-btn${status !== 'all' ? ' filtro-btn--on' : ''}`}
+              onClick={() => setFolha('status')}
+            >
+              <span>{status !== 'all' ? STATUSES.find((s) => s.key === status)!.label : 'Status'}</span>
+              <ChevronDown size={13} />
+            </button>
+          </div>
         </div>
 
         <div className="ch-table">
@@ -304,6 +447,32 @@ export function Desafios() {
             </div>
           </div>
         </div>
+
+        <SheetFiltro
+          titulo="Tema"
+          aberto={folha === 'tema'}
+          aoFechar={() => setFolha(null)}
+          valor={topic === 'Todos' ? '' : topic}
+          aoEscolher={(v) => reset(setTopic)(v || 'Todos')}
+          opcoes={opcoesTema}
+          placeholderBusca="Buscar tema"
+        />
+        <SheetFiltro
+          titulo="Dificuldade"
+          aberto={folha === 'dificuldade'}
+          aoFechar={() => setFolha(null)}
+          valor={diff === 'Todas' ? '' : diff}
+          aoEscolher={(v) => reset(setDiff)(v || 'Todas')}
+          opcoes={opcoesDificuldade}
+        />
+        <SheetFiltro
+          titulo="Status"
+          aberto={folha === 'status'}
+          aoFechar={() => setFolha(null)}
+          valor={status === 'all' ? '' : status}
+          aoEscolher={(v) => reset(setStatus)((v || 'all') as StatusDesafio | 'all')}
+          opcoes={opcoesStatus}
+        />
       </div>
     </div>
   );
@@ -312,86 +481,34 @@ export function Desafios() {
 function Row({ c }: { c: DesafioResumo }) {
   return (
     <div className={`ch-row${c.isToday ? ' ch-row--daily' : ''}`}>
-      <div>
+      <div className="ch-row__status">
         <StatusIcon status={c.status} />
       </div>
-      <div className="ch-row__name-cell">
-        {c.number != null && <span className="ch-row__id">{c.number}.</span>}
-        <Link
-          to={`/desafios/${c.id}`}
-          className={`ch-row__name link-esticado${c.status === 'solved' ? ' ch-row__name--done' : ''}`}
-        >
-          {c.title}
-        </Link>
-        {c.isToday && <span className="ch-row__today">HOJE</span>}
+      <div className="ch-row__main">
+        <div className="ch-row__name-cell">
+          {c.number != null && <span className="ch-row__id">{c.number}.</span>}
+          <Link
+            to={`/desafios/${c.id}`}
+            className={`ch-row__name link-esticado${c.status === 'solved' ? ' ch-row__name--done' : ''}`}
+          >
+            {c.title}
+          </Link>
+          {c.isToday && <span className="ch-row__today">HOJE</span>}
+        </div>
+        {/* No celular o tema e a dificuldade viram sublinha do título. */}
+        <div className="ch-row__sub">
+          {c.topic ?? '—'} ·{' '}
+          <span style={{ color: DIFF_COLOR[c.difficulty] }}>{DIF_LABEL[c.difficulty]}</span>
+        </div>
       </div>
       <div className="ch-row__topic">{c.topic ?? '—'}</div>
-      <div>
+      <div className="ch-row__diffcell">
         <span className="ch-row__diff" style={{ color: DIFF_COLOR[c.difficulty] }}>
           {DIF_LABEL[c.difficulty]}
         </span>
       </div>
       <div className="ch-row__accept">{c.acceptance == null ? '—' : `${c.acceptance}%`}</div>
       <div className="ch-row__xp">+{c.xp}</div>
-    </div>
-  );
-}
-
-function Dropdown({
-  label,
-  value,
-  options,
-  onChange,
-  allLabel,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (v: string) => void;
-  allLabel: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const active = value !== allLabel;
-  return (
-    <div className="ch-dd">
-      <button
-        className={`ch-dd__btn${active ? ' ch-dd__btn--active' : ''}`}
-        onClick={() => setOpen((o) => !o)}
-      >
-        {label}
-        {active ? `: ${value}` : ''}
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-      {open && (
-        <>
-          <div className="ch-dd__scrim" onClick={() => setOpen(false)} />
-          <div className="ch-dd__menu">
-            {options.map((o) => (
-              <button
-                key={o}
-                className={`ch-dd__opt${o === value ? ' ch-dd__opt--on' : ''}`}
-                onClick={() => {
-                  onChange(o);
-                  setOpen(false);
-                }}
-              >
-                {o}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 }

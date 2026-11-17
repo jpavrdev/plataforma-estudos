@@ -1745,6 +1745,76 @@
   display: none;
 }
 
+/* Inverso do de cima: filtro que só existe no desktop (vira gatilho da folha). */
+.filtro-desktop {
+  display: inline-flex;
+}
+
+/* Chips de filtro da segunda linha (provedores nos simulados, temas nos desafios). */
+.fchips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: -8px 0 16px;
+}
+.fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+.fchip:hover {
+  border-color: var(--accent);
+}
+.fchip--active,
+.fchip--active:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.fchip__n {
+  font-size: 11.5px;
+  line-height: 1;
+  font-weight: 500;
+  opacity: 0.65;
+}
+.fchips__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.fchips__ver:hover {
+  text-decoration: underline;
+}
+.fchips__ver-seta {
+  display: inline-flex;
+  transition: transform 0.18s ease;
+}
+
 /* Gatilho de filtro que abre a folha no celular (Nível, Categoria, Provedor...). */
 .filtro-btn {
   display: flex;
@@ -1946,6 +2016,20 @@
   .trilhas-page--catalog .filters .dropdown {
     display: none;
   }
+  .filtro-desktop {
+    display: none;
+  }
+  /* Chips da segunda linha saem no celular: os temas/provedores viram folha. */
+  .fchips {
+    display: none;
+  }
+  /* Gatilho de filtro solto na linha do contador (Status nos desafios). */
+  .filtro-mobile--status {
+    flex: 0 0 auto;
+  }
+  .filtro-mobile--status .filtro-btn {
+    width: auto;
+  }
 }
 
 /* Folha de filtro (celular): sobe de baixo com scrim, como nos mocks. */
@@ -2073,6 +2157,39 @@
   background: var(--text);
   border-color: var(--text);
   color: var(--bg);
+}
+/* Campo de busca interno (lista longa de temas dos desafios). */
+.sheet__busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  margin: 4px 0 6px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.sheet__busca:focus-within {
+  border-color: var(--accent);
+}
+.sheet__busca input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+}
+.sheet__vazio {
+  padding: 18px 4px;
+  font-size: 13.5px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .select-filtro {

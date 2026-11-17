@@ -295,20 +295,20 @@ export function Simulados() {
                 </div>
               </div>
 
-              <div className="prov-chips">
+              <div className="fchips">
                 <button
-                  className={`prov-chip${filtro === null ? ' prov-chip--active' : ''}`}
+                  className={`fchip${filtro === null ? ' fchip--active' : ''}`}
                   onClick={() => setFiltro(null)}
                 >
-                  Todos <span className="prov-chip__n">{exams.length}</span>
+                  Todos <span className="fchip__n">{exams.length}</span>
                 </button>
                 {provedores.map((p) => (
                   <button
                     key={p}
-                    className={`prov-chip${filtro === p ? ' prov-chip--active' : ''}`}
+                    className={`fchip${filtro === p ? ' fchip--active' : ''}`}
                     onClick={() => setFiltro(p)}
                   >
-                    {provedorDe(p).label} <span className="prov-chip__n">{contagem[p]}</span>
+                    {provedorDe(p).label} <span className="fchip__n">{contagem[p]}</span>
                   </button>
                 ))}
               </div>

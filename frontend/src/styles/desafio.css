@@ -156,131 +156,20 @@
   flex-shrink: 0;
 }
 
-.ch-toolbar {
+/* Linha do contador e do gatilho de Status: no desktop o contador fica à
+   direita abaixo dos chips; no celular, contador à esquerda e Status à direita. */
+.ch-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: -6px 0 14px;
 }
-.ch-search {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  flex: 1;
-  height: 42px;
-  padding: 0 15px;
-  border-radius: 11px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--muted);
-}
-.ch-search input {
-  flex: 1;
-  border: none;
-  background: none;
-  outline: none;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--text);
-}
-.ch-dd {
-  position: relative;
-}
-.ch-dd__btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  height: 42px;
-  padding: 0 15px;
-  border-radius: 11px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text);
-  cursor: pointer;
-  white-space: nowrap;
-}
-.ch-dd__btn svg {
-  color: var(--muted);
-}
-.ch-dd__btn--active {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.ch-dd__btn--active svg {
-  color: var(--accent);
-}
-.ch-dd__scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-}
-.ch-dd__menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 21;
-  min-width: 160px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 6px;
-  box-shadow: var(--shadow);
-}
-.ch-dd__opt {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 9px 12px;
-  border: none;
-  background: none;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-}
-.ch-dd__opt:hover {
-  background: var(--surface-2);
-}
-.ch-dd__opt--on {
-  color: var(--accent);
-  font-weight: 700;
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
-
-.ch-chips {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-.ch-chip {
-  height: 32px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  border-radius: 99px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  font-family: inherit;
-}
-.ch-chip--active {
-  color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
-}
-.ch-chip__count {
-  margin-left: 6px;
-  opacity: 0.7;
+@media (max-width: 900px) {
+  .ch-meta {
+    justify-content: space-between;
+    margin: 10px 0 16px;
+  }
 }
 
 .ch-table {
@@ -292,7 +181,7 @@
 .ch-table__head,
 .ch-row {
   display: grid;
-  grid-template-columns: 44px 1fr 130px 110px 90px 90px;
+  grid-template-columns: 44px 1fr 165px 110px 90px 90px;
   align-items: center;
   gap: 12px;
   padding: 13px 20px;
@@ -342,6 +231,19 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
+}
+.ch-row__main {
+  min-width: 0;
+}
+/* Sublinha de tema/dificuldade, exibida apenas no celular. */
+.ch-row__sub {
+  display: none;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .ch-row__id {
   font-family: var(--font-code);
@@ -458,17 +360,23 @@
   .ch-table__head {
     display: none;
   }
+  /* Coluna única: status, título com tema/dificuldade embaixo, XP à direita. */
   .ch-row {
-    grid-template-columns: 28px 1fr auto auto;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
     gap: 8px;
+    padding: 13px 16px;
   }
   .ch-row__topic,
+  .ch-row__diffcell,
   .ch-row__accept {
     display: none;
   }
+  .ch-row__sub {
+    display: block;
+  }
 }
 
-/* Telefone: banner do dia empilha, e busca/filtros quebram linha. */
+/* Telefone: banner do dia empilha. */
 @media (max-width: 640px) {
   .ch {
     padding: 18px 14px;
@@ -482,18 +390,6 @@
   .ch-daily__btn {
     width: 100%;
     justify-content: center;
-  }
-  .ch-toolbar {
-    flex-wrap: wrap;
-  }
-  .ch-search {
-    flex-basis: 100%;
-  }
-  .ch-dd {
-    flex: 1;
-  }
-  .ch-dd__btn {
-    width: 100%;
   }
 }
 
