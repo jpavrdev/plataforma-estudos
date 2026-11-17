@@ -1559,7 +1559,7 @@
   min-width: 220px;
   max-width: 480px;
   height: 44px;
-  padding: 0 8px 0 14px;
+  padding: 0 10px 0 14px;
   border-radius: 999px;
   border: 1px solid var(--border-strong);
   background: var(--input);
@@ -1863,14 +1863,16 @@
   }
   .filtro-mobile {
     display: block;
-    flex: 1 1 0;
+    min-width: 0;
+    /* Meia linha menos metade do gap: com o par de dropdowns a linha fecha
+       exata e o contador/favoritas caem para a linha de baixo. */
+    flex: 0 1 calc(50% - 6px);
+  }
+  .filters .dropdown {
+    flex: 0 1 calc(50% - 6px);
     min-width: 0;
   }
-  .filtro-mobile .dropdown {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-  .filtro-mobile .dropdown__gatilho {
+  .filters .dropdown__gatilho {
     width: 100%;
     justify-content: space-between;
   }
@@ -2153,7 +2155,9 @@
 
 .track-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0, 1fr): sem o 0 explícito, o nome da trilha (nowrap com reticências)
+     vira a largura mínima do card e estoura a tela do celular pro lado. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   /* start: expandir um card com "ler mais" não estica os vizinhos da linha. */
   align-items: start;
@@ -2316,6 +2320,9 @@
 }
 .track__tags {
   display: flex;
+  /* Sem o wrap a soma mínima dos chips vira a largura mínima do card, que
+     estoura a tela do celular pro lado. */
+  flex-wrap: wrap;
   gap: 6px;
 }
 .track__cta {
@@ -2345,7 +2352,7 @@
     gap: 18px;
   }
   .track-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

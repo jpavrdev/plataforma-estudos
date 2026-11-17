@@ -37,7 +37,9 @@ export function Dropdown({
     };
   }, [aberto]);
 
-  const selecionada = opcoes.find((o) => o.valor === valor);
+  // Valor vazio é o "sem filtro": mostra o placeholder (Categoria, Nível) no
+  // lugar do rótulo da opção "Todas", como nos mocks.
+  const selecionada = valor ? opcoes.find((o) => o.valor === valor) : undefined;
 
   return (
     <div className="dropdown" ref={raizRef}>
