@@ -1957,8 +1957,8 @@
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.2s ease,
-    visibility 0.2s ease;
+    opacity 0.18s ease,
+    visibility 0.18s;
 }
 .sheet-scrim--on {
   opacity: 1;
@@ -1981,9 +1981,11 @@
   box-shadow: 0 -14px 44px color-mix(in srgb, #000 16%, transparent);
   transform: translateY(102%);
   visibility: hidden;
+  /* Curva de aceleração forte no início: a folha responde ao toque na hora
+     e desacelera ao assentar, em vez de arrastar o ease padrão. */
   transition:
-    transform 0.24s ease,
-    visibility 0.24s ease;
+    transform 0.22s cubic-bezier(0.32, 0.72, 0, 1),
+    visibility 0.22s;
 }
 .sheet--on {
   transform: translateY(0);
