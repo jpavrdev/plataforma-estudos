@@ -1,5 +1,7 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
@@ -29,12 +31,15 @@ import {
   type PontoFraco,
   type SessaoRevisao,
 } from '../../services/flashcards';
+import { NIVEIS, type NivelKey } from '../../services/entrevista';
 
-const BOTOES: { resposta: Resposta; rotulo: string; classe: string }[] = [
-  { resposta: 'errei', rotulo: 'Errei', classe: 'errei' },
-  { resposta: 'dificil', rotulo: 'Difícil', classe: 'dificil' },
-  { resposta: 'intermediaria', rotulo: 'Intermediária', classe: 'intermediaria' },
-  { resposta: 'facil', rotulo: 'Fácil', classe: 'facil' },
+type RateKey = 'revisao.rateWrong' | 'revisao.rateHard' | 'revisao.rateMedium' | 'revisao.rateEasy';
+
+const BOTOES: { resposta: Resposta; chave: RateKey; classe: string }[] = [
+  { resposta: 'errei', chave: 'revisao.rateWrong', classe: 'errei' },
+  { resposta: 'dificil', chave: 'revisao.rateHard', classe: 'dificil' },
+  { resposta: 'intermediaria', chave: 'revisao.rateMedium', classe: 'intermediaria' },
+  { resposta: 'facil', chave: 'revisao.rateEasy', classe: 'facil' },
 ];
 
 // Tempo da animação de saída da carta. Precisa bater com a duração em revisao.css:
@@ -80,20 +85,20 @@ function lerEscolha(): EscolhaSalva {
 // precisa de um limite para não aceitar número absurdo digitado sem querer.
 const MAX_POR_SESSAO = 100;
 
-const HORA = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
-const DIA = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' });
+const HORA_CFG = { hour: '2-digit', minute: '2-digit' } as const;
+const DIA_CFG = { day: '2-digit', month: 'short' } as const;
 
 // "Hoje", "Ontem" ou a data. Comparação por dia local, e não por diferença de horas:
 // uma sessão das 23h e outra da 1h são dias diferentes mesmo com duas horas entre elas.
-function diaDaSessao(iso: string) {
+function diaDaSessao(iso: string, lingua: string, t: TFunction) {
   const d = new Date(iso);
   const hoje = new Date();
   const ontem = new Date();
   ontem.setDate(hoje.getDate() - 1);
   const mesmoDia = (a: Date, b: Date) => a.toDateString() === b.toDateString();
-  if (mesmoDia(d, hoje)) return 'Hoje';
-  if (mesmoDia(d, ontem)) return 'Ontem';
-  return DIA.format(d).replace('.', '');
+  if (mesmoDia(d, hoje)) return t('revisao.today');
+  if (mesmoDia(d, ontem)) return t('revisao.yesterday');
+  return new Intl.DateTimeFormat(lingua, DIA_CFG).format(d).replace('.', '');
 }
 
 // Relógio da carta. Sem décimos de propósito: a intenção é a pessoa perceber quando
@@ -111,26 +116,26 @@ function segundos(ms: number) {
   return s < 10 ? `${s.toFixed(1)}s` : `${Math.round(s)}s`;
 }
 
-const ROTULO_NIVEL: Record<string, string> = {
-  estagio: 'Estágio',
-  junior: 'Júnior',
-  pleno: 'Pleno',
-  senior: 'Sênior',
-};
+const CHAVE_NIVEL: Record<string, NivelKey> = Object.fromEntries(
+  NIVEIS.map((n) => [n.valor, n.key]),
+);
 
 // De onde a carta veio, no topo da frente. Cada origem tem uma coisa diferente para
 // dizer: a de aula mostra a trilha, a de entrevista mostra o assunto.
-function tituloDaCarta(c: Cartao) {
-  if (c.origem === 'glossario') return 'Glossário';
-  if (c.origem === 'entrevista') return c.topico ?? 'Entrevista';
+function tituloDaCarta(c: Cartao, t: TFunction) {
+  if (c.origem === 'glossario') return t('revisao.glossary');
+  if (c.origem === 'entrevista') return c.topico ?? t('revisao.interviewFallback');
   return c.trilha;
 }
 
 // O rodapé, que situa a carta sem entregar a resposta.
-function origemDaCarta(c: Cartao) {
-  if (c.origem === 'glossario') return 'Termo do glossário';
-  if (c.origem === 'entrevista')
-    return `Entrevista de ${(ROTULO_NIVEL[c.nivel ?? ''] ?? '').toLowerCase() || 'nível não informado'}`;
+function origemDaCarta(c: Cartao, t: TFunction) {
+  if (c.origem === 'glossario') return t('revisao.glossaryTerm');
+  if (c.origem === 'entrevista') {
+    const chave = c.nivel ? CHAVE_NIVEL[c.nivel] : undefined;
+    const nivel = chave ? t(chave).toLowerCase() : t('revisao.levelUnset');
+    return t('revisao.interviewOf', { level: nivel });
+  }
   return c.aula;
 }
 
@@ -146,6 +151,7 @@ function duracao(ms: number) {
 
 export function Revisao() {
   const { user: authUser } = useAuth();
+  const { t, i18n } = useTranslation();
   const nav = useNavPrincipal();
   const [params] = useSearchParams();
   const trilhaId = params.get('trilha');
@@ -189,7 +195,10 @@ export function Revisao() {
   // Reporte da carta atual: fechado, aberto para escrever, ou já enviado.
   const [reporte, setReporte] = useState<'fechado' | 'aberto' | 'enviado'>('fechado');
   const [reporteTexto, setReporteTexto] = useState('');
-  const [erro, setErro] = useState('');
+  // A mensagem mora no catálogo: o estado guarda só a chave.
+  const [erro, setErro] = useState<
+    '' | 'revisao.loadError' | 'revisao.queueError' | 'revisao.trailCardsError'
+  >('');
   const [feitos, setFeitos] = useState(0);
   const timer = useRef<number | null>(null);
   // Quando a carta atual apareceu. O tempo de resposta é medido daqui até o aluno se
@@ -221,7 +230,7 @@ export function Revisao() {
       setFracos(f);
     } catch (err) {
       console.error('Falha ao carregar a revisão.', err);
-      setErro('Não foi possível carregar seus cartões.');
+      setErro('revisao.loadError');
     }
   }, []);
 
@@ -258,7 +267,7 @@ export function Revisao() {
       iniciarSessao(cartoes);
     } catch (err) {
       console.error('Falha ao montar a fila de revisão.', err);
-      setErro('Não foi possível montar a fila.');
+      setErro('revisao.queueError');
     }
   }
 
@@ -334,7 +343,7 @@ export function Revisao() {
       .then(iniciarSessao)
       .catch((err) => {
         console.error('Falha ao carregar a revisão da trilha.', err);
-        setErro('Não foi possível carregar os cartões da trilha.');
+        setErro('revisao.trailCardsError');
         setFila([]);
       });
   }, [trilhaId, iniciarSessao]);
@@ -501,10 +510,10 @@ export function Revisao() {
   const tudoMarcado = selecaoAtiva.size === 0 && !comGlossario;
   const baralhoVazio = (resumo?.total ?? 0) === 0;
   const descricaoSelecao = tudoMarcado
-    ? 'Todo o seu baralho'
+    ? t('revisao.wholeDeck')
     : [
-        ...(baralhos?.trilhas ?? []).filter((t) => selecaoAtiva.has(t.id)).map((t) => t.nome),
-        ...(comGlossario ? ['Glossário'] : []),
+        ...(baralhos?.trilhas ?? []).filter((x) => selecaoAtiva.has(x.id)).map((x) => x.nome),
+        ...(comGlossario ? [t('revisao.glossary')] : []),
       ].join(' + ');
   // Quantas cartas a escolha atual tem, e não quantas venceram: a fila serve o
   // conteúdo inteiro. Sem escolha o número é o baralho do aluno; com uma área
@@ -516,8 +525,13 @@ export function Revisao() {
         .reduce((soma, t) => soma + t.disponiveis, 0) +
       (comGlossario ? (baralhos?.glossario.total ?? 0) : 0);
   // 87 áreas não cabem numa lista rolável sem busca.
-  const areas = (baralhos?.trilhas ?? []).filter((t) =>
-    busca.trim() ? t.nome.toLowerCase().includes(busca.trim().toLowerCase()) : true,
+  const areas = (baralhos?.trilhas ?? []).filter((x) =>
+    busca.trim() ? x.nome.toLowerCase().includes(busca.trim().toLowerCase()) : true,
+  );
+
+  const formatadores = useMemo(
+    () => ({ hora: new Intl.DateTimeFormat(i18n.language, HORA_CFG) }),
+    [i18n.language],
   );
 
   return (
@@ -556,24 +570,24 @@ export function Revisao() {
           <div className="rev-sala__head">
             <h1 className="rev-sala__titulo">
               {trilhaId
-                ? 'Revisão da trilha'
+                ? t('revisao.trailTitle')
                 : modo === 'entrevista'
-                  ? 'Modo entrevista'
-                  : 'Revisão do dia'}
+                  ? t('revisao.interviewTitle')
+                  : t('revisao.dayTitle')}
             </h1>
             <p className="rev-sala__sub">
               {trilhaId
-                ? 'Todos os cartões desta trilha, embaralhados.'
+                ? t('revisao.trailSub')
                 : modo === 'entrevista'
-                  ? 'Perguntas de entrevista por nível e assunto. O que você responder aqui volta pela revisão do dia.'
-                  : 'Cartões que voltam hoje. Cada acerto empurra o próximo encontro para mais longe.'}
+                  ? t('revisao.interviewSub')
+                  : t('revisao.daySub')}
             </p>
           </div>
 
           {/* Dois modos, e não duas páginas: eles compartilham baralho, agenda e
               estatísticas, então trocar de aba não deveria parecer trocar de app. */}
           {!trilhaId && fila === null && (
-            <div className="rev-modos" role="tablist" aria-label="Modo de revisão">
+            <div className="rev-modos" role="tablist" aria-label={t('revisao.modesAria')}>
               <button
                 type="button"
                 role="tab"
@@ -581,7 +595,7 @@ export function Revisao() {
                 className={`rev-modo${modo === 'dia' ? ' rev-modo--on' : ''}`}
                 onClick={() => setModo('dia')}
               >
-                Revisão do dia
+                {t('revisao.tabDay')}
               </button>
               <button
                 type="button"
@@ -590,12 +604,12 @@ export function Revisao() {
                 className={`rev-modo${modo === 'entrevista' ? ' rev-modo--on' : ''}`}
                 onClick={() => setModo('entrevista')}
               >
-                Entrevista
+                {t('revisao.tabInterview')}
               </button>
             </div>
           )}
 
-          {erro && <div className="rev-sala__erro">{erro}</div>}
+          {erro && <div className="rev-sala__erro">{t(erro)}</div>}
 
           {!trilhaId && modo === 'entrevista' && fila === null && (
             <ModoEntrevista onComecar={iniciarSessao} />
@@ -608,8 +622,8 @@ export function Revisao() {
                 <span />
                 <span />
               </div>
-              <h3>Tem carta esperando por você</h3>
-              <p>Uma de cada vez. Tente lembrar antes de virar.</p>
+              <h3>{t('revisao.waitingTitle')}</h3>
+              <p>{t('revisao.waitingHint')}</p>
 
               {/* O conteúdo escolhido fica escrito aqui, e clicar abre a lista. Sem
                   isso o aluno não sabe o que vai cair antes de começar. */}
@@ -619,11 +633,11 @@ export function Revisao() {
                 onClick={() => setEscolhendo(true)}
               >
                 <span>{descricaoSelecao}</span>
-                <b>Trocar</b>
+                <b>{t('revisao.change')}</b>
               </button>
 
               <button className="btn btn--accent" onClick={() => void comecar()}>
-                Começar revisão
+                {t('revisao.start')}
               </button>
             </div>
           )}
@@ -638,34 +652,30 @@ export function Revisao() {
               </span>
               {baralhoVazio ? (
                 <>
-                  <h3>Escolha uma área para começar</h3>
-                  <p>
-                    Seu baralho ainda está vazio, mas você não precisa esperar: dá para revisar
-                    qualquer área agora, mesmo sem ter feito a trilha. Concluir uma aula também
-                    traz as cartas dela para cá sozinho.
-                  </p>
+                  <h3>{t('revisao.chooseAreaTitle')}</h3>
+                  <p>{t('revisao.chooseAreaBody')}</p>
                   <button
                     type="button"
                     className="btn btn--accent"
                     onClick={() => setEscolhendo(true)}
                   >
-                    Escolher área
+                    {t('revisao.chooseAreaCta')}
                   </button>
                   <Link to="/trilhas" className="rev-sala__saida">
-                    Ou ir para as trilhas
+                    {t('revisao.orTracks')}
                   </Link>
                 </>
               ) : (
                 <>
-                  <h3>Nada por aqui ainda</h3>
-                  <p>Não há cartas no que você escolheu. Marque outra área.</p>
+                  <h3>{t('revisao.nothingTitle')}</h3>
+                  <p>{t('revisao.nothingBody')}</p>
                   <button
                     type="button"
                     className="rev-sala__selecao"
                     onClick={() => setEscolhendo(true)}
                   >
                     <span>{descricaoSelecao}</span>
-                    <b>Trocar</b>
+                    <b>{t('revisao.change')}</b>
                   </button>
                 </>
               )}
@@ -677,10 +687,10 @@ export function Revisao() {
               <span className="rev-sala__check">
                 <Check size={22} />
               </span>
-              <h3>Esta trilha ainda não tem cartões</h3>
-              <p>Os cartões aparecem aqui conforme as aulas ganharem revisão.</p>
+              <h3>{t('revisao.trackNoCardsTitle')}</h3>
+              <p>{t('revisao.trackNoCardsBody')}</p>
               <Link to="/trilhas" className="btn btn--accent">
-                Ir para as trilhas
+                {t('revisao.goTracks')}
               </Link>
             </div>
           )}
@@ -690,13 +700,12 @@ export function Revisao() {
               <span className="rev-sala__check">
                 <Check size={22} />
               </span>
-              <h3>Sessão concluída</h3>
+              <h3>{t('revisao.doneTitle')}</h3>
               <p>
-                {feitos} {feitos === 1 ? 'cartão revisado' : 'cartões revisados'}. Cada um voltou
-                para uma data diferente, conforme você se avaliou.
+                {t('revisao.reviewedCards', { count: feitos })} {t('revisao.doneBody')}
               </p>
               <button className="btn btn--accent" onClick={terminar}>
-                Voltar
+                {t('revisao.back')}
               </button>
             </div>
           )}
@@ -708,22 +717,20 @@ export function Revisao() {
                 <span />
                 <span />
               </div>
-              <h3>
-                {restantes} {restantes === 1 ? 'carta restante' : 'cartas restantes'}
-              </h3>
+              <h3>{t('revisao.remaining', { count: restantes })}</h3>
               <p>
                 {feitos > 0
-                  ? `Você já revisou ${feitos} nesta sessão.`
-                  : 'Uma de cada vez. Tente lembrar antes de virar.'}
+                  ? t('revisao.inSession', { count: feitos })
+                  : t('revisao.waitingHint')}
               </p>
               {/* Parar no meio é uma escolha legítima, e sem este botão a única saída
                   era navegar para fora e deixar a sessão pendurada. */}
               <div className="rev-sala__par">
                 <button className="btn btn--ghost" onClick={terminar}>
-                  Terminar revisão
+                  {t('revisao.end')}
                 </button>
                 <button className="btn btn--accent" onClick={() => setAberto(true)}>
-                  Continuar revisão
+                  {t('revisao.continueSession')}
                 </button>
               </div>
             </div>
@@ -733,31 +740,31 @@ export function Revisao() {
               cada revisão, então mostram como o aluno se saiu, e não quanto ele tem. */}
           {stats && stats.respostas > 0 && (
             <div className="rev-stats">
-              <h2>Suas respostas</h2>
+              <h2>{t('revisao.statsTitle')}</h2>
               <div className="rev-stats__numeros">
                 <div>
                   <b>{stats.respostas}</b>
-                  <span>revisões feitas</span>
+                  <span>{t('revisao.statReviews')}</span>
                 </div>
                 <div>
                   <b>{stats.taxaAcerto}%</b>
-                  <span>lembrou na hora</span>
+                  <span>{t('revisao.statRecall')}</span>
                 </div>
                 <div>
                   <b>{stats.diasAtivos}</b>
-                  <span>dias ativos em 30</span>
+                  <span>{t('revisao.statActiveDays')}</span>
                 </div>
                 <div>
                   <b>{stats.estabilidadeMedia}d</b>
-                  <span>memória média</span>
+                  <span>{t('revisao.statMemory')}</span>
                 </div>
                 <div>
                   <b>{segundos(stats.tempoTipicoMs)}</b>
-                  <span>por carta</span>
+                  <span>{t('revisao.statPerCard')}</span>
                 </div>
                 <div>
                   <b>{duracao(stats.tempoTotalMs)}</b>
-                  <span>revisando ao todo</span>
+                  <span>{t('revisao.statTotal')}</span>
                 </div>
               </div>
 
@@ -778,15 +785,15 @@ export function Revisao() {
                 {BOTOES.map((b) => (
                   <span key={b.resposta}>
                     <i className={`rev-stats__ponto rev-stats__ponto--${b.classe}`} />
-                    {b.rotulo} <b>{stats.porResposta[b.resposta]}</b>
+                    {t(b.chave)} <b>{stats.porResposta[b.resposta]}</b>
                   </span>
                 ))}
               </div>
 
               <p className="rev-stats__nota">
                 {stats.dominados > 0
-                  ? `${stats.dominados} ${stats.dominados === 1 ? 'cartão já dorme' : 'cartões já dormem'} por mais de três semanas, e ${stats.emAprendizado} ainda estão em aprendizado.`
-                  : `${stats.emAprendizado} ${stats.emAprendizado === 1 ? 'cartão ainda está' : 'cartões ainda estão'} em aprendizado. Passando de três semanas de intervalo, eles saem quase de vez da fila.`}
+                  ? `${t('revisao.sleeping', { count: stats.dominados })} ${t('revisao.sleepingMid')} ${t('revisao.learning', { count: stats.emAprendizado })}`
+                  : `${t('revisao.learning', { count: stats.emAprendizado })} ${t('revisao.learningTail')}`}
               </p>
             </div>
           )}
@@ -796,28 +803,25 @@ export function Revisao() {
               escapam e leva direto para a aula deles. */}
           {fracos.length > 0 && (
             <div className="rev-fracos">
-              <h2>Onde você mais tropeça</h2>
-              <p className="rev-fracos__ajuda">
-                Cartas que a sua memória já deixou cair. Reler a aula costuma resolver mais rápido
-                que insistir na carta.
-              </p>
+              <h2>{t('revisao.weakTitle')}</h2>
+              <p className="rev-fracos__ajuda">{t('revisao.weakHelp')}</p>
               <div className="rev-fracos__lista">
                 {fracos.map((f) => (
                   <div key={f.origem + f.id} className="rev-fracos__item">
                     <div className="rev-fracos__frente">{f.frente}</div>
                     <div className="rev-fracos__pe">
                       <span className="rev-fracos__lapsos">
-                        {f.lapsos} {f.lapsos === 1 ? 'esquecimento' : 'esquecimentos'}
+                        {t('revisao.lapses', { count: f.lapsos })}
                       </span>
                       {f.trilhaId && f.aulaId ? (
                         <a
                           className="rev-fracos__link"
                           href={`/trilhas/${f.trilhaId}/aula/${f.aulaId}`}
                         >
-                          Reler {f.aula}
+                          {t('revisao.reread', { lesson: f.aula })}
                         </a>
                       ) : (
-                        <span className="rev-fracos__origem">Glossário</span>
+                        <span className="rev-fracos__origem">{t('revisao.glossary')}</span>
                       )}
                     </div>
                   </div>
@@ -830,17 +834,20 @@ export function Revisao() {
               inteiro para quem já revisava antes de a tela existir. */}
           {historico.length > 0 && (
             <div className="rev-hist">
-              <h2>Suas sessões</h2>
+              <h2>{t('revisao.sessionsTitle')}</h2>
               <div className="rev-hist__lista">
                 {historico.map((s) => (
                   <div key={s.inicio} className="rev-hist__item">
                     <div className="rev-hist__topo">
                       <span className="rev-hist__quando">
-                        {diaDaSessao(s.inicio)}, {HORA.format(new Date(s.inicio))} às{' '}
-                        {HORA.format(new Date(s.fim))}
+                        {t('revisao.when', {
+                          day: diaDaSessao(s.inicio, i18n.language, t),
+                          start: formatadores.hora.format(new Date(s.inicio)),
+                          end: formatadores.hora.format(new Date(s.fim)),
+                        })}
                       </span>
                       <span className="rev-hist__peso">
-                        {s.cartas} {s.cartas === 1 ? 'carta' : 'cartas'} · {duracao(s.duracaoMs)}
+                        {t('revisao.cards', { count: s.cartas })} · {duracao(s.duracaoMs)}
                       </span>
                     </div>
                     {s.conteudos.length > 0 && (
@@ -863,7 +870,7 @@ export function Revisao() {
                       {BOTOES.filter((b) => s.porResposta[b.resposta] > 0).map((b) => (
                         <span key={b.resposta}>
                           <i className={`rev-stats__ponto rev-stats__ponto--${b.classe}`} />
-                          {b.rotulo} <b>{s.porResposta[b.resposta]}</b>
+                          {t(b.chave)} <b>{s.porResposta[b.resposta]}</b>
                         </span>
                       ))}
                     </div>
@@ -881,26 +888,27 @@ export function Revisao() {
             className="rev-modal rev-modal--painel"
             role="dialog"
             aria-modal="true"
-            aria-label="Escolher o que revisar"
+            aria-label={t('revisao.chooseAria')}
             onClick={fecharEscolha}
           >
             <div className="rev-escolha" onClick={(e) => e.stopPropagation()}>
               <div className="rev-escolha__topo">
-                <h2>O que você quer revisar</h2>
-                <button className="rev-escolha__x" onClick={fecharEscolha} aria-label="Fechar">
+                <h2>{t('revisao.chooseTitle')}</h2>
+                <button
+                  className="rev-escolha__x"
+                  onClick={fecharEscolha}
+                  aria-label={t('sheet.close')}
+                >
                   <X size={16} />
                 </button>
               </div>
-              <p className="rev-escolha__ajuda">
-                Qualquer área, tenha você feito a trilha ou não. Marque mais de uma para
-                embaralhar tudo na mesma sessão.
-              </p>
+              <p className="rev-escolha__ajuda">{t('revisao.chooseHelp')}</p>
 
               <input
                 className="rev-busca"
                 type="search"
                 autoComplete="off"
-                placeholder="Buscar área"
+                placeholder={t('revisao.searchArea')}
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
@@ -912,30 +920,34 @@ export function Revisao() {
                   onClick={tudo}
                 >
                   <span className="rev-item__check">{tudoMarcado && <Check size={13} />}</span>
-                  <span className="rev-item__nome">Todo o seu baralho</span>
+                  <span className="rev-item__nome">{t('revisao.wholeDeck')}</span>
                 </button>
 
-                {areas.map((t) => {
-                  const marcado = selecao.has(t.id);
+                {areas.map((area) => {
+                  const marcado = selecao.has(area.id);
                   return (
                     <button
-                      key={t.id}
+                      key={area.id}
                       type="button"
                       className={`rev-item${marcado ? ' rev-item--on' : ''}`}
-                      onClick={() => alternarTrilha(t.id)}
+                      onClick={() => alternarTrilha(area.id)}
                     >
                       <span className="rev-item__check">{marcado && <Check size={13} />}</span>
-                      <span className="rev-item__nome">{t.nome}</span>
+                      <span className="rev-item__nome">{area.nome}</span>
                       {/* O tamanho da área, e quanto dela já é dele. Sem isso não dá
                           para saber se marcar aquela linha rende 3 cartas ou 105. */}
                       <span className="rev-item__n">
-                        {t.total ? `${t.total} de ${t.disponiveis}` : t.disponiveis}
+                        {area.total
+                          ? t('revisao.countOf', { seen: area.total, total: area.disponiveis })
+                          : area.disponiveis}
                       </span>
                     </button>
                   );
                 })}
 
-                {!areas.length && <p className="rev-escolha__ajuda">Nenhuma área com esse nome.</p>}
+                {!areas.length && (
+                  <p className="rev-escolha__ajuda">{t('revisao.noArea')}</p>
+                )}
 
                 {baralhos.glossario.total > 0 && (
                   <button
@@ -944,20 +956,20 @@ export function Revisao() {
                     onClick={() => setComGlossario((v) => !v)}
                   >
                     <span className="rev-item__check">{comGlossario && <Check size={13} />}</span>
-                    <span className="rev-item__nome">Glossário</span>
+                    <span className="rev-item__nome">{t('revisao.glossary')}</span>
                   </button>
                 )}
               </div>
 
               <div className="rev-escolha__quantas">
-                <label htmlFor="rev-quantas">Quantas cartas</label>
+                <label htmlFor="rev-quantas">{t('revisao.howMany')}</label>
                 <input
                   id="rev-quantas"
                   className="rev-quant"
                   type="text"
                   inputMode="numeric"
                   autoComplete="off"
-                  placeholder="todas"
+                  placeholder={t('revisao.allF')}
                   value={limiteTexto}
                   onChange={(e) => setLimiteTexto(e.target.value.replace(/\D/g, '').slice(0, 3))}
                   onBlur={() =>
@@ -973,9 +985,7 @@ export function Revisao() {
                   separando "não estudei nada ainda" de "escolhi o baralho errado". */}
               {vazio && (
                 <p className="rev-escolha__vazio">
-                  {tudoMarcado
-                    ? 'Seu baralho está vazio. Marque uma área para revisar mesmo sem ter feito a trilha.'
-                    : 'Não há cartas no que você escolheu. Marque outro conteúdo.'}
+                  {tudoMarcado ? t('revisao.emptyDeck') : t('revisao.emptyChoice')}
                 </p>
               )}
 
@@ -984,7 +994,7 @@ export function Revisao() {
                   saber por quê. Clicando, o aviso acima diz o que fazer. */}
               <div className="rev-escolha__rodape">
                 <button className="btn btn--accent" onClick={() => void comecar()}>
-                  Começar revisão
+                  {t('revisao.start')}
                 </button>
               </div>
             </div>
@@ -993,8 +1003,17 @@ export function Revisao() {
 
         {/* A carta sobe acima da tela, com o resto escurecido atrás. */}
         {modalAberto && (
-          <div className="rev-modal" role="dialog" aria-modal="true" aria-label="Revisão">
-            <button className="rev-modal__fechar" onClick={fechar} aria-label="Fechar revisão">
+          <div
+            className="rev-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('revisao.sessionAria')}
+          >
+            <button
+              className="rev-modal__fechar"
+              onClick={fechar}
+              aria-label={t('revisao.closeAria')}
+            >
               <X size={18} />
             </button>
 
@@ -1006,9 +1025,7 @@ export function Revisao() {
                 />
               </div>
               <div className="rev-modal__contador">
-                <span>
-                  {indice + 1} de {total}
-                </span>
+                <span>{t('revisao.counter', { current: indice + 1, total })}</span>
                 <span className="rev-modal__relogio">{cronometro(decorrido)}</span>
               </div>
             </div>
@@ -1033,15 +1050,15 @@ export function Revisao() {
                   onClick={virar}
                   role="button"
                   tabIndex={0}
-                  aria-label={revelado ? 'Ver a pergunta' : 'Mostrar resposta'}
+                  aria-label={revelado ? t('revisao.showQuestion') : t('revisao.showAnswer')}
                 >
                   <div className="rev__face rev__face--frente">
-                    <span className="rev__origem">{tituloDaCarta(atual)}</span>
+                    <span className="rev__origem">{tituloDaCarta(atual, t)}</span>
                     <p className="rev__texto">{atual.frente}</p>
-                    <span className="rev__rodape">{origemDaCarta(atual)}</span>
+                    <span className="rev__rodape">{origemDaCarta(atual, t)}</span>
                   </div>
                   <div className="rev__face rev__face--verso">
-                    <span className="rev__origem">Resposta</span>
+                    <span className="rev__origem">{t('revisao.answer')}</span>
                     <p className="rev__texto rev__texto--verso">{atual.verso}</p>
                     {/* O link só existe no verso: na frente ele convidaria a fugir
                         antes de tentar lembrar. Aqui a pessoa já sabe se precisa
@@ -1056,10 +1073,10 @@ export function Revisao() {
                         rel="noreferrer noopener"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        Reler {atual.aula}
+                        {t('revisao.reread', { lesson: atual.aula })}
                       </a>
                     ) : (
-                      <span className="rev__rodape">{origemDaCarta(atual)}</span>
+                      <span className="rev__rodape">{origemDaCarta(atual, t)}</span>
                     )}
                   </div>
                 </div>
@@ -1067,7 +1084,10 @@ export function Revisao() {
             </div>
 
             <p className="rev-modal__pista">
-              Clique na carta ou aperte <b>espaço</b> para {revelado ? 'ver a pergunta' : 'virar'}
+              <Trans
+                i18nKey={revelado ? 'revisao.flipHintBack' : 'revisao.flipHintShow'}
+                components={{ b: <b /> }}
+              />
             </p>
 
             {/* Sinalizar carta ruim fica dentro do próprio modal, e não num diálogo
@@ -1076,7 +1096,7 @@ export function Revisao() {
             <div className="rev-reporte">
               {reporte === 'fechado' && (
                 <button className="rev-reporte__abrir" onClick={() => setReporte('aberto')}>
-                  Algo errado nesta carta?
+                  {t('revisao.reportAsk')}
                 </button>
               )}
               {reporte === 'aberto' && (
@@ -1086,7 +1106,7 @@ export function Revisao() {
                     type="text"
                     maxLength={300}
                     autoComplete="off"
-                    placeholder="O que está errado? (opcional)"
+                    placeholder={t('revisao.reportPlaceholder')}
                     value={reporteTexto}
                     onChange={(e) => setReporteTexto(e.target.value)}
                     onKeyDown={(e) => {
@@ -1098,12 +1118,12 @@ export function Revisao() {
                     }}
                   />
                   <button className="rev-reporte__enviar" onClick={() => void reportar()}>
-                    Enviar
+                    {t('revisao.reportSend')}
                   </button>
                 </div>
               )}
               {reporte === 'enviado' && (
-                <span className="rev-reporte__ok">Obrigado, vamos revisar essa carta.</span>
+                <span className="rev-reporte__ok">{t('revisao.reportDone')}</span>
               )}
             </div>
 
@@ -1116,7 +1136,7 @@ export function Revisao() {
                   tabIndex={jaViu ? 0 : -1}
                   aria-hidden={!jaViu}
                 >
-                  {b.rotulo}
+                  {t(b.chave)}
                 </button>
               ))}
             </div>

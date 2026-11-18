@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Check } from './Icons';
 import {
   NIVEIS,
@@ -55,6 +57,7 @@ interface Props {
 export function ModoEntrevista({ onComecar }: Props) {
   // O painel some da tela ao trocar de modo, então o estado nasce do que ficou
   // guardado: sem isso, ir ver a revisão do dia e voltar já apagava a escolha.
+  const { t } = useTranslation();
   const [salvo] = useState(lerEscolha);
   const [nivel, setNivel] = useState<Nivel>(salvo.nivel);
   const [topicos, setTopicos] = useState<TopicoEntrevista[]>([]);
@@ -62,7 +65,10 @@ export function ModoEntrevista({ onComecar }: Props) {
   const [resumo, setResumo] = useState<ResumoEntrevista | null>(null);
   const [quantas, setQuantas] = useState(salvo.quantas);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  // A mensagem mora no catálogo: o estado guarda só a chave.
+  const [erro, setErro] = useState<
+    '' | 'entrevista.loadError' | 'entrevista.emptyCombo' | 'entrevista.sessionError'
+  >('');
 
   const carregar = useCallback(async (alvo: Nivel) => {
     setCarregando(true);
@@ -73,7 +79,7 @@ export function ModoEntrevista({ onComecar }: Props) {
       setResumo(r);
     } catch (err) {
       console.error('Falha ao carregar o modo entrevista.', err);
-      setErro('Não foi possível carregar os assuntos.');
+      setErro('entrevista.loadError');
     } finally {
       setCarregando(false);
     }
@@ -113,31 +119,28 @@ export function ModoEntrevista({ onComecar }: Props) {
     try {
       const cartoes = await filaDeEntrevista(
         nivel,
-        marcados.map((t) => t.id),
+        marcados.map((x) => x.id),
         quantas,
       );
       if (!cartoes.length) {
-        setErro('Ainda não há perguntas para essa combinação de nível e assunto.');
+        setErro('entrevista.emptyCombo');
         return;
       }
       onComecar(cartoes);
     } catch (err) {
       console.error('Falha ao montar a sessão de entrevista.', err);
-      setErro('Não foi possível montar a sessão.');
+      setErro('entrevista.sessionError');
     }
   }
 
   return (
     <div className="rev-sala__aviso ent">
-      <h3>Ensaio de entrevista</h3>
-      <p>
-        Perguntas como elas caem numa entrevista de verdade. Vire a carta, compare com o que você
-        teria respondido e se avalie.
-      </p>
+      <h3>{t('entrevista.title')}</h3>
+      <p>{t('entrevista.intro')}</p>
 
       {/* O nível é cumulativo, e o texto diz isso: escolher pleno traz estágio e
           júnior junto, que é como a entrevista real funciona. */}
-      <div className="ent-niveis" role="group" aria-label="Nível da vaga">
+      <div className="ent-niveis" role="group" aria-label={t('entrevista.levelAria')}>
         {NIVEIS.map((n) => (
           <button
             key={n.valor}
@@ -146,42 +149,43 @@ export function ModoEntrevista({ onComecar }: Props) {
             onClick={() => setNivel(n.valor)}
             aria-pressed={nivel === n.valor}
           >
-            <b>{n.rotulo}</b>
-            <span>{n.descricao}</span>
+            <b>{t(n.key)}</b>
+            <span>{t(n.descriptionKey)}</span>
           </button>
         ))}
       </div>
       <p className="ent-cumulativo">
-        Um nível traz também os anteriores, porque entrevista de {nivelAtual(nivel)} cobra o básico
-        do mesmo jeito.
+        {t('entrevista.cumulative', { level: nivelAtual(nivel, t) })}
       </p>
 
-      {carregando && <p className="ent-vazio">Carregando os assuntos...</p>}
+      {carregando && <p className="ent-vazio">{t('entrevista.loading')}</p>}
 
       {!carregando && !topicos.length && (
-        <p className="ent-vazio">Nenhum assunto disponível ainda.</p>
+        <p className="ent-vazio">{t('entrevista.noTopics')}</p>
       )}
 
       {!carregando && topicos.length > 0 && (
         <>
           <div className="ent-topicos">
-            {topicos.map((t) => {
-              const marcado = escolhidos.has(t.id);
+            {topicos.map((topico) => {
+              const marcado = escolhidos.has(topico.id);
               return (
                 <button
-                  key={t.id}
+                  key={topico.id}
                   type="button"
                   className={`ent-topico${marcado ? ' ent-topico--on' : ''}`}
-                  onClick={() => alternar(t.id)}
+                  onClick={() => alternar(topico.id)}
                   aria-pressed={marcado}
-                  disabled={t.total === 0}
+                  disabled={topico.total === 0}
                 >
                   <span className="ent-topico__check">{marcado && <Check size={13} />}</span>
-                  <span className="ent-topico__nome">{t.nome}</span>
+                  <span className="ent-topico__nome">{topico.nome}</span>
                   {/* Quantas já foram vistas ao menos uma vez, para dar noção de
                       progresso em vez de só um menu. */}
                   <span className="ent-topico__n">
-                    {t.vistas ? `${t.vistas} de ${t.total}` : t.total}
+                    {topico.vistas
+                      ? t('revisao.countOf', { seen: topico.vistas, total: topico.total })
+                      : topico.total}
                   </span>
                 </button>
               );
@@ -189,12 +193,12 @@ export function ModoEntrevista({ onComecar }: Props) {
           </div>
           <p className="ent-cumulativo">
             {marcados.length
-              ? `${disponiveis} perguntas nos assuntos marcados.`
-              : 'Sem marcar nada, vem de todos os assuntos.'}
+              ? t('entrevista.marked', { count: disponiveis })
+              : t('entrevista.unmarked')}
           </p>
 
           <div className="ent-quantas">
-            <span>Quantas perguntas</span>
+            <span>{t('entrevista.howMany')}</span>
             <div className="ent-quantas__opcoes">
               {OPCOES_QUANTIDADE.map((n) => (
                 <button
@@ -212,19 +216,20 @@ export function ModoEntrevista({ onComecar }: Props) {
         </>
       )}
 
-      {erro && <p className="ent-erro">{erro}</p>}
+      {erro && <p className="ent-erro">{t(erro)}</p>}
 
       <button
         className="btn btn--accent"
         onClick={() => void comecar()}
         disabled={carregando || !topicos.length}
       >
-        Começar ensaio
+        {t('entrevista.start')}
       </button>
     </div>
   );
 }
 
-function nivelAtual(nivel: Nivel) {
-  return NIVEIS.find((n) => n.valor === nivel)?.rotulo.toLowerCase() ?? nivel;
+function nivelAtual(nivel: Nivel, t: TFunction) {
+  const n = NIVEIS.find((x) => x.valor === nivel);
+  return n ? t(n.key).toLowerCase() : nivel;
 }
