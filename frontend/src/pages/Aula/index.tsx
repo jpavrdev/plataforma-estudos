@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
@@ -36,6 +38,7 @@ import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 export function Aula() {
   const { trailId, lessonId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
   const displayName = authUser?.name ?? user.name;
@@ -43,7 +46,7 @@ export function Aula() {
   const [trilha, setTrilha] = useState<TrailDetail | null>(null);
   const [aula, setAula] = useState<LessonDetail | null>(null);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  const [erro, setErro] = useState(false);
   const [proximaRoadmap, setProximaRoadmap] = useState<ProximaTrilhaRoadmap | null>(null);
   const [perguntaTrilha, setPerguntaTrilha] = useState(false);
   const [buscandoProxima, setBuscandoProxima] = useState(false);
@@ -105,17 +108,17 @@ export function Aula() {
     let ativo = true;
     async function carregar() {
       setCarregando(true);
-      setErro('');
+      setErro(false);
       try {
         const lang = trailId ? getTrailLang(trailId) : undefined;
-        const [t, a] = await Promise.all([obterTrilha(trailId!, lang), obterAula(lessonId!, lang)]);
+        const [tr, a] = await Promise.all([obterTrilha(trailId!, lang), obterAula(lessonId!, lang)]);
         if (!ativo) return;
-        setTrilha(t);
+        setTrilha(tr);
         setAula(a);
       } catch (e: unknown) {
         if (!ativo) return;
         console.error('Falha ao carregar a aula:', e);
-        setErro('Não foi possível carregar a aula.');
+        setErro(true);
       } finally {
         if (ativo) setCarregando(false);
       }
@@ -156,12 +159,12 @@ export function Aula() {
           />
         </header>
 
-        {carregando && <p className="lesson__loading">Carregando aula...</p>}
+        {carregando && <p className="lesson__loading">{t('aula.loading')}</p>}
         {erro && !carregando && (
           <div className="lesson__erro">
-            <p>{erro}</p>
+            <p>{t('aula.loadError')}</p>
             <Link className="btn btn--accent" to="/trilhas">
-              Voltar para as trilhas
+              {t('aula.backToTracks')}
             </Link>
           </div>
         )}
@@ -183,13 +186,13 @@ export function Aula() {
             <div
               className="solve-next"
               role="dialog"
-              aria-label="Trilha concluída"
+              aria-label={t('aula.doneAria')}
               onClick={(e) => e.stopPropagation()}
             >
               <span className="solve-next__check">
                 <Check size={22} />
               </span>
-              <h3 className="solve-next__titulo">Trilha concluída!</h3>
+              <h3 className="solve-next__titulo">{t('aula.doneTitle')}</h3>
 
               {/* Revisar vem antes de emendar a próxima trilha de propósito: é o
                   momento em que o conteúdo ainda está fresco e a revisão custa pouco. */}
@@ -198,22 +201,20 @@ export function Aula() {
                   className="solve-next__revisar"
                   onClick={() => navigate(`/revisao?trilha=${trailId}`)}
                 >
-                  Revisar a trilha em cartões
-                  <span className="solve-next__revisar-nota">
-                    Uma passada rápida pelo que você acabou de estudar
-                  </span>
+                  {t('aula.reviewTrack')}
+                  <span className="solve-next__revisar-nota">{t('aula.reviewTrackHint')}</span>
                 </button>
               )}
 
               {proximaRoadmap?.roadmap && proximaRoadmap.proximaTrilha && (
                 <>
                   <p className="solve-next__sub">
-                    Quer seguir para a próxima trilha do roadmap {proximaRoadmap.roadmap.name}?
+                    {t('aula.nextRoadmapAsk', { name: proximaRoadmap.roadmap.name })}
                   </p>
                   <div className="solve-next__alvo">
                     <span className="solve-next__nome">{proximaRoadmap.proximaTrilha.name}</span>
                     <span className="solve-next__nivel">
-                      {NIVEL_LABEL[proximaRoadmap.proximaTrilha.level]}
+                      {rotuloNivel(t, proximaRoadmap.proximaTrilha.level)}
                     </span>
                   </div>
                   {/* Esta trilha vive em mais de um roadmap e o aluno nunca disse qual
@@ -222,9 +223,7 @@ export function Aula() {
                   {proximaRoadmap.origem !== 'declarado' &&
                     !!proximaRoadmap.outrosRoadmaps?.length && (
                       <div className="solve-next__troca">
-                        <span className="solve-next__troca-aviso">
-                          Está seguindo outro caminho? Escolha e nós lembramos:
-                        </span>
+                        <span className="solve-next__troca-aviso">{t('aula.switchHint')}</span>
                         {proximaRoadmap.outrosRoadmaps.map((r) => (
                           <button
                             key={r.slug}
@@ -248,14 +247,16 @@ export function Aula() {
                     navigate('/trilhas');
                   }}
                 >
-                  {proximaRoadmap?.proximaTrilha ? 'Agora não' : 'Voltar para as trilhas'}
+                  {proximaRoadmap?.proximaTrilha
+                    ? t('common.notNow')
+                    : t('aula.backToTracks')}
                 </button>
                 {proximaRoadmap?.proximaTrilha && (
                   <button
                     className="solve-next__ir"
                     onClick={() => navigate(`/trilhas/${proximaRoadmap.proximaTrilha!.id}`)}
                   >
-                    Ir para a próxima
+                    {t('aula.goNext')}
                   </button>
                 )}
               </div>
@@ -267,13 +268,22 @@ export function Aula() {
   );
 }
 
-const NIVEL_LABEL: Record<string, string> = {
-  iniciante: 'Iniciante',
-  intermediario: 'Intermediário',
-  avancado: 'Avançado',
+type LevelKey = 'levels.beginner' | 'levels.intermediate' | 'levels.advanced';
+
+const NIVEL_KEY: Record<string, LevelKey> = {
+  iniciante: 'levels.beginner',
+  intermediario: 'levels.intermediate',
+  avancado: 'levels.advanced',
 };
 
+// O nível vem da API como valor estável; o rótulo traduzido só existe no catálogo.
+function rotuloNivel(t: TFunction, level: string) {
+  const chave = NIVEL_KEY[level];
+  return chave ? t(chave) : level;
+}
+
 function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtualId: string }) {
+  const { t } = useTranslation();
   const [aberto, setAberto] = useState(false);
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const feitas = todas.filter((l) => l.state === 'done').length;
@@ -286,9 +296,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
         <span className="lesson__track-icon">{'{}'}</span>
         <div className="lesson__track-meta">
           <div className="lesson__track-name">{trilha.name}</div>
-          <div className="lesson__track-sub">
-            {feitas} de {total} aulas · {pct}%
-          </div>
+          <div className="lesson__track-sub">{t('aula.progress', { done: feitas, total, pct })}</div>
         </div>
       </div>
       <div className="lesson__track-bar">
@@ -302,7 +310,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
         onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
       >
-        Aulas da trilha
+        {t('aula.modulesToggle')}
         <span className="lesson__toggle-chevron">
           <ChevronDown size={16} />
         </span>
@@ -319,7 +327,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
                 <span>{m.title}</span>
                 <span
                   className={`lesson__module-count${moduloCompleto ? ' lesson__module-count--completo' : ''}`}
-                  aria-label={`${concluidas} de ${m.lessons.length} aulas concluídas`}
+                  aria-label={t('aula.moduleAria', { done: concluidas, total: m.lessons.length })}
                 >
                   {concluidas}/{m.lessons.length}
                 </span>
@@ -360,6 +368,7 @@ function ConteudoAula({
   onRevisar: (() => void) | null;
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const idx = todas.findIndex((l) => l.id === aula.id);
   const proxima = idx >= 0 && idx < todas.length - 1 ? todas[idx + 1] : null;
@@ -390,7 +399,7 @@ function ConteudoAula({
           </ReactMarkdown>
         </div>
       ) : (
-        <p className="lesson__p lesson__p--muted">Esta aula ainda não tem conteúdo escrito.</p>
+        <p className="lesson__p lesson__p--muted">{t('aula.noContent')}</p>
       )}
 
       {aula.questions.length > 0 ? (
@@ -404,17 +413,17 @@ function ConteudoAula({
         <div className="lesson__nextbar">
           {irProxima ? (
             <button className="btn btn--accent" onClick={irProxima}>
-              Próxima aula
+              {t('aula.nextLesson')}
             </button>
           ) : (
             <>
               {onRevisar && (
                 <button className="btn btn--ghost" onClick={onRevisar}>
-                  Revisar em cartões
+                  {t('aula.reviewCards')}
                 </button>
               )}
               <button className="btn btn--accent" onClick={onConcluir}>
-                Concluir trilha
+                {t('aula.finishTrack')}
               </button>
             </>
           )}
@@ -438,6 +447,7 @@ function Quiz({
   irProxima: (() => void) | null;
   onRevisar: (() => void) | null;
 }) {
+  const { t } = useTranslation();
   const total = aula.questions.length;
   const jaConcluida = aula.state === 'done';
   const respondido = total > 0 && aula.questions.every((q) => q.answer);
@@ -457,7 +467,8 @@ function Quiz({
       ? { correct: acertosSalvos, total, passed: jaConcluida, lessonCompleted: jaConcluida }
       : null,
   );
-  const [erro, setErro] = useState('');
+  // A mensagem mora no catálogo: o estado guarda só a chave.
+  const [erro, setErro] = useState<'' | 'aula.quiz.submitError' | 'aula.quiz.checkError'>('');
   // Uma vez concluída (agora ou numa visita anterior), refazer e errar não volta a bloquear.
   const [concluida, setConcluida] = useState(jaConcluida);
 
@@ -478,7 +489,7 @@ function Quiz({
       setResultado(r);
       if (r.passed) setConcluida(true);
     } catch {
-      setErro('Não foi possível enviar o quiz. Tente novamente.');
+      setErro('aula.quiz.submitError');
     } finally {
       setEnviando(false);
     }
@@ -497,7 +508,7 @@ function Quiz({
       setVerSolucao(false);
       setChecked(true);
     } catch {
-      setErro('Não foi possível verificar a resposta. Tente novamente.');
+      setErro('aula.quiz.checkError');
     } finally {
       setVerificando(false);
     }
@@ -565,12 +576,10 @@ function Quiz({
             {resultado.passed ? <Check size={34} /> : <Alert size={34} />}
           </span>
           <div className="quiz__result-title">
-            {resultado.passed ? 'Aula concluída!' : 'Quase lá!'}
+            {resultado.passed ? t('aula.quiz.passedTitle') : t('aula.quiz.failedTitle')}
           </div>
           <div className="quiz__result-text">
-            {resultado.passed
-              ? 'Você dominou o conteúdo e desbloqueou a próxima aula.'
-              : 'Você precisa acertar pelo menos 4 questões. Revise o conteúdo e tente de novo.'}
+            {resultado.passed ? t('aula.quiz.passedText') : t('aula.quiz.failedText')}
           </div>
           <div className="quiz__score">
             <span
@@ -583,12 +592,12 @@ function Quiz({
           </div>
           <div className="quiz__result-actions">
             <button className="btn btn--ghost" onClick={refazer}>
-              Refazer quiz
+              {t('aula.quiz.retry')}
             </button>
             {concluida &&
               (irProxima ? (
                 <button className="btn btn--accent" onClick={irProxima}>
-                  Próxima aula
+                  {t('aula.nextLesson')}
                 </button>
               ) : (
                 <>
@@ -596,11 +605,11 @@ function Quiz({
                       conteúdo todo ainda está fresco. */}
                   {onRevisar && (
                     <button className="btn btn--ghost" onClick={onRevisar}>
-                      Revisar em cartões
+                      {t('aula.reviewCards')}
                     </button>
                   )}
                   <button className="btn btn--accent" onClick={onConcluir}>
-                    Concluir trilha
+                    {t('aula.finishTrack')}
                   </button>
                 </>
               ))}
@@ -617,8 +626,8 @@ function Quiz({
           <Help size={22} />
         </span>
         <div className="quiz__head-meta">
-          <div className="quiz__title">Pratique o que aprendeu</div>
-          <div className="quiz__sub">{total} questões · acerte ao menos 4 para concluir a aula</div>
+          <div className="quiz__title">{t('aula.quiz.title')}</div>
+          <div className="quiz__sub">{t('aula.quiz.sub', { count: total })}</div>
         </div>
         <span className="quiz__counter">
           {qIndex + 1} / {total}
@@ -661,8 +670,8 @@ function Quiz({
         {checked && (
           <div className={`quiz__feedback quiz__feedback--${wasCorrect ? 'ok' : 'no'}`}>
             {wasCorrect
-              ? 'Correto! Mandou muito bem.'
-              : `Quase! A resposta certa é a alternativa ${letraCorreta()}.`}
+              ? t('aula.quiz.correct')
+              : t('aula.quiz.wrong', { letter: letraCorreta() })}
           </div>
         )}
 
@@ -673,7 +682,7 @@ function Quiz({
               className="quiz__solucao-toggle"
               onClick={() => setVerSolucao((v) => !v)}
             >
-              {verSolucao ? 'Ocultar resolução' : 'Ver resolução passo a passo'}
+              {verSolucao ? t('aula.quiz.hideSolution') : t('aula.quiz.showSolution')}
             </button>
             {verSolucao && (
               <div className="quiz__solucao-corpo lesson__md">
@@ -689,15 +698,15 @@ function Quiz({
           </div>
         )}
 
-        {erro && <div className="auth__alert">{erro}</div>}
+        {erro && <div className="auth__alert">{t(erro)}</div>}
 
         <div className="quiz__foot">
           <span className="quiz__hint">
             {!checked
-              ? 'Selecione uma alternativa e verifique.'
+              ? t('aula.quiz.hintSelect')
               : isLast
-                ? 'Confira a resolução e veja seu resultado.'
-                : 'Siga para a próxima questão.'}
+                ? t('aula.quiz.hintLast')
+                : t('aula.quiz.hintNext')}
           </span>
           <div className="topbar__spacer" />
           {!checked ? (
@@ -707,15 +716,15 @@ function Quiz({
               disabled={selected == null || verificando}
               onClick={verificar}
             >
-              {verificando ? 'Verificando...' : 'Verificar resposta'}
+              {verificando ? t('common.checking') : t('aula.quiz.check')}
             </button>
           ) : isLast ? (
             <button className="btn btn--accent" disabled={enviando} onClick={verResultado}>
-              {enviando ? 'Enviando...' : 'Ver resultado'}
+              {enviando ? t('common.sending') : t('aula.quiz.seeResult')}
             </button>
           ) : (
             <button className="btn btn--accent" onClick={avancar}>
-              Próxima questão
+              {t('aula.quiz.nextQuestion')}
             </button>
           )}
         </div>
