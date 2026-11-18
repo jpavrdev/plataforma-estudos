@@ -1,6 +1,7 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import {
+    BOOK_COPY,
     chapterToXhtml,
     escapeXml,
     quizToXhtml,
@@ -231,5 +232,40 @@ describe("escapeXml and slug", () => {
     test("slug strips accents and spaces", () => {
         assert.equal(slug("Estatística Matemática"), "estatistica-matematica");
         assert.equal(slug("???"), "livro");
+    });
+});
+
+describe("book copy per language", () => {
+    test("the English copy renders the quiz and the answer key in English", () => {
+        const html = quizToXhtml(
+            [
+                {
+                    statement: "Which statement is true?",
+                    explanation: "Because",
+                    options: [
+                        { text: "wrong", isCorrect: false },
+                        { text: "right", isCorrect: true },
+                    ],
+                },
+            ],
+            BOOK_COPY.en,
+        );
+        assert.ok(html.includes("Question 1"));
+        assert.ok(html.includes("Lesson quiz"));
+        assert.ok(html.includes("Answer key with explanations"));
+        assert.ok(html.includes("Answer:"));
+        assert.ok(!html.includes("Questão"));
+    });
+
+    test("the Portuguese copy stays the default", () => {
+        const html = quizToXhtml([
+            {
+                statement: "Qual é verdadeira?",
+                explanation: null,
+                options: [{ text: "certa", isCorrect: true }],
+            },
+        ]);
+        assert.ok(html.includes("Questão 1"));
+        assert.ok(html.includes("<h2>Gabarito</h2>"));
     });
 });
