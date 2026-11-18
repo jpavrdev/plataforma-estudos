@@ -1,4 +1,6 @@
 import { db } from "../../db.ts";
+import { lessonTranslations, questionTranslations, optionTranslations } from "../../schema.ts";
+import type { Locale } from "../i18n/locale.ts";
 import {
     lessons,
     modules,
@@ -73,7 +75,12 @@ export async function findLessonState(
 }
 
 // Returns the lesson with content and questions WITHOUT revealing the right option.
-export async function findLessonDetail(lessonId: string, userId: string, lang?: string) {
+export async function findLessonDetail(
+    lessonId: string,
+    userId: string,
+    lang?: string,
+    locale?: Locale,
+) {
     const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
     if (!lesson) {
         throw new AppError(404, "lesson.notFound");
@@ -119,6 +126,36 @@ export async function findLessonDetail(lessonId: string, userId: string, lang?: 
     const correctByQuestion = new Map<string, string>();
     for (const o of opts) if (o.isCorrect) correctByQuestion.set(o.questionId, o.id);
 
+    // Overlay das traduções (aula, questões e alternativas) quando o idioma é inglês.
+    const traduz = locale === "en";
+    const [trLesson] = traduz
+        ? await db
+              .select()
+              .from(lessonTranslations)
+              .where(and(eq(lessonTranslations.lessonId, lessonId), eq(lessonTranslations.locale, "en")))
+        : [];
+    const trQuestionRows =
+        traduz && qIds.length
+            ? await db
+                  .select()
+                  .from(questionTranslations)
+                  .where(inArray(questionTranslations.questionId, qIds))
+            : [];
+    const trQuestionById = new Map(trQuestionRows.map((q) => [q.questionId, q]));
+    const trOptionRows =
+        traduz && opts.length
+            ? await db
+                  .select()
+                  .from(optionTranslations)
+                  .where(
+                      inArray(
+                          optionTranslations.optionId,
+                          opts.map((o) => o.id),
+                      ),
+                  )
+            : [];
+    const trOptionById = new Map(trOptionRows.map((o) => [o.optionId, o]));
+
     // Shuffles questions and options so the right one does not always land on "A".
     // Grading goes by option id, so the order does not change the result; the position
     // is renumbered to the new order.
@@ -134,13 +171,14 @@ export async function findLessonDetail(lessonId: string, userId: string, lang?: 
     const shuffledQuestions = shuffle(
         qs.map((q) => {
             const r = answerByQuestion.get(q.id);
+            const trQ = trQuestionById.get(q.id);
             return {
                 id: q.id,
-                statement: q.statement,
+                statement: trQ?.statement ?? q.statement,
                 position: q.position,
                 options: shuffle(opts.filter((o) => o.questionId === q.id)).map((o, i) => ({
                     id: o.id,
-                    text: o.text,
+                    text: trOptionById.get(o.id)?.text ?? o.text,
                     position: i + 1,
                 })),
                 // The answer key shows only on the questions the user already answered.
@@ -149,7 +187,7 @@ export async function findLessonDetail(lessonId: string, userId: string, lang?: 
                           selectedOptionId: r.selectedOptionId,
                           isCorrect: r.isCorrect,
                           correctOptionId: correctByQuestion.get(q.id) ?? null,
-                          explanation: q.explanation ?? null,
+                          explanation: trQ?.explanation ?? q.explanation ?? null,
                       }
                     : null,
             };
@@ -160,10 +198,10 @@ export async function findLessonDetail(lessonId: string, userId: string, lang?: 
         id: lesson.id,
         trailId: lesson.trailId,
         moduleId: lesson.moduleId,
-        title: lesson.title,
+        title: trLesson?.title ?? lesson.title,
         language: lesson.language,
-        content: lesson.content,
-        contentBlocks: lesson.contentBlocks ?? null,
+        content: trLesson?.content ?? lesson.content,
+        contentBlocks: trLesson?.contentBlocks ?? lesson.contentBlocks ?? null,
         state: state,
         questions: shuffledQuestions,
     };

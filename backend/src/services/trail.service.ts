@@ -14,10 +14,18 @@ import {
     roadmapStageRefs,
     trailReviews,
     trailFavorites,
+    trailTranslations,
+    moduleTranslations,
+    lessonTranslations,
     users,
 } from "../../schema.ts";
 import { eq, asc, desc, countDistinct, inArray, and, isNotNull } from "drizzle-orm";
 import type { z } from "zod";
+import type { Locale } from "../i18n/locale.ts";
+
+// Overlay de tradução de conteúdo: só em inglês consulta as tabelas de
+// tradução; sem linha traduzida vale o pt-BR da base. pt-BR não paga nada.
+const TRADUZ = (locale: Locale | undefined) => locale === "en";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
 import { isAdmin } from "./user.service.ts";
@@ -121,6 +129,7 @@ const VALID_LEVELS = new Set(["iniciante", "intermediario", "avancado"]);
 export async function findTrails(
     filters: { level?: string; categoria?: string } = {},
     userId?: string,
+    locale?: Locale,
 ) {
     const levelFilter =
         filters.level && VALID_LEVELS.has(filters.level)
@@ -186,12 +195,26 @@ export async function findTrails(
               .where(eq(trailFavorites.userId, userId))
         : [];
     const favoriteSet = new Set(favoriteRows.map((f) => f.trailId));
-    return trailRows.map((t) => ({
-        ...t,
-        totalLessons: totalLessonsOf(t.id),
-        tags: tagsByTrail.get(t.id) ?? [],
-        favorito: favoriteSet.has(t.id),
-    }));
+
+    const tradRows = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(trailTranslations)
+              .where(eq(trailTranslations.locale, "en"))
+        : [];
+    const tradById = new Map(tradRows.map((t) => [t.trailId, t]));
+
+    return trailRows.map((t) => {
+        const tr = tradById.get(t.id);
+        return {
+            ...t,
+            name: tr?.name ?? t.name,
+            description: tr?.description ?? t.description,
+            totalLessons: totalLessonsOf(t.id),
+            tags: tagsByTrail.get(t.id) ?? [],
+            favorito: favoriteSet.has(t.id),
+        };
+    });
 }
 
 // Pins (or unpins) a trail for the user: the favorites tab of the catalog.
@@ -290,7 +313,12 @@ export async function findUserTrails(userId: string) {
 
 // Returns the track with modules and lessons, each lesson with its state for the user.
 // The state follows the whole track in sequence: done | current | locked.
-export async function findTrailDetail(trailId: string, userId: string, lang?: string) {
+export async function findTrailDetail(
+    trailId: string,
+    userId: string,
+    lang?: string,
+    locale?: Locale,
+) {
     const [trail] = await db.select().from(trails).where(eq(trails.id, trailId));
     if (!trail) {
         throw new AppError(404, "trail.notFound");
@@ -378,16 +406,48 @@ export async function findTrailDetail(trailId: string, userId: string, lang?: st
         }
     }
 
+    // Overlay das traduções (trilha, módulos e aulas) quando o idioma é inglês.
+    const [trTrail] = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(trailTranslations)
+              .where(and(eq(trailTranslations.trailId, trailId), eq(trailTranslations.locale, "en")))
+        : [];
+    const trModRows = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(moduleTranslations)
+              .where(
+                  inArray(
+                      moduleTranslations.moduleId,
+                      mods.map((m) => m.id),
+                  ),
+              )
+        : [];
+    const trModByld = new Map(trModRows.map((m) => [m.moduleId, m]));
+    const trLicaoRows = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(lessonTranslations)
+              .where(
+                  inArray(
+                      lessonTranslations.lessonId,
+                      allLessons.map((a) => a.id),
+                  ),
+              )
+        : [];
+    const trLicaoById = new Map(trLicaoRows.map((a) => [a.lessonId, a]));
+
     const modulesWithLessons = mods.map((m) => ({
         id: m.id,
-        title: m.title,
+        title: trModByld.get(m.id)?.title ?? m.title,
         position: m.position,
         lessons: lessonRows
             .filter((a) => a.moduleId === m.id)
             .sort((a, b) => a.position - b.position)
             .map((a) => ({
                 id: a.id,
-                title: a.title,
+                title: trLicaoById.get(a.id)?.title ?? a.title,
                 position: a.position,
                 published: a.published,
                 durationMin: a.durationMin,
@@ -443,6 +503,10 @@ export async function findTrailDetail(trailId: string, userId: string, lang?: st
 
     return {
         ...trail,
+        name: trTrail?.name ?? trail.name,
+        description: trTrail?.description ?? trail.description,
+        whatYouLearn: trTrail?.whatYouLearn ?? trail.whatYouLearn,
+        prerequisites: trTrail?.prerequisites ?? trail.prerequisites,
         category: rm?.name ?? null,
         studentsCount: Number(studs.n),
         rating,

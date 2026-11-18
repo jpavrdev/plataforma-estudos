@@ -1,4 +1,6 @@
 import { db } from "../../db.ts";
+import { questionTranslations } from "../../schema.ts";
+import type { Locale } from "../i18n/locale.ts";
 import { openLessonCards } from "./flashcard.service.ts";
 import {
     lessons,
@@ -142,6 +144,7 @@ export async function verifyAnswer(
     lessonId: string,
     questionId: string,
     optionId: string,
+    locale?: Locale,
 ) {
     const [lesson] = await db.select().from(lessons).where(eq(lessons.id, lessonId));
     if (!lesson) {
@@ -170,9 +173,23 @@ export async function verifyAnswer(
         throw new AppError(500, "quiz.noAnswerKey");
     }
 
+    // Overlay da explicação traduzida na conferência; sem tradução vale o pt-BR.
+    const [trQuestion] =
+        locale === "en"
+            ? await db
+                  .select({ explanation: questionTranslations.explanation })
+                  .from(questionTranslations)
+                  .where(
+                      and(
+                          eq(questionTranslations.questionId, questionId),
+                          eq(questionTranslations.locale, "en"),
+                      ),
+                  )
+            : [];
+
     return {
         correct: correctOption.id === optionId,
         correctOptionId: correctOption.id,
-        explanation: question.explanation ?? null,
+        explanation: trQuestion?.explanation ?? question.explanation ?? null,
     };
 }

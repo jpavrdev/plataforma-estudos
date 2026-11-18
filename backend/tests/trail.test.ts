@@ -543,3 +543,92 @@ describe("Quiz without shortcuts", () => {
         assert.equal(quiz.status, 400);
     });
 });
+
+// Content translations: the English locale overlays the translated fields and
+// falls back to the pt-BR base for everything else.
+describe("Content translations", () => {
+    async function getLocale(path: string, token: string, locale: string) {
+        const res = await fetch(`${server.base}${path}`, {
+            headers: { ...auth(token), "X-Locale": locale },
+        });
+        return { status: res.status, body: await res.json().catch(() => null) };
+    }
+
+    test("en overlays the translation and keeps pt-BR as the fallback", async () => {
+        const admin = await createSignedInUser(true);
+        const { trailId, lessonIds } = await buildTrail(admin.token, 2);
+        const student = await createSignedInUser();
+
+        const { db } = await import("../db.ts");
+        const {
+            trailTranslations,
+            moduleTranslations,
+            lessonTranslations,
+            questionTranslations,
+            optionTranslations,
+            modules,
+            lessons,
+            questions,
+            questionOptions,
+        } = await import("../schema.ts");
+        const { eq, and } = await import("drizzle-orm");
+
+        const [mod] = await db.select().from(modules).where(eq(modules.trailId, trailId));
+        const [q1] = await db
+            .select()
+            .from(questions)
+            .where(eq(questions.lessonId, lessonIds[0]));
+        const [certa] = await db
+            .select()
+            .from(questionOptions)
+            .where(and(eq(questionOptions.questionId, q1.id), eq(questionOptions.isCorrect, true)));
+
+        await db
+            .insert(trailTranslations)
+            .values({ trailId, locale: "en", name: "Logic", description: "Logic base." });
+        await db
+            .insert(moduleTranslations)
+            .values({ moduleId: mod.id, locale: "en", title: "Module 1" });
+        await db
+            .insert(lessonTranslations)
+            .values({
+                lessonId: lessonIds[0],
+                locale: "en",
+                title: "Lesson 1",
+                contentBlocks: [{ type: "text", value: "Welcome" }],
+            });
+        await db
+            .insert(questionTranslations)
+            .values({ questionId: q1.id, locale: "en", statement: "Question one", explanation: "Because" });
+        await db.insert(optionTranslations).values({ optionId: certa.id, locale: "en", text: "right" });
+
+        const en = await getLocale(`/trails/${trailId}`, student.token, "en");
+        assert.equal(en.body.name, "Logic");
+        assert.equal(en.body.modules[0].title, "Module 1");
+        assert.equal(en.body.modules[0].lessons[0].title, "Lesson 1");
+        // Lesson without translation falls back to the pt-BR title.
+        assert.equal(en.body.modules[0].lessons[1].title, "Aula 2");
+
+        const aulaEn = await getLocale(`/lessons/${lessonIds[0]}`, student.token, "en");
+        assert.equal(aulaEn.body.title, "Lesson 1");
+        assert.equal(aulaEn.body.contentBlocks[0].value, "Welcome");
+        const questaoEn = aulaEn.body.questions.find((q: any) => q.id === q1.id);
+        assert.equal(questaoEn.statement, "Question one");
+        assert.ok(questaoEn.options.some((o: any) => o.text === "right"));
+        assert.ok(questaoEn.options.some((o: any) => o.text === "errada"));
+
+        // The check-answer flow also returns the translated explanation.
+        const check = await fetch(`${server.base}/lessons/${lessonIds[0]}/quiz/check`, {
+            method: "POST",
+            headers: { ...auth(student.token), "Content-Type": "application/json", "X-Locale": "en" },
+            body: JSON.stringify({ questionId: q1.id, optionId: certa.id }),
+        });
+        const checkBody = await check.json();
+        assert.equal(checkBody.explanation, "Because");
+
+        // pt-BR keeps reading the base, untouched.
+        const pt = await getLocale(`/trails/${trailId}`, student.token, "pt-BR");
+        assert.equal(pt.body.name, "Logica");
+        assert.equal(pt.body.modules[0].title, "Modulo 1");
+    });
+});
