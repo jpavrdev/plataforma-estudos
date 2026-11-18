@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Check } from '../../components/Icons';
 import type { Participacao, SorteioAtivo } from '../../services/sorteios';
@@ -14,6 +15,7 @@ export function InscricaoConfirmada({
   participacao: Participacao;
 }) {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const [verInformacoes, setVerInformacoes] = useState(false);
 
   return (
@@ -21,17 +23,17 @@ export function InscricaoConfirmada({
       <span className="srt__confirmada-icone">
         <Check size={20} />
       </span>
-      <h1 className="srt__confirmada-titulo">Inscrição confirmada</h1>
+      <h1 className="srt__confirmada-titulo">{t('sorteio.confirmedTitle')}</h1>
       <p className="srt__quem">
-        Você participa como <b>@{user?.username}</b>
+        <Trans i18nKey="sorteio.youParticipate" values={{ user: user?.username ?? '' }} components={{ b: <b /> }} />
       </p>
-      <p className="srt__texto">Se você ganhar, avisamos por estes contatos:</p>
+      <p className="srt__texto">{t('sorteio.notifyThrough')}</p>
       <ContatosInformados contatos={participacao.contatos} />
       <p className="srt__texto">
-        As inscrições vão até {dataHoraPorExtenso(sorteio.fim)}, e o sorteio acontece depois disso.
+        {t('sorteio.deadlineFull', { date: dataHoraPorExtenso(sorteio.fim, i18n.language) })}
       </p>
       <p className="srt__data-inscricao">
-        Inscrição feita em {dataHoraCurta(participacao.inscritoEm)}.
+        {t('sorteio.registeredAt', { date: dataHoraCurta(participacao.inscritoEm, i18n.language) })}
       </p>
       <button
         type="button"
@@ -39,7 +41,7 @@ export function InscricaoConfirmada({
         aria-expanded={verInformacoes}
         onClick={() => setVerInformacoes((v) => !v)}
       >
-        {verInformacoes ? 'Esconder informações do sorteio' : 'Ver informações do sorteio'}
+        {verInformacoes ? t('sorteio.hideInfo') : t('sorteio.showInfo')}
       </button>
       {verInformacoes && (
         <div className="srt__info">

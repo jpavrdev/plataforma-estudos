@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useSorteioAtivo } from '../../contexts/SorteioContext';
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
@@ -27,6 +28,7 @@ function Aviso({ titulo, texto, acao }: { titulo: string; texto: string; acao: R
 }
 
 export function Sorteio() {
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
   const { sorteio, carregando, erro, recarregar } = useSorteioAtivo();
@@ -34,7 +36,7 @@ export function Sorteio() {
 
   let conteudo: ReactNode;
   if (carregando) {
-    conteudo = <p className="track__desc">Carregando...</p>;
+    conteudo = <p className="track__desc">{t('common.loading')}</p>;
   } else if (sorteio?.participacao) {
     conteudo = <InscricaoConfirmada sorteio={sorteio} participacao={sorteio.participacao} />;
   } else if (sorteio) {
@@ -47,11 +49,11 @@ export function Sorteio() {
   } else if (erro) {
     conteudo = (
       <Aviso
-        titulo="Não foi possível carregar o sorteio"
-        texto="Confira sua conexão e tente de novo."
+        titulo={t('sorteio.loadTitle')}
+        texto={t('sorteio.loadText')}
         acao={
           <button className="btn btn--accent" onClick={() => recarregar()}>
-            Tentar de novo
+            {t('sorteio.retry')}
           </button>
         }
       />
@@ -59,11 +61,11 @@ export function Sorteio() {
   } else {
     conteudo = (
       <Aviso
-        titulo="Nenhum sorteio aberto agora"
-        texto="Quando um sorteio abrir, ele aparece no menu e as inscrições ficam por aqui."
+        titulo={t('sorteio.noneTitle')}
+        texto={t('sorteio.noneText')}
         acao={
           <Link className="btn btn--ghost" to="/home">
-            Voltar ao início
+            {t('sorteio.backHome')}
           </Link>
         }
       />
