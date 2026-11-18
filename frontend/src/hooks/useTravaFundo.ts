@@ -1,29 +1,24 @@
 import { useEffect } from 'react';
 
-// Trava o scroll da página enquanto um overlay está aberto. No navegador do
-// celular o scroll nativo começa no touchstart e os touchmove chegam não
-// canceláveis, então nem overflow hidden nem preventDefault seguram: o fix é
-// congelar o body (position fixed com compensação do scroll) e devolver a
-// posição ao fechar.
+// Trava o scroll da página enquanto um overlay está aberto. O html para de
+// rolar sem mover nada: freeze no body (position fixed + top negativo)
+// desloca overlays fixos no iPhone (Safari e Chrome), que aparecem cortados
+// ou fora da tela quando a página foi rolada antes de abrir o modal.
 export function useTravaFundo(ativo: boolean) {
   useEffect(() => {
     if (!ativo) return;
+    const { style } = document.documentElement;
+    const prevOverflow = style.overflow;
+    const prevOverscroll = style.overscrollBehavior;
     const y = window.scrollY;
-    const { style } = document.body;
-    style.position = 'fixed';
-    style.top = `-${y}px`;
-    style.left = '0';
-    style.right = '0';
-    style.width = '100%';
-    document.documentElement.style.overflow = 'hidden';
+    style.overflow = 'hidden';
+    style.overscrollBehavior = 'none';
     return () => {
-      document.documentElement.style.overflow = '';
-      style.position = '';
-      style.top = '';
-      style.left = '';
-      style.right = '';
-      style.width = '';
-      window.scrollTo(0, y);
+      style.overflow = prevOverflow;
+      style.overscrollBehavior = prevOverscroll;
+      // O Chrome zera o offset do documento ao esconder o overflow; o
+      // WebKit mantém e não precisa voltar a lugar nenhum.
+      if (window.scrollY !== y) window.scrollTo(0, y);
     };
   }, [ativo]);
 }
