@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
@@ -87,10 +88,10 @@ interface Editavel {
   x: string;
 }
 
-function membroDesde(iso: string): string {
+function membroDesde(iso: string, lingua: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '—';
-  const s = d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const s = d.toLocaleDateString(lingua, { month: 'long', year: 'numeric' });
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
@@ -108,6 +109,7 @@ function lerArquivo(file: File): Promise<string> {
 
 export function Perfil() {
   const { user: authUser, atualizarUsuario } = useAuth();
+  const { t, i18n } = useTranslation();
   const nav = useNavPrincipal();
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState<PerfilData | null>(null);
@@ -160,7 +162,7 @@ export function Perfil() {
         setAtividades(ativ);
         setPosicao(rank?.me?.position ?? null);
       } catch {
-        if (ativo) setErro('Não foi possível carregar o perfil.');
+        if (ativo) setErro(t('perfil.loadError'));
       } finally {
         if (ativo) setCarregando(false);
       }
@@ -216,11 +218,11 @@ export function Perfil() {
       setEditando(false);
       // A URL canônica do perfil carrega o username; se ele mudou, acompanha.
       if (data.username) navigate(`/${data.username}`, { replace: true });
-      mostrar('Perfil atualizado.');
+      mostrar(t('perfil.updatedToast'));
     } catch (e) {
       console.error('Falha ao salvar o perfil', e);
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
-      mostrar(msg ?? 'Não foi possível salvar as alterações.', 'erro');
+      mostrar(msg ?? t('perfil.saveError'), 'erro');
     } finally {
       setSalvando(false);
     }
@@ -229,11 +231,11 @@ export function Perfil() {
   // Valida o arquivo escolhido e abre o recortador; o envio acontece após o corte.
   async function escolherImagem(file: File, tipo: 'avatar' | 'cover') {
     if (!TIPOS_IMG.includes(file.type)) {
-      mostrar('Use uma imagem PNG, JPG ou WEBP.', 'erro');
+      mostrar(t('perfil.imgTypeError'), 'erro');
       return;
     }
     if (file.size > MAX_IMG) {
-      mostrar('Imagem muito grande (máximo 4MB).', 'erro');
+      mostrar(t('perfil.imgSizeError'), 'erro');
       return;
     }
     setErro('');
@@ -257,7 +259,7 @@ export function Perfil() {
     } catch (e) {
       console.error('Falha ao enviar a imagem do perfil', e);
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
-      mostrar(msg ?? 'Não foi possível enviar a imagem.', 'erro');
+      mostrar(msg ?? t('perfil.imgSendError'), 'erro');
     } finally {
       setBusy(false);
     }
@@ -274,7 +276,7 @@ export function Perfil() {
     } catch (e) {
       console.error('Falha ao remover a imagem do perfil', e);
       const msg = (e as { response?: { data?: { erro?: string } } })?.response?.data?.erro;
-      mostrar(msg ?? 'Não foi possível remover a imagem.', 'erro');
+      mostrar(msg ?? t('perfil.imgRemoveError'), 'erro');
     } finally {
       setBusy(false);
     }
@@ -325,7 +327,7 @@ export function Perfil() {
             aspect={cropper.tipo === 'avatar' ? 1 : 3}
             round={cropper.tipo === 'avatar'}
             maxWidth={cropper.tipo === 'avatar' ? 512 : 1400}
-            titulo={cropper.tipo === 'avatar' ? 'Ajustar foto' : 'Ajustar capa'}
+            titulo={cropper.tipo === 'avatar' ? t('perfil.cropPhoto') : t('perfil.cropCover')}
             onConfirm={enviarRecorte}
             onCancel={() => setCropper(null)}
           />
@@ -352,11 +354,11 @@ export function Perfil() {
 
         {carregando ? (
           <p className="track__desc" style={{ padding: '40px 26px' }}>
-            Carregando perfil...
+            {t('perfil.loading')}
           </p>
         ) : !perfil ? (
           <p className="track__desc" style={{ padding: '40px 26px' }}>
-            {erro || 'Perfil não encontrado.'}
+            {erro || t('perfil.notFound')}
           </p>
         ) : (
           <div className="pf">
@@ -386,7 +388,8 @@ export function Perfil() {
                     onClick={() => inputCapa.current?.click()}
                     disabled={enviandoCapa}
                   >
-                    <Camera size={14} /> {enviandoCapa ? 'Enviando...' : 'Trocar capa'}
+                    <Camera size={14} />{' '}
+                    {enviandoCapa ? t('common.sending') : t('perfil.changeCover')}
                   </button>
                 )}
                 {editando && capaUrl && (
@@ -396,7 +399,7 @@ export function Perfil() {
                     onClick={() => removerImagem('/me/cover', setEnviandoCapa)}
                     disabled={enviandoCapa}
                   >
-                    <Trash size={13} /> Remover
+                    <Trash size={13} /> {t('perfil.remove')}
                   </button>
                 )}
                 <input
@@ -426,7 +429,7 @@ export function Perfil() {
                       className="pf-avatar-wrap__cam"
                       onClick={() => inputFoto.current?.click()}
                       disabled={enviandoFoto}
-                      aria-label="Trocar foto"
+                      aria-label={t('perfil.changePhoto')}
                     >
                       <Camera size={14} />
                     </button>
@@ -437,7 +440,7 @@ export function Perfil() {
                       className="pf-avatar-wrap__rm"
                       onClick={() => removerImagem('/me/avatar', setEnviandoFoto)}
                       disabled={enviandoFoto}
-                      aria-label="Remover foto"
+                      aria-label={t('perfil.removePhoto')}
                     >
                       <Trash size={13} />
                     </button>
@@ -457,21 +460,24 @@ export function Perfil() {
                         className="pf-id__name-input"
                         value={draft.name}
                         maxLength={255}
-                        placeholder="Seu nome"
+                        placeholder={t('perfil.namePlaceholder')}
                         onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                       />
                     ) : (
                       <span className="pf-id__name">{perfil.name}</span>
                     )}
-                    <span className="pf-id__level">Nível {nivel}</span>
+                    <span className="pf-id__level">{t('perfil.level', { level: nivel })}</span>
                     {perfil.apoiador && (
-                      <span className="selo-apoiador selo-apoiador--chip" title="Apoiador do Ensina Dev">
-                        <Heart size={12} /> Apoiador
+                      <span
+                        className="selo-apoiador selo-apoiador--chip"
+                        title={t('perfil.supporterTitle')}
+                      >
+                        <Heart size={12} /> {t('perfil.supporter')}
                       </span>
                     )}
                   </div>
                   <div className="pf-id__user">
-                    @{(editando ? draft.username : perfil.username) || 'sem_usuario'}
+                    @{(editando ? draft.username : perfil.username) || t('perfil.noUsername')}
                   </div>
                 </div>
                 {!editando ? (
@@ -483,24 +489,25 @@ export function Perfil() {
                       >
                         {linkCopiado ? (
                           <>
-                            <Check size={14} /> Copiado!
+                            <Check size={14} /> {t('perfil.copied')}
                           </>
                         ) : (
-                          'Compartilhar'
+                          t('perfil.share')
                         )}
                       </button>
                     )}
                     <button className="btn btn--accent pf-actions__btn" onClick={editar}>
-                      <Pencil size={14} /> Editar perfil
+                      <Pencil size={14} /> {t('perfil.editProfile')}
                     </button>
                   </div>
                 ) : (
                   <div className="pf-actions">
                     <button className="btn btn--ghost pf-actions__btn" onClick={cancelar}>
-                      Cancelar
+                      {t('common.cancel')}
                     </button>
                     <button className="pf-save" disabled={salvando} onClick={salvar}>
-                      <Check size={15} /> {salvando ? 'Salvando...' : 'Salvar alterações'}
+                      <Check size={15} />{' '}
+                      {salvando ? t('common.saving') : t('perfil.saveChanges')}
                     </button>
                   </div>
                 )}
@@ -508,40 +515,40 @@ export function Perfil() {
               <div className="pf-stats">
                 <Stat
                   value={String(perfil.streak)}
-                  label="dias de streak"
+                  label={t('perfil.statStreak')}
                   icon={<Flame size={18} />}
                 />
-                <Stat value={xp.xp.toLocaleString('pt-BR')} label="XP total" />
-                <Stat value={posicao ? `#${posicao}` : '—'} label="no ranking global" />
-                <Stat value={String(xp.questionsCorrect)} label="exercícios resolvidos" />
-                <Stat value={String(xp.lessonsCompleted)} label="aulas concluídas" />
+                <Stat value={xp.xp.toLocaleString(i18n.language)} label={t('perfil.statXp')} />
+                <Stat value={posicao ? `#${posicao}` : '—'} label={t('perfil.statRanking')} />
+                <Stat value={String(xp.questionsCorrect)} label={t('perfil.statSolved')} />
+                <Stat value={String(xp.lessonsCompleted)} label={t('perfil.statLessons')} />
               </div>
             </div>
 
             <div className="pf-grid">
               <div className="pf-col">
                 <div className="card">
-                  <h3 className="card__title card__title--mb">Sobre</h3>
+                  <h3 className="card__title card__title--mb">{t('perfil.about')}</h3>
                   {!editando ? (
-                    <p className="pf-bio">{perfil.bio || 'Sem descrição ainda.'}</p>
+                    <p className="pf-bio">{perfil.bio || t('perfil.noBio')}</p>
                   ) : (
                     <textarea
                       className="pf-textarea"
                       value={draft.bio}
                       maxLength={500}
-                      placeholder="Conte um pouco sobre você"
+                      placeholder={t('perfil.bioPlaceholder')}
                       onChange={(e) => setDraft({ ...draft, bio: e.target.value })}
                     />
                   )}
                 </div>
 
                 <div className="card">
-                  <h3 className="card__title card__title--mb">Informações</h3>
+                  <h3 className="card__title card__title--mb">{t('perfil.info')}</h3>
                   <div className="pf-fields">
                     {!editando ? (
                       <Campo
                         icon={<AtSign size={14} />}
-                        label="Usuário"
+                        label={t('perfil.username')}
                         value={perfil.username ? `@${perfil.username}` : '—'}
                       />
                     ) : (
@@ -550,14 +557,15 @@ export function Perfil() {
                           <span className="pf-field__icon">
                             <AtSign size={14} />
                           </span>
-                          Usuário
+                          {t('perfil.username')}
                         </div>
                         {usernameTravado ? (
                           <>
                             <div className="pf-field__value">@{perfil.username}</div>
                             <span className="pf-field__hint">
-                              Você poderá mudar novamente em{' '}
-                              {usernameLiberaEm!.toLocaleDateString('pt-BR')}.
+                              {t('perfil.usernameLocked', {
+                                date: usernameLiberaEm!.toLocaleDateString(i18n.language),
+                              })}
                             </span>
                           </>
                         ) : (
@@ -566,42 +574,40 @@ export function Perfil() {
                               className="pf-input"
                               value={draft.username}
                               maxLength={20}
-                              placeholder="seu_usuario"
+                              placeholder={t('perfil.usernamePlaceholder')}
                               onChange={(e) => setDraft({ ...draft, username: e.target.value })}
                             />
-                            <span className="pf-field__hint">
-                              Só pode ser alterado uma vez a cada 30 dias.
-                            </span>
+                            <span className="pf-field__hint">{t('perfil.usernameHint')}</span>
                           </>
                         )}
                       </div>
                     )}
                     <CampoEdit
                       icon={<MapPin size={14} />}
-                      label="Localização"
+                      label={t('perfil.location')}
                       value={perfil.location}
                       editando={editando}
                       draft={draft.location}
-                      placeholder="Cidade, País"
+                      placeholder={t('perfil.locationPlaceholder')}
                       onChange={(v) => setDraft({ ...draft, location: v })}
                     />
                     <CampoEdit
                       icon={<Briefcase size={14} />}
-                      label="Função"
+                      label={t('perfil.occupation')}
                       value={perfil.occupation}
                       editando={editando}
                       draft={draft.occupation}
-                      placeholder="Ex: Estudante de programação"
+                      placeholder={t('perfil.occupationPlaceholder')}
                       onChange={(v) => setDraft({ ...draft, occupation: v })}
                     />
                     <Campo
                       icon={<Calendar size={14} />}
-                      label="Membro desde"
-                      value={membroDesde(perfil.createdAt)}
+                      label={t('perfil.memberSince')}
+                      value={membroDesde(perfil.createdAt, i18n.language)}
                     />
 
                     <div>
-                      <div className="pf-field__label">Linguagens</div>
+                      <div className="pf-field__label">{t('perfil.languages')}</div>
                       <div className="pf-langs">
                         {langsVisiveis.map((l, i) => (
                           <span key={l + i} className="pf-lang">
@@ -610,7 +616,7 @@ export function Perfil() {
                               <button
                                 className="pf-lang__x"
                                 onClick={() => removeLang(i)}
-                                aria-label={`Remover ${l}`}
+                                aria-label={t('perfil.removeLangAria', { lang: l })}
                               >
                                 <X size={11} />
                               </button>
@@ -624,7 +630,7 @@ export function Perfil() {
                             onChange={(e) => addLang(e.target.value)}
                           >
                             <option value="" disabled>
-                              + Adicionar
+                              {t('perfil.addLang')}
                             </option>
                             {langsDisponiveis.map((l) => (
                               <option key={l} value={l}>
@@ -642,14 +648,14 @@ export function Perfil() {
                     </div>
 
                     <div>
-                      <div className="pf-field__label">Links</div>
+                      <div className="pf-field__label">{t('perfil.links')}</div>
                       <div className="pf-links">
                         <LinkEdit
                           icon={<Github size={15} />}
                           value={perfil.github}
                           editando={editando}
                           draft={draft.github}
-                          placeholder="github.com/voce"
+                          placeholder={t('perfil.ghPlaceholder')}
                           prefixo="https://github.com/"
                           onChange={(v) => setDraft({ ...draft, github: v })}
                         />
@@ -658,7 +664,7 @@ export function Perfil() {
                           value={perfil.linkedin}
                           editando={editando}
                           draft={draft.linkedin}
-                          placeholder="linkedin.com/in/voce"
+                          placeholder={t('perfil.liPlaceholder')}
                           prefixo="https://www.linkedin.com/in/"
                           onChange={(v) => setDraft({ ...draft, linkedin: v })}
                         />
@@ -667,7 +673,7 @@ export function Perfil() {
                           value={perfil.x}
                           editando={editando}
                           draft={draft.x}
-                          placeholder="x.com/voce"
+                          placeholder={t('perfil.xPlaceholder')}
                           prefixo="https://x.com/"
                           onChange={(v) => setDraft({ ...draft, x: v })}
                         />
@@ -683,7 +689,7 @@ export function Perfil() {
               <div className="pf-col">
                 <div className="card">
                   <div className="card__head">
-                    <h3 className="card__title">Conquistas</h3>
+                    <h3 className="card__title">{t('perfil.achievements')}</h3>
                     {conquistasGanhas.length > 6 && (
                       <button
                         type="button"
@@ -697,12 +703,12 @@ export function Perfil() {
                         }}
                         onClick={() => setVerTodasConquistas((v) => !v)}
                       >
-                        {verTodasConquistas ? 'Ver menos' : 'Ver todas'}
+                        {verTodasConquistas ? t('perfil.showLess') : t('perfil.showAll')}
                       </button>
                     )}
                   </div>
                   {conquistasGanhas.length === 0 ? (
-                    <p className="track__desc">Nenhuma conquista desbloqueada.</p>
+                    <p className="track__desc">{t('perfil.noAchievements')}</p>
                   ) : (
                     <div className="pf-badges">
                       {(verTodasConquistas ? conquistasGanhas : conquistasGanhas.slice(0, 6)).map(
@@ -720,11 +726,9 @@ export function Perfil() {
                   )}
                 </div>
                 <div className="card">
-                  <h3 className="card__title card__title--mb">Atividade recente</h3>
+                  <h3 className="card__title card__title--mb">{t('perfil.recentActivity')}</h3>
                   {atividades.length === 0 ? (
-                    <p className="track__desc">
-                      Nenhuma atividade ainda. Conclua uma aula para começar.
-                    </p>
+                    <p className="track__desc">{t('perfil.noActivity')}</p>
                   ) : (
                     <div className="pf-timeline">
                       {atividades.map((a, i) => (
@@ -736,7 +740,9 @@ export function Perfil() {
                           </span>
                           <div className="pf-act__body">
                             <div className="pf-act__text">{a.text}</div>
-                            <div className="pf-act__time">{tempoRelativo(a.at)}</div>
+                            <div className="pf-act__time">
+                              {tempoRelativo(a.at, i18n.language)}
+                            </div>
                           </div>
                         </div>
                       ))}
