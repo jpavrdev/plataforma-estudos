@@ -157,7 +157,7 @@ export function Simulados() {
   ];
   const opcoesNivel: OpcaoSheet[] = [
     { valor: '', label: t('filters.allM'), contagem: exams.length },
-    ...niveis,
+    ...niveis.map((n) => ({ ...n, label: t(n.label) })),
   ];
 
   return (

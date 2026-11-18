@@ -505,7 +505,7 @@ export function Trilhas() {
             aoFechar={() => setFolha(null)}
             valor={nivel}
             aoEscolher={setNivel}
-            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: t(n.label) }))}
           />
           <SheetFiltro
             titulo={t('filters.category')}
