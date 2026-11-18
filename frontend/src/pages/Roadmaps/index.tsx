@@ -193,7 +193,7 @@ export function Roadmaps() {
                   aria-pressed={nivel === n.v}
                   onClick={() => setNivel(n.v)}
                 >
-                  {n.label}
+                  {t(n.label)}
                 </button>
               ))}
             </div>
@@ -330,7 +330,7 @@ export function Roadmaps() {
             aoFechar={() => setFolhaNivel(false)}
             valor={nivel}
             aoEscolher={setNivel}
-            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: n.label }))}
+            opcoes={NIVEIS.map((n) => ({ valor: n.v, label: t(n.label) }))}
           />
         </div>
       </div>
