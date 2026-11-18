@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 import { FormField } from '../../components/FormField';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,6 +23,7 @@ type Step = 'view' | 'setup' | 'codes' | 'regenerate' | 'disable';
 // and the admin features require 2FA to be enabled.
 export function TwoFactorCard() {
   const { entrarComToken, atualizarUsuario } = useAuth();
+  const { t, i18n } = useTranslation();
   const [status, setStatus] = useState<Status | null>(null);
   const [step, setStep] = useState<Step>('view');
   const [setup, setSetup] = useState<Setup | null>(null);
@@ -47,7 +49,7 @@ export function TwoFactorCard() {
         }
       })
       .catch((e: unknown) =>
-        setError(mensagemErro(e, 'Não foi possível carregar a verificação em duas etapas.')),
+        setError(mensagemErro(e, t('perfil.twoFactor.loadError'))),
       );
   }, []);
 
@@ -77,7 +79,7 @@ export function TwoFactorCard() {
       const { data } = await api.post<Setup>('/me/2fa/setup');
       setSetup(data);
       goTo('setup');
-    }, 'Não foi possível começar a configuração.');
+    }, t('perfil.twoFactor.setupError'));
   }
 
   function enable(event: FormEvent<HTMLFormElement>) {
@@ -102,7 +104,7 @@ export function TwoFactorCard() {
       // The session comes back verified: the new token is what unlocks the admin
       // features. It comes after the codes so they show up even if this fails.
       await entrarComToken(data.token);
-    }, 'Não foi possível ativar.');
+    }, t('perfil.twoFactor.enableError'));
   }
 
   function regenerate(event: FormEvent<HTMLFormElement>) {
@@ -116,7 +118,7 @@ export function TwoFactorCard() {
         (current) => current && { ...current, recoveryCodesLeft: data.recoveryCodes.length },
       );
       goTo('codes');
-    }, 'Não foi possível gerar os códigos.');
+    }, t('perfil.twoFactor.regenError'));
   }
 
   function disable(event: FormEvent<HTMLFormElement>) {
@@ -133,26 +135,26 @@ export function TwoFactorCard() {
       const { data } = await api.get('/me');
       atualizarUsuario({ pendingTwoFactor: data.pendingTwoFactor ?? null });
       goTo('view');
-      setNotice('Verificação em duas etapas desativada.');
-    }, 'Não foi possível desativar.');
+      setNotice(t('perfil.twoFactor.disabledNotice'));
+    }, t('perfil.twoFactor.disableError'));
   }
 
   function copyCodes() {
     navigator.clipboard.writeText(recoveryCodes.join('\n')).then(
-      () => setNotice('Códigos copiados.'),
+      () => setNotice(t('perfil.twoFactor.copiedNotice')),
       (e: unknown) => {
         console.error('Failed to copy the recovery codes', e);
-        setError('Não foi possível copiar. Use o botão Baixar.');
+        setError(t('perfil.twoFactor.copyError'));
       },
     );
   }
 
   function downloadCodes() {
-    const text = `Códigos de recuperação do ensina.dev. Cada um vale uma vez só.\n\n${recoveryCodes.join('\n')}\n`;
+    const text = `${t('perfil.twoFactor.fileText')}\n\n${recoveryCodes.join('\n')}\n`;
     const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'ensinadev-codigos-de-recuperacao.txt';
+    link.download = t('perfil.twoFactor.fileName');
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
   }
@@ -167,7 +169,7 @@ export function TwoFactorCard() {
 
   const appCodeField = (
     <FormField
-      label="Código do app"
+      label={t('perfil.twoFactor.appCode')}
       inputMode="numeric"
       autoComplete="one-time-code"
       placeholder="000000"
@@ -177,7 +179,7 @@ export function TwoFactorCard() {
   );
   const passwordField = status.hasPassword && (
     <FormField
-      label="Senha atual"
+      label={t('perfil.twoFactor.currentPassword')}
       type="password"
       autoComplete="current-password"
       value={password}
@@ -187,17 +189,19 @@ export function TwoFactorCard() {
 
   return (
     <div className="card" id="two-factor">
-      <h3 className="card__title card__title--mb">Verificação em duas etapas</h3>
-      <div className="pf-field__label">Situação</div>
+      <h3 className="card__title card__title--mb">{t('perfil.twoFactor.title')}</h3>
+      <div className="pf-field__label">{t('perfil.twoFactor.status')}</div>
       <div className="pf-field__value">
         {status.enabled && status.enabledAt
-          ? `Ativa desde ${new Date(status.enabledAt).toLocaleDateString('pt-BR')}`
-          : 'Desativada'}
+          ? t('perfil.twoFactor.activeSince', {
+              date: new Date(status.enabledAt).toLocaleDateString(i18n.language),
+            })
+          : t('perfil.twoFactor.inactive')}
       </div>
       <span className="pf-field__hint">
         {status.enabled
-          ? `O login pede o código do app autenticador. Restam ${status.recoveryCodesLeft} códigos de recuperação.`
-          : 'As funções de administrador só funcionam com ela ativa. Você vai precisar de um app autenticador, como Google Authenticator, Authy ou 1Password.'}
+          ? t('perfil.twoFactor.hintOn', { count: status.recoveryCodesLeft })
+          : t('perfil.twoFactor.hintOff')}
       </span>
 
       {notice && <div className="auth__alert auth__alert--ok">{notice}</div>}
@@ -208,15 +212,15 @@ export function TwoFactorCard() {
           {status.enabled ? (
             <>
               <button className="btn" onClick={() => goTo('regenerate')} disabled={busy}>
-                Gerar novos códigos
+                {t('perfil.twoFactor.regen')}
               </button>
               <button className="btn" onClick={() => goTo('disable')} disabled={busy}>
-                Desativar
+                {t('perfil.twoFactor.disableBtn')}
               </button>
             </>
           ) : (
             <button className="btn btn--accent" onClick={startSetup} disabled={busy}>
-              {busy ? 'Preparando...' : 'Ativar'}
+              {busy ? t('perfil.twoFactor.preparing') : t('perfil.twoFactor.enableBtn')}
             </button>
           )}
         </div>
@@ -224,21 +228,18 @@ export function TwoFactorCard() {
 
       {step === 'setup' && setup && (
         <form className="form" onSubmit={enable} noValidate>
-          <span className="pf-field__hint">
-            Escaneie o QR code com o app autenticador. Se não der para escanear, digite a chave no
-            app.
-          </span>
+          <span className="pf-field__hint">{t('perfil.twoFactor.qrHint')}</span>
           <img
             className="tf-qr"
             src={`data:image/svg+xml;utf8,${encodeURIComponent(setup.qrSvg)}`}
-            alt="QR code para cadastrar a conta no app autenticador"
+            alt={t('perfil.twoFactor.qrAlt')}
           />
           <code className="tf-key">{setup.secret.match(/.{1,4}/g)?.join(' ')}</code>
           {appCodeField}
           {passwordField}
           <div className="pf-actions">
             <button className="btn btn--accent" type="submit" disabled={busy || code.length !== 6}>
-              Ativar
+              {t('perfil.twoFactor.enableBtn')}
             </button>
             <button
               className="btn"
@@ -256,10 +257,7 @@ export function TwoFactorCard() {
 
       {step === 'codes' && (
         <div className="form">
-          <span className="pf-field__hint">
-            Guarde estes códigos fora do celular. Cada um vale uma vez só e é o que permite entrar
-            se você perder o app. Eles não aparecem de novo.
-          </span>
+          <span className="pf-field__hint">{t('perfil.twoFactor.codesHint')}</span>
           <ul className="tf-codes">
             {recoveryCodes.map((c) => (
               <li key={c}>{c}</li>
@@ -267,10 +265,10 @@ export function TwoFactorCard() {
           </ul>
           <div className="pf-actions">
             <button className="btn" type="button" onClick={copyCodes}>
-              Copiar
+              {t('perfil.twoFactor.copy')}
             </button>
             <button className="btn" type="button" onClick={downloadCodes}>
-              Baixar
+              {t('perfil.twoFactor.download')}
             </button>
             <button
               className="btn btn--accent"
@@ -280,7 +278,7 @@ export function TwoFactorCard() {
                 goTo('view');
               }}
             >
-              Já guardei
+              {t('perfil.twoFactor.saved')}
             </button>
           </div>
         </div>
@@ -288,14 +286,14 @@ export function TwoFactorCard() {
 
       {step === 'regenerate' && (
         <form className="form" onSubmit={regenerate} noValidate>
-          <span className="pf-field__hint">Os códigos de recuperação atuais deixam de valer.</span>
+          <span className="pf-field__hint">{t('perfil.twoFactor.regenHint')}</span>
           {appCodeField}
           <div className="pf-actions">
             <button className="btn btn--accent" type="submit" disabled={busy || code.length !== 6}>
-              Gerar
+              {t('perfil.twoFactor.generate')}
             </button>
             <button className="btn" type="button" onClick={() => goTo('view')}>
-              Cancelar
+              {t('common.cancel')}
             </button>
           </div>
         </form>
@@ -303,12 +301,9 @@ export function TwoFactorCard() {
 
       {step === 'disable' && (
         <form className="form" onSubmit={disable} noValidate>
-          <span className="pf-field__hint">
-            Sem a verificação em duas etapas, as funções de administrador ficam bloqueadas. Serve o
-            código do app ou um de recuperação.
-          </span>
+          <span className="pf-field__hint">{t('perfil.twoFactor.disableHint')}</span>
           <FormField
-            label="Código"
+            label={t('perfil.twoFactor.codeLabel')}
             autoComplete="one-time-code"
             placeholder="000000"
             value={code}
@@ -317,10 +312,10 @@ export function TwoFactorCard() {
           {passwordField}
           <div className="pf-actions">
             <button className="btn" type="submit" disabled={busy || code.trim().length < 6}>
-              Desativar
+              {t('perfil.twoFactor.disableBtn')}
             </button>
             <button className="btn" type="button" onClick={() => goTo('view')}>
-              Cancelar
+              {t('common.cancel')}
             </button>
           </div>
         </form>
