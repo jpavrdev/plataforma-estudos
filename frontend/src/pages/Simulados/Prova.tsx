@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import {
   ClockExam,
   ChevronLeft,
@@ -50,6 +51,7 @@ function conferidaDe(q: QuestaoSimulado): Conferida {
 }
 
 export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado: () => void }) {
+  const { t } = useTranslation();
   const questions = dados.questions;
   const total = questions.length;
   const pratica = dados.pratica === true;
@@ -185,16 +187,19 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
         </span>
         <div className="exam-bar__id">
           <div className="exam-bar__title">
-            {pratica ? 'Modo de prática' : 'Simulado em andamento'}
+            {pratica ? t('simulados.briefing.practiceTitle') : t('simulados.prova.ongoingTitle')}
           </div>
           <div className="exam-bar__sub">
-            {pratica ? `${total} questões, conferidas uma a uma` : `${total} questões`}
+            {pratica
+              ? t('simulados.prova.practiceSub', { count: total })
+              : t('simulados.questions', { count: total })}
           </div>
         </div>
         <div className="topbar__spacer" />
         {pratica && conferidasCount > 0 && (
           <div className="exam-bar__placar">
-            <Check size={14} /> {acertosPratica} de {conferidasCount}
+            <Check size={14} />{' '}
+            {t('simulados.prova.score', { correct: acertosPratica, checked: conferidasCount })}
           </div>
         )}
         <div className="exam-bar__prog">
@@ -216,21 +221,24 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
           onClick={confirmarEnvio}
           disabled={enviando}
         >
-          Finalizar
+          {t('simulados.prova.finish')}
         </button>
       </div>
 
       <div className="exam-body">
         <div className="card exam-q">
           <div className="exam-q__meta">
-            <span className="exam-q__num">Questão {current + 1}</span>
-            {q.multiple && <span className="exam-q__tag">Selecione mais de uma</span>}
+            <span className="exam-q__num">{t('simulados.prova.question', { number: current + 1 })}</span>
+            {q.multiple && <span className="exam-q__tag">{t('simulados.prova.multiTag')}</span>}
             <div className="topbar__spacer" />
             <button
               className={`exam-q__flag${flags.has(current) ? ' exam-q__flag--on' : ''}`}
               onClick={alternarFlag}
             >
-              <Bookmark size={16} /> {flags.has(current) ? 'Marcada' : 'Marcar p/ revisar'}
+              <Bookmark size={16} />{' '}
+              {flags.has(current)
+                ? t('simulados.prova.flagSet')
+                : t('simulados.prova.flagUnset')}
             </button>
           </div>
 
@@ -251,7 +259,9 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
                 <button key={o.id} className={cls} onClick={() => marcar(o.id)}>
                   <span className="exam-opt__badge">{LETRAS[i] ?? i + 1}</span>
                   <span className="exam-opt__label">{o.text}</span>
-                  {conferida && on && <span className="exam-opt__sua">sua resposta</span>}
+                  {conferida && on && (
+                    <span className="exam-opt__sua">{t('simulados.prova.yourAnswer')}</span>
+                  )}
                 </button>
               );
             })}
@@ -263,7 +273,11 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
                 {conferida.correta ? <Check size={14} /> : <X size={12} />}
               </span>
               <div>
-                <b>{conferida.correta ? 'Você acertou.' : 'Você errou.'}</b>
+                <b>
+                  {conferida.correta
+                    ? t('simulados.prova.feedbackOk')
+                    : t('simulados.prova.feedbackNo')}
+                </b>
                 {conferida.explanation ? ` ${conferida.explanation}` : ''}
                 {conferida.topic && <span className="exam-feedback__topic">{conferida.topic}</span>}
               </div>
@@ -276,30 +290,32 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
               onClick={() => ir(-1)}
               disabled={current === 0}
             >
-              <ChevronLeft size={14} /> Anterior
+              <ChevronLeft size={14} /> {t('simulados.prova.previous')}
             </button>
             <div className="topbar__spacer" />
             {pratica ? (
               conferida ? (
-                <span className="exam-q__saved">Questão conferida</span>
+                <span className="exam-q__saved">{t('simulados.prova.checkedQ')}</span>
               ) : (
                 <button
                   className="btn btn--ghost exam-q__nav exam-q__conferir"
                   onClick={conferir}
                   disabled={semResposta || conferindo}
                 >
-                  {conferindo ? 'Conferindo...' : 'Conferir resposta'}
+                  {conferindo
+                    ? t('common.checking')
+                    : t('simulados.prova.check')}
                 </button>
               )
             ) : (
-              <span className="exam-q__saved">Resposta salva automaticamente</span>
+              <span className="exam-q__saved">{t('simulados.prova.savedAuto')}</span>
             )}
             <button
               className="btn btn--accent exam-q__nav"
               onClick={() => ir(1)}
               disabled={current === total - 1}
             >
-              Próxima <ChevronRight size={14} />
+              {t('simulados.prova.next')} <ChevronRight size={14} />
             </button>
           </div>
         </div>
@@ -311,7 +327,7 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
               onClick={() => setNavAberto((v) => !v)}
               aria-expanded={navAberto}
             >
-              <span>Navegador</span>
+              <span>{t('simulados.prova.browser')}</span>
               <span className="exam-nav__resumo">
                 {answeredCount}/{total}
               </span>
@@ -343,30 +359,30 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
                   <>
                     <div>
                       <span className="exam-nav__dot exam-nav__dot--ok" />
-                      Acertou ({acertosPratica})
+                      {t('simulados.prova.legendOk', { count: acertosPratica })}
                     </div>
                     <div>
                       <span className="exam-nav__dot exam-nav__dot--no" />
-                      Errou ({conferidasCount - acertosPratica})
+                      {t('simulados.prova.legendNo', { count: conferidasCount - acertosPratica })}
                     </div>
                     <div>
-                      <span className="exam-nav__dot exam-nav__dot--none" />A conferir (
-                      {total - conferidasCount})
+                      <span className="exam-nav__dot exam-nav__dot--none" />
+                      {t('simulados.prova.legendTodo', { count: total - conferidasCount })}
                     </div>
                   </>
                 ) : (
                   <>
                     <div>
                       <span className="exam-nav__dot exam-nav__dot--ans" />
-                      Respondida ({answeredCount})
+                      {t('simulados.prova.legendAns', { count: answeredCount })}
                     </div>
                     <div>
                       <span className="exam-nav__dot exam-nav__dot--flag" />
-                      Marcada ({flags.size})
+                      {t('simulados.prova.legendFlag', { count: flags.size })}
                     </div>
                     <div>
                       <span className="exam-nav__dot exam-nav__dot--none" />
-                      Em branco ({total - answeredCount})
+                      {t('simulados.prova.legendBlank', { count: total - answeredCount })}
                     </div>
                   </>
                 )}
@@ -374,16 +390,28 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
             </div>
           </div>
           <button className="exam-submit" onClick={confirmarEnvio} disabled={enviando}>
-            {enviando ? 'Enviando...' : pratica ? 'Ver meu resultado' : 'Revisar e enviar'}
+            {enviando
+              ? t('common.sending')
+              : pratica
+                ? t('simulados.prova.seeResult')
+                : t('simulados.prova.reviewSubmit')}
           </button>
         </div>
       </div>
 
       {confirmando && (
         <ConfirmModal
-          title={pratica ? 'Encerrar a prática?' : 'Enviar simulado?'}
+          title={
+            pratica
+              ? t('simulados.prova.confirmPracticeTitle')
+              : t('simulados.prova.confirmExamTitle')
+          }
           confirmLabel={
-            enviando ? 'Enviando...' : pratica ? 'Encerrar e ver resultado' : 'Enviar para correção'
+            enviando
+              ? t('common.sending')
+              : pratica
+                ? t('simulados.prova.confirmPracticeYes')
+                : t('simulados.prova.confirmExamYes')
           }
           loading={enviando}
           onConfirm={enviar}
@@ -391,13 +419,22 @@ export function Prova({ dados, onEnviado }: { dados: TentativaEstado; onEnviado:
         >
           {faltam > 0 ? (
             <>
-              Você deixou <b>{faltam}</b> {faltam === 1 ? 'questão' : 'questões'} em branco. Depois
-              de {pratica ? 'encerrar' : 'enviar'} não dá para voltar e corrigir.
+              <Trans
+                i18nKey="simulados.prova.blankPrefix"
+                count={faltam}
+                values={{ count: faltam }}
+                components={{ b: <b /> }}
+              />{' '}
+              {t('simulados.prova.blankSuffix', {
+                acao: pratica
+                  ? t('simulados.prova.actionEnd')
+                  : t('simulados.prova.actionSend'),
+              })}
             </>
           ) : pratica ? (
-            'Respondeu todas as questões. Depois de encerrar não dá para voltar.'
+            t('simulados.prova.allPractice')
           ) : (
-            'Respondeu todas as questões. Depois de enviar não dá para voltar e corrigir.'
+            t('simulados.prova.allExam')
           )}
         </ConfirmModal>
       )}

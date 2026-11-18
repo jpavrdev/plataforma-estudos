@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { SimTopbar } from './SimTopbar';
 import { Prova } from './Prova';
@@ -6,6 +7,7 @@ import { Resultado } from './Resultado';
 import { obterTentativa } from '../../services/simulados';
 
 export function TentativaSimulado() {
+  const { t } = useTranslation();
   const { attemptId = '' } = useParams();
   const { dados, carregando, erro, recarregar } = useRequisicao(
     () => obterTentativa(attemptId),
@@ -22,12 +24,12 @@ export function TentativaSimulado() {
         <SimTopbar />
         {carregando && (
           <div className="sim">
-            <p className="sim-empty">Carregando simulado...</p>
+            <p className="sim-empty">{t('simulados.prova.loading')}</p>
           </div>
         )}
         {erro && (
           <div className="sim">
-            <p className="sim-empty">Não foi possível carregar a tentativa.</p>
+            <p className="sim-empty">{t('simulados.prova.loadError')}</p>
           </div>
         )}
         {dados &&
