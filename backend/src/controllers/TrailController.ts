@@ -363,7 +363,11 @@ export const getTrail = async (req: Request, res: Response, next: NextFunction) 
 export const getTrailEpub = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        const { buffer, filename: fileName } = await buildTrailBook(String(req.params.id), lang);
+        const { buffer, filename: fileName } = await buildTrailBook(
+            String(req.params.id),
+            lang,
+            req.locale,
+        );
         res.setHeader("Content-Type", "application/epub+zip");
         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
         res.setHeader("Content-Length", String(buffer.length));

@@ -11,10 +11,22 @@ import path from "node:path";
 import JSZip from "jszip";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { lessons, modules, questionOptions, questions, trails } from "../../schema.ts";
+import {
+    lessons,
+    modules,
+    questionOptions,
+    questions,
+    trails,
+    trailTranslations,
+    moduleTranslations,
+    lessonTranslations,
+    questionTranslations,
+    optionTranslations,
+} from "../../schema.ts";
 import { AppError } from "../errors/AppError.ts";
 import { BOOKS_DIR, UPLOADS_DIR } from "../config/paths.ts";
 import {
+    BOOK_COPY,
     CONTAINER,
     CSS,
     chapterToXhtml,
@@ -23,17 +35,22 @@ import {
     page,
     renderMarkdown,
     slug,
+    type BookCopy,
     type Question,
 } from "../domain/book.ts";
+import type { Locale } from "../i18n/locale.ts";
 
 // Goes up when the generator changes, so the cached books are rebuilt.
-const GENERATOR_VERSION = 6;
+const GENERATOR_VERSION = 7;
 const PUBLISHER = "Ensina Dev";
-const LEVEL_LABELS: Record<string, string> = {
-    iniciante: "Nível iniciante",
-    intermediario: "Nível intermediário",
-    avancado: "Nível avançado",
-};
+const levelLabel = (level: string, copy: BookCopy) =>
+    level === "iniciante"
+        ? copy.levelBeginner
+        : level === "intermediario"
+          ? copy.levelIntermediate
+          : level === "avancado"
+            ? copy.levelAdvanced
+            : "";
 
 type Figure = { path: string; content: Buffer; type: string };
 
@@ -73,7 +90,9 @@ async function fetchImage(url: string): Promise<Figure | null> {
     return null;
 }
 
-export async function buildTrailBook(trailId: string, lang?: string) {
+export async function buildTrailBook(trailId: string, lang?: string, locale?: Locale) {
+    const traduz = locale === "en";
+    const copy = BOOK_COPY[traduz ? "en" : "pt-BR"];
     if (!/^[0-9a-f-]{36}$/i.test(trailId)) throw new AppError(404, "trail.notFound");
     const [trail] = await db.select().from(trails).where(eq(trails.id, trailId));
     if (!trail) throw new AppError(404, "trail.notFound");
@@ -131,6 +150,7 @@ export async function buildTrailBook(trailId: string, lang?: string) {
     const ops = qs.length
         ? await db
               .select({
+                  id: questionOptions.id,
                   questionId: questionOptions.questionId,
                   text: questionOptions.text,
                   isCorrect: questionOptions.isCorrect,
@@ -146,40 +166,111 @@ export async function buildTrailBook(trailId: string, lang?: string) {
               .orderBy(asc(questionOptions.position))
         : [];
 
+    // Overlay das traduções quando o idioma é inglês; sem linha traduzida vale a base.
+    const [trTrail] = traduz
+        ? await db
+              .select()
+              .from(trailTranslations)
+              .where(and(eq(trailTranslations.trailId, trailId), eq(trailTranslations.locale, "en")))
+        : [];
+    const nameTrail = trTrail?.name ?? trail.name;
+    const trModRows = traduz
+        ? await db
+              .select()
+              .from(moduleTranslations)
+              .where(
+                  inArray(
+                      moduleTranslations.moduleId,
+                      mods.map((m) => m.id),
+                  ),
+              )
+        : [];
+    const trModById = new Map(trModRows.map((m) => [m.moduleId, m]));
+    const trLicaoRows = traduz
+        ? await db
+              .select()
+              .from(lessonTranslations)
+              .where(inArray(lessonTranslations.lessonId, ids))
+        : [];
+    const trLicaoById = new Map(trLicaoRows.map((a) => [a.lessonId, a]));
+    const trQuestionRows =
+        traduz && qs.length
+            ? await db
+                  .select()
+                  .from(questionTranslations)
+                  .where(
+                      inArray(
+                          questionTranslations.questionId,
+                          qs.map((q) => q.id),
+                      ),
+                  )
+            : [];
+    const trQuestionById = new Map(trQuestionRows.map((q) => [q.questionId, q]));
+    const trOptionRows =
+        traduz && ops.length
+            ? await db
+                  .select()
+                  .from(optionTranslations)
+                  .where(
+                      inArray(
+                          optionTranslations.optionId,
+                          ops.map((o) => o.questionId).length ? ops.map((o: any) => o.optionId ?? o.id).filter(Boolean) : [],
+                      ),
+                  )
+            : [];
+    const trOptionById = new Map(trOptionRows.map((o) => [o.optionId, o]));
+
     const optionsByQuestion = new Map<string, { text: string; isCorrect: boolean }[]>();
     for (const o of ops) {
         const arr = optionsByQuestion.get(o.questionId) ?? [];
-        arr.push({ text: o.text, isCorrect: o.isCorrect });
+        arr.push({ text: trOptionById.get(o.id)?.text ?? o.text, isCorrect: o.isCorrect });
         optionsByQuestion.set(o.questionId, arr);
     }
     const quizByLesson = new Map<string, Question[]>();
     for (const q of qs) {
         const arr = quizByLesson.get(q.lessonId) ?? [];
+        const trQ = trQuestionById.get(q.id);
         arr.push({
-            statement: q.statement,
-            explanation: q.explanation,
+            statement: trQ?.statement ?? q.statement,
+            explanation: trQ?.explanation ?? q.explanation,
             options: optionsByQuestion.get(q.id) ?? [],
         });
         quizByLesson.set(q.lessonId, arr);
     }
 
+    // A aula traduzida cobre título e conteúdo; módulo e trilha cobrem os títulos.
+    const bookLessonsTrad = bookLessons.map((a) => {
+        const tr = trLicaoById.get(a.id);
+        return tr ? { ...a, title: tr.title, content: tr.content ?? a.content, contentBlocks: tr.contentBlocks ?? a.contentBlocks } : a;
+    });
+    const modsTrad = mods.map((m) => ({
+        ...m,
+        title: trModById.get(m.id)?.title ?? m.title,
+    }));
+    const trailName = nameTrail;
+    const trailDescription = trTrail?.description ?? trail.description;
+    const trailWhatYouLearn = trTrail?.whatYouLearn ?? trail.whatYouLearn;
+    const trailPrerequisites = trTrail?.prerequisites ?? trail.prerequisites;
+
     const signature = JSON.stringify({
         generatorVersion: GENERATOR_VERSION,
+        locale: traduz ? "en" : "pt-BR",
         trail: {
-            name: trail.name,
-            description: trail.description,
+            name: trailName,
+            description: trailDescription,
             level: trail.trailLevel,
-            whatYouLearn: trail.whatYouLearn,
-            prerequisites: trail.prerequisites,
+            whatYouLearn: trailWhatYouLearn,
+            prerequisites: trailPrerequisites,
             workloadHours: trail.workloadHours,
         },
-        mods,
-        lessons: bookLessons,
+        mods: modsTrad,
+        lessons: bookLessonsTrad,
         quiz: [...quizByLesson.entries()],
     });
     const hash = createHash("sha1").update(signature).digest("hex").slice(0, 12);
-    const fileName = `${slug(trail.name)}${language ? `-${slug(language)}` : ""}.epub`;
-    const cachedPath = path.join(BOOKS_DIR, `${trailId}-${language ?? "unico"}-${hash}.epub`);
+    const fileName = `${slug(trailName)}${language ? `-${slug(language)}` : ""}.epub`;
+    const cacheKey = `${language ?? "unico"}${traduz ? "-en" : ""}`;
+    const cachedPath = path.join(BOOKS_DIR, `${trailId}-${cacheKey}-${hash}.epub`);
     try {
         return { buffer: await readFile(cachedPath), filename: fileName };
     } catch (err) {
@@ -192,7 +283,7 @@ export async function buildTrailBook(trailId: string, lang?: string) {
     // building the XHTML is pure and only receives each file's path in the book.
     const figures = new Map<string, Figure>();
     const imagePathByUrl = new Map<string, string>();
-    for (const lesson of bookLessons) {
+    for (const lesson of bookLessonsTrad) {
         for (const b of lesson.contentBlocks ?? []) {
             if (b.type !== "image" || !b.value || imagePathByUrl.has(b.value)) continue;
             const figure = await fetchImage(b.value);
@@ -210,8 +301,8 @@ export async function buildTrailBook(trailId: string, lang?: string) {
         moduleId: string;
         xhtml: string;
     }[] = [];
-    for (const lesson of bookLessons) {
-        const mod = mods.find((m) => m.id === lesson.moduleId);
+    for (const lesson of bookLessonsTrad) {
+        const mod = modsTrad.find((m) => m.id === lesson.moduleId);
         const moduleNumber = mod ? (moduleOrder.get(mod.id) ?? 0) + 1 : 0;
         // A title that already starts with a number or with "Módulo" is not numbered again.
         const moduleLabel = mod
@@ -233,43 +324,48 @@ export async function buildTrailBook(trailId: string, lang?: string) {
                 moduleLabel,
                 quizByLesson.get(lesson.id) ?? [],
                 imagePathByUrl,
+                copy,
             ),
         });
     }
 
     const now = new Date();
     const today = now.toISOString().slice(0, 10);
-    const levelLabel = LEVEL_LABELS[trail.trailLevel] ?? "";
+    const level = levelLabel(trail.trailLevel, copy);
     const chaptersWithQuiz = chapters.filter((c) => c.xhtml.includes("quiz-gabarito")).length;
     const cover = page(
-        trail.name,
+        trailName,
         `<section class="capa" epub:type="titlepage">
-<h1>${escapeXml(trail.name)}</h1>
-<p class="subtitulo">${escapeXml([levelLabel, `${bookLessons.length} aulas`, language ? `em ${language}` : ""].filter(Boolean).join(", "))}</p>
+<h1>${escapeXml(trailName)}</h1>
+<p class="subtitulo">${escapeXml([level, `${bookLessonsTrad.length} ${copy.lessons}`, language ? `${copy.inLanguage} ${language}` : ""].filter(Boolean).join(", "))}</p>
 <p class="editora">${escapeXml(PUBLISHER)}</p>
 </section>`,
+        "../css/livro.css",
+        copy.xmlLang,
     );
     const about = page(
-        "Sobre este livro",
+        copy.aboutBook,
         `<section class="chapter" epub:type="preamble">
-<h1>Sobre este livro</h1>
-${renderMarkdown(trail.description)}
-<h2>Como o livro está organizado</h2>
-<p>Cada capítulo é uma aula da trilha <strong>${escapeXml(trail.name)}</strong>, na mesma ordem dos módulos da plataforma. ${chaptersWithQuiz > 0 ? "No fim do capítulo vem o quiz da aula, com o gabarito comentado logo depois, para você responder antes de conferir." : ""}</p>
-${list(trail.whatYouLearn) ? `<h2>O que você aprende</h2>\n${list(trail.whatYouLearn)}` : ""}
-${list(trail.prerequisites) ? `<h2>Pré-requisitos</h2>\n${list(trail.prerequisites)}` : ""}
-<h2>Ficha</h2>
+<h1>${copy.aboutBook}</h1>
+${renderMarkdown(trailDescription)}
+<h2>${copy.organization}</h2>
+<p>${copy.organizationBody(trailName)} ${chaptersWithQuiz > 0 ? copy.organizationQuiz : ""}</p>
+${list(trailWhatYouLearn) ? `<h2>${copy.whatYouLearn}</h2>\n${list(trailWhatYouLearn)}` : ""}
+${list(trailPrerequisites) ? `<h2>${copy.prerequisites}</h2>\n${list(trailPrerequisites)}` : ""}
+<h2>${copy.sheet}</h2>
 <ul>
-<li>${escapeXml(String(bookLessons.length))} aulas em ${escapeXml(String(mods.length))} módulos</li>
-${trail.workloadHours ? `<li>Carga horária de ${escapeXml(String(trail.workloadHours))} horas</li>` : ""}
-${levelLabel ? `<li>${escapeXml(levelLabel)}</li>` : ""}
-<li>Versão gerada em ${escapeXml(today)}</li>
+<li>${escapeXml(copy.lessonsInModules(bookLessonsTrad.length, modsTrad.length))}</li>
+${trail.workloadHours ? `<li>${escapeXml(copy.workload(trail.workloadHours))}</li>` : ""}
+${level ? `<li>${escapeXml(level)}</li>` : ""}
+<li>${copy.generatedAt} ${escapeXml(today)}</li>
 </ul>
-<aside class="nota"><p>Os laboratórios, os desafios de código e o registro de progresso continuam na plataforma: este livro é a parte de leitura da trilha, para estudar offline.</p></aside>
+<aside class="nota"><p>${copy.platformNote}</p></aside>
 </section>`,
+        "../css/livro.css",
+        copy.xmlLang,
     );
 
-    const navItems = mods
+    const navItems = modsTrad
         .map((m) => {
             const moduleChapters = chapters.filter((c) => c.moduleId === m.id);
             if (moduleChapters.length === 0) return "";
@@ -281,28 +377,29 @@ ${levelLabel ? `<li>${escapeXml(levelLabel)}</li>` : ""}
         .filter(Boolean)
         .join("\n");
     const nav = page(
-        "Sumário",
+        copy.toc,
         `<nav epub:type="toc" id="toc">
-<h1>Sumário</h1>
+<h1>${copy.toc}</h1>
 <ol>
-  <li><a href="text/sobre.xhtml">Sobre este livro</a></li>
+  <li><a href="text/sobre.xhtml">${copy.aboutBook}</a></li>
 ${navItems}
 </ol>
 </nav>
 <nav epub:type="landmarks" id="landmarks" hidden="hidden">
 <ol>
-  <li><a epub:type="titlepage" href="text/capa.xhtml">Capa</a></li>
-  <li><a epub:type="bodymatter" href="text/${chapters[0].file}">Começo do conteúdo</a></li>
+  <li><a epub:type="titlepage" href="text/capa.xhtml">${copy.cover}</a></li>
+  <li><a epub:type="bodymatter" href="text/${chapters[0].file}">${copy.contentStart}</a></li>
 </ol>
 </nav>`,
         "css/livro.css",
+        copy.xmlLang,
     );
 
     let playOrder = 1;
     const navPoints = [
-        `    <navPoint id="nav-sobre" playOrder="${playOrder++}"><navLabel><text>Sobre este livro</text></navLabel><content src="text/sobre.xhtml"/></navPoint>`,
+        `    <navPoint id="nav-sobre" playOrder="${playOrder++}"><navLabel><text>${copy.aboutBook}</text></navLabel><content src="text/sobre.xhtml"/></navPoint>`,
     ];
-    for (const m of mods) {
+    for (const m of modsTrad) {
         const moduleChapters = chapters.filter((c) => c.moduleId === m.id);
         if (moduleChapters.length === 0) continue;
         // The module's playOrder comes before its chapters, otherwise the reader
@@ -319,14 +416,14 @@ ${navItems}
         );
     }
     const ncx = `<?xml version="1.0" encoding="UTF-8"?>
-<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="pt-BR">
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="${copy.xmlLang}">
   <head>
     <meta name="dtb:uid" content="urn:uuid:${trailId}"/>
     <meta name="dtb:depth" content="2"/>
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
   </head>
-  <docTitle><text>${escapeXml(trail.name)}</text></docTitle>
+  <docTitle><text>${escapeXml(trailName)}</text></docTitle>
   <docAuthor><text>${escapeXml(PUBLISHER)}</text></docAuthor>
   <navMap>
 ${navPoints.join("\n")}
@@ -354,13 +451,13 @@ ${navPoints.join("\n")}
         ...chapters.map((c) => `    <itemref idref="${c.id}"/>`),
     ].join("\n");
     const opf = `<?xml version="1.0" encoding="UTF-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="pt-BR">
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" xml:lang="${copy.xmlLang}">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:identifier id="bookid">urn:uuid:${trailId}</dc:identifier>
-    <dc:title>${escapeXml(trail.name)}</dc:title>
+    <dc:title>${escapeXml(trailName)}</dc:title>
     <dc:creator id="creator">${escapeXml(PUBLISHER)}</dc:creator>
     <meta refines="#creator" property="role" scheme="marc:relators">aut</meta>
-    <dc:language>pt-BR</dc:language>
+    <dc:language>${copy.xmlLang}</dc:language>
     <dc:date>${today}</dc:date>
     <dc:publisher>${escapeXml(PUBLISHER)}</dc:publisher>
     <dc:description>${escapeXml(trail.description)}</dc:description>
@@ -397,7 +494,7 @@ ${spine}
         await writeFile(cachedPath, buffer);
         // Old versions of this same track are no longer useful: without this, every
         // lesson edit would leave an orphan file in the volume.
-        const prefix = `${trailId}-${language ?? "unico"}-`;
+        const prefix = `${trailId}-${cacheKey}-`;
         const current = path.basename(cachedPath);
         for (const existingFile of await readdir(BOOKS_DIR)) {
             if (existingFile.startsWith(prefix) && existingFile !== current) {

@@ -631,4 +631,39 @@ describe("Content translations", () => {
         assert.equal(pt.body.name, "Logica");
         assert.equal(pt.body.modules[0].title, "Modulo 1");
     });
+
+    test("the EPUB book comes per language, with its own name and cache", async () => {
+        const admin = await createSignedInUser(true);
+        const { trailId, lessonIds } = await buildTrail(admin.token, 1);
+        const student = await createSignedInUser();
+
+        const { db } = await import("../db.ts");
+        const { trailTranslations, lessonTranslations } = await import("../schema.ts");
+
+        await db
+            .insert(trailTranslations)
+            .values({ trailId, locale: "en", name: "Logic", description: "Logic base." });
+        await db
+            .insert(lessonTranslations)
+            .values({ lessonId: lessonIds[0], locale: "en", title: "Lesson 1" });
+
+        async function download(locale: string) {
+            const res = await fetch(`${server.base}/trails/${trailId}/epub`, {
+                headers: { ...auth(student.token), "X-Locale": locale },
+            });
+            const disposition = res.headers.get("content-disposition") ?? "";
+            const buffer = Buffer.from(await res.arrayBuffer());
+            return { status: res.status, fileName: /filename="([^"]+)"/.exec(disposition)?.[1], buffer };
+        }
+
+        const en = await download("en");
+        const pt = await download("pt-BR");
+        assert.equal(en.status, 200);
+        assert.equal(pt.status, 200);
+        // The translated name names the English file.
+        assert.ok(en.fileName?.startsWith("logic"));
+        assert.ok(pt.fileName?.startsWith("logica"));
+        // Same track, different books: the fixed copy alone already differs.
+        assert.ok(!en.buffer.equals(pt.buffer));
+    });
 });
