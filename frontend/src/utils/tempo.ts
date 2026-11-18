@@ -31,14 +31,14 @@ export function deDatetimeLocal(valor: string): string {
 }
 
 // Ex.: "31/10/2026, 23:59".
-export function dataHoraCurta(iso: string): string {
-  return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+export function dataHoraCurta(iso: string, lingua = 'pt-BR'): string {
+  return new Date(iso).toLocaleString(lingua, { dateStyle: 'short', timeStyle: 'short' });
 }
 
 // Ex.: "31 de outubro de 2026, às 23:59".
-export function dataHoraPorExtenso(iso: string): string {
+export function dataHoraPorExtenso(iso: string, lingua = 'pt-BR'): string {
   const d = new Date(iso);
-  const dia = d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
-  const hora = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  return `${dia}, às ${hora}`;
+  const dia = d.toLocaleDateString(lingua, { day: 'numeric', month: 'long', year: 'numeric' });
+  const hora = d.toLocaleTimeString(lingua, { hour: '2-digit', minute: '2-digit' });
+  return lingua.startsWith('pt') ? `${dia}, às ${hora}` : `${dia}, at ${hora}`;
 }

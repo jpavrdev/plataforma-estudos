@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ROTULO_CANAL, descreverContato, type Contato, type Contatos } from '../../utils/contatos';
 
 function LinhaContato({ papel, contato }: { papel: string; contato: Contato }) {
@@ -13,10 +14,13 @@ function LinhaContato({ papel, contato }: { papel: string; contato: Contato }) {
 
 // Só spans: a lista também vai dentro do parágrafo do modal de conferência.
 export function ContatosInformados({ contatos }: { contatos: Contatos }) {
+  const { t } = useTranslation();
   return (
     <span className="srt-contatos">
-      <LinhaContato papel="Principal" contato={contatos.primario} />
-      {contatos.secundario && <LinhaContato papel="Secundário" contato={contatos.secundario} />}
+      <LinhaContato papel={t('sorteio.primaryRole')} contato={contatos.primario} />
+      {contatos.secundario && (
+        <LinhaContato papel={t('sorteio.secondaryRole')} contato={contatos.secundario} />
+      )}
     </span>
   );
 }
