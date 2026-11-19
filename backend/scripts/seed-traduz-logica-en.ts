@@ -27,6 +27,7 @@ import { AULAS_MODULO_3, TITULO_MODULO_3 } from "./seed-dados-modulo3-en.ts";
 import { AULAS_MODULO_4, TITULO_MODULO_4 } from "./seed-dados-modulo4-en.ts";
 import { AULAS_MODULO_5, TITULO_MODULO_5 } from "./seed-dados-modulo5-en.ts";
 import { AULAS_MODULO_6, TITULO_MODULO_6 } from "./seed-dados-modulo6-en.ts";
+import { AULAS_MODULO_7, TITULO_MODULO_7 } from "./seed-dados-modulo7-en.ts";
 
 const TRILHA = "fa491407-b184-448b-b782-9a43fdb812ed"; // Lógica de Programação
 const MODULO_1 = "7dcfe755-da0a-486f-8425-ab10907da1ef"; // O que é lógica de programação e algoritmos
@@ -382,6 +383,7 @@ async function main() {
         { id: "ca95c493-47b9-412c-b28d-c950b899c91c", titulo: TITULO_MODULO_4, aulas: AULAS_MODULO_4 },
         { id: "451f9ad0-e486-4a90-9876-e296e7a41917", titulo: TITULO_MODULO_5, aulas: AULAS_MODULO_5 },
         { id: "f20ac8df-a97c-4309-8407-b69839a4bda5", titulo: TITULO_MODULO_6, aulas: AULAS_MODULO_6 },
+        { id: "5786a26e-60a7-47b0-942a-3f8ab5013815", titulo: TITULO_MODULO_7, aulas: AULAS_MODULO_7 },
     ];
 
     for (const mod of MODULOS_VARIANTES) {
