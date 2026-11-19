@@ -24,6 +24,7 @@ import { eq, asc } from "drizzle-orm";
 import { AULAS_MODULO_1, type Bloco } from "./seed-dados-modulo1-en.ts";
 import { AULAS_MODULO_2, TITULO_MODULO_2 } from "./seed-dados-modulo2-en.ts";
 import { AULAS_MODULO_3, TITULO_MODULO_3 } from "./seed-dados-modulo3-en.ts";
+import { AULAS_MODULO_4, TITULO_MODULO_4 } from "./seed-dados-modulo4-en.ts";
 
 const TRILHA = "fa491407-b184-448b-b782-9a43fdb812ed"; // Lógica de Programação
 const MODULO_1 = "7dcfe755-da0a-486f-8425-ab10907da1ef"; // O que é lógica de programação e algoritmos
@@ -376,6 +377,7 @@ async function main() {
     const MODULOS_VARIANTES: { id: string; titulo: string; aulas: typeof AULAS_MODULO_2 }[] = [
         { id: "21e5c05d-3124-46fa-b8a8-c76bd43e3496", titulo: TITULO_MODULO_2, aulas: AULAS_MODULO_2 },
         { id: "084efaca-ebac-45bc-bf49-9a6c5fec4188", titulo: TITULO_MODULO_3, aulas: AULAS_MODULO_3 },
+        { id: "ca95c493-47b9-412c-b28d-c950b899c91c", titulo: TITULO_MODULO_4, aulas: AULAS_MODULO_4 },
     ];
 
     for (const mod of MODULOS_VARIANTES) {
