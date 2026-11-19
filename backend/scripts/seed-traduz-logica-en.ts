@@ -23,6 +23,7 @@ import {
 import { eq, asc } from "drizzle-orm";
 import { AULAS_MODULO_1, type Bloco } from "./seed-dados-modulo1-en.ts";
 import { AULAS_MODULO_2, TITULO_MODULO_2 } from "./seed-dados-modulo2-en.ts";
+import { AULAS_MODULO_3, TITULO_MODULO_3 } from "./seed-dados-modulo3-en.ts";
 
 const TRILHA = "fa491407-b184-448b-b782-9a43fdb812ed"; // Lógica de Programação
 const MODULO_1 = "7dcfe755-da0a-486f-8425-ab10907da1ef"; // O que é lógica de programação e algoritmos
@@ -370,33 +371,41 @@ async function main() {
 
     // Módulo 2 inteiro: as variantes divergem de verdade (let/const x convenção,
     // === x ==), então cada aula traz blocos e alternativas por variante.
-    const MODULO_2 = "21e5c05d-3124-46fa-b8a8-c76bd43e3496";
-    await db
-        .insert(moduleTranslations)
-        .values({ moduleId: MODULO_2, locale: "en", title: TITULO_MODULO_2 })
-        .onConflictDoUpdate({
-            target: [moduleTranslations.moduleId, moduleTranslations.locale],
-            set: { title: TITULO_MODULO_2, updatedAt: new Date() },
-        });
+    // Módulos com variantes autoradas por inteiro: 2 (variáveis, tipos e
+    // operadores) e 3 (condicionais). A lista guia título do módulo e aulas.
+    const MODULOS_VARIANTES: { id: string; titulo: string; aulas: typeof AULAS_MODULO_2 }[] = [
+        { id: "21e5c05d-3124-46fa-b8a8-c76bd43e3496", titulo: TITULO_MODULO_2, aulas: AULAS_MODULO_2 },
+        { id: "084efaca-ebac-45bc-bf49-9a6c5fec4188", titulo: TITULO_MODULO_3, aulas: AULAS_MODULO_3 },
+    ];
 
-    const aulasModulo2 = await db
-        .select({ id: lessons.id, position: lessons.position, language: lessons.language })
-        .from(lessons)
-        .where(eq(lessons.moduleId, MODULO_2));
-    for (const aula of AULAS_MODULO_2) {
-        for (const variante of ["js", "py"] as const) {
-            const alvo = aulaDe(aulasModulo2, aula.posicao, variante);
-            if (!alvo) continue;
-            await aplicarAulaCompleta(
-                alvo.id,
-                aula.titulo[variante],
-                aula.blocos[variante],
-                aula.questoes.map((q) => ({
-                    enunciado: q.enunciado[variante],
-                    ops: q.ops[variante],
-                })),
-                `módulo 2 aula ${aula.posicao} ${variante}`,
-            );
+    for (const mod of MODULOS_VARIANTES) {
+        await db
+            .insert(moduleTranslations)
+            .values({ moduleId: mod.id, locale: "en", title: mod.titulo })
+            .onConflictDoUpdate({
+                target: [moduleTranslations.moduleId, moduleTranslations.locale],
+                set: { title: mod.titulo, updatedAt: new Date() },
+            });
+
+        const aulasModulo = await db
+            .select({ id: lessons.id, position: lessons.position, language: lessons.language })
+            .from(lessons)
+            .where(eq(lessons.moduleId, mod.id));
+        for (const aula of mod.aulas) {
+            for (const variante of ["js", "py"] as const) {
+                const alvo = aulaDe(aulasModulo, aula.posicao, variante);
+                if (!alvo) continue;
+                await aplicarAulaCompleta(
+                    alvo.id,
+                    aula.titulo[variante],
+                    aula.blocos[variante],
+                    aula.questoes.map((q) => ({
+                        enunciado: q.enunciado[variante],
+                        ops: q.ops[variante],
+                    })),
+                    `módulo ${mod.titulo.slice(7, 8)} aula ${aula.posicao} ${variante}`,
+                );
+            }
         }
     }
 
