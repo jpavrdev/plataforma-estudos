@@ -1,0 +1,2126 @@
+{
+ "trail": {
+  "id": "d5ce33ea-ca0b-469e-8284-edc5a2c62912",
+  "name": "C++",
+  "description": "The C++ language from zero to advanced: syntax and types, control flow, functions and pass-by-reference, pointers and memory management, classes and RAII, inheritance and virtual functions, the STL with containers and templates, and modern C++ with smart pointers and lambdas. The language of games, high-performance systems, and low-level software.",
+  "whatYouLearn": null,
+  "prerequisites": null
+ },
+ "modules": [
+  {
+   "id": "40169483-77e0-4df0-b6bf-a813f4f5d32d",
+   "title": "Module 1 - First steps with C++",
+   "lessons": [
+    {
+     "id": "af09b859-b709-4769-b5d1-f77b51afa70b",
+     "title": "What C++ is and how compilation works",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What is C++\n\nC++ is a programming language created by Bjarne Stroustrup in the 1980s, as an extension of the C language with support for object orientation. Decades later, it remains among the most used in the world where **performance** is critical: game engines, browsers, operating systems, high-frequency finance software, and embedded systems.\n\nC++ is **compiled** and **statically typed**, giving the programmer direct control over memory. There is no virtual machine or automatic garbage collector between your code and the hardware, which allows very fast code, but puts memory responsibility in your hands."
+      },
+      {
+       "type": "text",
+       "value": "## From source to executable\n\nA C++ program goes through a build process before running. Simplified:\n\n1. The **compiler** (like g++ or clang++) translates your source code into machine code.\n2. The **linker** joins the result with the libraries used, producing an executable.\n\nWith g++, one command does both steps:\n\n```\ng++ hello.cpp -o hello   # compiles and produces the hello executable\n./hello                # runs the program\n```"
+      },
+      {
+       "type": "quote",
+       "value": "C++ is compiled and statically typed, with no virtual machine or garbage collector. That brings high performance and memory control (and responsibility)."
+      }
+     ],
+     "questions": [
+      {
+       "id": "afeffd2f-fb0d-40a6-890f-f69d9a55fa5a",
+       "statement": "How does a C++ program get to be executed?",
+       "explanation": null,
+       "options": [
+        "It needs a web browser to run",
+        "It is compiled into machine code, producing an executable",
+        "It is interpreted line by line at runtime",
+        "It runs on a virtual machine, like bytecode does"
+       ]
+      },
+      {
+       "id": "f5614658-d11f-44ae-81d4-6f0fd861fc22",
+       "statement": "What does C++ NOT have, unlike languages like Java and Go?",
+       "explanation": null,
+       "options": [
+        "An automatic garbage collector managing memory",
+        "The ability to be compiled",
+        "Type checking at compile time",
+        "Support for functions and variables"
+       ]
+      },
+      {
+       "id": "ec6fbf0d-ea6d-493a-a453-662788c46ecc",
+       "statement": "In what type of application is C++ especially chosen?",
+       "explanation": null,
+       "options": [
+        "Only static pages with no site logic",
+        "Just simple everyday office spreadsheets",
+        "Performance-critical systems, like games and browsers",
+        "Exclusively small quick automation scripts"
+       ]
+      },
+      {
+       "id": "a0648276-019d-4871-8b45-b54f10fefced",
+       "statement": "Historically, how did C++ come about?",
+       "explanation": null,
+       "options": [
+        "As an interpreted version of the Java language",
+        "As a Python dialect aimed at games",
+        "As an extension of the C language with object orientation",
+        "As a completely new language, with no relation to C"
+       ]
+      },
+      {
+       "id": "b0e66fe0-9736-4357-bcd7-d975d6b9347c",
+       "statement": "In a C++ program's build, what does the linker do after compilation?",
+       "explanation": null,
+       "options": [
+        "It runs the executable and shows the output on screen",
+        "It checks the types of all the program's variables before compilation",
+        "It joins the compiled code with the libraries, forming the executable",
+        "It translates the source code into machine code"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "eef51ed8-1b6a-4289-aaab-36a55762f151",
+     "title": "Your first program: hello world",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The first program\n\nEvery C++ program starts executing from the `main` function. The program below, saved in a file `hello.cpp`, prints a message."
+      },
+      {
+       "type": "code",
+       "value": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, world!\" << std::endl;\n    return 0;\n}"
+      },
+      {
+       "type": "text",
+       "value": "## Each part of the program\n\n- **#include <iostream>**: a preprocessor directive that brings the input and output library, where `std::cout` and `std::cin` live.\n- **int main()**: the function where execution begins. It returns an `int` to the system; `return 0;` signals success.\n- **std::cout << ...**: sends values to standard output (the console) using the `<<` operator. `std::endl` prints a newline.\n\nEvery statement ends with a semicolon `;`, and blocks are delimited by braces `{ }`."
+      },
+      {
+       "type": "text",
+       "value": "## Reading and printing\n\nTo read something typed by the user, you use `std::cin` with the `>>` operator. You can chain several outputs with `<<`:\n\n```\nint age;\nstd::cout << \"Enter your age: \";\nstd::cin >> age;\nstd::cout << \"You are \" << age << \" years old\" << std::endl;\n```"
+      }
+     ],
+     "questions": [
+      {
+       "id": "0eac93c0-9426-4855-8930-efd3fbb805bc",
+       "statement": "Through which function does a C++ program's execution begin?",
+       "explanation": null,
+       "options": [
+        "Through the cout function",
+        "Through the first function declared in the file",
+        "Through any function marked as start",
+        "Through the main function"
+       ]
+      },
+      {
+       "id": "6341befa-b1cf-41f5-86fa-c7f86a89ca5f",
+       "statement": "Which operator does std::cout use to send values to the console?",
+       "explanation": null,
+       "options": [
+        "->",
+        ">>",
+        "<<",
+        "=="
+       ]
+      },
+      {
+       "id": "84d5ba36-7258-4c70-8f7d-d5f54e72d044",
+       "statement": "What is the line '#include <iostream>' for?",
+       "explanation": null,
+       "options": [
+        "Bringing the input and output library, with cout and cin",
+        "Compiling the program into an executable",
+        "Declaring the program's main function",
+        "Ending the program when execution finishes"
+       ]
+      },
+      {
+       "id": "58982067-17b3-4745-9275-a5c8d7b55770",
+       "statement": "In the program, what does the line `return 0;` inside main indicate?",
+       "explanation": null,
+       "options": [
+        "That the output will still be printed on screen",
+        "That the program should restart from the beginning",
+        "That an error occurred during execution",
+        "That the program finished successfully"
+       ]
+      },
+      {
+       "id": "550f52aa-495b-491b-8fe9-32a154936a8f",
+       "statement": "To read a value typed by the user, what do you use?",
+       "explanation": null,
+       "options": [
+        "std::cout with the << operator",
+        "std::read with the >> operator",
+        "std::endl with the << operator",
+        "std::cin with the >> operator"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "48de1e2b-19d0-409b-9b08-8970364b86f2",
+     "title": "Namespaces and the std",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Why so much std::\n\nYou may have noticed the `std::` before `cout`, `cin`, and `endl`. It indicates that those names come from the **namespace** `std`, C++'s standard library. Namespaces group names to avoid collisions: two pieces of code can have a `print` function without conflict, if they are in different namespaces."
+      },
+      {
+       "type": "text",
+       "value": "## using namespace std\n\nTo avoid repeating `std::` all the time, you can write `using namespace std;`. Then `cout` is enough.\n\n```\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Hello\" << endl;\n    return 0;\n}\n```\n\nIn small study programs, this is common. In larger projects, many people prefer writing `std::` explicitly, because importing the whole namespace can cause hard-to-track name collisions. It is worth knowing both forms."
+      },
+      {
+       "type": "quote",
+       "value": "std:: indicates the name comes from the standard library. using namespace std; avoids repeating the prefix, practical for study but avoided in large projects due to collision risk."
+      }
+     ],
+     "questions": [
+      {
+       "id": "8b3a1914-0727-483d-8818-313c9f772094",
+       "statement": "What does the prefix 'std::' indicate before cout and cin?",
+       "explanation": null,
+       "options": [
+        "That the value is a fixed, immutable constant",
+        "That the name comes from the std namespace, the standard library",
+        "That the stored variable is always of the string type",
+        "That the associated function is static in the class"
+       ]
+      },
+      {
+       "id": "f97cce21-a068-4a0e-b5c8-23a577ee3cfd",
+       "statement": "What is a namespace for in C++?",
+       "explanation": null,
+       "options": [
+        "Grouping names to avoid collisions between them",
+        "Speeding up the program's compilation",
+        "Reserving memory for variables",
+        "Ending the main function's execution"
+       ]
+      },
+      {
+       "id": "34c9f454-2053-4f4c-9cd0-3a30e9e54f92",
+       "statement": "What does 'using namespace std;' do?",
+       "explanation": null,
+       "options": [
+        "It prevents using any name from the standard library",
+        "It compiles the program in optimized mode",
+        "It creates a new namespace called std",
+        "It lets you use the std names without writing std:: every time"
+       ]
+      },
+      {
+       "id": "76660d32-e0f8-4741-a47a-f5a50b8e1978",
+       "statement": "Why do many people avoid `using namespace std;` in large projects?",
+       "explanation": null,
+       "options": [
+        "Because it erases the standard library's names",
+        "Because importing the whole namespace can cause name collisions",
+        "Because it makes the program's compilation much slower and heavier",
+        "Because it prevents using std::cout in the code"
+       ]
+      },
+      {
+       "id": "21a4e9e6-620c-46ea-a0a6-55c66128af2a",
+       "statement": "How can two pieces of code each have a `print` function without conflict?",
+       "explanation": null,
+       "options": [
+        "If each one stays in a different namespace",
+        "If both are marked as const",
+        "If both are written inside the main function",
+        "If neither uses the std library"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "b6f14045-56ad-4c30-8b06-90ee990afdb4",
+   "title": "Module 2 - Variables, types and operators",
+   "lessons": [
+    {
+     "id": "2e47358a-6f03-41fb-80df-824d25d861f6",
+     "title": "Variables and fundamental types",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Declaring variables\n\nC++ is statically typed: you declare the type before the name. The general form is `type name = value;`.\n\n```\nint age = 30;\ndouble price = 19.90;\nbool active = true;\nchar initial = 'A';\n```\n\nThe type says what values the variable holds and how much space it takes. Unlike languages with garbage collectors, you should keep the memory cost of each type in mind for high-performance code."
+      },
+      {
+       "type": "table",
+       "value": "[[\"Type\",\"Stores\",\"Example\"],[\"int\",\"Whole number\",\"int n = 10;\"],[\"double\",\"Number with decimals\",\"double x = 2.5;\"],[\"bool\",\"True or false\",\"bool ok = true;\"],[\"char\",\"A single character\",\"char c = 'Z';\"]]"
+      },
+      {
+       "type": "text",
+       "value": "## Text with std::string\n\nFor text, modern C++ uses the `std::string` type, from the `<string>` library. It is much safer and more practical than the character arrays inherited from the C language.\n\n```\n#include <string>\n\nstd::string name = \"Ana\";\nstd::cout << name << std::endl;\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Watch out for uninitialized variables\n\nA point of attention that distinguishes C++ from languages with automatic default values: a variable of a fundamental type (like `int`) declared **without** an initial value may contain garbage, an undefined value that was in memory. Always initialize your variables to avoid hard-to-track bugs."
+      },
+      {
+       "type": "quote",
+       "value": "C++ requires the type in the declaration. Text uses std::string. Variables of fundamental types without an initial value may contain garbage, so always initialize."
+      }
+     ],
+     "questions": [
+      {
+       "id": "b4ab1138-6b99-4b1a-9532-ba7cc0d62865",
+       "statement": "Which type does modern C++ use to safely store text?",
+       "explanation": null,
+       "options": [
+        "std::string",
+        "bool",
+        "double",
+        "text"
+       ]
+      },
+      {
+       "id": "35198972-873b-4f64-bc45-4917af63dfe9",
+       "statement": "What may an int variable declared without an initial value contain in C++?",
+       "explanation": null,
+       "options": [
+        "The null value, as in other languages",
+        "Garbage, an undefined value that was in memory",
+        "Always the zero value, guaranteed",
+        "An empty string by default"
+       ]
+      },
+      {
+       "id": "bd25f894-5787-46d8-81b4-973099829ee8",
+       "statement": "Which type is most suitable for a number with decimal places?",
+       "explanation": null,
+       "options": [
+        "int",
+        "bool",
+        "char",
+        "double"
+       ]
+      },
+      {
+       "id": "469ada8d-e19e-42d3-854e-5c4007ff7741",
+       "statement": "Which type is appropriate for storing a single character, like the letter 'Z'?",
+       "explanation": null,
+       "options": [
+        "char",
+        "double",
+        "bool",
+        "int"
+       ]
+      },
+      {
+       "id": "6c9e9bbc-b457-4b94-acf0-d48dd5fb64d5",
+       "statement": "Why does modern C++ prefer `std::string` over the character arrays inherited from C?",
+       "explanation": null,
+       "options": [
+        "Because it always uses less memory",
+        "Because it stores numbers in addition to text",
+        "Because it does not require including any library",
+        "Because it is safer and more practical to use"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "7f356130-1e10-44b6-8c65-1bdd22c705e2",
+     "title": "auto, const and conversions",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# auto: let the compiler infer\n\nSince C++11, the `auto` keyword asks the compiler to deduce the variable's type from the initial value. The type remains static and fixed; you just do not need to write it.\n\n```\nauto age = 30;       // int\nauto price = 19.90;    // double\nauto name = std::string(\"Ana\");   // std::string\n```\n\n`auto` is very useful with long types, like STL iterators, which you will see ahead."
+      },
+      {
+       "type": "text",
+       "value": "## const: what does not change\n\nThe `const` qualifier marks a value that cannot be changed after initialization. Trying to change it is a compilation error. Using `const` makes the intent clear and helps the compiler optimize and catch errors.\n\n```\nconst double PI = 3.14159;\n// PI = 3.0;  // compilation error\n```\n\n`const` appears in many places in C++, including parameters and methods, and is a hallmark of well-written code."
+      },
+      {
+       "type": "text",
+       "value": "## Type conversions\n\nC++ converts some types automatically (an `int` becomes a `double` without loss), but conversions that may lose data should be done carefully. The modern, explicit form is `static_cast`:\n\n```\ndouble price = 19.99;\nint whole = static_cast<int>(price);   // 19, truncates the decimal part\n```"
+      },
+      {
+       "type": "quote",
+       "value": "auto infers the type from the value, while remaining static. const marks what does not change. For explicit conversions, use static_cast<Type>(value)."
+      }
+     ],
+     "questions": [
+      {
+       "id": "e7488375-4e16-4864-90db-bbba3ffefe40",
+       "statement": "What does the word 'auto' do in C++?",
+       "explanation": null,
+       "options": [
+        "It allocates the variable on the heap automatically",
+        "It declares a variable with no defined type",
+        "It deduces the variable's type from the initial value",
+        "It creates a variable that can change type later"
+       ]
+      },
+      {
+       "id": "107476e5-54b0-4234-a472-d3f93c51716a",
+       "statement": "What does the 'const' qualifier guarantee?",
+       "explanation": null,
+       "options": [
+        "That the variable is allocated on the heap",
+        "That the value can change freely during the program",
+        "That the variable is global to the whole program",
+        "That the value cannot be changed after initialization"
+       ]
+      },
+      {
+       "id": "dca1bd51-50dd-4330-93ec-38acf11aba78",
+       "statement": "What is the modern, explicit way to convert a double to an int in C++?",
+       "explanation": null,
+       "options": [
+        "convert(value, int)",
+        "value.toInt()",
+        "int(value) alone, nothing more",
+        "static_cast<int>(value)"
+       ]
+      },
+      {
+       "id": "8a6cde42-2a4e-4806-85b9-874e2827d4b5",
+       "statement": "What is the result of `static_cast<int>(19.99)`?",
+       "explanation": null,
+       "options": [
+        "An error, because a double cannot become an int",
+        "19, because the decimal part is discarded",
+        "19.99, because the value does not change",
+        "20, because the value is rounded up"
+       ]
+      },
+      {
+       "id": "72a62ce9-0a9f-4c74-b9da-0857ee14b0e7",
+       "statement": "What happens if you try to change a variable declared with `const`?",
+       "explanation": null,
+       "options": [
+        "The program freezes only when executed",
+        "A compilation error occurs",
+        "The change is made normally",
+        "The value goes back to zero automatically"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "cc037eeb-7f3d-4ee4-91e5-276a657d1058",
+     "title": "Operators",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Operators in C++\n\nC++ has the usual operators:\n\n- Arithmetic: `+`, `-`, `*`, `/`, `%` (remainder).\n- Relational: `==`, `!=`, `>`, `<`, `>=`, `<=`, which produce a bool.\n- Logical: `&&` (AND), `||` (OR), `!` (NOT).\n\nAs in other languages, dividing two integers yields an integer: `7 / 2` is `3`. To get `3.5`, at least one operand must be `double`."
+      },
+      {
+       "type": "code",
+       "value": "int a = 17, b = 5;\nstd::cout << a + b << std::endl;   // 22\nstd::cout << a % b << std::endl;   // 2\nstd::cout << (a >= b) << std::endl; // 1 (true prints as 1)"
+      },
+      {
+       "type": "text",
+       "value": "## Increment and shortcuts\n\nC++ has `++` and `--` to add or subtract 1, and the shortcuts `+=`, `-=`, `*=`, `/=` that combine operation and assignment.\n\n```\nint total = 10;\ntotal += 5;   // 15\ntotal++;      // 16\n```\n\nOne detail: a boolean value printed with `cout` appears as `1` (true) or `0` (false), unless you ask for verbose formatting."
+      },
+      {
+       "type": "quote",
+       "value": "Integer division discards the decimal part: 7 / 2 is 3. A bool printed with cout appears as 1 (true) or 0 (false)."
+      }
+     ],
+     "questions": [
+      {
+       "id": "b358b7ae-4cfb-498d-88a4-6c048521a5e7",
+       "statement": "What is the result of '7 / 2' with two integers in C++?",
+       "explanation": null,
+       "options": [
+        "4, because the result is rounded up",
+        "3, because integer division discards the decimal part",
+        "3.5, because C++ keeps the decimal part",
+        "An error, because integers cannot be divided"
+       ]
+      },
+      {
+       "id": "46f42d15-6b63-4632-8eb4-408827de6f1e",
+       "statement": "What does the '%' operator return?",
+       "explanation": null,
+       "options": [
+        "The exact quotient of the division",
+        "The remainder of the division between two numbers",
+        "The percentage of one number over the other",
+        "The larger of the two numbers"
+       ]
+      },
+      {
+       "id": "73947e97-967d-4f5f-9248-6d4537ddba0e",
+       "statement": "How does a bool true value typically appear when printed with std::cout?",
+       "explanation": null,
+       "options": [
+        "As the letter T",
+        "As 1",
+        "As a blank space",
+        "As the word true spelled out"
+       ]
+      },
+      {
+       "id": "1890a0bd-4066-4ab9-a35b-469a77f3ca3e",
+       "statement": "For `7 / 2` to result in `3.5` instead of `3`, what is needed?",
+       "explanation": null,
+       "options": [
+        "Using the % operator instead of /",
+        "Both operands being of the int type",
+        "At least one of the operands being double",
+        "The result being stored in a bool"
+       ]
+      },
+      {
+       "id": "0ef8aef3-12f8-4a71-bda1-06afa0193e98",
+       "statement": "After `int total = 10; total += 5; total++;`, what is total?",
+       "explanation": null,
+       "options": [
+        "15",
+        "11",
+        "17",
+        "16"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "699447a8-0e80-4158-a681-ed3c428edb36",
+   "title": "Module 3 - Control flow",
+   "lessons": [
+    {
+     "id": "69fd3be5-3e9f-4302-b4d6-53be7e8ea183",
+     "title": "Conditionals: if and switch",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The if\n\nThe `if` runs a block when the condition, in parentheses, is true. You chain cases with `else if` and cover the rest with `else`.\n\n```\nint grade = 75;\nif (grade >= 90) {\n    std::cout << \"A\";\n} else if (grade >= 70) {\n    std::cout << \"B\";   // executes\n} else {\n    std::cout << \"C\";\n}\n```\n\nC++ tests conditions from top to bottom and runs the first block whose condition is true."
+      },
+      {
+       "type": "text",
+       "value": "## The switch and break\n\nThe `switch` compares an integer (or character) value against several cases. Important: in C++, each `case` needs a `break`, otherwise execution **falls** into the next case (fall-through). Forgetting `break` is a classic source of bugs.\n\n```\nswitch (day) {\n    case 1:\n        std::cout << \"Sunday\";\n        break;\n    case 3:\n        std::cout << \"Tuesday\";\n        break;\n    default:\n        std::cout << \"Another day\";\n}\n```"
+      },
+      {
+       "type": "quote",
+       "value": "The if tests conditions top to bottom. In C++'s switch, each case needs break, or execution falls into the next case."
+      }
+     ],
+     "questions": [
+      {
+       "id": "590af425-8031-47f7-9c71-5b279e7bc534",
+       "statement": "In an if / else if / else chain, how many blocks execute?",
+       "explanation": null,
+       "options": [
+        "Only the first whose condition is true",
+        "Always the last block, the else",
+        "All blocks, always, one after the other",
+        "None, because the else cancels the others"
+       ]
+      },
+      {
+       "id": "daf8a896-2d4e-452a-981e-911c3a1a2b6f",
+       "statement": "In C++'s switch, what happens if you forget the break in a case?",
+       "explanation": null,
+       "options": [
+        "The whole switch is ignored",
+        "The program stops with an immediate error",
+        "The default runs before any case",
+        "Execution falls into the next case (fall-through)"
+       ]
+      },
+      {
+       "id": "031816b4-a25e-4f3f-9734-bf6f1b088fac",
+       "statement": "For the value grade = 75, with tests >= 90, >= 70 and else, what is printed?",
+       "explanation": null,
+       "options": [
+        "A and B, because both blocks execute",
+        "A, because it is the first case in the chain",
+        "C, because it falls straight to the final else",
+        "B, because 75 fails >= 90 but passes >= 70"
+       ]
+      },
+      {
+       "id": "022eef33-d378-4e90-a006-f4dd8212c430",
+       "statement": "What type of value does a `switch` compare against its cases?",
+       "explanation": null,
+       "options": [
+        "An integer value or a character",
+        "Only bool values",
+        "Only double values",
+        "Any text of type std::string"
+       ]
+      },
+      {
+       "id": "d0a19898-198b-4a07-8c96-9288aed42e4f",
+       "statement": "In a `switch`, what is the `default` case for?",
+       "explanation": null,
+       "options": [
+        "Repeating the switch's first case",
+        "Forcing all cases to have a break at the end",
+        "Handling values that did not match any case",
+        "Ending the program immediately"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "f1b9845d-a3a3-4478-8b36-f861b079a125",
+     "title": "while and do-while loops",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# while\n\nThe `while` repeats a block as long as the condition is true. The condition is tested **before** each repetition, so the block may not run at all.\n\n```\nint counter = 1;\nwhile (counter <= 3) {\n    std::cout << counter << \" \";\n    counter++;\n}\n// prints: 1 2 3\n```"
+      },
+      {
+       "type": "text",
+       "value": "## do-while\n\nThe `do-while` tests the condition **after** executing the block, so the block runs at least once, even if the condition starts false.\n\n```\nint n = 10;\ndo {\n    std::cout << n;   // prints 10 once\n    n++;\n} while (n <= 3);\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Watch out for infinite loops\n\nIf the condition never becomes false, the loop runs forever. Make sure something inside the loop progresses toward the end, like incrementing a counter. You can interrupt a loop with `break` and skip to the next pass with `continue`."
+      },
+      {
+       "type": "quote",
+       "value": "while tests the condition before and may not run at all; do-while tests after and runs at least once."
+      }
+     ],
+     "questions": [
+      {
+       "id": "d95720c5-bb6f-48d7-a8d7-f542c86b3b29",
+       "statement": "What is the core difference between while and do-while?",
+       "explanation": null,
+       "options": [
+        "Both always run the exact same number of times",
+        "The do-while tests the condition after, so it runs at least once",
+        "The while never executes the inner block in any case",
+        "The do-while never executes the inner block of the loop"
+       ]
+      },
+      {
+       "id": "d101c6d7-dcbb-477e-a8aa-84e1cfebabd9",
+       "statement": "What causes an infinite while loop?",
+       "explanation": null,
+       "options": [
+        "Using an int counter in the loop",
+        "The condition never becoming false inside the loop",
+        "Declaring the variable before the loop",
+        "Printing a value on each repetition"
+       ]
+      },
+      {
+       "id": "3babc02c-62ac-4c2a-98b2-89d83db8d9c0",
+       "statement": "What does the 'continue' command do inside a loop?",
+       "explanation": null,
+       "options": [
+        "It restarts the loop from the first pass",
+        "It ends the loop completely immediately",
+        "It skips to the loop's next repetition",
+        "It repeats the current pass one more time"
+       ]
+      },
+      {
+       "id": "c97192f6-0532-495c-87a5-0f4e6ec05409",
+       "statement": "How many times does the following snippet print something?\n```cpp\nint n = 10;\ndo {\n    std::cout << n;\n    n++;\n} while (n <= 3);\n```",
+       "explanation": null,
+       "options": [
+        "None, because 10 is not less than or equal to 3",
+        "Three times, for n being 1, 2, and 3",
+        "Once, because the do-while runs before testing",
+        "Forever, because n only increases each pass"
+       ]
+      },
+      {
+       "id": "2d21778b-8510-421c-ae12-c867e54c51c9",
+       "statement": "In a `while` loop, when is the condition tested?",
+       "explanation": null,
+       "options": [
+        "Only on the loop's last pass",
+        "Before each repetition, and the block may not run at all",
+        "Only when the loop uses a break",
+        "After executing the inner block, on each repetition"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "3b3ea4d3-3728-4530-a39a-bd94531ad7ef",
+     "title": "The for and the range-based for",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The classic for\n\nThe `for` combines initialization, condition, and step in one line. It is the preferred form when you know how many times you will repeat.\n\n```\nfor (int i = 0; i < 5; i++) {\n    std::cout << i << \" \";   // 0 1 2 3 4\n}\n```\n\nRead as: start with `i = 0`; while `i < 5`, execute; at the end of each pass, do `i++`."
+      },
+      {
+       "type": "text",
+       "value": "## The range-based for\n\nSince C++11, when the goal is just to walk through the elements of a container (like a vector) or a string, the **range-based for** is cleaner. It reads as \"for each element in\".\n\n```\n#include <vector>\n\nstd::vector<int> numbers = {10, 20, 30};\nfor (int n : numbers) {\n    std::cout << n << \" \";   // 10 20 30\n}\n```\n\nTo iterate without copying each element (important for large objects), use a reference: `for (const auto& n : numbers)`."
+      },
+      {
+       "type": "quote",
+       "value": "Use the classic for when you need the index. Use the range-based for (for (x : collection)) to walk all elements cleanly."
+      }
+     ],
+     "questions": [
+      {
+       "id": "5be81b64-5f1d-43d3-a71d-22ae97270adf",
+       "statement": "How many times does the loop 'for (int i = 0; i < 5; i++)' execute the block?",
+       "explanation": null,
+       "options": [
+        "6 times, for i from 0 through 5",
+        "Infinitely, because i never reaches the end",
+        "4 times, for i from 1 through 4",
+        "5 times, for i being 0, 1, 2, 3, and 4"
+       ]
+      },
+      {
+       "id": "0de01fa4-d5c8-4df4-87ce-56cdd547758f",
+       "statement": "When is the range-based for the best choice?",
+       "explanation": null,
+       "options": [
+        "When repeating a block a fixed number of times",
+        "When you need to control the index of each position",
+        "When walking through elements from back to front",
+        "When walking through all elements of a container or string"
+       ]
+      },
+      {
+       "id": "8838b562-7ec5-4696-b89d-429f98bf3a7d",
+       "statement": "Why iterate large objects with 'const auto&' instead of 'auto' in a range-based for?",
+       "explanation": null,
+       "options": [
+        "To copy each element and gain performance",
+        "Because auto does not work in a range-based for",
+        "To iterate by reference, without copying each element",
+        "To convert each element into a string"
+       ]
+      },
+      {
+       "id": "7852b52f-2685-4535-8e38-9b69edf1b3ba",
+       "statement": "What are the three parts a classic `for` combines in its header?",
+       "explanation": null,
+       "options": [
+        "Initialization, condition and step",
+        "Input, processing and output of data",
+        "Name, type and value of the variable",
+        "Start, middle and end of the block"
+       ]
+      },
+      {
+       "id": "06ddbd28-b451-4168-ad31-90400114523f",
+       "statement": "When is the classic `for` usually the best choice?",
+       "explanation": null,
+       "options": [
+        "When you just want to walk all elements",
+        "When you know how many times to repeat or need the index",
+        "When the container has no defined size",
+        "When you want to walk all elements at once"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3a123988-9654-402f-9ffb-9750d6f59551",
+   "title": "Module 4 - Functions",
+   "lessons": [
+    {
+     "id": "41ed93ee-532b-4c76-8cd2-2e4fc2ff371f",
+     "title": "Functions and pass-by-value",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Declaring functions\n\nA function in C++ declares the return type, the name, and the parameters with their types. If it returns nothing, the return type is `void`.\n\n```\nint somar(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int total = somar(3, 4);   // 7\n}\n```\n\nIn C++, a function must be declared before it is used. So either you define it above `main`, or you declare a **prototype** (the signature without a body) at the top of the file."
+      },
+      {
+       "type": "text",
+       "value": "## Pass-by-value: a copy\n\nBy default, C++ passes arguments **by value**: the function receives a copy of the argument. Changing the parameter inside the function does not affect the caller's original variable.\n\n```\nvoid tentarDobrar(int x) {\n    x = x * 2;   // changes only the local copy\n}\n\nint n = 5;\ntentarDobrar(n);\n// n is still 5\n```\n\nPassing by value is simple and safe, but copying large objects can cost a lot in performance."
+      },
+      {
+       "type": "quote",
+       "value": "By default, C++ passes arguments by value: the function receives a copy, so changing the parameter does not modify the original variable."
+      }
+     ],
+     "questions": [
+      {
+       "id": "138ab371-79d6-4b25-9bb9-7b53e84b95f8",
+       "statement": "By default, how does C++ pass arguments to a function?",
+       "explanation": null,
+       "options": [
+        "By value, meaning the function receives a copy",
+        "By passing no data at all to the function",
+        "By pointer, requiring & in the call",
+        "By reference, always changing the original"
+       ]
+      },
+      {
+       "id": "c1fd1ab2-b724-4269-9bbf-26ee60749292",
+       "statement": "Passing 'int n = 5' by value while the function does 'x = x * 2', what happens to n?",
+       "explanation": null,
+       "options": [
+        "n becomes 10, because the function changes the original",
+        "A compilation error occurs",
+        "n becomes undefined after the call",
+        "n stays 5, because the function changes only the copy"
+       ]
+      },
+      {
+       "id": "ffd27281-5443-4c09-ac2e-f1d0830cd338",
+       "statement": "Why must a function in C++ be declared before it is used?",
+       "explanation": null,
+       "options": [
+        "Because every function must be in the main file",
+        "Because C++ runs functions bottom to top",
+        "The compiler needs to know the signature before the call",
+        "Because functions cannot call other functions"
+       ]
+      },
+      {
+       "id": "b40f6181-3206-48ea-a70a-b8cfa206beb8",
+       "statement": "Which return type is used for a function that returns no value?",
+       "explanation": null,
+       "options": [
+        "void",
+        "int",
+        "empty",
+        "null"
+       ]
+      },
+      {
+       "id": "d817102c-105a-4c0e-8f32-f2100d897fa5",
+       "statement": "What is a function prototype in C++?",
+       "explanation": null,
+       "options": [
+        "A function with no return type",
+        "A version of the function that runs before all others at startup",
+        "A function that calls itself repeatedly",
+        "The function's signature, without a body, declared before use"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "1c863041-8321-463a-bb9c-23471eb08c77",
+     "title": "Pass-by-reference",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# References: an alias for the variable\n\nA **reference**, marked with `&` in the parameter's type, makes the function work on the caller's **actual** variable, not on a copy. That way, the function can change it.\n\n```\nvoid dobrar(int& x) {\n    x = x * 2;   // changes the original\n}\n\nint n = 5;\ndobrar(n);\n// n is now 10\n```\n\nThe reference is one of C++'s core features and shows up all the time."
+      },
+      {
+       "type": "text",
+       "value": "## const reference: efficiency without copying\n\nWhat if you want to avoid copying a large object (for performance), but do **not** want the function to change it? Use a **const reference**: `const Tipo&`. The function accesses the real object, without copying it, and the compiler prevents any change.\n\n```\nvoid imprimir(const std::string& texto) {\n    std::cout << texto;   // no copy, and no changes allowed\n}\n```\n\nThis is the idiomatic way to pass large objects to functions that only need to read them."
+      },
+      {
+       "type": "table",
+       "value": "[[\"Form\",\"Copies?\",\"Can change the original?\"],[\"By value (int x)\",\"Yes\",\"No\"],[\"By reference (int& x)\",\"No\",\"Yes\"],[\"By const reference (const T& x)\",\"No\",\"No\"]]"
+      },
+      {
+       "type": "quote",
+       "value": "A reference (int&) lets the function change the original without copying. A const reference (const T&) passes large objects without copying and without allowing changes."
+      }
+     ],
+     "questions": [
+      {
+       "id": "3fe0c2d6-8018-4384-a22b-cb316160bafa",
+       "statement": "What does pass-by-reference (int& x) allow?",
+       "explanation": null,
+       "options": [
+        "The variable being erased after the call",
+        "The function receiving no argument at all",
+        "The function changing the caller's original variable",
+        "The function working only on a copy"
+       ]
+      },
+      {
+       "id": "10931809-7db5-4733-ae31-be516c4b793e",
+       "statement": "To pass a large object without copying and without letting the function change it, use:",
+       "explanation": null,
+       "options": [
+        "A plain reference (T&)",
+        "A const reference (const T&)",
+        "A common pass-by-value (T x)",
+        "No parameter at all in the function"
+       ]
+      },
+      {
+       "id": "b91eecdb-6bad-4727-aa8e-74dd333dcb44",
+       "statement": "An advantage of passing by const reference instead of by value is:",
+       "explanation": null,
+       "options": [
+        "Making an extra copy for safety",
+        "Avoiding copying the object, gaining performance",
+        "Letting the function change the object freely",
+        "Preventing the function from reading the object"
+       ]
+      },
+      {
+       "id": "5301f639-2b17-43e5-ab0a-5feb816cc0b6",
+       "statement": "After `int n = 5; dobrar(n);`, where `dobrar(int& x)` does `x = x * 2`, what is n?",
+       "explanation": null,
+       "options": [
+        "Undefined, because n loses its value right after the call",
+        "5, because the function receives only a copy",
+        "0, because n is erased after the call",
+        "10, because the reference changes the very variable"
+       ]
+      },
+      {
+       "id": "72f8911c-1202-41a1-8bf4-4c73e6309016",
+       "statement": "According to the lesson's table, what does pass-by-value (`int x`) do?",
+       "explanation": null,
+       "options": [
+        "Copies the argument, but does not change the original",
+        "Does not copy, but changes the original",
+        "Neither copies nor changes the original",
+        "Copies the argument and still changes the caller's original"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "330cce43-6c7f-4fd3-ae73-7ae50d22e92f",
+     "title": "Overloading and default arguments",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Function overloading\n\nC++ allows several functions with the **same name**, as long as they have **different parameters** (in number or type). The compiler picks the right version from the call's arguments. This is called overloading.\n\n```\nint somar(int a, int b) { return a + b; }\ndouble somar(double a, double b) { return a + b; }\n\nsomar(2, 3);       // uses the int version\nsomar(2.5, 3.5);   // uses the double version\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Default arguments\n\nYou can give a parameter a **default** value. If the caller does not supply that argument, the default is used. Parameters with default values must come last.\n\n```\nvoid cumprimentar(std::string nome, std::string saudacao = \"Olá\") {\n    std::cout << saudacao << \", \" << nome;\n}\n\ncumprimentar(\"Ana\");            // Olá, Ana\ncumprimentar(\"Ana\", \"Oi\");      // Oi, Ana\n```"
+      },
+      {
+       "type": "quote",
+       "value": "Overloading is having the same function name with different parameters. Default arguments provide a value used when the caller does not supply that argument."
+      }
+     ],
+     "questions": [
+      {
+       "id": "9043a82a-876d-40c9-88ac-afc61fbdfd81",
+       "statement": "What characterizes function overloading in C++?",
+       "explanation": null,
+       "options": [
+        "Same name and same parameters, changing the return type",
+        "Same function name with different parameters",
+        "Different names for the same operation",
+        "A function that calls itself"
+       ]
+      },
+      {
+       "id": "3cfeb2e5-5945-4297-bf9c-54ae961937d7",
+       "statement": "What happens if the caller does not supply an argument that has a default value?",
+       "explanation": null,
+       "options": [
+        "A compilation error always occurs",
+        "The declared default value is used",
+        "The parameter is left with memory garbage",
+        "The function does not run"
+       ]
+      },
+      {
+       "id": "e9ea6c0d-d08c-481a-a62b-d5263da0c676",
+       "statement": "Where should parameters with default values go in the parameter list?",
+       "explanation": null,
+       "options": [
+        "Anywhere, with no restriction",
+        "In the middle, among the required parameters",
+        "Always at the beginning, before all the others",
+        "Last, after the parameters without default values"
+       ]
+      },
+      {
+       "id": "d8595d9a-25c0-4c4f-8ce6-020bb04245e2",
+       "statement": "In an overloaded function, how does the compiler choose which version to use?",
+       "explanation": null,
+       "options": [
+        "By the order the versions were written in",
+        "Always by the first version declared",
+        "By the arguments passed in the call",
+        "By each version's return type"
+       ]
+      },
+      {
+       "id": "40329db2-af28-4f7a-9909-6d0793a87222",
+       "statement": "With `void cumprimentar(std::string nome, std::string saudacao = \"Olá\")`, what does `cumprimentar(\"Ana\")` print?",
+       "explanation": null,
+       "options": [
+        "Just Ana, with no greeting",
+        "Oi, Ana",
+        "Olá, Ana",
+        "Ana, Olá"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "75db8c04-5e4e-435d-812b-4c35ac294b22",
+   "title": "Module 5 - Pointers and memory management",
+   "lessons": [
+    {
+     "id": "8923df0b-792a-4052-bb9f-eb8b47c73291",
+     "title": "Pointers: addresses and dereferencing",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What a pointer is\n\nA **pointer** is a variable that holds the **address** of another variable, not the value itself. Pointers are a central C++ feature and the foundation of low-level memory control.\n\nTwo operators bridge the gap:\n\n- `&` (address of): returns a variable's address.\n- `*` (dereference): accesses the value stored at the pointed-to address."
+      },
+      {
+       "type": "code",
+       "value": "int x = 10;\nint* p = &x;   // p holds x's address\n\nstd::cout << *p << std::endl;   // 10, the pointed-to value\n*p = 20;                        // changes x through the pointer\nstd::cout << x << std::endl;    // 20"
+      },
+      {
+       "type": "text",
+       "value": "## nullptr: the pointer that points nowhere\n\nA pointer that points to nothing should receive `nullptr` (modern C++). Dereferencing a null or uninitialized pointer is a serious error that usually crashes the program. Always make sure a pointer points to something valid before using `*`.\n\n```\nint* p = nullptr;   // does not point anywhere yet\n```"
+      },
+      {
+       "type": "quote",
+       "value": "A pointer holds a variable's address. & takes the address; * accesses the pointed-to value. A pointer with no destination receives nullptr."
+      }
+     ],
+     "questions": [
+      {
+       "id": "53d70d8c-9883-470d-b9a5-b4e7932583f2",
+       "statement": "What does a pointer hold in C++?",
+       "explanation": null,
+       "options": [
+        "The address of another variable",
+        "A copy of another variable's value",
+        "Only a variable's type",
+        "A variable's textual name"
+       ]
+      },
+      {
+       "id": "6be0e71a-de20-4fd1-84fc-a66a8efb4546",
+       "statement": "What does the '*' operator do when applied to a pointer, as in '*p'?",
+       "explanation": null,
+       "options": [
+        "Multiplies the pointer by a number",
+        "Returns the pointer's address",
+        "Creates a new null pointer",
+        "Accesses the value stored at the pointed-to address"
+       ]
+      },
+      {
+       "id": "6ec2dab7-9f59-4bba-a4b3-c4fe8e8f90d3",
+       "statement": "What should a pointer that points to nothing receive in modern C++?",
+       "explanation": null,
+       "options": [
+        "An empty string",
+        "nullptr",
+        "The undefined value",
+        "The number zero spelled out"
+       ]
+      },
+      {
+       "id": "2e4109bd-ec96-45ec-be66-62f68dcd72c6",
+       "statement": "What does the `&` operator, as in `&x`, return?",
+       "explanation": null,
+       "options": [
+        "The declared type of the variable x",
+        "The value stored inside x",
+        "The address of the variable x",
+        "A copy of the variable x"
+       ]
+      },
+      {
+       "id": "1ea5011e-37f4-4a0f-b2dc-d6791fe48b79",
+       "statement": "What happens when dereferencing (`*p`) a null or uninitialized pointer?",
+       "explanation": null,
+       "options": [
+        "It is a serious error that usually crashes the program",
+        "Nothing, C++ simply ignores the operation",
+        "The pointer starts pointing to the value zero",
+        "The pointed-to value automatically becomes nullptr"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "2a4a729b-ce6f-42af-b3ec-3c33dc6bb48e",
+     "title": "Stack and heap: new and delete",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Two memory regions\n\nA C++ program uses two main memory regions:\n\n- The **stack**: where local variables live. It is fast and managed automatically: when a function ends, its local variables are freed on their own.\n- The **heap**: dynamically allocated memory, under your control. You request memory when you need it and are responsible for giving it back."
+      },
+      {
+       "type": "text",
+       "value": "## Allocating on the heap with new and delete\n\nTo allocate on the heap, you use `new`, which returns a pointer to the reserved memory. When you are done, you must release it with `delete`. Unlike the stack, the heap does not clean itself up.\n\n```\nint* p = new int;   // allocates an int on the heap\n*p = 42;\nstd::cout << *p << std::endl;   // 42\ndelete p;           // frees the memory\n```\n\nThe rule is simple to say and easy to forget: for every `new`, there must be a `delete`."
+      },
+      {
+       "type": "quote",
+       "value": "Local variables live on the stack and are freed on their own. The heap is dynamic memory you allocate with new and must release with delete: for each new, one delete."
+      }
+     ],
+     "questions": [
+      {
+       "id": "b7925a47-5042-4e06-a1b0-461e7f8003c1",
+       "statement": "What characterizes the stack in C++?",
+       "explanation": null,
+       "options": [
+        "It holds local variables and frees them by itself when the function ends",
+        "It is never released during program execution",
+        "It is memory you allocate and free manually",
+        "It only exists in programs without functions"
+       ]
+      },
+      {
+       "id": "8a9c792f-c495-487a-a69c-1f24f0f73f7f",
+       "statement": "Which keyword allocates memory on the heap in C++?",
+       "explanation": null,
+       "options": [
+        "new",
+        "alloc",
+        "create",
+        "malloc"
+       ]
+      },
+      {
+       "id": "ebf0dcb4-74d9-4dda-bfb9-a04ab511c19b",
+       "statement": "After allocating with 'new int', what should you do when done using it?",
+       "explanation": null,
+       "options": [
+        "Convert the pointer into an int",
+        "Free the memory with delete",
+        "Call new again to close it",
+        "Nothing, because the heap cleans itself"
+       ]
+      },
+      {
+       "id": "22cbf935-3190-4bcd-8f3a-455a82715afc",
+       "statement": "What does `new` return when allocating memory on the heap?",
+       "explanation": null,
+       "options": [
+        "A pointer to the reserved memory",
+        "The address of the stack top at that moment",
+        "The exact size of the memory in bytes",
+        "A copy of the newly allocated value"
+       ]
+      },
+      {
+       "id": "c05fc652-2b44-4f99-84da-3ba3e2891493",
+       "statement": "Which rule applies to memory allocated on the heap with `new`?",
+       "explanation": null,
+       "options": [
+        "For every new there must be a delete",
+        "A single delete frees all news at once",
+        "The heap cleans itself between calls",
+        "new frees itself when the function ends"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "34797051-2f83-4a45-bdbb-7b3925c9ad54",
+     "title": "The dangers: leaks and dangling pointers",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Memory leaks\n\nIf you allocate with `new` and **forget** the `delete`, that memory stays reserved until the program ends, even though it is no longer used. That is a **memory leak**. In a long-running program, leaks gradually consume memory until they cause problems."
+      },
+      {
+       "type": "text",
+       "value": "## Dangling pointers\n\nThe opposite problem: using a pointer **after** the memory has been freed. After a `delete`, the pointer still holds the old address, but the memory is no longer yours. Dereferencing that **dangling pointer** leads to undefined behavior, one of C++'s most treacherous bugs.\n\n```\nint* p = new int(10);\ndelete p;\n// *p is now undefined behavior: p is dangling\n```"
+      },
+      {
+       "type": "text",
+       "value": "## The modern solution\n\nManaging `new` and `delete` manually is error-prone. That is why modern C++ strongly recommends avoiding direct `new`/`delete` and using **smart pointers** and the **RAII** technique, which tie memory release to the objects' lifecycle. You will see those features in the advanced modules; for now, understand the problem they solve."
+      },
+      {
+       "type": "quote",
+       "value": "Forgetting delete causes a memory leak; using a pointer after delete creates a dangling pointer. Modern C++ solves this with smart pointers and RAII."
+      }
+     ],
+     "questions": [
+      {
+       "id": "f3d7374f-db47-4d50-b160-645e087b42a3",
+       "statement": "What is a memory leak?",
+       "explanation": null,
+       "options": [
+        "Allocating memory with new and forgetting to release it with delete",
+        "Using a pointer after the memory is freed",
+        "Declaring a local variable inside a function",
+        "Passing an argument by value to a function"
+       ]
+      },
+      {
+       "id": "e4f16688-8f45-40be-a66a-f9754ee071ff",
+       "statement": "What is a dangling pointer?",
+       "explanation": null,
+       "options": [
+        "A pointer that never received the nullptr value",
+        "A pointer used after the memory it points to has been freed",
+        "A pointer passed by value to a common function",
+        "A pointer that points to any local variable"
+       ]
+      },
+      {
+       "id": "df7ee758-e268-4edd-ab5c-5a01aeb5b1a2",
+       "statement": "What does modern C++ recommend to avoid the errors of manual new and delete?",
+       "explanation": null,
+       "options": [
+        "Allocating everything with new and never freeing",
+        "Avoiding the use of pointers entirely",
+        "Using smart pointers and the RAII technique",
+        "Never allocating memory in any program"
+       ]
+      },
+      {
+       "id": "5644e9fc-c359-4d2e-9cbe-85ddb6430870",
+       "statement": "What happens when dereferencing a dangling pointer, after the `delete`?",
+       "explanation": null,
+       "options": [
+        "Undefined behavior, one of the most treacherous bugs",
+        "The memory is reallocated right away",
+        "The old value is always recovered intact",
+        "The pointer automatically goes back to nullptr"
+       ]
+      },
+      {
+       "id": "2a50dba7-498d-4e7a-bb30-803eeb6ac3ba",
+       "statement": "What is the effect of memory leaks on a long-running program?",
+       "explanation": null,
+       "options": [
+        "They gradually consume memory until causing problems",
+        "They have no effect on execution at all",
+        "They free the memory used by all other programs",
+        "They make the program faster over time"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "64b1e9e3-02de-44da-8f9b-5754900e95fb",
+   "title": "Module 6 - Classes, objects and RAII",
+   "lessons": [
+    {
+     "id": "70880cb5-468d-4867-9caa-ed4dca4067d9",
+     "title": "Classes and objects",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Modeling with classes\n\nA **class** is a template that groups data (attributes) and behavior (methods) under one type. An **object** is a concrete instance of the class. C++ inherited object orientation from adding classes to the C language, and that is where this heritage shows up.\n\n```\nclass Cachorro {\npublic:\n    std::string nome;\n    void latir() {\n        std::cout << nome << \" faz au au\" << std::endl;\n    }\n};\n\nCachorro rex;\nrex.nome = \"Rex\";\nrex.latir();   // Rex faz au au\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Access: public and private\n\nInside a class, members sit under **access specifiers**:\n\n- **public**: accessible from outside the object.\n- **private**: accessible only from inside the class itself.\n- **protected**: like private, but also visible to subclasses.\n\nOne difference between `class` and `struct` in C++: in a `class`, members are `private` by default; in a `struct`, they are `public` by default. Other than that, they are very similar."
+      },
+      {
+       "type": "quote",
+       "value": "A class groups data and behavior; an object is an instance of it. Members sit under public, private, or protected. In class the default is private; in struct, public."
+      }
+     ],
+     "questions": [
+      {
+       "id": "04088747-93ca-4751-8259-4dc530720843",
+       "statement": "What is the relationship between a class and an object?",
+       "explanation": null,
+       "options": [
+        "The object is the model; the class is the instance",
+        "Class and object are the same thing",
+        "The class exists only after the object",
+        "The class is the model; the object is an instance of it"
+       ]
+      },
+      {
+       "id": "62c50c09-f73e-4182-b787-17f6409bf725",
+       "statement": "What does the 'private' specifier do to a class member?",
+       "explanation": null,
+       "options": [
+        "Makes the member accessible from anywhere",
+        "Turns the member into a global function",
+        "Makes the member accessible only from inside the class itself",
+        "Removes the member from the class"
+       ]
+      },
+      {
+       "id": "7869c634-9ac9-4e8b-ad19-348a56b44383",
+       "statement": "What is the default access difference between 'class' and 'struct' in C++?",
+       "explanation": null,
+       "options": [
+        "In class members are public by default; in struct, private",
+        "Both have private members by default",
+        "In class members are private by default; in struct, public",
+        "struct cannot have methods, only class can"
+       ]
+      },
+      {
+       "id": "972a27e5-77a2-4de9-ac87-fb047f9f5c2b",
+       "statement": "What characterizes a `protected` member in a class?",
+       "explanation": null,
+       "options": [
+        "It is like private, but also visible to subclasses",
+        "It can only be read, never changed",
+        "It is accessible from anywhere in the program's code",
+        "It is removed from the class at compile time"
+       ]
+      },
+      {
+       "id": "9c49f7ab-69b2-49ad-a26c-e302923acb44",
+       "statement": "In a class, the data it holds and the behavior it runs are called, respectively:",
+       "explanation": null,
+       "options": [
+        "Methods and attributes",
+        "Attributes and methods",
+        "Objects and instances",
+        "Keys and values"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "7c26b9fb-2646-4cf3-b1e4-24e7ddf4323f",
+     "title": "Constructors and destructors",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The constructor\n\nThe **constructor** is a special method that runs when the object is created, to initialize it. It has the same name as the class and declares no return type.\n\n```\nclass Cachorro {\npublic:\n    std::string nome;\n    int idade;\n\n    Cachorro(std::string n, int i) {\n        nome = n;\n        idade = i;\n    }\n};\n\nCachorro rex(\"Rex\", 3);   // calls the constructor\n```"
+      },
+      {
+       "type": "text",
+       "value": "# The destructor: unique to C++\n\nThe **destructor** is a special method that runs automatically when the object is destroyed, whether by going out of scope (on the stack) or being released with `delete` (on the heap). It has the class name with a tilde in front: `~Cachorro()`. The destructor is the place to release resources the object acquired, such as memory, files, or connections.\n\n```\nclass Arquivo {\npublic:\n    Arquivo() { /* opens the file */ }\n    ~Arquivo() { /* closes the file automatically */ }\n};\n```\n\nThis constructor/destructor pair is the foundation of one of C++'s most important concepts, RAII, in the next lesson."
+      },
+      {
+       "type": "quote",
+       "value": "The constructor initializes the object when it is created. The destructor (~Class) runs automatically when the object is destroyed, and is where you release the resources it acquired."
+      }
+     ],
+     "questions": [
+      {
+       "id": "475118f0-6d19-47bd-9924-f78adb7f6f02",
+       "statement": "What is a class constructor for?",
+       "explanation": null,
+       "options": [
+        "Initializing the object at the moment it is created",
+        "Destroying the object at the end of the program",
+        "Defining the methods' return type",
+        "Preventing the class from being instantiated"
+       ]
+      },
+      {
+       "id": "d4bf584b-2526-4505-9f9e-6362dc9bbd88",
+       "statement": "When is an object's destructor executed?",
+       "explanation": null,
+       "options": [
+        "At the start of the program, before main",
+        "Automatically, when the object is destroyed",
+        "Only when an error occurs in the object",
+        "Manually, by calling it by name"
+       ]
+      },
+      {
+       "id": "721bff76-81a6-449d-b829-100b41f9c86e",
+       "statement": "What is the typical role of a destructor in C++?",
+       "explanation": null,
+       "options": [
+        "Preventing access to private members",
+        "Setting the attributes' initial values",
+        "Creating new objects of the same class",
+        "Releasing the resources the object had acquired"
+       ]
+      },
+      {
+       "id": "2bfbdb92-f0db-4635-b876-86d5a1f15b79",
+       "statement": "What characterizes a constructor's signature?",
+       "explanation": null,
+       "options": [
+        "It has any name and returns void",
+        "It has a free name and returns an int",
+        "It has the same name as the class and no return type",
+        "It has the class name with a tilde (~) in front"
+       ]
+      },
+      {
+       "id": "167bb6f9-3d57-485f-8c6a-0650baff0327",
+       "statement": "How do you write the destructor name of a class called `Cachorro`?",
+       "explanation": null,
+       "options": [
+        "!Cachorro",
+        "delete Cachorro",
+        "~Cachorro",
+        "Cachorro"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b1ab3be2-8496-459b-a7d2-bdd1348fda16",
+     "title": "Encapsulation and RAII",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Encapsulation\n\n**Encapsulation** means hiding the object's internal details and controlling access to them. In practice, you make attributes `private` and offer public methods to read and change them under rules. This protects the object from invalid states.\n\n```\nclass ContaBancaria {\nprivate:\n    double saldo = 0;\npublic:\n    double getSaldo() const { return saldo; }\n    void depositar(double valor) {\n        if (valor > 0) saldo += valor;   // only accepts positives\n    }\n};\n```\n\nNote the `const` after `getSaldo()`: it promises the method does not change the object."
+      },
+      {
+       "type": "text",
+       "value": "# RAII: the pattern that defines C++\n\n**RAII** stands for \"Resource Acquisition Is Initialization\". The idea: tie a resource's lifecycle to an object's lifecycle. The constructor **acquires** the resource (memory, file, lock); the destructor **releases** it, automatically, when the object goes out of scope.\n\nSince the destructor runs on its own, you cannot forget to release, even if an error happens along the way. That is why modern C++ prefers self-managing objects (like smart pointers) over manual `new`/`delete`: RAII turns release into something guaranteed by the language."
+      },
+      {
+       "type": "quote",
+       "value": "RAII ties a resource to an object's lifecycle: the constructor acquires, the destructor releases on its own at the end of the scope. That is what makes resource management in C++ safe."
+      }
+     ],
+     "questions": [
+      {
+       "id": "3181d2d6-5174-4f49-96aa-abab7d570195",
+       "statement": "Encapsulation in a class is best described as:",
+       "explanation": null,
+       "options": [
+        "Copying an object to create another identical to it",
+        "Having several methods with the same name in the class",
+        "Making one class inherit from another base class",
+        "Hiding the internal details and controlling access to them"
+       ]
+      },
+      {
+       "id": "1f862751-8806-48e7-a20d-305cbf91506d",
+       "statement": "What does the acronym RAII describe in C++?",
+       "explanation": null,
+       "options": [
+        "A form of inheritance among several classes",
+        "A special kind of loop",
+        "Tying a resource's lifecycle to an object's",
+        "A technique to speed up compilation"
+       ]
+      },
+      {
+       "id": "aac0151d-4273-46a4-978f-27617ff7636b",
+       "statement": "Why does RAII make resource release reliable?",
+       "explanation": null,
+       "options": [
+        "The release only happens when the whole program ends",
+        "The programmer must release everything manually",
+        "The destructor runs on its own at the end of the scope, even if there is an error",
+        "Resources are never released during execution"
+       ]
+      },
+      {
+       "id": "13851033-e786-41c4-a656-12df1386ba62",
+       "statement": "In `double getSaldo() const`, what does the `const` after the method name promise?",
+       "explanation": null,
+       "options": [
+        "That the method is always private to the class",
+        "That the method takes no parameters",
+        "That the method does not change the object",
+        "That the returned value never changes"
+       ]
+      },
+      {
+       "id": "54562f32-1505-448f-90c5-58c73fcbd006",
+       "statement": "In the RAII pattern, what are the roles of the constructor and destructor?",
+       "explanation": null,
+       "options": [
+        "Both acquire the resource at the same time",
+        "The constructor acquires the resource and the destructor releases it",
+        "The constructor releases the resource and the destructor acquires it again",
+        "Neither handles the acquired resource"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "57b36202-2498-4355-9b56-6fcf5ba135c0",
+   "title": "Module 7 - Inheritance and polymorphism",
+   "lessons": [
+    {
+     "id": "f78ffd16-a60e-4965-b27e-57e25501b823",
+     "title": "Inheritance",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Reuse and specialize\n\n**Inheritance** lets a class (the derived one) reuse the members of another (the base) and add or specialize whatever it needs. In C++, you use a colon and the inheritance type, usually `public`.\n\n```\nclass Animal {\npublic:\n    std::string nome;\n    void comer() {\n        std::cout << nome << \" está comendo\" << std::endl;\n    }\n};\n\nclass Gato : public Animal {\npublic:\n    void miar() {\n        std::cout << nome << \" faz miau\" << std::endl;\n    }\n};\n```"
+      },
+      {
+       "type": "text",
+       "value": "## The derived class is a kind of the base\n\n`Gato` inherits `nome` and `comer()` from `Animal` and adds `miar()`. The relationship models an \"is a kind of\": a cat is a kind of animal.\n\n```\nGato felix;\nfelix.nome = \"Felix\";\nfelix.comer();   // inherited from Animal\nfelix.miar();    // Gato's own\n```\n\nUnlike languages with single inheritance, C++ allows **multiple inheritance** (inheriting from more than one base), a powerful feature that demands care because it can create ambiguities."
+      },
+      {
+       "type": "quote",
+       "value": "Inheritance (class Derived : public Base) lets the derived class reuse and specialize the base, modeling an is-a-kind-of. C++ even allows multiple inheritance."
+      }
+     ],
+     "questions": [
+      {
+       "id": "53920415-7c81-41a8-a3ad-98b32aa66bd9",
+       "statement": "How do you declare that the class Gato publicly inherits from Animal in C++?",
+       "explanation": null,
+       "options": [
+        "class Gato implements Animal",
+        "class Gato : public Animal",
+        "class Gato inherits Animal",
+        "class Gato extends Animal"
+       ]
+      },
+      {
+       "id": "3e79c0a1-bc6a-40ab-9085-d2f48a6a50c4",
+       "statement": "A derived class, when inheriting from a base:",
+       "explanation": null,
+       "options": [
+        "Cannot add any new members",
+        "Reuses the base's members and can add its own",
+        "Loses access to everything the base defines",
+        "Must rewrite all the base's members"
+       ]
+      },
+      {
+       "id": "9fcbb623-7c98-4100-a872-f732b77956ed",
+       "statement": "What does C++ allow regarding inheritance, unlike single-inheritance languages?",
+       "explanation": null,
+       "options": [
+        "Inheritance with no code reuse at all",
+        "Multiple inheritance, inheriting from more than one base",
+        "Inheritance only between classes with the same name",
+        "Inheriting from only a single base, no exceptions"
+       ]
+      },
+      {
+       "id": "eec2ba89-8b0e-4ba3-95b2-4945b493f10d",
+       "statement": "What relationship does inheritance between `Gato` and `Animal` model?",
+       "explanation": null,
+       "options": [
+        "An animal is a kind of cat",
+        "A cat is a kind of animal",
+        "A cat uses an animal from outside",
+        "A cat has an animal inside it"
+       ]
+      },
+      {
+       "id": "7fb51b6f-46cc-499e-b452-7e0514b66dcb",
+       "statement": "Why does C++'s multiple inheritance demand care?",
+       "explanation": null,
+       "options": [
+        "Because it can create ambiguities between the bases",
+        "Because it prevents the class from having its own methods",
+        "Because it erases the members inherited from the base",
+        "Because it forbids using public in inheritance"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "8bbda91a-0508-400a-8fd9-d482516a1ab7",
+     "title": "Virtual functions and polymorphism",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The problem virtual solves\n\nIn C++, for a base-class pointer or reference to call the derived class's version, the method must be declared **virtual** in the base. Without `virtual`, the call uses the base version, decided at compile time.\n\n```\nclass Animal {\npublic:\n    virtual void emitirSom() {\n        std::cout << \"Som genérico\" << std::endl;\n    }\n};\n\nclass Gato : public Animal {\npublic:\n    void emitirSom() override {\n        std::cout << \"Miau\" << std::endl;\n    }\n};\n```\n\nThe `override` keyword in the derived class makes it clear you are overriding a virtual method, and the compiler checks it."
+      },
+      {
+       "type": "text",
+       "value": "## Polymorphism in action\n\nWith `virtual`, a base reference or pointer executes the **actual** object's version, decided at runtime. That is polymorphism: writing code that works with any `Animal` without knowing the exact type.\n\n```\nAnimal* a = new Gato();\na->emitirSom();   // Miau, because the method is virtual\ndelete a;\n```\n\nIf `emitirSom` were not `virtual`, the call above would print \"Som genérico\", because it would use the pointer's type (`Animal`), not the object's (`Gato`)."
+      },
+      {
+       "type": "quote",
+       "value": "For a base reference to call the derived version, the method must be virtual. Then the real object's version is chosen at runtime: that is polymorphism."
+      }
+     ],
+     "questions": [
+      {
+       "id": "8f39fa1b-a8de-494b-aae7-0f6574c9b89d",
+       "statement": "What is needed for a base pointer to call the derived class's overridden version?",
+       "explanation": null,
+       "options": [
+        "Declaring the method as const in the derived class",
+        "Declaring the method as static in the base",
+        "Declaring the method as virtual in the base class",
+        "Nothing, that always happens by default"
+       ]
+      },
+      {
+       "id": "e5de0afc-d13a-4411-b67d-91e3d98a112e",
+       "statement": "With 'Animal* a = new Gato();' and virtual emitirSom, what does 'a->emitirSom()' run?",
+       "explanation": null,
+       "options": [
+        "Animal's version, because the pointer is of type Animal",
+        "Neither, because the assignment is invalid",
+        "Gato's version, because the real object is a Gato",
+        "Both versions, one after the other"
+       ]
+      },
+      {
+       "id": "d1c2cc46-6bc6-4b7e-8d60-2d8899ccebd5",
+       "statement": "What is the 'override' keyword for in the derived class?",
+       "explanation": null,
+       "options": [
+        "Making the method private in the derived class",
+        "Preventing the method from being inherited by derived classes",
+        "Turning the method into a class constructor",
+        "Signaling it overrides a virtual, and the compiler checks it"
+       ]
+      },
+      {
+       "id": "ae28ae91-5943-4a2f-920e-d14e2cec0b8b",
+       "statement": "Without `virtual`, which version of the method does a base pointer call?",
+       "explanation": null,
+       "options": [
+        "The real object's, decided at runtime",
+        "Both versions, one after the other",
+        "The base's, decided at compile time",
+        "Neither, because it becomes a compilation error"
+       ]
+      },
+      {
+       "id": "b46ee717-8734-4544-9745-09ea69f5ca3d",
+       "statement": "What does polymorphism allow, in practice?",
+       "explanation": null,
+       "options": [
+        "Preventing the base class from being instantiated",
+        "Treating objects of different types through a common base",
+        "Inheriting from several base classes at once",
+        "Having two or more methods with the same name in the same class"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "16cc2d05-a42c-4c9f-9a7c-c2414ace1ef6",
+     "title": "Abstract classes and the virtual destructor",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Pure virtual methods and abstract classes\n\nA virtual method can be declared **pure**, without a body, by assigning `= 0`. A class with at least one pure virtual method is **abstract**: it cannot be instantiated, and it serves as a contract for derived classes, which are required to implement the method.\n\n```\nclass Forma {\npublic:\n    virtual double area() = 0;   // pure virtual: no body\n};\n\nclass Circulo : public Forma {\npublic:\n    double raio;\n    double area() override { return 3.14159 * raio * raio; }\n};\n```\n\n`Forma` cannot be created directly; `Circulo` implements `area()` and can."
+      },
+      {
+       "type": "text",
+       "value": "## The virtual destructor: a classic trap\n\nAn important C++ rule: if you have a base class with virtual methods and will delete derived objects through a base pointer, the **base destructor must be virtual**. Without that, deleting through the base pointer calls only the base destructor, and the derived part is not released correctly, causing leaks.\n\n```\nclass Base {\npublic:\n    virtual ~Base() {}   // virtual destructor\n};\n```"
+      },
+      {
+       "type": "quote",
+       "value": "A method virtual = 0 is pure virtual and makes the class abstract (not instantiable). If you delete derived objects through a base pointer, the base destructor must be virtual."
+      }
+     ],
+     "questions": [
+      {
+       "id": "7e7e6321-fc23-4daf-be7a-78b534ce7a1a",
+       "statement": "What makes a class abstract in C++?",
+       "explanation": null,
+       "options": [
+        "Having no defined constructor",
+        "Having all methods declared as const",
+        "Having at least one pure virtual method (= 0)",
+        "Inheriting from more than one base class"
+       ]
+      },
+      {
+       "id": "3c450718-af61-47e9-8b47-1ac73b809c26",
+       "statement": "An abstract class in C++:",
+       "explanation": null,
+       "options": [
+        "Cannot have derived classes",
+        "Can be instantiated like any other",
+        "Cannot declare any method",
+        "Cannot be instantiated directly"
+       ]
+      },
+      {
+       "id": "792c1c5b-08f5-490b-b354-e5cfc596a49b",
+       "statement": "Why must a base class's destructor be virtual when deleting derived objects through a base pointer?",
+       "explanation": null,
+       "options": [
+        "Because destructors can never be called",
+        "To prevent the creation of derived classes",
+        "To speed up object destruction a lot",
+        "So the derived destructor runs and frees everything"
+       ]
+      },
+      {
+       "id": "6da1215a-74bb-4abe-9cee-ba2526fc02c5",
+       "statement": "How do you declare a pure virtual method in C++?",
+       "explanation": null,
+       "options": [
+        "By marking the method as `const`",
+        "By writing the word `pure` before the method",
+        "By removing the word `virtual` from it",
+        "By assigning `= 0` and giving the method no body"
+       ]
+      },
+      {
+       "id": "e560d6b9-536a-4de5-bb70-30f288e02241",
+       "statement": "What is an abstract class's role toward its derived classes?",
+       "explanation": null,
+       "options": [
+        "Copying their attributes when created",
+        "Implementing all existing pure virtual methods in their place",
+        "Preventing them from having their own methods",
+        "Serving as a contract, requiring them to implement the pure method"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "8ca216fc-1ece-4d30-aeaf-0a371500b31b",
+   "title": "Module 8 - The STL: containers and templates",
+   "lessons": [
+    {
+     "id": "e5f3d593-f09c-48ad-829d-94b3bac4dcdb",
+     "title": "std::vector: the dynamic array",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The container library\n\nThe **STL (Standard Template Library)** is the part of C++'s standard library with ready-made data structures and algorithms. The most used container is `std::vector`: an array that grows and shrinks as you add and remove, without the fixed size of raw arrays.\n\n```\n#include <vector>\n\nstd::vector<int> numeros = {10, 20, 30};\nnumeros.push_back(40);            // adds to the end\nstd::cout << numeros.size();      // 4\nstd::cout << numeros[0];          // 10\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Common methods and the type between < >\n\nThe `vector` offers `push_back` (add to the end), `size()` (count), access by index with `[]`, and works well with the range-based for. The `<int>` says the vector holds integers; that is possible because of **templates**, which you will see ahead.\n\nThe `vector` manages its own memory: it allocates and frees as needed, following RAII. You do not need `new` or `delete`, which makes it much safer than managing a raw array on the heap."
+      },
+      {
+       "type": "quote",
+       "value": "std::vector is the STL's dynamic array: it grows with push_back, is accessed with [], and manages its own memory (RAII), with no new or delete."
+      }
+     ],
+     "questions": [
+      {
+       "id": "066d30f0-39ae-4c87-8d49-652f817eeec2",
+       "statement": "What is std::vector's advantage over a raw fixed-size array?",
+       "explanation": null,
+       "options": [
+        "It is always slower, but takes up less space",
+        "It grows and shrinks in size and manages its own memory",
+        "It dispenses with declaring the element type",
+        "It stores mixed different types together"
+       ]
+      },
+      {
+       "id": "69b00774-6f34-4076-9a55-727abc4fef5f",
+       "statement": "Which method adds an element to the end of a std::vector?",
+       "explanation": null,
+       "options": [
+        "push_back",
+        "append",
+        "add",
+        "insert_end"
+       ]
+      },
+      {
+       "id": "6e956763-e6a0-4560-b30f-319d1241163a",
+       "statement": "Why is std::vector safer than a raw array on the heap?",
+       "explanation": null,
+       "options": [
+        "It forbids accessing elements by index",
+        "It manages its own memory via RAII, with no new or delete",
+        "It only works with string values",
+        "It never actually stores any data"
+       ]
+      },
+      {
+       "id": "c6b32919-2636-45da-be0c-4e763d8bba8f",
+       "statement": "What is C++'s STL (Standard Template Library)?",
+       "explanation": null,
+       "options": [
+        "A dedicated compiler that translates the language's source code",
+        "The standard library with data structures and algorithms",
+        "A tool that runs the already compiled program",
+        "A kind of pointer that manages memory on its own"
+       ]
+      },
+      {
+       "id": "8c2ced56-b8de-45fb-9f33-8000da62d189",
+       "statement": "What does a `std::vector`'s `size()` method return?",
+       "explanation": null,
+       "options": [
+        "The type of the elements it holds",
+        "The vector's fixed maximum capacity",
+        "The number of elements it holds",
+        "The element stored in the first position"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "95ad4153-e589-4baf-a019-36a8498f3107",
+     "title": "map, set and iterators",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# std::map: key and value\n\n`std::map` associates keys with values, like a dictionary. You access and insert with square brackets.\n\n```\n#include <map>\n\nstd::map<std::string, int> idades;\nidades[\"Ana\"] = 30;\nidades[\"Bruno\"] = 25;\nstd::cout << idades[\"Ana\"];   // 30\n```\n\nThe type `std::map<std::string, int>` means: string keys, int values. `std::set` is a cousin that stores only **unique elements**, with no associated values, useful for guaranteeing there are no duplicates."
+      },
+      {
+       "type": "text",
+       "value": "## Iterators: walking any container\n\nThe STL uses **iterators** to walk containers uniformly. An iterator is like a pointer to an element; `begin()` gives the first and `end()` marks the end. With `auto`, the code stays short.\n\n```\nfor (auto it = numeros.begin(); it != numeros.end(); ++it) {\n    std::cout << *it << \" \";   // dereferences like a pointer\n}\n```\n\nIn most cases, though, the range-based for (`for (auto x : numeros)`) is simpler and does the same, hiding the iterator."
+      },
+      {
+       "type": "quote",
+       "value": "std::map associates keys with values; std::set stores only unique elements. Iterators walk any container uniformly, and the range-based for hides them."
+      }
+     ],
+     "questions": [
+      {
+       "id": "c10e87f4-20e6-4a37-b836-19b82271ef04",
+       "statement": "What does std::map hold?",
+       "explanation": null,
+       "options": [
+        "A single value at a time",
+        "A sequence accessed only by index",
+        "Key and value pairs, like a dictionary",
+        "Only unique values, with no keys"
+       ]
+      },
+      {
+       "id": "b712dded-a64f-4320-a2b2-b67ece3a828d",
+       "statement": "What distinguishes a std::set from a std::vector?",
+       "explanation": null,
+       "options": [
+        "The set has a fixed size defined at creation",
+        "The set only holds values of type int",
+        "The set stores only unique elements, with no duplicates",
+        "The set associates keys with values like a dictionary"
+       ]
+      },
+      {
+       "id": "bf2841d3-a926-439c-84a7-ffc53bcbc701",
+       "statement": "What does an STL iterator represent?",
+       "explanation": null,
+       "options": [
+        "A complete independent copy of the container",
+        "The total number of elements stored in the container",
+        "The type of elements the container holds",
+        "Something like a pointer to an element of the container"
+       ]
+      },
+      {
+       "id": "541a62e4-f3e4-465f-b093-30e9b0f41d42",
+       "statement": "When using iterators, what do `begin()` and `end()` indicate?",
+       "explanation": null,
+       "options": [
+        "begin() counts all the elements and end() erases each of them",
+        "begin() points to the first element and end() marks the end",
+        "begin() opens and end() closes a file",
+        "Both always point to the same element"
+       ]
+      },
+      {
+       "id": "4a0ec837-b737-420b-8f42-dae810a296da",
+       "statement": "In the type `std::map<std::string, int>`, what are the `std::string` and the `int`?",
+       "explanation": null,
+       "options": [
+        "The value type and the key type, in that order",
+        "Two different values stored together",
+        "The map's name and size",
+        "The key type and the value type"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "f391db03-1210-444f-8b33-4a6597561146",
+     "title": "Templates: generic code",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What lies behind vector<int>\n\n**Templates** let you write code that works with any type, defined by the user. That is what supports the STL: a single `std::vector` works with `int`, `std::string`, or any type, because it is a **class template**.\n\nYou can also write your own templates. A **function template** generalizes a function to several types:\n\n```\ntemplate <typename T>\nT maximo(T a, T b) {\n    return (a > b) ? a : b;\n}\n\nmaximo(3, 7);        // uses int\nmaximo(2.5, 1.5);    // uses double\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Resolved at compile time\n\nThe magic of templates happens at **compilation**: for each type you use, the compiler generates a specialized version of the code. This keeps the performance of hand-written code for each type, without you repeating anything, and keeps type safety, since everything is checked before running.\n\nTemplates are one of C++'s most powerful features and the reason the STL is generic and efficient at the same time."
+      },
+      {
+       "type": "quote",
+       "value": "Templates write generic code for any type, resolved at compile time. That is what makes std::vector work with any type without losing performance."
+      }
+     ],
+     "questions": [
+      {
+       "id": "357253eb-e15f-4361-95f4-bb953b2ee149",
+       "statement": "What do templates allow in C++?",
+       "explanation": null,
+       "options": [
+        "Allocating memory without needing pointers",
+        "Running code without compiling the program first",
+        "Mixing different types in the same container",
+        "Writing code that works with any chosen type"
+       ]
+      },
+      {
+       "id": "6f41029f-2544-48e5-af06-c4c6d3461987",
+       "statement": "When is a template's code specialized for each type used?",
+       "explanation": null,
+       "options": [
+        "Never, because templates generate no code",
+        "At compile time, generating one version per type",
+        "Only when the program is closed",
+        "At runtime, on every call"
+       ]
+      },
+      {
+       "id": "992272a1-7f4a-4ec0-9fc1-e372267214d5",
+       "statement": "Which C++ feature makes std::vector able to hold any type?",
+       "explanation": null,
+       "options": [
+        "Templates",
+        "Const references",
+        "Pointers",
+        "Destructors"
+       ]
+      },
+      {
+       "id": "e11a215a-b2f4-4ea2-98ac-ea885c0ea221",
+       "statement": "In the function `template <typename T> T maximo(T a, T b)`, what does `T` represent?",
+       "explanation": null,
+       "options": [
+        "Any type, defined by whoever calls the function",
+        "A global variable of the whole program",
+        "A fixed integer value always passed as an argument",
+        "The name of the function to be generated later"
+       ]
+      },
+      {
+       "id": "535d1287-29f3-4f73-8357-298a48d04b00",
+       "statement": "Besides performance, what do templates preserve by being resolved at compile time?",
+       "explanation": null,
+       "options": [
+        "The ability to mix several types together",
+        "Running the code without compiling first",
+        "Type safety, checked before running",
+        "Automatic release of all memory used"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "a8debfe2-93dc-4e2d-8194-1b5a1616e94f",
+   "title": "Module 9 - Modern C++: smart pointers and lambdas",
+   "lessons": [
+    {
+     "id": "c69d7f30-49a6-4de3-bb67-90e366b7eed3",
+     "title": "Smart pointers: memory without leaks",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The end of manual new and delete\n\nYou saw that manual `new` and `delete` are dangerous: it is easy to forget the `delete` (leak) or use a pointer after releasing it (dangling pointer). **Smart pointers**, from the `<memory>` library, solve this by applying RAII: they are objects that manage a pointer and free the memory on their own when they go out of scope."
+      },
+      {
+       "type": "text",
+       "value": "## unique_ptr and shared_ptr\n\n**std::unique_ptr** represents exclusive ownership: only one smart pointer owns the resource, and it releases it automatically when destroyed. Create one with `std::make_unique`.\n\n```\n#include <memory>\n\nauto p = std::make_unique<int>(42);\nstd::cout << *p << std::endl;   // 42\n// no delete: the memory is freed on its own at the end of the scope\n```\n\n**std::shared_ptr** allows shared ownership: several of them can point to the same resource, which is released when the last one goes away (reference counting). Use it when ownership is truly shared."
+      },
+      {
+       "type": "quote",
+       "value": "Smart pointers apply RAII: they free memory on their own. unique_ptr is the exclusive owner; shared_ptr is shared ownership with reference counting. Prefer them over raw new and delete."
+      }
+     ],
+     "questions": [
+      {
+       "id": "bfa9e068-b2a2-4e98-9451-f1b839e8e01f",
+       "statement": "What is the main advantage of smart pointers?",
+       "explanation": null,
+       "options": [
+        "They dispense with including any external library",
+        "They make the program slower but more readable",
+        "They allow mixing several types in one pointer",
+        "They free memory on their own when going out of scope, via RAII"
+       ]
+      },
+      {
+       "id": "09131f39-a3d5-4fd1-b3a4-baf004a32a95",
+       "statement": "What does std::unique_ptr represent?",
+       "explanation": null,
+       "options": [
+        "Shared ownership among several pointers",
+        "A fixed-size array on the stack",
+        "Exclusive ownership: only it owns the resource",
+        "A pointer that never frees memory"
+       ]
+      },
+      {
+       "id": "93a95bba-07a9-42f7-a3f8-f7e6cd60d0c4",
+       "statement": "When is a std::shared_ptr's resource released?",
+       "explanation": null,
+       "options": [
+        "Only when the whole program ends",
+        "Right after the pointer's first copy",
+        "Never, because shared_ptr does not free memory",
+        "When the last shared_ptr pointing to it is destroyed"
+       ]
+      },
+      {
+       "id": "b7a1a5a4-6878-466d-ad92-8704380690bd",
+       "statement": "How do you create a `std::unique_ptr` in modern C++?",
+       "explanation": null,
+       "options": [
+        "With C's `malloc`",
+        "With `std::make_shared`",
+        "With `new` followed by `delete`",
+        "With `std::make_unique`"
+       ]
+      },
+      {
+       "id": "a0cede2d-82d5-4d2a-80fc-8cdd9d7f3c57",
+       "statement": "How does `std::shared_ptr` know when to release the resource?",
+       "explanation": null,
+       "options": [
+        "When the first function that uses it finishes",
+        "As soon as any copy of it is created in memory",
+        "By reference counting, when the last one goes away",
+        "Only when the whole program ends"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "6556824a-7f93-41a1-be0c-9bdbe9389d78",
+     "title": "Lambdas and auto in modern C++",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Anonymous functions with lambdas\n\nSince C++11, a **lambda** is an anonymous function written on the spot, great for passing a short behavior to an algorithm. The basic form is `[capture](parameters) { body }`.\n\n```\nauto dobro = [](int x) { return x * 2; };\nstd::cout << dobro(5) << std::endl;   // 10\n```\n\nThe **capture** list `[ ]` says which surrounding variables the lambda may use: `[x]` captures by copy, `[&x]` by reference."
+      },
+      {
+       "type": "text",
+       "value": "## Combining with the STL\n\nLambdas shine with STL algorithms. For example, sorting a vector by your own criterion fits in one line, passing a comparison lambda. Together with `auto` and the range-based for, modern C++ is much leaner than the classic style.\n\nA quick look at an advanced feature: modern C++ also has **move semantics**, with `std::move`, which lets you **transfer** resources from one object to another instead of copying them, gaining performance when handling large objects. It is a topic to go deeper into after these fundamentals."
+      },
+      {
+       "type": "quote",
+       "value": "A lambda is an anonymous function in the form [capture](params){ body }, great with STL algorithms. auto and the range-based for complete modern C++'s lean style."
+      }
+     ],
+     "questions": [
+      {
+       "id": "24eba277-7e46-4a77-a3fa-d3827fdec7b9",
+       "statement": "What is a lambda in C++?",
+       "explanation": null,
+       "options": [
+        "An anonymous function in the form [capture](params){ body }",
+        "A special primitive type for storing functions",
+        "An abstract class that has no constructor",
+        "A data container from the standard library"
+       ]
+      },
+      {
+       "id": "b0edd200-383b-42d1-b835-952151f93ca5",
+       "statement": "What is a lambda's capture list [ ] for?",
+       "explanation": null,
+       "options": [
+        "Listing the parameters the lambda receives",
+        "Declaring the lambda's return type",
+        "Saying which surrounding variables the lambda may use",
+        "Defining the lambda's name in the program"
+       ]
+      },
+      {
+       "id": "dbb61914-5584-43d7-96eb-8eb7b873d09b",
+       "statement": "What does move semantics (std::move) allow in modern C++?",
+       "explanation": null,
+       "options": [
+        "Repositioning elements on the program's screen",
+        "Changing a variable's physical address",
+        "Moving a file from one folder to another on disk",
+        "Transferring resources from one object to another instead of copying"
+       ]
+      },
+      {
+       "id": "35609440-677d-4d17-949d-c495e36bc08c",
+       "statement": "In a lambda's capture lists, what is the difference between `[x]` and `[&x]`?",
+       "explanation": null,
+       "options": [
+        "`[x]` captures by copy and `[&x]` by reference",
+        "Both always capture by copy",
+        "Neither captures variables",
+        "`[x]` captures by reference and `[&x]` by copy"
+       ]
+      },
+      {
+       "id": "7908e9a9-2bc1-4309-a7fe-2966580e4353",
+       "statement": "Given `auto dobro = [](int x) { return x * 2; };`, what is `dobro(5)`?",
+       "explanation": null,
+       "options": [
+        "25",
+        "5",
+        "10",
+        "7"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "0ffd101c-e471-432a-b793-959786df1354",
+     "title": "Wrap-up: review and next steps",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What you covered\n\nYou went from zero to modern C++:\n\n- **Fundamentals**: the compiled, high-performance language, the first program, iostream and namespaces.\n- **Types and flow**: variables, auto and const, if and switch with break, loops and the range-based for.\n- **Functions**: pass-by-value, by reference, and by const reference, overloading and default arguments.\n- **Memory**: pointers, stack and heap, new and delete, and the dangers of leaks and dangling pointers.\n- **Classes**: encapsulation, constructors and destructors, and RAII, the pattern that defines C++.\n- **Inheritance and polymorphism**: virtual functions, abstract classes, and the virtual destructor.\n- **STL and templates**: vector, map, set, iterators, and the generic code of templates.\n- **Modern C++**: smart pointers, lambdas, and a taste of move semantics."
+      },
+      {
+       "type": "text",
+       "value": "## How to keep growing\n\nC++ is a large language, and you learn it through steady practice. Redo the examples, break them and fix them, and build small programs: a contact list with classes and a vector, a calculator, a small hierarchy of shapes with virtual functions. With each project, a concept becomes a tool.\n\nAfter these fundamentals, natural paths include going deeper into the STL and its algorithms, mastering move semantics and rvalue references, and exploring areas like games, systems, or high-performance programming, where C++ is strong. Choose what matches your goal and keep practicing, always mindful of memory management, the trait that most sets C++ apart."
+      },
+      {
+       "type": "quote",
+       "value": "You went from the first program to smart pointers. The next step is writing lots of C++: turn each concept into small projects, always mindful of memory."
+      }
+     ],
+     "questions": [
+      {
+       "id": "3966347a-e24f-499e-bee5-0366982a3eae",
+       "statement": "What is the best way to reinforce what you learned in C++?",
+       "explanation": null,
+       "options": [
+        "Memorizing the syntax without understanding the concepts behind it",
+        "Writing code: redoing examples and building small projects",
+        "Skipping practice and going straight to advanced topics",
+        "Only rereading the theory, never actually programming"
+       ]
+      },
+      {
+       "id": "8b9b3799-268d-402f-b836-46de790df7b2",
+       "statement": "Which trait most distinguishes C++ from garbage-collected languages?",
+       "explanation": null,
+       "options": [
+        "Running on a virtual machine",
+        "Being unable to create classes",
+        "Direct control over, and responsibility for, memory",
+        "The total absence of types on variables"
+       ]
+      },
+      {
+       "id": "31655120-78ac-4513-9073-17d173669da4",
+       "statement": "Preferring smart pointers over manual new and delete matters because:",
+       "explanation": null,
+       "options": [
+        "They replace the need to write classes",
+        "They free memory on their own, avoiding leaks via RAII",
+        "They are the only way to declare pointers",
+        "They make the program unable to use memory"
+       ]
+      },
+      {
+       "id": "dc4f7ba2-9639-413e-b2eb-87fc571d4195",
+       "statement": "According to the review, which pattern is described as the one that defines C++?",
+       "explanation": null,
+       "options": [
+        "RAII",
+        "Function overloading",
+        "Passing arguments by value",
+        "The range-based for loop"
+       ]
+      },
+      {
+       "id": "8194fdac-c6e3-432f-b3eb-4578324a9b46",
+       "statement": "Among the suggested paths to continue after the fundamentals is:",
+       "explanation": null,
+       "options": [
+        "Switching to programming only on dedicated virtual machines",
+        "Abandoning any use of pointers for good",
+        "Mastering move semantics and rvalue references",
+        "Swapping C++ for an interpreted language"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
