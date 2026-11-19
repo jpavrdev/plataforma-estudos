@@ -21,6 +21,7 @@ import {
     optionTranslations,
 } from "../schema.ts";
 import { eq, asc } from "drizzle-orm";
+import { AULAS_MODULO_1, type Bloco } from "./seed-dados-modulo1-en.ts";
 
 const TRILHA = "fa491407-b184-448b-b782-9a43fdb812ed"; // Lógica de Programação
 const MODULO_1 = "7dcfe755-da0a-486f-8425-ab10907da1ef"; // O que é lógica de programação e algoritmos
@@ -169,13 +170,18 @@ const ALTERNATIVAS: string[][] = [
 ];
 
 const blocosDaVariante = (variante: "js" | "py") =>
-    BLOCOS_BASE.map((b) => ({
+    BLOCOS_BASE.map((b) => aplicarVariante(b, variante));
+
+function aplicarVariante(b: Bloco, variante: "js" | "py"): Bloco {
+    return {
         ...b,
         value: b.value
             .replaceAll("{{LINGUAGEM}}", variante === "js" ? "JavaScript" : "Python")
             .replaceAll("{{LINGUA_ARQUIVO}}", variante === "js" ? "JavaScript" : "Python")
-            .replaceAll("{{COMENTARIO}}", variante === "js" ? "//" : "#"),
-    }));
+            .replaceAll("{{COMENTARIO}}", variante === "js" ? "//" : "#")
+            .replaceAll("{{TERMINAL}}", variante === "js" ? "console" : "terminal"),
+    };
+}
 
 async function main() {
     const [trilha] = await db.select().from(trails).where(eq(trails.id, TRILHA));
@@ -270,9 +276,79 @@ async function main() {
         }
     }
 
+    // Aulas 2 a 5 do módulo 1: blocos por variante e questões traduzidas pelo
+    // texto original em português, porque a ordem das alternativas difere.
+    const aulasModulo = await db
+        .select({ id: lessons.id, position: lessons.position, language: lessons.language })
+        .from(lessons)
+        .where(eq(lessons.moduleId, MODULO_1));
+    const aulaDe = (posicao: number, variante: "js" | "py") =>
+        aulasModulo.find(
+            (a) => a.position === posicao && a.language === (variante === "js" ? "javascript" : "python"),
+        );
+
+    let faltando = 0;
+    for (const aula of AULAS_MODULO_1) {
+        for (const variante of ["js", "py"] as const) {
+            const alvo = aulaDe(aula.posicao, variante);
+            if (!alvo) continue;
+            const blocos = Array.isArray(aula.blocos)
+                ? aula.blocos.map((b) => aplicarVariante(b, variante))
+                : aula.blocos[variante];
+            await db
+                .insert(lessonTranslations)
+                .values({ lessonId: alvo.id, locale: "en", title: TRADUCOES_AULAS[alvo.id], contentBlocks: blocos })
+                .onConflictDoUpdate({
+                    target: [lessonTranslations.lessonId, lessonTranslations.locale],
+                    set: { title: TRADUCOES_AULAS[alvo.id], contentBlocks: blocos, updatedAt: new Date() },
+                });
+
+            const questoes = await db
+                .select({ id: questions.id })
+                .from(questions)
+                .where(eq(questions.lessonId, alvo.id))
+                .orderBy(asc(questions.position));
+            for (const [i, { id }] of questoes.entries()) {
+                const dados = aula.questoes[i];
+                if (!dados) continue;
+                const enunciado =
+                    typeof dados.enunciado === "string" ? dados.enunciado : dados.enunciado[variante];
+                await db
+                    .insert(questionTranslations)
+                    .values({ questionId: id, locale: "en", statement: enunciado })
+                    .onConflictDoUpdate({
+                        target: [questionTranslations.questionId, questionTranslations.locale],
+                        set: { statement: enunciado, updatedAt: new Date() },
+                    });
+                totalQuestoes++;
+                const opts = await db
+                    .select({ id: questionOptions.id, text: questionOptions.text })
+                    .from(questionOptions)
+                    .where(eq(questionOptions.questionId, id))
+                    .orderBy(asc(questionOptions.position));
+                for (const opt of opts) {
+                    const texto = dados.ops[opt.text];
+                    if (!texto) {
+                        faltando++;
+                        console.warn(`Alternativa sem tradução (aula ${aula.posicao} ${variante}): ${opt.text}`);
+                        continue;
+                    }
+                    await db
+                        .insert(optionTranslations)
+                        .values({ optionId: opt.id, locale: "en", text: texto })
+                        .onConflictDoUpdate({
+                            target: [optionTranslations.optionId, optionTranslations.locale],
+                            set: { text: texto, updatedAt: new Date() },
+                        });
+                }
+            }
+        }
+    }
+
     console.log(
-        `Traduções da Lógica de Programação gravadas: trilha, módulo 1, ${aulasModulo1.length} títulos de aula, aula 1 completa nas duas variantes e ${totalQuestoes} questões.`,
+        `Traduções da Lógica de Programação gravadas: trilha, módulo 1 inteiro (${aulasModulo1.length} títulos), ${totalQuestoes} questões e ${faltando} alternativas sem tradução.`,
     );
+    if (faltando > 0) process.exitCode = 1;
     process.exit(0);
 }
 
