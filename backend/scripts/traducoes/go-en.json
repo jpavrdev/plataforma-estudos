@@ -1,0 +1,2134 @@
+{
+ "trail": {
+  "id": "23acfecc-4385-445a-8a96-b613c66df5bf",
+  "name": "Go",
+  "description": "The Go (Golang) language from zero to advanced: syntax and types, control flow, functions with multiple returns, slices and maps, structs and methods, implicit interfaces, error handling and pointers, and concurrency with goroutines and channels. The language behind Docker, Kubernetes and large-scale cloud services.",
+  "whatYouLearn": null,
+  "prerequisites": null
+ },
+ "modules": [
+  {
+   "id": "212d6982-6e41-48b3-a9ab-a604bacca82a",
+   "title": "Module 1 - First steps with Go",
+   "lessons": [
+    {
+     "id": "457fd8cb-9d13-4f7e-b2df-879d464f747b",
+     "title": "What Go is and why it exists",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What is Go\n\nGo, also called Golang, is a programming language created at Google and released in 2009. It was born to solve a practical problem: writing server software that compiles fast, is simple to read, and is built for concurrency, without the complexity of other systems languages.\n\nGo is **compiled**, **statically typed**, and produces a single standalone executable, with no need for a virtual machine. It is the language behind tools like Docker and Kubernetes, and is widely used in back-ends, APIs, and cloud infrastructure."
+      },
+      {
+       "type": "text",
+       "value": "## What makes Go different\n\nA few design choices define Go and will come up throughout this trail:\n\n- **Intentional simplicity**: the language has few keywords and avoids features that lead to confusing code. The goal is that anyone on the team can read the code easily.\n- **Fast compilation** into a single binary, which simplifies deployment.\n- **Built-in concurrency**: goroutines and channels make it natural to write programs that do several things at once.\n- **Standardized formatting**: the `gofmt` tool formats code one way, ending style debates."
+      },
+      {
+       "type": "quote",
+       "value": "Go is compiled, statically typed, and produces a single binary, with no virtual machine. It was designed to be simple to read and good at concurrency."
+      }
+     ],
+     "questions": [
+      {
+       "id": "826b718a-7e16-401b-a4cd-b6a8711e19f4",
+       "statement": "How is a Go program executed, regarding compilation?",
+       "explanation": null,
+       "options": [
+        "It only runs inside a web browser",
+        "It needs a virtual machine to run the bytecode",
+        "It is interpreted line by line at runtime",
+        "It is compiled into a standalone executable, with no virtual machine"
+       ]
+      },
+      {
+       "id": "ae62f9f9-0d7c-4070-8a2a-3d26094a1ca7",
+       "statement": "Which is a hallmark design characteristic of the Go language?",
+       "explanation": null,
+       "options": [
+        "Intentional simplicity, with few keywords",
+        "The complete absence of type checking",
+        "A syntax full of complex and implicit features",
+        "The dependency on a heavy virtual machine"
+       ]
+      },
+      {
+       "id": "a66d0a3c-f538-4e85-a009-68b1d4fd3ada",
+       "statement": "Widely known tools written in Go include:",
+       "explanation": null,
+       "options": [
+        "Only games for old consoles",
+        "Docker and Kubernetes",
+        "Only office spreadsheets",
+        "Exclusively image editors"
+       ]
+      },
+      {
+       "id": "48ab2cec-5aad-4970-bd8c-107ffce6fb47",
+       "statement": "By whom and in what year was the Go language created?",
+       "explanation": null,
+       "options": [
+        "At Microsoft, released in 2001",
+        "At Google, released in 2009",
+        "At Apple, released in 2014",
+        "At Sun Microsystems, in the 90s"
+       ]
+      },
+      {
+       "id": "3cbcbee5-86e8-4447-977f-26152c64cd00",
+       "statement": "What is the role of the gofmt tool in daily work?",
+       "explanation": null,
+       "options": [
+        "Managing the versions of the project's external libraries",
+        "Detecting all logical bugs in the program",
+        "Standardizing code formatting automatically",
+        "Translating Go code to the C language"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "d55d5157-affb-4790-abea-4f6d76bbaeb8",
+     "title": "Your first program: hello world",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The first program\n\nEvery executable Go program starts in the `main` package and the `main` function. The program below, saved in a file `hello.go`, prints a message."
+      },
+      {
+       "type": "code",
+       "value": "package main\n\nimport \"fmt\"\n\nfunc main() {\n    fmt.Println(\"Hello, world!\")\n}"
+      },
+      {
+       "type": "text",
+       "value": "## Running and compiling\n\nGo offers two main commands:\n\n- `go run hello.go` compiles and runs in one step, great for experimenting.\n- `go build hello.go` produces the executable (`hello`), which you run later independently.\n\n```\ngo run hello.go     # prints: Hello, world!\ngo build hello.go   # produces the hello binary\n```"
+      },
+      {
+       "type": "text",
+       "value": "## The parts of the program\n\n- **package main**: declares the package. An executable program must be the `main` package.\n- **import \"fmt\"**: imports the standard `fmt` package, which handles formatted input and output.\n- **func main()**: the function where execution begins.\n- **fmt.Println(...)**: prints the argument and adds a newline. Notice that Go does not use semicolons at the end of lines; the tool handles that."
+      }
+     ],
+     "questions": [
+      {
+       "id": "73672466-21e0-4d51-9588-22ef3feeb333",
+       "statement": "In which package and function does the execution of an executable Go program begin?",
+       "explanation": null,
+       "options": [
+        "In the fmt package, in the Println function",
+        "In the start package, in the run function",
+        "In the main package, in the main function",
+        "In any package, on the first line of the file"
+       ]
+      },
+      {
+       "id": "e1ccd856-175d-4afc-9989-cb2963ba6a38",
+       "statement": "What does the command 'go run hello.go' do?",
+       "explanation": null,
+       "options": [
+        "Downloads dependencies without compiling the code",
+        "Formats the code without running anything",
+        "Compiles and runs the program in one step",
+        "Only produces the executable, without running it"
+       ]
+      },
+      {
+       "id": "0b29419e-45ec-417c-8def-025b9b120bef",
+       "statement": "Para que serve a linha 'import \"fmt\"' no programa?",
+       "explanation": null,
+       "options": [
+        "Importar o pacote padrão de entrada e saída formatada",
+        "Definir o nome do pacote atual",
+        "Compilar o programa em um executável",
+        "Declarar a função principal do programa"
+       ]
+      },
+      {
+       "id": "85404ddc-32bd-4e2a-a9ce-685e1bfc90d5",
+       "statement": "O que o comando 'go build ola.go' faz?",
+       "explanation": null,
+       "options": [
+        "Apaga o executável criado anteriormente",
+        "Formata o arquivo de código automaticamente",
+        "Gera o executável, que você roda depois",
+        "Compila e já executa o programa na hora"
+       ]
+      },
+      {
+       "id": "de263cca-1a00-4168-abad-43839b05fcb8",
+       "statement": "Sobre o ponto e vírgula ao fim das linhas em Go, o que é correto?",
+       "explanation": null,
+       "options": [
+        "É obrigatório ao fim de toda e qualquer instrução",
+        "Não é necessário; a ferramenta cuida disso",
+        "Serve para separar os imports entre si",
+        "Só é exigido dentro da função main"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "d3e0c535-08cd-4687-8d83-d913900df567",
+     "title": "Packages, imports, and exported names",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Everything lives in packages\n\nIn Go, code is organized into **packages**. Every file starts by declaring which package it belongs to. The `main` package produces an executable; any other name produces a library that other code can import."
+      },
+      {
+       "type": "text",
+       "value": "## Uppercase exports, lowercase hides\n\nGo has a simple and striking rule for visibility: a name starting with an **uppercase letter is exported**, meaning visible from outside the package; a name starting with a lowercase letter is private to the package. The capitalization replaces the `public` and `private` keywords of other languages."
+      },
+      {
+       "type": "code",
+       "value": "package math\n\n// Exported: visible from outside (starts with uppercase)\nfunc Add(a, b int) int {\n    return a + b\n}\n\n// Private: only inside the math package (starts with lowercase)\nfunc validate(x int) bool {\n    return x >= 0\n}"
+      },
+      {
+       "type": "quote",
+       "value": "In Go, a name starting with an uppercase letter is exported (visible from outside the package); starting with lowercase it is private. The capitalization replaces public and private."
+      }
+     ],
+     "questions": [
+      {
+       "id": "122033ea-736b-4de9-bffe-a386e7a39216",
+       "statement": "Em Go, o que determina se um nome é visível de fora do seu pacote?",
+       "explanation": null,
+       "options": [
+        "A ordem em que o nome aparece no arquivo",
+        "Uma palavra-chave public escrita antes do nome",
+        "A inicial: maiúscula exporta, minúscula é privada",
+        "O tamanho do nome escolhido para o item"
+       ]
+      },
+      {
+       "id": "27af8fa7-bd79-456e-83cb-5fce6e6cee5e",
+       "statement": "Qual pacote um programa executável em Go precisa declarar?",
+       "explanation": null,
+       "options": [
+        "O pacote fmt",
+        "O pacote main",
+        "O pacote build",
+        "O pacote exec"
+       ]
+      },
+      {
+       "id": "b5d74da2-97b9-42c7-9b00-21f68ada6974",
+       "statement": "Por que a função de impressão se escreve 'fmt.Println', com P maiúsculo?",
+       "explanation": null,
+       "options": [
+        "Porque Println é uma palavra reservada da linguagem",
+        "Porque Println é exportado pelo pacote fmt",
+        "Porque a maiúscula acelera a execução da função",
+        "Porque toda função em Go começa com maiúscula"
+       ]
+      },
+      {
+       "id": "3f32fb3e-ad34-454e-94cb-d411955863f0",
+       "statement": "Um pacote com nome diferente de main produz o quê?",
+       "explanation": null,
+       "options": [
+        "Um arquivo de configuração do projeto",
+        "Um executável pronto para rodar sozinho no sistema",
+        "Um erro, pois todo pacote deve ser main",
+        "Uma biblioteca, feita para ser importada"
+       ]
+      },
+      {
+       "id": "02cc96d2-3ae0-4454-83a4-8a8a61d3affb",
+       "statement": "A função validar do exemplo, com inicial minúscula, pode ser usada onde?",
+       "explanation": null,
+       "options": [
+        "Apenas pelo pacote main do programa",
+        "Só dentro do próprio pacote onde vive",
+        "Por qualquer pacote que a importe",
+        "De qualquer lugar, como toda função em Go"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ee6e6524-e95b-4149-83be-fac997ab140d",
+   "title": "Module 2 - Variables, types and operators",
+   "lessons": [
+    {
+     "id": "d58af7fd-a00c-4fdf-bc7b-f19c2ce53d00",
+     "title": "Variables: var, := and zero values",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Declaring variables\n\nGo has two ways to declare a variable. The full form uses `var`, with the type optional if there is an initial value:\n\n```\nvar age int = 30\nvar name = \"Ana\"   // type inferred: string\n```\n\nInside functions, the short form with `:=` is the most common. It declares and infers the type at once, without writing `var`:\n\n```\nage := 30       // int\nprice := 19.90    // float64\nactive := true     // bool\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Zero values: no garbage\n\nIn Go, every variable declared without a value receives the **zero value** of its type, never an undefined value. This eliminates the entire category of \"uninitialized variable\" bugs.\n\n- Numbers: `0`\n- Strings: `\"\"` (empty string)\n- Booleans: `false`\n- Pointers, slices and maps: `nil`\n\n```\nvar counter int      // 0\nvar message string   // \"\"\nvar ready bool       // false\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Go is strict: unused variables are errors\n\nA point that surprises people coming from other languages: in Go, a declared and **unused** variable causes a compilation error, not just a warning. The same applies to unused imports. It is an intentional choice to keep the code clean, but it requires attention at first."
+      },
+      {
+       "type": "quote",
+       "value": "Use := to declare and infer the type inside functions. Variables without a value receive the zero value (0, \"\", false, nil), and an unused variable is a compilation error."
+      }
+     ],
+     "questions": [
+      {
+       "id": "ee82180f-5886-4302-bd26-f5f7b1cb687a",
+       "statement": "What does the short form ':=' do in Go?",
+       "explanation": null,
+       "options": [
+        "It only assigns a value to an already existing variable",
+        "It declares the variable and infers its type at once",
+        "It compares two values and returns a boolean",
+        "It defines a constant that cannot change"
+       ]
+      },
+      {
+       "id": "6b3d9265-0fe6-4ff4-8904-582266b3da0b",
+       "statement": "What is the zero value of a string variable declared without a value?",
+       "explanation": null,
+       "options": [
+        "The empty string \"\"",
+        "The number zero",
+        "The null value",
+        "The nil value"
+       ]
+      },
+      {
+       "id": "0fc035dd-e426-43ce-a961-882b21f291f3",
+       "statement": "What happens in Go if you declare a variable and do not use it?",
+       "explanation": null,
+       "options": [
+        "It causes a compilation error",
+        "The compiler replaces the variable with another automatically",
+        "The program compiles and runs without any warning",
+        "The variable is deleted at runtime"
+       ]
+      },
+      {
+       "id": "5ab97531-c782-4ae8-973a-829418c45eb6",
+       "statement": "What is the zero value of a slice, a map or a pointer declared without a value?",
+       "explanation": null,
+       "options": [
+        "nil",
+        "An empty string",
+        "0",
+        "false"
+       ]
+      },
+      {
+       "id": "19b2b70b-c1f8-47b6-a4dd-34a0ce761267",
+       "statement": "Besides unused variables, what else causes a compilation error in Go?",
+       "explanation": null,
+       "options": [
+        "An imported and unused import",
+        "Using the := form inside a function",
+        "Letting a variable receive the zero value",
+        "Declaring a variable using var"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b78f4a75-8bfa-4053-9606-7aef3b46e641",
+     "title": "Basic types and constants",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The types you use most\n\nGo is statically typed. The basic types for daily work:\n\n- **int**: whole numbers (the size depends on the platform; there are also int32, int64).\n- **float64**: numbers with decimal places (the default for reals).\n- **string**: text, in double quotes.\n- **bool**: `true` or `false`.\n\nThere is also `byte` (an alias for uint8) and `rune` (an alias for int32, representing a Unicode character)."
+      },
+      {
+       "type": "table",
+       "value": "[[\"Type\",\"Stores\",\"Example\"],[\"int\",\"Whole number\",\"n := 10\"],[\"float64\",\"Number with decimals\",\"x := 2.5\"],[\"string\",\"Text\",\"s := \\\"hi\\\"\"],[\"bool\",\"True or false\",\"ok := true\"]]"
+      },
+      {
+       "type": "text",
+       "value": "## Explicit conversion\n\nGo does not convert numeric types automatically, not even between int and float64. You need to convert explicitly, writing the type like a function:\n\n```\ni := 10\nf := float64(i)   // converts int to float64\nn := int(3.9)     // converts float to int: 3 (truncates)\n```\n\nThis strictness prevents silent conversions that hide bugs."
+      },
+      {
+       "type": "text",
+       "value": "## Constants\n\nUse `const` for values that do not change. Constants are resolved at compile time and cannot receive the result of something that is only known at runtime.\n\n```\nconst Pi = 3.14159\nconst MaxAttempts = 3\n```"
+      },
+      {
+       "type": "quote",
+       "value": "Go does not convert numbers automatically: use float64(i) or int(x) explicitly. Fixed values go in const."
+      }
+     ],
+     "questions": [
+      {
+       "id": "b5e24cdd-cc55-42ea-82f0-3852489b8504",
+       "statement": "Which type is the default for numbers with decimal places in Go?",
+       "explanation": null,
+       "options": [
+        "float64",
+        "decimal",
+        "double",
+        "int"
+       ]
+      },
+      {
+       "id": "87ad8d92-f333-4ced-a611-80678f1bcc04",
+       "statement": "How do you convert an int named i to float64 in Go?",
+       "explanation": null,
+       "options": [
+        "float64(i)",
+        "i.toFloat64()",
+        "(float64) i",
+        "i as float64"
+       ]
+      },
+      {
+       "id": "5fdb1916-454b-49b1-8d8d-49d7e11cd15d",
+       "statement": "About the conversion between int and float64 in Go, what is true?",
+       "explanation": null,
+       "options": [
+        "You must convert them explicitly, as it is not automatic",
+        "It is impossible to convert an int to float64 in Go",
+        "Go converts one into the other automatically when needed",
+        "int and float64 are exactly the same type in Go"
+       ]
+      },
+      {
+       "id": "ea35d381-b4b9-462b-8550-875490ff286a",
+       "statement": "What does the rune type represent in Go?",
+       "explanation": null,
+       "options": [
+        "A sequence of several text characters",
+        "A boolean value stored in a single bit",
+        "A Unicode character, an alias for int32",
+        "A very high precision decimal number"
+       ]
+      },
+      {
+       "id": "d43d7ca9-0ca9-47e5-ba68-55c98e1f6bc8",
+       "statement": "What is the result of int(3.9) in Go?",
+       "explanation": null,
+       "options": [
+        "4, because it always rounds up",
+        "An invalid conversion error",
+        "3, because it truncates the decimal part",
+        "3.9, keeping the original value"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "16772d77-8bee-4292-808e-4d6222ae4229",
+     "title": "Operators and formatted printing",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Operators\n\nGo has the expected operators:\n\n- Arithmetic: `+`, `-`, `*`, `/`, `%` (remainder).\n- Relational: `==`, `!=`, `>`, `<`, `>=`, `<=`, which produce a bool.\n- Logical: `&&` (AND), `||` (OR), `!` (NOT).\n\nAs in other languages, dividing two integers yields an integer: `7 / 2` is `3`. For incrementing, Go uses `i++` and `i--`, but note: in Go these are statements, not expressions, so you cannot write `x := i++`."
+      },
+      {
+       "type": "code",
+       "value": "a := 17\nb := 5\nfmt.Println(a + b)   // 22\nfmt.Println(a % b)   // 2\nfmt.Println(a >= b)  // true"
+      },
+      {
+       "type": "text",
+       "value": "## Println and Printf\n\nThe `fmt` package has two common ways to print. `Println` prints the values separated by spaces and adds a newline. `Printf` uses a format string with verbs like `%d` (integer), `%f` (float), `%s` (string) and `%v` (any value), without a newline (add `\\n` yourself).\n\n```\nname := \"Ana\"\nage := 30\nfmt.Printf(\"%s is %d years old\\n\", name, age)   // Ana is 30 years old\n```"
+      },
+      {
+       "type": "quote",
+       "value": "fmt.Println prints values separated by spaces and adds a newline; fmt.Printf uses format verbs like %d, %s and %v."
+      }
+     ],
+     "questions": [
+      {
+       "id": "7d074487-de1b-4d06-a0b7-2e3a07d9f487",
+       "statement": "What is the result of '7 / 2' with two integers in Go?",
+       "explanation": null,
+       "options": [
+        "An error, because integers cannot be divided in Go",
+        "3.5, because Go rounds to the real value",
+        "4, because Go rounds the result up",
+        "3, because integer division discards the decimal part"
+       ]
+      },
+      {
+       "id": "1bf34faa-cf45-4aab-94c3-d8c6f0314b94",
+       "statement": "In fmt.Printf, which verb is used for an integer?",
+       "explanation": null,
+       "options": [
+        "%d",
+        "%b",
+        "%s",
+        "%f"
+       ]
+      },
+      {
+       "id": "2f1a8ee0-7f8b-4c62-a208-21ebe11d6b47",
+       "statement": "What is the difference between fmt.Println and fmt.Printf?",
+       "explanation": null,
+       "options": [
+        "Println does not exist in Go's fmt package",
+        "Printf only prints numbers, never text",
+        "Printf uses a format string with verbs; Println does not",
+        "Println requires a mandatory format string"
+       ]
+      },
+      {
+       "id": "d6de13e2-e839-49f2-bdef-44fec9481dde",
+       "statement": "What does the % operator do in Go, as in 'a % b'?",
+       "explanation": null,
+       "options": [
+        "It calculates the percentage of a",
+        "It returns the division remainder",
+        "It raises a to the power of b",
+        "It divides a by b as a decimal"
+       ]
+      },
+      {
+       "id": "2669c248-1925-4bfa-a9ca-dafeffbcd926",
+       "statement": "Why is the expression 'x := i++' invalid in Go?",
+       "explanation": null,
+       "options": [
+        "Because you can only increment inside a for",
+        "Because i++ only works with decimal numbers",
+        "Because i++ is a statement, not an expression",
+        "Because Go does not have an increment operator"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "28a469ec-2086-4ebc-b37f-a5ed91587744",
+   "title": "Module 3 - Control flow",
+   "lessons": [
+    {
+     "id": "3c5df4b3-68d6-4ecd-9b8f-d36c8d4b40aa",
+     "title": "Conditionals: if and switch",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The if in Go\n\nThe `if` runs a block when the condition is true. Unlike C or Java, the condition is **not** wrapped in parentheses, but braces are mandatory, even for a single line.\n\n```\nage := 20\nif age >= 18 {\n    fmt.Println(\"Of age\")\n} else {\n    fmt.Println(\"Under age\")\n}\n```"
+      },
+      {
+       "type": "text",
+       "value": "## if with an initialization statement\n\nAn idiomatic Go feature: the `if` can have a small statement before the condition, separated by a semicolon. The variable created there is only visible inside the if and its else. It is widely used with functions that return a value and an error.\n\n```\nif n := calculate(); n > 0 {\n    fmt.Println(\"positive:\", n)\n}\n// n no longer exists out here\n```"
+      },
+      {
+       "type": "text",
+       "value": "## The switch, without fall-through\n\nThe `switch` compares a value against several cases. The big difference from C and Java: **each case does not need break**, because there is no automatic fall-through. As soon as a case matches, it runs and the switch ends. If you intentionally want to fall into the next case, use the `fallthrough` keyword.\n\n```\nswitch day {\ncase 1:\n    fmt.Println(\"Sunday\")\ncase 3:\n    fmt.Println(\"Tuesday\")   // runs and stops; no break needed\ndefault:\n    fmt.Println(\"Another day\")\n}\n```"
+      },
+      {
+       "type": "quote",
+       "value": "In Go's if, the condition does not use parentheses. In the switch, there is no fall-through: each case stops on its own, without needing break."
+      }
+     ],
+     "questions": [
+      {
+       "id": "9780c755-9757-4b1f-b773-13d2bd9bc3a3",
+       "statement": "About the condition of an if in Go, what is correct?",
+       "explanation": null,
+       "options": [
+        "It does not use parentheses, and braces are mandatory",
+        "It requires parentheses around the condition",
+        "It dispenses with braces when there is only one line",
+        "It only accepts comparisons with whole numbers"
+       ]
+      },
+      {
+       "id": "35ec1ab4-3ce4-44fb-b293-c3b12409f29f",
+       "statement": "In Go's switch, what happens at the end of a case that matched?",
+       "explanation": null,
+       "options": [
+        "The switch ends, because there is no automatic fall-through",
+        "The default always runs right after the case",
+        "Execution falls into the next case, as in C and Java",
+        "Writing break is mandatory to end the case"
+       ]
+      },
+      {
+       "id": "a745cd99-f675-4c4c-9214-f32c9f38d4c2",
+       "statement": "In 'if n := calculate(); n > 0 {', where can the variable n be used?",
+       "explanation": null,
+       "options": [
+        "Only inside the if and its associated else",
+        "Nowhere, because the syntax is invalid",
+        "Only after the if ends",
+        "Anywhere in the file, without restriction"
+       ]
+      },
+      {
+       "id": "a6a32d9e-5bd1-455a-968e-1bcae8e76233",
+       "statement": "In Go's switch, what does the fallthrough keyword do?",
+       "explanation": null,
+       "options": [
+        "It jumps straight to the default block",
+        "It ends the switch at that point immediately",
+        "It repeats the current case one more time",
+        "It makes execution fall into the next case"
+       ]
+      },
+      {
+       "id": "0c3ab0b6-d1a0-41ff-a0c4-a19817fb32a8",
+       "statement": "In a switch, when is the default block executed?",
+       "explanation": null,
+       "options": [
+        "Always, right after the first case",
+        "Always, before any other case",
+        "Never, because it is only decorative",
+        "When no other case matches"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b616f099-b6d1-406f-8ae5-561b5733329b",
+     "title": "The for: Go's only loop",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# One loop to rule them all\n\nGo has only one loop keyword: `for`. There is no `while` or `do-while`. But `for` takes several forms, covering all cases.\n\nThe classic form, with initialization, condition and step:\n\n```\nfor i := 0; i < 5; i++ {\n    fmt.Println(i)   // 0, 1, 2, 3, 4\n}\n```"
+      },
+      {
+       "type": "text",
+       "value": "## for as while\n\nWith only a condition, `for` works like a while:\n\n```\nn := 1\nfor n <= 3 {\n    fmt.Println(n)\n    n++\n}\n```\n\nAnd with no condition at all, it is an infinite loop, which you interrupt with `break`:\n\n```\nfor {\n    // runs forever until a break\n    break\n}\n```"
+      },
+      {
+       "type": "quote",
+       "value": "Go only has for. With three parts it is the classic for; with one condition it becomes a while; with nothing it is an infinite loop interrupted by break."
+      }
+     ],
+     "questions": [
+      {
+       "id": "97bff0e1-408f-4d5b-b16c-e581ba1ade3f",
+       "statement": "How many loop keywords does the Go language have?",
+       "explanation": null,
+       "options": [
+        "Three: for, while and do-while",
+        "Only one: for",
+        "Two: for and while",
+        "None, because Go has no loops"
+       ]
+      },
+      {
+       "id": "d851e1a9-2bac-469d-974e-15cd0d558ab8",
+       "statement": "How do you write the equivalent of a while in Go?",
+       "explanation": null,
+       "options": [
+        "With the while keyword followed by the condition",
+        "With a loop followed by the condition in parentheses",
+        "With a for followed by only a condition",
+        "With a do followed by while at the end"
+       ]
+      },
+      {
+       "id": "04068587-5305-4014-9248-aafd34868963",
+       "statement": "What does 'for { ... }' with no condition represent?",
+       "explanation": null,
+       "options": [
+        "A loop that executes exactly once",
+        "An infinite loop, interrupted by a break",
+        "A loop that never executes the inner block",
+        "A compilation error, because the condition is missing"
+       ]
+      },
+      {
+       "id": "0afe9103-470e-4aa9-99bb-adcb405a7232",
+       "statement": "In the classic form 'for i := 0; i < 5; i++', what are the three parts?",
+       "explanation": null,
+       "options": [
+        "Initialization, condition and step",
+        "Type, name and value of the variable",
+        "Start, middle and end of the loop",
+        "Condition, body and return of the loop"
+       ]
+      },
+      {
+       "id": "d542a1e7-38eb-45f9-a400-c1cd450f80a2",
+       "statement": "What interrupts an infinite 'for { ... }' loop?",
+       "explanation": null,
+       "options": [
+        "The stop statement",
+        "The while statement",
+        "The break statement",
+        "The loop keyword"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b7ea0950-73f9-4b7e-8c09-eaa4acc38fce",
+     "title": "Iterating with range",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# range: iterating cleanly\n\nTo walk through the elements of a slice, array, string or map, Go uses `for ... range`. On each pass, range returns the **index** and the **value** of the element.\n\n```\nnumbers := []int{10, 20, 30}\nfor i, v := range numbers {\n    fmt.Println(i, v)   // 0 10, then 1 20, then 2 30\n}\n```"
+      },
+      {
+       "type": "text",
+       "value": "## The blank identifier _\n\nSometimes you only want the value, not the index. Since Go forbids unused variables, discarding the index with the **blank identifier** `_` solves it. It says \"I receive it, but I ignore it\".\n\n```\nfor _, v := range numbers {\n    fmt.Println(v)   // just the values: 10, 20, 30\n}\n```\n\nThe `_` also works to discard any return value you will not use, a common pattern in Go."
+      },
+      {
+       "type": "quote",
+       "value": "for ... range walks through and returns index and value. Use the blank identifier _ to discard what you will not use, avoiding the unused variable error."
+      }
+     ],
+     "questions": [
+      {
+       "id": "71eff77a-ad46-46d1-9904-229c3a1de03d",
+       "statement": "What does 'for i, v := range slice' return on each pass?",
+       "explanation": null,
+       "options": [
+        "The total size of the slice on each pass",
+        "Only the index of the element, without the value",
+        "Only the value of the element, without the index",
+        "The index and the value of the current element"
+       ]
+      },
+      {
+       "id": "6c9466b3-0e57-45bd-b3d4-6e94db460c85",
+       "statement": "What is the blank identifier _ used for in Go?",
+       "explanation": null,
+       "options": [
+        "Naming the default variable of every range",
+        "Discarding a value you receive but will not use",
+        "Marking the end of a for loop",
+        "Declaring a global constant of the program"
+       ]
+      },
+      {
+       "id": "9fc799ee-6cf0-4bc3-893c-6ffbcefadac2",
+       "statement": "Why is discarding the index with _ useful when using range in Go?",
+       "explanation": null,
+       "options": [
+        "Because range does not work without the _ identifier",
+        "Because without _ the value would always come empty",
+        "Because _ speeds up loop execution",
+        "Because an unused variable would cause a compilation error"
+       ]
+      },
+      {
+       "id": "0b1e87a5-ff46-4018-bf94-f24719622092",
+       "statement": "Which types can for...range iterate over, according to the lesson?",
+       "explanation": null,
+       "options": [
+        "Only slices of integers",
+        "Only strings and nothing else",
+        "Slice, array, string and map",
+        "Only maps with string keys"
+       ]
+      },
+      {
+       "id": "9d63ab8b-ed45-4372-9f9a-d64fb7ef221c",
+       "statement": "To get only the value of each element with range, how do you write it?",
+       "explanation": null,
+       "options": [
+        "for v := range slice",
+        "for range slice",
+        "for _, v := range slice",
+        "for v, _ := range slice"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "5f7c61e5-65a2-4999-ba26-c1d2ab6aef41",
+   "title": "Module 4 - Functions",
+   "lessons": [
+    {
+     "id": "327fda22-571b-4cd8-aa3c-236d860ab05e",
+     "title": "Functions and multiple returns",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Declaring functions\n\nA function in Go starts with `func`, followed by the name, the parameters (with the type after the name) and the return type.\n\n```\nfunc add(a int, b int) int {\n    return a + b\n}\n\nfunc main() {\n    total := add(3, 4)   // 7\n}\n```\n\nWhen consecutive parameters share the same type, you can write the type only once: `func add(a, b int) int`."
+      },
+      {
+       "type": "text",
+       "value": "## The big differentiator: multiple returns\n\nGo lets a function return **several values** at once. This is used all the time, mainly to return a result along with a possible error.\n\n```\nfunc divide(a, b int) (int, int) {\n    return a / b, a % b   // quotient and remainder\n}\n\nq, r := divide(17, 5)   // q = 3, r = 2\n```\n\nThis is the foundation of Go's idiomatic error handling style, which you will see ahead: `value, err := doSomething()`."
+      },
+      {
+       "type": "quote",
+       "value": "In Go, the type comes after the parameter name, and a function can return several values at once, which supports the value, err := ... style."
+      }
+     ],
+     "questions": [
+      {
+       "id": "290bca64-ea5f-4b8e-aa08-043fe52e818a",
+       "statement": "In Go, where does the type of a parameter go in a function declaration?",
+       "explanation": null,
+       "options": [
+        "Parameter types are not declared in Go",
+        "Always in brackets at the end of the function",
+        "After the parameter name",
+        "Before the parameter name"
+       ]
+      },
+      {
+       "id": "d4bb349a-6007-467f-b421-ff076fa0e847",
+       "statement": "Which is a striking differentiator of functions in Go?",
+       "explanation": null,
+       "options": [
+        "They can never return any value",
+        "They cannot receive any parameters",
+        "They can only return string values",
+        "They can return several values at once"
+       ]
+      },
+      {
+       "id": "43b45b24-900b-420d-b1da-c38b0f406f0e",
+       "statement": "The idiomatic style 'value, err := doSomething()' depends on which Go feature?",
+       "explanation": null,
+       "options": [
+        "A function returning multiple values",
+        "Automatic conversion between numeric types",
+        "The absence of types in the language",
+        "The automatic fall-through of switch"
+       ]
+      },
+      {
+       "id": "1eaf381a-cb95-4706-896e-b694de316b60",
+       "statement": "How do you write two consecutive int parameters in shorthand?",
+       "explanation": null,
+       "options": [
+        "func add(int a, int b)",
+        "func add(a, b int)",
+        "func add(a: int, b: int)",
+        "func add(a int, b)"
+       ]
+      },
+      {
+       "id": "0cb8d0ae-a919-484d-be88-faf39b8e465d",
+       "statement": "In the example, what does the function 'divide(a, b int) (int, int)' return?",
+       "explanation": null,
+       "options": [
+        "The quotient and the remainder of the division",
+        "The sum and the product of a and b",
+        "Only the remainder of the integer division",
+        "Only the quotient of the integer division"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "b22ac7fc-3d52-4a64-ac2e-571f4627df3c",
+     "title": "Named returns and variadic functions",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Named returns\n\nGo lets you give **names** to the return values in the signature. Those names become pre-declared variables inside the function, and a bare `return` sends their current values back. Used in moderation, it makes the intent clear.\n\n```\nfunc divide(a, b int) (quotient, remainder int) {\n    quotient = a / b\n    remainder = a % b\n    return   // returns quotient and remainder\n}\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Variadic functions\n\nA **variadic** function accepts a variable number of arguments of the same type, indicated with `...`. Inside the function, that parameter is treated as a slice.\n\n```\nfunc sumAll(numbers ...int) int {\n    total := 0\n    for _, n := range numbers {\n        total += n\n    }\n    return total\n}\n\nsumAll(1, 2, 3)      // 6\nsumAll(10, 20)       // 30\n```\n\n`fmt.Println` itself is variadic: that is why it accepts as many arguments as you want."
+      },
+      {
+       "type": "quote",
+       "value": "Named returns become ready-made variables and allow a bare return. Variadic functions use ... to accept multiple arguments, treated as a slice."
+      }
+     ],
+     "questions": [
+      {
+       "id": "f3d9e15b-2f6c-4bf5-9eec-8876ed2353e2",
+       "statement": "What characterizes a variadic function in Go?",
+       "explanation": null,
+       "options": [
+        "It accepts a variable number of arguments, marked with ...",
+        "It always returns several values at once",
+        "It changes return type on each call",
+        "It cannot receive any input arguments"
+       ]
+      },
+      {
+       "id": "ad6affbe-f485-44cb-9858-76e8869fad64",
+       "statement": "Inside a variadic function, how is the ... parameter treated?",
+       "explanation": null,
+       "options": [
+        "As a map with numeric keys",
+        "As a single value from the first argument",
+        "As a slice of the received values",
+        "As a string with the values joined together"
+       ]
+      },
+      {
+       "id": "a64b3809-d3b0-4194-9750-1578ef24eda0",
+       "statement": "With named returns, what does a bare 'return' do?",
+       "explanation": null,
+       "options": [
+        "It returns the current values of the named return variables",
+        "It causes a compilation error for missing values",
+        "It ends the entire program immediately",
+        "It always returns the zero values of the return types"
+       ]
+      },
+      {
+       "id": "2ee37b49-5c94-4286-9062-f5135698ec31",
+       "statement": "Why does fmt.Println accept as many arguments as you want?",
+       "explanation": null,
+       "options": [
+        "Because it is a variadic function",
+        "Because it only accepts one argument at a time",
+        "Because it ignores all extra arguments",
+        "Because it converts everything into a single string first"
+       ]
+      },
+      {
+       "id": "de4e7221-69a5-43e8-95f4-30e76b9af002",
+       "statement": "With named returns, what do the names in the signature become inside the function?",
+       "explanation": null,
+       "options": [
+        "New input parameters of the function",
+        "Just labels with no effect on the code",
+        "Pre-declared variables ready to use",
+        "Constants that cannot change value"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "754aea0d-bd92-4599-950f-9a13530c5214",
+     "title": "defer and functions as values",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# defer: postponing until the end\n\nThe `defer` schedules a call to run at the moment the current function **returns**, no matter what happens along the way. It is the idiomatic way to guarantee that a resource is released, like closing a file right after opening it.\n\n```\nf := openFile()\ndefer f.Close()   // will be called when the function ends\n// ... use the file here\n```\n\nIf there are multiple `defer` statements, they run in reverse order (the last scheduled runs first), like a stack."
+      },
+      {
+       "type": "text",
+       "value": "## Functions are values\n\nIn Go, functions are first-class values: you can store them in variables, pass them as arguments, and return them from other functions. You can also create anonymous functions on the spot.\n\n```\ndouble := func(x int) int {\n    return x * 2\n}\nfmt.Println(double(5))   // 10\n```\n\nThis feature is the foundation of flexible patterns, like passing a comparison function to sort a list."
+      },
+      {
+       "type": "quote",
+       "value": "defer schedules a call for when the function returns, ideal for releasing resources. Functions are values: they fit in variables and become arguments."
+      }
+     ],
+     "questions": [
+      {
+       "id": "7ab04279-7a95-4648-a55c-b790ef310259",
+       "statement": "When is a call scheduled by defer executed?",
+       "explanation": null,
+       "options": [
+        "At the moment the current function returns",
+        "Only if an error occurs in the function",
+        "Immediately, on the line where defer appears",
+        "At the start of the function, before everything"
+       ]
+      },
+      {
+       "id": "db61531c-ec44-41ff-a43d-e7776cb930cd",
+       "statement": "What is defer typically used for in Go?",
+       "explanation": null,
+       "options": [
+        "Converting numeric types automatically",
+        "Guaranteeing resource release, like closing a file",
+        "Speeding up the execution of loops",
+        "Declaring global variables of the program"
+       ]
+      },
+      {
+       "id": "c590b530-0c91-4de4-91af-347518a2fb2e",
+       "statement": "What does it mean that functions are first-class values in Go?",
+       "explanation": null,
+       "options": [
+        "They cannot have any input parameters",
+        "They must always return several values at once",
+        "They can be stored in variables and passed as arguments",
+        "They can only be declared inside the main package"
+       ]
+      },
+      {
+       "id": "494815e6-9fac-4510-ae2a-a0735ed7960e",
+       "statement": "With several defers in a function, in what order are they executed?",
+       "explanation": null,
+       "options": [
+        "All at once, simultaneously",
+        "In random order on each execution",
+        "In reverse order, the last one first",
+        "In the same order they were written"
+       ]
+      },
+      {
+       "id": "a166a128-4710-4a5d-88d6-14a840c97928",
+       "statement": "What is an anonymous function in Go?",
+       "explanation": null,
+       "options": [
+        "A function that returns no value at all",
+        "A function created on the spot, without a name",
+        "A function with no parameters",
+        "A function private to a package"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dc935830-09a8-47ad-8267-21ce345168b2",
+   "title": "Module 5 - Slices and maps",
+   "lessons": [
+    {
+     "id": "91fc635c-c914-4941-b58f-a58900fd2019",
+     "title": "Arrays and slices",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Arrays have a fixed size\n\nAn **array** in Go has a fixed size, defined in the declaration and part of its type. `[3]int` and `[4]int` are different types. In practice, fixed-size arrays are rarely used directly.\n\n```\nvar numbers [3]int      // [0 0 0], zero values\nnumbers[0] = 10\nfmt.Println(numbers)    // [10 0 0]\n```"
+      },
+      {
+       "type": "text",
+       "value": "# Slices: the everyday structure\n\nThe **slice** is the most used structure in Go: a variable-length sequence backed by an array underneath. You declare it without a fixed size and grow it with `append`.\n\n```\nnumbers := []int{10, 20, 30}   // a slice\nnumbers = append(numbers, 40)  // [10 20 30 40]\nfmt.Println(len(numbers))      // 4\n```\n\nThe `len` function gives the slice's size, and `append` returns a new slice with the element added (that is why we reassign to `numbers`)."
+      },
+      {
+       "type": "text",
+       "value": "## Slicing\n\nYou can get a portion of a slice with the notation `s[start:end]`, which includes the start and excludes the end. Indexes start at 0.\n\n```\ns := []int{10, 20, 30, 40, 50}\nfmt.Println(s[1:3])   // [20 30]\nfmt.Println(s[:2])    // [10 20]\nfmt.Println(s[3:])    // [40 50]\n```"
+      },
+      {
+       "type": "quote",
+       "value": "Arrays have a fixed size and are rarely used directly. The slice is the everyday structure: it grows with append and is sliced with s[start:end]."
+      }
+     ],
+     "questions": [
+      {
+       "id": "70758477-52cd-44be-80e1-f9db523bfa37",
+       "statement": "What is the core difference between an array and a slice in Go?",
+       "explanation": null,
+       "options": [
+        "The slice has a fixed size; the array is variable",
+        "Both behave exactly the same way",
+        "Arrays only store strings and slices only numbers",
+        "The array has a fixed size; the slice has a variable size"
+       ]
+      },
+      {
+       "id": "c2bb7dec-ee60-4a74-a165-5a00508f25e1",
+       "statement": "Which function adds an element to a slice?",
+       "explanation": null,
+       "options": [
+        "insert",
+        "add",
+        "append",
+        "push"
+       ]
+      },
+      {
+       "id": "7de8f234-8e68-4160-abaa-331b23a3aaa7",
+       "statement": "What does 's[1:3]' return for the slice {10, 20, 30, 40}?",
+       "explanation": null,
+       "options": [
+        "[20 30 40], because it includes indexes 1 through 3",
+        "[20 30], because it includes index 1 and excludes 3",
+        "[10 20 30], because it always starts from the beginning",
+        "[30 40], because it counts from the end"
+       ]
+      },
+      {
+       "id": "5421c477-4add-47de-b5cd-89555f9dd0b8",
+       "statement": "What does the len function do with a slice?",
+       "explanation": null,
+       "options": [
+        "It sorts its elements",
+        "It returns its size",
+        "It removes its last element",
+        "It adds an element to it"
+       ]
+      },
+      {
+       "id": "3f60e545-d929-417e-b203-fa00a0a71c02",
+       "statement": "Why do we write 'numbers = append(numbers, 40)', reassigning to numbers?",
+       "explanation": null,
+       "options": [
+        "Because append only works inside a for",
+        "Because append deletes the old slice from memory",
+        "Because without the reassignment the code would not compile",
+        "Because append returns a new ready slice"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "f6878fab-93f6-421f-ab70-45cfec4d5551",
+     "title": "Growing and creating slices",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# make and the empty slice\n\nBesides the literal `[]int{...}`, you can create a slice with `make`, informing the type and the initial size. A slice can start empty and grow as you add to it.\n\n```\nnumbers := make([]int, 0)   // empty int slice\nfor i := 1; i <= 3; i++ {\n    numbers = append(numbers, i)\n}\nfmt.Println(numbers)   // [1 2 3]\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Watch out: slices share the underlying array\n\nAn important Go detail: when you slice or copy a slice, the new slice may point to the **same underlying array**. Changing one can affect the other. If you need an independent copy, use the `copy` function into a new slice.\n\n```\noriginal := []int{1, 2, 3}\npart := original[:2]\npart[0] = 99\nfmt.Println(original)   // [99 2 3], changed too!\n```"
+      },
+      {
+       "type": "quote",
+       "value": "Create slices with make or with a literal. Remember that slices can share the same underlying array, so changing one can affect the other."
+      }
+     ],
+     "questions": [
+      {
+       "id": "15dde68a-c0c9-4dc0-ae5c-e23016aa1c72",
+       "statement": "What does 'make([]int, 0)' create?",
+       "explanation": null,
+       "options": [
+        "A fixed and immutable array of size zero",
+        "A single integer with value zero",
+        "A map of integers with no keys",
+        "An empty int slice, ready to grow with append"
+       ]
+      },
+      {
+       "id": "53dd86c2-dc23-421b-a6da-228e0d491ca7",
+       "statement": "Why can changing a slice portion affect the original slice?",
+       "explanation": null,
+       "options": [
+        "Because slices always create fully independent copies",
+        "Because the portion becomes a map when created",
+        "Because Go forbids slicing existing slices",
+        "Because both may point to the same underlying array"
+       ]
+      },
+      {
+       "id": "9d1e24ff-21d7-45a7-be0b-706287eb4162",
+       "statement": "If you need an independent copy of a slice, what do you use?",
+       "explanation": null,
+       "options": [
+        "The len function, which duplicates the slice",
+        "The copy function, into a new slice",
+        "The append function, which always isolates data",
+        "Nothing, because every assignment already copies everything"
+       ]
+      },
+      {
+       "id": "0ac1de8d-252f-44c7-b237-048983c049a5",
+       "statement": "What do you provide when creating a slice with make?",
+       "explanation": null,
+       "options": [
+        "Only the ready values",
+        "Just the variable name",
+        "The type and the initial size",
+        "The sort order of the data"
+       ]
+      },
+      {
+       "id": "9409e5e0-cd4e-48f5-b27f-ef8b416f115f",
+       "statement": "In the example, after 'part := original[:2]' and 'part[0] = 99', what happens to original?",
+       "explanation": null,
+       "options": [
+        "It becomes an isolated copy",
+        "It is completely erased from memory",
+        "It remains completely unchanged",
+        "Its first element also becomes 99"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "d9856332-e614-44d7-b4d1-97701861057c",
+     "title": "Maps: key and value pairs",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Go's dictionary\n\nA **map** associates keys with values, like a dictionary. You create it with `make` (or a literal) and access it with brackets.\n\n```\nages := make(map[string]int)\nages[\"Ana\"] = 30\nages[\"Bruno\"] = 25\nfmt.Println(ages[\"Ana\"])   // 30\n```\n\nThe type `map[string]int` means: keys of type string, values of type int. To remove a key, use `delete(ages, \"Ana\")`."
+      },
+      {
+       "type": "text",
+       "value": "## The comma-ok idiom\n\nAccessing a key that does not exist returns the zero value of the value's type, not an error. To distinguish \"the key exists and holds zero\" from \"the key does not exist\", use the two-return form, the **comma-ok**: besides the value, you get a bool telling whether the key existed.\n\n```\nvalue, exists := ages[\"Carla\"]\nif exists {\n    fmt.Println(value)\n} else {\n    fmt.Println(\"Carla is not in the map\")\n}\n```"
+      },
+      {
+       "type": "quote",
+       "value": "map[string]int has string keys and int values. A missing key returns the zero value; use value, ok := m[key] to know whether the key actually exists."
+      }
+     ],
+     "questions": [
+      {
+       "id": "64f62f97-3cee-4c9e-84cb-0bc05caf959d",
+       "statement": "What does the type 'map[string]int' represent?",
+       "explanation": null,
+       "options": [
+        "A map with string keys and int values",
+        "A fixed array of integer pairs",
+        "A slice of mixed strings and integers",
+        "A map with int keys and string values"
+       ]
+      },
+      {
+       "id": "61f5e603-ed97-4d0f-8fbf-835628b2b81b",
+       "statement": "What happens when accessing a key that does not exist in a map?",
+       "explanation": null,
+       "options": [
+        "It returns the zero value of the value's type",
+        "It returns the value of any other key",
+        "It creates the key automatically with a random value",
+        "It throws an error that interrupts the program"
+       ]
+      },
+      {
+       "id": "b30bbbcb-a93c-4bb9-916f-333b5ee85108",
+       "statement": "To know for sure whether a key exists in a map, which pattern do you use?",
+       "explanation": null,
+       "options": [
+        "Comparing the value directly with null",
+        "Walking through the whole map with a for on each access",
+        "Using the len function on the key",
+        "The comma-ok: value, ok := m[key]"
+       ]
+      },
+      {
+       "id": "2fa115b2-34dc-4c9d-bfbf-dff442144d1b",
+       "statement": "Which function removes a key from a map in Go?",
+       "explanation": null,
+       "options": [
+        "clear",
+        "remove",
+        "delete",
+        "pop"
+       ]
+      },
+      {
+       "id": "f92d9301-fc68-4ae3-b7e0-24508415b8cd",
+       "statement": "In the comma-ok idiom 'value, exists := m[key]', what is 'exists'?",
+       "explanation": null,
+       "options": [
+        "The key's position within the map",
+        "A copy of the previous key's value",
+        "The total number of keys in the map",
+        "A bool telling whether the key existed"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1e0cc4c9-ed19-4452-8007-78497bd8e168",
+   "title": "Module 6 - Structs and methods",
+   "lessons": [
+    {
+     "id": "3934161c-72b8-43c0-a206-7bf768ef856a",
+     "title": "Structs: grouping data",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Go has no classes\n\nGo has no classes or inheritance in the traditional sense. Instead, you use **structs**: a type that groups related fields under a name. It is the way to model an entity, like a person or a product.\n\n```\ntype Person struct {\n    Name string\n    Age  int\n}\n```\n\nWith `type ... struct`, you define a new type `Person` with two fields."
+      },
+      {
+       "type": "text",
+       "value": "## Creating and accessing\n\nYou create a struct value by providing the fields, preferably by name, and access them with a dot.\n\n```\np := Person{Name: \"Ana\", Age: 30}\nfmt.Println(p.Name)   // Ana\np.Age = 31            // changes the field\n```\n\nFields you do not provide receive the zero value. As you saw with packages, fields starting with an uppercase letter are exported (visible from outside the package); lowercase ones stay private."
+      },
+      {
+       "type": "quote",
+       "value": "Go has no classes: use structs to group fields under a type. Create with Type{Field: value} and access fields with a dot."
+      }
+     ],
+     "questions": [
+      {
+       "id": "04cb7ec1-0a01-4e79-875e-aca13dcdbc99",
+       "statement": "How does Go group related data fields, since it has no classes?",
+       "explanation": null,
+       "options": [
+        "With classes, like Java's",
+        "With maps, mandatorily for all data",
+        "Only with slices of loose values",
+        "With structs, types that gather fields under a name"
+       ]
+      },
+      {
+       "id": "8af09382-5b6d-4122-9f34-2f31cc807bce",
+       "statement": "How do you access the Name field of a struct called p?",
+       "explanation": null,
+       "options": [
+        "p->Name",
+        "p.Name",
+        "Name(p)",
+        "p[Name]"
+       ]
+      },
+      {
+       "id": "0b79f7bd-7aa3-4a87-a335-6ae14390516d",
+       "statement": "In a struct, what happens to a field you do not provide when creating it?",
+       "explanation": null,
+       "options": [
+        "It stays undefined, with a garbage value",
+        "It receives the zero value of its type",
+        "It causes a compilation error",
+        "It is removed from the struct automatically"
+       ]
+      },
+      {
+       "id": "298a6dfc-e280-4b86-a327-c9b742d74d64",
+       "statement": "What does Go NOT have, which leads to using structs?",
+       "explanation": null,
+       "options": [
+        "Traditional classes and inheritance",
+        "Numeric types like int",
+        "Functions with multiple input parameters",
+        "Repetition loops like for"
+       ]
+      },
+      {
+       "id": "b9905db3-1fb8-48fc-aedc-fe76b1602f13",
+       "statement": "In a struct, a field whose name starts with a lowercase letter is:",
+       "explanation": null,
+       "options": [
+        "Private to the package where the struct lives",
+        "Automatically converted into a method",
+        "Always ignored when creating the struct",
+        "Exported and visible from any package"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "9fd84f56-485e-4f6c-ace6-c8028f0df737",
+     "title": "Methods, pointers and the receiver",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Methods with a receiver\n\nIn Go, a **method** is a function associated with a type. This is done through a **receiver**: a special parameter between `func` and the method name, saying which type the method belongs to.\n\n```\nfunc (p Person) Greet() string {\n    return \"Hi, I am \" + p.Name\n}\n\np := Person{Name: \"Ana\"}\nfmt.Println(p.Greet())   // Hi, I am Ana\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Pointers in a nutshell\n\nA **pointer** stores the address of a variable, not the value itself. `&x` gets the address of `x`, and `*p` accesses the value pointed to by `p`. Pointers let a function change the original variable instead of working on a copy.\n\n```\nx := 10\np := &x     // p points to x\n*p = 20     // changes x through the pointer\nfmt.Println(x)   // 20\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Value receiver vs pointer receiver\n\nWhen the receiver is a **value** (`p Person`), the method receives a copy: changing fields does not affect the original. When the receiver is a **pointer** (`p *Person`), the method works on the real object, so it can change it.\n\n```\nfunc (p *Person) HaveBirthday() {\n    p.Age++   // changes the actual Person\n}\n```\n\nRule of thumb: if the method needs to modify the struct, use a pointer receiver."
+      },
+      {
+       "type": "quote",
+       "value": "Methods use a receiver to belong to a type. A value receiver works on a copy; a pointer receiver (*Type) changes the real object."
+      }
+     ],
+     "questions": [
+      {
+       "id": "d3e389b2-7f95-41a9-88b7-35ac09971793",
+       "statement": "What is the receiver of a method in Go?",
+       "explanation": null,
+       "options": [
+        "The value the method always returns at the end",
+        "A special parameter that associates the method with a type",
+        "A keyword that declares a struct",
+        "The mandatory name of every Go package"
+       ]
+      },
+      {
+       "id": "0be7a6e2-6367-49b3-be5c-e11ad76fdf5b",
+       "statement": "If a method needs to change the struct's fields, which receiver type should you use?",
+       "explanation": null,
+       "options": [
+        "A pointer receiver, like (p *Person)",
+        "A string type receiver always",
+        "A value receiver, like (p Person)",
+        "None, because methods never change structs"
+       ]
+      },
+      {
+       "id": "6e8a1661-53b8-496a-90f4-f7ccd7b5002d",
+       "statement": "What does the & operator do in Go, as in '&x'?",
+       "explanation": null,
+       "options": [
+        "It returns the value stored in x directly",
+        "It compares x with another logical value",
+        "It converts x to the text pointer type",
+        "It returns the address of x, creating a pointer to it"
+       ]
+      },
+      {
+       "id": "a245339f-0154-4c1a-a270-14f120bca643",
+       "statement": "What does the * operator do in '*p', when p is a pointer?",
+       "explanation": null,
+       "options": [
+        "It multiplies p by itself",
+        "It accesses the value pointed to by p",
+        "It returns the memory address of p",
+        "It creates a new pointer to p"
+       ]
+      },
+      {
+       "id": "73860b86-b2ff-495d-9318-51d6575a2938",
+       "statement": "With a value receiver, like '(p Person)', what happens when you change a field in the method?",
+       "explanation": null,
+       "options": [
+        "The change stays only in the local copy",
+        "The original is changed along with the received copy",
+        "The method starts returning a pointer",
+        "A compilation error occurs immediately"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "ed3cb994-df0f-45f3-bb2d-7812bb21e974",
+     "title": "Composition with embedding",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Reusing without inheritance\n\nSince Go has no inheritance, reuse between types happens through **composition**: one struct contains another. Go offers an elegant form of this, **embedding**, where you declare a type inside another without giving it a field name.\n\n```\ntype Animal struct {\n    Name string\n}\n\nfunc (a Animal) Eat() {\n    fmt.Println(a.Name + \" is eating\")\n}\n\ntype Dog struct {\n    Animal   // embedding: no field name\n    Breed string\n}\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Methods and fields are promoted\n\nWith embedding, the embedded type's fields and methods become directly accessible on the outer type, as if they were its own. It is Go's idiomatic way to reuse behavior.\n\n```\nrex := Dog{Animal: Animal{Name: \"Rex\"}, Breed: \"Mutt\"}\nfmt.Println(rex.Name)   // Rex, from the embedded Animal\nrex.Eat()               // Rex is eating, Animal's method\n```\n\nGo favors composition over inheritance: you assemble behaviors by combining pieces, instead of building rigid class hierarchies."
+      },
+      {
+       "type": "quote",
+       "value": "Without inheritance, Go reuses through composition. With embedding, the embedded type's fields and methods become directly accessible on the outer type."
+      }
+     ],
+     "questions": [
+      {
+       "id": "7b72d607-b0b0-4338-8399-b053ca62ab2f",
+       "statement": "How does Go promote behavior reuse between types, since it has no inheritance?",
+       "explanation": null,
+       "options": [
+        "Through composition, with one struct containing another (embedding)",
+        "By manually copying the code into each type",
+        "It is not possible to reuse behavior in Go",
+        "Through multiple inheritance between several classes"
+       ]
+      },
+      {
+       "id": "56c1f632-2096-41fc-a5d9-7b2acff2118b",
+       "statement": "With embedding, what happens to the embedded type's fields and methods?",
+       "explanation": null,
+       "options": [
+        "They are converted into global variables",
+        "They become directly accessible on the outer type",
+        "They need to be rewritten in the outer type",
+        "They become completely inaccessible on the outer type"
+       ]
+      },
+      {
+       "id": "1b51c01c-118e-4697-9bd0-5e06c9785535",
+       "statement": "Which design principle does Go favor?",
+       "explanation": null,
+       "options": [
+        "Total absence of code reuse",
+        "Deep inheritance of many classes",
+        "Manual copying of behavior between types",
+        "Composition over inheritance"
+       ]
+      },
+      {
+       "id": "e834f75a-343a-44af-8856-d0aaa78bfa7e",
+       "statement": "What characterizes embedding in a Go struct?",
+       "explanation": null,
+       "options": [
+        "Inheriting from a base class with the extends keyword",
+        "Declaring a type inside another without naming it",
+        "Manually copying all fields from another struct",
+        "Storing several structs inside a single slice"
+       ]
+      },
+      {
+       "id": "22e1c8f4-f646-4a2b-96c4-602957358708",
+       "statement": "Why does 'rex.Eat()' work, even though Eat is Animal's method?",
+       "explanation": null,
+       "options": [
+        "Because Eat was rewritten inside Dog",
+        "Because embedding promotes the method up",
+        "Because Dog inherits from Animal using extends",
+        "Because every method in Go is global to the program"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "a704d976-5af3-4e6a-87de-ac97b87a9d7d",
+   "title": "Module 7 - Interfaces",
+   "lessons": [
+    {
+     "id": "ea5eb16c-cecb-48a6-b166-00040a9fec54",
+     "title": "Interfaces: an implicit contract",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What an interface is\n\nAn **interface** defines a set of methods, a behavioral contract. Any type that has those methods satisfies the interface. Go's big difference is that this is **implicit**: there is no `implements` keyword. If the type has the right methods, it satisfies the interface, with no declaration needed.\n\n```\ntype Speaker interface {\n    Speak() string\n}\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Satisfying without declaring\n\nIt is enough for a type to have the method `Speak() string` to be a `Speaker`, automatically.\n\n```\ntype Dog struct{}\nfunc (d Dog) Speak() string { return \"Woof\" }\n\ntype Cat struct{}\nfunc (c Cat) Speak() string { return \"Meow\" }\n\n// both satisfy Speaker without writing it anywhere\nvar s Speaker = Dog{}\nfmt.Println(s.Speak())   // Woof\n```\n\nThis loose coupling is a hallmark of Go: one package can define an interface and use types from other packages that satisfy it, even without them knowing about the interface."
+      },
+      {
+       "type": "quote",
+       "value": "In Go, interfaces are satisfied implicitly: if the type has the contract's methods, it already satisfies it, without any implements keyword."
+      }
+     ],
+     "questions": [
+      {
+       "id": "2b072105-4578-466d-b42c-a5657e4f2b3c",
+       "statement": "How does a type come to satisfy an interface in Go?",
+       "explanation": null,
+       "options": [
+        "It just needs to have the methods the interface declares; it is implicit",
+        "You need to register the type in the interface manually",
+        "You need to inherit from the interface with extends",
+        "You need to write the implements keyword"
+       ]
+      },
+      {
+       "id": "7d406cf3-3fdb-4a81-ab41-c198fa881d58",
+       "statement": "What does an interface define in Go?",
+       "explanation": null,
+       "options": [
+        "A set of methods, a behavioral contract",
+        "A set of data fields of a struct",
+        "A constant value used across the program",
+        "A special loop for walking collections"
+       ]
+      },
+      {
+       "id": "6601c818-16b0-4cb3-b01d-ef68d5c10b4b",
+       "statement": "Which is an advantage of Go's implicit interfaces?",
+       "explanation": null,
+       "options": [
+        "They force all types to declare all interfaces",
+        "They prevent different types from having the same method",
+        "A type can satisfy an interface without even knowing it",
+        "They eliminate the need to write methods"
+       ]
+      },
+      {
+       "id": "1559a309-52d7-41b7-b98e-1c982fc42e11",
+       "statement": "Which keyword does Go use to declare that a type implements an interface?",
+       "explanation": null,
+       "options": [
+        "None; satisfaction is implicit",
+        "The implements keyword, before the type",
+        "The interface keyword in the type",
+        "The extends keyword, like Java"
+       ]
+      },
+      {
+       "id": "45cf864e-e7cf-4305-b21a-dfd430ea9d28",
+       "statement": "The loose coupling of Go's interfaces allows:",
+       "explanation": null,
+       "options": [
+        "Two types to never share a same method",
+        "One package to use types from another that satisfy it",
+        "A type to switch interfaces at runtime",
+        "Interfaces to also store data fields"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "cab36910-67cb-49c0-a0b3-6ea0ad606ca5",
+     "title": "Polymorphism with interfaces",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# One function, several types\n\nInterfaces enable polymorphism in Go. A function that receives an interface accepts any type satisfying it, and calls the method without knowing the concrete type.\n\n```\nfunc introduce(s Speaker) {\n    fmt.Println(s.Speak())\n}\n\nintroduce(Dog{})   // Woof\nintroduce(Cat{})   // Meow\n```\n\nThe same function handles `Dog` and `Cat` because both are `Speaker`. To add a new type that speaks, just give it the `Speak()` method, without touching the `introduce` function."
+      },
+      {
+       "type": "text",
+       "value": "## Small interfaces are the ideal\n\nGo encourages small interfaces, often with a single method. A famous example from the standard library is `Stringer`, which has only the method `String() string`: any type implementing it controls how it is printed by `fmt`. Lean interfaces are easy to satisfy and to combine."
+      },
+      {
+       "type": "quote",
+       "value": "A function that receives an interface accepts any type satisfying it. Go prefers small interfaces, often with just one method."
+      }
+     ],
+     "questions": [
+      {
+       "id": "b01b9eaa-6898-4b5e-8b6f-907b9b3c9592",
+       "statement": "A function that receives a parameter of an interface type accepts:",
+       "explanation": null,
+       "options": [
+        "No type, because interfaces cannot be parameters",
+        "Only one specific concrete type chosen beforehand",
+        "Only values of the string type",
+        "Any type that satisfies that interface"
+       ]
+      },
+      {
+       "id": "f3da92db-33b0-4855-bbb5-9d7f9a109810",
+       "statement": "For a new type to start working with a function that expects a Speaker, it is enough to:",
+       "explanation": null,
+       "options": [
+        "Rewrite the function to know the new type",
+        "Register the type in a global list of speakers",
+        "Inherit the type from the introduce function",
+        "Give it the Speak() method, without changing the function"
+       ]
+      },
+      {
+       "id": "af9887cf-7c74-479f-8184-ef4f94f0801c",
+       "statement": "What size of interface does Go tend to encourage?",
+       "explanation": null,
+       "options": [
+        "Small interfaces, often with a single method",
+        "Large interfaces, with dozens of methods",
+        "Interfaces that only contain data fields",
+        "Interfaces with no declared methods"
+       ]
+      },
+      {
+       "id": "dfe3b800-c79f-4e02-ad6e-750517d8b1fe",
+       "statement": "What does a type control by implementing the Stringer interface, with String() string?",
+       "explanation": null,
+       "options": [
+        "The compilation speed of the program",
+        "Which packages can import it",
+        "How it is printed by the fmt package",
+        "The order of its fields in memory"
+       ]
+      },
+      {
+       "id": "a5612a80-296e-4f66-a21f-1a5962c7c4da",
+       "statement": "When receiving an interface, the function calls the method:",
+       "explanation": null,
+       "options": [
+        "Only for values of the given string type",
+        "Only if it knows the exact concrete type",
+        "After converting everything into a map",
+        "Without knowing the concrete type behind it"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "05a23619-d2e3-4b13-9a3d-1494e6f99edc",
+     "title": "The empty interface and type assertion",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# The empty interface\n\nThe empty interface, written `interface{}` (or `any` in modern Go), requires no methods. Therefore, **any** value satisfies it. It is useful when you need to store a value of unknown type, like in a function that accepts anything.\n\n```\nvar anything any\nanything = 42\nanything = \"text\"   // works with any type\n```"
+      },
+      {
+       "type": "text",
+       "value": "## Recovering the type with an assertion\n\nWhen you have a value in an empty interface and need the concrete type back, you use a **type assertion**. The safe form, with comma-ok, avoids a panic if the type is not the expected one.\n\n```\nvar i any = \"hello\"\ns, ok := i.(string)\nif ok {\n    fmt.Println(\"is a string:\", s)\n}\n```\n\nTo handle several possible types, Go has the **type switch**, which picks a case based on the value's dynamic type."
+      },
+      {
+       "type": "quote",
+       "value": "The empty interface (any) accepts any value. To recover the concrete type safely, use the comma-ok assertion: v, ok := i.(Type)."
+      }
+     ],
+     "questions": [
+      {
+       "id": "18c46cf2-ee6d-4eeb-b484-ca4be3a04f45",
+       "statement": "Which values does the empty interface (interface{} or any) accept?",
+       "explanation": null,
+       "options": [
+        "Only user-defined structs",
+        "No value, because it is always nil",
+        "Only values of the string type",
+        "Any value, because it requires no methods"
+       ]
+      },
+      {
+       "id": "ae517417-7a7d-44fd-ada6-16e1c018e574",
+       "statement": "What is a type assertion like 'i.(string)' for?",
+       "explanation": null,
+       "options": [
+        "Recovering the concrete type of a value in an interface",
+        "Declaring a new interface within the program",
+        "Creating a slice from a text string",
+        "Converting an integer into a floating point"
+       ]
+      },
+      {
+       "id": "8856ebe3-ae6b-48fb-bbd2-3b08ccea9361",
+       "statement": "Why use the comma-ok form in a type assertion?",
+       "explanation": null,
+       "options": [
+        "To avoid a panic if the type is not the expected one",
+        "To speed up the conversion between types",
+        "To turn the value into an empty interface",
+        "Because the assertion does not work without two variables"
+       ]
+      },
+      {
+       "id": "6f4fe2dd-f469-43aa-9d88-29dc25e53b14",
+       "statement": "In modern Go, which word is a synonym for interface{}?",
+       "explanation": null,
+       "options": [
+        "void",
+        "any",
+        "var",
+        "object"
+       ]
+      },
+      {
+       "id": "49bb94ed-d07e-4db7-957d-f67ab97bceeb",
+       "statement": "To handle several possible types of a value in an interface, Go offers:",
+       "explanation": null,
+       "options": [
+        "The type switch, which acts on the dynamic type",
+        "Automatic conversion between types",
+        "A for loop over all possible types",
+        "A try block followed by a catch"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "d4b6cf38-3a96-4483-aa5d-3b26f7514c3c",
+   "title": "Module 8 - Error handling",
+   "lessons": [
+    {
+     "id": "14b84fd1-558f-4b89-9f95-462aed5d0746",
+     "title": "Errors are values",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# No exceptions for daily work\n\nGo does not use exceptions (try/catch) for everyday error handling. Instead, **errors are values**: a function that can fail returns an error value as one of its returns, and the caller checks that value. The `error` type is a simple interface with one method, `Error() string`.\n\nThe idiomatic convention is to return the result and an `error`, with the error last:"
+      },
+      {
+       "type": "code",
+       "value": "result, err := divide(10, 0)\nif err != nil {\n    fmt.Println(\"error:\", err)\n    return\n}\nfmt.Println(result)"
+      },
+      {
+       "type": "text",
+       "value": "## The if err != nil pattern\n\nThis `if err != nil` block is everywhere in Go. It makes the error flow explicit: you see in the code, line by line, where something can go wrong and how it is handled. An `error` value of `nil` means everything went well; any non-nil value indicates failure.\n\nPeople starting out sometimes find all the `if err != nil` strange, but this clarity is intentional: no hidden errors jumping across several levels, as happens with exceptions."
+      },
+      {
+       "type": "quote",
+       "value": "In Go, errors are values: the function returns an error as the last return, and the caller checks with if err != nil. A nil error means success."
+      }
+     ],
+     "questions": [
+      {
+       "id": "98e86603-1858-4054-887e-27dc3854514d",
+       "statement": "How does Go handle common errors, instead of using exceptions?",
+       "explanation": null,
+       "options": [
+        "Errors are thrown and caught with try and catch",
+        "Errors are ignored by default across the code",
+        "Errors interrupt the program without any checking",
+        "Errors are values returned and checked by the caller"
+       ]
+      },
+      {
+       "id": "2cf7c518-926a-4d04-b74e-c97bd66726a4",
+       "statement": "What does an error value equal to nil indicate?",
+       "explanation": null,
+       "options": [
+        "That a serious error occurred in the operation",
+        "That the operation succeeded, with no error",
+        "That the program should be terminated immediately",
+        "That the function has not finished running yet"
+       ]
+      },
+      {
+       "id": "f9736cc0-f700-4941-a1cf-7dc868d82906",
+       "statement": "In Go's idiomatic convention, in which position does a function's returned error come?",
+       "explanation": null,
+       "options": [
+        "Go does not allow returning an error",
+        "In the middle, between two results",
+        "Last, after the result",
+        "Always first, before the result"
+       ]
+      },
+      {
+       "id": "765454d5-0e25-43e3-ba47-3d6df641f0ab",
+       "statement": "The error type in Go is actually:",
+       "explanation": null,
+       "options": [
+        "A reserved keyword of the Go language",
+        "A numeric type that stores a code",
+        "A struct with several text fields",
+        "An interface with the Error() string method"
+       ]
+      },
+      {
+       "id": "7b75f85a-7d5b-4ae2-805c-b45767ce7e8b",
+       "statement": "A non-nil error value indicates that:",
+       "explanation": null,
+       "options": [
+        "The result should always be ignored",
+        "The operation was a complete success",
+        "There was a failure in the operation",
+        "The program is still compiling"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "f6b750d7-a54d-4d5d-abb5-11a8afe2d30e",
+     "title": "Creating and propagating errors",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Creating an error\n\nTo create a simple error, use `errors.New` with a message, or `fmt.Errorf` when you want to build the message with values. The function returns the error instead of continuing.\n\n```\nimport \"errors\"\n\nfunc divide(a, b int) (int, error) {\n    if b == 0 {\n        return 0, errors.New(\"cannot divide by zero\")\n    }\n    return a / b, nil\n}\n```\n\nNotice that, on the success path, the returned error is `nil`."
+      },
+      {
+       "type": "text",
+       "value": "## Propagating and wrapping\n\nWhen a function receives an error from another and cannot resolve it, it usually **propagates**: returns the error upward, for the caller to decide. With `fmt.Errorf` and the `%w` verb, you **wrap** the original error, adding context without losing the cause.\n\n```\nif err != nil {\n    return fmt.Errorf(\"loading the user: %w\", err)\n}\n```\n\nThat way, the final message tells the story of what happened, layer by layer, and tools can inspect the original error."
+      },
+      {
+       "type": "quote",
+       "value": "Create errors with errors.New or fmt.Errorf. Propagate what you cannot resolve and use %w to wrap the original error with more context."
+      }
+     ],
+     "questions": [
+      {
+       "id": "b685b893-438d-4d0a-beea-1d099a5ff563",
+       "statement": "Which function creates a simple error with a message in Go?",
+       "explanation": null,
+       "options": [
+        "fmt.Println",
+        "throw.Error",
+        "panic.New",
+        "errors.New"
+       ]
+      },
+      {
+       "id": "07c7df3a-ddf5-4cb7-ab14-80ee9570eb05",
+       "statement": "On the success path of a function returning (int, error), what do you return as the error?",
+       "explanation": null,
+       "options": [
+        "nil, indicating there was no error",
+        "An empty string in place of the error",
+        "A new generic error always",
+        "The number zero as the error"
+       ]
+      },
+      {
+       "id": "f604454e-68aa-418d-9344-14313b87a897",
+       "statement": "What is the %w verb in fmt.Errorf for?",
+       "explanation": null,
+       "options": [
+        "Ending the program right after building the message",
+        "Formatting an integer inside the error message",
+        "Wrapping the original error, adding context without losing the cause",
+        "Converting the error into a string with no defined type"
+       ]
+      },
+      {
+       "id": "726efca8-aeba-467b-8cb5-af51e3944377",
+       "statement": "When to use fmt.Errorf instead of errors.New?",
+       "explanation": null,
+       "options": [
+        "When the error has no text at all",
+        "When there is in fact no error",
+        "When you want to build the message with values",
+        "When you want to end the program right away"
+       ]
+      },
+      {
+       "id": "088f26f3-049c-4962-b19f-ead7cad79987",
+       "statement": "What does it mean to 'propagate' an error in Go?",
+       "explanation": null,
+       "options": [
+        "Storing it in a global variable",
+        "Turning it into an immediate panic",
+        "Returning it upward, to whoever called",
+        "Erasing it silently and moving on as normal"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "dc5f7cca-e32a-4a2e-898c-991fb44ec87f",
+     "title": "panic and recover",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# When something is truly exceptional\n\nBesides everyday errors, Go has `panic`, for truly exceptional situations where the program should not continue: an impossible state, a programming bug. A `panic` interrupts the normal flow and starts unwinding the call stack.\n\nThe golden rule: use errors (values) for what is expected (file not found, invalid input) and reserve `panic` for what should never happen."
+      },
+      {
+       "type": "text",
+       "value": "## recover: taking back control\n\n`recover`, used inside a deferred function with `defer`, lets you catch a `panic` and prevent it from crashing the program, taking back control in an orderly way. It is a pattern used, for example, so a server does not go down entirely because of one problematic request.\n\n```\nfunc safe() {\n    defer func() {\n        if r := recover(); r != nil {\n            fmt.Println(\"recovered from:\", r)\n        }\n    }()\n    panic(\"something went very wrong\")\n}\n```"
+      },
+      {
+       "type": "quote",
+       "value": "Use errors (values) for expected failures and panic only for the exceptional. recover, inside a defer, catches a panic and keeps the program from crashing."
+      }
+     ],
+     "questions": [
+      {
+       "id": "4dc0ace2-c8a2-4f5c-86cc-9ed192e21433",
+       "statement": "What kind of situation should panic be reserved for in Go?",
+       "explanation": null,
+       "options": [
+        "The normal flow of any function",
+        "Every user input validation",
+        "Any common error, like a file not found",
+        "Truly exceptional situations that should not occur"
+       ]
+      },
+      {
+       "id": "1d9232a7-1330-4a23-9514-7aa5071bc285",
+       "statement": "Where does recover need to be used to catch a panic?",
+       "explanation": null,
+       "options": [
+        "Inside a try block, as in other languages",
+        "On any line, with no requirements",
+        "At the start of the program, before main",
+        "Inside a deferred function with defer"
+       ]
+      },
+      {
+       "id": "07779fe8-b65c-426f-a91e-6685aec38beb",
+       "statement": "What is the golden rule between errors and panic in Go?",
+       "explanation": null,
+       "options": [
+        "Never handle errors, letting the program fall",
+        "Errors for the expected; panic only for the exceptional",
+        "Panic for everything, avoiding returned errors",
+        "Errors and panic are interchangeable, either works"
+       ]
+      },
+      {
+       "id": "c1c9be09-4700-4fe7-9a19-d15782053ff1",
+       "statement": "What does a panic do to the program's flow?",
+       "explanation": null,
+       "options": [
+        "It continues the flow as if nothing happened",
+        "It ignores the current line and moves on",
+        "It restarts the program from main",
+        "It interrupts the normal flow and unwinds the stack"
+       ]
+      },
+      {
+       "id": "13b6ac95-bd76-415b-80d4-26732749c37e",
+       "statement": "What is the effect of recover when catching a panic?",
+       "explanation": null,
+       "options": [
+        "It makes the panic happen one more time",
+        "It ends the program immediately",
+        "It prevents the panic from crashing the program",
+        "It converts the panic into an even worse error"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "6df06e7c-ecf1-4752-bdfa-9847b97f829e",
+   "title": "Module 9 - Concurrency with goroutines and channels",
+   "lessons": [
+    {
+     "id": "439586d2-d8e8-4231-89ce-8722ae73dafd",
+     "title": "Goroutines: lightweight concurrency",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Go's hallmark\n\nConcurrency, doing several things at once, is where Go shines most. The central piece is the **goroutine**: a function that runs concurrently, managed by Go's own runtime. Starting one is trivial: just put the word `go` before the call.\n\n```\ngo doSomething()   // runs concurrently, without blocking\n```\n\nGoroutines are very lightweight: a program can have thousands of them running, something unfeasible with traditional operating system threads."
+      },
+      {
+       "type": "text",
+       "value": "# Concurrency is not parallelism\n\nA distinction Go itself likes to emphasize: **concurrency** is structuring the program as independent tasks that progress in an interleaved way; **parallelism** is actually executing them at the same time, across multiple cores. Go makes it easy to write concurrent code, and the runtime decides how to distribute it across the available cores."
+      },
+      {
+       "type": "text",
+       "value": "## The synchronization problem\n\nWhen you start a goroutine, the program does not wait for it: execution moves on. If `main` ends, the program finishes, even with goroutines still running. That is why you need to **coordinate** goroutines, guaranteeing that the work completes. The next lesson shows the idiomatic way to do that: channels."
+      },
+      {
+       "type": "quote",
+       "value": "A goroutine is a concurrent function started with the go keyword. They are so lightweight that a program can have thousands, but they need to be coordinated."
+      }
+     ],
+     "questions": [
+      {
+       "id": "8d5f3e4e-08f5-42f3-b2f4-0250d924c21b",
+       "statement": "How do you start a goroutine in Go?",
+       "explanation": null,
+       "options": [
+        "By putting the word go before the function call",
+        "By declaring the function as async",
+        "By passing the function to the thread package",
+        "By calling the function's start() method"
+       ]
+      },
+      {
+       "id": "6cf096c4-cc25-4d03-b09e-2b42dbcc7937",
+       "statement": "What characterizes goroutines compared to traditional system threads?",
+       "explanation": null,
+       "options": [
+        "They are much lighter, allowing thousands at once",
+        "They are heavier and limited to a few per program",
+        "They are identical to operating system threads",
+        "They only run one at a time, never concurrently"
+       ]
+      },
+      {
+       "id": "b055044f-d438-481d-a041-38c95bd1268c",
+       "statement": "What happens to in-progress goroutines when the main function ends?",
+       "explanation": null,
+       "options": [
+        "The program ends, even if they have not finished",
+        "The goroutines keep running forever on their own",
+        "Main never ends while there are goroutines",
+        "The program waits for all of them to finish automatically"
+       ]
+      },
+      {
+       "id": "57818002-bbcb-4250-b5fb-555b7e0204db",
+       "statement": "What distinction does Go make between concurrency and parallelism?",
+       "explanation": null,
+       "options": [
+        "Concurrency requires multiple processor cores",
+        "Parallelism is always slower than concurrency in Go",
+        "Both words mean exactly the same thing",
+        "Concurrency structures tasks; parallelism executes them"
+       ]
+      },
+      {
+       "id": "6a8511a5-7e77-4a3c-814e-2138e59a8a7f",
+       "statement": "Who manages goroutines in execution?",
+       "explanation": null,
+       "options": [
+        "The compiler, before the program runs",
+        "The programmer, manually, line by line",
+        "Go's own runtime",
+        "The operating system alone"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "603bded0-a0ad-46b4-a360-52350069a506",
+     "title": "Channels: communication between goroutines",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# Communicate instead of sharing\n\nA famous Go motto is: \"do not communicate by sharing memory; share memory by communicating\". The tool for that is the **channel**: a typed pipe through which goroutines send and receive values safely.\n\n```\nch := make(chan int)   // a channel of int\ngo func() {\n    ch <- 42           // sends 42 into the channel\n}()\nvalue := <-ch          // receives from the channel: 42\n```\n\nThe `<-` operator sends (`ch <- v`) and receives (`v := <-ch`) values."
+      },
+      {
+       "type": "text",
+       "value": "## Channels synchronize\n\nIn a regular (unbuffered) channel, the send **blocks** until someone receives, and the receive blocks until someone sends. That rendezvous synchronizes goroutines naturally: whoever receives waits for the data to be ready. That is how concurrent work is coordinated without manual locks.\n\nWhen there are several channels to watch at once, `select` waits on multiple of them and acts on the first one ready, like a switch for channel operations."
+      },
+      {
+       "type": "quote",
+       "value": "Channels are typed pipes for goroutines to exchange values safely. In an unbuffered channel, the send and the receive synchronize, coordinating the work."
+      }
+     ],
+     "questions": [
+      {
+       "id": "e026f5a0-e5ee-4bce-8ada-de83c6b1e86c",
+       "statement": "What is a channel for in Go?",
+       "explanation": null,
+       "options": [
+        "Converting numeric types between each other in the program",
+        "For goroutines to send and receive values safely",
+        "For declaring structs with many data fields",
+        "For formatting text output in the console"
+       ]
+      },
+      {
+       "id": "2b6300b9-c39f-4f4f-bfa2-c5d608edae88",
+       "statement": "In an unbuffered channel, what happens when you send a value?",
+       "explanation": null,
+       "options": [
+        "The send never blocks, continuing immediately",
+        "The program ends when sending to a channel",
+        "The value is discarded if nobody is listening",
+        "The send blocks until someone receives the value"
+       ]
+      },
+      {
+       "id": "365458b4-324f-41df-96c1-84ec12fa0972",
+       "statement": "What does select allow you to do with channels?",
+       "explanation": null,
+       "options": [
+        "Close all the program's channels at once",
+        "Create a new channel with a much larger buffer",
+        "Wait on several channels and act on the first one ready",
+        "Convert a channel into a slice of values"
+       ]
+      },
+      {
+       "id": "e4c08dab-148f-4af3-9a74-17bebf5f19a5",
+       "statement": "Which operator sends and receives values on a channel?",
+       "explanation": null,
+       "options": [
+        "The arrow <-",
+        "The addition operator +",
+        "The equals sign =",
+        "The colon-equals :="
+       ]
+      },
+      {
+       "id": "3565b6d4-9d89-49c3-a067-8beb587b967d",
+       "statement": "In an unbuffered channel, what happens to whoever tries to receive before there is a send?",
+       "explanation": null,
+       "options": [
+        "It moves on without receiving anything",
+        "It receives an error, and the program stops",
+        "It stays blocked until someone sends",
+        "It receives the zero value of the type at that instant"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "990d7eea-72bc-4e3b-aa3f-ef2e75b6d487",
+     "title": "Closing: review and next steps",
+     "blocks": [
+      {
+       "type": "text",
+       "value": "# What you covered\n\nYou went from zero to concurrency in Go:\n\n- **Fundamentals**: the compiled and simple language, your first program, packages, and visibility through uppercase or lowercase.\n- **Types and flow**: variables with := and zero values, types and explicit conversions, if and switch (without fall-through), and for as the only loop, with range.\n- **Functions**: multiple returns, named returns, variadic functions, defer, and functions as values.\n- **Data**: slices and maps, with the shared underlying array gotcha and comma-ok.\n- **Custom types**: structs and methods with receivers, pointers, and composition through embedding.\n- **Interfaces**: the implicit contract, polymorphism, and the empty interface with type assertions.\n- **Errors**: errors as values and if err != nil, plus panic and recover.\n- **Concurrency**: goroutines and channels, Go's hallmark."
+      },
+      {
+       "type": "text",
+       "value": "## How to keep growing\n\nGo is learned by writing Go. Redo the examples, break them on purpose and fix them, and build small programs: a command-line tool, a simple HTTP API with the standard `net/http` package, a concurrent file processor with goroutines and channels. With each project, a concept becomes a tool.\n\nAfter these fundamentals, natural paths include going deeper into the standard library, writing tests with the `testing` package, and building network services, Go's strength. Choose what fits your goal and keep practicing."
+      },
+      {
+       "type": "quote",
+       "value": "You went from your first program to goroutines. The next step is to write a lot of Go: turn each concept into small projects and services of your own."
+      }
+     ],
+     "questions": [
+      {
+       "id": "7f827c8a-d281-468a-bca3-a7a8688f97fd",
+       "statement": "What is the best way to reinforce what you learned in Go?",
+       "explanation": null,
+       "options": [
+        "Memorizing the syntax without understanding the concepts",
+        "Avoiding practice and jumping straight to advanced topics",
+        "Writing code: redoing examples and building small projects",
+        "Only rereading the theory, without programming anything"
+       ]
+      },
+      {
+       "id": "9ecfe51d-35d2-4ab5-a4db-b2ee541e0fc0",
+       "statement": "Which pair of resources represents Go's concurrency hallmark?",
+       "explanation": null,
+       "options": [
+        "Exceptions and try/catch",
+        "Pointers and fixed arrays",
+        "Goroutines and channels",
+        "Classes and inheritance"
+       ]
+      },
+      {
+       "id": "dd753b9f-4557-4bea-9de0-da4c68b758fc",
+       "statement": "Remembering that errors are values in Go matters because:",
+       "explanation": null,
+       "options": [
+        "Every error always crashes the program immediately",
+        "Errors and panic mean exactly the same thing",
+        "You handle failures with if err != nil, not with exceptions",
+        "Errors have no relation to the program's flow"
+       ]
+      },
+      {
+       "id": "6ccba05d-cec0-440a-b257-bfb965e011f4",
+       "statement": "Which standard package does the lesson suggest for writing tests in Go?",
+       "explanation": null,
+       "options": [
+        "junit",
+        "testing",
+        "assert",
+        "quicktest"
+       ]
+      },
+      {
+       "id": "12395f5b-1f09-4570-a46d-a754fb3eb897",
+       "statement": "According to the lesson, which standard package is for building a simple HTTP API?",
+       "explanation": null,
+       "options": [
+        "web/server",
+        "fmt/web",
+        "net/http",
+        "http/router"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
