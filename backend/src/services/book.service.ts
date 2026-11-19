@@ -214,7 +214,7 @@ export async function buildTrailBook(trailId: string, lang?: string, locale?: Lo
                   .where(
                       inArray(
                           optionTranslations.optionId,
-                          ops.map((o) => o.questionId).length ? ops.map((o: any) => o.optionId ?? o.id).filter(Boolean) : [],
+                          ops.map((o) => o.id),
                       ),
                   )
             : [];
@@ -269,7 +269,7 @@ export async function buildTrailBook(trailId: string, lang?: string, locale?: Lo
     });
     const hash = createHash("sha1").update(signature).digest("hex").slice(0, 12);
     const fileName = `${slug(trailName)}${language ? `-${slug(language)}` : ""}.epub`;
-    const cacheKey = `${language ?? "unico"}${traduz ? "-en" : ""}`;
+    const cacheKey = `${language ?? "unico"}-${traduz ? "en" : "pt"}`;
     const cachedPath = path.join(BOOKS_DIR, `${trailId}-${cacheKey}-${hash}.epub`);
     try {
         return { buffer: await readFile(cachedPath), filename: fileName };
@@ -306,7 +306,7 @@ export async function buildTrailBook(trailId: string, lang?: string, locale?: Lo
         const moduleNumber = mod ? (moduleOrder.get(mod.id) ?? 0) + 1 : 0;
         // A title that already starts with a number or with "Módulo" is not numbered again.
         const moduleLabel = mod
-            ? /^(\d|m[oó]dulo)/i.test(mod.title.trim())
+            ? /^(\d|m[oó]dulo|module)/i.test(mod.title.trim())
                 ? mod.title
                 : `${String(moduleNumber).padStart(2, "0")}. ${mod.title}`
             : trail.name;
