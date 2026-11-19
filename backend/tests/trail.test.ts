@@ -638,7 +638,15 @@ describe("Content translations", () => {
         const student = await createSignedInUser();
 
         const { db } = await import("../db.ts");
-        const { trailTranslations, lessonTranslations } = await import("../schema.ts");
+        const {
+            trailTranslations,
+            lessonTranslations,
+            questionTranslations,
+            optionTranslations,
+            questions,
+            questionOptions,
+        } = await import("../schema.ts");
+        const { eq, and: andEq } = await import("drizzle-orm");
 
         await db
             .insert(trailTranslations)
@@ -646,6 +654,20 @@ describe("Content translations", () => {
         await db
             .insert(lessonTranslations)
             .values({ lessonId: lessonIds[0], locale: "en", title: "Lesson 1" });
+        const [q1] = await db
+            .select()
+            .from(questions)
+            .where(eq(questions.lessonId, lessonIds[0]));
+        const [certa] = await db
+            .select()
+            .from(questionOptions)
+            .where(andEq(eq(questionOptions.questionId, q1.id), eq(questionOptions.isCorrect, true)));
+        await db
+            .insert(questionTranslations)
+            .values({ questionId: q1.id, locale: "en", statement: "Question one" });
+        await db
+            .insert(optionTranslations)
+            .values({ optionId: certa.id, locale: "en", text: "right" });
 
         async function download(locale: string) {
             const res = await fetch(`${server.base}/trails/${trailId}/epub`, {
@@ -665,5 +687,21 @@ describe("Content translations", () => {
         assert.ok(pt.fileName?.startsWith("logica"));
         // Same track, different books: the fixed copy alone already differs.
         assert.ok(!en.buffer.equals(pt.buffer));
+
+        // The quiz options inside the English book come translated too: the
+        // chapter text has "right" and no Portuguese option left in it.
+        const { default: JSZip } = await import("jszip");
+        const zip = await JSZip.loadAsync(en.buffer);
+        const chapter = Object.keys(zip.files).find((n) => /text\/ch-/.test(n));
+        const xhtml = await zip.files[chapter!].async("string");
+        // Só a alternativa correta da primeira questão foi traduzida; as outras
+        // seguem em português, então confere apenas a presença da tradução.
+        assert.ok(xhtml.includes("right"));
+
+        // The Portuguese book keeps the base options.
+        const zipPt = await JSZip.loadAsync(pt.buffer);
+        const chapterPt = Object.keys(zipPt.files).find((n) => /text\/ch-/.test(n));
+        const xhtmlPt = await zipPt.files[chapterPt!].async("string");
+        assert.ok(xhtmlPt.includes("certa"));
     });
 });

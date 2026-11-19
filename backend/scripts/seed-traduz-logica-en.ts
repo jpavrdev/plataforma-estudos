@@ -20,11 +20,16 @@ import {
     questionOptions,
     optionTranslations,
 } from "../schema.ts";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 const TRILHA = "fa491407-b184-448b-b782-9a43fdb812ed"; // Lógica de Programação
 const MODULO_1 = "7dcfe755-da0a-486f-8425-ab10907da1ef"; // O que é lógica de programação e algoritmos
-const LICAO_1 = "79c5ca18-bc76-4d7f-bfe1-f8e687d88e54"; // O que é programar e o que é um algoritmo (JS)
+// As duas variantes da primeira aula: o livro e a tela default seguem a variante
+// JavaScript, mas quem estuda pela variante Python precisa da mesma tradução.
+const LICOES_1 = {
+    js: "33d5ef42-af3c-412b-8ebd-7b02636d5c66",
+    py: "79c5ca18-bc76-4d7f-bfe1-f8e687d88e54",
+} as const;
 
 const TRADUCAO_TRILHA = {
     name: "Programming Logic",
@@ -56,7 +61,7 @@ const TRADUCOES_AULAS: Record<string, string> = {
     "2f209df5-fe37-478b-a9d0-437be8cd8408": "Your first code: print",
 };
 
-const BLOCOS_LICAO_1 = [
+const BLOCOS_BASE = [
     {
         type: "text",
         value: `# What programming is and what an algorithm is
@@ -83,7 +88,7 @@ An algorithm is a sequence of steps, well defined and ordered, to solve a proble
 
 A cake recipe is an algorithm: it describes, step by step, what to do to turn loose ingredients into a finished cake. Changing a flat tire is also an algorithm: there is an order of steps that leads from "flat tire" to "car running again", and that order is not just any order.
 
-When you program, you are basically writing an algorithm in a language the computer can understand and execute, such as Python, which is the language we will use here.`,
+When you program, you are basically writing an algorithm in a language the computer can understand and execute, such as {{LINGUAGEM}}, which is the language we will use here.`,
     },
     {
         type: "table",
@@ -101,77 +106,76 @@ The same goes for precision: saying "mix the ingredients" is vague, but saying "
     },
     {
         type: "code",
-        value: `# An algorithm can be written like this, step by step, even before it becomes real code.
-# This is already a valid Python file: comments do not make the computer execute anything,
-# but they help organize the reasoning before programming.
+        value: `{{COMENTARIO}} An algorithm can be written like this, step by step, even before it becomes real code.
+{{COMENTARIO}} This is already a valid {{LINGUA_ARQUIVO}} file: comments do not make the computer execute anything,
+{{COMENTARIO}} but they help organize the reasoning before programming.
 
-# Algorithm: change a flat tire
-# 1. Stop the car in a safe place and set up the warning signs
-# 2. Get the spare tire, the jack and the lug wrench
-# 3. Loosen the lug nuts of the flat wheel a little (with the car still on the ground)
-# 4. Lift the car with the jack
-# 5. Finish removing the lug nuts and take the flat wheel off
-# 6. Put the spare wheel in place
-# 7. Put the lug nuts back on and tighten them
-# 8. Lower the car and tighten the lug nuts harder`,
+{{COMENTARIO}} Algorithm: change a flat tire
+{{COMENTARIO}} 1. Stop the car in a safe place and set up the warning signs
+{{COMENTARIO}} 2. Get the spare tire, the jack and the lug wrench
+{{COMENTARIO}} 3. Loosen the lug nuts of the flat wheel a little (with the car still on the ground)
+{{COMENTARIO}} 4. Lift the car with the jack
+{{COMENTARIO}} 5. Finish removing the lug nuts and take the flat wheel off
+{{COMENTARIO}} 6. Put the spare wheel in place
+{{COMENTARIO}} 7. Put the lug nuts back on and tighten them
+{{COMENTARIO}} 8. Lower the car and tighten the lug nuts harder`,
     },
     {
         type: "quote",
         value: `Programming is giving precise, ordered instructions for the computer to execute. An algorithm is the recipe behind every program: a sequence of steps that solves a problem, in the right order.`,
     },
 ];
+// Questões da aula 1, por posição: as duas variantes têm linhas próprias de
+// questões e alternativas com o mesmo conteúdo, então a tradução casa pelo lugar.
+const ENUNCIADOS: string[] = [
+    'Which option best describes what "programming" means?',
+    "Which of the options below is an example of an everyday algorithm?",
+    'You ask a friend who has never cooked: "make a butter and bread sandwich". He follows exactly the words you said, in the order you said them, and tries to spread butter right on the still closed bread bag. This example mainly shows that:',
+    "In the flat tire changing algorithm, the wheel lug nuts are loosened while the car is still on the ground, before lifting it with the jack. Why does this order matter?",
+    "Which statement about algorithms is true?",
+];
 
-// Questões da aula 1: enunciado e alternativas. As explicações da base estão
-// vazias nesta aula, então não há o que traduzir ali.
-const TRADUCOES_QUESTOES: Record<string, { statement: string; explanation?: string }> = {
-    "3935297f-1768-4414-8da1-1e4152fbbb4f": {
-        statement: 'Which option best describes what "programming" means?',
-    },
-    "147078cd-1802-4f38-8acd-4d0dc6e9e1a2": {
-        statement: "Which of the options below is an example of an everyday algorithm?",
-    },
-    "cc83fe88-b7a0-4743-919d-ec0ce7b9517d": {
-        statement:
-            'You ask a friend who has never cooked: "make a butter and bread sandwich". He follows exactly the words you said, in the order you said them, and tries to spread butter right on the still closed bread bag. This example mainly shows that:',
-    },
-    "785f0c6d-3caa-4994-bb58-fe111e52d479": {
-        statement:
-            "In the flat tire changing algorithm, the wheel lug nuts are loosened while the car is still on the ground, before lifting it with the jack. Why does this order matter?",
-    },
-    "7ca67ffe-5c33-44ea-a5cd-f677f278f070": {
-        statement: "Which statement about algorithms is true?",
-    },
-};
-
-const TRADUCOES_ALTERNATIVAS: Record<string, string> = {
-    "681a62d3-5a56-41cb-90ff-46e50dbfcf6b": "Fixing the computer when it crashes",
-    "3356471f-8b94-43ae-8d10-b58cb8eb3b50": "Giving ordered instructions for the computer to execute",
-    "535212a5-a183-4e34-9101-7a53f1efc242": "Designing the screen of an app or website",
-    "f5c4fb0a-05ae-4964-8ffb-f051be607c55": "Memorizing the commands of a programming language by heart",
-    "a3f62d71-dc61-4a77-98dd-42298eefcaeb": "The name of the family favorite restaurant",
-    "65f5d18d-4a7f-49dc-8832-62e91f971ab9": "The cover color of a book",
-    "f5e0219c-183e-4f11-892c-0164546c8cf6": "The price of a bus ticket",
-    "3a904752-9bd4-4354-94e4-90f6a75d4d67": "A cake recipe, step by step",
-    "4cf25b10-711a-428b-b574-a300e0b09013": "more bread should have been bought before starting the recipe",
-    "63942e1b-fe47-4bb8-9963-584f25d1edf2":
+const ALTERNATIVAS: string[][] = [
+    [
+        "Fixing the computer when it crashes",
+        "Giving ordered instructions for the computer to execute",
+        "Designing the screen of an app or website",
+        "Memorizing the commands of a programming language by heart",
+    ],
+    [
+        "The name of the family favorite restaurant",
+        "The cover color of a book",
+        "The price of a bus ticket",
+        "A cake recipe, step by step",
+    ],
+    [
+        "more bread should have been bought before starting the recipe",
         "instructions are followed to the letter, even when something seems obvious",
-    "86533949-f875-46ae-9f7a-d0be03d27929":
         "it is not possible to describe making a sandwich as a sequence of steps",
-    "dbdf5d69-174d-4922-81fa-56eb1ded03bf": "your friend does not know how to follow kitchen recipes",
-    "4f2b270b-706a-41db-b3a9-6701e252a782": "Because that way the car is more stable when lifted by the jack",
-    "198f4db0-894d-4ecc-979c-b36e2dec6698": "Because the jack can only lift the car after all the lug nuts are loose",
-    "8c8dbe86-fcc2-49ea-bff8-9e640fd66b74":
+        "your friend does not know how to follow kitchen recipes",
+    ],
+    [
+        "Because that way the car is more stable when lifted by the jack",
+        "Because the jack can only lift the car after all the lug nuts are loose",
         "Because the friction with the ground locks the wheel, making it easier to loosen the lug nuts",
-    "27a5fb44-a397-45e6-936b-fb0d75786997":
         "Because the order of the steps never changes the result of an algorithm",
-    "823ba034-9f76-4f8a-a79b-c0cd52ef9870":
+    ],
+    [
         "It is the sequence of steps itself, described in text, drawing or code",
-    "d8a6d0c2-2ea6-40fa-8d99-2c1dee479d80":
         "It only comes into existence after being written in a language such as Python",
-    "7d07b19a-ee07-421b-a6d3-72083a33f6b6": "It always needs a computer to exist and be executed",
-    "07448553-a667-4f65-9b50-6b9a71c73fe0":
+        "It always needs a computer to exist and be executed",
         "Changing the order of the steps never alters the final result",
-};
+    ],
+];
+
+const blocosDaVariante = (variante: "js" | "py") =>
+    BLOCOS_BASE.map((b) => ({
+        ...b,
+        value: b.value
+            .replaceAll("{{LINGUAGEM}}", variante === "js" ? "JavaScript" : "Python")
+            .replaceAll("{{LINGUA_ARQUIVO}}", variante === "js" ? "JavaScript" : "Python")
+            .replaceAll("{{COMENTARIO}}", variante === "js" ? "//" : "#"),
+    }));
 
 async function main() {
     const [trilha] = await db.select().from(trails).where(eq(trails.id, TRILHA));
@@ -209,65 +213,65 @@ async function main() {
             });
     }
 
-    await db
-        .insert(lessonTranslations)
-        .values({
-            lessonId: LICAO_1,
-            locale: "en",
-            title: TRADUCOES_AULAS[LICAO_1],
-            content: null,
-            contentBlocks: BLOCOS_LICAO_1,
-        })
-        .onConflictDoUpdate({
-            target: [lessonTranslations.lessonId, lessonTranslations.locale],
-            set: {
-                title: TRADUCOES_AULAS[LICAO_1],
-                content: null,
-                contentBlocks: BLOCOS_LICAO_1,
-                updatedAt: new Date(),
-            },
-        });
-
-    const questoesLicao1 = await db
-        .select({ id: questions.id })
-        .from(questions)
-        .where(eq(questions.lessonId, LICAO_1));
-    for (const { id } of questoesLicao1) {
-        const tr = TRADUCOES_QUESTOES[id];
-        if (!tr) continue;
+    let totalQuestoes = 0;
+    for (const [variante, lessonId] of Object.entries(LICOES_1) as [("js" | "py"), string][]) {
+        const blocos = blocosDaVariante(variante);
         await db
-            .insert(questionTranslations)
+            .insert(lessonTranslations)
             .values({
-                questionId: id,
+                lessonId,
                 locale: "en",
-                statement: tr.statement,
-                explanation: tr.explanation ?? null,
+                title: TRADUCOES_AULAS[lessonId],
+                content: null,
+                contentBlocks: blocos,
             })
             .onConflictDoUpdate({
-                target: [questionTranslations.questionId, questionTranslations.locale],
-                set: { statement: tr.statement, explanation: tr.explanation ?? null, updatedAt: new Date() },
+                target: [lessonTranslations.lessonId, lessonTranslations.locale],
+                set: {
+                    title: TRADUCOES_AULAS[lessonId],
+                    content: null,
+                    contentBlocks: blocos,
+                    updatedAt: new Date(),
+                },
             });
-    }
 
-    const alternativas = await db
-        .select({ id: questionOptions.id })
-        .from(questionOptions)
-        .innerJoin(questions, eq(questions.id, questionOptions.questionId))
-        .where(eq(questions.lessonId, LICAO_1));
-    for (const { id } of alternativas) {
-        const text = TRADUCOES_ALTERNATIVAS[id];
-        if (!text) continue;
-        await db
-            .insert(optionTranslations)
-            .values({ optionId: id, locale: "en", text })
-            .onConflictDoUpdate({
-                target: [optionTranslations.optionId, optionTranslations.locale],
-                set: { text, updatedAt: new Date() },
-            });
+        const questoes = await db
+            .select({ id: questions.id })
+            .from(questions)
+            .where(eq(questions.lessonId, lessonId))
+            .orderBy(asc(questions.position));
+        for (const [i, { id }] of questoes.entries()) {
+            const statement = ENUNCIADOS[i];
+            if (!statement) continue;
+            await db
+                .insert(questionTranslations)
+                .values({ questionId: id, locale: "en", statement })
+                .onConflictDoUpdate({
+                    target: [questionTranslations.questionId, questionTranslations.locale],
+                    set: { statement, updatedAt: new Date() },
+                });
+            const opts = await db
+                .select({ id: questionOptions.id })
+                .from(questionOptions)
+                .where(eq(questionOptions.questionId, id))
+                .orderBy(asc(questionOptions.position));
+            for (const [j, opt] of opts.entries()) {
+                const text = ALTERNATIVAS[i]?.[j];
+                if (!text) continue;
+                await db
+                    .insert(optionTranslations)
+                    .values({ optionId: opt.id, locale: "en", text })
+                    .onConflictDoUpdate({
+                        target: [optionTranslations.optionId, optionTranslations.locale],
+                        set: { text, updatedAt: new Date() },
+                    });
+            }
+            totalQuestoes++;
+        }
     }
 
     console.log(
-        `Traduções da Lógica de Programação gravadas: trilha, módulo 1, ${aulasModulo1.length} títulos de aula, aula 1 completa e ${questoesLicao1.length} questões.`,
+        `Traduções da Lógica de Programação gravadas: trilha, módulo 1, ${aulasModulo1.length} títulos de aula, aula 1 completa nas duas variantes e ${totalQuestoes} questões.`,
     );
     process.exit(0);
 }
