@@ -22,6 +22,7 @@ import {
 } from "../schema.ts";
 import { eq, asc } from "drizzle-orm";
 import { AULAS_MODULO_1, type Bloco } from "./seed-dados-modulo1-en.ts";
+import { AULAS_MODULO_2, TITULO_MODULO_2 } from "./seed-dados-modulo2-en.ts";
 
 const TRILHA = "fa491407-b184-448b-b782-9a43fdb812ed"; // Lógica de Programação
 const MODULO_1 = "7dcfe755-da0a-486f-8425-ab10907da1ef"; // O que é lógica de programação e algoritmos
@@ -183,6 +184,62 @@ function aplicarVariante(b: Bloco, variante: "js" | "py"): Bloco {
     };
 }
 
+let faltando = 0;
+let totalQuestoes = 0;
+
+async function aplicarAulaCompleta(
+    lessonId: string,
+    title: string,
+    blocos: Bloco[],
+    questoesDados: { enunciado: string; ops: Record<string, string> }[],
+    rotulo: string,
+) {
+    await db
+        .insert(lessonTranslations)
+        .values({ lessonId, locale: "en", title, contentBlocks: blocos })
+        .onConflictDoUpdate({
+            target: [lessonTranslations.lessonId, lessonTranslations.locale],
+            set: { title, contentBlocks: blocos, updatedAt: new Date() },
+        });
+    const questoes = await db
+        .select({ id: questions.id })
+        .from(questions)
+        .where(eq(questions.lessonId, lessonId))
+        .orderBy(asc(questions.position));
+    for (const [i, { id }] of questoes.entries()) {
+        const dados = questoesDados[i];
+        if (!dados) continue;
+        await db
+            .insert(questionTranslations)
+            .values({ questionId: id, locale: "en", statement: dados.enunciado })
+            .onConflictDoUpdate({
+                target: [questionTranslations.questionId, questionTranslations.locale],
+                set: { statement: dados.enunciado, updatedAt: new Date() },
+            });
+        totalQuestoes++;
+        const opts = await db
+            .select({ id: questionOptions.id, text: questionOptions.text })
+            .from(questionOptions)
+            .where(eq(questionOptions.questionId, id))
+            .orderBy(asc(questionOptions.position));
+        for (const opt of opts) {
+            const texto = dados.ops[opt.text];
+            if (!texto) {
+                faltando++;
+                console.warn(`Alternativa sem tradução (${rotulo}): ${opt.text}`);
+                continue;
+            }
+            await db
+                .insert(optionTranslations)
+                .values({ optionId: opt.id, locale: "en", text: texto })
+                .onConflictDoUpdate({
+                    target: [optionTranslations.optionId, optionTranslations.locale],
+                    set: { text: texto, updatedAt: new Date() },
+                });
+        }
+    }
+}
+
 async function main() {
     const [trilha] = await db.select().from(trails).where(eq(trails.id, TRILHA));
     if (!trilha) throw new Error("Trilha não encontrada");
@@ -219,7 +276,6 @@ async function main() {
             });
     }
 
-    let totalQuestoes = 0;
     for (const [variante, lessonId] of Object.entries(LICOES_1) as [("js" | "py"), string][]) {
         const blocos = blocosDaVariante(variante);
         await db
@@ -282,66 +338,65 @@ async function main() {
         .select({ id: lessons.id, position: lessons.position, language: lessons.language })
         .from(lessons)
         .where(eq(lessons.moduleId, MODULO_1));
-    const aulaDe = (posicao: number, variante: "js" | "py") =>
-        aulasModulo.find(
-            (a) => a.position === posicao && a.language === (variante === "js" ? "javascript" : "python"),
+    const aulaDe = (
+        aulas: { id: string; position: number; language: string | null }[],
+        posicao: number,
+        variante: "js" | "py",
+    ) =>
+        aulas.find(
+            (a) =>
+                a.position === posicao && a.language === (variante === "js" ? "javascript" : "python"),
         );
 
-    let faltando = 0;
     for (const aula of AULAS_MODULO_1) {
         for (const variante of ["js", "py"] as const) {
-            const alvo = aulaDe(aula.posicao, variante);
+            const alvo = aulaDe(aulasModulo, aula.posicao, variante);
             if (!alvo) continue;
             const blocos = Array.isArray(aula.blocos)
                 ? aula.blocos.map((b) => aplicarVariante(b, variante))
                 : aula.blocos[variante];
-            await db
-                .insert(lessonTranslations)
-                .values({ lessonId: alvo.id, locale: "en", title: TRADUCOES_AULAS[alvo.id], contentBlocks: blocos })
-                .onConflictDoUpdate({
-                    target: [lessonTranslations.lessonId, lessonTranslations.locale],
-                    set: { title: TRADUCOES_AULAS[alvo.id], contentBlocks: blocos, updatedAt: new Date() },
-                });
+            await aplicarAulaCompleta(
+                alvo.id,
+                TRADUCOES_AULAS[alvo.id],
+                blocos,
+                aula.questoes.map((q) => ({
+                    enunciado: typeof q.enunciado === "string" ? q.enunciado : q.enunciado[variante],
+                    ops: q.ops,
+                })),
+                `módulo 1 aula ${aula.posicao} ${variante}`,
+            );
+        }
+    }
 
-            const questoes = await db
-                .select({ id: questions.id })
-                .from(questions)
-                .where(eq(questions.lessonId, alvo.id))
-                .orderBy(asc(questions.position));
-            for (const [i, { id }] of questoes.entries()) {
-                const dados = aula.questoes[i];
-                if (!dados) continue;
-                const enunciado =
-                    typeof dados.enunciado === "string" ? dados.enunciado : dados.enunciado[variante];
-                await db
-                    .insert(questionTranslations)
-                    .values({ questionId: id, locale: "en", statement: enunciado })
-                    .onConflictDoUpdate({
-                        target: [questionTranslations.questionId, questionTranslations.locale],
-                        set: { statement: enunciado, updatedAt: new Date() },
-                    });
-                totalQuestoes++;
-                const opts = await db
-                    .select({ id: questionOptions.id, text: questionOptions.text })
-                    .from(questionOptions)
-                    .where(eq(questionOptions.questionId, id))
-                    .orderBy(asc(questionOptions.position));
-                for (const opt of opts) {
-                    const texto = dados.ops[opt.text];
-                    if (!texto) {
-                        faltando++;
-                        console.warn(`Alternativa sem tradução (aula ${aula.posicao} ${variante}): ${opt.text}`);
-                        continue;
-                    }
-                    await db
-                        .insert(optionTranslations)
-                        .values({ optionId: opt.id, locale: "en", text: texto })
-                        .onConflictDoUpdate({
-                            target: [optionTranslations.optionId, optionTranslations.locale],
-                            set: { text: texto, updatedAt: new Date() },
-                        });
-                }
-            }
+    // Módulo 2 inteiro: as variantes divergem de verdade (let/const x convenção,
+    // === x ==), então cada aula traz blocos e alternativas por variante.
+    const MODULO_2 = "21e5c05d-3124-46fa-b8a8-c76bd43e3496";
+    await db
+        .insert(moduleTranslations)
+        .values({ moduleId: MODULO_2, locale: "en", title: TITULO_MODULO_2 })
+        .onConflictDoUpdate({
+            target: [moduleTranslations.moduleId, moduleTranslations.locale],
+            set: { title: TITULO_MODULO_2, updatedAt: new Date() },
+        });
+
+    const aulasModulo2 = await db
+        .select({ id: lessons.id, position: lessons.position, language: lessons.language })
+        .from(lessons)
+        .where(eq(lessons.moduleId, MODULO_2));
+    for (const aula of AULAS_MODULO_2) {
+        for (const variante of ["js", "py"] as const) {
+            const alvo = aulaDe(aulasModulo2, aula.posicao, variante);
+            if (!alvo) continue;
+            await aplicarAulaCompleta(
+                alvo.id,
+                aula.titulo[variante],
+                aula.blocos[variante],
+                aula.questoes.map((q) => ({
+                    enunciado: q.enunciado[variante],
+                    ops: q.ops[variante],
+                })),
+                `módulo 2 aula ${aula.posicao} ${variante}`,
+            );
         }
     }
 
