@@ -269,6 +269,28 @@ export const lessonProgress = pgTable(
     ],
 );
 
+// Student notebook: written notes and highlighted excerpts from each lesson.
+export const lessonNotes = pgTable(
+    "lesson_notes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        lessonId: uuid("lesson_id")
+            .references(() => lessons.id, { onDelete: "cascade" })
+            .notNull(),
+        // "nota" = written by the student; "grifo" = excerpt selected in the content.
+        kind: varchar("kind", { length: 10 }).notNull(),
+        body: text("body").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("lesson_notes_user_id_idx").on(table.userId),
+        index("lesson_notes_lesson_id_idx").on(table.lessonId),
+    ],
+);
+
 export const questions = pgTable(
     "questions",
     {

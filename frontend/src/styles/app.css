@@ -85,6 +85,17 @@
 .btn--ghost:hover {
   border-color: var(--accent);
 }
+.btn--danger {
+  flex: 1;
+  background: var(--av-red);
+  border-color: var(--av-red);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn--danger:hover {
+  filter: brightness(1.05);
+}
 /* O `flex: 1` do .btn--ghost é para as linhas de dois botões lado a lado (.auth__social,
    rodapé de modal). Um botão --block ocupa a linha inteira sozinho: num container em
    coluna com espaço livre (.auth__panel) aquele flex-grow esticava o botão até o fim do
@@ -3248,6 +3259,295 @@
   margin-top: 28px;
 }
 
+/* ===================== LESSON NOTEBOOK ===================== */
+.lesson--notebook {
+  grid-template-columns: 320px minmax(0, 1fr) minmax(400px, 29%);
+}
+.notebook {
+  align-self: stretch;
+  margin: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px 30px;
+}
+.notebook__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.notebook__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.notebook__close {
+  display: flex;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 7px;
+  border-radius: var(--r-sm);
+}
+.notebook__close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.notebook__tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-2);
+  padding: 4px;
+  border-radius: var(--r-lg);
+}
+.notebook__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 8px;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.notebook__tab--active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.notebook__tab-n {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 99px;
+  padding: 1px 8px;
+}
+.notebook__composer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0 16px;
+}
+.notebook__composer textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 92px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+.notebook__composer textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.notebook__save {
+  align-self: flex-end;
+}
+.notebook__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.notebook__card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 14px 16px;
+  background: var(--surface);
+}
+.notebook__card-body {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.notebook__card--highlight {
+  cursor: pointer;
+}
+.notebook__card--highlight:hover {
+  border-color: color-mix(in srgb, var(--amber) 55%, transparent);
+}
+.notebook__card--highlight .notebook__card-body {
+  background: color-mix(in srgb, var(--amber) 24%, transparent);
+  border-left: 3px solid var(--amber);
+  border-radius: 6px 10px 10px 6px;
+  padding: 10px 12px;
+}
+.notebook__card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+.notebook__card-info {
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notebook__card-del {
+  flex: none;
+  display: flex;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: var(--r-sm);
+}
+.notebook__card-del:hover {
+  color: var(--av-red);
+  background: color-mix(in srgb, var(--av-red) 12%, transparent);
+}
+.notebook__empty {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+  text-align: center;
+  padding: 22px 16px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-xl);
+}
+.lesson__notebook-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 99px;
+  cursor: pointer;
+}
+.lesson__notebook-toggle:hover {
+  color: var(--text);
+}
+.lesson__notebook-toggle--active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.lesson__notebook-n {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+mark.notebook-highlight {
+  background: color-mix(in srgb, var(--amber) 42%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+/* Brief flash when a notebook card jumps back to this excerpt. */
+mark.notebook-flash {
+  animation: notebook-flash 1.6s ease-out 1;
+}
+@keyframes notebook-flash {
+  0% {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  60% {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  100% {
+    background: color-mix(in srgb, var(--amber) 42%, transparent);
+  }
+}
+.notebook__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 12, 22, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.notebook__confirm {
+  width: min(440px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.notebook__confirm-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.notebook__confirm-body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.notebook__confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+.notebook-fab {
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 70;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.notebook-fab:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.notebook-fab--disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+.notebook-fab--disabled:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
 /* Ajustes da tela de aula ao layout do projeto */
 .lesson {
   min-height: calc(100svh - 66px);
@@ -5363,6 +5663,21 @@
   }
   .lesson {
     grid-template-columns: 1fr;
+  }
+  .lesson--notebook {
+    grid-template-columns: 1fr;
+  }
+  .notebook {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    width: min(92vw, 440px);
+    max-height: none;
+    z-index: 80;
+    box-shadow: var(--shadow);
+    border-radius: 16px 0 0 16px;
   }
   .lesson__nav {
     align-self: auto;

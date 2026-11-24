@@ -247,6 +247,21 @@ export const Pencil = ({ size = 15 }: IconProps) => (
   </svg>
 );
 
+export const Notebook = ({ size = 15 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M4 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z" />
+    <path d="M8 2v20" />
+    <path d="M12 7h5" />
+    <path d="M12 11h5" />
+  </svg>
+);
+
 export const AtSign = ({ size = 14 }: IconProps) => (
   <svg
     {...base(size)}
