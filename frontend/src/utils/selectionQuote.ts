@@ -33,6 +33,8 @@ function closestKatex(node: Node | null): Element | null {
   return node instanceof Element ? node.closest('.katex') : node?.parentElement?.closest('.katex') ?? null;
 }
 
+// setStart/setEnd offsets count child NODES (text nodes included); counting
+// only element children made the range swallow the text before the formula.
 function indexOfNode(el: Element): number {
-  return el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
+  return el.parentNode ? Array.prototype.indexOf.call(el.parentNode.childNodes, el) : 0;
 }
