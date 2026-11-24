@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { Trash, Notebook, X } from './Icons';
+import { TextoMath } from './BlocosConteudo';
 import {
   createNote,
   deleteNote,
@@ -9,6 +11,7 @@ import {
   type LessonNote,
   type TrailNote,
 } from '../services/notes';
+import { isAxiosError } from 'axios';
 
 type Tab = 'lesson' | 'trail';
 
@@ -30,12 +33,14 @@ export function LessonNotebook({
   onNoteRemoved: (id: string) => void;
 }) {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('lesson');
   const [draft, setDraft] = useState('');
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
   // The trail tab owns its data and loads it lazily, only when first opened.
   const [trailNotes, setTrailNotes] = useState<TrailNote[] | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<LessonNote | null>(null);
   const areaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -73,15 +78,37 @@ export function LessonNotebook({
     }
   }
 
-  async function remove(note: LessonNote) {
+  async function confirmDelete() {
+    if (!pendingDelete) return;
+    const note = pendingDelete;
+    setPendingDelete(null);
     try {
       await deleteNote(note.id);
-      onNoteRemoved(note.id);
-      if (trailNotes) setTrailNotes(trailNotes.filter((n) => n.id !== note.id));
     } catch (err) {
-      console.error('Failed to delete the note.', err);
-      setFailed(true);
+      // A 404 means it is already gone (double click, other tab): the card has
+      // to leave all the same, not block the notebook with an error.
+      if (!isAxiosError(err) || err.response?.status !== 404) {
+        console.error('Failed to delete the note.', err);
+        setFailed(true);
+        return;
+      }
     }
+    onNoteRemoved(note.id);
+    if (trailNotes) setTrailNotes(trailNotes.filter((n) => n.id !== note.id));
+  }
+
+  // Clicking a highlight card takes the reader to the painted text: in this
+  // lesson right away, in another lesson of the trail via navigation.
+  function jumpToText(note: LessonNote) {
+    if (note.kind !== 'grifo') return;
+    if (note.lessonId === lessonId) {
+      const mark = document.querySelector(`mark.notebook-highlight[data-note-id="${note.id}"]`);
+      mark?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      mark?.classList.remove('notebook-flash');
+      mark?.classList.add('notebook-flash');
+      return;
+    }
+    navigate(`/trilhas/${trailId}/aula/${note.lessonId}`, { state: { scrollToNote: note.id } });
   }
 
   const fromTrail = trailNotes ?? [];
@@ -156,7 +183,13 @@ export function LessonNotebook({
             <p className="notebook__empty">{t('aula.notebook.emptyLesson')}</p>
           ) : (
             notes.map((n) => (
-              <NoteCard key={n.id} note={n} onDelete={remove} locale={i18n.language} />
+              <NoteCard
+                key={n.id}
+                note={n}
+                onDelete={setPendingDelete}
+                onJump={jumpToText}
+                locale={i18n.language}
+              />
             ))
           )
         ) : fromTrail.length === 0 ? (
@@ -165,10 +198,43 @@ export function LessonNotebook({
           </p>
         ) : (
           fromTrail.map((n) => (
-            <NoteCard key={n.id} note={n} onDelete={remove} locale={i18n.language} />
+            <NoteCard
+              key={n.id}
+              note={n}
+              onDelete={setPendingDelete}
+              onJump={jumpToText}
+              locale={i18n.language}
+            />
           ))
         )}
       </div>
+
+      {pendingDelete && (
+        <div className="notebook__scrim" onClick={() => setPendingDelete(null)}>
+          <div
+            className="notebook__confirm"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('aula.notebook.confirmTitle')}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="notebook__confirm-title">{t('aula.notebook.confirmTitle')}</h3>
+            <p className="notebook__confirm-body">{t('aula.notebook.confirmBody')}</p>
+            <div className="notebook__confirm-actions">
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => setPendingDelete(null)}
+              >
+                {t('aula.notebook.confirmCancel')}
+              </button>
+              <button type="button" className="btn btn--danger" onClick={confirmDelete}>
+                {t('aula.notebook.confirmDelete')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
@@ -176,20 +242,34 @@ export function LessonNotebook({
 function NoteCard({
   note,
   onDelete,
+  onJump,
   locale,
 }: {
   note: LessonNote;
   onDelete: (note: LessonNote) => void;
+  onJump: (note: LessonNote) => void;
   locale: string;
 }) {
   const { t } = useTranslation();
   const lessonTitle = (note as TrailNote).aula;
+  const isHighlight = note.kind === 'grifo';
   return (
-    <article className={`notebook__card${note.kind === 'grifo' ? ' notebook__card--highlight' : ''}`}>
-      <p className="notebook__card-body">{note.body}</p>
+    <article
+      className={`notebook__card${isHighlight ? ' notebook__card--highlight' : ''}`}
+      {...(isHighlight ? { onClick: () => onJump(note), title: t('aula.notebook.jumpHint') } : {})}
+    >
+      {/* Highlight quotes carry math as LaTeX ($...$); TextoMath renders it back
+          instead of showing the linearized token soup. Written notes stay plain. */}
+      {isHighlight ? (
+        <p className="notebook__card-body">
+          <TextoMath>{note.body}</TextoMath>
+        </p>
+      ) : (
+        <p className="notebook__card-body">{note.body}</p>
+      )}
       <div className="notebook__card-meta">
         <span className="notebook__card-info">
-          {note.kind === 'grifo' ? t('aula.notebook.kindHighlight') : t('aula.notebook.kindNote')}
+          {isHighlight ? t('aula.notebook.kindHighlight') : t('aula.notebook.kindNote')}
           {' · '}
           {relativeDate(note.createdAt, locale, t)}
           {lessonTitle ? ` · ${lessonTitle}` : ''}
@@ -197,7 +277,10 @@ function NoteCard({
         <button
           type="button"
           className="notebook__card-del"
-          onClick={() => onDelete(note)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(note);
+          }}
           aria-label={t('aula.notebook.delete')}
         >
           <Trash size={14} />

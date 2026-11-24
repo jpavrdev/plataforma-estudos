@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { useAuth } from '../../contexts/AuthContext';
@@ -21,6 +21,7 @@ import {
   type QuizResult,
 } from '../../services/trails';
 import { listLessonNotes, createNote, type LessonNote } from '../../services/notes';
+import { selectionQuote } from '../../utils/selectionQuote';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -40,6 +41,7 @@ import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 export function Aula() {
   const { trailId, lessonId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
@@ -57,6 +59,11 @@ export function Aula() {
   // Notebook: the lesson notes live here (both the panel and the in-text
   // highlights read from this list).
   const [notes, setNotes] = useState<LessonNote[]>([]);
+  // Jumping from a trail-notebook card to a highlight in another lesson lands
+  // here; the scroll happens after the notes load and the marks are painted.
+  const [pendingScrollNote, setPendingScrollNote] = useState<string | null>(
+    (location.state as { scrollToNote?: string } | null)?.scrollToNote ?? null,
+  );
   const [notebookOpen, setNotebookOpen] = useState(() => {
     try {
       return localStorage.getItem('notebook-open') !== '0';
@@ -217,6 +224,8 @@ export function Aula() {
               aula={aula}
               notes={notes}
               notebookOpen={notebookOpen}
+              pendingScrollNote={pendingScrollNote}
+              onScrollHandled={() => setPendingScrollNote(null)}
               onToggleNotebook={toggleNotebook}
               onNoteAdded={noteAdded}
               onConcluir={aoConcluirTrilha}
@@ -415,6 +424,8 @@ function ConteudoAula({
   aula,
   notes,
   notebookOpen,
+  pendingScrollNote,
+  onScrollHandled,
   onToggleNotebook,
   onNoteAdded,
   onConcluir,
@@ -424,6 +435,8 @@ function ConteudoAula({
   aula: LessonDetail;
   notes: LessonNote[];
   notebookOpen: boolean;
+  pendingScrollNote: string | null;
+  onScrollHandled: () => void;
   onToggleNotebook: () => void;
   onNoteAdded: (note: LessonNote) => void;
   onConcluir: () => void;
@@ -432,9 +445,12 @@ function ConteudoAula({
   const navigate = useNavigate();
   const { t } = useTranslation();
   const contentRef = useRef<HTMLElement | null>(null);
-  const [highlightTarget, setHighlightTarget] = useState<{ x: number; y: number; text: string } | null>(
-    null,
-  );
+  const [highlightTarget, setHighlightTarget] = useState<{
+    x: number;
+    y: number;
+    text: string;
+    duplicate: boolean;
+  } | null>(null);
   const [highlightSaving, setHighlightSaving] = useState(false);
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const idx = todas.findIndex((l) => l.id === aula.id);
@@ -443,8 +459,12 @@ function ConteudoAula({
 
   // A highlight starts as a text selection inside the lesson. A button shows up
   // next to the selection and saves the quote as a note; the painting of the
-  // text itself is reapplied by the effect below.
-  function handleSelectionEnd() {
+  // text itself is reapplied by the effect below. Selecting an excerpt that is
+  // already highlighted keeps the button visible but disabled.
+  function handleSelectionEnd(e?: { target: EventTarget | null }) {
+    // The mouseup that lands on the floating button itself must not re-run this:
+    // it would race the click that saves the highlight.
+    if (e?.target instanceof Element && e.target.closest('.notebook-fab')) return;
     const sel = window.getSelection();
     const container = contentRef.current;
     if (!sel || sel.isCollapsed || !container || sel.rangeCount === 0) {
@@ -456,16 +476,22 @@ function ConteudoAula({
       setHighlightTarget(null);
       return;
     }
-    const text = sel.toString().trim();
+    // Math excerpts come through selectionQuote as LaTeX, not as the linearized
+    // token soup the rendered spans produce.
+    const text = selectionQuote(range);
     if (!text) {
       setHighlightTarget(null);
       return;
     }
+    const duplicate = notes.some(
+      (n) => n.kind === 'grifo' && normalizeSpace(n.body) === normalizeSpace(text),
+    );
     const rect = range.getBoundingClientRect();
     setHighlightTarget({
       x: Math.min(Math.max(rect.left + rect.width / 2, 80), window.innerWidth - 80),
       y: Math.max(rect.top - 46, 12),
       text,
+      duplicate,
     });
   }
 
@@ -493,7 +519,7 @@ function ConteudoAula({
     if (!root) return;
 
     function apply(root: HTMLElement) {
-      const quotes = notes.filter((n) => n.kind === 'grifo').map((n) => n.body);
+      const highlights = notes.filter((n) => n.kind === 'grifo');
       root.querySelectorAll('mark.notebook-highlight').forEach((m) => {
         const parent = m.parentNode;
         if (!parent) return;
@@ -501,7 +527,7 @@ function ConteudoAula({
         parent.removeChild(m);
         parent.normalize();
       });
-      if (quotes.length === 0) return;
+      if (highlights.length === 0) return;
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
           const el = node.parentElement;
@@ -510,30 +536,52 @@ function ConteudoAula({
           return NodeFilter.FILTER_ACCEPT;
         },
       });
-      const pending = [...quotes];
+      const pending = [...highlights];
       let node: Node | null;
       while (pending.length > 0 && (node = walker.nextNode()) !== null) {
-        const original = (node as Text).data;
-        for (let q = pending.length - 1; q >= 0; q--) {
-          const bounds = findTextRange(original, pending[q]);
-          if (!bounds) continue;
-          try {
-            const range = document.createRange();
-            range.setStart(node, bounds.start);
-            range.setEnd(node, bounds.end);
-            const mark = document.createElement('mark');
-            mark.className = 'notebook-highlight';
-            range.surroundContents(mark);
-            pending.splice(q, 1);
-          } catch (err) {
-            console.error('Failed to paint the highlight onto the content.', err);
-            pending.splice(q, 1);
+        // surroundContents splits the text node in the middle, so after each
+        // painted quote the node data must be read again: offsets computed over
+        // the old string can point past the end of the shortened node.
+        let paintedSomething = true;
+        while (paintedSomething && pending.length > 0) {
+          paintedSomething = false;
+          const current = (node as Text).data;
+          for (let q = pending.length - 1; q >= 0; q--) {
+            const bounds = findTextRange(current, pending[q].body);
+            if (!bounds) continue;
+            try {
+              const range = document.createRange();
+              range.setStart(node, bounds.start);
+              range.setEnd(node, bounds.end);
+              const mark = document.createElement('mark');
+              mark.className = 'notebook-highlight';
+              mark.dataset.noteId = pending[q].id;
+              // A pending jump keeps its flash even if the content repaints.
+              if (pending[q].id === pendingScrollNote) mark.classList.add('notebook-flash');
+              range.surroundContents(mark);
+              pending.splice(q, 1);
+              paintedSomething = true;
+              break;
+            } catch (err) {
+              console.error('Failed to paint the highlight onto the content.', err);
+              pending.splice(q, 1);
+            }
           }
         }
       }
     }
 
     apply(root);
+
+    // A jump asked from another lesson's notebook waits for the paint to land.
+    if (pendingScrollNote) {
+      const mark = root.querySelector(`mark.notebook-highlight[data-note-id="${pendingScrollNote}"]`);
+      if (mark) {
+        mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        mark.classList.add('notebook-flash');
+        onScrollHandled();
+      }
+    }
 
     // The glossary and the markdown remount the content after the first paint;
     // the highlights are restored when that happens (ignoring the mutations
@@ -554,10 +602,15 @@ function ConteudoAula({
       observer.disconnect();
       clearTimeout(scheduled);
     };
-  }, [aula.id, notes]);
+  }, [aula.id, notes, pendingScrollNote, onScrollHandled]);
 
   return (
-    <main className="lesson__content" ref={contentRef} onMouseUp={handleSelectionEnd} onTouchEnd={handleSelectionEnd}>
+    <main
+      className="lesson__content"
+      ref={contentRef}
+      onMouseUp={(e) => handleSelectionEnd(e)}
+      onTouchEnd={(e) => handleSelectionEnd(e)}
+    >
       <div className="lesson__crumb">
         <span>{trilha.name}</span>
         <span className="lesson__crumb-sep">/</span>
@@ -626,19 +679,29 @@ function ConteudoAula({
       {highlightTarget && (
         <button
           type="button"
-          className="notebook-fab"
+          className={`notebook-fab${highlightTarget.duplicate ? ' notebook-fab--disabled' : ''}`}
           style={{ left: highlightTarget.x, top: highlightTarget.y }}
           // Focusing on mouse down would steal the selection before the click lands.
           onMouseDown={(e) => e.preventDefault()}
           onClick={saveHighlight}
-          disabled={highlightSaving}
+          disabled={highlightSaving || highlightTarget.duplicate}
         >
           <Pencil size={13} />
-          {highlightSaving ? t('common.saving') : t('aula.notebook.highlight')}
+          {highlightSaving
+            ? t('common.saving')
+            : highlightTarget.duplicate
+              ? t('aula.notebook.alreadyHighlighted')
+              : t('aula.notebook.highlight')}
         </button>
       )}
     </main>
   );
+}
+
+// Collapses runs of whitespace so a saved quote still matches the text node it
+// came from even when line breaks got normalized along the way.
+function normalizeSpace(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
 }
 
 // Matches the quote (with normalized whitespace) against the original node text

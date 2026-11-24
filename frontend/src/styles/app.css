@@ -85,6 +85,17 @@
 .btn--ghost:hover {
   border-color: var(--accent);
 }
+.btn--danger {
+  flex: 1;
+  background: var(--av-red);
+  border-color: var(--av-red);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+.btn--danger:hover {
+  filter: brightness(1.05);
+}
 /* O `flex: 1` do .btn--ghost é para as linhas de dois botões lado a lado (.auth__social,
    rodapé de modal). Um botão --block ocupa a linha inteira sozinho: num container em
    coluna com espaço livre (.auth__panel) aquele flex-grow esticava o botão até o fim do
@@ -3367,6 +3378,12 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+.notebook__card--highlight {
+  cursor: pointer;
+}
+.notebook__card--highlight:hover {
+  border-color: color-mix(in srgb, var(--amber) 55%, transparent);
+}
 .notebook__card--highlight .notebook__card-body {
   background: color-mix(in srgb, var(--amber) 24%, transparent);
   border-left: 3px solid var(--amber);
@@ -3453,6 +3470,54 @@ mark.notebook-highlight {
   border-radius: 3px;
   padding: 0 1px;
 }
+/* Brief flash when a notebook card jumps back to this excerpt. */
+mark.notebook-flash {
+  animation: notebook-flash 1.6s ease-out 1;
+}
+@keyframes notebook-flash {
+  0% {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  60% {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  100% {
+    background: color-mix(in srgb, var(--amber) 42%, transparent);
+  }
+}
+.notebook__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(15, 12, 22, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.notebook__confirm {
+  width: min(440px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.notebook__confirm-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.notebook__confirm-body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.notebook__confirm-actions {
+  display: flex;
+  gap: 10px;
+}
 .notebook-fab {
   position: fixed;
   transform: translateX(-50%);
@@ -3473,6 +3538,14 @@ mark.notebook-highlight {
 .notebook-fab:hover {
   color: var(--accent);
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.notebook-fab--disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+.notebook-fab--disabled:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
 }
 
 /* Ajustes da tela de aula ao layout do projeto */

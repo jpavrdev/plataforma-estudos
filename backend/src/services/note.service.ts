@@ -69,6 +69,23 @@ export async function createNote(
         .where(and(eq(lessons.id, lessonId), eq(lessons.published, true)));
     if (!lesson) throw new AppError(404, "lesson.notFound");
 
+    // Highlighting the exact same excerpt twice only clutters the notebook; the
+    // frontend also guards this, the check here closes the race and the API hole.
+    if (kind === "grifo") {
+        const [dupe] = await db
+            .select({ id: lessonNotes.id })
+            .from(lessonNotes)
+            .where(
+                and(
+                    eq(lessonNotes.userId, userId),
+                    eq(lessonNotes.lessonId, lessonId),
+                    eq(lessonNotes.kind, "grifo"),
+                    eq(lessonNotes.body, text),
+                ),
+            );
+        if (dupe) throw new AppError(409, "note.alreadyHighlighted");
+    }
+
     const [note] = await db
         .insert(lessonNotes)
         .values({ userId, lessonId, kind, body: text })
