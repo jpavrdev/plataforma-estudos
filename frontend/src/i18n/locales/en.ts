@@ -715,6 +715,13 @@ export const en: typeof ptBR = {
     ctaUnlock: 'Unlock',
   },
 
+  trilhaDetalhe: {
+    leave: 'Leave track',
+    followAgain: 'Follow this track again',
+    hiddenNotice:
+      'You left this track and it no longer shows in your continue lists. Your progress was kept.',
+  },
+
   aula: {
     loading: 'Loading lesson...',
     loadError: 'Could not load the lesson.',

@@ -49,6 +49,7 @@ import {
     getMyStreak,
     getPublicStats,
     toggleFavorite,
+    toggleHide,
 } from "../controllers/TrailController.ts";
 import {
     getLessonNotes,
@@ -101,6 +102,8 @@ router.patch("/lessons/:id/published", authenticate, requireAdmin, setLessonPubl
 router.get("/trails", authenticate, listTrails);
 router.get("/trails/:id", authenticate, getTrail);
 router.post("/trails/:id/favorite", authenticate, toggleFavorite);
+// Leaving a trail hides it from "continue" lists; the progress stays.
+router.post("/trails/:id/hide", authenticate, toggleHide);
 // The track as an EPUB book: same access rule as the content (being signed in is enough).
 router.get("/trails/:id/epub", authenticate, getTrailEpub);
 router.post("/trails/:id/review", authenticate, submitTrailReview);

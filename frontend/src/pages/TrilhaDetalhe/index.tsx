@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
@@ -21,7 +22,7 @@ import {
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
-import { obterTrilha, avaliarTrilha, baixarEpubTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
+import { obterTrilha, avaliarTrilha, baixarEpubTrilha, alternarSairTrilha, type TrailDetail, type LessonRef } from '../../services/trails';
 import {
   statusCertificado,
   emitirCertificado,
@@ -124,6 +125,7 @@ export function TrilhaDetalhe() {
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const displayName = authUser?.name ?? user.name;
   const initials = getInitials(displayName);
@@ -303,6 +305,17 @@ export function TrilhaDetalhe() {
     if (!trilha) return;
     navigate(`/trilhas/${trilha.id}/aula/${l.id}`);
   }
+  // Leaving hides the trail from the "continue" lists; the progress stays and
+  // the same button brings it back.
+  async function sairDaTrilha() {
+    if (!trilha) return;
+    try {
+      const r = await alternarSairTrilha(trilha.id);
+      setTrilha((atual) => (atual ? { ...atual, ocultada: r.ocultada } : atual));
+    } catch (err) {
+      console.error('Falha ao sair da trilha.', err);
+    }
+  }
   function irPara(l?: LessonRef) {
     if (!trilha || !l) return;
     navigate(`/trilhas/${trilha.id}/aula/${l.id}`);
@@ -470,6 +483,16 @@ export function TrilhaDetalhe() {
                     <button className="td-card__cta" onClick={() => irPara(stats.alvo)} disabled={!stats.alvo}>
                       {stats.comecado ? 'Continuar trilha' : 'Começar trilha'}
                     </button>
+                    {stats.comecado && (
+                      <button className="td-card__leave" onClick={sairDaTrilha}>
+                        {trilha.ocultada
+                          ? t('trilhaDetalhe.followAgain')
+                          : t('trilhaDetalhe.leave')}
+                      </button>
+                    )}
+                    {trilha.ocultada && (
+                      <p className="td-card__leave-hint">{t('trilhaDetalhe.hiddenNotice')}</p>
+                    )}
                     <button className="td-card__livro" onClick={baixarLivro} disabled={baixandoLivro}>
                       <BookOpen size={15} /> {baixandoLivro ? 'Preparando o livro...' : 'Baixar livro (EPUB)'}
                     </button>

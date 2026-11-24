@@ -71,6 +71,12 @@ export async function alternarFavoritoTrilha(id: string) {
   return data;
 }
 
+// Sai (ou volta a) a trilha: sai de "continuar" sem apagar o progresso.
+export async function alternarSairTrilha(id: string) {
+  const { data } = await api.post<{ ocultada: boolean }>(`/trails/${id}/hide`);
+  return data;
+}
+
 export type LessonState = 'done' | 'current' | 'locked';
 
 export interface LessonRef {
@@ -123,6 +129,8 @@ export interface TrailDetail {
   multiLanguage?: boolean;
   languages?: string[];
   activeLanguage?: string | null;
+  /** True when the user left the trail: hidden from "continue" lists. */
+  ocultada?: boolean;
   modules: ModuleWithLessons[];
 }
 

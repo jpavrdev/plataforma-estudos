@@ -716,6 +716,13 @@ export const ptBR = {
     ctaUnlock: 'Desbloquear',
   },
 
+  trilhaDetalhe: {
+    leave: 'Sair da trilha',
+    followAgain: 'Voltar a seguir esta trilha',
+    hiddenNotice:
+      'Você saiu desta trilha e ela não aparece mais nas suas listas de continuar. Seu progresso foi mantido.',
+  },
+
   aula: {
     loading: 'Carregando aula...',
     loadError: 'Não foi possível carregar a aula.',

@@ -14,6 +14,7 @@ import {
     roadmapStageRefs,
     trailReviews,
     trailFavorites,
+    trailHides,
     trailTranslations,
     moduleTranslations,
     lessonTranslations,
@@ -232,6 +233,31 @@ export async function toggleTrailFavorite(userId: string, trailId: string) {
     return { favorito: removed.length === 0 };
 }
 
+// Hides (or unhides) a trail from the user's "continue" lists. Leaving a trail
+// keeps the progress intact: coming back through the same toggle restores it.
+export async function toggleTrailHide(userId: string, trailId: string) {
+    const [trail] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
+    if (!trail) throw new AppError(404, "trail.notFound");
+
+    const removed = await db
+        .delete(trailHides)
+        .where(and(eq(trailHides.trailId, trailId), eq(trailHides.userId, userId)))
+        .returning({ id: trailHides.id });
+    if (removed.length === 0) {
+        await db.insert(trailHides).values({ trailId, userId }).onConflictDoNothing();
+    }
+    return { ocultada: removed.length === 0 };
+}
+
+// Trails the user left behind, so "continue" lists skip them.
+async function hiddenTrailIds(userId: string): Promise<Set<string>> {
+    const rows = await db
+        .select({ trailId: trailHides.trailId })
+        .from(trailHides)
+        .where(eq(trailHides.userId, userId));
+    return new Set(rows.map((r) => r.trailId));
+}
+
 // Tracks where the user already has progress, with the completion percentage.
 // In a multi-language track the percentage is the best path's (neutral + one language),
 // the same measure as the roadmap and the certificate completion.
@@ -267,6 +293,7 @@ export async function findUserTrails(userId: string) {
 
     const allTrails = await db.select().from(trails);
     const countCompleted = (ids: string[]) => ids.filter((id) => completedIds.has(id)).length;
+    const hidden = await hiddenTrailIds(userId);
 
     const result: {
         id: string;
@@ -280,6 +307,8 @@ export async function findUserTrails(userId: string) {
     for (const trail of allTrails) {
         const group = byTrail.get(trail.id);
         if (!group) continue;
+        // A trail the user left keeps its progress but stops showing up as "continue".
+        if (hidden.has(trail.id)) continue;
 
         let total = group.neutras.length;
         let completed = countCompleted(group.neutras);
@@ -500,9 +529,11 @@ export async function findTrailDetail(
     const ownReview = revs.find((r) => r.userId === userId);
     const myReview = ownReview ? { stars: ownReview.stars, comment: ownReview.comment } : null;
     const canReview = allLessons.some((a) => completed.has(a.id));
+    const hidden = await hiddenTrailIds(userId);
 
     return {
         ...trail,
+        ocultada: hidden.has(trailId),
         name: trTrail?.name ?? trail.name,
         description: trTrail?.description ?? trail.description,
         whatYouLearn: trTrail?.whatYouLearn ?? trail.whatYouLearn,
