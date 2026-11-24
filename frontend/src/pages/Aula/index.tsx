@@ -528,15 +528,42 @@ function ConteudoAula({
         parent.normalize();
       });
       if (highlights.length === 0) return;
+      const pending = [...highlights];
+
+      // Formula quotes ("$...$" alone) paint by wrapping the matching KaTeX
+      // element; its annotation carries the same LaTeX the quote was made of.
+      for (const h of [...pending]) {
+        const m = h.body.trim().match(/^\$([^$]+)\$/);
+        if (!m) continue;
+        const katex = [...root.querySelectorAll('.katex')].find((k) =>
+          k.querySelector('annotation')?.textContent?.trim() === m[1].trim(),
+        );
+        if (!katex) continue;
+        try {
+          const range = document.createRange();
+          range.selectNode(katex);
+          const mark = document.createElement('mark');
+          mark.className = 'notebook-highlight';
+          mark.dataset.noteId = h.id;
+          // A pending jump keeps its flash even if the content repaints.
+          if (h.id === pendingScrollNote) mark.classList.add('notebook-flash');
+          range.surroundContents(mark);
+          pending.splice(pending.indexOf(h), 1);
+        } catch (err) {
+          console.error('Failed to paint the formula highlight.', err);
+          pending.splice(pending.indexOf(h), 1);
+        }
+      }
+
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
           const el = node.parentElement;
-          // Block code and existing highlight marks stay out of the search.
-          if (!el || el.closest('.codeblock, mark.notebook-highlight')) return NodeFilter.FILTER_REJECT;
+          // Block code, KaTeX internals and existing marks stay out of the search.
+          if (!el || el.closest('.codeblock, .katex, mark.notebook-highlight'))
+            return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         },
       });
-      const pending = [...highlights];
       let node: Node | null;
       while (pending.length > 0 && (node = walker.nextNode()) !== null) {
         // surroundContents splits the text node in the middle, so after each
