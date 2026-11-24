@@ -3248,6 +3248,235 @@
   margin-top: 28px;
 }
 
+/* ===================== LESSON NOTEBOOK ===================== */
+.lesson--notebook {
+  grid-template-columns: 320px minmax(0, 1fr) 340px;
+}
+.notebook {
+  position: sticky;
+  top: 78px;
+  align-self: start;
+  max-height: calc(100svh - 92px);
+  overflow-y: auto;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 18px 16px 26px;
+}
+.notebook__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.notebook__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.notebook__close {
+  display: flex;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--r-sm);
+}
+.notebook__close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.notebook__tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-2);
+  padding: 4px;
+  border-radius: var(--r-lg);
+}
+.notebook__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 6px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.notebook__tab--active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.notebook__tab-n {
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 99px;
+  padding: 1px 7px;
+}
+.notebook__composer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+.notebook__composer textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 72px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.notebook__composer textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.notebook__save {
+  align-self: flex-end;
+}
+.notebook__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.notebook__card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 10px 12px;
+  background: var(--surface);
+}
+.notebook__card-body {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.notebook__card--highlight .notebook__card-body {
+  background: color-mix(in srgb, var(--amber) 24%, transparent);
+  border-left: 3px solid var(--amber);
+  border-radius: 4px 8px 8px 4px;
+  padding: 7px 10px;
+}
+.notebook__card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+.notebook__card-info {
+  font-size: 11.5px;
+  color: var(--muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notebook__card-del {
+  flex: none;
+  display: flex;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--r-sm);
+}
+.notebook__card-del:hover {
+  color: var(--av-red);
+  background: color-mix(in srgb, var(--av-red) 12%, transparent);
+}
+.notebook__empty {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+  padding: 18px 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-lg);
+}
+.lesson__notebook-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+}
+.lesson__notebook-toggle:hover {
+  color: var(--text);
+}
+.lesson__notebook-toggle--active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.lesson__notebook-n {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+mark.notebook-highlight {
+  background: color-mix(in srgb, var(--amber) 42%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+.notebook-fab {
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 70;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.notebook-fab:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
 /* Ajustes da tela de aula ao layout do projeto */
 .lesson {
   min-height: calc(100svh - 66px);
@@ -5363,6 +5592,20 @@
   }
   .lesson {
     grid-template-columns: 1fr;
+  }
+  .lesson--notebook {
+    grid-template-columns: 1fr;
+  }
+  .notebook {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(92vw, 380px);
+    max-height: none;
+    z-index: 80;
+    box-shadow: var(--shadow);
+    border-left: 1px solid var(--border);
   }
   .lesson__nav {
     align-self: auto;

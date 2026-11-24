@@ -498,6 +498,13 @@
       "when": 1795017094243,
       "tag": "0070_content_translations",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1795546628557,
+      "tag": "0071_lesson_notes",
+      "breakpoints": true
     }
   ]
 }

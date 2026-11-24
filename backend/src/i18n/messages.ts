@@ -461,6 +461,12 @@ export const MESSAGES = {
 
     // ---------------------------------------------------------------- review and interviews
     "flashcard.notFound": { "pt-BR": "Cartão não encontrado.", en: "Card not found." },
+    "note.invalidKind": { "pt-BR": "Tipo de nota inválido.", en: "Invalid note type." },
+    "note.invalidBody": {
+        "pt-BR": "A nota não pode estar vazia nem passar de 2000 caracteres.",
+        en: "The note cannot be empty or longer than 2000 characters.",
+    },
+    "note.notFound": { "pt-BR": "Nota não encontrada.", en: "Note not found." },
     "flashcard.notInDeck": {
         "pt-BR": "Cartão não encontrado no seu baralho.",
         en: "Card not found in your deck.",

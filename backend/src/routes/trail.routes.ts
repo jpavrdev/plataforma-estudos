@@ -50,6 +50,12 @@ import {
     getPublicStats,
     toggleFavorite,
 } from "../controllers/TrailController.ts";
+import {
+    getLessonNotes,
+    getTrailNotes,
+    postNote,
+    removeNote,
+} from "../controllers/NoteController.ts";
 
 const router = Router();
 
@@ -117,5 +123,11 @@ router.get("/community/achievements", authenticate, getCommunityAchievements);
 router.get("/ranking", authenticate, getRanking);
 router.post("/lessons/:id/quiz", authenticate, submitQuiz);
 router.post("/lessons/:id/quiz/check", authenticate, checkAnswer);
+
+// Student notebook: notes and highlights per lesson, plus the whole-trail view.
+router.get("/lessons/:id/notes", authenticate, getLessonNotes);
+router.post("/lessons/:id/notes", authenticate, postNote);
+router.get("/trails/:id/notes", authenticate, getTrailNotes);
+router.delete("/notes/:id", authenticate, removeNote);
 
 export default router;

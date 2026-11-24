@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
@@ -7,7 +7,8 @@ import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Check, Help, Alert, X, ChevronDown } from '../../components/Icons';
+import { Flame, Check, Help, Alert, X, ChevronDown, Notebook, Pencil } from '../../components/Icons';
+import { LessonNotebook } from '../../components/LessonNotebook';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import {
@@ -19,6 +20,7 @@ import {
   type LessonDetail,
   type QuizResult,
 } from '../../services/trails';
+import { listLessonNotes, createNote, type LessonNote } from '../../services/notes';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -51,6 +53,36 @@ export function Aula() {
   const [perguntaTrilha, setPerguntaTrilha] = useState(false);
   const [buscandoProxima, setBuscandoProxima] = useState(false);
   const [temRevisao, setTemRevisao] = useState(false);
+
+  // Notebook: the lesson notes live here (both the panel and the in-text
+  // highlights read from this list).
+  const [notes, setNotes] = useState<LessonNote[]>([]);
+  const [notebookOpen, setNotebookOpen] = useState(() => {
+    try {
+      return localStorage.getItem('notebook-open') !== '0';
+    } catch {
+      return true;
+    }
+  });
+
+  function toggleNotebook() {
+    setNotebookOpen((open) => {
+      try {
+        localStorage.setItem('notebook-open', open ? '0' : '1');
+      } catch {
+        // Without localStorage (private mode/blocked) the preference lasts the session.
+      }
+      return !open;
+    });
+  }
+
+  function noteAdded(note: LessonNote) {
+    setNotes((current) => [note, ...current]);
+  }
+
+  function noteRemoved(id: string) {
+    setNotes((current) => current.filter((n) => n.id !== id));
+  }
 
   // Ao concluir a trilha, pergunta se a pessoa quer emendar a próxima do
   // roadmap; trilha fora de roadmap (ou roadmap no fim) segue para a lista.
@@ -111,10 +143,18 @@ export function Aula() {
       setErro(false);
       try {
         const lang = trailId ? getTrailLang(trailId) : undefined;
-        const [tr, a] = await Promise.all([obterTrilha(trailId!, lang), obterAula(lessonId!, lang)]);
+        const [tr, a, ns] = await Promise.all([
+          obterTrilha(trailId!, lang),
+          obterAula(lessonId!, lang),
+          listLessonNotes(lessonId!).catch((err) => {
+            console.error('Failed to load the lesson notebook.', err);
+            return [] as LessonNote[];
+          }),
+        ]);
         if (!ativo) return;
         setTrilha(tr);
         setAula(a);
+        setNotes(ns);
       } catch (e: unknown) {
         if (!ativo) return;
         console.error('Falha ao carregar a aula:', e);
@@ -170,14 +210,28 @@ export function Aula() {
         )}
 
         {!carregando && !erro && trilha && aula && (
-          <div className="lesson">
+          <div className={`lesson${notebookOpen ? ' lesson--notebook' : ''}`}>
             <SidebarTrilha trilha={trilha} aulaAtualId={aula.id} />
             <ConteudoAula
               trilha={trilha}
               aula={aula}
+              notes={notes}
+              notebookOpen={notebookOpen}
+              onToggleNotebook={toggleNotebook}
+              onNoteAdded={noteAdded}
               onConcluir={aoConcluirTrilha}
               onRevisar={temRevisao ? () => navigate(`/revisao?trilha=${trailId}`) : null}
             />
+            {notebookOpen && (
+              <LessonNotebook
+                trailId={trilha.id}
+                lessonId={aula.id}
+                notes={notes}
+                onClose={toggleNotebook}
+                onNoteAdded={noteAdded}
+                onNoteRemoved={noteRemoved}
+              />
+            )}
           </div>
         )}
 
@@ -359,27 +413,166 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
 function ConteudoAula({
   trilha,
   aula,
+  notes,
+  notebookOpen,
+  onToggleNotebook,
+  onNoteAdded,
   onConcluir,
   onRevisar,
 }: {
   trilha: TrailDetail;
   aula: LessonDetail;
+  notes: LessonNote[];
+  notebookOpen: boolean;
+  onToggleNotebook: () => void;
+  onNoteAdded: (note: LessonNote) => void;
   onConcluir: () => void;
   onRevisar: (() => void) | null;
 }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const contentRef = useRef<HTMLElement | null>(null);
+  const [highlightTarget, setHighlightTarget] = useState<{ x: number; y: number; text: string } | null>(
+    null,
+  );
+  const [highlightSaving, setHighlightSaving] = useState(false);
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const idx = todas.findIndex((l) => l.id === aula.id);
   const proxima = idx >= 0 && idx < todas.length - 1 ? todas[idx + 1] : null;
   const irProxima = proxima ? () => navigate(`/trilhas/${trilha.id}/aula/${proxima.id}`) : null;
 
+  // A highlight starts as a text selection inside the lesson. A button shows up
+  // next to the selection and saves the quote as a note; the painting of the
+  // text itself is reapplied by the effect below.
+  function handleSelectionEnd() {
+    const sel = window.getSelection();
+    const container = contentRef.current;
+    if (!sel || sel.isCollapsed || !container || sel.rangeCount === 0) {
+      setHighlightTarget(null);
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    if (!container.contains(range.commonAncestorContainer)) {
+      setHighlightTarget(null);
+      return;
+    }
+    const text = sel.toString().trim();
+    if (!text) {
+      setHighlightTarget(null);
+      return;
+    }
+    const rect = range.getBoundingClientRect();
+    setHighlightTarget({
+      x: Math.min(Math.max(rect.left + rect.width / 2, 80), window.innerWidth - 80),
+      y: Math.max(rect.top - 46, 12),
+      text,
+    });
+  }
+
+  async function saveHighlight() {
+    if (!highlightTarget || highlightSaving) return;
+    setHighlightSaving(true);
+    try {
+      const note = await createNote(aula.id, 'grifo', highlightTarget.text.slice(0, 2000));
+      onNoteAdded(note);
+      window.getSelection()?.removeAllRanges();
+      setHighlightTarget(null);
+    } catch (err) {
+      console.error('Failed to save the highlight.', err);
+    } finally {
+      setHighlightSaving(false);
+    }
+  }
+
+  // Paints the saved highlights onto the lesson text. The quote is matched inside
+  // a single text node (the common case of a plain paragraph); when the selection
+  // spans inline elements or the content changed, the highlight simply stays in
+  // the notebook only.
+  useEffect(() => {
+    const root = contentRef.current;
+    if (!root) return;
+
+    function apply(root: HTMLElement) {
+      const quotes = notes.filter((n) => n.kind === 'grifo').map((n) => n.body);
+      root.querySelectorAll('mark.notebook-highlight').forEach((m) => {
+        const parent = m.parentNode;
+        if (!parent) return;
+        while (m.firstChild) parent.insertBefore(m.firstChild, m);
+        parent.removeChild(m);
+        parent.normalize();
+      });
+      if (quotes.length === 0) return;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const el = node.parentElement;
+          // Block code and existing highlight marks stay out of the search.
+          if (!el || el.closest('.codeblock, mark.notebook-highlight')) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        },
+      });
+      const pending = [...quotes];
+      let node: Node | null;
+      while (pending.length > 0 && (node = walker.nextNode()) !== null) {
+        const original = (node as Text).data;
+        for (let q = pending.length - 1; q >= 0; q--) {
+          const bounds = findTextRange(original, pending[q]);
+          if (!bounds) continue;
+          try {
+            const range = document.createRange();
+            range.setStart(node, bounds.start);
+            range.setEnd(node, bounds.end);
+            const mark = document.createElement('mark');
+            mark.className = 'notebook-highlight';
+            range.surroundContents(mark);
+            pending.splice(q, 1);
+          } catch (err) {
+            console.error('Failed to paint the highlight onto the content.', err);
+            pending.splice(q, 1);
+          }
+        }
+      }
+    }
+
+    apply(root);
+
+    // The glossary and the markdown remount the content after the first paint;
+    // the highlights are restored when that happens (ignoring the mutations
+    // caused by the restoration itself).
+    let scheduled: ReturnType<typeof setTimeout> | undefined;
+    const observer = new MutationObserver((mutations) => {
+      const onlyHighlights = mutations.every((m) =>
+        [...m.addedNodes, ...m.removedNodes].every(
+          (n) => n instanceof HTMLElement && n.classList.contains('notebook-highlight'),
+        ),
+      );
+      if (onlyHighlights) return;
+      clearTimeout(scheduled);
+      scheduled = setTimeout(() => apply(root), 50);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      clearTimeout(scheduled);
+    };
+  }, [aula.id, notes]);
+
   return (
-    <main className="lesson__content">
+    <main className="lesson__content" ref={contentRef} onMouseUp={handleSelectionEnd} onTouchEnd={handleSelectionEnd}>
       <div className="lesson__crumb">
         <span>{trilha.name}</span>
         <span className="lesson__crumb-sep">/</span>
         <span>{aula.title}</span>
+        <button
+          type="button"
+          className={`lesson__notebook-toggle${notebookOpen ? ' lesson__notebook-toggle--active' : ''}`}
+          onClick={onToggleNotebook}
+          aria-pressed={notebookOpen}
+          title={t('aula.notebook.toggleAria')}
+        >
+          <Notebook size={15} />
+          <span>{t('aula.notebook.toggle')}</span>
+          {notes.length > 0 && <span className="lesson__notebook-n">{notes.length}</span>}
+        </button>
       </div>
 
       <h1 className="lesson__title">{aula.title}</h1>
@@ -429,8 +622,51 @@ function ConteudoAula({
           )}
         </div>
       )}
+
+      {highlightTarget && (
+        <button
+          type="button"
+          className="notebook-fab"
+          style={{ left: highlightTarget.x, top: highlightTarget.y }}
+          // Focusing on mouse down would steal the selection before the click lands.
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={saveHighlight}
+          disabled={highlightSaving}
+        >
+          <Pencil size={13} />
+          {highlightSaving ? t('common.saving') : t('aula.notebook.highlight')}
+        </button>
+      )}
     </main>
   );
+}
+
+// Matches the quote (with normalized whitespace) against the original node text
+// and returns the offsets in the original string, ready for a Range.
+function findTextRange(original: string, rawQuote: string): { start: number; end: number } | null {
+  const quote = rawQuote.replace(/\s+/g, ' ').trim();
+  if (!quote) return null;
+  const map: number[] = [];
+  let norm = '';
+  let inSpace = false;
+  for (let i = 0; i < original.length; i++) {
+    if (/\s/.test(original[i])) {
+      if (inSpace) continue;
+      inSpace = true;
+      map[norm.length] = i;
+      norm += ' ';
+    } else {
+      inSpace = false;
+      map[norm.length] = i;
+      norm += original[i];
+    }
+  }
+  const idx = norm.trimStart().indexOf(quote);
+  if (idx < 0) return null;
+  const normStart = norm.length - norm.trimStart().length;
+  const start = map[normStart + idx];
+  const end = map[normStart + idx + quote.length - 1];
+  return start !== undefined && end !== undefined ? { start, end: end + 1 } : null;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
