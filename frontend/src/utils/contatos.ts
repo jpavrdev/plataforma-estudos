@@ -37,39 +37,45 @@ export function ehCanal(valor: string): valor is Canal {
 export interface Pais {
   codigo: string;
   nome: string;
+  nomeEn: string;
   ddi: string;
+}
+
+// Nome do país no idioma ativo, com fallback para o português.
+export function nomeDoPais(pais: Pais, lingua: string): string {
+  return lingua.startsWith('pt') ? pais.nome : pais.nomeEn;
 }
 
 const BRASIL = 'BR';
 
 const LISTA_DE_PAISES: Pais[] = [
-  { codigo: 'BR', nome: 'Brasil', ddi: '55' },
-  { codigo: 'PT', nome: 'Portugal', ddi: '351' },
-  { codigo: 'AO', nome: 'Angola', ddi: '244' },
-  { codigo: 'MZ', nome: 'Moçambique', ddi: '258' },
-  { codigo: 'CV', nome: 'Cabo Verde', ddi: '238' },
-  { codigo: 'GW', nome: 'Guiné-Bissau', ddi: '245' },
-  { codigo: 'ST', nome: 'São Tomé e Príncipe', ddi: '239' },
-  { codigo: 'TL', nome: 'Timor-Leste', ddi: '670' },
-  { codigo: 'US', nome: 'Estados Unidos', ddi: '1' },
-  { codigo: 'CA', nome: 'Canadá', ddi: '1' },
-  { codigo: 'AR', nome: 'Argentina', ddi: '54' },
-  { codigo: 'CL', nome: 'Chile', ddi: '56' },
-  { codigo: 'CO', nome: 'Colômbia', ddi: '57' },
-  { codigo: 'MX', nome: 'México', ddi: '52' },
-  { codigo: 'PY', nome: 'Paraguai', ddi: '595' },
-  { codigo: 'UY', nome: 'Uruguai', ddi: '598' },
-  { codigo: 'ES', nome: 'Espanha', ddi: '34' },
-  { codigo: 'FR', nome: 'França', ddi: '33' },
-  { codigo: 'IT', nome: 'Itália', ddi: '39' },
-  { codigo: 'DE', nome: 'Alemanha', ddi: '49' },
-  { codigo: 'NL', nome: 'Países Baixos', ddi: '31' },
-  { codigo: 'BE', nome: 'Bélgica', ddi: '32' },
-  { codigo: 'CH', nome: 'Suíça', ddi: '41' },
-  { codigo: 'IE', nome: 'Irlanda', ddi: '353' },
-  { codigo: 'GB', nome: 'Reino Unido', ddi: '44' },
-  { codigo: 'JP', nome: 'Japão', ddi: '81' },
-  { codigo: 'AU', nome: 'Austrália', ddi: '61' },
+  { codigo: 'BR', nome: 'Brasil', nomeEn: 'Brazil', ddi: '55' },
+  { codigo: 'PT', nome: 'Portugal', nomeEn: 'Portugal', ddi: '351' },
+  { codigo: 'AO', nome: 'Angola', nomeEn: 'Angola', ddi: '244' },
+  { codigo: 'MZ', nome: 'Moçambique', nomeEn: 'Mozambique', ddi: '258' },
+  { codigo: 'CV', nome: 'Cabo Verde', nomeEn: 'Cape Verde', ddi: '238' },
+  { codigo: 'GW', nome: 'Guiné-Bissau', nomeEn: 'Guinea-Bissau', ddi: '245' },
+  { codigo: 'ST', nome: 'São Tomé e Príncipe', nomeEn: 'São Tomé and Príncipe', ddi: '239' },
+  { codigo: 'TL', nome: 'Timor-Leste', nomeEn: 'Timor-Leste', ddi: '670' },
+  { codigo: 'US', nome: 'Estados Unidos', nomeEn: 'United States', ddi: '1' },
+  { codigo: 'CA', nome: 'Canadá', nomeEn: 'Canada', ddi: '1' },
+  { codigo: 'AR', nome: 'Argentina', nomeEn: 'Argentina', ddi: '54' },
+  { codigo: 'CL', nome: 'Chile', nomeEn: 'Chile', ddi: '56' },
+  { codigo: 'CO', nome: 'Colômbia', nomeEn: 'Colombia', ddi: '57' },
+  { codigo: 'MX', nome: 'México', nomeEn: 'Mexico', ddi: '52' },
+  { codigo: 'PY', nome: 'Paraguai', nomeEn: 'Paraguay', ddi: '595' },
+  { codigo: 'UY', nome: 'Uruguai', nomeEn: 'Uruguay', ddi: '598' },
+  { codigo: 'ES', nome: 'Espanha', nomeEn: 'Spain', ddi: '34' },
+  { codigo: 'FR', nome: 'França', nomeEn: 'France', ddi: '33' },
+  { codigo: 'IT', nome: 'Itália', nomeEn: 'Italy', ddi: '39' },
+  { codigo: 'DE', nome: 'Alemanha', nomeEn: 'Germany', ddi: '49' },
+  { codigo: 'NL', nome: 'Países Baixos', nomeEn: 'Netherlands', ddi: '31' },
+  { codigo: 'BE', nome: 'Bélgica', nomeEn: 'Belgium', ddi: '32' },
+  { codigo: 'CH', nome: 'Suíça', nomeEn: 'Switzerland', ddi: '41' },
+  { codigo: 'IE', nome: 'Irlanda', nomeEn: 'Ireland', ddi: '353' },
+  { codigo: 'GB', nome: 'Reino Unido', nomeEn: 'United Kingdom', ddi: '44' },
+  { codigo: 'JP', nome: 'Japão', nomeEn: 'Japan', ddi: '81' },
+  { codigo: 'AU', nome: 'Austrália', nomeEn: 'Australia', ddi: '61' },
 ];
 
 export const PAISES: Pais[] = [
@@ -154,7 +160,20 @@ export type Rascunhos = Record<Papel, RascunhoContato>;
 
 export type CampoTexto = 'ddd' | 'numero' | 'usuario' | 'email';
 export type CampoContato = 'canal' | CampoTexto;
-export type ErrosContato = Partial<Record<CampoContato, string>>;
+export type ChaveErroContato =
+  | 'sorteio.dddRequired'
+  | 'sorteio.dddInvalid'
+  | 'sorteio.numberRequired'
+  | 'sorteio.brPhone'
+  | 'sorteio.digitRange'
+  | 'sorteio.igRequired'
+  | 'sorteio.igFormat'
+  | 'sorteio.igDots'
+  | 'sorteio.emailRequired'
+  | 'sorteio.emailInvalid'
+  | 'sorteio.channelRequired'
+  | 'sorteio.channelDifferent';
+export type ErrosContato = Partial<Record<CampoContato, ChaveErroContato>>;
 export type ErrosInscricao = Record<Papel, ErrosContato>;
 
 export const SEM_ERROS: ErrosInscricao = { primario: {}, secundario: {} };
@@ -218,47 +237,50 @@ const FORMATO_EMAIL =
 const MAX_EMAIL = 254;
 const FORMATO_INSTAGRAM = /^[a-z0-9._]{1,30}$/;
 
-function validarDdd(valor: string): string | undefined {
+function validarDdd(valor: string): ChaveErroContato | undefined {
   const ddd = digitos(valor);
-  if (!ddd) return 'Informe o DDD';
-  if (!DDDS.has(ddd)) return 'DDD inválido';
+  if (!ddd) return 'sorteio.dddRequired';
+  if (!DDDS.has(ddd)) return 'sorteio.dddInvalid';
   return undefined;
 }
 
-function validarNumero(valor: string, pais: string): string | undefined {
+function validarNumero(valor: string, pais: string): ChaveErroContato | undefined {
   const digitado = digitos(valor);
-  if (!digitado) return 'Informe o número';
+  if (!digitado) return 'sorteio.numberRequired';
   if (pais === BRASIL) {
-    return /^9\d{8}$/.test(digitado) ? undefined : 'O celular tem 9 dígitos e começa com 9';
+    return /^9\d{8}$/.test(digitado) ? undefined : 'sorteio.brPhone';
   }
   const numero = semZeroNacional(digitado, pais);
   const max = limiteDoNumero(pais);
   if (numero.length < MIN_DIGITOS_NUMERO || numero.length > max) {
-    return `Use de ${MIN_DIGITOS_NUMERO} a ${max} dígitos, com o código de área`;
+    // A faixa real depende do DDI, mas a mensagem é genérica: quem digitou errado
+    // precisa saber a ordem de grandeza, não o limite exato do país escolhido.
+    return 'sorteio.digitRange';
   }
   return undefined;
 }
 
-function validarInstagram(valor: string): string | undefined {
+function validarInstagram(valor: string): ChaveErroContato | undefined {
   const usuario = normalizarInstagram(valor);
-  if (!usuario) return 'Informe o seu @ do Instagram';
-  if (!FORMATO_INSTAGRAM.test(usuario)) {
-    return 'Use só letras, números, ponto e underline, até 30 caracteres';
-  }
+  if (!usuario) return 'sorteio.igRequired';
+  if (!FORMATO_INSTAGRAM.test(usuario)) return 'sorteio.igFormat';
   if (usuario.startsWith('.') || usuario.endsWith('.') || usuario.includes('..')) {
-    return 'O @ não pode começar nem terminar com ponto, nem ter dois pontos seguidos';
+    return 'sorteio.igDots';
   }
   return undefined;
 }
 
-function validarEmail(valor: string): string | undefined {
+function validarEmail(valor: string): ChaveErroContato | undefined {
   const email = normalizarEmail(valor);
-  if (!email) return 'Informe o email';
-  if (email.length > MAX_EMAIL || !FORMATO_EMAIL.test(email)) return 'Email inválido';
+  if (!email) return 'sorteio.emailRequired';
+  if (email.length > MAX_EMAIL || !FORMATO_EMAIL.test(email)) return 'sorteio.emailInvalid';
   return undefined;
 }
 
-export function validarCampo(rascunho: RascunhoContato, campo: CampoTexto): string | undefined {
+export function validarCampo(
+  rascunho: RascunhoContato,
+  campo: CampoTexto,
+): ChaveErroContato | undefined {
   switch (campo) {
     case 'ddd':
       return validarDdd(rascunho.ddd);
@@ -342,9 +364,9 @@ export function prepararInscricao({ primario, secundario }: Rascunhos): Resultad
     primario: validarContato(primario),
     secundario: validarContato(secundario),
   };
-  if (!primario.canal) erros.primario.canal = 'Escolha um canal';
+  if (!primario.canal) erros.primario.canal = 'sorteio.channelRequired';
   if (secundario.canal && secundario.canal === primario.canal) {
-    erros.secundario.canal = 'Escolha um canal diferente do principal';
+    erros.secundario.canal = 'sorteio.channelDifferent';
   }
 
   const entradaPrincipal = paraEntrada(primario);

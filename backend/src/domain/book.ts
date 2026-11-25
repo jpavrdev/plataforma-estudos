@@ -7,6 +7,85 @@ import { seededShuffle } from "./shuffle.ts";
 
 export const LETTERS = "ABCDEFGHIJ";
 
+// Fixed copy of the book chrome (quiz, answer key, about page), per language.
+// The lesson content itself comes from the database already translated.
+export type BookCopy = typeof BOOK_COPY["pt-BR"];
+
+export const BOOK_COPY = {
+    "pt-BR": {
+        xmlLang: "pt-BR",
+        question: "Questão",
+        answer: "Resposta:",
+        quizTitle: "Quiz da aula",
+        answerKey: "Gabarito",
+        answerKeyCommented: "Gabarito comentado",
+        terminalNote:
+            "Esta aula tem um terminal interativo para praticar, que funciona na plataforma.",
+        watchVideo: "Assistir ao vídeo desta aula",
+        lessonImage: "Imagem da aula",
+        viewImage: "Ver imagem desta aula",
+        levelBeginner: "Nível iniciante",
+        levelIntermediate: "Nível intermediário",
+        levelAdvanced: "Nível avançado",
+        lessons: "aulas",
+        inLanguage: "em",
+        aboutBook: "Sobre este livro",
+        organization: "Como o livro está organizado",
+        organizationBody: (trailName: string) =>
+            `Cada capítulo é uma aula da trilha <strong>${escapeXml(trailName)}</strong>, na mesma ordem dos módulos da plataforma.`,
+        organizationQuiz:
+            "No fim do capítulo vem o quiz da aula, com o gabarito comentado logo depois, para você responder antes de conferir.",
+        whatYouLearn: "O que você aprende",
+        prerequisites: "Pré-requisitos",
+        sheet: "Ficha",
+        lessonsInModules: (lessons: number, modules: number) =>
+            `${lessons} aulas em ${modules} módulos`,
+        workload: (hours: number) => `Carga horária de ${hours} horas`,
+        generatedAt: "Versão gerada em",
+        platformNote:
+            "Os laboratórios, os desafios de código e o registro de progresso continuam na plataforma: este livro é a parte de leitura da trilha, para estudar offline.",
+        toc: "Sumário",
+        cover: "Capa",
+        contentStart: "Começo do conteúdo",
+    },
+    en: {
+        xmlLang: "en",
+        question: "Question",
+        answer: "Answer:",
+        quizTitle: "Lesson quiz",
+        answerKey: "Answer key",
+        answerKeyCommented: "Answer key with explanations",
+        terminalNote:
+            "This lesson has an interactive terminal to practice with, which works on the platform.",
+        watchVideo: "Watch this lesson video",
+        lessonImage: "Lesson image",
+        viewImage: "View this lesson image",
+        levelBeginner: "Beginner level",
+        levelIntermediate: "Intermediate level",
+        levelAdvanced: "Advanced level",
+        lessons: "lessons",
+        inLanguage: "in",
+        aboutBook: "About this book",
+        organization: "How the book is organized",
+        organizationBody: (trailName: string) =>
+            `Each chapter is a lesson of the track <strong>${escapeXml(trailName)}</strong>, in the same order as the modules on the platform.`,
+        organizationQuiz:
+            "At the end of the chapter comes the lesson quiz, with the commented answer key right after, so you can answer before checking.",
+        whatYouLearn: "What you learn",
+        prerequisites: "Prerequisites",
+        sheet: "Details",
+        lessonsInModules: (lessons: number, modules: number) =>
+            `${lessons} lessons in ${modules} modules`,
+        workload: (hours: number) => `Workload of ${hours} hours`,
+        generatedAt: "Version generated on",
+        platformNote:
+            "The labs, the code challenges and the progress tracking stay on the platform: this book is the reading part of the track, for studying offline.",
+        toc: "Table of contents",
+        cover: "Cover",
+        contentStart: "Start of content",
+    },
+};
+
 export type Block = { type: string; value: string };
 export type Question = {
     statement: string;
@@ -101,7 +180,7 @@ export function tableToXhtml(value: string): string {
 // the answer key, built from the same list, keeps matching the letters.
 const shuffledOptions = (q: Question) => seededShuffle(q.options, q.statement);
 
-export function quizToXhtml(questions: Question[]): string {
+export function quizToXhtml(questions: Question[], copy: BookCopy = BOOK_COPY["pt-BR"]): string {
     const questionsHtml = questions
         .map((q, i) => {
             const options = shuffledOptions(q)
@@ -113,7 +192,7 @@ export function quizToXhtml(questions: Question[]): string {
                 })
                 .join("\n");
             return `<div class="quiz-q">
-<p class="quiz-num">Questão ${i + 1}</p>
+<p class="quiz-num">${copy.question} ${i + 1}</p>
 ${renderMarkdown(q.statement)}
 <ul class="quiz-opts">
 ${options}
@@ -128,17 +207,17 @@ ${options}
                 .filter((l): l is string => !!l)
                 .join(", ");
             const explanation = q.explanation ? ` ${renderMarkdown(q.explanation, true)}` : "";
-            return `<p class="quiz-ans"><span class="quiz-num">Questão ${i + 1}.</span> Resposta: <span class="resp">${letters || "?"}</span>.${explanation}</p>`;
+            return `<p class="quiz-ans"><span class="quiz-num">${copy.question} ${i + 1}.</span> ${copy.answer} <span class="resp">${letters || "?"}</span>.${explanation}</p>`;
         })
         .join("\n");
     // Most tracks have no explanations in the quiz, and promising comments that
     // never come is worse than just calling it an answer key.
     const hasExplanation = questions.some((q) => !!q.explanation);
     return `<section class="quiz">
-<h2>Quiz da aula</h2>
+<h2>${copy.quizTitle}</h2>
 ${questionsHtml}
 <div class="quiz-gabarito">
-<h2>${hasExplanation ? "Gabarito comentado" : "Gabarito"}</h2>
+<h2>${hasExplanation ? copy.answerKeyCommented : copy.answerKey}</h2>
 ${answerKey}
 </div>
 </section>`;
@@ -148,9 +227,10 @@ export const page = (
     title: string,
     body: string,
     cssPath = "../css/livro.css",
+    xmlLang = "pt-BR",
 ) => `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="pt-BR" lang="pt-BR">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="${xmlLang}" lang="${xmlLang}">
 <head>
 <meta charset="utf-8" />
 <title>${escapeXml(title)}</title>
@@ -169,6 +249,7 @@ export function chapterToXhtml(
     kicker: string,
     questions: Question[],
     figures: Map<string, string>,
+    copy: BookCopy = BOOK_COPY["pt-BR"],
 ): string {
     const blocks: Block[] =
         lesson.contentBlocks && lesson.contentBlocks.length > 0
@@ -187,12 +268,12 @@ export function chapterToXhtml(
             body.push(tableToXhtml(value));
         } else if (b.type === "terminal") {
             body.push(
-                `<aside class="nota"><p>Esta aula tem um terminal interativo para praticar, que funciona na plataforma.</p></aside>`,
+                `<aside class="nota"><p>${copy.terminalNote}</p></aside>`,
             );
         } else if (b.type === "video") {
             if (value) {
                 body.push(
-                    `<p class="link"><a href="${escapeXml(value)}">Assistir ao vídeo desta aula</a></p>`,
+                    `<p class="link"><a href="${escapeXml(value)}">${copy.watchVideo}</a></p>`,
                 );
             }
         } else if (b.type === "image") {
@@ -200,14 +281,14 @@ export function chapterToXhtml(
             const filePath = figures.get(value);
             body.push(
                 filePath
-                    ? `<figure><img src="../${filePath}" alt="Imagem da aula" /></figure>`
-                    : `<p class="link"><a href="${escapeXml(value)}">Ver imagem desta aula</a></p>`,
+                    ? `<figure><img src="../${filePath}" alt="${copy.lessonImage}" /></figure>`
+                    : `<p class="link"><a href="${escapeXml(value)}">${copy.viewImage}</a></p>`,
             );
         } else {
             body.push(renderMarkdown(value));
         }
     }
-    if (questions.length > 0) body.push(quizToXhtml(questions));
+    if (questions.length > 0) body.push(quizToXhtml(questions, copy));
     return page(
         lesson.title,
         `<section class="chapter" epub:type="chapter">
@@ -215,6 +296,8 @@ export function chapterToXhtml(
 <h1>${escapeXml(lesson.title)}</h1>
 ${body.filter(Boolean).join("\n")}
 </section>`,
+        "../css/livro.css",
+        copy.xmlLang,
     );
 }
 

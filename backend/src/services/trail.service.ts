@@ -14,10 +14,19 @@ import {
     roadmapStageRefs,
     trailReviews,
     trailFavorites,
+    trailHides,
+    trailTranslations,
+    moduleTranslations,
+    lessonTranslations,
     users,
 } from "../../schema.ts";
 import { eq, asc, desc, countDistinct, inArray, and, isNotNull } from "drizzle-orm";
 import type { z } from "zod";
+import type { Locale } from "../i18n/locale.ts";
+
+// Overlay de tradução de conteúdo: só em inglês consulta as tabelas de
+// tradução; sem linha traduzida vale o pt-BR da base. pt-BR não paga nada.
+const TRADUZ = (locale: Locale | undefined) => locale === "en";
 import type { createTrailSchema, updateTrailSchema } from "../schemas/trail.schemas.ts";
 import { AppError } from "../errors/AppError.ts";
 import { isAdmin } from "./user.service.ts";
@@ -121,6 +130,7 @@ const VALID_LEVELS = new Set(["iniciante", "intermediario", "avancado"]);
 export async function findTrails(
     filters: { level?: string; categoria?: string } = {},
     userId?: string,
+    locale?: Locale,
 ) {
     const levelFilter =
         filters.level && VALID_LEVELS.has(filters.level)
@@ -186,12 +196,26 @@ export async function findTrails(
               .where(eq(trailFavorites.userId, userId))
         : [];
     const favoriteSet = new Set(favoriteRows.map((f) => f.trailId));
-    return trailRows.map((t) => ({
-        ...t,
-        totalLessons: totalLessonsOf(t.id),
-        tags: tagsByTrail.get(t.id) ?? [],
-        favorito: favoriteSet.has(t.id),
-    }));
+
+    const tradRows = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(trailTranslations)
+              .where(eq(trailTranslations.locale, "en"))
+        : [];
+    const tradById = new Map(tradRows.map((t) => [t.trailId, t]));
+
+    return trailRows.map((t) => {
+        const tr = tradById.get(t.id);
+        return {
+            ...t,
+            name: tr?.name ?? t.name,
+            description: tr?.description ?? t.description,
+            totalLessons: totalLessonsOf(t.id),
+            tags: tagsByTrail.get(t.id) ?? [],
+            favorito: favoriteSet.has(t.id),
+        };
+    });
 }
 
 // Pins (or unpins) a trail for the user: the favorites tab of the catalog.
@@ -207,6 +231,31 @@ export async function toggleTrailFavorite(userId: string, trailId: string) {
         await db.insert(trailFavorites).values({ trailId, userId }).onConflictDoNothing();
     }
     return { favorito: removed.length === 0 };
+}
+
+// Hides (or unhides) a trail from the user's "continue" lists. Leaving a trail
+// keeps the progress intact: coming back through the same toggle restores it.
+export async function toggleTrailHide(userId: string, trailId: string) {
+    const [trail] = await db.select({ id: trails.id }).from(trails).where(eq(trails.id, trailId));
+    if (!trail) throw new AppError(404, "trail.notFound");
+
+    const removed = await db
+        .delete(trailHides)
+        .where(and(eq(trailHides.trailId, trailId), eq(trailHides.userId, userId)))
+        .returning({ id: trailHides.id });
+    if (removed.length === 0) {
+        await db.insert(trailHides).values({ trailId, userId }).onConflictDoNothing();
+    }
+    return { ocultada: removed.length === 0 };
+}
+
+// Trails the user left behind, so "continue" lists skip them.
+async function hiddenTrailIds(userId: string): Promise<Set<string>> {
+    const rows = await db
+        .select({ trailId: trailHides.trailId })
+        .from(trailHides)
+        .where(eq(trailHides.userId, userId));
+    return new Set(rows.map((r) => r.trailId));
 }
 
 // Tracks where the user already has progress, with the completion percentage.
@@ -244,6 +293,7 @@ export async function findUserTrails(userId: string) {
 
     const allTrails = await db.select().from(trails);
     const countCompleted = (ids: string[]) => ids.filter((id) => completedIds.has(id)).length;
+    const hidden = await hiddenTrailIds(userId);
 
     const result: {
         id: string;
@@ -257,6 +307,8 @@ export async function findUserTrails(userId: string) {
     for (const trail of allTrails) {
         const group = byTrail.get(trail.id);
         if (!group) continue;
+        // A trail the user left keeps its progress but stops showing up as "continue".
+        if (hidden.has(trail.id)) continue;
 
         let total = group.neutras.length;
         let completed = countCompleted(group.neutras);
@@ -290,7 +342,12 @@ export async function findUserTrails(userId: string) {
 
 // Returns the track with modules and lessons, each lesson with its state for the user.
 // The state follows the whole track in sequence: done | current | locked.
-export async function findTrailDetail(trailId: string, userId: string, lang?: string) {
+export async function findTrailDetail(
+    trailId: string,
+    userId: string,
+    lang?: string,
+    locale?: Locale,
+) {
     const [trail] = await db.select().from(trails).where(eq(trails.id, trailId));
     if (!trail) {
         throw new AppError(404, "trail.notFound");
@@ -378,16 +435,48 @@ export async function findTrailDetail(trailId: string, userId: string, lang?: st
         }
     }
 
+    // Overlay das traduções (trilha, módulos e aulas) quando o idioma é inglês.
+    const [trTrail] = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(trailTranslations)
+              .where(and(eq(trailTranslations.trailId, trailId), eq(trailTranslations.locale, "en")))
+        : [];
+    const trModRows = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(moduleTranslations)
+              .where(
+                  inArray(
+                      moduleTranslations.moduleId,
+                      mods.map((m) => m.id),
+                  ),
+              )
+        : [];
+    const trModByld = new Map(trModRows.map((m) => [m.moduleId, m]));
+    const trLicaoRows = TRADUZ(locale)
+        ? await db
+              .select()
+              .from(lessonTranslations)
+              .where(
+                  inArray(
+                      lessonTranslations.lessonId,
+                      allLessons.map((a) => a.id),
+                  ),
+              )
+        : [];
+    const trLicaoById = new Map(trLicaoRows.map((a) => [a.lessonId, a]));
+
     const modulesWithLessons = mods.map((m) => ({
         id: m.id,
-        title: m.title,
+        title: trModByld.get(m.id)?.title ?? m.title,
         position: m.position,
         lessons: lessonRows
             .filter((a) => a.moduleId === m.id)
             .sort((a, b) => a.position - b.position)
             .map((a) => ({
                 id: a.id,
-                title: a.title,
+                title: trLicaoById.get(a.id)?.title ?? a.title,
                 position: a.position,
                 published: a.published,
                 durationMin: a.durationMin,
@@ -440,9 +529,15 @@ export async function findTrailDetail(trailId: string, userId: string, lang?: st
     const ownReview = revs.find((r) => r.userId === userId);
     const myReview = ownReview ? { stars: ownReview.stars, comment: ownReview.comment } : null;
     const canReview = allLessons.some((a) => completed.has(a.id));
+    const hidden = await hiddenTrailIds(userId);
 
     return {
         ...trail,
+        ocultada: hidden.has(trailId),
+        name: trTrail?.name ?? trail.name,
+        description: trTrail?.description ?? trail.description,
+        whatYouLearn: trTrail?.whatYouLearn ?? trail.whatYouLearn,
+        prerequisites: trTrail?.prerequisites ?? trail.prerequisites,
         category: rm?.name ?? null,
         studentsCount: Number(studs.n),
         rating,

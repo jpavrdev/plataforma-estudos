@@ -3,12 +3,23 @@ import type { Cartao } from './flashcards';
 
 export type Nivel = 'estagio' | 'junior' | 'pleno' | 'senior';
 
+export type NivelKey =
+  | 'entrevista.stage'
+  | 'entrevista.junior'
+  | 'entrevista.pleno'
+  | 'entrevista.senior';
+export type NivelDescriptionKey =
+  | 'entrevista.stageDesc'
+  | 'entrevista.juniorDesc'
+  | 'entrevista.plenoDesc'
+  | 'entrevista.seniorDesc';
+
 /** Do mais raso ao mais fundo. A ordem é a mesma do backend, e o corte é cumulativo. */
-export const NIVEIS: { valor: Nivel; rotulo: string; descricao: string }[] = [
-  { valor: 'estagio', rotulo: 'Estágio', descricao: 'Fundamentos e vocabulário' },
-  { valor: 'junior', rotulo: 'Júnior', descricao: 'Uso no dia a dia e armadilhas' },
-  { valor: 'pleno', rotulo: 'Pleno', descricao: 'Design, produção e depuração' },
-  { valor: 'senior', rotulo: 'Sênior', descricao: 'Trade-off e decisão técnica' },
+export const NIVEIS: { valor: Nivel; key: NivelKey; descriptionKey: NivelDescriptionKey }[] = [
+  { valor: 'estagio', key: 'entrevista.stage', descriptionKey: 'entrevista.stageDesc' },
+  { valor: 'junior', key: 'entrevista.junior', descriptionKey: 'entrevista.juniorDesc' },
+  { valor: 'pleno', key: 'entrevista.pleno', descriptionKey: 'entrevista.plenoDesc' },
+  { valor: 'senior', key: 'entrevista.senior', descriptionKey: 'entrevista.seniorDesc' },
 ];
 
 export interface TopicoEntrevista {

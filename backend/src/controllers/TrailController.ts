@@ -52,6 +52,7 @@ import {
     findTrailDetail,
     saveTrailReview,
     toggleTrailFavorite,
+    toggleTrailHide,
 } from "../services/trail.service.ts";
 import { findLessonDetail } from "../services/lesson.service.ts";
 import { gradeQuiz, verifyAnswer } from "../services/quiz.service.ts";
@@ -317,7 +318,7 @@ export const listTrails = async (req: Request, res: Response, next: NextFunction
     try {
         const level = typeof req.query.level === "string" ? req.query.level : undefined;
         const category = typeof req.query.categoria === "string" ? req.query.categoria : undefined;
-        res.json(await findTrails({ level, categoria: category }, req.userId));
+        res.json(await findTrails({ level, categoria: category }, req.userId, req.locale));
     } catch (err) {
         next(err);
     }
@@ -327,6 +328,15 @@ export const listTrails = async (req: Request, res: Response, next: NextFunction
 export const toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await toggleTrailFavorite(req.userId!, String(req.params.id)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Leaves/rejoins a trail: hidden from the "continue" lists, progress kept.
+export const toggleHide = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await toggleTrailHide(req.userId!, String(req.params.id)));
     } catch (err) {
         next(err);
     }
@@ -349,7 +359,9 @@ export const getMyTrails = async (req: Request, res: Response, next: NextFunctio
 export const getTrail = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        res.json(await findTrailDetail(String(req.params.id), req.userId!, lang));
+        res.json(
+            await findTrailDetail(String(req.params.id), req.userId!, lang, req.locale),
+        );
     } catch (err) {
         next(err);
     }
@@ -361,7 +373,11 @@ export const getTrail = async (req: Request, res: Response, next: NextFunction) 
 export const getTrailEpub = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        const { buffer, filename: fileName } = await buildTrailBook(String(req.params.id), lang);
+        const { buffer, filename: fileName } = await buildTrailBook(
+            String(req.params.id),
+            lang,
+            req.locale,
+        );
         res.setHeader("Content-Type", "application/epub+zip");
         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
         res.setHeader("Content-Length", String(buffer.length));
@@ -391,7 +407,9 @@ export const submitTrailReview = async (req: Request, res: Response, next: NextF
 export const getLesson = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const lang = typeof req.query.lang === "string" ? req.query.lang : undefined;
-        res.json(await findLessonDetail(String(req.params.id), req.userId!, lang));
+        res.json(
+            await findLessonDetail(String(req.params.id), req.userId!, lang, req.locale),
+        );
     } catch (err) {
         next(err);
     }
@@ -493,7 +511,9 @@ export const checkAnswer = async (req: Request, res: Response, next: NextFunctio
     try {
         const lessonId = String(req.params.id);
         const { questionId, optionId } = checkAnswerSchema.parse(req.body);
-        res.json(await verifyAnswer(req.userId!, lessonId, questionId, optionId));
+        res.json(
+            await verifyAnswer(req.userId!, lessonId, questionId, optionId, req.locale),
+        );
     } catch (err) {
         next(err);
     }

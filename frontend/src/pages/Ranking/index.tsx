@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRequisicao } from '../../hooks/useRequisicao';
 import { Logo } from '../../components/Logo';
@@ -20,17 +21,27 @@ const PODIO: Record<number, { size: number; font: number; pedestal: number }> = 
   2: { size: 62, font: 22, pedestal: 104 },
   3: { size: 58, font: 20, pedestal: 88 },
 };
-const PERIODOS: { label: string; value: RankingPeriodo }[] = [
-  { label: 'Semana', value: 'week' },
-  { label: 'Mês', value: 'month' },
-  { label: 'Geral', value: 'all' },
+type PeriodoKey = 'ranking.week' | 'ranking.month' | 'ranking.all';
+type LigaKey =
+  | 'ranking.leagueBronze'
+  | 'ranking.leagueSilver'
+  | 'ranking.leagueGold'
+  | 'ranking.leaguePlatinum'
+  | 'ranking.leagueDiamond';
+
+const PERIODOS: { chave: PeriodoKey; value: RankingPeriodo }[] = [
+  { chave: 'ranking.week', value: 'week' },
+  { chave: 'ranking.month', value: 'month' },
+  { chave: 'ranking.all', value: 'all' },
 ];
-const LIGAS = [
-  { name: 'Bronze', color: '#C77B3B', threshold: 0 },
-  { name: 'Prata', color: '#A9AEB8', threshold: 1500 },
-  { name: 'Ouro', color: '#E0A82E', threshold: 3500 },
-  { name: 'Platina', color: '#3FBEC6', threshold: 6000 },
-  { name: 'Diamante', color: '#56C5E8', threshold: 10000 },
+// textoEscuro: a cor do emblema pede letra escura para o brilho do ouro não
+// lavar o ícone.
+const LIGAS: { chave: LigaKey; color: string; threshold: number; textoEscuro?: boolean }[] = [
+  { chave: 'ranking.leagueBronze', color: '#C77B3B', threshold: 0 },
+  { chave: 'ranking.leagueSilver', color: '#A9AEB8', threshold: 1500 },
+  { chave: 'ranking.leagueGold', color: '#E0A82E', threshold: 3500, textoEscuro: true },
+  { chave: 'ranking.leaguePlatinum', color: '#3FBEC6', threshold: 6000 },
+  { chave: 'ranking.leagueDiamond', color: '#56C5E8', threshold: 10000 },
 ];
 
 function ligaAtual(totalXp: number): number {
@@ -38,7 +49,6 @@ function ligaAtual(totalXp: number): number {
   for (let i = 0; i < LIGAS.length; i++) if (totalXp >= LIGAS[i].threshold) idx = i;
   return idx;
 }
-const fmtXp = (n: number) => n.toLocaleString('pt-BR');
 
 function Delta({ delta }: { delta: number }) {
   if (delta > 0)
@@ -58,10 +68,13 @@ function Delta({ delta }: { delta: number }) {
 
 export function Ranking() {
   const { user: authUser } = useAuth();
+  const { t, i18n } = useTranslation();
   const nav = useNavPrincipal();
   const [period, setPeriod] = useState<RankingPeriodo>('all');
   const { dados: resp, carregando } = useRequisicao(() => obterRanking(period), [period]);
   const dados: RankingResposta = resp ?? { me: null, rows: [] };
+
+  const fmtXp = (n: number) => n.toLocaleString(i18n.language);
 
   const displayName = authUser?.name ?? homeUser.name;
   const totalXp = dados.me?.totalXp ?? 0;
@@ -107,14 +120,12 @@ export function Ranking() {
           <div className="rk-head">
             <div>
               <div className="rk-head__title-row">
-                <h1 className="rk-title">Ranking global</h1>
+                <h1 className="rk-title">{t('ranking.title')}</h1>
                 <span className="rk-league-badge">
-                  <Trophy size={13} /> Liga {liga.name}
+                  <Trophy size={13} /> {t('ranking.league')} {t(liga.chave)}
                 </span>
               </div>
-              <p className="rk-sub">
-                Classificação por XP. Resolva exercícios e conclua aulas para subir.
-              </p>
+              <p className="rk-sub">{t('ranking.sub')}</p>
             </div>
             <div className="seg">
               {PERIODOS.map((p) => (
@@ -123,7 +134,7 @@ export function Ranking() {
                   className={`seg__item${period === p.value ? ' seg__item--active' : ''}`}
                   onClick={() => setPeriod(p.value)}
                 >
-                  {p.label}
+                  {t(p.chave)}
                 </button>
               ))}
             </div>
@@ -132,8 +143,8 @@ export function Ranking() {
           {/* Ligas */}
           <div className="leagues">
             <div className="leagues__head">
-              <h3 className="card__title">Ligas</h3>
-              <span className="leagues__rule">Sua liga depende do XP total acumulado</span>
+              <h3 className="card__title">{t('ranking.leagues')}</h3>
+              <span className="leagues__rule">{t('ranking.leaguesRule')}</span>
             </div>
             <div className="leagues__track">
               <span className="leagues__line" />
@@ -147,12 +158,12 @@ export function Ranking() {
                   const current = i === ligaIdx;
                   const locked = i > ligaIdx;
                   return (
-                    <div key={g.name} className="league" style={{ opacity: locked ? 0.7 : 1 }}>
+                    <div key={g.chave} className="league" style={{ opacity: locked ? 0.7 : 1 }}>
                       <div
                         className="league__emblem"
                         style={{
                           background: locked ? 'var(--surface-2)' : g.color,
-                          color: locked ? 'var(--muted)' : g.name === 'Ouro' ? '#5a3d00' : '#fff',
+                          color: locked ? 'var(--muted)' : g.textoEscuro ? '#5a3d00' : '#fff',
                           boxShadow: current
                             ? '0 0 0 4px color-mix(in srgb, var(--accent) 32%, transparent)'
                             : 'none',
@@ -180,10 +191,10 @@ export function Ranking() {
                           fontWeight: current ? 700 : 600,
                         }}
                       >
-                        {g.name}
+                        {t(g.chave)}
                       </div>
                       {current ? (
-                        <span className="league__here">Você está aqui</span>
+                        <span className="league__here">{t('ranking.here')}</span>
                       ) : (
                         <span className="league__xp">{fmtXp(g.threshold)} XP</span>
                       )}
@@ -234,7 +245,7 @@ export function Ranking() {
                           {p.position}
                         </span>
                       </div>
-                      <div className="podium__name">{p.you ? 'Você' : p.name}</div>
+                      <div className="podium__name">{p.you ? t('ranking.you') : p.name}</div>
                       <div className="podium__xp">{fmtXp(p.xp)} XP</div>
                       <div
                         className="podium__pedestal"
@@ -256,12 +267,12 @@ export function Ranking() {
           {/* Sua posição */}
           {dados.me && (
             <div className="rk-you">
-              <span className="rk-you__label">Sua posição</span>
+              <span className="rk-you__label">{t('ranking.yourPosition')}</span>
               <span className="rk-you__rank">#{dados.me.position}</span>
               <Avatar initials={getInitials(displayName)} background="var(--accent)" />
               <div className="rk-you__id">
-                <div className="rk-you__name">Você</div>
-                <div className="rk-you__user">@{dados.me.username ?? 'voce'}</div>
+                <div className="rk-you__name">{t('ranking.you')}</div>
+                <div className="rk-you__user">@{dados.me.username ?? t('ranking.fallbackYou')}</div>
               </div>
               {dados.me.delta !== 0 && (
                 <span
@@ -269,12 +280,12 @@ export function Ranking() {
                   style={{ color: dados.me.delta > 0 ? 'var(--success)' : 'var(--av-red)' }}
                 >
                   {dados.me.delta > 0 ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  {dados.me.delta > 0 ? 'subiu' : 'caiu'} {Math.abs(dados.me.delta)}{' '}
-                  {Math.abs(dados.me.delta) === 1 ? 'posição' : 'posições'}
+                  {dados.me.delta > 0 ? t('ranking.rose') : t('ranking.fell')}{' '}
+                  {t('ranking.positions', { count: Math.abs(dados.me.delta) })}
                 </span>
               )}
               <span className="rk-you__streak">
-                <Flame size={15} /> {dados.me.streak} dias
+                <Flame size={15} /> {t('ranking.streakDays', { count: dados.me.streak })}
               </span>
               <span className="rk-you__xp">{fmtXp(dados.me.xp)} XP</span>
             </div>
@@ -284,20 +295,18 @@ export function Ranking() {
           <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
             <div className="rk-table__head">
               <div>#</div>
-              <div>Estudante</div>
-              <div>Streak</div>
-              <div>Nível</div>
+              <div>{t('ranking.colStudent')}</div>
+              <div>{t('ranking.colStreak')}</div>
+              <div>{t('ranking.colLevel')}</div>
               <div className="rk-right">XP</div>
             </div>
             {carregando ? (
               <p className="track__desc" style={{ padding: '18px 20px' }}>
-                Carregando ranking...
+                {t('ranking.loading')}
               </p>
             ) : tabela.length === 0 ? (
               <p className="track__desc" style={{ padding: '18px 20px' }}>
-                {dados.rows.length === 0
-                  ? 'Ninguém pontuou ainda. Conclua aulas para aparecer aqui.'
-                  : 'Sem mais posições por enquanto.'}
+                {dados.rows.length === 0 ? t('ranking.empty') : t('ranking.noMore')}
               </p>
             ) : (
               tabela.map((r) => (
@@ -313,14 +322,14 @@ export function Ranking() {
                     />
                     <div className="rk-row__id">
                       <div className="rk-row__name" style={{ fontWeight: r.you ? 700 : 600 }}>
-                        {r.you ? 'Você' : r.name}
+                        {r.you ? t('ranking.you') : r.name}
                         {r.apoiador && (
-                          <span className="selo-apoiador" title="Apoiador do Ensina Dev">
+                          <span className="selo-apoiador" title={t('ranking.supporter')}>
                             <Heart size={11} />
                           </span>
                         )}
                       </div>
-                      <div className="rk-row__user">@{r.username ?? 'usuario'}</div>
+                      <div className="rk-row__user">@{r.username ?? t('ranking.fallbackUser')}</div>
                     </div>
                   </div>
                   <div className="rk-row__streak">

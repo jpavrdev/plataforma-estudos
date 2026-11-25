@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { Link, useParams } from 'react-router-dom';
 import { Eye, Trash, Plus, Minus, Check, ChevronRight } from '../../components/Icons';
@@ -21,32 +22,43 @@ import { parseGrid, serializeGrid } from '../../utils/tabela';
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
-const BLOCO_TIPOS: { type: BlocoTipo; icon: string; label: string }[] = [
-  { type: 'text', icon: '¶', label: 'Texto' },
-  { type: 'code', icon: '{}', label: 'Código' },
-  { type: 'image', icon: '▣', label: 'Imagem' },
-  { type: 'video', icon: '▷', label: 'Vídeo' },
-  { type: 'quote', icon: '❝', label: 'Citação' },
-  { type: 'table', icon: '▦', label: 'Tabela' },
-  { type: 'terminal', icon: '>_', label: 'Laboratório' },
+type BlocoKey =
+  | 'estudio.blockText'
+  | 'estudio.blockCode'
+  | 'estudio.blockImage'
+  | 'estudio.blockVideo'
+  | 'estudio.blockQuote'
+  | 'estudio.blockTable'
+  | 'estudio.blockTerminal';
+type DiffKey = 'desafios.diffEasy' | 'desafios.diffMedium' | 'desafios.diffHard';
+
+const BLOCO_TIPOS: { type: BlocoTipo; icon: string; chave: BlocoKey }[] = [
+  { type: 'text', icon: '¶', chave: 'estudio.blockText' },
+  { type: 'code', icon: '{}', chave: 'estudio.blockCode' },
+  { type: 'image', icon: '▣', chave: 'estudio.blockImage' },
+  { type: 'video', icon: '▷', chave: 'estudio.blockVideo' },
+  { type: 'quote', icon: '❝', chave: 'estudio.blockQuote' },
+  { type: 'table', icon: '▦', chave: 'estudio.blockTable' },
+  { type: 'terminal', icon: '>_', chave: 'estudio.blockTerminal' },
 ];
-const BLOCO_LABEL: Record<BlocoTipo, string> = {
-  text: 'Texto',
-  code: '{ } Código',
-  image: 'Imagem',
-  video: 'Vídeo',
-  quote: 'Citação',
-  table: 'Tabela',
-  terminal: 'Laboratório',
+const BLOCO_CHAVE: Record<BlocoTipo, BlocoKey> = {
+  text: 'estudio.blockText',
+  code: 'estudio.blockCode',
+  image: 'estudio.blockImage',
+  video: 'estudio.blockVideo',
+  quote: 'estudio.blockQuote',
+  table: 'estudio.blockTable',
+  terminal: 'estudio.blockTerminal',
 };
-const DIFFS: { value: QuestionDifficulty; label: string }[] = [
-  { value: 'facil', label: 'Fácil' },
-  { value: 'medio', label: 'Médio' },
-  { value: 'dificil', label: 'Difícil' },
+const DIFFS: { value: QuestionDifficulty; chave: DiffKey }[] = [
+  { value: 'facil', chave: 'desafios.diffEasy' },
+  { value: 'medio', chave: 'desafios.diffMedium' },
+  { value: 'dificil', chave: 'desafios.diffHard' },
 ];
 
 export function Estudio() {
   const { trailId } = useParams();
+  const { t } = useTranslation();
   const [outline, setOutline] = useState<StudioTrail | null>(null);
   const [selId, setSelId] = useState<string | null>(null);
   const selIdRef = useRef<string | null>(null);
@@ -64,7 +76,7 @@ export function Estudio() {
       setAula(await obterAulaEstudio(id));
       setSalvo(true);
     } catch {
-      setErro('Não foi possível carregar a aula.');
+      setErro(t('estudio.lessonLoadError'));
     }
   }
 
@@ -96,7 +108,7 @@ export function Estudio() {
         const primeira = o.modules.flatMap((m) => m.lessons)[0]?.id ?? null;
         if (primeira) await carregarAula(primeira);
       } catch {
-        if (ativo) setErro('Não foi possível carregar o estúdio.');
+        if (ativo) setErro(t('estudio.studioLoadError'));
       } finally {
         if (ativo) setCarregando(false);
       }
@@ -114,13 +126,13 @@ export function Estudio() {
   // ----- mutações estruturais (vão direto ao backend) -----
   async function adicionarModulo() {
     if (!outline) return;
-    const nome = window.prompt('Nome do módulo:');
+    const nome = window.prompt(t('estudio.moduleNamePrompt'));
     if (!nome?.trim()) return;
     try {
       await criarModulo(outline.id, nome.trim(), outline.modules.length + 1);
       await carregarOutline();
     } catch {
-      setErro('Não foi possível criar o módulo.');
+      setErro(t('estudio.moduleCreateError'));
     }
   }
 
@@ -129,32 +141,29 @@ export function Estudio() {
       const nova = await criarAula(moduleId, 'Nova aula', qtd + 1);
       await carregarOutline(nova.id);
     } catch {
-      setErro('Não foi possível criar a aula.');
+      setErro(t('estudio.lessonCreateError'));
     }
   }
 
   async function excluir() {
     if (!aula) return;
-    if (!window.confirm('Excluir esta aula? Essa ação não pode ser desfeita.')) return;
+    if (!window.confirm(t('estudio.deleteLessonConfirm'))) return;
     try {
       await excluirAula(aula.id);
       await carregarOutline(null);
     } catch {
-      setErro('Não foi possível excluir a aula.');
+      setErro(t('estudio.lessonDeleteError'));
     }
   }
 
   async function removerModulo(moduleId: string) {
-    if (
-      !window.confirm('Excluir este módulo e todas as suas aulas? Essa ação não pode ser desfeita.')
-    )
-      return;
+    if (!window.confirm(t('estudio.moduleDeleteConfirm'))) return;
     setErro('');
     try {
       await excluirModulo(moduleId);
       await carregarOutline(null);
     } catch {
-      setErro('Não foi possível excluir o módulo.');
+      setErro(t('estudio.moduleDeleteError'));
     }
   }
 
@@ -175,7 +184,7 @@ export function Estudio() {
       });
       await carregarOutline(aula.id);
     } catch (e: unknown) {
-      setErro(mensagemErro(e, 'Não foi possível salvar.'));
+      setErro(mensagemErro(e, t('estudio.saveLessonError')));
     } finally {
       setSalvando(false);
     }
@@ -318,7 +327,7 @@ export function Estudio() {
         nav={false}
         crumb={
           <>
-            <Link to="/trilhas">Trilhas</Link>
+            <Link to="/trilhas">{t('nav.studioTracks')}</Link>
             <span className="studio__crumb-sep">/</span>
             <b>{outline?.name ?? '...'}</b>
           </>
@@ -327,7 +336,7 @@ export function Estudio() {
           <>
             {aula && salvo && (
               <span className="studio__saved">
-                <i /> Rascunho salvo
+                <i /> {t('estudio.saved')}
               </span>
             )}
             {aula && (
@@ -335,7 +344,7 @@ export function Estudio() {
                 className="btn btn--ghost studio__btn"
                 to={`/trilhas/${trailId}/aula/${aula.id}`}
               >
-                <Eye size={15} /> Pré-visualizar
+                <Eye size={15} /> {t('estudio.preview')}
               </Link>
             )}
             <button
@@ -343,21 +352,25 @@ export function Estudio() {
               disabled={!aula || salvando}
               onClick={() => aula && salvar(!aula.published)}
             >
-              {salvando ? 'Salvando...' : aula?.published ? 'Despublicar' : 'Publicar'}
+              {salvando
+                ? t('common.saving')
+                : aula?.published
+                  ? t('estudio.unpublish')
+                  : t('estudio.publish')}
             </button>
           </>
         }
       />
 
       {carregando ? (
-        <p className="lesson__loading">Carregando estúdio...</p>
+        <p className="lesson__loading">{t('estudio.loading')}</p>
       ) : (
         <div className="studio">
           <aside className="studio__nav">
             <div className="studio__nav-head">
-              <span className="studio__nav-title">Estrutura do curso</span>
+              <span className="studio__nav-title">{t('estudio.structure')}</span>
               <span className="studio__nav-count">
-                {totalMod} módulos · {totalAulas} aulas
+                {t('estudio.structureCount', { mod: totalMod, aulas: totalAulas })}
               </span>
             </div>
 
@@ -369,11 +382,13 @@ export function Estudio() {
                   </span>
                   <span className="studio-mod__num">{m.position}</span>
                   <span className="studio-mod__title">{m.title}</span>
-                  <span className="studio-mod__count">{m.lessons.length} aulas</span>
+                  <span className="studio-mod__count">
+                    {t('estudio.lessonsShort', { count: m.lessons.length })}
+                  </span>
                   <button
                     className="studio-mod__del"
                     onClick={() => removerModulo(m.id)}
-                    aria-label="Excluir módulo"
+                    aria-label={t('estudio.deleteModuleAria')}
                   >
                     <Trash size={13} />
                   </button>
@@ -392,7 +407,7 @@ export function Estudio() {
                           {l.published ? <Check size={11} /> : null}
                         </span>
                         <span className="studio-les__name">{l.title}</span>
-                        {l.id === selId && <span className="studio-les__tag">editando</span>}
+                        {l.id === selId && <span className="studio-les__tag">{t('estudio.editing')}</span>}
                       </div>
                     );
                   })}
@@ -400,21 +415,23 @@ export function Estudio() {
                     className="studio__add studio__add--ghost"
                     onClick={() => adicionarAula(m.id, m.lessons.length)}
                   >
-                    <Plus size={14} /> Adicionar aula
+                    <Plus size={14} /> {t('estudio.addLesson')}
                   </button>
                 </div>
               </div>
             ))}
 
             <button className="studio__add studio__add--dashed" onClick={adicionarModulo}>
-              <Plus size={15} /> Adicionar módulo
+              <Plus size={15} /> {t('estudio.addModule')}
             </button>
           </aside>
 
           {aula ? (
             <main className="studio__editor">
               <div className="studio__meta">
-                <span className="studio__meta-mod">{moduloDaAula?.title ?? 'Módulo'}</span>
+                <span className="studio__meta-mod">
+                  {moduloDaAula?.title ?? t('estudio.moduleFallback')}
+                </span>
                 <span
                   style={{
                     fontSize: 11.5,
@@ -425,15 +442,15 @@ export function Estudio() {
                     background: aula.published ? 'var(--success-soft)' : 'var(--surface-2)',
                   }}
                 >
-                  {aula.published ? 'Publicada' : 'Rascunho'}
+                  {aula.published ? t('estudio.publishedTag') : t('estudio.draftTag')}
                 </span>
                 <div className="topbar__spacer" />
                 <button className="studio__del" onClick={excluir}>
-                  <Trash size={14} /> Excluir aula
+                  <Trash size={14} /> {t('estudio.deleteLesson')}
                 </button>
               </div>
 
-              <label className="studio__label">Título da aula</label>
+              <label className="studio__label">{t('estudio.titleLabel')}</label>
               <div className="studio__title-field">
                 <input
                   className="es-input"
@@ -446,8 +463,10 @@ export function Estudio() {
               </div>
 
               <div className="studio__section">
-                <span className="studio__section-title">Conteúdo da aula</span>
-                <span className="studio__pill">{aula.contentBlocks.length} blocos</span>
+                <span className="studio__section-title">{t('estudio.contentTitle')}</span>
+                <span className="studio__pill">
+                  {t('estudio.blocksCount', { count: aula.contentBlocks.length })}
+                </span>
               </div>
 
               <div className="studio__blocks">
@@ -455,7 +474,7 @@ export function Estudio() {
                   <div key={i} className="block">
                     <div className="block__bar">
                       <span className={`block__tag block__tag--${b.type}`}>
-                        {BLOCO_LABEL[b.type]}
+                        {t(BLOCO_CHAVE[b.type])}
                       </span>
                       <div className="topbar__spacer" />
                       <button
@@ -482,8 +501,7 @@ export function Estudio() {
                     </div>
                     {b.type === 'terminal' ? (
                       <p className="studio__section-sub" style={{ margin: 0 }}>
-                        Terminal Linux para o aluno praticar. Não tem conteúdo a preencher: basta
-                        posicionar o bloco onde o laboratório deve aparecer na aula.
+                        {t('estudio.terminalHint')}
                       </p>
                     ) : b.type === 'table' ? (
                       <TabelaEditor value={b.value} onChange={(v) => setBloco(i, v)} />
@@ -492,9 +510,7 @@ export function Estudio() {
                         className="block__input es-input"
                         value={b.value}
                         placeholder={
-                          b.type === 'image'
-                            ? 'URL da imagem (https://...)'
-                            : 'URL do vídeo (YouTube ou embed)'
+                          b.type === 'image' ? t('estudio.imageUrl') : t('estudio.videoUrl')
                         }
                         onChange={(e) => setBloco(i, e.target.value)}
                       />
@@ -504,10 +520,10 @@ export function Estudio() {
                         value={b.value}
                         placeholder={
                           b.type === 'code'
-                            ? 'Cole o código aqui'
+                            ? t('estudio.codePlaceholder')
                             : b.type === 'quote'
-                              ? 'Texto da citação'
-                              : 'Escreva o texto'
+                              ? t('estudio.quotePlaceholder')
+                              : t('estudio.textPlaceholder')
                         }
                         onChange={(e) => setBloco(i, e.target.value)}
                       />
@@ -516,36 +532,38 @@ export function Estudio() {
                 ))}
                 {aula.contentBlocks.length === 0 && (
                   <p className="studio__section-sub" style={{ margin: 0 }}>
-                    Nenhum bloco ainda. Adicione conteúdo abaixo.
+                    {t('estudio.noBlocks')}
                   </p>
                 )}
               </div>
 
               <div className="block-palette">
-                <div className="block-palette__label">Adicionar bloco de conteúdo</div>
+                <div className="block-palette__label">{t('estudio.paletteLabel')}</div>
                 <div className="block-palette__chips">
                   {BLOCO_TIPOS.map((bt) => (
                     <button key={bt.type} className="block-chip" onClick={() => addBloco(bt.type)}>
-                      <span className="block-chip__icon">{bt.icon}</span> {bt.label}
+                      <span className="block-chip__icon">{bt.icon}</span> {t(bt.chave)}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="studio__section">
-                <span className="studio__section-title">Questões da aula</span>
-                <span className="studio__pill">{aula.questions.length} de 5</span>
+                <span className="studio__section-title">{t('estudio.questionsTitle')}</span>
+                <span className="studio__pill">
+                  {t('estudio.questionsCount', { count: aula.questions.length })}
+                </span>
               </div>
-              <p className="studio__section-sub">
-                Adicione 5 questões — o aluno precisa acertar ao menos 4 para concluir a aula.
-              </p>
+              <p className="studio__section-sub">{t('estudio.questionsHint')}</p>
 
               <div className="studio__questions">
                 {aula.questions.map((q, qi) => (
                   <div key={qi} className="qcard">
                     <div className="qcard__head">
                       <span className="qcard__num">{qi + 1}</span>
-                      <span className="qcard__label">Questão {qi + 1}</span>
+                      <span className="qcard__label">
+                        {t('estudio.questionLabel', { number: qi + 1 })}
+                      </span>
                       <div className="topbar__spacer" />
                       <select
                         className="qcard__diff"
@@ -556,14 +574,14 @@ export function Estudio() {
                       >
                         {DIFFS.map((d) => (
                           <option key={d.value} value={d.value}>
-                            {d.label}
+                            {t(d.chave)}
                           </option>
                         ))}
                       </select>
                       <button
                         className="qcard__del"
                         onClick={() => removerQuestao(qi)}
-                        aria-label="Excluir questão"
+                        aria-label={t('estudio.deleteQuestionAria')}
                       >
                         <Trash size={16} />
                       </button>
@@ -573,7 +591,7 @@ export function Estudio() {
                       <input
                         className="es-input"
                         value={q.statement}
-                        placeholder="Enunciado da questão"
+                        placeholder={t('estudio.statementPlaceholder')}
                         onChange={(e) => setQuestion(qi, { statement: e.target.value })}
                       />
                     </div>
@@ -584,7 +602,7 @@ export function Estudio() {
                           <button
                             className="qopt__radio"
                             onClick={() => marcarCorreta(qi, oi)}
-                            aria-label="Marcar como correta"
+                            aria-label={t('estudio.markCorrectAria')}
                           >
                             {o.isCorrect ? <Check size={12} /> : null}
                           </button>
@@ -592,14 +610,16 @@ export function Estudio() {
                           <input
                             className="es-input"
                             value={o.text}
-                            placeholder="Texto da alternativa"
+                            placeholder={t('estudio.optionPlaceholder')}
                             onChange={(e) => setOption(qi, oi, { text: e.target.value })}
                           />
-                          {o.isCorrect && <span className="qopt__tag">correta</span>}
+                          {o.isCorrect && (
+                            <span className="qopt__tag">{t('estudio.correctTag')}</span>
+                          )}
                           <button
                             className="qopt__remove"
                             onClick={() => removerAlternativa(qi, oi)}
-                            aria-label="Remover alternativa"
+                            aria-label={t('estudio.removeOptionAria')}
                           >
                             <Minus size={14} />
                           </button>
@@ -611,7 +631,7 @@ export function Estudio() {
                       className="studio__add studio__add--ghost"
                       onClick={() => adicionarAlternativa(qi)}
                     >
-                      <Plus size={14} /> Adicionar alternativa
+                      <Plus size={14} /> {t('estudio.addOption')}
                     </button>
                   </div>
                 ))}
@@ -623,21 +643,23 @@ export function Estudio() {
                 className="studio__add studio__add--dashed studio__add--lg"
                 onClick={adicionarQuestao}
               >
-                <Plus size={16} /> Adicionar questão{' '}
-                {faltam > 0 && <span className="studio__add-note">· faltam {faltam}</span>}
+                <Plus size={16} /> {t('estudio.addQuestion')}{' '}
+                {faltam > 0 && (
+                  <span className="studio__add-note">
+                    {t('estudio.missingNote', { count: faltam })}
+                  </span>
+                )}
               </button>
 
               <div style={{ display: 'flex', gap: 12, marginTop: 18 }}>
                 <button className="btn btn--ghost" disabled={salvando} onClick={() => salvar()}>
-                  {salvando ? 'Salvando...' : 'Salvar'}
+                  {salvando ? t('common.saving') : t('estudio.save')}
                 </button>
               </div>
             </main>
           ) : (
             <main className="studio__editor">
-              <p className="studio__section-sub">
-                Selecione uma aula na esquerda ou adicione uma nova para começar.
-              </p>
+              <p className="studio__section-sub">{t('estudio.pickLesson')}</p>
               {erro && <div className="auth__alert">{erro}</div>}
             </main>
           )}
@@ -650,6 +672,7 @@ export function Estudio() {
 // Editor de tabela: grid de inputs com controles para adicionar/remover linhas e
 // colunas. A 1ª linha é o cabeçalho. Salva como JSON no value do bloco.
 function TabelaEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const { t } = useTranslation();
   const grid = parseGrid(value);
   const cols = grid[0]?.length ?? 0;
 
@@ -680,7 +703,7 @@ function TabelaEditor({ value, onChange }: { value: string; onChange: (v: string
               key={`${r}-${c}`}
               className={`tbl-edit__cell${r === 0 ? ' tbl-edit__cell--head' : ''}`}
               value={cell}
-              placeholder={r === 0 ? 'Cabeçalho' : ''}
+              placeholder={r === 0 ? t('estudio.headerPlaceholder') : ''}
               onChange={(e) => setCell(r, c, e.target.value)}
             />
           )),
@@ -688,21 +711,21 @@ function TabelaEditor({ value, onChange }: { value: string; onChange: (v: string
       </div>
       <div className="tbl-edit__controls">
         <span className="tbl-edit__hint">
-          {grid.length} {grid.length === 1 ? 'linha' : 'linhas'} × {cols}{' '}
-          {cols === 1 ? 'coluna' : 'colunas'} · 1ª linha é o cabeçalho
+          {t('estudio.rows', { count: grid.length })} × {t('estudio.cols', { count: cols })} ·{' '}
+          {t('estudio.headerNote')}
         </span>
         <div className="tbl-edit__actions">
           <button type="button" className="tbl-edit__btn" onClick={removerColuna}>
-            − coluna
+            {t('estudio.minusCol')}
           </button>
           <button type="button" className="tbl-edit__btn" onClick={addColuna}>
-            + coluna
+            {t('estudio.plusCol')}
           </button>
           <button type="button" className="tbl-edit__btn" onClick={removerLinha}>
-            − linha
+            {t('estudio.minusRow')}
           </button>
           <button type="button" className="tbl-edit__btn" onClick={addLinha}>
-            + linha
+            {t('estudio.plusRow')}
           </button>
         </div>
       </div>

@@ -49,7 +49,14 @@ import {
     getMyStreak,
     getPublicStats,
     toggleFavorite,
+    toggleHide,
 } from "../controllers/TrailController.ts";
+import {
+    getLessonNotes,
+    getTrailNotes,
+    postNote,
+    removeNote,
+} from "../controllers/NoteController.ts";
 
 const router = Router();
 
@@ -95,6 +102,8 @@ router.patch("/lessons/:id/published", authenticate, requireAdmin, setLessonPubl
 router.get("/trails", authenticate, listTrails);
 router.get("/trails/:id", authenticate, getTrail);
 router.post("/trails/:id/favorite", authenticate, toggleFavorite);
+// Leaving a trail hides it from "continue" lists; the progress stays.
+router.post("/trails/:id/hide", authenticate, toggleHide);
 // The track as an EPUB book: same access rule as the content (being signed in is enough).
 router.get("/trails/:id/epub", authenticate, getTrailEpub);
 router.post("/trails/:id/review", authenticate, submitTrailReview);
@@ -117,5 +126,11 @@ router.get("/community/achievements", authenticate, getCommunityAchievements);
 router.get("/ranking", authenticate, getRanking);
 router.post("/lessons/:id/quiz", authenticate, submitQuiz);
 router.post("/lessons/:id/quiz/check", authenticate, checkAnswer);
+
+// Student notebook: notes and highlights per lesson, plus the whole-trail view.
+router.get("/lessons/:id/notes", authenticate, getLessonNotes);
+router.post("/lessons/:id/notes", authenticate, postNote);
+router.get("/trails/:id/notes", authenticate, getTrailNotes);
+router.delete("/notes/:id", authenticate, removeNote);
 
 export default router;

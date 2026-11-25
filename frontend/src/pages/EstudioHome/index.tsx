@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { ChevronRight, Plus, Pencil, Trash } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
@@ -17,15 +18,22 @@ import { mensagemErro } from '../../utils/erro';
 
 type TrailComId = Trail & { id: string };
 
-const LEVELS: { value: TrailLevelEnum; label: string }[] = [
-  { value: 'iniciante', label: 'Iniciante' },
-  { value: 'intermediario', label: 'Intermediário' },
-  { value: 'avancado', label: 'Avançado' },
+type LevelKey = 'levels.beginner' | 'levels.intermediate' | 'levels.advanced';
+
+const LEVELS: { value: TrailLevelEnum; chave: LevelKey }[] = [
+  { value: 'iniciante', chave: 'levels.beginner' },
+  { value: 'intermediario', chave: 'levels.intermediate' },
+  { value: 'avancado', chave: 'levels.advanced' },
 ];
-const LABEL_TO_ENUM: Record<string, TrailLevelEnum> = {
-  Iniciante: 'iniciante',
-  Intermediário: 'intermediario',
-  Avançado: 'avancado',
+const ENUM_DO_NIVEL: Record<string, TrailLevelEnum> = {
+  iniciante: 'iniciante',
+  intermediario: 'intermediario',
+  avancado: 'avancado',
+};
+const CHAVE_DO_NIVEL: Record<string, LevelKey> = {
+  iniciante: 'levels.beginner',
+  intermediario: 'levels.intermediate',
+  avancado: 'levels.advanced',
 };
 
 interface FormState {
@@ -39,6 +47,7 @@ interface FormState {
 
 export function EstudioHome() {
   const navigate = useNavigate();
+  const { t: t2 } = useTranslation();
   const {
     dados,
     carregando,
@@ -64,7 +73,7 @@ export function EstudioHome() {
     setForm({
       id: t.id,
       name: t.name,
-      level: LABEL_TO_ENUM[t.level] ?? 'iniciante',
+      level: ENUM_DO_NIVEL[t.level] ?? 'iniciante',
       description: t.desc,
       tagIds,
       workloadHours: t.workloadHours ? String(t.workloadHours) : '',
@@ -97,56 +106,53 @@ export function EstudioHome() {
       setForm(null);
       recarregar();
     } catch (e: unknown) {
-      setErro(mensagemErro(e, 'Não foi possível salvar a trilha.'));
+      setErro(mensagemErro(e, t2('estudio.saveError')));
     } finally {
       setSalvando(false);
     }
   }
 
   async function excluir(t: TrailComId) {
-    if (
-      !window.confirm(
-        `Excluir a trilha "${t.name}" e tudo dentro dela? Essa ação não pode ser desfeita.`,
-      )
-    )
-      return;
+    if (!window.confirm(t2('estudio.deleteConfirm', { name: t.name }))) return;
     setErro('');
     try {
       await excluirTrilha(t.id);
       recarregar();
     } catch {
-      setErro('Não foi possível excluir a trilha.');
+      setErro(t2('estudio.deleteError'));
     }
   }
 
   return (
     <div className="home">
-      <EstudioTopbar crumb={<b>Painel do administrador</b>} />
+      <EstudioTopbar crumb={<b>{t2('estudio.adminCrumb')}</b>} />
 
       <div className="estudio-home">
         <div className="estudio-home__head">
           <div>
-            <h1 className="estudio-home__title">Trilhas</h1>
-            <p className="estudio-home__sub">Escolha uma trilha para editar, ou crie uma nova.</p>
+            <h1 className="estudio-home__title">{t2('nav.studioTracks')}</h1>
+            <p className="estudio-home__sub">{t2('estudio.homeSub')}</p>
           </div>
           {!form && (
             <button className="btn btn--accent" onClick={novaTrilha}>
-              <Plus size={14} /> Nova trilha
+              <Plus size={14} /> {t2('estudio.newTrack')}
             </button>
           )}
         </div>
 
         {form && (
           <div className="estudio-form">
-            <div className="estudio-form__title">{form.id ? 'Editar trilha' : 'Nova trilha'}</div>
-            <label className="studio__label">Nome</label>
+            <div className="estudio-form__title">
+              {form.id ? t2('estudio.editTrack') : t2('estudio.newTrack')}
+            </div>
+            <label className="studio__label">{t2('estudio.nameLabel')}</label>
             <input
               className="estudio-form__input"
               value={form.name}
-              placeholder="Ex.: Lógica de Programação"
+              placeholder={t2('estudio.namePlaceholder')}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
-            <label className="studio__label">Nível</label>
+            <label className="studio__label">{t2('filters.level')}</label>
             <select
               className="estudio-form__input"
               value={form.level}
@@ -154,31 +160,31 @@ export function EstudioHome() {
             >
               {LEVELS.map((l) => (
                 <option key={l.value} value={l.value}>
-                  {l.label}
+                  {t2(l.chave)}
                 </option>
               ))}
             </select>
-            <label className="studio__label">Carga horária (em horas, para o certificado)</label>
+            <label className="studio__label">{t2('estudio.workloadLabel')}</label>
             <input
               className="estudio-form__input"
               type="number"
               min={1}
               max={999}
               value={form.workloadHours}
-              placeholder="Ex.: 20. Vazio = trilha sem certificado"
+              placeholder={t2('estudio.workloadPlaceholder')}
               onChange={(e) => setForm({ ...form, workloadHours: e.target.value })}
             />
-            <label className="studio__label">Descrição</label>
+            <label className="studio__label">{t2('estudio.descLabel')}</label>
             <textarea
               className="estudio-form__input estudio-form__textarea"
               value={form.description}
-              placeholder="Descrição da trilha (mínimo 10 caracteres)"
+              placeholder={t2('estudio.descPlaceholder')}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
-            <label className="studio__label">Tags</label>
+            <label className="studio__label">{t2('estudio.tagsLabel')}</label>
             <div className="tag-picker">
               {tagsDisp.length === 0 && (
-                <span className="tag-picker__empty">Nenhuma tag ainda. Crie em Configurações.</span>
+                <span className="tag-picker__empty">{t2('estudio.tagsEmpty')}</span>
               )}
               {tagsDisp.map((tg) => {
                 const ativa = form.tagIds.includes(tg.id);
@@ -219,12 +225,12 @@ export function EstudioHome() {
           </div>
         )}
 
-        {carregando && <p className="track__desc">Carregando...</p>}
+        {carregando && <p className="track__desc">{t2('common.loading')}</p>}
         {!form && (erro || falhaCarga) && (
-          <div className="auth__alert">{erro || 'Não foi possível carregar as trilhas.'}</div>
+          <div className="auth__alert">{erro || t2('estudio.loadError')}</div>
         )}
         {!carregando && trilhas.length === 0 && !form && (
-          <p className="track__desc">Nenhuma trilha cadastrada ainda.</p>
+          <p className="track__desc">{t2('estudio.empty')}</p>
         )}
 
         <div className="estudio-home__list">
@@ -235,7 +241,10 @@ export function EstudioHome() {
                 <div className="estudio-home__meta">
                   <div className="estudio-home__name">{t.name}</div>
                   <div className="estudio-home__info">
-                    {t.lessons} aulas · {t.level}
+                    {t2('estudio.lessonsOf', {
+                      count: t.lessons,
+                      level: CHAVE_DO_NIVEL[t.level] ? t2(CHAVE_DO_NIVEL[t.level]) : t.level,
+                    })}
                   </div>
                 </div>
               </button>

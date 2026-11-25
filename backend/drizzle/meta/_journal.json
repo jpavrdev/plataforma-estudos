@@ -491,6 +491,27 @@
       "when": 1794917931820,
       "tag": "0069_roadmap_favorites",
       "breakpoints": true
+    },
+    {
+      "idx": 70,
+      "version": "7",
+      "when": 1795017094243,
+      "tag": "0070_content_translations",
+      "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1795546628557,
+      "tag": "0071_lesson_notes",
+      "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1795550917783,
+      "tag": "0072_trail_hides",
+      "breakpoints": true
     }
   ]
 }

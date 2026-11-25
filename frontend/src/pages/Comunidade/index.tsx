@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
@@ -53,33 +54,46 @@ function corDoNome(chave: string): string {
   return PALETA_AVATAR[h % PALETA_AVATAR.length];
 }
 
-const KIND_META: Record<Exclude<PostKind, 'post'>, { label: string; cls: string; Icon: typeof Help }> = {
-  duvida: { label: 'Dúvida', cls: 'ct--duvida', Icon: Help },
-  solucao: { label: 'Solução', cls: 'ct--solucao', Icon: Check },
-  conquista: { label: 'Conquista', cls: 'ct--conquista', Icon: Trophy },
+type KindKey =
+  | 'comunidade.kindPost'
+  | 'comunidade.kindDuvida'
+  | 'comunidade.kindSolucao'
+  | 'comunidade.kindConquista';
+type FeedKey =
+  | 'comunidade.feedForYou'
+  | 'comunidade.feedFollowing'
+  | 'comunidade.feedQuestions'
+  | 'comunidade.feedSolutions'
+  | 'comunidade.feedAchievements';
+type TabKey = 'comunidade.tabRecent' | 'comunidade.tabHot' | 'comunidade.tabUnanswered';
+
+const KIND_META: Record<Exclude<PostKind, 'post'>, { chave: KindKey; cls: string; Icon: typeof Help }> = {
+  duvida: { chave: 'comunidade.kindDuvida', cls: 'ct--duvida', Icon: Help },
+  solucao: { chave: 'comunidade.kindSolucao', cls: 'ct--solucao', Icon: Check },
+  conquista: { chave: 'comunidade.kindConquista', cls: 'ct--conquista', Icon: Trophy },
 };
 
-const MENU_ESQUERDO: { key: FiltroFeed; label: string; Icon: typeof House }[] = [
-  { key: 'para-voce', label: 'Para você', Icon: House },
-  { key: 'seguindo', label: 'Seguindo', Icon: Users },
-  { key: 'duvida', label: 'Dúvidas', Icon: Help },
-  { key: 'solucao', label: 'Soluções', Icon: Check },
-  { key: 'conquista', label: 'Conquistas', Icon: Trophy },
+const MENU_ESQUERDO: { key: FiltroFeed; chave: FeedKey; Icon: typeof House }[] = [
+  { key: 'para-voce', chave: 'comunidade.feedForYou', Icon: House },
+  { key: 'seguindo', chave: 'comunidade.feedFollowing', Icon: Users },
+  { key: 'duvida', chave: 'comunidade.feedQuestions', Icon: Help },
+  { key: 'solucao', chave: 'comunidade.feedSolutions', Icon: Check },
+  { key: 'conquista', chave: 'comunidade.feedAchievements', Icon: Trophy },
 ];
 
-const TABS: { key: FiltroFeed; label: string }[] = [
-  { key: 'recentes', label: 'Recentes' },
-  { key: 'em-alta', label: 'Em alta' },
-  { key: 'sem-resposta', label: 'Sem resposta' },
+const TABS: { key: FiltroFeed; chave: TabKey }[] = [
+  { key: 'recentes', chave: 'comunidade.tabRecent' },
+  { key: 'em-alta', chave: 'comunidade.tabHot' },
+  { key: 'sem-resposta', chave: 'comunidade.tabUnanswered' },
 ];
 
 const FILTRO_PRINCIPAL: FiltroFeed[] = ['para-voce', 'recentes', 'em-alta', 'sem-resposta'];
 
-const KINDS_COMPOR: { key: PostKind; label: string }[] = [
-  { key: 'post', label: 'Post' },
-  { key: 'duvida', label: 'Dúvida' },
-  { key: 'solucao', label: 'Solução' },
-  { key: 'conquista', label: 'Conquista' },
+const KINDS_COMPOR: { key: PostKind; chave: KindKey }[] = [
+  { key: 'post', chave: 'comunidade.kindPost' },
+  { key: 'duvida', chave: 'comunidade.kindDuvida' },
+  { key: 'solucao', chave: 'comunidade.kindSolucao' },
+  { key: 'conquista', chave: 'comunidade.kindConquista' },
 ];
 
 function AvatarPessoa({
@@ -104,6 +118,7 @@ function AvatarPessoa({
 
 export function Comunidade() {
   const { user } = useAuth();
+  const { t, i18n } = useTranslation();
   const nav = useNavPrincipal();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -114,7 +129,8 @@ export function Comunidade() {
   const [lateral, setLateral] = useState<BarraLateral | null>(null);
   const [desafio, setDesafio] = useState<DesafioDetalhe | null>(null);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  // A mensagem mora no catálogo: o estado guarda só a chave.
+  const [erro, setErro] = useState<'' | 'comunidade.loadError'>('');
   const [busca, setBusca] = useState('');
   const [copiado, setCopiado] = useState<string | null>(null);
   const [seguindo, setSeguindo] = useState<Set<string>>(new Set());
@@ -123,13 +139,13 @@ export function Comunidade() {
   const displayName = user?.name ?? '';
   const initials = getInitials(displayName || 'A');
 
-  async function carregarFeed(f: FiltroFeed, t: string | null) {
+  async function carregarFeed(f: FiltroFeed, tg: string | null) {
     setCarregando(true);
     setErro('');
     try {
-      setPosts(await obterFeed(f, t));
+      setPosts(await obterFeed(f, tg));
     } catch {
-      setErro('Não foi possível carregar o feed. Tente novamente.');
+      setErro('comunidade.loadError');
     } finally {
       setCarregando(false);
     }
@@ -207,7 +223,7 @@ export function Comunidade() {
         p.content.toLowerCase().includes(termo) ||
         p.autor.name.toLowerCase().includes(termo) ||
         (p.autor.username ?? '').toLowerCase().includes(termo) ||
-        p.tags.some((t) => t.includes(termo)),
+        p.tags.some((tg) => tg.includes(termo)),
     );
   }, [posts, busca]);
 
@@ -236,7 +252,7 @@ export function Comunidade() {
             <input
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              placeholder="Buscar na comunidade…"
+              placeholder={t('comunidade.search')}
             />
           </label>
           <div className="streak-pill">
@@ -254,7 +270,7 @@ export function Comunidade() {
         <div className="com">
           <aside className="com__left">
             <nav className="com-menu">
-              {MENU_ESQUERDO.map(({ key, label, Icon }) => {
+              {MENU_ESQUERDO.map(({ key, chave, Icon }) => {
                 const ativo =
                   key === 'para-voce' ? FILTRO_PRINCIPAL.includes(filtro) && !tag : filtro === key && !tag;
                 const badge = key === 'duvida' ? lateral?.duvidasAbertas ?? 0 : 0;
@@ -265,7 +281,7 @@ export function Comunidade() {
                     onClick={() => selecionarFiltro(key)}
                   >
                     <Icon size={18} />
-                    <span>{label}</span>
+                    <span>{t(chave)}</span>
                     {badge > 0 && <span className="com-menu__badge">{badge}</span>}
                   </button>
                 );
@@ -274,11 +290,17 @@ export function Comunidade() {
 
             {lateral && lateral.topicos.length > 0 && (
               <div className="card com-topicos">
-                <div className="com-topicos__titulo">Tópicos populares</div>
-                {lateral.topicos.map((t) => (
-                  <button key={t.tag} className="com-topicos__item" onClick={() => abrirTag(t.tag)}>
-                    <span className="com-topicos__tag">#{t.tag}</span>
-                    <span className="com-topicos__n">{formatarMilhar(t.count)}</span>
+                <div className="com-topicos__titulo">{t('comunidade.topics')}</div>
+                {lateral.topicos.map((topico) => (
+                  <button
+                    key={topico.tag}
+                    className="com-topicos__item"
+                    onClick={() => abrirTag(topico.tag)}
+                  >
+                    <span className="com-topicos__tag">#{topico.tag}</span>
+                    <span className="com-topicos__n">
+                      {formatarMilhar(topico.count, i18n.language)}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -300,24 +322,28 @@ export function Comunidade() {
             {tag ? (
               <div className="com-tagbar">
                 <span>
-                  Publicações com <strong>#{tag}</strong>
+                  <Trans
+                    i18nKey="comunidade.postsWithTag"
+                    values={{ tag }}
+                    components={{ strong: <strong /> }}
+                  />
                 </span>
                 <button onClick={limparTag} className="com-tagbar__x">
-                  <X size={14} /> limpar
+                  <X size={14} /> {t('comunidade.clearTag')}
                 </button>
               </div>
             ) : (
               FILTRO_PRINCIPAL.includes(filtro) && (
                 <div className="com-tabs">
-                  {TABS.map((t) => {
-                    const ativo = filtro === t.key || (t.key === 'recentes' && filtro === 'para-voce');
+                  {TABS.map((tab) => {
+                    const ativo = filtro === tab.key || (tab.key === 'recentes' && filtro === 'para-voce');
                     return (
                       <button
-                        key={t.key}
+                        key={tab.key}
                         className={`com-tab${ativo ? ' com-tab--on' : ''}`}
-                        onClick={() => setFiltro(t.key)}
+                        onClick={() => setFiltro(tab.key)}
                       >
-                        {t.label}
+                        {t(tab.chave)}
                       </button>
                     );
                   })}
@@ -325,17 +351,19 @@ export function Comunidade() {
               )
             )}
 
-            {erro && <div className="auth__alert">{erro}</div>}
-            {carregando && posts.length === 0 && <p className="com-vazio">Carregando publicações…</p>}
+            {erro && <div className="auth__alert">{t(erro)}</div>}
+            {carregando && posts.length === 0 && (
+              <p className="com-vazio">{t('comunidade.loading')}</p>
+            )}
             {!carregando && postsFiltrados.length === 0 && !erro && (
               <p className="com-vazio">
                 {busca
-                  ? 'Nada encontrado para essa busca.'
+                  ? t('comunidade.emptySearch')
                   : tag
-                    ? 'Ainda não há publicações com essa tag.'
+                    ? t('comunidade.emptyTag')
                     : filtro === 'seguindo'
-                      ? 'Você ainda não segue ninguém, ou quem você segue ainda não publicou.'
-                      : 'Ainda não há publicações por aqui. Seja o primeiro a compartilhar.'}
+                      ? t('comunidade.emptyFollowing')
+                      : t('comunidade.empty')}
               </p>
             )}
 
@@ -355,26 +383,31 @@ export function Comunidade() {
 
           <aside className="com__right">
             <button className="com-desafio" onClick={() => navigate('/desafios')}>
-              <div className="com-desafio__eyebrow">Desafio de hoje</div>
-              <div className="com-desafio__titulo">{desafio ? desafio.title : 'Desafios diários'}</div>
+              <div className="com-desafio__eyebrow">{t('comunidade.dailyEyebrow')}</div>
+              <div className="com-desafio__titulo">
+                {desafio ? desafio.title : t('comunidade.dailyFallbackTitle')}
+              </div>
               <p className="com-desafio__desc">
                 {desafio
-                  ? `Resolva e ganhe +${desafio.xp} XP. Mantenha sua sequência viva.`
-                  : 'Resolva um desafio por dia, ganhe XP e mantenha sua sequência.'}
+                  ? t('comunidade.dailyDesc', { xp: desafio.xp })
+                  : t('comunidade.dailyFallbackDesc')}
               </p>
               <span className="com-desafio__cta">
-                <Zap size={15} /> {desafio?.solved ? 'Revisar desafio' : 'Resolver agora'}
+                <Zap size={15} />{' '}
+                {desafio?.solved ? t('comunidade.reviewChallenge') : t('comunidade.solveNow')}
               </span>
             </button>
 
             {lateral && lateral.discussoes.length > 0 && (
               <div className="card com-side">
-                <div className="com-side__titulo">Discussões em alta</div>
+                <div className="com-side__titulo">{t('comunidade.hotDiscussions')}</div>
                 {lateral.discussoes.map((d) => (
                   <button key={d.id} className="com-disc" onClick={() => compartilharDiscussao(d.id, setParams)}>
                     {d.tag && <span className="com-disc__tag">#{d.tag}</span>}
                     <span className="com-disc__titulo">{d.titulo}</span>
-                    <span className="com-disc__n">{d.comentarios} respostas</span>
+                    <span className="com-disc__n">
+                      {t('comunidade.replies', { count: d.comentarios })}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -382,7 +415,7 @@ export function Comunidade() {
 
             {lateral && lateral.sugestoes.length > 0 && (
               <div className="card com-side">
-                <div className="com-side__titulo">Sugestões para seguir</div>
+                <div className="com-side__titulo">{t('comunidade.suggestions')}</div>
                 {lateral.sugestoes.map((s) => (
                   <div key={s.username} className="com-sug">
                     <button className="com-sug__pessoa" onClick={() => navigate(`/${s.username}`)}>
@@ -390,8 +423,10 @@ export function Comunidade() {
                       <span className="com-sug__info">
                         <span className="com-sug__nome">{s.name}</span>
                         <span className="com-sug__sub">
-                          Nível {s.level}
-                          {s.respostas > 0 ? ` · ${s.respostas} respostas` : ''}
+                          {t('comunidade.level', { level: s.level })}
+                          {s.respostas > 0
+                            ? ` · ${t('comunidade.replies', { count: s.respostas })}`
+                            : ''}
                         </span>
                       </span>
                     </button>
@@ -400,7 +435,9 @@ export function Comunidade() {
                       disabled={seguindo.has(s.username)}
                       onClick={() => seguirSugestao(s.username)}
                     >
-                      {seguindo.has(s.username) ? 'Seguindo' : 'Seguir'}
+                      {seguindo.has(s.username)
+                        ? t('comunidade.following')
+                        : t('comunidade.follow')}
                     </button>
                   </div>
                 ))}
@@ -412,7 +449,7 @@ export function Comunidade() {
         {/* Botão flutuante de compor (telefone), estilo Twitter. */}
         <button
           className="com-fab"
-          aria-label="Nova publicação"
+          aria-label={t('comunidade.newPost')}
           onClick={() => setComporAberto(true)}
         >
           <Plus size={24} />
@@ -424,12 +461,12 @@ export function Comunidade() {
               <div className="com-modal__head">
                 <button
                   className="com-modal__x"
-                  aria-label="Fechar"
+                  aria-label={t('sheet.close')}
                   onClick={() => setComporAberto(false)}
                 >
                   <X size={20} />
                 </button>
-                <span className="com-modal__titulo">Nova publicação</span>
+                <span className="com-modal__titulo">{t('comunidade.newPost')}</span>
               </div>
               <Composer
                 nome={displayName}
@@ -451,8 +488,11 @@ export function Comunidade() {
   );
 }
 
-function formatarMilhar(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(n >= 10000 ? 0 : 1).replace('.', ',')}k`;
+function formatarMilhar(n: number, lingua: string): string {
+  if (n >= 1000) {
+    const v = `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k`;
+    return lingua.startsWith('pt') ? v.replace('.', ',') : v;
+  }
   return String(n);
 }
 
@@ -478,6 +518,7 @@ function Composer({
   iniciarAberto?: boolean;
   onFechar?: () => void;
 }) {
+  const { t } = useTranslation();
   const [aberto, setAberto] = useState(iniciarAberto);
   const [kind, setKind] = useState<PostKind>('post');
   const [content, setContent] = useState('');
@@ -487,7 +528,10 @@ function Composer({
   const [tagsTexto, setTagsTexto] = useState('');
   const [imagem, setImagem] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
-  const [erro, setErro] = useState('');
+  // A mensagem mora no catálogo: o estado guarda só a chave.
+  const [erro, setErro] = useState<
+    '' | 'comunidade.imageError' | 'comunidade.emptyError' | 'comunidade.publishError'
+  >('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   function reset() {
@@ -510,14 +554,14 @@ function Composer({
       setImagem(await comprimirImagem(dataUrl));
       setAberto(true);
     } catch {
-      setErro('Não foi possível carregar a imagem.');
+      setErro('comunidade.imageError');
     }
   }
 
   async function publicar() {
     if (enviando) return;
     if (!content.trim()) {
-      setErro('Escreva algo antes de publicar.');
+      setErro('comunidade.emptyError');
       return;
     }
     setEnviando(true);
@@ -541,7 +585,7 @@ function Composer({
       reset();
       onPublicado();
     } catch {
-      setErro('Não foi possível publicar. Tente novamente.');
+      setErro('comunidade.publishError');
       setEnviando(false);
     }
   }
@@ -556,13 +600,13 @@ function Composer({
             autoFocus
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Compartilhe uma dúvida, solução ou conquista…"
+            placeholder={t('comunidade.composerPlaceholder')}
             rows={3}
             maxLength={2000}
           />
         ) : (
           <button className="com-composer__fake" onClick={() => setAberto(true)}>
-            Compartilhe uma dúvida, solução ou conquista…
+            {t('comunidade.composerPlaceholder')}
           </button>
         )}
       </div>
@@ -576,7 +620,7 @@ function Composer({
                 className={`com-kchip${kind === k.key ? ' com-kchip--on' : ''}`}
                 onClick={() => setKind(k.key)}
               >
-                {k.label}
+                {t(k.chave)}
               </button>
             ))}
           </div>
@@ -594,14 +638,14 @@ function Composer({
                   )}
                 </select>
                 <button onClick={() => setComCodigo(false)} className="com-composer__coderm">
-                  <X size={13} /> remover código
+                  <X size={13} /> {t('comunidade.removeCode')}
                 </button>
               </div>
               <textarea
                 className="com-composer__codearea"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="Cole seu código aqui…"
+                placeholder={t('comunidade.codePlaceholder')}
                 spellCheck={false}
                 rows={5}
               />
@@ -610,7 +654,7 @@ function Composer({
 
           {imagem && (
             <div className="com-composer__img">
-              <img src={imagem} alt="Prévia" />
+              <img src={imagem} alt={t('comunidade.preview')} />
               <button onClick={() => setImagem(null)} className="com-composer__imgrm">
                 <X size={14} />
               </button>
@@ -621,10 +665,10 @@ function Composer({
             className="com-composer__tags"
             value={tagsTexto}
             onChange={(e) => setTagsTexto(e.target.value)}
-            placeholder="Tags separadas por espaço: logica while array"
+            placeholder={t('comunidade.tagsPlaceholder')}
           />
 
-          {erro && <div className="com-composer__erro">{erro}</div>}
+          {erro && <div className="com-composer__erro">{t(erro)}</div>}
 
           <div className="com-composer__acoes">
             <div className="com-composer__ferramentas">
@@ -632,12 +676,12 @@ function Composer({
                 className={`com-composer__ferr${comCodigo ? ' com-composer__ferr--on' : ''}`}
                 onClick={() => setComCodigo((v) => !v)}
               >
-                <Code size={16} /> Código
+                <Code size={16} /> {t('comunidade.code')}
               </button>
               {apoiador && (
                 <>
                   <button className="com-composer__ferr" onClick={() => fileRef.current?.click()}>
-                    <Camera size={15} /> Imagem
+                    <Camera size={15} /> {t('comunidade.image')}
                   </button>
                   <input
                     ref={fileRef}
@@ -658,14 +702,14 @@ function Composer({
                 }}
                 disabled={enviando}
               >
-                Cancelar
+                {t('common.cancel')}
               </button>
               <button
                 className="btn btn--accent com-composer__publicar"
                 onClick={publicar}
                 disabled={enviando || !content.trim()}
               >
-                {enviando ? 'Publicando…' : 'Publicar'}
+                {enviando ? t('comunidade.publishing') : t('comunidade.publish')}
               </button>
             </div>
           </div>
@@ -675,12 +719,12 @@ function Composer({
       {!aberto && (
         <div className="com-composer__atalhos">
           <button className="com-composer__ferr" onClick={() => { setComCodigo(true); setAberto(true); }}>
-            <Code size={16} /> Código
+            <Code size={16} /> {t('comunidade.code')}
           </button>
           {apoiador && (
             <>
               <button className="com-composer__ferr" onClick={() => fileRef.current?.click()}>
-                <Camera size={15} /> Imagem
+                <Camera size={15} /> {t('comunidade.image')}
               </button>
               <input
                 ref={fileRef}
@@ -706,6 +750,7 @@ function ComentarioItem({
   onCurtir: () => void;
   onResponder: () => void;
 }) {
+  const { t, i18n } = useTranslation();
   return (
     <div className="com-coment">
       <AvatarPessoa
@@ -717,7 +762,7 @@ function ComentarioItem({
         <div className="com-coment__head">
           <span className="com-coment__nome">{c.autor.name}</span>
           <span className="com-coment__lv">Lv {c.autor.level}</span>
-          <span className="com-coment__tempo">{tempoRelativo(c.createdAt)}</span>
+          <span className="com-coment__tempo">{tempoRelativo(c.createdAt, i18n.language)}</span>
         </div>
         <p className="com-coment__texto">{c.content}</p>
         <div className="com-coment__acoes">
@@ -729,7 +774,7 @@ function ComentarioItem({
             {c.likes > 0 && <span>{c.likes}</span>}
           </button>
           <button className="com-coment__acao" onClick={onResponder}>
-            Responder
+            {t('comunidade.reply')}
           </button>
         </div>
       </div>
@@ -763,6 +808,7 @@ function PostCard({
   const [respondendoA, setRespondendoA] = useState<{ threadId: string; nome: string } | null>(null);
   const [textoResposta, setTextoResposta] = useState('');
   const cardRef = useRef<HTMLElement>(null);
+  const { t, i18n } = useTranslation();
 
   const meta = post.kind !== 'post' ? KIND_META[post.kind] : null;
 
@@ -865,16 +911,19 @@ function PostCard({
             <span className="com-post__nome">
               {post.autor.name}
               <span className="com-post__lv">Lv {post.autor.level}</span>
-              {post.autor.apoiador && <span className="com-post__apoiador">Apoiador</span>}
+              {post.autor.apoiador && (
+                <span className="com-post__apoiador">{t('comunidade.supporterBadge')}</span>
+              )}
             </span>
             <span className="com-post__meta">
-              {post.autor.username ? `@${post.autor.username}` : 'sem @'} · {tempoRelativo(post.createdAt)}
+              {post.autor.username ? `@${post.autor.username}` : t('comunidade.noUsername')} ·{' '}
+              {tempoRelativo(post.createdAt, i18n.language)}
             </span>
           </span>
         </button>
         {meta && (
           <span className={`com-ct ${meta.cls}`}>
-            <meta.Icon size={13} /> {meta.label}
+            <meta.Icon size={13} /> {t(meta.chave)}
           </span>
         )}
       </div>
@@ -889,7 +938,11 @@ function PostCard({
 
       {post.imageUrl && (
         <div className="com-post__imagem">
-          <img src={urlImagem(post.imageUrl) ?? ''} alt="Imagem da publicação" loading="lazy" />
+          <img
+            src={urlImagem(post.imageUrl) ?? ''}
+            alt={t('comunidade.postImage')}
+            loading="lazy"
+          />
         </div>
       )}
 
@@ -914,7 +967,7 @@ function PostCard({
           <ChatBubble size={17} /> {totalCom}
         </button>
         <button className="com-acao" onClick={onCompartilhar}>
-          <Share size={16} /> {copiado ? 'Copiado!' : 'Compartilhar'}
+          <Share size={16} /> {copiado ? t('comunidade.copied') : t('comunidade.share')}
         </button>
       </div>
 
@@ -924,7 +977,7 @@ function PostCard({
             <textarea
               value={novoComentario}
               onChange={(e) => setNovoComentario(e.target.value)}
-              placeholder="Escreva um comentário…"
+              placeholder={t('comunidade.commentPlaceholder')}
               rows={2}
               maxLength={1000}
             />
@@ -933,10 +986,12 @@ function PostCard({
               onClick={enviarComentario}
               disabled={enviandoCom || !novoComentario.trim()}
             >
-              {enviandoCom ? '...' : 'Responder'}
+              {enviandoCom ? '...' : t('comunidade.reply')}
             </button>
           </div>
-          {carregandoCom && <p className="com-thread__vazio">Carregando comentários…</p>}
+          {carregandoCom && (
+            <p className="com-thread__vazio">{t('comunidade.loadingComments')}</p>
+          )}
           {principais.map((c) => (
             <div key={c.id} className="com-fio">
               <ComentarioItem
@@ -959,7 +1014,7 @@ function PostCard({
                     autoFocus
                     value={textoResposta}
                     onChange={(e) => setTextoResposta(e.target.value)}
-                    placeholder={`Responda a ${respondendoA.nome}…`}
+                    placeholder={t('comunidade.replyTo', { name: respondendoA.nome })}
                     rows={2}
                     maxLength={1000}
                   />
@@ -968,14 +1023,14 @@ function PostCard({
                     onClick={enviarResposta}
                     disabled={enviandoCom || !textoResposta.trim()}
                   >
-                    {enviandoCom ? '...' : 'Responder'}
+                    {enviandoCom ? '...' : t('comunidade.reply')}
                   </button>
                 </div>
               )}
             </div>
           ))}
           {comentarios && comentarios.length === 0 && !carregandoCom && (
-            <p className="com-thread__vazio">Ainda não há comentários. Seja o primeiro a responder.</p>
+            <p className="com-thread__vazio">{t('comunidade.emptyComments')}</p>
           )}
         </div>
       )}

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { useSorteioAtivo } from '../../contexts/SorteioContext';
@@ -33,6 +34,7 @@ function sorteioMudou(e: unknown): boolean {
 
 export function FormularioInscricao({ sorteio }: { sorteio: SorteioAtivo }) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { mostrar } = useToast();
   const { recarregar } = useSorteioAtivo();
   const [rascunhos, setRascunhos] = useState<Rascunhos>(RASCUNHOS_VAZIOS);
@@ -76,11 +78,11 @@ export function FormularioInscricao({ sorteio }: { sorteio: SorteioAtivo }) {
     setEnviando(true);
     try {
       await inscreverNoSorteio(sorteio.id, conferindo.entrada);
-      mostrar('Inscrição confirmada. Boa sorte!');
+      mostrar(t('sorteio.confirmedToast'));
       await recarregar();
     } catch (e) {
       console.error('Falha ao confirmar a inscrição no sorteio:', e);
-      mostrar(mensagemErro(e, 'Não foi possível confirmar a inscrição.'), 'erro');
+      mostrar(mensagemErro(e, t('sorteio.confirmError')), 'erro');
       if (sorteioMudou(e)) await recarregar();
     } finally {
       setEnviando(false);
@@ -92,12 +94,12 @@ export function FormularioInscricao({ sorteio }: { sorteio: SorteioAtivo }) {
     <>
       <form className="card srt__form" onSubmit={conferir} noValidate>
         <p className="srt__quem">
-          Você participa como <b>@{user?.username}</b>
+          <Trans i18nKey="sorteio.youParticipate" values={{ user: user?.username ?? '' }} components={{ b: <b /> }} />
         </p>
 
         <ContatoCampos
-          titulo="Contato principal"
-          dica="Por onde avisamos se você for sorteado."
+          titulo={t('sorteio.primaryTitle')}
+          dica={t('sorteio.primaryHint')}
           canais={CANAIS}
           rascunho={rascunhos.primario}
           erros={erros.primario}
@@ -106,8 +108,8 @@ export function FormularioInscricao({ sorteio }: { sorteio: SorteioAtivo }) {
           onSairDoCampo={(campo) => sairDoCampo('primario', campo)}
         />
         <ContatoCampos
-          titulo="Contato secundário (opcional)"
-          dica="Um segundo caminho, caso não consigamos falar com você pelo principal."
+          titulo={t('sorteio.secondaryTitle')}
+          dica={t('sorteio.secondaryHint')}
           opcional
           canais={canaisDoSecundario(rascunhos.primario.canal)}
           rascunho={rascunhos.secundario}
@@ -119,33 +121,33 @@ export function FormularioInscricao({ sorteio }: { sorteio: SorteioAtivo }) {
 
         <div className="srt__acoes">
           <button type="submit" className="btn btn--accent" disabled={enviando}>
-            Participar do sorteio
+            {t('sorteio.enter')}
           </button>
         </div>
 
         <p className="srt__privacidade">
-          Seus contatos servem só para avisar quem for sorteado. Os de quem não ganhar são apagados
-          no ato do sorteio. Os detalhes estão na{' '}
-          <Link className="link" to="/privacidade" target="_blank" rel="noreferrer">
-            Política de Privacidade
-          </Link>
-          .
+          <Trans
+            i18nKey="sorteio.privacy"
+            components={{
+              link: <Link className="link" to="/privacidade" target="_blank" rel="noreferrer" />,
+            }}
+          />
         </p>
       </form>
 
       {/* Fora do form: os botões do modal não têm type e enviariam o formulário. */}
       {conferindo && (
         <ConfirmModal
-          title="Confira sua inscrição"
+          title={t('sorteio.checkTitle')}
           confirmLabel="OK"
-          cancelLabel="Voltar"
+          cancelLabel={t('sorteio.back')}
           loading={enviando}
           onConfirm={confirmar}
           onCancel={() => setConferindo(null)}
         >
-          Confira se suas informações estão corretas. Depois de confirmar, não dá para alterar.
+          {t('sorteio.checkBody1')}
           <ContatosInformados contatos={conferindo.contatos} />
-          Se estiver tudo certo, aperte OK.
+          {t('sorteio.checkBody2')}
         </ConfirmModal>
       )}
     </>

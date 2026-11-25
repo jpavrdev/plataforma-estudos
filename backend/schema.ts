@@ -14,6 +14,7 @@ import {
     type AnyPgColumn,
     numeric,
     smallint,
+    primaryKey,
 } from "drizzle-orm/pg-core";
 import type { Contacts } from "./src/domain/contacts.ts";
 import type { Locale } from "./src/i18n/locale.ts";
@@ -265,6 +266,47 @@ export const lessonProgress = pgTable(
     (table) => [
         unique().on(table.userId, table.lessonId),
         index("lessons_progress_lesson_id_idx").on(table.lessonId),
+    ],
+);
+
+// Trails the user left: hidden from "continue" lists without wiping progress.
+export const trailHides = pgTable(
+    "trail_hides",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.trailId, table.userId),
+        index("trail_hides_user_id_idx").on(table.userId),
+    ],
+);
+
+// Student notebook: written notes and highlighted excerpts from each lesson.
+export const lessonNotes = pgTable(
+    "lesson_notes",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        lessonId: uuid("lesson_id")
+            .references(() => lessons.id, { onDelete: "cascade" })
+            .notNull(),
+        // "nota" = written by the student; "grifo" = excerpt selected in the content.
+        kind: varchar("kind", { length: 10 }).notNull(),
+        body: text("body").notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("lesson_notes_user_id_idx").on(table.userId),
+        index("lesson_notes_lesson_id_idx").on(table.lessonId),
     ],
 );
 
@@ -1241,5 +1283,96 @@ export const sorteioParticipacoes = pgTable(
         unique().on(table.sorteioId, table.userId),
         unique().on(table.sorteioId, table.posicao),
         index("sorteio_participacoes_user_id_idx").on(table.userId),
+    ],
+);
+
+// ===================== TRADUÇÕES DE CONTEÚDO (fase bilíngue) =====================
+// As tabelas base seguem sendo o pt-BR. A leitura faz o overlay pelo idioma e
+// cai no pt-BR quando a tradução não existe. O gabarito nunca é traduzido: fica
+// na tabela base. PK composta (entidade, locale) e FK indexada.
+
+export const trailTranslations = pgTable(
+    "trail_translations",
+    {
+        trailId: uuid("trail_id")
+            .references(() => trails.id, { onDelete: "cascade" })
+            .notNull(),
+        locale: varchar("locale", { length: 5 }).$type<Locale>().notNull(),
+        name: varchar("name", { length: 255 }).notNull(),
+        description: text("description").notNull(),
+        whatYouLearn: jsonb("what_you_learn").$type<string[]>(),
+        prerequisites: jsonb("prerequisites").$type<string[]>(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        primaryKey({ columns: [table.trailId, table.locale] }),
+        index("trail_translations_trail_id_idx").on(table.trailId),
+    ],
+);
+
+export const moduleTranslations = pgTable(
+    "module_translations",
+    {
+        moduleId: uuid("module_id")
+            .references(() => modules.id, { onDelete: "cascade" })
+            .notNull(),
+        locale: varchar("locale", { length: 5 }).$type<Locale>().notNull(),
+        title: varchar("title", { length: 255 }).notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        primaryKey({ columns: [table.moduleId, table.locale] }),
+        index("module_translations_module_id_idx").on(table.moduleId),
+    ],
+);
+
+export const lessonTranslations = pgTable(
+    "lesson_translations",
+    {
+        lessonId: uuid("lesson_id")
+            .references(() => lessons.id, { onDelete: "cascade" })
+            .notNull(),
+        locale: varchar("locale", { length: 5 }).$type<Locale>().notNull(),
+        title: varchar("title", { length: 255 }).notNull(),
+        content: text("content"),
+        contentBlocks: jsonb("content_blocks").$type<{ type: string; value: string }[]>(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        primaryKey({ columns: [table.lessonId, table.locale] }),
+        index("lesson_translations_lesson_id_idx").on(table.lessonId),
+    ],
+);
+
+export const questionTranslations = pgTable(
+    "question_translations",
+    {
+        questionId: uuid("question_id")
+            .references(() => questions.id, { onDelete: "cascade" })
+            .notNull(),
+        locale: varchar("locale", { length: 5 }).$type<Locale>().notNull(),
+        statement: text("statement").notNull(),
+        explanation: text("explanation"),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        primaryKey({ columns: [table.questionId, table.locale] }),
+        index("question_translations_question_id_idx").on(table.questionId),
+    ],
+);
+
+export const optionTranslations = pgTable(
+    "option_translations",
+    {
+        optionId: uuid("option_id")
+            .references(() => questionOptions.id, { onDelete: "cascade" })
+            .notNull(),
+        locale: varchar("locale", { length: 5 }).$type<Locale>().notNull(),
+        text: text("text").notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        primaryKey({ columns: [table.optionId, table.locale] }),
+        index("option_translations_option_id_idx").on(table.optionId),
     ],
 );

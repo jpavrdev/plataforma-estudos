@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { Logo } from '../../components/Logo';
 import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
-import { Flame, Check, Help, Alert, X, ChevronDown } from '../../components/Icons';
+import { Flame, Check, Help, Alert, X, ChevronDown, Notebook, Pencil } from '../../components/Icons';
+import { LessonNotebook } from '../../components/LessonNotebook';
 import { getInitials } from '../../utils/initials';
 import { user } from '../../data/home';
 import {
@@ -17,6 +20,8 @@ import {
   type LessonDetail,
   type QuizResult,
 } from '../../services/trails';
+import { listLessonNotes, createNote, type LessonNote } from '../../services/notes';
+import { selectionQuote } from '../../utils/selectionQuote';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -36,6 +41,8 @@ import { useNavPrincipal } from '../../hooks/useNavPrincipal';
 export function Aula() {
   const { trailId, lessonId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const nav = useNavPrincipal();
   const displayName = authUser?.name ?? user.name;
@@ -43,11 +50,46 @@ export function Aula() {
   const [trilha, setTrilha] = useState<TrailDetail | null>(null);
   const [aula, setAula] = useState<LessonDetail | null>(null);
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
+  const [erro, setErro] = useState(false);
   const [proximaRoadmap, setProximaRoadmap] = useState<ProximaTrilhaRoadmap | null>(null);
   const [perguntaTrilha, setPerguntaTrilha] = useState(false);
   const [buscandoProxima, setBuscandoProxima] = useState(false);
   const [temRevisao, setTemRevisao] = useState(false);
+
+  // Notebook: the lesson notes live here (both the panel and the in-text
+  // highlights read from this list).
+  const [notes, setNotes] = useState<LessonNote[]>([]);
+  // Jumping from a trail-notebook card to a highlight in another lesson lands
+  // here; the scroll happens after the notes load and the marks are painted.
+  const [pendingScrollNote, setPendingScrollNote] = useState<string | null>(
+    (location.state as { scrollToNote?: string } | null)?.scrollToNote ?? null,
+  );
+  const [notebookOpen, setNotebookOpen] = useState(() => {
+    try {
+      return localStorage.getItem('notebook-open') !== '0';
+    } catch {
+      return true;
+    }
+  });
+
+  function toggleNotebook() {
+    setNotebookOpen((open) => {
+      try {
+        localStorage.setItem('notebook-open', open ? '0' : '1');
+      } catch {
+        // Without localStorage (private mode/blocked) the preference lasts the session.
+      }
+      return !open;
+    });
+  }
+
+  function noteAdded(note: LessonNote) {
+    setNotes((current) => [note, ...current]);
+  }
+
+  function noteRemoved(id: string) {
+    setNotes((current) => current.filter((n) => n.id !== id));
+  }
 
   // Ao concluir a trilha, pergunta se a pessoa quer emendar a próxima do
   // roadmap; trilha fora de roadmap (ou roadmap no fim) segue para a lista.
@@ -105,17 +147,25 @@ export function Aula() {
     let ativo = true;
     async function carregar() {
       setCarregando(true);
-      setErro('');
+      setErro(false);
       try {
         const lang = trailId ? getTrailLang(trailId) : undefined;
-        const [t, a] = await Promise.all([obterTrilha(trailId!, lang), obterAula(lessonId!, lang)]);
+        const [tr, a, ns] = await Promise.all([
+          obterTrilha(trailId!, lang),
+          obterAula(lessonId!, lang),
+          listLessonNotes(lessonId!).catch((err) => {
+            console.error('Failed to load the lesson notebook.', err);
+            return [] as LessonNote[];
+          }),
+        ]);
         if (!ativo) return;
-        setTrilha(t);
+        setTrilha(tr);
         setAula(a);
+        setNotes(ns);
       } catch (e: unknown) {
         if (!ativo) return;
         console.error('Falha ao carregar a aula:', e);
-        setErro('Não foi possível carregar a aula.');
+        setErro(true);
       } finally {
         if (ativo) setCarregando(false);
       }
@@ -156,25 +206,41 @@ export function Aula() {
           />
         </header>
 
-        {carregando && <p className="lesson__loading">Carregando aula...</p>}
+        {carregando && <p className="lesson__loading">{t('aula.loading')}</p>}
         {erro && !carregando && (
           <div className="lesson__erro">
-            <p>{erro}</p>
+            <p>{t('aula.loadError')}</p>
             <Link className="btn btn--accent" to="/trilhas">
-              Voltar para as trilhas
+              {t('aula.backToTracks')}
             </Link>
           </div>
         )}
 
         {!carregando && !erro && trilha && aula && (
-          <div className="lesson">
+          <div className={`lesson${notebookOpen ? ' lesson--notebook' : ''}`}>
             <SidebarTrilha trilha={trilha} aulaAtualId={aula.id} />
             <ConteudoAula
               trilha={trilha}
               aula={aula}
+              notes={notes}
+              notebookOpen={notebookOpen}
+              pendingScrollNote={pendingScrollNote}
+              onScrollHandled={() => setPendingScrollNote(null)}
+              onToggleNotebook={toggleNotebook}
+              onNoteAdded={noteAdded}
               onConcluir={aoConcluirTrilha}
               onRevisar={temRevisao ? () => navigate(`/revisao?trilha=${trailId}`) : null}
             />
+            {notebookOpen && (
+              <LessonNotebook
+                trailId={trilha.id}
+                lessonId={aula.id}
+                notes={notes}
+                onClose={toggleNotebook}
+                onNoteAdded={noteAdded}
+                onNoteRemoved={noteRemoved}
+              />
+            )}
           </div>
         )}
 
@@ -183,13 +249,13 @@ export function Aula() {
             <div
               className="solve-next"
               role="dialog"
-              aria-label="Trilha concluída"
+              aria-label={t('aula.doneAria')}
               onClick={(e) => e.stopPropagation()}
             >
               <span className="solve-next__check">
                 <Check size={22} />
               </span>
-              <h3 className="solve-next__titulo">Trilha concluída!</h3>
+              <h3 className="solve-next__titulo">{t('aula.doneTitle')}</h3>
 
               {/* Revisar vem antes de emendar a próxima trilha de propósito: é o
                   momento em que o conteúdo ainda está fresco e a revisão custa pouco. */}
@@ -198,22 +264,20 @@ export function Aula() {
                   className="solve-next__revisar"
                   onClick={() => navigate(`/revisao?trilha=${trailId}`)}
                 >
-                  Revisar a trilha em cartões
-                  <span className="solve-next__revisar-nota">
-                    Uma passada rápida pelo que você acabou de estudar
-                  </span>
+                  {t('aula.reviewTrack')}
+                  <span className="solve-next__revisar-nota">{t('aula.reviewTrackHint')}</span>
                 </button>
               )}
 
               {proximaRoadmap?.roadmap && proximaRoadmap.proximaTrilha && (
                 <>
                   <p className="solve-next__sub">
-                    Quer seguir para a próxima trilha do roadmap {proximaRoadmap.roadmap.name}?
+                    {t('aula.nextRoadmapAsk', { name: proximaRoadmap.roadmap.name })}
                   </p>
                   <div className="solve-next__alvo">
                     <span className="solve-next__nome">{proximaRoadmap.proximaTrilha.name}</span>
                     <span className="solve-next__nivel">
-                      {NIVEL_LABEL[proximaRoadmap.proximaTrilha.level]}
+                      {rotuloNivel(t, proximaRoadmap.proximaTrilha.level)}
                     </span>
                   </div>
                   {/* Esta trilha vive em mais de um roadmap e o aluno nunca disse qual
@@ -222,9 +286,7 @@ export function Aula() {
                   {proximaRoadmap.origem !== 'declarado' &&
                     !!proximaRoadmap.outrosRoadmaps?.length && (
                       <div className="solve-next__troca">
-                        <span className="solve-next__troca-aviso">
-                          Está seguindo outro caminho? Escolha e nós lembramos:
-                        </span>
+                        <span className="solve-next__troca-aviso">{t('aula.switchHint')}</span>
                         {proximaRoadmap.outrosRoadmaps.map((r) => (
                           <button
                             key={r.slug}
@@ -248,14 +310,16 @@ export function Aula() {
                     navigate('/trilhas');
                   }}
                 >
-                  {proximaRoadmap?.proximaTrilha ? 'Agora não' : 'Voltar para as trilhas'}
+                  {proximaRoadmap?.proximaTrilha
+                    ? t('common.notNow')
+                    : t('aula.backToTracks')}
                 </button>
                 {proximaRoadmap?.proximaTrilha && (
                   <button
                     className="solve-next__ir"
                     onClick={() => navigate(`/trilhas/${proximaRoadmap.proximaTrilha!.id}`)}
                   >
-                    Ir para a próxima
+                    {t('aula.goNext')}
                   </button>
                 )}
               </div>
@@ -267,13 +331,22 @@ export function Aula() {
   );
 }
 
-const NIVEL_LABEL: Record<string, string> = {
-  iniciante: 'Iniciante',
-  intermediario: 'Intermediário',
-  avancado: 'Avançado',
+type LevelKey = 'levels.beginner' | 'levels.intermediate' | 'levels.advanced';
+
+const NIVEL_KEY: Record<string, LevelKey> = {
+  iniciante: 'levels.beginner',
+  intermediario: 'levels.intermediate',
+  avancado: 'levels.advanced',
 };
 
+// O nível vem da API como valor estável; o rótulo traduzido só existe no catálogo.
+function rotuloNivel(t: TFunction, level: string) {
+  const chave = NIVEL_KEY[level];
+  return chave ? t(chave) : level;
+}
+
 function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtualId: string }) {
+  const { t } = useTranslation();
   const [aberto, setAberto] = useState(false);
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const feitas = todas.filter((l) => l.state === 'done').length;
@@ -286,9 +359,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
         <span className="lesson__track-icon">{'{}'}</span>
         <div className="lesson__track-meta">
           <div className="lesson__track-name">{trilha.name}</div>
-          <div className="lesson__track-sub">
-            {feitas} de {total} aulas · {pct}%
-          </div>
+          <div className="lesson__track-sub">{t('aula.progress', { done: feitas, total, pct })}</div>
         </div>
       </div>
       <div className="lesson__track-bar">
@@ -302,7 +373,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
         onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
       >
-        Aulas da trilha
+        {t('aula.modulesToggle')}
         <span className="lesson__toggle-chevron">
           <ChevronDown size={16} />
         </span>
@@ -319,7 +390,7 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
                 <span>{m.title}</span>
                 <span
                   className={`lesson__module-count${moduloCompleto ? ' lesson__module-count--completo' : ''}`}
-                  aria-label={`${concluidas} de ${m.lessons.length} aulas concluídas`}
+                  aria-label={t('aula.moduleAria', { done: concluidas, total: m.lessons.length })}
                 >
                   {concluidas}/{m.lessons.length}
                 </span>
@@ -351,26 +422,237 @@ function SidebarTrilha({ trilha, aulaAtualId }: { trilha: TrailDetail; aulaAtual
 function ConteudoAula({
   trilha,
   aula,
+  notes,
+  notebookOpen,
+  pendingScrollNote,
+  onScrollHandled,
+  onToggleNotebook,
+  onNoteAdded,
   onConcluir,
   onRevisar,
 }: {
   trilha: TrailDetail;
   aula: LessonDetail;
+  notes: LessonNote[];
+  notebookOpen: boolean;
+  pendingScrollNote: string | null;
+  onScrollHandled: () => void;
+  onToggleNotebook: () => void;
+  onNoteAdded: (note: LessonNote) => void;
   onConcluir: () => void;
   onRevisar: (() => void) | null;
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const contentRef = useRef<HTMLElement | null>(null);
+  const [highlightTarget, setHighlightTarget] = useState<{
+    x: number;
+    y: number;
+    text: string;
+    duplicate: boolean;
+  } | null>(null);
+  const [highlightSaving, setHighlightSaving] = useState(false);
   const todas = trilha.modules.flatMap((m) => m.lessons);
   const idx = todas.findIndex((l) => l.id === aula.id);
   const proxima = idx >= 0 && idx < todas.length - 1 ? todas[idx + 1] : null;
   const irProxima = proxima ? () => navigate(`/trilhas/${trilha.id}/aula/${proxima.id}`) : null;
 
+  // A highlight starts as a text selection inside the lesson. A button shows up
+  // next to the selection and saves the quote as a note; the painting of the
+  // text itself is reapplied by the effect below. Selecting an excerpt that is
+  // already highlighted keeps the button visible but disabled.
+  function handleSelectionEnd(e?: { target: EventTarget | null }) {
+    // The mouseup that lands on the floating button itself must not re-run this:
+    // it would race the click that saves the highlight.
+    if (e?.target instanceof Element && e.target.closest('.notebook-fab')) return;
+    const sel = window.getSelection();
+    const container = contentRef.current;
+    if (!sel || sel.isCollapsed || !container || sel.rangeCount === 0) {
+      setHighlightTarget(null);
+      return;
+    }
+    const range = sel.getRangeAt(0);
+    if (!container.contains(range.commonAncestorContainer)) {
+      setHighlightTarget(null);
+      return;
+    }
+    // Math excerpts come through selectionQuote as LaTeX, not as the linearized
+    // token soup the rendered spans produce.
+    const text = selectionQuote(range);
+    if (!text) {
+      setHighlightTarget(null);
+      return;
+    }
+    const duplicate = notes.some(
+      (n) => n.kind === 'grifo' && normalizeSpace(n.body) === normalizeSpace(text),
+    );
+    const rect = range.getBoundingClientRect();
+    setHighlightTarget({
+      x: Math.min(Math.max(rect.left + rect.width / 2, 80), window.innerWidth - 80),
+      y: Math.max(rect.top - 46, 12),
+      text,
+      duplicate,
+    });
+  }
+
+  async function saveHighlight() {
+    if (!highlightTarget || highlightSaving) return;
+    setHighlightSaving(true);
+    try {
+      const note = await createNote(aula.id, 'grifo', highlightTarget.text.slice(0, 2000));
+      onNoteAdded(note);
+      window.getSelection()?.removeAllRanges();
+      setHighlightTarget(null);
+    } catch (err) {
+      console.error('Failed to save the highlight.', err);
+    } finally {
+      setHighlightSaving(false);
+    }
+  }
+
+  // Paints the saved highlights onto the lesson text. The quote is matched inside
+  // a single text node (the common case of a plain paragraph); when the selection
+  // spans inline elements or the content changed, the highlight simply stays in
+  // the notebook only.
+  useEffect(() => {
+    const root = contentRef.current;
+    if (!root) return;
+
+    function apply(root: HTMLElement) {
+      const highlights = notes.filter((n) => n.kind === 'grifo');
+      root.querySelectorAll('mark.notebook-highlight').forEach((m) => {
+        const parent = m.parentNode;
+        if (!parent) return;
+        while (m.firstChild) parent.insertBefore(m.firstChild, m);
+        parent.removeChild(m);
+        parent.normalize();
+      });
+      if (highlights.length === 0) return;
+      const pending = [...highlights];
+
+      // Formula quotes ("$...$" alone) paint by wrapping the matching KaTeX
+      // element; its annotation carries the same LaTeX the quote was made of.
+      for (const h of [...pending]) {
+        const m = h.body.trim().match(/^\$([^$]+)\$/);
+        if (!m) continue;
+        const katex = [...root.querySelectorAll('.katex')].find((k) =>
+          k.querySelector('annotation')?.textContent?.trim() === m[1].trim(),
+        );
+        if (!katex) continue;
+        try {
+          const range = document.createRange();
+          range.selectNode(katex);
+          const mark = document.createElement('mark');
+          mark.className = 'notebook-highlight';
+          mark.dataset.noteId = h.id;
+          // A pending jump keeps its flash even if the content repaints.
+          if (h.id === pendingScrollNote) mark.classList.add('notebook-flash');
+          range.surroundContents(mark);
+          pending.splice(pending.indexOf(h), 1);
+        } catch (err) {
+          console.error('Failed to paint the formula highlight.', err);
+          pending.splice(pending.indexOf(h), 1);
+        }
+      }
+
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const el = node.parentElement;
+          // Block code, KaTeX internals and existing marks stay out of the search.
+          if (!el || el.closest('.codeblock, .katex, mark.notebook-highlight'))
+            return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        },
+      });
+      let node: Node | null;
+      while (pending.length > 0 && (node = walker.nextNode()) !== null) {
+        // surroundContents splits the text node in the middle, so after each
+        // painted quote the node data must be read again: offsets computed over
+        // the old string can point past the end of the shortened node.
+        let paintedSomething = true;
+        while (paintedSomething && pending.length > 0) {
+          paintedSomething = false;
+          const current = (node as Text).data;
+          for (let q = pending.length - 1; q >= 0; q--) {
+            const bounds = findTextRange(current, pending[q].body);
+            if (!bounds) continue;
+            try {
+              const range = document.createRange();
+              range.setStart(node, bounds.start);
+              range.setEnd(node, bounds.end);
+              const mark = document.createElement('mark');
+              mark.className = 'notebook-highlight';
+              mark.dataset.noteId = pending[q].id;
+              // A pending jump keeps its flash even if the content repaints.
+              if (pending[q].id === pendingScrollNote) mark.classList.add('notebook-flash');
+              range.surroundContents(mark);
+              pending.splice(q, 1);
+              paintedSomething = true;
+              break;
+            } catch (err) {
+              console.error('Failed to paint the highlight onto the content.', err);
+              pending.splice(q, 1);
+            }
+          }
+        }
+      }
+    }
+
+    apply(root);
+
+    // A jump asked from another lesson's notebook waits for the paint to land.
+    if (pendingScrollNote) {
+      const mark = root.querySelector(`mark.notebook-highlight[data-note-id="${pendingScrollNote}"]`);
+      if (mark) {
+        mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        mark.classList.add('notebook-flash');
+        onScrollHandled();
+      }
+    }
+
+    // The glossary and the markdown remount the content after the first paint;
+    // the highlights are restored when that happens (ignoring the mutations
+    // caused by the restoration itself).
+    let scheduled: ReturnType<typeof setTimeout> | undefined;
+    const observer = new MutationObserver((mutations) => {
+      const onlyHighlights = mutations.every((m) =>
+        [...m.addedNodes, ...m.removedNodes].every(
+          (n) => n instanceof HTMLElement && n.classList.contains('notebook-highlight'),
+        ),
+      );
+      if (onlyHighlights) return;
+      clearTimeout(scheduled);
+      scheduled = setTimeout(() => apply(root), 50);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      clearTimeout(scheduled);
+    };
+  }, [aula.id, notes, pendingScrollNote, onScrollHandled]);
+
   return (
-    <main className="lesson__content">
+    <main
+      className="lesson__content"
+      ref={contentRef}
+      onMouseUp={(e) => handleSelectionEnd(e)}
+      onTouchEnd={(e) => handleSelectionEnd(e)}
+    >
       <div className="lesson__crumb">
         <span>{trilha.name}</span>
         <span className="lesson__crumb-sep">/</span>
         <span>{aula.title}</span>
+        <button
+          type="button"
+          className={`lesson__notebook-toggle${notebookOpen ? ' lesson__notebook-toggle--active' : ''}`}
+          onClick={onToggleNotebook}
+          aria-pressed={notebookOpen}
+          title={t('aula.notebook.toggleAria')}
+        >
+          <Notebook size={15} />
+          <span>{t('aula.notebook.toggle')}</span>
+          {notes.length > 0 && <span className="lesson__notebook-n">{notes.length}</span>}
+        </button>
       </div>
 
       <h1 className="lesson__title">{aula.title}</h1>
@@ -390,7 +672,7 @@ function ConteudoAula({
           </ReactMarkdown>
         </div>
       ) : (
-        <p className="lesson__p lesson__p--muted">Esta aula ainda não tem conteúdo escrito.</p>
+        <p className="lesson__p lesson__p--muted">{t('aula.noContent')}</p>
       )}
 
       {aula.questions.length > 0 ? (
@@ -404,24 +686,77 @@ function ConteudoAula({
         <div className="lesson__nextbar">
           {irProxima ? (
             <button className="btn btn--accent" onClick={irProxima}>
-              Próxima aula
+              {t('aula.nextLesson')}
             </button>
           ) : (
             <>
               {onRevisar && (
                 <button className="btn btn--ghost" onClick={onRevisar}>
-                  Revisar em cartões
+                  {t('aula.reviewCards')}
                 </button>
               )}
               <button className="btn btn--accent" onClick={onConcluir}>
-                Concluir trilha
+                {t('aula.finishTrack')}
               </button>
             </>
           )}
         </div>
       )}
+
+      {highlightTarget && (
+        <button
+          type="button"
+          className={`notebook-fab${highlightTarget.duplicate ? ' notebook-fab--disabled' : ''}`}
+          style={{ left: highlightTarget.x, top: highlightTarget.y }}
+          // Focusing on mouse down would steal the selection before the click lands.
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={saveHighlight}
+          disabled={highlightSaving || highlightTarget.duplicate}
+        >
+          <Pencil size={13} />
+          {highlightSaving
+            ? t('common.saving')
+            : highlightTarget.duplicate
+              ? t('aula.notebook.alreadyHighlighted')
+              : t('aula.notebook.highlight')}
+        </button>
+      )}
     </main>
   );
+}
+
+// Collapses runs of whitespace so a saved quote still matches the text node it
+// came from even when line breaks got normalized along the way.
+function normalizeSpace(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+// Matches the quote (with normalized whitespace) against the original node text
+// and returns the offsets in the original string, ready for a Range.
+function findTextRange(original: string, rawQuote: string): { start: number; end: number } | null {
+  const quote = rawQuote.replace(/\s+/g, ' ').trim();
+  if (!quote) return null;
+  const map: number[] = [];
+  let norm = '';
+  let inSpace = false;
+  for (let i = 0; i < original.length; i++) {
+    if (/\s/.test(original[i])) {
+      if (inSpace) continue;
+      inSpace = true;
+      map[norm.length] = i;
+      norm += ' ';
+    } else {
+      inSpace = false;
+      map[norm.length] = i;
+      norm += original[i];
+    }
+  }
+  const idx = norm.trimStart().indexOf(quote);
+  if (idx < 0) return null;
+  const normStart = norm.length - norm.trimStart().length;
+  const start = map[normStart + idx];
+  const end = map[normStart + idx + quote.length - 1];
+  return start !== undefined && end !== undefined ? { start, end: end + 1 } : null;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -438,6 +773,7 @@ function Quiz({
   irProxima: (() => void) | null;
   onRevisar: (() => void) | null;
 }) {
+  const { t } = useTranslation();
   const total = aula.questions.length;
   const jaConcluida = aula.state === 'done';
   const respondido = total > 0 && aula.questions.every((q) => q.answer);
@@ -457,7 +793,8 @@ function Quiz({
       ? { correct: acertosSalvos, total, passed: jaConcluida, lessonCompleted: jaConcluida }
       : null,
   );
-  const [erro, setErro] = useState('');
+  // A mensagem mora no catálogo: o estado guarda só a chave.
+  const [erro, setErro] = useState<'' | 'aula.quiz.submitError' | 'aula.quiz.checkError'>('');
   // Uma vez concluída (agora ou numa visita anterior), refazer e errar não volta a bloquear.
   const [concluida, setConcluida] = useState(jaConcluida);
 
@@ -478,7 +815,7 @@ function Quiz({
       setResultado(r);
       if (r.passed) setConcluida(true);
     } catch {
-      setErro('Não foi possível enviar o quiz. Tente novamente.');
+      setErro('aula.quiz.submitError');
     } finally {
       setEnviando(false);
     }
@@ -497,7 +834,7 @@ function Quiz({
       setVerSolucao(false);
       setChecked(true);
     } catch {
-      setErro('Não foi possível verificar a resposta. Tente novamente.');
+      setErro('aula.quiz.checkError');
     } finally {
       setVerificando(false);
     }
@@ -565,12 +902,10 @@ function Quiz({
             {resultado.passed ? <Check size={34} /> : <Alert size={34} />}
           </span>
           <div className="quiz__result-title">
-            {resultado.passed ? 'Aula concluída!' : 'Quase lá!'}
+            {resultado.passed ? t('aula.quiz.passedTitle') : t('aula.quiz.failedTitle')}
           </div>
           <div className="quiz__result-text">
-            {resultado.passed
-              ? 'Você dominou o conteúdo e desbloqueou a próxima aula.'
-              : 'Você precisa acertar pelo menos 4 questões. Revise o conteúdo e tente de novo.'}
+            {resultado.passed ? t('aula.quiz.passedText') : t('aula.quiz.failedText')}
           </div>
           <div className="quiz__score">
             <span
@@ -583,12 +918,12 @@ function Quiz({
           </div>
           <div className="quiz__result-actions">
             <button className="btn btn--ghost" onClick={refazer}>
-              Refazer quiz
+              {t('aula.quiz.retry')}
             </button>
             {concluida &&
               (irProxima ? (
                 <button className="btn btn--accent" onClick={irProxima}>
-                  Próxima aula
+                  {t('aula.nextLesson')}
                 </button>
               ) : (
                 <>
@@ -596,11 +931,11 @@ function Quiz({
                       conteúdo todo ainda está fresco. */}
                   {onRevisar && (
                     <button className="btn btn--ghost" onClick={onRevisar}>
-                      Revisar em cartões
+                      {t('aula.reviewCards')}
                     </button>
                   )}
                   <button className="btn btn--accent" onClick={onConcluir}>
-                    Concluir trilha
+                    {t('aula.finishTrack')}
                   </button>
                 </>
               ))}
@@ -617,8 +952,8 @@ function Quiz({
           <Help size={22} />
         </span>
         <div className="quiz__head-meta">
-          <div className="quiz__title">Pratique o que aprendeu</div>
-          <div className="quiz__sub">{total} questões · acerte ao menos 4 para concluir a aula</div>
+          <div className="quiz__title">{t('aula.quiz.title')}</div>
+          <div className="quiz__sub">{t('aula.quiz.sub', { count: total })}</div>
         </div>
         <span className="quiz__counter">
           {qIndex + 1} / {total}
@@ -661,8 +996,8 @@ function Quiz({
         {checked && (
           <div className={`quiz__feedback quiz__feedback--${wasCorrect ? 'ok' : 'no'}`}>
             {wasCorrect
-              ? 'Correto! Mandou muito bem.'
-              : `Quase! A resposta certa é a alternativa ${letraCorreta()}.`}
+              ? t('aula.quiz.correct')
+              : t('aula.quiz.wrong', { letter: letraCorreta() })}
           </div>
         )}
 
@@ -673,7 +1008,7 @@ function Quiz({
               className="quiz__solucao-toggle"
               onClick={() => setVerSolucao((v) => !v)}
             >
-              {verSolucao ? 'Ocultar resolução' : 'Ver resolução passo a passo'}
+              {verSolucao ? t('aula.quiz.hideSolution') : t('aula.quiz.showSolution')}
             </button>
             {verSolucao && (
               <div className="quiz__solucao-corpo lesson__md">
@@ -689,15 +1024,15 @@ function Quiz({
           </div>
         )}
 
-        {erro && <div className="auth__alert">{erro}</div>}
+        {erro && <div className="auth__alert">{t(erro)}</div>}
 
         <div className="quiz__foot">
           <span className="quiz__hint">
             {!checked
-              ? 'Selecione uma alternativa e verifique.'
+              ? t('aula.quiz.hintSelect')
               : isLast
-                ? 'Confira a resolução e veja seu resultado.'
-                : 'Siga para a próxima questão.'}
+                ? t('aula.quiz.hintLast')
+                : t('aula.quiz.hintNext')}
           </span>
           <div className="topbar__spacer" />
           {!checked ? (
@@ -707,15 +1042,15 @@ function Quiz({
               disabled={selected == null || verificando}
               onClick={verificar}
             >
-              {verificando ? 'Verificando...' : 'Verificar resposta'}
+              {verificando ? t('common.checking') : t('aula.quiz.check')}
             </button>
           ) : isLast ? (
             <button className="btn btn--accent" disabled={enviando} onClick={verResultado}>
-              {enviando ? 'Enviando...' : 'Ver resultado'}
+              {enviando ? t('common.sending') : t('aula.quiz.seeResult')}
             </button>
           ) : (
             <button className="btn btn--accent" onClick={avancar}>
-              Próxima questão
+              {t('aula.quiz.nextQuestion')}
             </button>
           )}
         </div>
