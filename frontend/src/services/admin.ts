@@ -33,9 +33,9 @@ export interface UsuarioCrm {
   provider: string | null;
   criadoEm: string;
   ultimaAtividade: string | null;
-  ultimaAcao: string | null;
-  ultimoAcesso: string | null;
-  diasAtivos: number;
+  lastAction: string | null;
+  lastAccess: string | null;
+  activeDays: number;
   aulas: number;
   trilhas: number;
   simulados: number;
@@ -46,19 +46,19 @@ export interface UsuarioCrm {
 }
 
 export interface AccessDay {
-  dia: string;
-  pessoas: number;
-  visitas: number;
+  day: string;
+  people: number;
+  visits: number;
 }
 
 export interface AccessOverview {
-  serie: AccessDay[];
-  resumo: {
-    ativosHoje: number;
-    ativos7d: number;
-    ativos30d: number;
-    mediaDiasAtivos: number;
-    novos30d: number;
+  series: AccessDay[];
+  summary: {
+    activeToday: number;
+    active7d: number;
+    active30d: number;
+    avgActiveDays: number;
+    newSignups30d: number;
   };
 }
 

@@ -28,18 +28,18 @@ export function AccessChart({ accesses }: { accesses: AccessOverview | null }) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   const graph = useMemo(() => {
-    if (!accesses || accesses.serie.length === 0) return null;
+    if (!accesses || accesses.series.length === 0) return null;
     const chosen = PERIODS.find((p) => p.key === period)!;
-    const within = accesses.serie.slice(-chosen.days);
-    const maxValue = Math.max(1, ...within.map((d) => d.pessoas));
+    const within = accesses.series.slice(-chosen.days);
+    const maxValue = Math.max(1, ...within.map((d) => d.people));
     const py = (v: number) => PADT + (1 - v / maxValue) * (H - PADT - PADB);
     const plotWidth = W - PADL - PADR;
     const step = plotWidth / within.length;
     const bars = within.map((d, i) => {
       const width = Math.max(3, Math.min(34, step * 0.62));
       const x = PADL + i * step + (step - width) / 2;
-      const y = py(d.pessoas);
-      return { ...d, t: new Date(`${d.dia}T00:00:00`).getTime(), x, width, y, h: H - PADB - y };
+      const y = py(d.people);
+      return { ...d, t: new Date(`${d.day}T00:00:00`).getTime(), x, width, y, h: H - PADB - y };
     });
     // Few distinct counts (1 person/day) would repeat tick values; the scale
     // shrinks to 0..max so the baseline label shows up too.
@@ -73,7 +73,7 @@ export function AccessChart({ accesses }: { accesses: AccessOverview | null }) {
   }
 
   const active = hover != null && graph ? graph.bars[hover] : null;
-  const summary = accesses?.resumo;
+  const summary = accesses?.summary;
 
   return (
     <div className="painel-graf">
@@ -101,8 +101,8 @@ export function AccessChart({ accesses }: { accesses: AccessOverview | null }) {
           <div className="painel-graf__leitura">
             {active ? (
               <>
-                <b>{active.pessoas}</b> {active.pessoas === 1 ? 'pessoa' : 'pessoas'} em{' '}
-                {fmtFullDate(active.t)} · {active.visitas} {active.visitas === 1 ? 'visita' : 'visitas'}
+                <b>{active.people}</b> {active.people === 1 ? 'pessoa' : 'pessoas'} em{' '}
+                {fmtFullDate(active.t)} · {active.visits} {active.visits === 1 ? 'visita' : 'visitas'}
               </>
             ) : (
               <span>Passe o mouse para ver quem acessou em cada dia</span>
@@ -125,7 +125,7 @@ export function AccessChart({ accesses }: { accesses: AccessOverview | null }) {
             ))}
             {graph.bars.map((b, i) => (
               <rect
-                key={b.dia}
+                key={b.day}
                 className={`painel-graf__bar${hover === i ? ' is-active' : ''}`}
                 x={b.x}
                 y={b.y}
@@ -134,7 +134,7 @@ export function AccessChart({ accesses }: { accesses: AccessOverview | null }) {
               />
             ))}
             {graph.xlabels.map((l) => (
-              <text className="painel-graf__xlab" key={l.dia} x={l.x + l.width / 2} y={H - 8} textAnchor="middle">
+              <text className="painel-graf__xlab" key={l.day} x={l.x + l.width / 2} y={H - 8} textAnchor="middle">
                 {fmtDay(l.t)}
               </text>
             ))}
@@ -145,23 +145,23 @@ export function AccessChart({ accesses }: { accesses: AccessOverview | null }) {
       {summary && (
         <div className="painel-access-summary">
           <div>
-            <b>{summary.ativosHoje}</b>
+            <b>{summary.activeToday}</b>
             <span>hoje</span>
           </div>
           <div>
-            <b>{summary.ativos7d}</b>
+            <b>{summary.active7d}</b>
             <span>7 dias</span>
           </div>
           <div>
-            <b>{summary.ativos30d}</b>
+            <b>{summary.active30d}</b>
             <span>30 dias</span>
           </div>
           <div>
-            <b>{summary.mediaDiasAtivos}</b>
+            <b>{summary.avgActiveDays}</b>
             <span>média de dias ativos (30d)</span>
           </div>
           <div>
-            <b>{summary.novos30d}</b>
+            <b>{summary.newSignups30d}</b>
             <span>cadastros novos (30d)</span>
           </div>
         </div>

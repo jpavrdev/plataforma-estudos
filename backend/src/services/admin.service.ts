@@ -18,9 +18,9 @@ export async function accessOverview(days = 30) {
 
     const seriesRows = (
         await db.execute(sql`
-            select d.dia::date::text dia,
-                   count(v.user_id)::int pessoas,
-                   coalesce(sum(v.visits), 0)::int visitas
+            select d.dia::date::text as "day",
+                   count(v.user_id)::int as "people",
+                   coalesce(sum(v.visits), 0)::int as "visits"
             from generate_series(
                 ((current_date - ${window - 1}::int)::timestamp),
                 (current_date::timestamp),
@@ -30,18 +30,18 @@ export async function accessOverview(days = 30) {
             group by d.dia
             order by d.dia
         `)
-    ).rows as { dia: string; pessoas: number; visitas: number }[];
+    ).rows as { day: string; people: number; visits: number }[];
 
     const [actives] = (
         await db.execute(sql`
             select
-                count(distinct user_id) filter (where day = current_date)::int hoje,
-                count(distinct user_id) filter (where day > current_date - 7)::int d7,
-                count(distinct user_id) filter (where day > current_date - 30)::int d30
+                count(distinct user_id) filter (where day = current_date)::int as "today",
+                count(distinct user_id) filter (where day > current_date - 7)::int as "d7",
+                count(distinct user_id) filter (where day > current_date - 30)::int as "d30"
             from user_visits
             where day > current_date - ${window}::int
         `)
-    ).rows as { hoje: number; d7: number; d30: number }[];
+    ).rows as { today: number; d7: number; d30: number }[];
 
     const [frequency] = (
         await db.execute(sql`
@@ -63,13 +63,13 @@ export async function accessOverview(days = 30) {
     ).rows as { n: number }[];
 
     return {
-        serie: seriesRows,
-        resumo: {
-            ativosHoje: actives?.hoje ?? 0,
-            ativos7d: actives?.d7 ?? 0,
-            ativos30d: actives?.d30 ?? 0,
-            mediaDiasAtivos: frequency?.media_dias_ativos ?? 0,
-            novos30d: signups?.n ?? 0,
+        series: seriesRows,
+        summary: {
+            activeToday: actives?.today ?? 0,
+            active7d: actives?.d7 ?? 0,
+            active30d: actives?.d30 ?? 0,
+            avgActiveDays: frequency?.media_dias_ativos ?? 0,
+            newSignups30d: signups?.n ?? 0,
         },
     };
 }
@@ -189,8 +189,8 @@ const CRM_SORTS: Record<string, SQL> = {
     conquistas: sql`coalesce(cq.n, 0)`,
     xp: sql`(coalesce(ap.n, 0) * ${XP_PER_LESSON} + coalesce(ac.n, 0) * ${XP_PER_QUESTION} + coalesce(ds.xp, 0))`,
     ultimaAtividade: sql`la.ultima`,
-    ultimoAcesso: sql`uv.ultimo`,
-    diasAtivos: sql`coalesce(uv.dias, 0)`,
+    lastAccess: sql`uv.ultimo`,
+    activeDays: sql`coalesce(uv.dias, 0)`,
 };
 
 export async function crmUsers(
@@ -224,10 +224,10 @@ export async function crmUsers(
             coalesce(sa.n, 0)::int simulados,
             coalesce(cq.n, 0)::int conquistas,
             coalesce(ta.n, 0)::int trilhas,
-            la.ultima as ultima_atividade,
-            la.acao as ultima_acao,
-            uv.ultimo as ultimo_acesso,
-            coalesce(uv.dias, 0)::int dias_ativos
+            la.ultima as last_activity,
+            la.acao as last_action,
+            uv.ultimo as last_access,
+            coalesce(uv.dias, 0)::int active_days
         from users u
         left join (select user_id, count(*) n from lessons_progress group by user_id) ap on ap.user_id = u.id
         left join (select user_id, count(*) n from question_answers where acertou_em is not null group by user_id) ac on ac.user_id = u.id
@@ -277,10 +277,10 @@ export async function crmUsers(
             origem: r.social ? "social" : "email",
             provider: (r.provider as string | null) ?? null,
             criadoEm: r.created_at as string,
-            ultimaAtividade: (r.ultima_atividade as string | null) ?? null,
-            ultimaAcao: (r.ultima_acao as string | null) ?? null,
-            ultimoAcesso: (r.ultimo_acesso as string | null) ?? null,
-            diasAtivos: r.dias_ativos as number,
+            ultimaAtividade: (r.last_activity as string | null) ?? null,
+            lastAction: (r.last_action as string | null) ?? null,
+            lastAccess: (r.last_access as string | null) ?? null,
+            activeDays: r.active_days as number,
             aulas: lessons,
             trilhas: r.trilhas as number,
             simulados: r.simulados as number,

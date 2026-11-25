@@ -36,7 +36,7 @@ const ACTION_LABEL: Record<string, string> = {
 
 type Coluna = keyof Pick<
   UsuarioCrm,
-  'name' | 'aulas' | 'trilhas' | 'simulados' | 'desafios' | 'conquistas' | 'xp' | 'ultimaAtividade' | 'ultimoAcesso' | 'diasAtivos' | 'criadoEm'
+  'name' | 'aulas' | 'trilhas' | 'simulados' | 'desafios' | 'conquistas' | 'xp' | 'ultimaAtividade' | 'lastAccess' | 'activeDays' | 'criadoEm'
 >;
 
 const COLS_NUM = new Set<Coluna>(['aulas', 'trilhas', 'simulados', 'desafios', 'conquistas', 'xp']);
@@ -182,8 +182,8 @@ export function Usuarios() {
                 <Th col="desafios" label="Desaf." ordem={ordem} onClick={ordenarPor} />
                 <Th col="conquistas" label="Conq." ordem={ordem} onClick={ordenarPor} />
                 <Th col="xp" label="XP" ordem={ordem} onClick={ordenarPor} />
-                <Th col="ultimoAcesso" label="Últ. acesso" ordem={ordem} onClick={ordenarPor} />
-                <Th col="diasAtivos" label="Dias ativos" ordem={ordem} onClick={ordenarPor} />
+                <Th col="lastAccess" label="Últ. acesso" ordem={ordem} onClick={ordenarPor} />
+                <Th col="activeDays" label="Dias ativos" ordem={ordem} onClick={ordenarPor} />
                 <Th col="ultimaAtividade" label="Últ. ação" ordem={ordem} onClick={ordenarPor} />
                 <Th col="criadoEm" label="Cadastro" ordem={ordem} onClick={ordenarPor} />
               </tr>
@@ -219,14 +219,14 @@ export function Usuarios() {
                   <td className="num">{u.conquistas}</td>
                   <td className="num">{u.xp}</td>
                   <td>
-                    <div>{formatRecency(u.ultimoAcesso)}</div>
-                    <div className="painel-user__sub">{fmtData(u.ultimoAcesso)}</div>
+                    <div>{formatRecency(u.lastAccess)}</div>
+                    <div className="painel-user__sub">{fmtData(u.lastAccess)}</div>
                   </td>
-                  <td className="num">{u.diasAtivos}</td>
+                  <td className="num">{u.activeDays}</td>
                   <td>
                     {u.ultimaAtividade ? (
                       <>
-                        <div>{ACTION_LABEL[u.ultimaAcao ?? ''] ?? 'estudo'}</div>
+                        <div>{ACTION_LABEL[u.lastAction ?? ''] ?? 'estudo'}</div>
                         <div className="painel-user__sub">{fmtData(u.ultimaAtividade)}</div>
                       </>
                     ) : (
