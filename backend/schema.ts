@@ -269,6 +269,25 @@ export const lessonProgress = pgTable(
     ],
 );
 
+// Trails the user left: hidden from "continue" lists without wiping progress.
+export const trailHides = pgTable(
+    "trail_hides",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        trailId: uuid("trail_id")
+            .references(() => trails.id, { onDelete: "cascade" })
+            .notNull(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.trailId, table.userId),
+        index("trail_hides_user_id_idx").on(table.userId),
+    ],
+);
+
 // Student notebook: written notes and highlighted excerpts from each lesson.
 export const lessonNotes = pgTable(
     "lesson_notes",

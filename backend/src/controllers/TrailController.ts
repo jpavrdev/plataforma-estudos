@@ -52,6 +52,7 @@ import {
     findTrailDetail,
     saveTrailReview,
     toggleTrailFavorite,
+    toggleTrailHide,
 } from "../services/trail.service.ts";
 import { findLessonDetail } from "../services/lesson.service.ts";
 import { gradeQuiz, verifyAnswer } from "../services/quiz.service.ts";
@@ -327,6 +328,15 @@ export const listTrails = async (req: Request, res: Response, next: NextFunction
 export const toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await toggleTrailFavorite(req.userId!, String(req.params.id)));
+    } catch (err) {
+        next(err);
+    }
+};
+
+// Leaves/rejoins a trail: hidden from the "continue" lists, progress kept.
+export const toggleHide = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.json(await toggleTrailHide(req.userId!, String(req.params.id)));
     } catch (err) {
         next(err);
     }

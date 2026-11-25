@@ -141,3 +141,6 @@
 .td-cert-share { display: flex; gap: 8px; margin-top: 8px; }
 .td-cert-share__btn { flex: 1; height: 38px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong); border-radius: 10px; background: transparent; color: var(--text); font-size: 13px; font-weight: 600; text-decoration: none; }
 .td-cert-share__btn:hover { border-color: var(--accent); }
+.td-card__leave { width: 100%; height: 42px; margin-top: 8px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: var(--muted); font-family: inherit; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.td-card__leave:hover { color: var(--av-red); border-color: color-mix(in srgb, var(--av-red) 35%, transparent); background: color-mix(in srgb, var(--av-red) 8%, transparent); }
+.td-card__leave-hint { margin: 8px 2px 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
