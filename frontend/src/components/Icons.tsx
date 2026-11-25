@@ -548,6 +548,18 @@ export const DocLines = ({ size = 26 }: IconProps) => (
   </svg>
 );
 
+export const Download = ({ size = 16 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+  </svg>
+);
+
 export const Grid4 = ({ size = 17 }: IconProps) => (
   <svg {...base(size)} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7" rx="1" />

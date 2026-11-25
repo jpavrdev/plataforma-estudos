@@ -860,6 +860,8 @@ export const en: typeof ptBR = {
     searchArea: 'Search area',
     wholeDeck: 'Your entire deck',
     noArea: 'No area with that name.',
+    exportArea: 'Export the {{area}} flashcards (CSV)',
+    exportAreaError: 'Could not export the flashcards right now. Try again in a moment.',
     howMany: 'How many cards',
     allF: 'all',
     countOf: '{{seen}} of {{total}}',

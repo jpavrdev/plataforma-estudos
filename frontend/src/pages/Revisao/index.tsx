@@ -8,7 +8,7 @@ import { MobileMenu } from '../../components/MobileMenu';
 import { UserMenu } from '../../components/UserMenu';
 import { ThemeToggle } from '../../components/ThemeToggle';
 import { ModoEntrevista } from '../../components/ModoEntrevista';
-import { Flame, Check, X } from '../../components/Icons';
+import { Flame, Check, X, Download } from '../../components/Icons';
 import { getInitials } from '../../utils/initials';
 import { user as userMock } from '../../data/home';
 import { useNavPrincipal } from '../../hooks/useNavPrincipal';
@@ -23,6 +23,7 @@ import {
   reportarCartao,
   responderCartao,
   revisaoDaTrilha,
+  downloadTrailCards,
   type Baralhos,
   type Cartao,
   type Estatisticas,
@@ -149,6 +150,14 @@ function duracao(ms: number) {
   return resto ? `${h}h${String(resto).padStart(2, '0')}` : `${h}h`;
 }
 
+const csvFileName = (name: string) =>
+  name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'area';
+
 export function Revisao() {
   const { user: authUser } = useAuth();
   const { t, i18n } = useTranslation();
@@ -179,6 +188,8 @@ export function Revisao() {
   // Busca da lista de áreas. Some junto com o painel, para não sobrar filtro
   // invisível na próxima vez que ele abrir.
   const [busca, setBusca] = useState('');
+  const [exportingArea, setExportingArea] = useState<string | null>(null);
+  const [exportAreaFailed, setExportAreaFailed] = useState(false);
   const [vazio, setVazio] = useState(false);
   // Quantas cartas a sessão entrega, como o aluno digitou. Vazio é "vai até acabar".
   const [limiteTexto, setLimiteTexto] = useState(salvo.limite);
@@ -397,6 +408,25 @@ export function Revisao() {
     setEscolhendo(false);
     setBusca('');
     setVazio(false);
+  }
+
+  async function exportArea(trailId: string, areaName: string) {
+    setExportingArea(trailId);
+    setExportAreaFailed(false);
+    try {
+      const blob = await downloadTrailCards(trailId);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${csvFileName(areaName)}-flashcards.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Failed to export the area flashcards:', e);
+      setExportAreaFailed(true);
+    } finally {
+      setExportingArea(null);
+    }
   }
 
   function alternarTrilha(id: string) {
@@ -923,25 +953,40 @@ export function Revisao() {
                   <span className="rev-item__nome">{t('revisao.wholeDeck')}</span>
                 </button>
 
+                {exportAreaFailed && (
+                  <p className="rev-escolha__erro">{t('revisao.exportAreaError')}</p>
+                )}
+
                 {areas.map((area) => {
                   const marcado = selecao.has(area.id);
                   return (
-                    <button
-                      key={area.id}
-                      type="button"
-                      className={`rev-item${marcado ? ' rev-item--on' : ''}`}
-                      onClick={() => alternarTrilha(area.id)}
-                    >
-                      <span className="rev-item__check">{marcado && <Check size={13} />}</span>
-                      <span className="rev-item__nome">{area.nome}</span>
-                      {/* O tamanho da área, e quanto dela já é dele. Sem isso não dá
+                    <div key={area.id} className="rev-area">
+                      <button
+                        type="button"
+                        className={`rev-item${marcado ? ' rev-item--on' : ''}`}
+                        onClick={() => alternarTrilha(area.id)}
+                      >
+                        <span className="rev-item__check">{marcado && <Check size={13} />}</span>
+                        <span className="rev-item__nome">{area.nome}</span>
+                        {/* O tamanho da área, e quanto dela já é dele. Sem isso não dá
                           para saber se marcar aquela linha rende 3 cartas ou 105. */}
-                      <span className="rev-item__n">
-                        {area.total
-                          ? t('revisao.countOf', { seen: area.total, total: area.disponiveis })
-                          : area.disponiveis}
-                      </span>
-                    </button>
+                        <span className="rev-item__n">
+                          {area.total
+                            ? t('revisao.countOf', { seen: area.total, total: area.disponiveis })
+                            : area.disponiveis}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        className="rev-area__export"
+                        onClick={() => exportArea(area.id, area.nome)}
+                        disabled={exportingArea === area.id}
+                        aria-label={t('revisao.exportArea', { area: area.nome })}
+                        title={t('revisao.exportArea', { area: area.nome })}
+                      >
+                        <Download size={15} />
+                      </button>
+                    </div>
                   );
                 })}
 

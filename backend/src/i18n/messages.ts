@@ -477,6 +477,14 @@ export const MESSAGES = {
     },
     "flashcard.invalidSource": { "pt-BR": "Origem inválida.", en: "Invalid source." },
     "flashcard.invalidAnswer": { "pt-BR": "Resposta inválida.", en: "Invalid answer." },
+    "flashcard.invalidFormat": {
+        "pt-BR": "Formato de exportação inválido.",
+        en: "Invalid export format.",
+    },
+    "flashcard.noCards": {
+        "pt-BR": "Esta trilha ainda não tem flashcards.",
+        en: "This trail has no flashcards yet.",
+    },
     "interview.invalidLevel": { "pt-BR": "Nível inválido.", en: "Invalid level." },
 
     // ---------------------------------------------------------------- community

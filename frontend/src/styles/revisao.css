@@ -607,6 +607,39 @@
     border-color 0.15s ease,
     background 0.15s ease;
 }
+.rev-area {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+.rev-area__export {
+  flex: none;
+  width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.rev-area__export:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.rev-area__export:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+.rev-escolha__erro {
+  margin: 0;
+  font-size: 13px;
+  color: var(--av-red);
+}
 .rev-item:hover {
   border-color: var(--accent);
 }
