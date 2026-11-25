@@ -33,6 +33,9 @@ export interface UsuarioCrm {
   provider: string | null;
   criadoEm: string;
   ultimaAtividade: string | null;
+  ultimaAcao: string | null;
+  ultimoAcesso: string | null;
+  diasAtivos: number;
   aulas: number;
   trilhas: number;
   simulados: number;
@@ -40,6 +43,28 @@ export interface UsuarioCrm {
   conquistas: number;
   questoesCertas: number;
   xp: number;
+}
+
+export interface DiaAcessos {
+  dia: string;
+  pessoas: number;
+  visitas: number;
+}
+
+export interface Acessos {
+  serie: DiaAcessos[];
+  resumo: {
+    ativosHoje: number;
+    ativos7d: number;
+    ativos30d: number;
+    mediaDiasAtivos: number;
+    novos30d: number;
+  };
+}
+
+export async function obterAcessos(dias = 30): Promise<Acessos> {
+  const { data } = await api.get<Acessos>('/admin/acessos', { params: { dias } });
+  return data;
 }
 
 export async function obterVisaoGeral() {

@@ -560,3 +560,37 @@
   color: var(--muted);
   font-weight: 500;
 }
+
+/* Barras do gráfico de acessos por dia. */
+.painel-graf__barra {
+  fill: color-mix(in srgb, var(--accent) 72%, transparent);
+  rx: 3;
+}
+.painel-graf__barra.is-ativa {
+  fill: var(--accent);
+}
+.painel-acessos-resumo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.painel-acessos-resumo > div {
+  flex: 1;
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+.painel-acessos-resumo b {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.painel-acessos-resumo span {
+  font-size: 12px;
+  color: var(--muted);
+}
