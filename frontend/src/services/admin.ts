@@ -33,6 +33,9 @@ export interface UsuarioCrm {
   provider: string | null;
   criadoEm: string;
   ultimaAtividade: string | null;
+  lastAction: string | null;
+  lastAccess: string | null;
+  activeDays: number;
   aulas: number;
   trilhas: number;
   simulados: number;
@@ -40,6 +43,28 @@ export interface UsuarioCrm {
   conquistas: number;
   questoesCertas: number;
   xp: number;
+}
+
+export interface AccessDay {
+  day: string;
+  people: number;
+  visits: number;
+}
+
+export interface AccessOverview {
+  series: AccessDay[];
+  summary: {
+    activeToday: number;
+    active7d: number;
+    active30d: number;
+    avgActiveDays: number;
+    newSignups30d: number;
+  };
+}
+
+export async function fetchAccessOverview(days = 30): Promise<AccessOverview> {
+  const { data } = await api.get<AccessOverview>('/admin/acessos', { params: { dias: days } });
+  return data;
 }
 
 export async function obterVisaoGeral() {

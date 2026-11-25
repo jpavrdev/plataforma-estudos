@@ -5,11 +5,74 @@ import { computeXp, XP_PER_LESSON, XP_PER_QUESTION } from "../domain/xp.ts";
 // Unified activity feed (lesson, mock exam, challenge, achievement). It derives
 // "last activity" and "active users" without a last-seen column.
 const ACTIVITY = sql`
-    select user_id, completed_at ts from lessons_progress
-    union all select user_id, submitted_at from simulado_attempts
-    union all select user_id, created_at from challenge_submissions
-    union all select user_id, earned_at from user_achievements
+    select user_id, completed_at ts, 'aula' acao from lessons_progress
+    union all select user_id, submitted_at, 'simulado' from simulado_attempts
+    union all select user_id, created_at, 'desafio' from challenge_submissions
+    union all select user_id, earned_at, 'conquista' from user_achievements
 `;
+
+// Engagement panel over the daily visit log: people per day, frequency and
+// inactivity. Days with no row still show up as zero, straight from the series.
+export async function accessOverview(days = 30) {
+    const window = Math.min(Math.max(7, Math.floor(days) || 30), 365);
+
+    const seriesRows = (
+        await db.execute(sql`
+            select d.dia::date::text as "day",
+                   count(v.user_id)::int as "people",
+                   coalesce(sum(v.visits), 0)::int as "visits"
+            from generate_series(
+                ((current_date - ${window - 1}::int)::timestamp),
+                (current_date::timestamp),
+                '1 day'
+            ) d(dia)
+            left join user_visits v on v.day = d.dia::date
+            group by d.dia
+            order by d.dia
+        `)
+    ).rows as { day: string; people: number; visits: number }[];
+
+    const [actives] = (
+        await db.execute(sql`
+            select
+                count(distinct user_id) filter (where day = current_date)::int as "today",
+                count(distinct user_id) filter (where day > current_date - 7)::int as "d7",
+                count(distinct user_id) filter (where day > current_date - 30)::int as "d30"
+            from user_visits
+            where day > current_date - ${window}::int
+        `)
+    ).rows as { today: number; d7: number; d30: number }[];
+
+    const [frequency] = (
+        await db.execute(sql`
+            select coalesce(round(avg(dias), 1), 0)::float media_dias_ativos
+            from (
+                select user_id, count(*) dias
+                from user_visits
+                where day > current_date - 30
+                group by user_id
+            ) t
+        `)
+    ).rows as { media_dias_ativos: number }[];
+
+    const [signups] = (
+        await db.execute(sql`
+            select count(*) filter (where created_at > now() - interval '30 days')::int n
+            from users
+        `)
+    ).rows as { n: number }[];
+
+    return {
+        series: seriesRows,
+        summary: {
+            activeToday: actives?.today ?? 0,
+            active7d: actives?.d7 ?? 0,
+            active30d: actives?.d30 ?? 0,
+            avgActiveDays: frequency?.media_dias_ativos ?? 0,
+            newSignups30d: signups?.n ?? 0,
+        },
+    };
+}
 
 export async function overview() {
     const usersRow = (
@@ -126,6 +189,8 @@ const CRM_SORTS: Record<string, SQL> = {
     conquistas: sql`coalesce(cq.n, 0)`,
     xp: sql`(coalesce(ap.n, 0) * ${XP_PER_LESSON} + coalesce(ac.n, 0) * ${XP_PER_QUESTION} + coalesce(ds.xp, 0))`,
     ultimaAtividade: sql`la.ultima`,
+    lastAccess: sql`uv.ultimo`,
+    activeDays: sql`coalesce(uv.dias, 0)`,
 };
 
 export async function crmUsers(
@@ -159,7 +224,10 @@ export async function crmUsers(
             coalesce(sa.n, 0)::int simulados,
             coalesce(cq.n, 0)::int conquistas,
             coalesce(ta.n, 0)::int trilhas,
-            la.ultima as ultima_atividade
+            la.ultima as last_activity,
+            la.acao as last_action,
+            uv.ultimo as last_access,
+            coalesce(uv.dias, 0)::int active_days
         from users u
         left join (select user_id, count(*) n from lessons_progress group by user_id) ap on ap.user_id = u.id
         left join (select user_id, count(*) n from question_answers where acertou_em is not null group by user_id) ac on ac.user_id = u.id
@@ -182,8 +250,14 @@ export async function crmUsers(
             group by f.user_id
         ) ta on ta.user_id = u.id
         left join (
-            select user_id, max(ts) ultima from (${ACTIVITY}) z group by user_id
+            select distinct on (user_id) user_id, ts ultima, acao
+            from (${ACTIVITY}) z
+            order by user_id, ts desc
         ) la on la.user_id = u.id
+        left join (
+            select user_id, max(last_at) ultimo, count(*) dias
+            from user_visits group by user_id
+        ) uv on uv.user_id = u.id
         left join (
             select user_id, min(provider) provider from oauth_accounts group by user_id
         ) oa on oa.user_id = u.id
@@ -203,7 +277,10 @@ export async function crmUsers(
             origem: r.social ? "social" : "email",
             provider: (r.provider as string | null) ?? null,
             criadoEm: r.created_at as string,
-            ultimaAtividade: (r.ultima_atividade as string | null) ?? null,
+            ultimaAtividade: (r.last_activity as string | null) ?? null,
+            lastAction: (r.last_action as string | null) ?? null,
+            lastAccess: (r.last_access as string | null) ?? null,
+            activeDays: r.active_days as number,
             aulas: lessons,
             trilhas: r.trilhas as number,
             simulados: r.simulados as number,

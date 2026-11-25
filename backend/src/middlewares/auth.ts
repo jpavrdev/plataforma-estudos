@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { sql } from "drizzle-orm";
 import { db } from "../../db.ts";
-import { twoFactorAuth, users } from "../../schema.ts";
+import { twoFactorAuth, users, userVisits } from "../../schema.ts";
 import { eq } from "drizzle-orm";
 import { env } from "../config/env.ts";
 
@@ -30,6 +31,8 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 
         req.userId = payload.userId;
         req.mfa = payload.mfa === true;
+
+        recordVisit(req.userId);
 
         next();
     } catch {
@@ -76,4 +79,31 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
     }
 
     next();
+}
+
+// Daily access log for the studio engagement panel. The flush is throttled in
+// memory (at most one write per user every few minutes) so requests stay cheap;
+// losing a flush to a restart only undercounts a handful of visits.
+const VISIT_FLUSH_MS = 5 * 60_000;
+const lastFlush = new Map<string, number>();
+
+function recordVisit(userId: string) {
+    const now = Date.now();
+    const previous = lastFlush.get(userId) ?? 0;
+    if (now - previous < VISIT_FLUSH_MS) return;
+    if (lastFlush.size > 5000) {
+        for (const [key, at] of lastFlush) {
+            if (now - at > VISIT_FLUSH_MS) lastFlush.delete(key);
+        }
+    }
+    lastFlush.set(userId, now);
+    // The audience is Brazilian, so the chart days follow Sao Paulo time.
+    const day = new Date().toLocaleDateString("sv-SE", { timeZone: "America/Sao_Paulo" });
+    db.insert(userVisits)
+        .values({ userId, day })
+        .onConflictDoUpdate({
+            target: [userVisits.userId, userVisits.day],
+            set: { visits: sql`${userVisits.visits} + 1`, lastAt: new Date() },
+        })
+        .catch((err) => console.error("Failed to record the visit.", err));
 }

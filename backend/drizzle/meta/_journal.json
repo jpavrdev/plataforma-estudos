@@ -512,6 +512,13 @@
       "when": 1795550917783,
       "tag": "0072_trail_hides",
       "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1795612988384,
+      "tag": "0073_user_visits",
+      "breakpoints": true
     }
   ]
 }
