@@ -269,6 +269,24 @@ export const lessonProgress = pgTable(
     ],
 );
 
+// Daily access log: one row per user per day, counting the flushed visits.
+// Feeds the studio engagement panel (retention, frequency, inactivity).
+export const userVisits = pgTable(
+    "user_visits",
+    {
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        day: date("day").notNull(),
+        visits: integer("visits").default(1).notNull(),
+        lastAt: timestamp("last_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        primaryKey({ columns: [table.userId, table.day] }),
+        index("user_visits_day_idx").on(table.day),
+    ],
+);
+
 // Trails the user left: hidden from "continue" lists without wiping progress.
 export const trailHides = pgTable(
     "trail_hides",

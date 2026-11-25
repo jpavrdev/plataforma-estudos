@@ -1,9 +1,18 @@
 import type { Request, Response, NextFunction } from "express";
-import { overview, crmUsers } from "../services/admin.service.ts";
+import { overview, crmUsers, accessOverview } from "../services/admin.service.ts";
 
 export const getOverview = async (_req: Request, res: Response, next: NextFunction) => {
     try {
         res.json(await overview());
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getAccessOverview = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const days = Number(req.query.dias) || 30;
+        res.json(await accessOverview(days));
     } catch (err) {
         next(err);
     }

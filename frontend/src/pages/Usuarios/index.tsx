@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { ChevronLeft, ChevronRight } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
-import { obterVisaoGeral, listarUsuariosCrm, type UsuarioCrm } from '../../services/admin';
+import { obterVisaoGeral, fetchAccessOverview, listarUsuariosCrm, type UsuarioCrm } from '../../services/admin';
 import { GraficoCrescimento } from './GraficoCrescimento';
 import { GraficoMensal } from './GraficoMensal';
 import { GraficoTrilhas } from './GraficoTrilhas';
+import { AccessChart } from './AccessChart';
 import { FunilOnboarding } from './FunilOnboarding';
 import '../../styles/painel.css';
 
@@ -14,9 +15,28 @@ const POR_PAGINA = 20;
 const fmtData = (s: string | null) =>
   s ? new Date(s).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : '—';
 
+// "há 3 dias" style recency for the last-access column; null means the visit
+// log knows nothing about the user yet (predates the tracking).
+const formatRecency = (s: string | null) => {
+  if (!s) return 'sem registro';
+  const dias = Math.floor((Date.now() - new Date(s).getTime()) / 86400000);
+  if (dias <= 0) return 'hoje';
+  if (dias === 1) return 'ontem';
+  if (dias < 30) return `há ${dias} dias`;
+  const meses = Math.floor(dias / 30);
+  return `há ${meses} ${meses === 1 ? 'mês' : 'meses'}`;
+};
+
+const ACTION_LABEL: Record<string, string> = {
+  aula: 'aula',
+  simulado: 'simulado',
+  desafio: 'desafio',
+  conquista: 'conquista',
+};
+
 type Coluna = keyof Pick<
   UsuarioCrm,
-  'name' | 'aulas' | 'trilhas' | 'simulados' | 'desafios' | 'conquistas' | 'xp' | 'ultimaAtividade' | 'criadoEm'
+  'name' | 'aulas' | 'trilhas' | 'simulados' | 'desafios' | 'conquistas' | 'xp' | 'ultimaAtividade' | 'lastAccess' | 'activeDays' | 'criadoEm'
 >;
 
 const COLS_NUM = new Set<Coluna>(['aulas', 'trilhas', 'simulados', 'desafios', 'conquistas', 'xp']);
@@ -59,6 +79,8 @@ export function Usuarios() {
     }, 350);
     return () => clearTimeout(id);
   }, [busca]);
+
+  const { dados: accesses } = useRequisicao(() => fetchAccessOverview(180), []);
 
   const { dados: paginaCrm, carregando } = useRequisicao(
     () =>
@@ -124,6 +146,8 @@ export function Usuarios() {
 
         {overview && <GraficoCrescimento cadastros={overview.cadastrosPorDia} />}
 
+        <AccessChart accesses={accesses ?? null} />
+
         {overview && <GraficoMensal cadastros={overview.cadastrosPorDia} />}
 
         {overview && (
@@ -158,7 +182,9 @@ export function Usuarios() {
                 <Th col="desafios" label="Desaf." ordem={ordem} onClick={ordenarPor} />
                 <Th col="conquistas" label="Conq." ordem={ordem} onClick={ordenarPor} />
                 <Th col="xp" label="XP" ordem={ordem} onClick={ordenarPor} />
-                <Th col="ultimaAtividade" label="Últ. atividade" ordem={ordem} onClick={ordenarPor} />
+                <Th col="lastAccess" label="Últ. acesso" ordem={ordem} onClick={ordenarPor} />
+                <Th col="activeDays" label="Dias ativos" ordem={ordem} onClick={ordenarPor} />
+                <Th col="ultimaAtividade" label="Últ. ação" ordem={ordem} onClick={ordenarPor} />
                 <Th col="criadoEm" label="Cadastro" ordem={ordem} onClick={ordenarPor} />
               </tr>
             </thead>
@@ -192,13 +218,27 @@ export function Usuarios() {
                   <td className="num">{u.desafios}</td>
                   <td className="num">{u.conquistas}</td>
                   <td className="num">{u.xp}</td>
-                  <td>{fmtData(u.ultimaAtividade)}</td>
+                  <td>
+                    <div>{formatRecency(u.lastAccess)}</div>
+                    <div className="painel-user__sub">{fmtData(u.lastAccess)}</div>
+                  </td>
+                  <td className="num">{u.activeDays}</td>
+                  <td>
+                    {u.ultimaAtividade ? (
+                      <>
+                        <div>{ACTION_LABEL[u.lastAction ?? ''] ?? 'estudo'}</div>
+                        <div className="painel-user__sub">{fmtData(u.ultimaAtividade)}</div>
+                      </>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td>{fmtData(u.criadoEm)}</td>
                 </tr>
               ))}
               {!carregando && usuarios.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="painel-tabela__vazia">
+                  <td colSpan={12} className="painel-tabela__vazia">
                     Nenhum usuário encontrado.
                   </td>
                 </tr>
