@@ -561,21 +561,21 @@
   font-weight: 500;
 }
 
-/* Barras do gráfico de acessos por dia. */
-.painel-graf__barra {
+/* Bars of the daily access chart. */
+.painel-graf__bar {
   fill: color-mix(in srgb, var(--accent) 72%, transparent);
   rx: 3;
 }
-.painel-graf__barra.is-ativa {
+.painel-graf__bar.is-active {
   fill: var(--accent);
 }
-.painel-acessos-resumo {
+.painel-access-summary {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 14px;
 }
-.painel-acessos-resumo > div {
+.painel-access-summary > div {
   flex: 1;
   min-width: 110px;
   display: flex;
@@ -586,11 +586,11 @@
   border-radius: var(--r-lg);
   background: var(--surface-2);
 }
-.painel-acessos-resumo b {
+.painel-access-summary b {
   font-size: 20px;
   font-variant-numeric: tabular-nums;
 }
-.painel-acessos-resumo span {
+.painel-access-summary span {
   font-size: 12px;
   color: var(--muted);
 }

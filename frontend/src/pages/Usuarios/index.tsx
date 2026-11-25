@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { EstudioTopbar } from '../../components/EstudioTopbar';
 import { ChevronLeft, ChevronRight } from '../../components/Icons';
 import { useRequisicao } from '../../hooks/useRequisicao';
-import { obterVisaoGeral, obterAcessos, listarUsuariosCrm, type UsuarioCrm } from '../../services/admin';
+import { obterVisaoGeral, fetchAccessOverview, listarUsuariosCrm, type UsuarioCrm } from '../../services/admin';
 import { GraficoCrescimento } from './GraficoCrescimento';
 import { GraficoMensal } from './GraficoMensal';
 import { GraficoTrilhas } from './GraficoTrilhas';
-import { GraficoAcessos } from './GraficoAcessos';
+import { AccessChart } from './AccessChart';
 import { FunilOnboarding } from './FunilOnboarding';
 import '../../styles/painel.css';
 
@@ -17,7 +17,7 @@ const fmtData = (s: string | null) =>
 
 // "há 3 dias" style recency for the last-access column; null means the visit
 // log knows nothing about the user yet (predates the tracking).
-const fmtRecencia = (s: string | null) => {
+const formatRecency = (s: string | null) => {
   if (!s) return 'sem registro';
   const dias = Math.floor((Date.now() - new Date(s).getTime()) / 86400000);
   if (dias <= 0) return 'hoje';
@@ -27,7 +27,7 @@ const fmtRecencia = (s: string | null) => {
   return `há ${meses} ${meses === 1 ? 'mês' : 'meses'}`;
 };
 
-const ACAO_LABEL: Record<string, string> = {
+const ACTION_LABEL: Record<string, string> = {
   aula: 'aula',
   simulado: 'simulado',
   desafio: 'desafio',
@@ -80,7 +80,7 @@ export function Usuarios() {
     return () => clearTimeout(id);
   }, [busca]);
 
-  const { dados: acessos } = useRequisicao(() => obterAcessos(180), []);
+  const { dados: accesses } = useRequisicao(() => fetchAccessOverview(180), []);
 
   const { dados: paginaCrm, carregando } = useRequisicao(
     () =>
@@ -146,7 +146,7 @@ export function Usuarios() {
 
         {overview && <GraficoCrescimento cadastros={overview.cadastrosPorDia} />}
 
-        <GraficoAcessos acessos={acessos ?? null} />
+        <AccessChart accesses={accesses ?? null} />
 
         {overview && <GraficoMensal cadastros={overview.cadastrosPorDia} />}
 
@@ -219,14 +219,14 @@ export function Usuarios() {
                   <td className="num">{u.conquistas}</td>
                   <td className="num">{u.xp}</td>
                   <td>
-                    <div>{fmtRecencia(u.ultimoAcesso)}</div>
+                    <div>{formatRecency(u.ultimoAcesso)}</div>
                     <div className="painel-user__sub">{fmtData(u.ultimoAcesso)}</div>
                   </td>
                   <td className="num">{u.diasAtivos}</td>
                   <td>
                     {u.ultimaAtividade ? (
                       <>
-                        <div>{ACAO_LABEL[u.ultimaAcao ?? ''] ?? 'estudo'}</div>
+                        <div>{ACTION_LABEL[u.ultimaAcao ?? ''] ?? 'estudo'}</div>
                         <div className="painel-user__sub">{fmtData(u.ultimaAtividade)}</div>
                       </>
                     ) : (

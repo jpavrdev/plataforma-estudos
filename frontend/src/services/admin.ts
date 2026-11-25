@@ -45,14 +45,14 @@ export interface UsuarioCrm {
   xp: number;
 }
 
-export interface DiaAcessos {
+export interface AccessDay {
   dia: string;
   pessoas: number;
   visitas: number;
 }
 
-export interface Acessos {
-  serie: DiaAcessos[];
+export interface AccessOverview {
+  serie: AccessDay[];
   resumo: {
     ativosHoje: number;
     ativos7d: number;
@@ -62,8 +62,8 @@ export interface Acessos {
   };
 }
 
-export async function obterAcessos(dias = 30): Promise<Acessos> {
-  const { data } = await api.get<Acessos>('/admin/acessos', { params: { dias } });
+export async function fetchAccessOverview(days = 30): Promise<AccessOverview> {
+  const { data } = await api.get<AccessOverview>('/admin/acessos', { params: { dias: days } });
   return data;
 }
 

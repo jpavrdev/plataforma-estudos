@@ -16,7 +16,7 @@ const ACTIVITY = sql`
 export async function accessOverview(days = 30) {
     const window = Math.min(Math.max(7, Math.floor(days) || 30), 365);
 
-    const serieRows = (
+    const seriesRows = (
         await db.execute(sql`
             select d.dia::date::text dia,
                    count(v.user_id)::int pessoas,
@@ -32,7 +32,7 @@ export async function accessOverview(days = 30) {
         `)
     ).rows as { dia: string; pessoas: number; visitas: number }[];
 
-    const [ativos] = (
+    const [actives] = (
         await db.execute(sql`
             select
                 count(distinct user_id) filter (where day = current_date)::int hoje,
@@ -43,7 +43,7 @@ export async function accessOverview(days = 30) {
         `)
     ).rows as { hoje: number; d7: number; d30: number }[];
 
-    const [freq] = (
+    const [frequency] = (
         await db.execute(sql`
             select coalesce(round(avg(dias), 1), 0)::float media_dias_ativos
             from (
@@ -55,7 +55,7 @@ export async function accessOverview(days = 30) {
         `)
     ).rows as { media_dias_ativos: number }[];
 
-    const [novos] = (
+    const [signups] = (
         await db.execute(sql`
             select count(*) filter (where created_at > now() - interval '30 days')::int n
             from users
@@ -63,13 +63,13 @@ export async function accessOverview(days = 30) {
     ).rows as { n: number }[];
 
     return {
-        serie: serieRows,
+        serie: seriesRows,
         resumo: {
-            ativosHoje: ativos?.hoje ?? 0,
-            ativos7d: ativos?.d7 ?? 0,
-            ativos30d: ativos?.d30 ?? 0,
-            mediaDiasAtivos: freq?.media_dias_ativos ?? 0,
-            novos30d: novos?.n ?? 0,
+            ativosHoje: actives?.hoje ?? 0,
+            ativos7d: actives?.d7 ?? 0,
+            ativos30d: actives?.d30 ?? 0,
+            mediaDiasAtivos: frequency?.media_dias_ativos ?? 0,
+            novos30d: signups?.n ?? 0,
         },
     };
 }
