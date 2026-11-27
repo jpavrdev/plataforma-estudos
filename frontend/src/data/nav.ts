@@ -15,6 +15,10 @@ export const NAV_PRINCIPAL = [
 
 export const NAV_SORTEIO = { key: 'giveaway', to: '/sorteio' } as const;
 
+// Gated by the "projetos-guiados" flag in useNavPrincipal: only users released
+// in the beta see the tab.
+export const NAV_PROJECTS = { key: 'projects', to: '/projetos' } as const;
+
 export const NAV_ESTUDIO = [
   { key: 'nav.studioTracks', to: '/estudio' },
   { key: 'nav.studioRoadmaps', to: '/estudio/roadmaps' },

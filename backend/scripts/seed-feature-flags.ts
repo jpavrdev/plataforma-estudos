@@ -13,12 +13,16 @@ type Status = "off" | "beta" | "on";
 const FLAGS: { key: string; description: string; status: Status }[] = [
     {
         key: "projetos-guiados",
-        description: "Projetos guiados em etapas verificadas pelo runner",
-        status: "off",
+        description: "Aba de Projetos: jogo de sprint com tasks verificadas pelo runner",
+        status: "beta",
     },
 ];
 
-// Emails com acesso enquanto o flag correspondente está em "beta".
+// Emails with access while the corresponding flag is in "beta". Keep it empty:
+// real emails do not belong in a versioned file. Grant access with SQL:
+//   insert into feature_flag_users (flag_id, user_id)
+//   select f.id, u.id from feature_flags f, users u
+//   where f.key = 'projetos-guiados' and u.email = '<email>';
 const ALLOWLIST: Record<string, string[]> = {
     "projetos-guiados": [],
 };

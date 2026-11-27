@@ -418,6 +418,19 @@ export const Lock = ({ size = 14 }: IconProps) => (
   </svg>
 );
 
+export const Unlock = ({ size = 14 }: IconProps) => (
+  <svg
+    {...base(size)}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect x="4" y="11" width="16" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 0 1 7.9-.9" />
+  </svg>
+);
+
 export const ChevronUp = ({ size = 13 }: IconProps) => (
   <svg
     {...base(size)}
