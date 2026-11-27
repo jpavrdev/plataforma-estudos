@@ -14,17 +14,23 @@ export function challengeXp(difficulty: string): number {
     return CHALLENGE_XP_BY_DIFFICULTY[difficulty] ?? CHALLENGE_XP_BY_DIFFICULTY.facil;
 }
 
-// challengesXp is already summed in XP (not a count), since each challenge is worth a different amount.
+// A sprint task pays its points times this, granted once on approval.
+export const XP_PER_SPRINT_POINT = 20;
+
+// challengesXp and sprintsXp arrive already summed (each item is worth a
+// different amount), unlike the counted lessons and questions.
 export function computeXp({
     lessons,
     questions,
     challengesXp = 0,
+    sprintsXp = 0,
 }: {
     lessons: number;
     questions: number;
     challengesXp?: number;
+    sprintsXp?: number;
 }): number {
-    return lessons * XP_PER_LESSON + questions * XP_PER_QUESTION + challengesXp;
+    return lessons * XP_PER_LESSON + questions * XP_PER_QUESTION + challengesXp + sprintsXp;
 }
 
 export function levelFromXp(xp: number): number {

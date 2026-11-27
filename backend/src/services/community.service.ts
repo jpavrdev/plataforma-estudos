@@ -8,6 +8,7 @@ import {
     communityCommentLikes,
     userFollows,
     users,
+    userSprintTasks,
     lessonProgress,
     questionAnswers,
     challengeSubmissions,
@@ -24,7 +25,7 @@ type PostInput = z.infer<typeof createPostSchema>;
 export async function userLevels(userIds: string[]): Promise<Map<string, number>> {
     const levels = new Map<string, number>();
     if (userIds.length === 0) return levels;
-    const [lessons, correct, challenges] = await Promise.all([
+    const [lessons, correct, challenges, sprints] = await Promise.all([
         db
             .select({ userId: lessonProgress.userId, n: count() })
             .from(lessonProgress)
@@ -47,17 +48,26 @@ export async function userLevels(userIds: string[]): Promise<Map<string, number>
                 ),
             )
             .groupBy(challengeSubmissions.userId),
+        db
+            .select({ userId: userSprintTasks.userId, xp: sum(userSprintTasks.xpEarned) })
+            .from(userSprintTasks)
+            .where(
+                and(inArray(userSprintTasks.userId, userIds), gt(userSprintTasks.xpEarned, 0)),
+            )
+            .groupBy(userSprintTasks.userId),
     ]);
     const toMap = (arr: { userId: string; n?: number | string; xp?: number | string | null }[]) =>
         new Map(arr.map((a) => [a.userId, Number(a.n ?? a.xp ?? 0)]));
     const lessonCounts = toMap(lessons);
     const correctCounts = toMap(correct);
     const challengeCounts = toMap(challenges);
+    const sprintCounts = toMap(sprints);
     for (const id of userIds) {
         const xp = computeXp({
             lessons: lessonCounts.get(id) ?? 0,
             questions: correctCounts.get(id) ?? 0,
             challengesXp: challengeCounts.get(id) ?? 0,
+            sprintsXp: sprintCounts.get(id) ?? 0,
         });
         levels.set(id, levelFromXp(xp));
     }

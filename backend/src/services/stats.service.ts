@@ -3,6 +3,7 @@ import {
     lessonProgress,
     questionAnswers,
     challengeSubmissions,
+    userSprintTasks,
     trails,
     lessons,
     questions,
@@ -28,6 +29,10 @@ export async function computeUserStats(userId: string) {
         .select({ xp: sum(challengeSubmissions.xpEarned), n: count() })
         .from(challengeSubmissions)
         .where(and(eq(challengeSubmissions.userId, userId), gt(challengeSubmissions.xpEarned, 0)));
+    const [sprintRows] = await db
+        .select({ xp: sum(userSprintTasks.xpEarned) })
+        .from(userSprintTasks)
+        .where(and(eq(userSprintTasks.userId, userId), gt(userSprintTasks.xpEarned, 0)));
     const lessonsCompleted = Number(lessonRows?.n ?? 0);
     const questionsCorrect = Number(correctRows?.n ?? 0);
     const challengesCompleted = Number(challengeRows?.n ?? 0);
@@ -36,6 +41,7 @@ export async function computeUserStats(userId: string) {
         lessons: lessonsCompleted,
         questions: questionsCorrect,
         challengesXp: challengeXpTotal,
+        sprintsXp: Number(sprintRows?.xp ?? 0),
     });
     return {
         xp,

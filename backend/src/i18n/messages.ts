@@ -477,6 +477,17 @@ export const MESSAGES = {
     },
     "flashcard.invalidSource": { "pt-BR": "Origem inválida.", en: "Invalid source." },
     "flashcard.invalidAnswer": { "pt-BR": "Resposta inválida.", en: "Invalid answer." },
+    "sprint.notFound": { "pt-BR": "Nenhuma sprint disponível.", en: "No sprint available." },
+    "sprint.taskNotFound": { "pt-BR": "Task não encontrada.", en: "Task not found." },
+    "sprint.alreadyDone": {
+        "pt-BR": "Essa task já foi concluída.",
+        en: "This task is already done.",
+    },
+    "sprint.notDoing": {
+        "pt-BR": "Pegue a task antes de concluir.",
+        en: "Pick up the task before completing it.",
+    },
+    "sprint.invalidCode": { "pt-BR": "Código inválido.", en: "Invalid code." },
     "interview.invalidLevel": { "pt-BR": "Nível inválido.", en: "Invalid level." },
 
     // ---------------------------------------------------------------- community

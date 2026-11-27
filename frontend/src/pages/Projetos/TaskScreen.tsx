@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronLeft, ChevronRight, ClockExam, Play, X } from '../../components/Icons';
-import { SPRINT, TASK_DETAIL, type SprintTask } from './sprintData';
+import { fetchSprintTask, saveSprintCode, type SprintData, type SprintTaskDetail, type SprintTaskView } from '../../services/sprints';
 import { useCountdown } from './useCountdown';
 
 // One test resolves every 560ms while running (T3), straight from the spec.
@@ -9,53 +9,74 @@ const TEST_MS = 560;
 
 type TestState = 'idle' | 'run' | 'pass' | 'fail';
 
-// Placeholder grader: the sprint engine will grade the submission for real.
-// Until it exists, the untouched starter fails the case-insensitive test
-// (the bug the task is about) and any edit to the code passes everything.
-function grade(starterUntouched: boolean): TestState[] {
-  return TASK_DETAIL.tests.map((_, i) =>
+// Placeholder grader: the runner will grade the submission for real. Until it
+// exists, the untouched starter fails the case-insensitive test (the bug the
+// task is about) and any edit to the code passes everything.
+function grade(starterUntouched: boolean, total: number): TestState[] {
+  return Array.from({ length: total }, (_, i) =>
     starterUntouched && i === 2 ? 'fail' : 'pass',
   );
 }
 
 // Screen 2 of the sprint game: the task. The spec the PO wrote on the left,
-// the editor in the middle, the tests on the right; each criterion lights up
-// together with the test that proves it.
+// the editor in the middle (persisted to the engine), the tests on the right;
+// each criterion lights up together with the test that proves it.
 export function TaskScreen({
-  task,
+  taskId,
   deadline,
+  taskMeta,
+  previousTasks,
   onBack,
   onDeliver,
 }: {
-  task: SprintTask;
+  taskId: string;
   deadline: number;
+  taskMeta: SprintData['sprint'] | null;
+  previousTasks: SprintTaskView[];
   onBack: () => void;
   onDeliver: () => void;
 }) {
   const { t } = useTranslation();
   const mainRef = useRef<HTMLElement>(null);
-  const [states, setStates] = useState<TestState[]>(() => TASK_DETAIL.tests.map(() => 'idle'));
+  const [detail, setDetail] = useState<SprintTaskDetail | null>(null);
+  const [states, setStates] = useState<TestState[]>([]);
   const [running, setRunning] = useState(false);
   const [score, setScore] = useState(0);
-  const [code, setCode] = useState(TASK_DETAIL.starterCode);
-  const [edited, setEdited] = useState(false);
+  const [code, setCode] = useState('');
   const [saved, setSaved] = useState(true);
   const clock = useCountdown(deadline);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
     mainRef.current?.focus();
-    return () => timers.current.forEach(window.clearTimeout);
-  }, []);
+    let active = true;
+    fetchSprintTask(taskId)
+      .then((loaded) => {
+        if (!active) return;
+        setDetail(loaded);
+        setCode(loaded.code);
+        setStates(loaded.tests.map(() => 'idle'));
+      })
+      .catch((err) => console.error('Failed to load the sprint task.', err));
+    return () => {
+      active = false;
+      timers.current.forEach(window.clearTimeout);
+    };
+  }, [taskId]);
 
-  // Local save with a small debounce: honest "Salvo" indicator, no backend yet.
+  // Real save with a small debounce: the engine keeps the live file.
   useEffect(() => {
-    if (saved) return;
-    const id = window.setTimeout(() => setSaved(true), 900);
+    if (!detail || saved) return;
+    const id = window.setTimeout(() => {
+      saveSprintCode(taskId, code)
+        .then(() => setSaved(true))
+        .catch((err) => console.error('Failed to save the sprint code.', err));
+    }, 900);
     return () => window.clearTimeout(id);
-  }, [code, saved]);
+  }, [code, saved, detail, taskId]);
 
-  const allPassed = score === TASK_DETAIL.tests.length && !running;
+  const total = detail?.tests.length ?? 0;
+  const allPassed = total > 0 && score === total && !running;
   const failed = states.includes('fail') && !running;
   const daviLine = allPassed
     ? t('projects.daviPass')
@@ -65,17 +86,16 @@ export function TaskScreen({
 
   function editCode(next: string) {
     setCode(next);
-    setEdited(true);
     setSaved(false);
   }
 
   function runTests() {
-    if (running) return;
+    if (running || !detail) return;
     setRunning(true);
-    setStates(TASK_DETAIL.tests.map(() => 'idle'));
+    setStates(detail.tests.map(() => 'idle'));
     setScore(0);
 
-    const results = grade(!edited);
+    const results = grade(code === detail.starterCode, total);
     results.forEach((result, i) => {
       timers.current.push(
         window.setTimeout(() => {
@@ -84,16 +104,24 @@ export function TaskScreen({
         window.setTimeout(() => {
           setStates((list) => list.map((s, j) => (j === i ? result : s)));
           if (result === 'pass') setScore((n) => n + 1);
-          if (i === TASK_DETAIL.tests.length - 1) setRunning(false);
+          if (i === total - 1) setRunning(false);
         }, (i + 1) * TEST_MS),
       );
     });
   }
 
+  if (!detail) {
+    return (
+      <main className="g-task-screen" ref={mainRef} tabIndex={-1}>
+        <p className="g-loading">{t('common.loading')}</p>
+      </main>
+    );
+  }
+
   return (
     <main className="g-task-screen" ref={mainRef} tabIndex={-1}>
       <h1 className="g-sr-only">
-        {t('projects.taskSrTitle', { title: task.title, index: 3, total: 5 })}
+        {t('projects.taskSrTitle', { title: detail.title, index: detail.position, total: detail.sprint.totalTasks })}
       </h1>
 
       {/* Focus bar: back to the board, task identity, deadline and actions. */}
@@ -104,12 +132,16 @@ export function TaskScreen({
         </button>
         <div className="g-focus-bar__title">
           <span className="g-tag">
-            {t('projects.taskMeta', { sprint: SPRINT.number, index: 3, total: 5 })}
+            {t('projects.taskMeta', {
+              sprint: taskMeta?.number ?? detail.sprint.number,
+              index: detail.position,
+              total: detail.sprint.totalTasks,
+            })}
           </span>
           <div className="g-focus-bar__name">
-            <strong>{task.title}</strong>
-            <span className="g-tag">{task.tag}</span>
-            <span className="g-pts">{task.points} pts</span>
+            <strong>{detail.title}</strong>
+            <span className="g-tag">{detail.tag}</span>
+            <span className="g-pts">{detail.points} pts</span>
           </div>
         </div>
         <div className="g-focus-bar__actions">
@@ -131,7 +163,7 @@ export function TaskScreen({
               type="button"
               className="g-btn g-btn--locked"
               disabled
-              title={t('projects.deliverLockedTitle')}
+              title={t('projects.deliverLockedTitle', { total })}
             >
               {t('projects.deliver')}
             </button>
@@ -146,7 +178,7 @@ export function TaskScreen({
             <span className="g-avatar g-avatar--lia" aria-hidden="true">L</span>
             <div className="g-msg__body">
               <span className="g-who">LIA · {t('projects.rolePo')}</span>
-              <p className="g-bubble">{TASK_DETAIL.poAsk}</p>
+              <p className="g-bubble">{t('projects.poTaskAsk')}</p>
             </div>
           </div>
           <div className="g-pane__head">
@@ -154,8 +186,8 @@ export function TaskScreen({
             <h2 id="g-spec-h">{t('projects.specTitle')}</h2>
           </div>
           <ol className="g-crits">
-            {TASK_DETAIL.criteria.map((crit, i) => (
-              <li className="g-crit" data-state={states[i]} key={crit}>
+            {detail.criteria.map((crit, i) => (
+              <li className="g-crit" data-state={states[i] ?? 'idle'} key={crit}>
                 <span className="g-mk" aria-hidden="true">
                   <span className="g-mk__num">{i + 1}</span>
                   <span className="g-mk__ok"><Check size={13} /></span>
@@ -168,10 +200,10 @@ export function TaskScreen({
           <div className="g-pane__foot g-base">
             <span className="g-label">{t('projects.fromPreviousLabel')}</span>
             <div className="g-base__chips">
-              {TASK_DETAIL.baseChips.map((chip) => (
-                <span className="g-ok-chip" key={chip}>
+              {previousTasks.map((task) => (
+                <span className="g-ok-chip" key={task.id}>
                   <Check size={13} aria-hidden="true" />
-                  <span>{chip}</span>
+                  <span>Task {task.position} · {task.trackName}</span>
                 </span>
               ))}
             </div>
@@ -189,7 +221,7 @@ export function TaskScreen({
           <CodeEditor
             code={code}
             onChange={editCode}
-            flagLine={failed ? TASK_DETAIL.failLine : null}
+            flagLine={failed ? detail.starterCode.split('\n').findIndex((l) => l.includes('existe_email')) + 1 : null}
             ariaLabel={t('projects.editorAria')}
           />
           <div className="g-editor__status">
@@ -206,16 +238,16 @@ export function TaskScreen({
               <h2 id="g-tests-h">{t('projects.testsTitleIdle')}</h2>
             </div>
             <span className="g-score" key={score} title={t('projects.scoreTitle')}>
-              {score}/{TASK_DETAIL.tests.length}
+              {score}/{total}
             </span>
           </div>
           <div className="g-segs" aria-hidden="true">
-            {TASK_DETAIL.tests.map((test, i) => (
+            {detail.tests.map((test, i) => (
               <span className="g-seg" data-state={states[i]} key={test.name} />
             ))}
           </div>
           <ol className="g-trows">
-            {TASK_DETAIL.tests.map((test, i) => (
+            {detail.tests.map((test, i) => (
               <li className="g-trow" data-state={states[i]} key={test.name}>
                 <span className="g-mk" aria-hidden="true">
                   <span className="g-mk__ok"><Check size={13} /></span>
@@ -229,8 +261,8 @@ export function TaskScreen({
 
           {failed && (
             <div className="g-result g-result--fail" role="status">
-              <strong>{TASK_DETAIL.failTitle}</strong>
-              <span>{TASK_DETAIL.failBody}</span>
+              <strong>{t('projects.failTitle')}</strong>
+              <span>{t('projects.failBody')}</span>
             </div>
           )}
           {allPassed && (

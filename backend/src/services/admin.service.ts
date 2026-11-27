@@ -221,6 +221,7 @@ export async function crmUsers(
             coalesce(ac.n, 0)::int questoes,
             coalesce(ds.n, 0)::int desafios,
             coalesce(ds.xp, 0)::int desafios_xp,
+            coalesce(sp.xp, 0)::int sprints_xp,
             coalesce(sa.n, 0)::int simulados,
             coalesce(cq.n, 0)::int conquistas,
             coalesce(ta.n, 0)::int trilhas,
@@ -235,6 +236,10 @@ export async function crmUsers(
             select user_id, count(*) n, sum(xp_earned) xp
             from challenge_submissions where xp_earned > 0 group by user_id
         ) ds on ds.user_id = u.id
+        left join (
+            select user_id, sum(xp_earned) xp
+            from user_sprint_tasks where xp_earned > 0 group by user_id
+        ) sp on sp.user_id = u.id
         left join (select user_id, count(*) n from simulado_attempts group by user_id) sa on sa.user_id = u.id
         left join (select user_id, count(*) n from user_achievements group by user_id) cq on cq.user_id = u.id
         left join (
@@ -291,6 +296,7 @@ export async function crmUsers(
                 lessons,
                 questions,
                 challengesXp: r.desafios_xp as number,
+                sprintsXp: r.sprints_xp as number,
             }),
         };
     });

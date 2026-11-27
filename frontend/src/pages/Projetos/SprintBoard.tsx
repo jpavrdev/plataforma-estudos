@@ -10,14 +10,9 @@ import {
   Eye,
   Lock,
 } from '../../components/Icons';
-import {
-  RANKING,
-  SPRINT,
-  deliveredCount,
-  trackStatus,
-  type SprintTask,
-} from './sprintData';
+import { miniRanking, trackStatus } from './sprintData';
 import { useCountdown } from './useCountdown';
+import type { SprintData, SprintTaskView } from '../../services/sprints';
 
 // Timing of the column-change choreography (Q8 -> Q9), straight from the spec.
 const MOVE_MS = 260;
@@ -30,15 +25,17 @@ type MoveFx = { id: string; cls: 'g-drop-in' | 'g-drop-back' };
 // track, ranking), the PO's message and the four columns; picking a task
 // flies the card into the doing column with the spec's choreography.
 export function SprintBoard({
-  tasks,
-  setTasks,
-  deadline,
+  data,
+  failed,
+  onRetry,
+  onMove,
   onOpenTask,
   userInitials,
 }: {
-  tasks: SprintTask[];
-  setTasks: React.Dispatch<React.SetStateAction<SprintTask[]>>;
-  deadline: number;
+  data: SprintData | null;
+  failed: boolean;
+  onRetry: () => void;
+  onMove: (taskId: string, to: 'doing' | 'backlog') => void;
   onOpenTask: (taskId: string) => void;
   userInitials: string;
 }) {
@@ -50,18 +47,17 @@ export function SprintBoard({
 
   useEffect(() => () => timers.current.forEach(window.clearTimeout), []);
 
-  // When the sprint engine exists these become POSTs; the choreography fires
-  // on the response the same way it fires on the local move today.
+  // The engine persists the move; the choreography fires around it.
   function moveTask(id: string, to: 'backlog' | 'doing') {
     const from = to === 'doing' ? 'backlog' : 'doing';
-    const task = tasks.find((tk) => tk.id === id);
+    const task = data?.tasks.find((tk) => tk.id === id);
     if (!task || task.status !== from || leavingId) return;
 
     setLeavingId(id);
     if (to === 'doing') setPoState('typing');
     timers.current.push(
       window.setTimeout(() => {
-        setTasks((list) => list.map((tk) => (tk.id === id ? { ...tk, status: to } : tk)));
+        onMove(id, to);
         setLeavingId(null);
         setMoveFx({ id, cls: to === 'doing' ? 'g-drop-in' : 'g-drop-back' });
       }, MOVE_MS),
@@ -73,10 +69,23 @@ export function SprintBoard({
     );
   }
 
-  const columns: { status: SprintTask['status']; titleKey: 'projects.colBacklog' | 'projects.colDoing' | 'projects.colReview' | 'projects.colDone'; helperKey: 'projects.backlogHelper' | 'projects.doingHelper' | 'projects.reviewHelper' | 'projects.doneHelper'; who: 'lia' | 'you' | 'davi' | 'ok' }[] = [
+  if (!data) {
+    return (
+      <div className="g-page">
+        <p className="g-loading">{failed ? t('projects.loadError') : t('common.loading')}</p>
+        {failed && (
+          <button type="button" className="g-btn g-btn--quiet" onClick={onRetry}>
+            {t('projects.retry')}
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  const columns: { status: SprintTaskView['status']; titleKey: 'projects.colBacklog' | 'projects.colDoing' | 'projects.colReview' | 'projects.colDone'; helperKey: 'projects.backlogHelper' | 'projects.doingHelper' | 'projects.reviewHelper' | 'projects.doneHelper'; who: 'lia' | 'you' | 'davi' | 'ok'; emptyKey?: 'projects.doingEmpty' | 'projects.reviewEmpty' }[] = [
     { status: 'backlog', titleKey: 'projects.colBacklog', helperKey: 'projects.backlogHelper', who: 'lia' },
-    { status: 'doing', titleKey: 'projects.colDoing', helperKey: 'projects.doingHelper', who: 'you' },
-    { status: 'review', titleKey: 'projects.colReview', helperKey: 'projects.reviewHelper', who: 'davi' },
+    { status: 'doing', titleKey: 'projects.colDoing', helperKey: 'projects.doingHelper', who: 'you', emptyKey: 'projects.doingEmpty' },
+    { status: 'review', titleKey: 'projects.colReview', helperKey: 'projects.reviewHelper', who: 'davi', emptyKey: 'projects.reviewEmpty' },
     { status: 'done', titleKey: 'projects.colDone', helperKey: 'projects.doneHelper', who: 'ok' },
   ];
 
@@ -103,7 +112,7 @@ export function SprintBoard({
         </ul>
       </div>
 
-      <SprintHud tasks={tasks} deadline={deadline} />
+      <SprintHud data={data} />
 
       <div className="g-po g-enter" style={{ ['--d' as string]: '.16s' }}>
         <span className="g-avatar g-avatar--lg g-avatar--lia" aria-hidden="true">L</span>
@@ -123,7 +132,7 @@ export function SprintBoard({
 
       <section className="g-board" aria-label={t('projects.boardAria')}>
         {columns.map((col, i) => {
-          const items = tasks.filter((tk) => tk.status === col.status);
+          const items = data.tasks.filter((tk) => tk.status === col.status);
           return (
             <div className="g-col g-enter" style={{ ['--d' as string]: `${0.26 + i * 0.08}s` }} key={col.status}>
               <div className="g-col__head">
@@ -142,10 +151,12 @@ export function SprintBoard({
                 <span className="g-count" key={`${col.status}-${items.length}`}>{items.length}</span>
               </div>
 
-              {col.status === 'doing' && items.length === 0 && (
+              {items.length === 0 && col.emptyKey && (
                 <div className="g-col__empty">
-                  <span className="g-nudge-back" aria-hidden="true"><ChevronLeft size={22} /></span>
-                  <span>{t('projects.doingEmpty')}</span>
+                  {col.status === 'doing' && (
+                    <span className="g-nudge-back" aria-hidden="true"><ChevronLeft size={22} /></span>
+                  )}
+                  <span>{t(col.emptyKey)}</span>
                 </div>
               )}
 
@@ -167,27 +178,26 @@ export function SprintBoard({
   );
 }
 
-function SprintHud({ tasks, deadline }: { tasks: SprintTask[]; deadline: number }) {
+function SprintHud({ data }: { data: SprintData }) {
   const { t } = useTranslation();
-  const clock = useCountdown(deadline);
-  const delivered = deliveredCount(tasks);
-  const earned = tasks.filter((tk) => tk.status === 'done').reduce((sum, tk) => sum + tk.points, 0);
+  const clock = useCountdown(Date.parse(data.sprint.endsAt));
+  const { sprint, tasks, ranking } = data;
   // The fill goes from the first node's center to the current node's (10%-90%).
-  const fillPct = Math.min(100, (delivered / Math.max(1, tasks.length - 1)) * 100);
+  const fillPct = Math.min(100, (sprint.delivered / Math.max(1, tasks.length - 1)) * 100);
 
   return (
     <section className="g-hud g-panel-dark g-enter" style={{ ['--d' as string]: '.08s' }} aria-label={t('projects.hudAria')}>
       <div className="g-hud__sprint">
         <div className="g-hud__intro">
           <div className="g-hud__meta">
-            <span className="g-badge-dark">SPRINT {SPRINT.number}</span>
+            <span className="g-badge-dark">SPRINT {sprint.number}</span>
             <span className="g-hud__live">
               <span className="g-live-dot" aria-hidden="true" />
               <span>{t('projects.sprintLive')}</span>
             </span>
           </div>
-          <h2 className="g-hud__title">{SPRINT.product}</h2>
-          <p className="g-hud__sub">{SPRINT.summary}</p>
+          <h2 className="g-hud__title">{sprint.product}</h2>
+          <p className="g-hud__sub">{sprint.summary}</p>
         </div>
         <div className="g-track">
           <div className="g-track__rail">
@@ -219,7 +229,12 @@ function SprintHud({ tasks, deadline }: { tasks: SprintTask[]; deadline: number 
             </ol>
           </div>
           <p className="g-hud__sub g-hud__sub--sm">
-            {t('projects.trackProgress', { done: delivered, total: tasks.length, pts: earned, ptsTotal: SPRINT.totalPoints })}
+            {t('projects.trackProgress', {
+              done: sprint.delivered,
+              total: tasks.length,
+              pts: sprint.earned,
+              ptsTotal: sprint.totalPoints,
+            })}
           </p>
         </div>
       </div>
@@ -240,16 +255,16 @@ function SprintHud({ tasks, deadline }: { tasks: SprintTask[]; deadline: number 
       <div className="g-hud__rank">
         <div className="g-hud__rank-head">
           <span className="g-dark-label">{t('projects.rankLabel')}</span>
-          <a href="#ranking-geral">{t('projects.rankAll')}</a>
+          <a href="#g-ranking">{t('projects.rankAll')}</a>
         </div>
         <ol className="g-rank-mini">
-          {RANKING.map((row) => (
+          {miniRanking(ranking).map((row) => (
             <li key={row.position} className={row.you ? 'is-you' : undefined}>
               <span className="g-rank-mini__pos">{row.position}º</span>
               <span className="g-rank-mini__name">{row.name}</span>
-              {row.climbed ? (
-                <span className="g-rank-mini__up" role="img" aria-label={t('projects.rankClimbed', { n: row.climbed })}>
-                  <ChevronUp size={12} aria-hidden="true" />{row.climbed}
+              {row.you ? (
+                <span className="g-rank-mini__up">
+                  <ChevronUp size={12} aria-hidden="true" />
                 </span>
               ) : null}
               <span className="g-rank-mini__pts">{row.points} pts</span>
@@ -268,7 +283,7 @@ function TaskCard({
   onGiveBack,
   onOpen,
 }: {
-  task: SprintTask;
+  task: SprintTaskView;
   fx?: string;
   onPick: () => void;
   onGiveBack: () => void;
@@ -338,7 +353,7 @@ function TaskCard({
             <Check size={15} aria-hidden="true" />
             <span>{t('projects.testsPassed', { passed: 5, total: 5 })}</span>
           </span>
-          <span className="g-tcard__xp">+100 XP</span>
+          <span className="g-tcard__xp">+{task.points * 20} XP</span>
         </div>
       )}
     </article>

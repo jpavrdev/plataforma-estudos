@@ -1,4 +1,4 @@
-import { sql, eq, and, count, sum, gte, isNotNull } from "drizzle-orm";
+import { sql, eq, and, count, sum, gte, gt, isNotNull } from "drizzle-orm";
 import { db } from "../../db.ts";
 import {
     rankingSnapshots,
@@ -6,6 +6,7 @@ import {
     lessonProgress,
     questionAnswers,
     challengeSubmissions,
+    userSprintTasks,
 } from "../../schema.ts";
 import { findAllStreaks, todayInSaoPaulo } from "./streak.ts";
 import { activeSupporters } from "./supporter.service.ts";
@@ -79,6 +80,8 @@ export async function globalRanking(period: string, currentUserId: string | unde
         lessonsPeriod,
         correctPeriod,
         challengesPeriod,
+        sprintsTotal,
+        sprintsPeriod,
         streaks,
         supporters,
     ] = await Promise.all([
@@ -130,6 +133,18 @@ export async function globalRanking(period: string, currentUserId: string | unde
                   .where(gte(challengeSubmissions.createdAt, since))
                   .groupBy(challengeSubmissions.userId)
             : Promise.resolve(null),
+        db
+            .select({ userId: userSprintTasks.userId, n: sum(userSprintTasks.xpEarned) })
+            .from(userSprintTasks)
+            .where(gt(userSprintTasks.xpEarned, 0))
+            .groupBy(userSprintTasks.userId),
+        since
+            ? db
+                  .select({ userId: userSprintTasks.userId, n: sum(userSprintTasks.xpEarned) })
+                  .from(userSprintTasks)
+                  .where(and(gt(userSprintTasks.xpEarned, 0), gte(userSprintTasks.doneAt, since)))
+                  .groupBy(userSprintTasks.userId)
+            : Promise.resolve(null),
         findAllStreaks(),
         activeSupporters(),
     ]);
@@ -139,21 +154,25 @@ export async function globalRanking(period: string, currentUserId: string | unde
         new Map((arr ?? []).map((a) => [a.userId, Number(a.n ?? 0)]));
     const lessonsAll = toMap(lessonsTotal),
         correctAll = toMap(correctTotal),
-        challengesAll = toMap(challengesTotal);
+        challengesAll = toMap(challengesTotal),
+        sprintsAll = toMap(sprintsTotal);
     const lessonsPer = since ? toMap(lessonsPeriod) : lessonsAll;
     const correctPer = since ? toMap(correctPeriod) : correctAll;
     const challengesPer = since ? toMap(challengesPeriod) : challengesAll;
+    const sprintsPer = since ? toMap(sprintsPeriod) : sprintsAll;
 
     const base = userRows.map((u) => {
         const totalXp = computeXp({
             lessons: lessonsAll.get(u.id) ?? 0,
             questions: correctAll.get(u.id) ?? 0,
             challengesXp: challengesAll.get(u.id) ?? 0,
+            sprintsXp: sprintsAll.get(u.id) ?? 0,
         });
         const periodXp = computeXp({
             lessons: lessonsPer.get(u.id) ?? 0,
             questions: correctPer.get(u.id) ?? 0,
             challengesXp: challengesPer.get(u.id) ?? 0,
+            sprintsXp: sprintsPer.get(u.id) ?? 0,
         });
         return {
             id: u.id,

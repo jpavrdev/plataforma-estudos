@@ -1394,3 +1394,74 @@ export const optionTranslations = pgTable(
         index("option_translations_option_id_idx").on(table.optionId),
     ],
 );
+
+// ===================== SPRINT GAME =====================
+// The Projects tab game: a fictional team, a sprint of tasks and the student
+// implementing them. Sprints and tasks are content; user_sprint_tasks holds
+// each student's progress (status and the live code file).
+
+export const userSprintTaskStatus = pgEnum("user_sprint_task_status", [
+    "backlog",
+    "doing",
+    "done",
+]);
+
+export const sprints = pgTable("sprints", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    slug: varchar("slug", { length: 80 }).notNull().unique(),
+    product: varchar("product", { length: 120 }).notNull(),
+    summary: text("summary").notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    position: integer("position").notNull().default(1),
+    published: boolean("published").notNull().default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const sprintTasks = pgTable(
+    "sprint_tasks",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        sprintId: uuid("sprint_id")
+            .references(() => sprints.id, { onDelete: "cascade" })
+            .notNull(),
+        position: integer("position").notNull(),
+        trackName: varchar("track_name", { length: 40 }).notNull(),
+        title: varchar("title", { length: 160 }).notNull(),
+        description: text("description").notNull(),
+        points: integer("points").notNull(),
+        tag: varchar("tag", { length: 40 }).notNull(),
+        starterCode: text("starter_code").notNull(),
+        // Spec criteria and the task's test list. Plain content until the
+        // runner grading lands; then tests become real executable cases.
+        criteria: jsonb("criteria").$type<string[]>().notNull().default([]),
+        tests: jsonb("tests").$type<{ name: string; ms: number }[]>().notNull().default([]),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.sprintId, table.position),
+        index("sprint_tasks_sprint_id_idx").on(table.sprintId),
+    ],
+);
+
+export const userSprintTasks = pgTable(
+    "user_sprint_tasks",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        userId: uuid("user_id")
+            .references(() => users.id, { onDelete: "cascade" })
+            .notNull(),
+        taskId: uuid("task_id")
+            .references(() => sprintTasks.id, { onDelete: "cascade" })
+            .notNull(),
+        status: userSprintTaskStatus("status").notNull(),
+        code: text("code"),
+        xpEarned: integer("xp_earned").notNull().default(0),
+        doneAt: timestamp("done_at", { withTimezone: true }),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        unique().on(table.userId, table.taskId),
+        index("user_sprint_tasks_user_id_idx").on(table.userId),
+        index("user_sprint_tasks_task_id_idx").on(table.taskId),
+    ],
+);
