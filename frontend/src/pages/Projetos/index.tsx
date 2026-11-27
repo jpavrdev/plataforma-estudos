@@ -13,7 +13,8 @@ import { getInitials } from '../../utils/initials';
 import { SprintBoard } from './SprintBoard';
 import { TaskScreen } from './TaskScreen';
 import { TaskDone } from './TaskDone';
-import { SPRINT, initialTasks } from './sprintData';
+import { SprintEnd } from './SprintEnd';
+import { SPRINT, initialTasks, type SprintTask } from './sprintData';
 // The game stylesheet travels in this page's lazy chunk, not in the shared
 // bundle: the territory boundary is real, not just a folder convention.
 import '../../styles/game.css';
@@ -34,6 +35,7 @@ export function Projects() {
   const [tasks, setTasks] = useState(initialTasks);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const [doneTaskId, setDoneTaskId] = useState<string | null>(null);
+  const [sprintOver, setSprintOver] = useState(false);
   const deadline = useMemo(() => Date.now() + SPRINT.deadlineOffsetMs, []);
 
   if (!enabled) return <Navigate to="/home" replace />;
@@ -46,15 +48,19 @@ export function Projects() {
 
   function backToBoard() {
     if (!doneTask) return;
-    setTasks((list) =>
-      list.map((tk) => {
-        if (tk.id === doneTask.id) return { ...tk, status: 'done' };
-        // The next locked task in line opens up.
-        if (tk.locked && tk.id === tasks.find((c) => c.locked)?.id) return { ...tk, locked: false };
-        return tk;
-      }),
-    );
+    const firstLockedId = tasks.find((c) => c.locked)?.id;
+    const updated: SprintTask[] = tasks.map((tk) => {
+      if (tk.id === doneTask.id) return { ...tk, status: 'done' };
+      // Whatever was under review got approved while the student worked.
+      if (tk.status === 'review') return { ...tk, status: 'done' };
+      // The next locked task in line opens up.
+      if (tk.locked && tk.id === firstLockedId) return { ...tk, locked: false };
+      return tk;
+    });
+    setTasks(updated);
     setDoneTaskId(null);
+    // Approving the last task ends the sprint.
+    if (updated.every((tk) => tk.status === 'done')) setSprintOver(true);
   }
 
   return (
@@ -88,7 +94,13 @@ export function Projects() {
         </header>
 
         <div className="g-root">
-          {doneTask ? (
+          {sprintOver ? (
+            <SprintEnd
+              tasks={tasks}
+              userInitials={getInitials(displayName)}
+              onBackToProjects={() => setSprintOver(false)}
+            />
+          ) : doneTask ? (
             <TaskDone
               task={doneTask}
               nextTask={nextTask}
@@ -101,7 +113,12 @@ export function Projects() {
               task={doing}
               deadline={deadline}
               onBack={() => setOpenTaskId(null)}
-              onDeliver={() => setDoneTaskId(doing.id)}
+              onDeliver={() => {
+                // Delivering leaves the editor: forgetting to clear this
+                // reopens the task screen as soon as the next task is picked.
+                setOpenTaskId(null);
+                setDoneTaskId(doing.id);
+              }}
             />
           ) : (
             <SprintBoard

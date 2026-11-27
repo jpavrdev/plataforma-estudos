@@ -151,27 +151,31 @@ export function TaskDone({
         </section>
 
         {/* C10 · the next task unlocks */}
-        {nextTask && (
-          <section className="g-tile g-after__card g-enter" style={{ ['--d' as string]: '.62s' }} aria-label={t('projects.nextAria')}>
-            <span className="g-label" aria-live="polite">
-              {unlocked ? t('projects.nextUnlocked') : t('projects.nextLabel')}
-            </span>
-            <div className={`g-next${unlocked ? ' is-open' : ''}`}>
-              <span className="g-next__lock" aria-hidden="true">
-                <span className="g-i-closed"><Lock size={18} /></span>
-                <span className="g-i-open"><Unlock size={18} /></span>
+        <section className="g-tile g-after__card g-enter" style={{ ['--d' as string]: '.62s' }} aria-label={t('projects.nextAria')}>
+          {nextTask ? (
+            <>
+              <span className="g-label" aria-live="polite">
+                {unlocked ? t('projects.nextUnlocked') : t('projects.nextLabel')}
               </span>
-              <div className="g-next__text">
-                <b>{nextTask.title}</b>
-                <span className="g-tag">{nextTask.tag} · {nextTask.points} pts</span>
+              <div className={`g-next${unlocked ? ' is-open' : ''}`}>
+                <span className="g-next__lock" aria-hidden="true">
+                  <span className="g-i-closed"><Lock size={18} /></span>
+                  <span className="g-i-open"><Unlock size={18} /></span>
+                </span>
+                <div className="g-next__text">
+                  <b>{nextTask.title}</b>
+                  <span className="g-tag">{nextTask.tag} · {nextTask.points} pts</span>
+                </div>
               </div>
-            </div>
-            <button type="button" className="g-btn g-btn--primary g-btn--block g-after__cta" onClick={onBack}>
-              <span>{t('projects.backToBoard')}</span>
-              <ChevronRight size={16} aria-hidden="true" />
-            </button>
-          </section>
-        )}
+            </>
+          ) : (
+            <span className="g-label" aria-live="polite">{t('projects.lastTaskLabel')}</span>
+          )}
+          <button type="button" className="g-btn g-btn--primary g-btn--block g-after__cta" onClick={onBack}>
+            <span>{t('projects.backToBoard')}</span>
+            <ChevronRight size={16} aria-hidden="true" />
+          </button>
+        </section>
 
         {/* C11 · the ranking row climbs */}
         <section className="g-tile g-after__card g-enter" style={{ ['--d' as string]: '.74s' }} aria-label={t('projects.rankLabel')}>
