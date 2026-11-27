@@ -125,6 +125,10 @@ async function turnFlagOn(token: string) {
         .insert(featureFlagUsers)
         .values({ flagId: flag.id, userId: payload.userId })
         .onConflictDoNothing();
+    console.log(
+        "FLAG-DEBUG",
+        JSON.stringify({ status: flag.status, id: flag.id, userId: payload.userId }),
+    );
 }
 
 before(async () => {
@@ -151,7 +155,7 @@ describe("sprint game", () => {
         await turnFlagOn(token);
 
         const first = await get("/sprints/current", token);
-        assert.equal(first.status, 200);
+        assert.equal(first.status, 200, JSON.stringify(first.body));
         assert.equal(first.body.sprint.totalTasks, 3);
         assert.equal(first.body.sprint.delivered, 0);
         const statuses = first.body.tasks.map((t: { status: string; locked: boolean }) => [
