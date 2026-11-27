@@ -958,6 +958,28 @@ export const ptBR = {
     editorHint: 'Edite e rode os testes',
     saved: 'Salvo',
     editing: 'Editando…',
+    doneTitle: 'Task concluída',
+    doneLead:
+      '{{title}} passou nos 5 testes e na revisão do Davi. Já faz parte da {{product}}.',
+    levelLabel: 'Nível {{n}}',
+    levelOf: '{{now}} / {{max}} XP',
+    levelBarAria: 'Progresso do nível {{n}}',
+    levelLeft: 'Faltam {{left}} XP pro nível {{n}}.',
+    stampAria: 'Carimbo: aprovada na revisão do Davi',
+    stampLabel: 'APROVADA',
+    stampSub: 'REVISÃO · DAVI',
+    rewardXp: 'XP ganho',
+    rewardPts: 'pts na sprint',
+    rewardTests: 'testes passando',
+    reviewAria: 'Revisão do Davi',
+    chipApproved: 'APROVADA',
+    daviTyping: 'Davi está digitando',
+    daviReviewMsg:
+      'Normalizar o e-mail antes de consultar o banco foi a decisão certa. Pode seguir pra próxima.',
+    nextAria: 'Próxima task',
+    nextUnlocked: 'PRÓXIMA TASK DESTRAVADA',
+    nextLabel: 'PRÓXIMA TASK',
+    rankGain: 'Subiu {{n}} posições',
   },
 
   entrevista: {
