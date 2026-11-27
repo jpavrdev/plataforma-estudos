@@ -3265,6 +3265,13 @@
 }
 .notebook {
   align-self: stretch;
+  /* The panel rides along while the lesson scrolls: it sticks to the viewport
+     and only the note list inside it scrolls (mobile keeps the fixed drawer). */
+  position: sticky;
+  top: 22px;
+  max-height: calc(100svh - 44px);
+  display: flex;
+  flex-direction: column;
   margin: 22px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -3364,6 +3371,11 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
 }
 .notebook__card {
   border: 1px solid var(--border);
