@@ -861,6 +861,8 @@ export const ptBR = {
     searchArea: 'Buscar área',
     wholeDeck: 'Todo o seu baralho',
     noArea: 'Nenhuma área com esse nome.',
+    exportArea: 'Exportar os flashcards de {{area}} (CSV)',
+    exportAreaError: 'Não foi possível exportar os flashcards agora. Tente de novo em instantes.',
     howMany: 'Quantas cartas',
     allF: 'todas',
     countOf: '{{seen}} de {{total}}',

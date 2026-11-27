@@ -10,6 +10,7 @@ import {
     answerCard,
     summary,
     trailReview,
+    exportTrailCards,
     type Answer,
 } from "../services/flashcard.service.ts";
 import { AppError } from "../errors/AppError.ts";
@@ -79,7 +80,19 @@ export const getWeakPoints = async (req: Request, res: Response, next: NextFunct
 
 export const getTrailReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.json(await trailReview(String(req.params.trailId)));
+        const format = req.query.formato;
+        if (format === undefined) {
+            res.json(await trailReview(String(req.params.trailId)));
+            return;
+        }
+        if (format !== "csv") throw new AppError(400, "flashcard.invalidFormat");
+        const { content, filename } = await exportTrailCards(
+            String(req.params.trailId),
+            req.locale,
+        );
+        res.setHeader("Content-Type", "text/csv; charset=utf-8");
+        res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+        res.send(content);
     } catch (err) {
         next(err);
     }

@@ -128,6 +128,14 @@ export async function contarRevisaoDaTrilha(trailId: string) {
   return data.total;
 }
 
+export async function downloadTrailCards(trailId: string) {
+  const { data } = await api.get<Blob>(`/flashcards/trilha/${trailId}`, {
+    responseType: 'blob',
+    params: { formato: 'csv' },
+  });
+  return data;
+}
+
 export async function reportarCartao(id: string, origem: Cartao['origem'], comentario?: string) {
   const { data } = await api.post<{ reportado: boolean }>(`/flashcards/${id}/reportar`, {
     origem,

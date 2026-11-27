@@ -10,9 +10,14 @@ import {
     glossary,
     interviewCards,
     interviewTopics,
+    trailTranslations,
+    lessonTranslations,
 } from "../../schema.ts";
 import { and, asc, count, desc, eq, inArray, isNotNull, lte, notInArray, sql } from "drizzle-orm";
 import { AppError } from "../errors/AppError.ts";
+import { renderCardsCsv } from "../domain/cardsCsv.ts";
+import { slug } from "../domain/book.ts";
+import type { Locale } from "../i18n/locale.ts";
 
 /**
  * Scheduler based on the Ebbinghaus forgetting curve.
@@ -718,6 +723,15 @@ async function openSingleCard(userId: string, source: CardSource, sourceId: stri
  * deck as it is answered.
  */
 export async function trailReview(trailId: string) {
+    const deduped = await orderedTrailCards(trailId);
+
+    // The trail order above serves the dedup, which needs to be stable. The
+    // review itself comes out shuffled: here the goal is retention, not redoing
+    // the trail path.
+    return shuffle(deduped).map((c) => ({ ...c, origem: "flashcard" as const }));
+}
+
+async function orderedTrailCards(trailId: string) {
     const cards = await db
         .select({
             id: flashcards.id,
@@ -739,16 +753,65 @@ export async function trailReview(trailId: string) {
     // language track arrives even after the deck is cleaned. The first one in
     // trail order stays, which is stable.
     const seen = new Set<string>();
-    const deduped = cards.filter((c) => {
+    return cards.filter((c) => {
         if (seen.has(c.frente)) return false;
         seen.add(c.frente);
         return true;
     });
+}
 
-    // The trail order above serves the dedup, which needs to be stable. The
-    // review itself comes out shuffled: here the goal is retention, not redoing
-    // the trail path.
-    return shuffle(deduped).map((c) => ({ ...c, origem: "flashcard" as const }));
+const CARDS_CSV_HEADER: Record<Locale, string[]> = {
+    "pt-BR": ["frente", "verso", "aula", "trilha"],
+    en: ["front", "back", "lesson", "trail"],
+};
+
+export async function exportTrailCards(trailId: string, locale: Locale) {
+    if (!/^[0-9a-f-]{36}$/i.test(trailId)) throw new AppError(404, "trail.notFound");
+    const [trail] = await db
+        .select({ name: trails.name })
+        .from(trails)
+        .where(eq(trails.id, trailId));
+    if (!trail) throw new AppError(404, "trail.notFound");
+
+    const cards = await orderedTrailCards(trailId);
+    if (!cards.length) throw new AppError(404, "flashcard.noCards");
+
+    const translate = locale === "en";
+    const [trailTranslation] = translate
+        ? await db
+              .select({ name: trailTranslations.name })
+              .from(trailTranslations)
+              .where(
+                  and(eq(trailTranslations.trailId, trailId), eq(trailTranslations.locale, "en")),
+              )
+        : [];
+    const lessonTranslationRows = translate
+        ? await db
+              .select({ lessonId: lessonTranslations.lessonId, title: lessonTranslations.title })
+              .from(lessonTranslations)
+              .where(
+                  and(
+                      inArray(lessonTranslations.lessonId, [
+                          ...new Set(cards.map((c) => c.aulaId)),
+                      ]),
+                      eq(lessonTranslations.locale, "en"),
+                  ),
+              )
+        : [];
+    const translatedLessonTitle = new Map(lessonTranslationRows.map((l) => [l.lessonId, l.title]));
+
+    const trailName = trailTranslation?.name ?? trail.name;
+    const rows = cards.map((c) => [
+        c.frente,
+        c.verso,
+        translatedLessonTitle.get(c.aulaId) ?? c.aula,
+        trailName,
+    ]);
+
+    return {
+        content: renderCardsCsv(CARDS_CSV_HEADER[locale], rows),
+        filename: `${slug(trailName)}-flashcards.csv`,
+    };
 }
 
 /** How many cards the trail has to review. Feeds the review call. */
