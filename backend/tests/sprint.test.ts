@@ -125,10 +125,6 @@ async function turnFlagOn(token: string) {
         .insert(featureFlagUsers)
         .values({ flagId: flag.id, userId: payload.userId })
         .onConflictDoNothing();
-    console.log(
-        "FLAG-DEBUG",
-        JSON.stringify({ status: flag.status, id: flag.id, userId: payload.userId }),
-    );
 }
 
 before(async () => {
