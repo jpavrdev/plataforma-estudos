@@ -5,8 +5,9 @@
    Keyframe names follow the animation spec exactly (rise, pop, ping...).
    This stylesheet travels in the page's lazy chunk, not the shared bundle. */
 
-.g-page {
-  --g-ground: #eae3d1;
+/* Tokens live on the shared wrapper so every game screen (board, task, done,
+   end) reads the same palette wherever it renders. */
+.g-root {
   --g-well: #f2eddf;
   --g-card: #fbf8ef;
   --g-chip: #e4dcca;
@@ -38,6 +39,12 @@
   --g-violet-3: #8b5cf6;
   --g-violet-line: #7a5bc7;
   --g-mint: #7ee2b0;
+  --g-peach: #ffb088;
+  --g-bad: #d9651f;
+  --g-bad-text: #a63a08;
+  --g-bad-tint: #fbe8da;
+  --g-bad-line: #e7a57e;
+  --g-lilac-soft: #efe6fc;
   --g-ok: #0e7a52;
   --g-ok-text: #0b6b47;
   --g-ok-tint: #e6f3e9;
@@ -51,7 +58,9 @@
   --g-ease-ping: cubic-bezier(0, 0, 0.2, 1);
   --g-t-press: 0.08s;
   --g-t-enter: 0.6s;
+}
 
+.g-page {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -459,6 +468,328 @@
 .g-nudge { animation: nudge 1.2s ease-in-out infinite; } /* Q6 */
 .g-nudge-back { animation: nudgeBack 1.4s ease-in-out infinite; } /* Q7 */
 
+/* ---------- screen 2 · task screen ---------- */
+
+.g-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.g-task-screen {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.g-task-screen:focus { outline: none; }
+
+.g-focus-bar {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  background: var(--g-card);
+  border-bottom: 1.5px solid var(--g-line);
+}
+.g-focus-bar__back { padding: 0 16px 0 12px; color: var(--g-ink); }
+.g-focus-bar__title { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.g-focus-bar__name { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+.g-focus-bar__name strong { font-size: 19px; line-height: 1.3; letter-spacing: -0.01em; }
+.g-focus-bar__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.g-clock-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--g-well);
+  border: 1.5px solid var(--g-line-soft);
+  font-family: var(--font-code);
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.g-clock-pill svg { color: var(--g-purple); }
+.g-btn--locked {
+  background: #efe9da;
+  color: var(--g-muted);
+  border: 1.5px dashed var(--g-line-dash);
+  cursor: not-allowed;
+}
+/* T9 · deliver appears and keeps pulsing */
+.g-deliver-in {
+  animation: bubble 0.34s var(--g-ease-spring) backwards, glow 1.4s ease-out 0.4s infinite;
+}
+.g-deliver-in:active { animation: none; }
+
+.g-task {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 20px 24px;
+  min-width: 0;
+}
+.g-pane { min-width: 0; display: flex; flex-direction: column; }
+.g-pane--spec { flex: 1 1 320px; gap: 16px; padding: 18px; }
+.g-pane--tests { flex: 1 1 320px; gap: 14px; padding: 18px; }
+.g-pane--editor {
+  flex: 2.2 1 480px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--g-dark);
+  color: #ede6f5;
+  box-shadow: 0 4px 0 var(--g-dark-edge);
+}
+.g-pane__head { display: flex; flex-direction: column; gap: 4px; }
+.g-pane__head h2 { margin: 0; font-size: 18px; line-height: 1.3; }
+.g-pane__foot { margin-top: auto; padding-top: 14px; border-top: 1.5px dashed var(--g-line-soft); }
+.g-label {
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--g-muted);
+}
+.g-base { display: flex; flex-direction: column; gap: 8px; }
+.g-base__chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.g-ok-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--g-ok-tint);
+  border: 1.5px solid var(--g-ok-line);
+  color: var(--g-ok-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.g-msg { display: flex; align-items: flex-start; gap: 10px; }
+.g-msg__body { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+
+/* criteria (each lights up with the test that proves it) */
+.g-crits { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.g-crit {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--g-line-faint);
+  background: var(--g-card);
+  font-size: 14px;
+  line-height: 1.45;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.g-crit__text { padding-top: 2px; }
+.g-crit[data-state='pass'] { background: var(--g-ok-tint); border-color: var(--g-ok-line); }
+.g-crit[data-state='fail'] { background: var(--g-bad-tint, #fbe8da); border-color: var(--g-bad-line, #e7a57e); }
+
+/* state marker: number/empty -> spinning -> check or X */
+.g-mk {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--g-line-dash);
+  font-family: var(--font-code);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--g-muted);
+}
+.g-mk__ok, .g-mk__no { display: none; }
+[data-state='run'] > .g-mk { border-color: var(--g-purple); border-top-color: transparent; animation: spin 0.7s linear infinite; } /* T3 */
+[data-state='pass'] > .g-mk { background: var(--g-ok); border-color: var(--g-ok); color: #fff; animation: popMark 0.45s var(--g-ease-spring); } /* T4 */
+[data-state='fail'] > .g-mk { background: #fbe3d2; border-color: var(--g-bad-text, #a63a08); color: var(--g-bad-text, #a63a08); animation: shake 0.4s ease; } /* T5 */
+[data-state='run'] > .g-mk .g-mk__num,
+[data-state='pass'] > .g-mk .g-mk__num,
+[data-state='fail'] > .g-mk .g-mk__num { display: none; }
+[data-state='pass'] > .g-mk .g-mk__ok { display: block; }
+[data-state='fail'] > .g-mk .g-mk__no { display: block; }
+.g-pane--spec .g-mk { margin-top: 1px; }
+
+/* editor */
+.g-tabs {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 10px 14px 0;
+  border-bottom: 1px solid var(--g-dark-hover);
+}
+.g-tab {
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: transparent;
+  color: var(--g-on-dark-muted);
+  font-family: var(--font-code);
+  font-size: 13px;
+  cursor: default;
+}
+.g-tab[aria-pressed='true'] { background: #2e2239; border-color: var(--g-dark-hover); color: var(--g-on-dark); }
+.g-tabs__saved {
+  margin-left: auto;
+  align-self: center;
+  padding-bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--g-on-dark-muted);
+}
+.g-tabs__saved::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--g-mint); }
+.g-tabs__saved[data-state='editing']::before { background: var(--g-peach, #ffb088); }
+
+.g-code-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 380px;
+  counter-reset: ln;
+  font-family: var(--font-code);
+  font-size: 13.5px;
+  line-height: 23px;
+}
+.g-hl {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 14px 16px 14px 8px;
+  overflow: hidden;
+  white-space: pre;
+  font: inherit;
+  color: #ede6f5;
+}
+/* Block, not flex: flex would drop whitespace-only text nodes between the
+   highlight spans and fuse tokens like "returnErr". */
+.g-ln { display: block; position: relative; min-height: 23px; padding-left: 48px; counter-increment: ln; }
+.g-ln::before {
+  content: counter(ln);
+  position: absolute;
+  left: 8px;
+  width: 36px;
+  padding-right: 12px;
+  text-align: right;
+  color: #9a8dae;
+  user-select: none;
+}
+/* T5 · the failing line gets flagged */
+.g-ln--flag {
+  background: rgba(255, 176, 136, 0.13);
+  box-shadow: inset 3px 0 0 var(--g-peach);
+}
+.g-ln--flag::before { color: var(--g-peach); font-weight: 700; }
+.g-k { color: var(--g-violet); }
+.g-t { color: #8fe3bd; }
+.g-s { color: #ffb48c; }
+.g-c { color: #9a8dae; }
+/* The textarea sits on the painted layer; its padding-left must match the
+   painted text origin (8px of pane padding + 48px of line number). */
+.g-code-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 14px 16px 14px 56px;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--g-violet);
+  font: inherit;
+  line-height: 23px;
+  white-space: pre;
+  overflow: auto;
+  resize: none;
+  outline: none;
+  tab-size: 4;
+}
+.g-code-input::selection { background: rgba(124, 58, 237, 0.35); -webkit-text-fill-color: transparent; }
+.g-editor__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--g-dark-hover);
+  font-family: var(--font-code);
+  font-size: 12px;
+  color: var(--g-on-dark-muted);
+}
+
+/* tests */
+.g-tests__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.g-score {
+  display: inline-block;
+  font-family: var(--font-code);
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  animation: bumpScore 0.45s ease; /* T6 */
+}
+.g-segs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.g-seg { height: 8px; border-radius: 4px; background: var(--g-chip); transition: background-color 0.25s ease; }
+.g-seg[data-state='run'] { background: var(--g-lilac-line); animation: blinkSoft 0.5s ease-in-out infinite alternate; }
+.g-seg[data-state='pass'] { background: var(--g-ok); }
+.g-seg[data-state='fail'] { background: var(--g-bad, #d9651f); }
+.g-trows { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.g-trow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--g-line-faint);
+  background: var(--g-card);
+  font-family: var(--font-code);
+  font-size: 12.5px;
+  line-height: 1.4;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.g-trow[data-state='run'] { background: var(--g-lilac-soft, #efe6fc); border-color: var(--g-lilac-line); }
+.g-trow[data-state='fail'] { background: var(--g-bad-tint, #fbe8da); border-color: var(--g-bad-line, #e7a57e); }
+.g-trow__name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.g-trow__ms { font-size: 11.5px; color: var(--g-muted); }
+.g-result {
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  transform-origin: left top;
+  animation: bubble 0.34s var(--g-ease-spring) backwards;
+}
+.g-result--fail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--g-bad-tint, #fbe8da);
+  border: 1.5px solid var(--g-bad-line, #e7a57e);
+}
+.g-result--fail strong { font-family: var(--font-code); font-size: 12.5px; color: var(--g-bad-text, #a63a08); }
+.g-result--pass {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--g-ok-tint);
+  border: 1.5px solid var(--g-ok-line);
+  color: var(--g-ok-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* ---------- keyframes (names follow the animation spec) ---------- */
 
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
@@ -489,10 +820,31 @@
 @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
 @keyframes nudgeBack { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
 
+/* T3 · test running */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes blinkSoft { from { opacity: 0.45; } to { opacity: 1; } }
+/* T4 · test passed */
+@keyframes popMark { 0% { transform: scale(0.4); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+/* T5 · test failed */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+/* T6 · test score */
+@keyframes bumpScore { 0% { transform: scale(1); } 40% { transform: scale(1.3); color: #7c3aed; } 100% { transform: scale(1); } }
+/* T9 · deliver button pulsing */
+@keyframes glow {
+  0% { box-shadow: 0 4px 0 #5b21b6, 0 0 0 0 rgba(124, 58, 237, 0.5); }
+  100% { box-shadow: 0 4px 0 #5b21b6, 0 0 0 14px rgba(124, 58, 237, 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .g-page *,
-  .g-page *::before,
-  .g-page *::after {
+  .g-root *,
+  .g-root *::before,
+  .g-root *::after {
     animation-duration: 0.01ms !important;
     animation-delay: 0s !important;
     animation-iteration-count: 1 !important;

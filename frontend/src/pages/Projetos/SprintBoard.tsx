@@ -14,7 +14,6 @@ import {
   RANKING,
   SPRINT,
   deliveredCount,
-  initialTasks,
   trackStatus,
   type SprintTask,
 } from './sprintData';
@@ -27,12 +26,23 @@ const PO_REPLY_MS = 1400;
 
 type MoveFx = { id: string; cls: 'g-drop-in' | 'g-drop-back' };
 
-// Screen 1 of the sprint game: the board. The student sees the sprint score
-// (deadline, task track, ranking), the PO's message and the four columns, and
-// moves a task from the backlog with the choreographed card flight.
-export function SprintBoard({ userInitials }: { userInitials: string }) {
+// Screen 1 of the sprint game: the board. The sprint score (deadline, task
+// track, ranking), the PO's message and the four columns; picking a task
+// flies the card into the doing column with the spec's choreography.
+export function SprintBoard({
+  tasks,
+  setTasks,
+  deadline,
+  onOpenTask,
+  userInitials,
+}: {
+  tasks: SprintTask[];
+  setTasks: React.Dispatch<React.SetStateAction<SprintTask[]>>;
+  deadline: number;
+  onOpenTask: (taskId: string) => void;
+  userInitials: string;
+}) {
   const { t } = useTranslation();
-  const [tasks, setTasks] = useState<SprintTask[]>(initialTasks);
   const [poState, setPoState] = useState<'idle' | 'typing' | 'picked'>('idle');
   const [leavingId, setLeavingId] = useState<string | null>(null);
   const [moveFx, setMoveFx] = useState<MoveFx | null>(null);
@@ -93,7 +103,7 @@ export function SprintBoard({ userInitials }: { userInitials: string }) {
         </ul>
       </div>
 
-      <SprintHud tasks={tasks} />
+      <SprintHud tasks={tasks} deadline={deadline} />
 
       <div className="g-po g-enter" style={{ ['--d' as string]: '.16s' }}>
         <span className="g-avatar g-avatar--lg g-avatar--lia" aria-hidden="true">L</span>
@@ -146,6 +156,7 @@ export function SprintBoard({ userInitials }: { userInitials: string }) {
                   fx={leavingId === task.id ? 'g-is-leaving' : moveFx?.id === task.id ? moveFx.cls : undefined}
                   onPick={() => moveTask(task.id, 'doing')}
                   onGiveBack={() => moveTask(task.id, 'backlog')}
+                  onOpen={() => onOpenTask(task.id)}
                 />
               ))}
             </div>
@@ -156,9 +167,8 @@ export function SprintBoard({ userInitials }: { userInitials: string }) {
   );
 }
 
-function SprintHud({ tasks }: { tasks: SprintTask[] }) {
+function SprintHud({ tasks, deadline }: { tasks: SprintTask[]; deadline: number }) {
   const { t } = useTranslation();
-  const deadline = useRef(Date.now() + SPRINT.deadlineOffsetMs).current;
   const clock = useCountdown(deadline);
   const delivered = deliveredCount(tasks);
   const earned = tasks.filter((tk) => tk.status === 'done').reduce((sum, tk) => sum + tk.points, 0);
@@ -256,11 +266,13 @@ function TaskCard({
   fx,
   onPick,
   onGiveBack,
+  onOpen,
 }: {
   task: SprintTask;
   fx?: string;
   onPick: () => void;
   onGiveBack: () => void;
+  onOpen: () => void;
 }) {
   const { t } = useTranslation();
   const next = task.status === 'backlog' && !task.locked;
@@ -300,7 +312,7 @@ function TaskCard({
             <span className="g-blink-block" aria-hidden="true" />
             <span>{t('projects.withYouNow')}</span>
           </p>
-          <button type="button" className="g-btn g-btn--primary g-btn--block" disabled title={t('projects.editorSoon')}>
+          <button type="button" className="g-btn g-btn--primary g-btn--block" onClick={onOpen}>
             <Code size={16} aria-hidden="true" />
             <span>{t('projects.openEditor')}</span>
           </button>
