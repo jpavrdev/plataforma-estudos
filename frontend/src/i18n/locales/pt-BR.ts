@@ -341,6 +341,7 @@ export const ptBR = {
     tracks: 'Trilhas',
     exams: 'Simulados',
     challenges: 'Desafios',
+    projects: 'Projetos',
     review: 'Revisão',
     ranking: 'Ranking',
     community: 'Comunidade',
@@ -886,6 +887,25 @@ export const ptBR = {
     rateHard: 'Difícil',
     rateMedium: 'Intermediária',
     rateEasy: 'Fácil',
+  },
+
+  projects: {
+    title: 'Projetos',
+    subtitle:
+      'Entre num time de verdade: receba as tasks da sprint, implemente no editor e veja os testes passarem.',
+    badge: 'Em construção',
+    colBacklog: 'Backlog',
+    colDoing: 'Fazendo',
+    colReview: 'Em revisão',
+    colDone: 'Feita',
+    emptyColumn: 'Nada por aqui ainda.',
+    teaserTitle: 'Implementar endpoint de cadastro',
+    teaserBody:
+      'Receber os dados, validar o que chega e devolver a resposta certa pra cada caso.',
+    teaserFoot: 'Abre com a sprint',
+    introTitle: 'Como vai funcionar',
+    introBody:
+      'Cada sprint entrega um produto que cresce task por task. Você pega a task, implementa no editor, roda os testes, ganha XP e destrava a próxima. O que você construiu numa task vira a base da seguinte.',
   },
 
   entrevista: {

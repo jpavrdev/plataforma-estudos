@@ -59,6 +59,7 @@ const RoadmapEditor = lazy(() =>
 );
 const Desafios = lazy(() => import('./pages/Desafios').then((m) => ({ default: m.Desafios })));
 const Revisao = lazy(() => import('./pages/Revisao').then((m) => ({ default: m.Revisao })));
+const Projects = lazy(() => import('./pages/Projetos').then((m) => ({ default: m.Projects })));
 const Desafio = lazy(() =>
   import('./pages/Desafios/Desafio').then((m) => ({ default: m.Desafio })),
 );
@@ -392,6 +393,14 @@ function AppRoutes() {
             element={
               <PrivateRoute>
                 <Desafio />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/projetos"
+            element={
+              <PrivateRoute>
+                <Projects />
               </PrivateRoute>
             }
           />

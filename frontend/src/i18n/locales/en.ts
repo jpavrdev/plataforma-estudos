@@ -341,6 +341,7 @@ export const en: typeof ptBR = {
     tracks: 'Tracks',
     exams: 'Mock exams',
     challenges: 'Challenges',
+    projects: 'Projects',
     review: 'Review',
     ranking: 'Leaderboard',
     community: 'Community',
@@ -885,6 +886,24 @@ export const en: typeof ptBR = {
     rateHard: 'Hard',
     rateMedium: 'Medium',
     rateEasy: 'Easy',
+  },
+
+  projects: {
+    title: 'Projects',
+    subtitle:
+      'Join a real team: pick up sprint tasks, implement them in the editor and watch the tests pass.',
+    badge: 'In the making',
+    colBacklog: 'Backlog',
+    colDoing: 'In progress',
+    colReview: 'In review',
+    colDone: 'Done',
+    emptyColumn: 'Nothing here yet.',
+    teaserTitle: 'Implement the sign-up endpoint',
+    teaserBody: 'Take the incoming data, validate it and answer the right response for each case.',
+    teaserFoot: 'Opens with the sprint',
+    introTitle: 'How it will work',
+    introBody:
+      'Each sprint ships a product that grows task by task. You take the task, implement it in the editor, run the tests, earn XP and unlock the next one. What you built in a task becomes the base of the following one.',
   },
 
   entrevista: {
