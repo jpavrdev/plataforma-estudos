@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Lock } from '../../components/Icons';
-import { SPRINT, type SprintTask } from './sprintData';
+import type { SprintData } from '../../services/sprints';
 
 // XP counting on the final stats (F4): 28 steps of 45ms starting at 900ms.
 const XP_STEPS = 28;
@@ -13,11 +13,11 @@ const XP_PER_POINT = 20;
 // brick by brick, the sprint numbers come in, the final ranking highlights
 // the student and the team leaves their word. Only the XP count is JS.
 export function SprintEnd({
-  tasks,
+  data,
   userInitials,
   onBackToProjects,
 }: {
-  tasks: SprintTask[];
+  data: SprintData;
   userInitials: string;
   onBackToProjects: () => void;
 }) {
@@ -26,8 +26,8 @@ export function SprintEnd({
   const [xp, setXp] = useState(0);
   const timers = useRef<number[]>([]);
 
-  const totalPoints = tasks.reduce((sum, tk) => sum + tk.points, 0);
-  const xpTotal = totalPoints * XP_PER_POINT;
+  const { sprint, tasks, ranking } = data;
+  const xpTotal = sprint.earned * XP_PER_POINT;
 
   useEffect(() => {
     mainRef.current?.focus();
@@ -43,29 +43,27 @@ export function SprintEnd({
     // The screen mounts once per finished sprint.
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const ranking = [
-    { pos: 1, avatar: 'M', name: 'marina.dev', time: '2d 04h', pts: 21 },
-    { pos: 2, avatar: 'J', name: 'joaopedro', time: '2d 11h', pts: 21 },
-    { pos: 3, avatar: 'B', name: 'biaalves', time: '3d 01h', pts: 21 },
-    { pos: 8, avatar: 'L', name: 'lucas.tx', time: '5d 09h', pts: 21 },
-    { pos: 9, avatar: userInitials, name: t('projects.you'), time: '5d 18h', pts: 21, you: true },
-    { pos: 10, avatar: 'R', name: 'rafa_lima', time: '6d 02h', pts: 21 },
-  ];
+  // Time left on the clock when the last task landed, as "1d 06h".
+  const slackMs = Math.max(0, Date.parse(sprint.endsAt) - Date.now());
+  const slack =
+    slackMs >= 86_400_000
+      ? `${Math.floor(slackMs / 86_400_000)}d ${String(Math.floor((slackMs % 86_400_000) / 3_600_000)).padStart(2, '0')}h`
+      : `${Math.floor(slackMs / 3_600_000)}h`;
 
   return (
     <main className="g-end" ref={mainRef} tabIndex={-1}>
-      <h1 className="g-sr-only">{t('projects.endSrTitle', { product: SPRINT.product })}</h1>
+      <h1 className="g-sr-only">{t('projects.endSrTitle', { product: sprint.product })}</h1>
 
       <section className="g-end-hero g-panel-dark g-enter" aria-labelledby="g-end-h">
         <div className="g-end-hero__text">
           <span className="g-badge-dark g-badge-dark--ok g-enter" style={{ ['--d' as string]: '.1s' }}>
-            {t('projects.endBadge', { sprint: SPRINT.number })}
+            {t('projects.endBadge', { sprint: sprint.number })}
           </span>
           <h2 id="g-end-h" className="g-enter" style={{ ['--d' as string]: '.18s' }}>
-            {t('projects.endTitleA')} <em>{SPRINT.product}</em> {t('projects.endTitleB')}
+            {t('projects.endTitleA')} <em>{sprint.product}</em> {t('projects.endTitleB')}
           </h2>
           <p className="g-hero__lead g-enter" style={{ ['--d' as string]: '.26s' }}>
-            {t('projects.endLead', { done: tasks.length, total: tasks.length })}
+            {t('projects.endLead', { done: sprint.delivered, total: sprint.totalTasks, slack })}
           </p>
           <div className="g-end-hero__actions g-enter" style={{ ['--d' as string]: '.34s' }}>
             <a className="g-btn g-btn--primary" href="#g-ranking">
@@ -90,7 +88,7 @@ export function SprintEnd({
           <ol className="g-tower" aria-label={t('projects.towerAria')}>
             {tasks.map((task, i) => (
               <li className="g-brick" style={{ ['--d' as string]: `${0.5 + i * 0.22}s` }} key={task.id}>
-                <span>{i + 1}</span>
+                <span>{task.position}</span>
                 <b>{task.title}</b>
                 <span>{task.points} pts</span>
               </li>
@@ -101,7 +99,7 @@ export function SprintEnd({
 
       <section className="g-stats" aria-label={t('projects.statsAria')}>
         <div className="g-stat g-tile g-enter" style={{ ['--d' as string]: '.3s' }}>
-          <b>{totalPoints}/{totalPoints}</b>
+          <b>{sprint.earned}/{sprint.totalPoints}</b>
           <span>{t('projects.statPts')}</span>
         </div>
         <div className="g-stat g-stat--xp g-tile g-enter" style={{ ['--d' as string]: '.38s' }}>
@@ -109,11 +107,11 @@ export function SprintEnd({
           <span>{t('projects.rewardXp')}</span>
         </div>
         <div className="g-stat g-tile g-enter" style={{ ['--d' as string]: '.46s' }}>
-          <b>{tasks.length}/{tasks.length}</b>
+          <b>{sprint.delivered}/{sprint.totalTasks}</b>
           <span>{t('projects.statApproved')}</span>
         </div>
         <div className="g-stat g-tile g-enter" style={{ ['--d' as string]: '.54s' }}>
-          <b>1d 06h</b>
+          <b>{slack}</b>
           <span>{t('projects.statSlack')}</span>
         </div>
       </section>
@@ -126,18 +124,21 @@ export function SprintEnd({
           </div>
           <ol>
             {ranking.map((row, i) => (
-              <li key={row.pos}>
-                {/* F5 · the gap before your section of the table */}
-                {row.pos === 8 && <span className="g-rank-gap" aria-hidden="true">···</span>}
+              <li key={row.position}>
+                {/* F5 · the gap before the student's section of the table */}
+                {row.you && row.position > 4 && (
+                  <span className="g-rank-gap" aria-hidden="true">···</span>
+                )}
                 <div
-                  className={`g-rank-row${row.pos === 1 ? ' g-rank-row--first' : ''}${row.you ? ' g-rank-row--you' : ''}`}
+                  className={`g-rank-row${row.position === 1 ? ' g-rank-row--first' : ''}${row.you ? ' g-rank-row--you' : ''}`}
                   style={{ ['--d' as string]: `${0.74 + i * 0.07}s` }}
                 >
-                  <span className="g-rank-row__pos">{row.pos}º</span>
-                  <span className="g-avatar" aria-hidden="true">{row.avatar}</span>
+                  <span className="g-rank-row__pos">{row.position}º</span>
+                  <span className="g-avatar" aria-hidden="true">
+                    {row.you ? userInitials : row.name.slice(0, 1).toUpperCase()}
+                  </span>
                   <span className="g-rank-row__name">{row.name}</span>
-                  <span className="g-rank-row__time">{row.time}</span>
-                  <span className="g-rank-row__pts">{row.pts} pts</span>
+                  <span className="g-rank-row__pts">{row.points} pts</span>
                 </div>
               </li>
             ))}
@@ -167,7 +168,7 @@ export function SprintEnd({
           <section className="g-next-sprint g-enter" style={{ ['--d' as string]: '.8s' }} aria-label={t('projects.nextSprintAria')}>
             <span className="g-next-sprint__lock" aria-hidden="true"><Lock size={20} /></span>
             <div className="g-next-sprint__text">
-              <span className="g-label">{t('projects.nextSprintLabel', { sprint: SPRINT.number + 1 })}</span>
+              <span className="g-label">{t('projects.nextSprintLabel', { sprint: sprint.number + 1 })}</span>
               <b>{t('projects.nextSprintName')}</b>
               <small>{t('projects.nextSprintDate')}</small>
             </div>

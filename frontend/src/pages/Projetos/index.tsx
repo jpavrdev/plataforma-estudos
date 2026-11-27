@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MobileMenu } from '../../components/MobileMenu';
@@ -14,14 +14,20 @@ import { SprintBoard } from './SprintBoard';
 import { TaskScreen } from './TaskScreen';
 import { TaskDone } from './TaskDone';
 import { SprintEnd } from './SprintEnd';
-import { SPRINT, initialTasks, type SprintTask } from './sprintData';
+import {
+  claimSprintTask,
+  completeSprintTask,
+  fetchCurrentSprint,
+  returnSprintTask,
+  type SprintData,
+} from '../../services/sprints';
 // The game stylesheet travels in this page's lazy chunk, not in the shared
 // bundle: the territory boundary is real, not just a folder convention.
 import '../../styles/game.css';
 
-// Territory of the sprint game: the tab where the student joins a fictional
-// team, picks backlog tasks and implements them until the tests pass. The
-// "projetos-guiados" flag gates it so nobody trips over work in progress.
+// Territory of the sprint game. The engine behind /sprints serves the board;
+// screens hand work to each other: the board moves tasks, the task screen
+// delivers, the celebration completes. The "projetos-guiados" flag gates it.
 export function Projects() {
   const { t } = useTranslation();
   const { user: authUser } = useAuth();
@@ -29,38 +35,64 @@ export function Projects() {
   const enabled = useFeature('projetos-guiados');
   useSeo({ titulo: t('projects.title'), descricao: t('projects.subtitle') });
 
-  // The whole game state lives here so the screens hand work to each other:
-  // the board moves tasks between columns, the task screen delivers, the
-  // celebration screen approves and unlocks the next task.
-  const [tasks, setTasks] = useState(initialTasks);
+  const [data, setData] = useState<SprintData | null>(null);
+  const [failed, setFailed] = useState(false);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
-  const [doneTaskId, setDoneTaskId] = useState<string | null>(null);
-  const [sprintOver, setSprintOver] = useState(false);
-  const deadline = useMemo(() => Date.now() + SPRINT.deadlineOffsetMs, []);
+  const [celebratingId, setCelebratingId] = useState<string | null>(null);
+  // After the sprint ends, "back to projects" shows the finished board.
+  const [forceBoard, setForceBoard] = useState(false);
+
+  const reload = useCallback(async () => {
+    try {
+      setData(await fetchCurrentSprint());
+      setFailed(false);
+    } catch (err) {
+      console.error('Failed to load the current sprint.', err);
+      setFailed(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   if (!enabled) return <Navigate to="/home" replace />;
 
   const displayName = authUser?.name ?? '';
-  const doing = tasks.find((tk) => tk.status === 'doing') ?? null;
-  const doneTask = doneTaskId ? tasks.find((tk) => tk.id === doneTaskId) ?? null : null;
-  const doneIndex = doneTask ? tasks.findIndex((tk) => tk.id === doneTask.id) + 1 : 0;
-  const nextTask = doneTask ? tasks.find((tk) => tk.locked) ?? null : null;
+  const doing = data?.tasks.find((tk) => tk.status === 'doing') ?? null;
+  const celebrating = celebratingId ? data?.tasks.find((tk) => tk.id === celebratingId) ?? null : null;
+  const nextTask = celebrating ? data?.tasks.find((tk) => tk.locked) ?? null : null;
 
-  function backToBoard() {
-    if (!doneTask) return;
-    const firstLockedId = tasks.find((c) => c.locked)?.id;
-    const updated: SprintTask[] = tasks.map((tk) => {
-      if (tk.id === doneTask.id) return { ...tk, status: 'done' };
-      // Whatever was under review got approved while the student worked.
-      if (tk.status === 'review') return { ...tk, status: 'done' };
-      // The next locked task in line opens up.
-      if (tk.locked && tk.id === firstLockedId) return { ...tk, locked: false };
-      return tk;
-    });
-    setTasks(updated);
-    setDoneTaskId(null);
-    // Approving the last task ends the sprint.
-    if (updated.every((tk) => tk.status === 'done')) setSprintOver(true);
+  // The board choreographs the move locally; this applies it to the engine
+  // state and persists it. On failure the reload brings the truth back.
+  async function moveTask(taskId: string, to: 'doing' | 'backlog') {
+    setData((current) =>
+      current
+        ? {
+            ...current,
+            tasks: current.tasks.map((tk) => (tk.id === taskId ? { ...tk, status: to } : tk)),
+          }
+        : current,
+    );
+    try {
+      if (to === 'doing') await claimSprintTask(taskId);
+      else await returnSprintTask(taskId);
+    } catch (err) {
+      console.error('Failed to move the sprint task.', err);
+      reload();
+    }
+  }
+
+  // Leaving the celebration completes the task in the engine; the reloaded
+  // board knows whether the sprint just ended.
+  async function completeFromCelebration(taskId: string) {
+    try {
+      await completeSprintTask(taskId);
+    } catch (err) {
+      console.error('Failed to complete the sprint task.', err);
+    }
+    setCelebratingId(null);
+    await reload();
   }
 
   return (
@@ -94,37 +126,46 @@ export function Projects() {
         </header>
 
         <div className="g-root">
-          {sprintOver ? (
+          {data?.sprint.over && !forceBoard ? (
             <SprintEnd
-              tasks={tasks}
+              data={data}
               userInitials={getInitials(displayName)}
-              onBackToProjects={() => setSprintOver(false)}
+              onBackToProjects={() => setForceBoard(true)}
             />
-          ) : doneTask ? (
+          ) : celebrating && data ? (
             <TaskDone
-              task={doneTask}
+              sprint={data.sprint}
+              task={celebrating}
               nextTask={nextTask}
-              taskIndex={doneIndex}
-              totalTasks={tasks.length}
-              onBack={backToBoard}
+              taskIndex={celebrating.position}
+              totalTasks={data.sprint.totalTasks}
+              onComplete={() => completeFromCelebration(celebrating.id)}
             />
           ) : openTaskId && doing ? (
             <TaskScreen
-              task={doing}
-              deadline={deadline}
+              taskId={doing.id}
+              deadline={data ? Date.parse(data.sprint.endsAt) : Date.now()}
+              taskMeta={data?.sprint ?? null}
+              previousTasks={
+                data?.tasks
+                  .filter((tk) => tk.status === 'done' && tk.position < doing.position)
+                  .slice(-2)
+                  .reverse() ?? []
+              }
               onBack={() => setOpenTaskId(null)}
               onDeliver={() => {
                 // Delivering leaves the editor: forgetting to clear this
                 // reopens the task screen as soon as the next task is picked.
                 setOpenTaskId(null);
-                setDoneTaskId(doing.id);
+                setCelebratingId(doing.id);
               }}
             />
           ) : (
             <SprintBoard
-              tasks={tasks}
-              setTasks={setTasks}
-              deadline={deadline}
+              data={data}
+              failed={failed}
+              onRetry={reload}
+              onMove={moveTask}
               onOpenTask={setOpenTaskId}
               userInitials={getInitials(displayName)}
             />

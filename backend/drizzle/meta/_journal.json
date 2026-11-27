@@ -519,6 +519,13 @@
       "when": 1795612988384,
       "tag": "0073_user_visits",
       "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "7",
+      "when": 1795798617262,
+      "tag": "0074_sprints",
+      "breakpoints": true
     }
   ]
 }

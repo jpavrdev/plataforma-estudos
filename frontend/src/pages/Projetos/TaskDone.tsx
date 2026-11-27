@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, ChevronRight, ChevronUp, Lock, Unlock } from '../../components/Icons';
-import { SPRINT, type SprintTask } from './sprintData';
+import type { SprintData, SprintTaskView } from '../../services/sprints';
 
 // Celebration timings, straight from the spec: the reviewer answers at 2.4s,
 // the next task unlocks at 3.1s and the ranking rows swap at 3.6s.
@@ -20,17 +20,19 @@ const LEVEL_MAX = 500;
 // counts up, the reviewer says his word, the next task unlocks and the
 // ranking row climbs. Only counting and the three timers live in JS.
 export function TaskDone({
+  sprint,
   task,
   nextTask,
   taskIndex,
   totalTasks,
-  onBack,
+  onComplete,
 }: {
-  task: SprintTask;
-  nextTask: SprintTask | null;
+  sprint: SprintData['sprint'];
+  task: SprintTaskView;
+  nextTask: SprintTaskView | null;
   taskIndex: number;
   totalTasks: number;
-  onBack: () => void;
+  onComplete: () => void;
 }) {
   const { t } = useTranslation();
   const mainRef = useRef<HTMLElement>(null);
@@ -70,13 +72,13 @@ export function TaskDone({
       <section className="g-hero g-panel-dark g-hero-in" aria-labelledby="g-done-h">
         <div className="g-hero__text">
           <span className="g-badge-dark g-enter" style={{ ['--d' as string]: '.1s' }}>
-            {t('projects.taskMeta', { sprint: SPRINT.number, index: taskIndex, total: totalTasks })}
+            {t('projects.taskMeta', { sprint: sprint.number, index: taskIndex, total: totalTasks })}
           </span>
           <h2 id="g-done-h" className="g-enter" style={{ ['--d' as string]: '.18s' }}>
             {t('projects.doneTitle')}
           </h2>
           <p className="g-hero__lead g-enter" style={{ ['--d' as string]: '.26s' }}>
-            {t('projects.doneLead', { title: task.title, product: SPRINT.product })}
+            {t('projects.doneLead', { title: task.title, product: sprint.product })}
           </p>
           {/* C6 · the level bar follows the XP count */}
           <div className="g-level g-enter" style={{ ['--d' as string]: '1.3s' }}>
@@ -171,7 +173,7 @@ export function TaskDone({
           ) : (
             <span className="g-label" aria-live="polite">{t('projects.lastTaskLabel')}</span>
           )}
-          <button type="button" className="g-btn g-btn--primary g-btn--block g-after__cta" onClick={onBack}>
+          <button type="button" className="g-btn g-btn--primary g-btn--block g-after__cta" onClick={onComplete}>
             <span>{t('projects.backToBoard')}</span>
             <ChevronRight size={16} aria-hidden="true" />
           </button>
@@ -190,7 +192,7 @@ export function TaskDone({
             <span className="g-rank-move__pos">10º</span>
             <div className="g-rank-move__row g-rank-move__row--you">
               {t('projects.you')}
-              <span>{xp >= xpTotal ? 8 + task.points : 8} pts</span>
+              <span>{xp >= xpTotal ? sprint.earned + task.points : sprint.earned} pts</span>
             </div>
             <span className="g-rank-move__pos">11º</span>
             <div className="g-rank-move__row">rafa_lima<span>10 pts</span></div>

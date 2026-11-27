@@ -18,6 +18,7 @@ import communityRoutes from "./src/routes/community.routes.ts";
 import labRoutes from "./src/routes/lab.routes.ts";
 import atsRoutes from "./src/routes/ats.routes.ts";
 import healthRoutes from "./src/routes/health.routes.ts";
+import sprintRoutes from "./src/routes/sprint.routes.ts";
 import { errorMiddleware } from "./src/middlewares/error.ts";
 import { locale } from "./src/middlewares/locale.ts";
 import { apiLimiter } from "./src/middlewares/rateLimit.ts";
@@ -83,5 +84,6 @@ app.use(labRoutes);
 app.use(atsRoutes);
 app.use(adminRoutes);
 app.use(healthRoutes);
+app.use(sprintRoutes);
 
 app.use(errorMiddleware);

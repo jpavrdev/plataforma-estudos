@@ -70,6 +70,7 @@
   width: 100%;
   color: var(--g-ink);
 }
+.g-loading { margin: 0; padding: 24px 0; color: var(--g-muted); }
 
 /* ---------- shared pieces ---------- */
 
