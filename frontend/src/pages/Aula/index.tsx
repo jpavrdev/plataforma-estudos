@@ -527,73 +527,18 @@ function ConteudoAula({
         parent.removeChild(m);
         parent.normalize();
       });
-      if (highlights.length === 0) return;
-      const pending = [...highlights];
-
-      // Formula quotes ("$...$" alone) paint by wrapping the matching KaTeX
-      // element; its annotation carries the same LaTeX the quote was made of.
-      for (const h of [...pending]) {
-        const m = h.body.trim().match(/^\$([^$]+)\$/);
-        if (!m) continue;
-        const katex = [...root.querySelectorAll('.katex')].find((k) =>
-          k.querySelector('annotation')?.textContent?.trim() === m[1].trim(),
-        );
-        if (!katex) continue;
-        try {
-          const range = document.createRange();
-          range.selectNode(katex);
-          const mark = document.createElement('mark');
-          mark.className = 'notebook-highlight';
-          mark.dataset.noteId = h.id;
-          // A pending jump keeps its flash even if the content repaints.
-          if (h.id === pendingScrollNote) mark.classList.add('notebook-flash');
-          range.surroundContents(mark);
-          pending.splice(pending.indexOf(h), 1);
-        } catch (err) {
-          console.error('Failed to paint the formula highlight.', err);
-          pending.splice(pending.indexOf(h), 1);
+      for (const h of highlights) {
+        const segments = matchQuote(root, h.body);
+        if (!segments) {
+          // The quote crossed content that changed since it was saved (or never
+          // existed in this lesson): it stays in the notebook only.
+          console.warn('Notebook highlight no longer matches the lesson text.', h.body.slice(0, 80));
+          continue;
         }
-      }
-
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-        acceptNode(node) {
-          const el = node.parentElement;
-          // Block code, KaTeX internals and existing marks stay out of the search.
-          if (!el || el.closest('.codeblock, .katex, mark.notebook-highlight'))
-            return NodeFilter.FILTER_REJECT;
-          return NodeFilter.FILTER_ACCEPT;
-        },
-      });
-      let node: Node | null;
-      while (pending.length > 0 && (node = walker.nextNode()) !== null) {
-        // surroundContents splits the text node in the middle, so after each
-        // painted quote the node data must be read again: offsets computed over
-        // the old string can point past the end of the shortened node.
-        let paintedSomething = true;
-        while (paintedSomething && pending.length > 0) {
-          paintedSomething = false;
-          const current = (node as Text).data;
-          for (let q = pending.length - 1; q >= 0; q--) {
-            const bounds = findTextRange(current, pending[q].body);
-            if (!bounds) continue;
-            try {
-              const range = document.createRange();
-              range.setStart(node, bounds.start);
-              range.setEnd(node, bounds.end);
-              const mark = document.createElement('mark');
-              mark.className = 'notebook-highlight';
-              mark.dataset.noteId = pending[q].id;
-              // A pending jump keeps its flash even if the content repaints.
-              if (pending[q].id === pendingScrollNote) mark.classList.add('notebook-flash');
-              range.surroundContents(mark);
-              pending.splice(q, 1);
-              paintedSomething = true;
-              break;
-            } catch (err) {
-              console.error('Failed to paint the highlight onto the content.', err);
-              pending.splice(q, 1);
-            }
-          }
+        // Each quote is matched against a freshly collected index, because
+        // painting a previous one splits text nodes and moves offsets.
+        for (let i = segments.length - 1; i >= 0; i--) {
+          paintSegment(segments[i], h.id, h.id === pendingScrollNote);
         }
       }
     }
@@ -731,32 +676,118 @@ function normalizeSpace(text: string): string {
   return text.replace(/\s+/g, ' ').trim();
 }
 
-// Matches the quote (with normalized whitespace) against the original node text
-// and returns the offsets in the original string, ready for a Range.
-function findTextRange(original: string, rawQuote: string): { start: number; end: number } | null {
+// One slice of a highlight: a stretch inside a single text node, or one whole
+// KaTeX formula. Quotes are painted as a run of these side by side.
+type HighlightSegment = { text: Text; start: number; end: number } | { katex: Element };
+
+type FlatPart = { kind: 'text'; node: Text } | { kind: 'katex'; el: Element; text: string };
+
+// Flattens the lesson into the same shape a saved quote was captured in: text
+// nodes in DOM order, with each formula standing in for its LaTeX source
+// ($...$). Inline markup (bold, glossary spans, code) splits paragraphs into
+// many nodes, so matching a single node would miss most real selections. Code
+// blocks and marks painted by an earlier quote stay out.
+function collectParts(root: HTMLElement): FlatPart[] {
+  const parts: FlatPart[] = [];
+  (function walk(el: HTMLElement) {
+    for (const child of Array.from(el.childNodes)) {
+      if (child instanceof Text) {
+        if (child.length > 0) parts.push({ kind: 'text', node: child });
+      } else if (child instanceof HTMLElement) {
+        if (child.classList.contains('katex')) {
+          const tex = child.querySelector('annotation')?.textContent;
+          parts.push({ kind: 'katex', el: child, text: tex ? `$${tex}$` : (child.textContent ?? '') });
+        } else if (!child.closest('.codeblock, mark.notebook-highlight')) {
+          walk(child);
+        }
+      }
+    }
+  })(root);
+  return parts;
+}
+
+// Matches a saved quote against the flattened lesson and returns the segments
+// to paint, or null when the text is not there anymore. Whitespace collapses on
+// both sides, so quotes survive line-break normalization.
+function matchQuote(root: HTMLElement, rawQuote: string): HighlightSegment[] | null {
   const quote = rawQuote.replace(/\s+/g, ' ').trim();
   if (!quote) return null;
+  const parts = collectParts(root);
+
+  let raw = '';
+  const chars: { p: number; o: number }[] = [];
+  for (const [p, part] of parts.entries()) {
+    const slice = part.kind === 'text' ? part.node.data : part.text;
+    for (const [o, ch] of Array.from(slice).entries()) {
+      raw += ch;
+      chars.push({ p, o });
+    }
+  }
+
   const map: number[] = [];
   let norm = '';
   let inSpace = false;
-  for (let i = 0; i < original.length; i++) {
-    if (/\s/.test(original[i])) {
+  for (let i = 0; i < raw.length; i++) {
+    if (/\s/.test(raw[i])) {
       if (inSpace) continue;
       inSpace = true;
-      map[norm.length] = i;
       norm += ' ';
+      map.push(i);
     } else {
       inSpace = false;
-      map[norm.length] = i;
-      norm += original[i];
+      norm += raw[i];
+      map.push(i);
     }
   }
-  const idx = norm.trimStart().indexOf(quote);
+  const lead = norm.length - norm.trimStart().length;
+  const idx = norm.indexOf(quote, lead);
   if (idx < 0) return null;
-  const normStart = norm.length - norm.trimStart().length;
-  const start = map[normStart + idx];
-  const end = map[normStart + idx + quote.length - 1];
-  return start !== undefined && end !== undefined ? { start, end: end + 1 } : null;
+  const from = map[idx];
+  const to = map[idx + quote.length - 1];
+  if (from === undefined || to === undefined) return null;
+
+  const runs: { p: number; a: number; b: number }[] = [];
+  for (let i = from; i <= to; i++) {
+    const { p, o } = chars[i];
+    const last = runs[runs.length - 1];
+    if (last && last.p === p) last.b = o;
+    else runs.push({ p, a: o, b: o });
+  }
+
+  const segments: HighlightSegment[] = [];
+  for (const run of runs) {
+    const part = parts[run.p];
+    if (part.kind === 'text') {
+      segments.push({ text: part.node, start: run.a, end: run.b + 1 });
+    } else if (run.a === 0 && run.b + 1 === part.text.length) {
+      // A formula joins a quote whole: its LaTeX ($...$) is all or nothing.
+      segments.push({ katex: part.el });
+    } else {
+      return null;
+    }
+  }
+  return segments;
+}
+
+// Wraps one segment in its mark. Called right-to-left per quote: surrounding a
+// range splits its text node, and only the text after the split moves away.
+function paintSegment(segment: HighlightSegment, noteId: string, flash: boolean) {
+  try {
+    const range = document.createRange();
+    if ('text' in segment) {
+      range.setStart(segment.text, segment.start);
+      range.setEnd(segment.text, segment.end);
+    } else {
+      range.selectNode(segment.katex);
+    }
+    const mark = document.createElement('mark');
+    mark.className = 'notebook-highlight';
+    mark.dataset.noteId = noteId;
+    if (flash) mark.classList.add('notebook-flash');
+    range.surroundContents(mark);
+  } catch (err) {
+    console.error('Failed to paint a highlight segment.', err);
+  }
 }
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
